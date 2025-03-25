@@ -14,6 +14,8 @@ import { Injectable } from '@angular/core';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
+  assign,
+  cloneDeep,
   each,
   filter,
   find,
@@ -30,9 +32,13 @@ import {
   size,
   values
 } from 'lodash';
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import { map as _map } from 'rxjs/operators';
-import { ProtectedResourceApiService, SystemApiService } from '../api/services';
+import {
+  AppService,
+  ProtectedResourceApiService,
+  SystemApiService
+} from '../api/services';
 import {
   ApplicationType,
   ClusterEnvironment,
@@ -59,7 +65,7 @@ import { ResourceCatalogsService } from './resource-catalogs.service';
 export class AppUtilsService {
   // 临时缓存数据
   cacheObject: { [key: string]: any } = {};
-  isDmeUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
+  isDmeUser = this.cookieService.get('userType') === CommonConsts.DME_USER_TYPE;
   isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
   isDistributed =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.e6000.value;
@@ -93,6 +99,7 @@ export class AppUtilsService {
   constructor(
     private router: Router,
     private i18n: I18NService,
+    private appService: AppService,
     private cookieService: CookieService,
     private dataMapService: DataMapService,
     private systemApiService: SystemApiService,
@@ -135,14 +142,20 @@ export class AppUtilsService {
           count: 0,
           protectionUrl: RouterUrl.ProtectionDatabaseAntDB,
           copyUrl: RouterUrl.ExploreCopyDataAntDB,
-          resourceSetType: ResourceSetType.AntDB
+          resType: ResourceSetType.AntDB,
+          resourceSetType: ResourceSetType.AntDB,
+          jobTargetType: [
+            DataMap.Job_Target_Type.AntDBInstance.value,
+            DataMap.Job_Target_Type.AntDBClusterInstance.value
+          ]
         },
         {
           id: 'oralce',
           slaId: ApplicationType.Oracle,
           key: [
             DataMap.Resource_Type.oracle.value,
-            DataMap.Resource_Type.oracleCluster.value
+            DataMap.Resource_Type.oracleCluster.value,
+            DataMap.Resource_Type.oraclePDB.value
           ],
           hide: !includes(items, ApplicationType.Oracle),
           label: this.i18n.get('common_oracle_label'),
@@ -161,9 +174,18 @@ export class AppUtilsService {
             {
               label: this.i18n.get('common_database_label'),
               resType: DataMap.Resource_Type.oracle.value
+            },
+            {
+              label: this.i18n.get('protection_pdb_set_label'),
+              resType: DataMap.Resource_Type.oraclePDB.value
             }
           ],
-          resourceSetType: ResourceSetType.Oracle
+          resourceSetType: ResourceSetType.Oracle,
+          jobTargetType: [
+            DataMap.Job_Target_Type.oracle.value,
+            DataMap.Job_Target_Type.oracleCluster.value,
+            DataMap.Job_Target_Type.oraclePdbSet.value
+          ]
         },
         {
           id: 'mysql',
@@ -196,7 +218,13 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.MySQLDatabase.value
             }
           ],
-          resourceSetType: ResourceSetType.MySQL
+          resourceSetType: ResourceSetType.MySQL,
+          jobTargetType: [
+            DataMap.Job_Target_Type.MySQLCluster.value,
+            DataMap.Job_Target_Type.MySQLInstance.value,
+            DataMap.Job_Target_Type.MySQLDatabase.value,
+            DataMap.Job_Target_Type.MySQLClusterInstance.value
+          ]
         },
         {
           id: 'sqlserver',
@@ -233,7 +261,14 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.SQLServerDatabase.value
             }
           ],
-          resourceSetType: ResourceSetType.SQLServer
+          resourceSetType: ResourceSetType.SQLServer,
+          jobTargetType: [
+            DataMap.Job_Target_Type.SQLServerCluster.value,
+            DataMap.Job_Target_Type.SQLServerInstance.value,
+            DataMap.Job_Target_Type.sqlServerClusterInstance.value,
+            DataMap.Job_Target_Type.SQLServerGroup.value,
+            DataMap.Job_Target_Type.SQLServerDatabase.value
+          ]
         },
         {
           id: 'postgresql',
@@ -260,7 +295,11 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.PostgreSQLInstance.value
             }
           ],
-          resourceSetType: ResourceSetType.PostgreSQL
+          resourceSetType: ResourceSetType.PostgreSQL,
+          jobTargetType: [
+            DataMap.Job_Target_Type.PostgreInstance.value,
+            DataMap.Job_Target_Type.PostgreClusterInstance.value
+          ]
         },
         {
           id: 'db2',
@@ -295,7 +334,14 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.dbTwoTableSet.value
             }
           ],
-          resourceSetType: ResourceSetType.DB2
+          resourceSetType: ResourceSetType.DB2,
+          jobTargetType: [
+            DataMap.Job_Target_Type.dbTwoCluster.value,
+            DataMap.Job_Target_Type.dbTwoInstance.value,
+            DataMap.Job_Target_Type.dbTwoClusterInstance.value,
+            DataMap.Job_Target_Type.dbTwoDatabase.value,
+            DataMap.Job_Target_Type.dbTwoTableSet.value
+          ]
         },
         {
           id: 'informix',
@@ -322,7 +368,12 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.informixInstance.value
             }
           ],
-          resourceSetType: ResourceSetType.Informix
+          resourceSetType: ResourceSetType.Informix,
+          jobTargetType: [
+            DataMap.Job_Target_Type.informixService.value,
+            DataMap.Job_Target_Type.informixInstance.value,
+            DataMap.Job_Target_Type.informixClusterInstance.value
+          ]
         },
         {
           id: 'opengauss',
@@ -353,7 +404,12 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.OpenGauss_database.value
             }
           ],
-          resourceSetType: ResourceSetType.OpenGauss
+          resourceSetType: ResourceSetType.OpenGauss,
+          jobTargetType: [
+            DataMap.Job_Target_Type.OpenGauss.value,
+            DataMap.Job_Target_Type.openGaussInstance.value,
+            DataMap.Job_Target_Type.openGaussDatabase.value
+          ]
         },
         {
           id: 'gaussdbt',
@@ -371,7 +427,11 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionHostAppGaussDBT,
           copyUrl: RouterUrl.ExploreCopyDataGaussDBT,
           resType: DataMap.Resource_Type.GaussDB_T.value,
-          resourceSetType: ResourceSetType.GaussDB_T
+          resourceSetType: ResourceSetType.GaussDB_T,
+          jobTargetType: [
+            DataMap.Job_Target_Type.GaussDB_T.value,
+            DataMap.Job_Target_Type.gaussdbTSingle.value
+          ]
         },
         {
           id: 'tidb',
@@ -403,7 +463,12 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.tidbTable.value
             }
           ],
-          resourceSetType: ResourceSetType.TiDB
+          resourceSetType: ResourceSetType.TiDB,
+          jobTargetType: [
+            DataMap.Job_Target_Type.tidbCluster.value,
+            DataMap.Job_Target_Type.tidbDatabase.value,
+            DataMap.Job_Target_Type.tidbTable.value
+          ]
         },
         {
           id: 'oceanbase',
@@ -430,7 +495,11 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.OceanBaseTenant.value
             }
           ],
-          resourceSetType: ResourceSetType.OceanBase
+          resourceSetType: ResourceSetType.OceanBase,
+          jobTargetType: [
+            DataMap.Job_Target_Type.oceanBaseCluster.value,
+            DataMap.Job_Target_Type.oceanBaseTenant.value
+          ]
         },
         {
           id: 'tdsql',
@@ -462,7 +531,12 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.tdsqlDistributedInstance.value
             }
           ],
-          resourceSetType: ResourceSetType.TDSQL
+          resourceSetType: ResourceSetType.TDSQL,
+          jobTargetType: [
+            DataMap.Job_Target_Type.tdsqlCluster.value,
+            DataMap.Job_Target_Type.tdsqlInstance.value,
+            DataMap.Job_Target_Type.tdsqlDistributedInstance.value
+          ]
         },
         {
           id: 'kingbase',
@@ -489,7 +563,11 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.KingBaseInstance.value
             }
           ],
-          resourceSetType: ResourceSetType.KingBase
+          resourceSetType: ResourceSetType.KingBase,
+          jobTargetType: [
+            DataMap.Job_Target_Type.KingBaseInstance.value,
+            DataMap.Job_Target_Type.KingBaseClusterInstance.value
+          ]
         },
         {
           id: 'dameng',
@@ -507,7 +585,11 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionHostAppDameng,
           copyUrl: RouterUrl.ExportCopyDataDameng,
           resType: DataMap.Resource_Type.Dameng.value,
-          resourceSetType: ResourceSetType.Dameng
+          resourceSetType: ResourceSetType.Dameng,
+          jobTargetType: [
+            DataMap.Job_Target_Type.damengCluster.value,
+            DataMap.Job_Target_Type.damengSingleNode.value
+          ]
         },
         {
           id: 'goldendb',
@@ -531,7 +613,11 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.goldendbInstance.value
             }
           ],
-          resourceSetType: ResourceSetType.GoldenDB
+          resourceSetType: ResourceSetType.GoldenDB,
+          jobTargetType: [
+            DataMap.Job_Target_Type.goldendbCluter.value,
+            DataMap.Job_Target_Type.goldendbInstance.value
+          ]
         },
         {
           id: 'generaldatabase',
@@ -546,7 +632,8 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionHostGeneralDatabase,
           copyUrl: RouterUrl.ExploreCopyDataGeneralDatabase,
           resType: DataMap.Resource_Type.generalDatabase.value,
-          resourceSetType: ResourceSetType.GeneralDb
+          resourceSetType: ResourceSetType.GeneralDb,
+          jobTargetType: [DataMap.Job_Target_Type.GeneralDatabase.value]
         },
         {
           id: 'gbase',
@@ -563,7 +650,8 @@ export class AppUtilsService {
           count: 0,
           protectionUrl: RouterUrl.ProtectionGbase,
           copyUrl: RouterUrl.ExploreCopyDataDatabaseGbase,
-          resType: DataMap.Resource_Type.gbaseCluster.value
+          resType: DataMap.Resource_Type.gbaseCluster.value,
+          jobTargetType: []
         },
         {
           id: 'lightcloudgaussdb',
@@ -587,7 +675,11 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.lightCloudGaussdbInstance.value
             }
           ],
-          resourceSetType: ResourceSetType.GaussDB
+          resourceSetType: ResourceSetType.GaussDB,
+          jobTargetType: [
+            DataMap.Job_Target_Type.lightCloudGaussdbProject.value,
+            DataMap.Job_Target_Type.lightCloudGaussdbInstance.value
+          ]
         }
       ],
       bigData: [
@@ -607,7 +699,11 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionHostAppMongoDB,
           copyUrl: RouterUrl.ExploreCopyDataMongoDB,
           resType: DataMap.Resource_Type.MongoDB.value,
-          resourceSetType: ResourceSetType.MongoDB
+          resourceSetType: ResourceSetType.MongoDB,
+          jobTargetType: [
+            DataMap.Job_Target_Type.mongodbSingleInstance.value,
+            DataMap.Job_Target_Type.mongodbClusterInstance.value
+          ]
         },
         {
           id: 'redis',
@@ -622,7 +718,8 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionHostAppRedis,
           copyUrl: RouterUrl.ExploreCopyDataRedis,
           resType: DataMap.Resource_Type.Redis.value,
-          resourceSetType: ResourceSetType.Redis
+          resourceSetType: ResourceSetType.Redis,
+          jobTargetType: [DataMap.Job_Target_Type.Redis.value]
         },
         {
           id: 'gaussdbdws',
@@ -654,7 +751,12 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.DWS_Table.value
             }
           ],
-          resourceSetType: ResourceSetType.GaussDB_DWS
+          resourceSetType: ResourceSetType.GaussDB_DWS,
+          jobTargetType: [
+            DataMap.Job_Target_Type.dwsCluster.value,
+            DataMap.Job_Target_Type.dwsSchema.value,
+            DataMap.Job_Target_Type.dwsTable.value
+          ]
         },
         {
           id: 'clickhouse',
@@ -682,7 +784,8 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.ClickHouseTableset.value
             }
           ],
-          resourceSetType: ResourceSetType.ClickHouse
+          resourceSetType: ResourceSetType.ClickHouse,
+          jobTargetType: [DataMap.Job_Target_Type.ClickHouse.value]
         },
         {
           id: 'hdfs',
@@ -706,7 +809,8 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.HDFSFileset.value
             }
           ],
-          resourceSetType: ResourceSetType.HDFS
+          resourceSetType: ResourceSetType.HDFS,
+          jobTargetType: [DataMap.Job_Target_Type.HDFSFileset.value]
         },
         {
           id: 'hbase',
@@ -730,7 +834,8 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.HBaseBackupSet.value
             }
           ],
-          resourceSetType: ResourceSetType.HBase
+          resourceSetType: ResourceSetType.HBase,
+          jobTargetType: [DataMap.Job_Target_Type.HBaseBackupSet.value]
         },
         {
           id: 'hive',
@@ -754,7 +859,8 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.HiveBackupSet.value
             }
           ],
-          resourceSetType: ResourceSetType.Hive
+          resourceSetType: ResourceSetType.Hive,
+          jobTargetType: [DataMap.Job_Target_Type.HiveBackupSet.value]
         },
         {
           id: 'elasticsearch',
@@ -778,7 +884,8 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.ElasticsearchBackupSet.value
             }
           ],
-          resourceSetType: ResourceSetType.Elasticsearch
+          resourceSetType: ResourceSetType.Elasticsearch,
+          jobTargetType: [DataMap.Job_Target_Type.ElasticSearch.value]
         }
       ],
       virtualization: [
@@ -807,7 +914,16 @@ export class AppUtilsService {
           livemountUrl: RouterUrl.ExploreLiveMountApplicationVmware,
           antiUrl: RouterUrl.ExploreAntiApplicationVmware,
           resType: ApplicationType.Vmware,
-          resourceSetType: ResourceSetType.VMware
+          resourceSetType: ResourceSetType.VMware,
+          jobTargetType: [
+            DataMap.Job_Target_Type.VMware.value,
+            DataMap.Job_Target_Type.VMwarevCenterServer.value,
+            DataMap.Job_Target_Type.clusterComputeResource.value,
+            DataMap.Job_Target_Type.vmwareHostSystem.value,
+            DataMap.Job_Target_Type.vmwareEsx.value,
+            DataMap.Job_Target_Type.vmwareEsxi.value,
+            DataMap.Job_Target_Type.vmware.value
+          ]
         },
         {
           id: 'cnware',
@@ -834,7 +950,14 @@ export class AppUtilsService {
           livemountUrl: RouterUrl.ExploreLiveMountApplicationCnware,
           antiUrl: RouterUrl.ExploreAntiApplicationCnware,
           resType: ResourceType.CNWARE,
-          resourceSetType: ResourceSetType.CNware
+          resourceSetType: ResourceSetType.CNware,
+          jobTargetType: [
+            DataMap.Job_Target_Type.cNware.value,
+            DataMap.Job_Target_Type.cNwareHostPool.value,
+            DataMap.Job_Target_Type.cNwareCluster.value,
+            DataMap.Job_Target_Type.cNwareHost.value,
+            DataMap.Job_Target_Type.cNwareVm.value
+          ]
         },
         {
           id: 'fusioncompute',
@@ -849,7 +972,13 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionVirtualizationFusionCompute,
           copyUrl: RouterUrl.ExploreCopyDataFusionCompute,
           resType: ApplicationType.FusionCompute,
-          resourceSetType: ResourceSetType.FusionCompute
+          resourceSetType: ResourceSetType.FusionCompute,
+          jobTargetType: [
+            DataMap.Job_Target_Type.FusionComputePlatform.value,
+            DataMap.Job_Target_Type.FusionComputeCluster.value,
+            DataMap.Job_Target_Type.FusionComputeHost.value,
+            DataMap.Job_Target_Type.FusionCompute.value
+          ]
         },
         {
           id: 'hyper-v',
@@ -874,7 +1003,13 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionVirtualizationHyperV,
           copyUrl: RouterUrl.ExploreCopyDataHyperv,
           resType: ResourceType.HYPERV,
-          resourceSetType: ResourceSetType.HyperV
+          resourceSetType: ResourceSetType.HyperV,
+          jobTargetType: [
+            DataMap.Job_Target_Type.hypervScvmm.value,
+            DataMap.Job_Target_Type.hypervCluster.value,
+            DataMap.Job_Target_Type.hypervHost.value,
+            DataMap.Job_Target_Type.hypervVM.value
+          ]
         },
         {
           id: 'fusionone',
@@ -890,7 +1025,13 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionVirtualizationFusionOne,
           copyUrl: RouterUrl.ExploreCopyDataFusionOne,
           resType: ApplicationType.FusionOne,
-          resourceSetType: ResourceSetType.FusionOne
+          resourceSetType: ResourceSetType.FusionOne,
+          jobTargetType: [
+            DataMap.Job_Target_Type.FusionOneComputePlatform.value,
+            DataMap.Job_Target_Type.FusionOneComputeCluster.value,
+            DataMap.Job_Target_Type.FusionOneComputeHost.value,
+            DataMap.Job_Target_Type.FusionOneCompute.value
+          ]
         },
         {
           id: 'nutanix',
@@ -916,7 +1057,13 @@ export class AppUtilsService {
           copyUrl: RouterUrl.ExploreCopyDataNutanix,
           antiUrl: RouterUrl.ExploreAntiApplicationNutanix,
           resType: ResourceType.NUTANIX,
-          resourceSetType: ResourceSetType.Nutanix
+          resourceSetType: ResourceSetType.Nutanix,
+          jobTargetType: [
+            DataMap.Job_Target_Type.nutanix.value,
+            DataMap.Job_Target_Type.nutanixCluster.value,
+            DataMap.Job_Target_Type.nutanixHost.value,
+            DataMap.Job_Target_Type.nutanixVm.value
+          ]
         }
       ],
       container: [
@@ -950,7 +1097,12 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.KubernetesStatefulset.value
             }
           ],
-          resourceSetType: ResourceSetType.Kubernetes_FlexVolume
+          resourceSetType: ResourceSetType.Kubernetes_FlexVolume,
+          jobTargetType: [
+            DataMap.Job_Target_Type.kubernetes.value,
+            DataMap.Job_Target_Type.kubernetesNamespace.value,
+            DataMap.Job_Target_Type.kubernetesStatefulSet.value
+          ]
         },
         {
           id: 'kubernetes-container',
@@ -982,7 +1134,12 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.kubernetesDatasetCommon.value
             }
           ],
-          resourceSetType: ResourceSetType.Kubernetes_CSI
+          resourceSetType: ResourceSetType.Kubernetes_CSI,
+          jobTargetType: [
+            DataMap.Job_Target_Type.kubernetesClusterCommon.value,
+            DataMap.Job_Target_Type.kubernetesNamespaceCommon.value,
+            DataMap.Job_Target_Type.kubernetesDatasetCommon.value
+          ]
         }
       ],
       cloud: [
@@ -1008,7 +1165,14 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionCloudHuaweiStack,
           copyUrl: RouterUrl.ExploreCopyDataHuaweiStack,
           resType: ApplicationType.HCSCloudHost,
-          resourceSetType: ResourceSetType.HCSStack
+          resourceSetType: ResourceSetType.HCSStack,
+          jobTargetType: [
+            DataMap.Job_Target_Type.HCSContainer.value,
+            DataMap.Job_Target_Type.hcsEnvOp.value,
+            DataMap.Job_Target_Type.HCSTenant.value,
+            DataMap.Job_Target_Type.HCSProject.value,
+            DataMap.Job_Target_Type.HCSCloudHost.value
+          ]
         },
         {
           id: 'openstack',
@@ -1032,7 +1196,12 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionCloudOpenstack,
           copyUrl: RouterUrl.ExploreCopyDataOpenStack,
           resType: ApplicationType.OpenStack,
-          resourceSetType: ResourceSetType.OpenStack
+          resourceSetType: ResourceSetType.OpenStack,
+          jobTargetType: [
+            DataMap.Job_Target_Type.Openstack.value,
+            DataMap.Job_Target_Type.OpenStackProject.value,
+            DataMap.Job_Target_Type.OpenStackCloudServer.value
+          ]
         },
         {
           id: 'gaussdbforopengauss',
@@ -1056,7 +1225,11 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.gaussdbForOpengaussInstance.value
             }
           ],
-          resourceSetType: ResourceSetType.HCSStack_GaussDB
+          resourceSetType: ResourceSetType.HCSStack_GaussDB,
+          jobTargetType: [
+            DataMap.Job_Target_Type.gaussdbForOpengaussInstance.value,
+            DataMap.Job_Target_Type.gaussdbForOpengaussProject.value
+          ]
         },
         {
           id: 'apsarastack',
@@ -1081,7 +1254,13 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionApsaraStack,
           copyUrl: RouterUrl.ExploreCopyDataApsaraStack,
           resourceSetType: ResourceSetType.ApsaraStack,
-          resType: ApplicationType.ApsaraStack
+          resType: ApplicationType.ApsaraStack,
+          jobTargetType: [
+            DataMap.Job_Target_Type.ApsaraStack.value,
+            DataMap.Job_Target_Type.APSResourceSet.value,
+            DataMap.Job_Target_Type.APSCloudServer.value,
+            DataMap.Job_Target_Type.APSZone.value
+          ]
         }
       ],
       fileService: [
@@ -1103,7 +1282,8 @@ export class AppUtilsService {
           livemountUrl: RouterUrl.ExploreLiveMountApplicationFileSystem,
           antiUrl: RouterUrl.ExploreAntiApplicationDoradoFileSystem,
           resType: DataMap.Resource_Type.NASFileSystem.value,
-          resourceSetType: ResourceSetType.NasFileSystem
+          resourceSetType: ResourceSetType.NasFileSystem,
+          jobTargetType: [DataMap.Job_Target_Type.NASFileSystem.value]
         },
         {
           id: 'nasshare',
@@ -1120,7 +1300,8 @@ export class AppUtilsService {
           livemountUrl: RouterUrl.ExploreLiveMountApplicationNasshare,
           antiUrl: RouterUrl.ExploreAntiApplicationNasShared,
           resType: DataMap.Resource_Type.NASShare.value,
-          resourceSetType: ResourceSetType.NasShare
+          resourceSetType: ResourceSetType.NasShare,
+          jobTargetType: [DataMap.Job_Target_Type.NASShare.value]
         },
         {
           id: 'ndmp',
@@ -1145,7 +1326,11 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.ndmp.value
             }
           ],
-          resourceSetType: ResourceSetType.Ndmp
+          resourceSetType: ResourceSetType.Ndmp,
+          jobTargetType: [
+            DataMap.Job_Target_Type.ndmp.value,
+            DataMap.Job_Target_Type.ndmpServer.value
+          ]
         },
         {
           id: 'commonShare',
@@ -1163,7 +1348,8 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionCommonShare,
           copyUrl: RouterUrl.ExploreCopyDataCommonShare,
           resType: DataMap.Resource_Type.commonShare.value,
-          resourceSetType: ResourceSetType.CommonShare
+          resourceSetType: ResourceSetType.CommonShare,
+          jobTargetType: [DataMap.Job_Target_Type.commonShare.value]
         },
         {
           id: 'objectStorage',
@@ -1187,7 +1373,8 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.ObjectSet.value
             }
           ],
-          resourceSetType: ResourceSetType.ObjectStorage
+          resourceSetType: ResourceSetType.ObjectStorage,
+          jobTargetType: [DataMap.Job_Target_Type.ObjectSet.value]
         },
         {
           id: 'fileset',
@@ -1213,7 +1400,8 @@ export class AppUtilsService {
               resType: 'filesetTemplate'
             }
           ],
-          resourceSetType: ResourceSetType.Fileset
+          resourceSetType: ResourceSetType.Fileset,
+          jobTargetType: [DataMap.Job_Target_Type.Fileset.value]
         },
         {
           id: 'volume',
@@ -1229,7 +1417,8 @@ export class AppUtilsService {
           copyUrl: RouterUrl.ExploreCopyDataVolume,
           livemountUrl: RouterUrl.ExploreLiveMountApplicationVolume,
           resType: DataMap.Resource_Type.volume.value,
-          resourceSetType: ResourceSetType.Volume
+          resourceSetType: ResourceSetType.Volume,
+          jobTargetType: [DataMap.Job_Target_Type.volume.value]
         }
       ],
       application: [
@@ -1237,7 +1426,9 @@ export class AppUtilsService {
           id: 'activedirectory',
           slaId: ApplicationType.ActiveDirectory,
           key: DataMap.Resource_Type.ActiveDirectory.value,
-          hide: !includes(items, ApplicationType.ActiveDirectory),
+          hide:
+            !includes(items, ApplicationType.ActiveDirectory) ||
+            this.isDistributed,
           label: this.i18n.get('Active Directory'),
           prefix: 'A',
           color: '#717074',
@@ -1246,7 +1437,8 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionActiveDirectory,
           copyUrl: RouterUrl.ExploreCopyDataActiveDirectory,
           resType: DataMap.Resource_Type.ActiveDirectory.value,
-          resourceSetType: ResourceSetType.ADDS
+          resourceSetType: ResourceSetType.ADDS,
+          jobTargetType: [DataMap.Job_Target_Type.ActiveDirectory.value]
         },
         {
           id: 'exchange',
@@ -1257,7 +1449,8 @@ export class AppUtilsService {
             DataMap.Resource_Type.ExchangeSingle.value,
             DataMap.Resource_Type.ExchangeEmail.value
           ],
-          hide: !includes(items, ApplicationType.Exchange),
+          hide:
+            !includes(items, ApplicationType.Exchange) || this.isDistributed,
           label: this.i18n.get('Exchange'),
           prefix: 'E',
           color: '#0072C6',
@@ -1280,7 +1473,13 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.ExchangeEmail.value
             }
           ],
-          resourceSetType: ResourceSetType.Exchange
+          resourceSetType: ResourceSetType.Exchange,
+          jobTargetType: [
+            DataMap.Job_Target_Type.ExchangeSingle.value,
+            DataMap.Job_Target_Type.ExchangeGroup.value,
+            DataMap.Job_Target_Type.ExchangeDataBase.value,
+            DataMap.Job_Target_Type.ExchangeEmail.value
+          ]
         },
         {
           id: 'saphana',
@@ -1307,13 +1506,17 @@ export class AppUtilsService {
               resType: DataMap.Resource_Type.saphanaDatabase.value
             }
           ],
-          resourceSetType: ResourceSetType.SAP_HANA
+          resourceSetType: ResourceSetType.SAP_HANA,
+          jobTargetType: [
+            DataMap.Job_Target_Type.saphanaInstance.value,
+            DataMap.Job_Target_Type.saphanaDatabase.value
+          ]
         },
         {
           id: 'Saponoracle',
           slaId: ApplicationType.Saponoracle,
           key: [DataMap.Resource_Type.saponoracleDatabase.value],
-          hide: !includes(items, ApplicationType.Saponoracle),
+          hide: !includes(items, ApplicationType.Saponoracle) || this.isHcsUser,
           label: this.i18n.get('common_sap_on_oracle_label'),
           prefix: 'S',
           color: '#006DB8',
@@ -1322,7 +1525,8 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionHostAppSaponoracle,
           copyUrl: RouterUrl.ExploreCopyDataSaponoracle,
           resType: DataMap.Resource_Type.saponoracleDatabase.value,
-          resourceSetType: ResourceSetType.SAP_ON_ORACLE
+          resourceSetType: ResourceSetType.SAP_ON_ORACLE,
+          jobTargetType: [DataMap.Job_Target_Type.saponoracleDatabase.value]
         }
       ],
       bareMetal: [
@@ -1339,7 +1543,8 @@ export class AppUtilsService {
           protectionUrl: RouterUrl.ProtectionBareMetalFilesetTemplate,
           copyUrl: RouterUrl.ExploreCopyDataBareMetalFileset,
           livemountUrl: RouterUrl.ExploreLiveMountApplicationFileset,
-          antiUrl: RouterUrl.ExploreAntiApplicationFileset
+          antiUrl: RouterUrl.ExploreAntiApplicationFileset,
+          jobTargetType: [DataMap.Job_Target_Type.Fileset.value]
         }
       ]
     };
@@ -1513,7 +1718,7 @@ export class AppUtilsService {
             const tmpData = find(res, { uuid: item.uuid });
             return {
               ...item,
-              disabled: get(tmpData, 'isAllowRestore', 'false') === 'false'
+              disabled: get(tmpData, 'isAllowRestore', 'true') === 'false'
             };
           })
         );
@@ -1545,6 +1750,11 @@ export class AppUtilsService {
           startPage = start;
         }
         startPage++;
+        if (extParams?.startPage) {
+          let page = cloneDeep(extParams?.startPage);
+          page++;
+          set(extParams, 'startPage', page);
+        }
         recordsTemp = [...recordsTemp, ...res.records];
         const page = specialPage
           ? Math.ceil(res.totalCount / CommonConsts.MAX_PAGE_SIZE) + 1
@@ -1612,6 +1822,12 @@ export class AppUtilsService {
           if (this.isHcsUser) {
             const herf: string = first(window.location.href.split('#'));
             window.open(herf.replace('/console/', targetUrl), '_blank');
+          } else if (this.isDmeUser) {
+            const herf: string = first(window.location.href.split('#'));
+            window.open(
+              herf.replace('/console/index.html', targetUrl),
+              '_blank'
+            );
           } else {
             window.open(targetUrl, '_blank');
           }
@@ -1648,9 +1864,13 @@ export class AppUtilsService {
       ? `/console/assets/help/a8000/en-us/index.html#${HelpUrlCode.en[newType]}.html`
       : `/console/assets/help/a8000/zh-cn/index.html#${HelpUrlCode.zh[newType]}.html`;
 
-    if (this.isHcsUser || this.isDmeUser) {
+    if (this.isHcsUser) {
       const herf: string = first(window.location.href.split('#'));
       return herf.replace('/console/', baseUrl);
+    }
+    if (this.isDmeUser) {
+      const herf: string = first(window.location.href.split('#'));
+      return herf.replace('/console/index.html', baseUrl);
     }
     return `${location.origin}${baseUrl}`;
   }
@@ -1865,15 +2085,15 @@ export class AppUtilsService {
    * 此刻设置系统时间
    * @param formControl 需要赋值的表单控件
    */
-  setTimePickerCurrent(formControl: any) {
-    this.systemApiService
-      .getSystemTimeUsingGET({
-        akDoException: false
-      })
-      .subscribe(res => {
-        const sysDate = new Date(res.time);
-        formControl?.setValue(sysDate);
-      });
+  setTimePickerCurrent(formControl?: any) {
+    const tempSysLong = new Date(SYSTEM_TIME.sysTime).getTime();
+    const intervalTimeFromQuery =
+      new Date().getTime() - SYSTEM_TIME.userSystemTime;
+    const controlTime = new Date(tempSysLong + intervalTimeFromQuery);
+    if (formControl) {
+      formControl.setValue(controlTime);
+    }
+    return controlTime;
   }
 
   /**
@@ -1895,5 +2115,145 @@ export class AppUtilsService {
     a.download = fileName;
     a.click();
     document.body.removeChild(a);
+  }
+
+  /**
+   *
+   * @param targetServer 待查询的虚拟机或云服务器
+   * @param resourceType 查询资源类型，例如：网卡、磁盘、数据存储等
+   * @param paramsExt 扩展条件参数
+   * @param conditionsExt conditions扩展条件参数
+   * @param hasConditions 是否需要conditions
+   */
+  getResourcesDetails(
+    targetServer,
+    resourceType = '',
+    paramsExt = {},
+    conditionsExt = {},
+    hasConditions = true
+  ): Observable<any> {
+    return new Observable<any>((observer: Observer<any>) => {
+      const sendEmpty = () => {
+        observer.next([]);
+        observer.complete();
+      };
+      if (!targetServer) {
+        sendEmpty();
+        return;
+      }
+      let agentsId = [];
+      // 查询详情方法
+      const listDetails = (
+        agentId: string,
+        recordsTemp = [],
+        startPage = 1
+      ) => {
+        const conditions = { uuid: targetServer.uuid, ...conditionsExt };
+        if (!isEmpty(resourceType)) {
+          assign(conditions, { resourceType: resourceType });
+        }
+        const params = {
+          agentId: agentId,
+          envId: targetServer.rootUuid || targetServer.root_uuid,
+          resourceIds: [targetServer.uuid || targetServer.root_uuid],
+          pageNo: startPage,
+          pageSize: CommonConsts.MAX_PAGE_SIZE,
+          ...paramsExt,
+          conditions: JSON.stringify(conditions)
+        };
+        if (!hasConditions) {
+          delete params.conditions;
+        }
+        this.appService
+          .ListResourcesDetails({ ...params, akDoException: isEmpty(agentsId) })
+          .subscribe({
+            next: res => {
+              recordsTemp = [...recordsTemp, ...res.records];
+              if (
+                startPage ===
+                  Math.ceil(res.totalCount / CommonConsts.MAX_PAGE_SIZE) ||
+                res.totalCount === 0 ||
+                res.totalCount === size(res.records)
+              ) {
+                observer.next(recordsTemp);
+                observer.complete();
+                return;
+              }
+              startPage++;
+              listDetails(agentId, recordsTemp, startPage);
+            },
+            error: err => {
+              // 如果是多代理注册、界面取到的代理状态是在线，实际是离线，PM有5分钟的更新时间，接口会报错。此时从已有列表中选取下一个重试下发。
+              if (
+                err?.error?.errorCode === '1677931275' &&
+                !isEmpty(agentsId)
+              ) {
+                const agent = agentsId.shift();
+                listDetails(agent);
+              } else {
+                sendEmpty();
+              }
+            }
+          });
+      };
+      this.protectedResourceApiService
+        .ListResources({
+          pageNo: CommonConsts.PAGE_START,
+          pageSize: CommonConsts.PAGE_SIZE,
+          queryDependency: true,
+          conditions: JSON.stringify({
+            uuid: targetServer.rootUuid || targetServer.root_uuid
+          })
+        })
+        .subscribe({
+          next: (res: any) => {
+            if (first(res.records)) {
+              const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
+                item =>
+                  item.linkStatus ===
+                  DataMap.resource_LinkStatus_Special.normal.value
+              );
+              if (isEmpty(onlineAgents)) {
+                sendEmpty();
+                return;
+              }
+              agentsId = map(onlineAgents, 'uuid');
+              // 默认获取第一个agent
+              const agent = agentsId.shift();
+              listDetails(agent);
+            } else {
+              sendEmpty();
+            }
+          },
+          error: () => sendEmpty()
+        });
+    });
+  }
+
+  /**
+   * 资源详情右上角的操作执行后，用最新的数据重新打开一次modal
+   * @param params
+   * @param self
+   * @param funName 打开资源详情函数名，默认为getResourceDetail
+   */
+  openDetailModalAfterQueryData(
+    params: {
+      autoPolling: boolean;
+      records: any[];
+    },
+    self,
+    funName = 'getResourceDetail'
+  ) {
+    const { autoPolling, records } = params;
+    if (
+      autoPolling ||
+      !includes(map(self.drawModalService.modals, 'key'), 'detail-modal')
+    ) {
+      return;
+    }
+    const target = find(records, { uuid: self.currentDetailUuid });
+    if (target) {
+      self[funName](target);
+    }
   }
 }

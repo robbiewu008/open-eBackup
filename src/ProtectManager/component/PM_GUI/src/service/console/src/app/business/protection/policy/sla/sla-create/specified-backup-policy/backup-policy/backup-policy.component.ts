@@ -114,6 +114,7 @@ export class BackupPolicyComponent implements OnInit, OnChanges {
     ],
     this.i18n.get('deploy_type')
   );
+  isDistributed = this.appUtilsService.isDistributed;
   @Input() data: any;
   @Input() action;
   @Input() activeIndex: number;
@@ -299,12 +300,12 @@ export class BackupPolicyComponent implements OnInit, OnChanges {
   }
   ngOnChanges(changes: SimpleChanges) {
     if (changes.isBasicDisk) {
-      this.getBackupTeams().controls.map(control => {
+      this.getBackupTeams()?.controls.map(control => {
         control.get('worm_switch').disable();
         control.get('worm_switch').setValue(false);
       });
     } else {
-      this.getBackupTeams().controls.map(control => {
+      this.getBackupTeams()?.controls.map(control => {
         control.get('worm_switch').enable();
       });
     }
@@ -384,15 +385,21 @@ export class BackupPolicyComponent implements OnInit, OnChanges {
   }
 
   batchDealCtrl() {
-    this.getBackupTeams().controls.map(control => {
-      if (
-        control.get('duration_unit').value ===
-        DataMap.Interval_Unit.persistent.value
-      ) {
-        control.get('retention_duration').disable();
-        control.get('retention_duration').setValue('');
-      }
-    });
+    setTimeout(() => {
+      this.getBackupTeams().controls.map(control => {
+        if (
+          control.get('duration_unit').value ===
+            DataMap.Interval_Unit.persistent.value ||
+          control.get('specified_duration_unit').value ===
+            DataMap.Interval_Unit.persistent.value
+        ) {
+          control.get('retention_duration').disable();
+          control.get('retention_duration').setValue('');
+          control.get('specified_retention_duration').disable();
+          control.get('specified_retention_duration').setValue('');
+        }
+      });
+    }, 0);
   }
 
   updateForm() {
@@ -564,19 +571,9 @@ export class BackupPolicyComponent implements OnInit, OnChanges {
         this.wormSetVerify(backupTeam);
       } else if (res) {
         // 开启时如果是这两种应用的日志备份，自动切到自定义时间
-        // 这两种应用的日志没有保留时间，禁用与副本保留时间一致
-        if (
-          [this.appType.HBase, this.appType.SQLServer].includes(
-            this.applicationType
-          ) &&
-          backupTeam.get('action').value === this.policyAction.LOG
-        ) {
-          backupTeam.get('worm_validity_type').setValue(2);
-          this.wormSetVerify(backupTeam);
-        } else {
-          backupTeam.get('worm_validity_type').setValue(1);
-          this.wormClearVerify(backupTeam);
-        }
+        // 日志没有保留时间，禁用与副本保留时间一致
+        backupTeam.get('worm_validity_type').setValue(1);
+        this.wormClearVerify(backupTeam);
       } else {
         // 关闭时将worm_validity_type置0，否则回显时开关自动打开
         backupTeam.get('worm_validity_type').setValue(0);
@@ -779,20 +776,6 @@ export class BackupPolicyComponent implements OnInit, OnChanges {
       backupTeam.get('specified_window_end').clearValidators();
       backupTeam.get('specified_retention_duration').clearValidators();
       backupTeam.get('specified_duration_unit').clearValidators();
-      if (
-        [this.appType.HBase, this.appType.SQLServer].includes(
-          this.applicationType
-        )
-      ) {
-        backupTeam
-          .get('duration_unit')
-          .setValue(DataMap.Interval_Unit.persistent.value);
-        this.changeUnit(
-          backupTeam,
-          DataMap.Interval_Unit.persistent.value,
-          'retention_duration'
-        );
-      }
     } else {
       backupTeam
         .get('window_start')
@@ -1418,7 +1401,6 @@ export class BackupPolicyComponent implements OnInit, OnChanges {
         ApplicationType.TiDB,
         ApplicationType.ActiveDirectory,
         ApplicationType.LightCloudGaussDB,
-        ApplicationType.SapHana,
         ApplicationType.Saponoracle
       ],
       this.applicationType
@@ -1442,7 +1424,8 @@ export class BackupPolicyComponent implements OnInit, OnChanges {
         ApplicationType.GaussDBForOpenGauss,
         ApplicationType.Informix,
         ApplicationType.GeneralDatabase,
-        ApplicationType.LightCloudGaussDB
+        ApplicationType.LightCloudGaussDB,
+        ApplicationType.SapHana
       ],
       this.applicationType
     );
@@ -1713,8 +1696,10 @@ export class BackupPolicyComponent implements OnInit, OnChanges {
         }
       }
     } else if (value === DataMap.Interval_Unit.persistent.value) {
-      formGroup.get(formControlName).disable();
-      formGroup.get(formControlName).setValue('');
+      setTimeout(() => {
+        formGroup.get(formControlName).disable();
+        formGroup.get(formControlName).setValue('');
+      }, 0);
     }
     formGroup.get(formControlName).updateValueAndValidity();
   }

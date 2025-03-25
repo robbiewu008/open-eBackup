@@ -38,6 +38,7 @@ import {
   OperateItems,
   RestoreType,
   RoleType,
+  StorageUnitService,
   TapeCopyApiService,
   WarningMessageService
 } from 'app/shared';
@@ -142,7 +143,8 @@ export class DetectionRepicasListComponent implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private globalService: GlobalService,
     private commonShareRestoreApiService: CommonShareRestoreApiService,
-    public appUtilsService: AppUtilsService
+    public appUtilsService: AppUtilsService,
+    private storageUnitService: StorageUnitService
   ) {}
 
   ngAfterViewInit() {
@@ -193,7 +195,8 @@ export class DetectionRepicasListComponent implements OnInit, AfterViewInit {
       this.copyControllerService,
       this.globalService,
       this.commonShareRestoreApiService,
-      this.appUtilsService
+      this.appUtilsService,
+      this.storageUnitService
     );
   }
 

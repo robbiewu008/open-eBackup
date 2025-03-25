@@ -70,6 +70,9 @@ spec:
     - name: run
       port: 30093
       protocol: TCP
+    - name: runhealthcheck
+      port: 30094
+      protocol: TCP
   selector:
     app: protectmanager-system-base
 ---

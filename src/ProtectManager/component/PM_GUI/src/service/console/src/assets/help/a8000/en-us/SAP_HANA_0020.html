@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,9 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="SAP_HANA_0020">
 <meta name="DC.Language" content="en-us">
@@ -36,7 +38,7 @@
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="SAP_HANA_0020"></a><a name="SAP_HANA_0020"></a>
 
 <h1 class="topictitle1">Step 1: Registering the SAP HANA Database (Backint Backup Mode)</h1>
-<div><p>The Backint backup mode writes backup data through third-party backup tools. Each SAP HANA service starts Backint for SAP HANA agent and sends the data to be backed up to third-party backup tools.</p>
+<div><p>In Backint backup mode, backup data is written through third-party backup tools. Each SAP HANA service starts the Backint for SAP HANA agent and sends the backup data to third-party backup tools.</p>
 <div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="SAP_HANA_0020__en-us_topic_0000001839142377_uicontrol5648197104718"><b><span id="SAP_HANA_0020__en-us_topic_0000001839142377_text264897164717"><strong>Protection</strong></span> &gt; <span id="SAP_HANA_0020__en-us_topic_0000001839142377_text1364812716472"><strong>Applications</strong></span> &gt; <span id="SAP_HANA_0020__en-us_topic_0000001839142377_text1079695192219"><strong>SAP HANA</strong></span></b></span>.</span></li><li><span>Register an SAP HANA instance.</span><p><div class="p">On the <span class="uicontrol"><b>Instance</b></span> tab page, click <span class="uicontrol"><b>Register</b></span>. <a href="#SAP_HANA_0020__table1180165510331">Table 2</a> describes the parameters for registering an SAP HANA instance.
 <div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" frame="border" border="1" rules="all"><caption><b>Table 1 </b>SAP HANA instance registration information</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.2.2.2.2.1.4.2.3.1.1"><p>Parameter</p>
 </th>
@@ -69,11 +71,11 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p id="SAP_HANA_0020__p178508137816"><strong id="SAP_HANA_0020__b97876381535">Hdbuserstore KEY</strong></p>
 </td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><div class="p">If the <strong>Hdbuserstore</strong> mode is selected in cluster deployment mode, you need to set the <strong>Hdbuserstore KEY</strong> parameter on all hosts where the instance resides.<ol type="a" id="SAP_HANA_0020__ol556191216136"><li id="SAP_HANA_0020__li956131217138">Use PuTTY to log in to the host where the SAP HANA database is located as user <strong id="SAP_HANA_0020__b71588346225">root</strong>.</li><li id="SAP_HANA_0020__li12561312191314">Run the following command to switch to the SAP HANA database user, for example, <strong id="SAP_HANA_0020__b14361547171616">s00adm</strong>:<pre class="screen" id="SAP_HANA_0020__screen556111127132">su - <em id="SAP_HANA_0020__i5967165483218">s00adm</em></pre>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><div class="p">If the <strong>Hdbuserstore</strong> mode is selected when the database is deployed in a cluster, you need to set the <strong>Hdbuserstore KEY</strong> parameter on all hosts where the instance resides.<ol type="a" id="SAP_HANA_0020__ol556191216136"><li id="SAP_HANA_0020__li956131217138">Use PuTTY to log in to the host where the SAP HANA database is located as user <strong id="SAP_HANA_0020__b71588346225">root</strong>.</li><li id="SAP_HANA_0020__li12561312191314">Run the following command to switch to the SAP HANA database user, for example, <strong id="SAP_HANA_0020__b14361547171616">s00adm</strong>:<pre class="screen" id="SAP_HANA_0020__screen556111127132">su - <em id="SAP_HANA_0020__i5967165483218">s00adm</em></pre>
 </li><li id="SAP_HANA_0020__li456101219137">Run the following command to set the <strong id="SAP_HANA_0020__b1427812162614">Hdbuserstore KEY</strong> parameter:<pre class="screen" id="SAP_HANA_0020__screen656116121137">hdbuserstore set <em id="SAP_HANA_0020__i256141216131">S00SAPDB</em> "<em id="SAP_HANA_0020__i1856115128131">hana1</em>:30013" SYSTEM <em id="SAP_HANA_0020__i1256111121131">1234</em></pre>
-<p id="SAP_HANA_0020__p05619121136">In the preceding command, <strong id="SAP_HANA_0020__b521230132516">S00SAPDB</strong> is the <strong id="SAP_HANA_0020__b1822330192517">KEY</strong> parameter set by the user, <strong id="SAP_HANA_0020__b22283002511">hana1</strong> is the host name, <strong id="SAP_HANA_0020__b3221030152511">30013</strong> is the default port number, and <strong id="SAP_HANA_0020__b192203092515">1234</strong> is the database password. Replace them with the actual values.</p>
+<p id="SAP_HANA_0020__p05619121136">In the preceding command, <em id="SAP_HANA_0020__i41931751168">S00SAPDB</em> is the <strong id="SAP_HANA_0020__b1822330192517">KEY</strong> parameter set by the user, <em id="SAP_HANA_0020__i1671112915169">hana1</em> is the host name, <strong id="SAP_HANA_0020__b3221030152511">30013</strong> is the default port number, and <em id="SAP_HANA_0020__i14362414201612">1234</em> is the database password. Replace them with the actual values.</p>
 </li><li id="SAP_HANA_0020__li756171241312">Run the following command to check the <strong id="SAP_HANA_0020__b126331397276">Hdbuserstore KEY</strong> parameter:<pre class="screen" id="SAP_HANA_0020__screen45611512171320">hdbuserstore list</pre>
-<p id="SAP_HANA_0020__p12561201211135">In the following command output, the line where <strong id="SAP_HANA_0020__b8867621494">KEY</strong> is located is the <strong id="SAP_HANA_0020__b9867172696">Hdbuserstore KEY</strong> parameter.</p>
+<p id="SAP_HANA_0020__p12561201211135">In the following command output, the <strong id="SAP_HANA_0020__b9867172696">Hdbuserstore KEY</strong> parameter is displayed in the line that contains <strong id="SAP_HANA_0020__b122591972317">KEY</strong>.</p>
 <p id="SAP_HANA_0020__p17561512171316"><span><img id="SAP_HANA_0020__image3561171216130" src="en-us_image_0000002058723905.png"></span></p>
 </li></ol>
 </div>
@@ -94,20 +96,20 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><span><strong>Log Backup</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>Logs can be backed up only after the function is enabled.</p>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>Logs can be backed up only after this function is enabled.</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><strong>Regular log backup interval</strong></p>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><strong>Regular Log Backup Interval</strong></p>
 </td>
 <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>Set the interval for backing up logs.</p>
-<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>It is recommended that the interval be set to 50% to 100% of the log backup interval set in <a href="SAP_HANA_0024.html#SAP_HANA_0024__en-us_topic_0000002004293194_en-us_topic_0000002004090332_en-us_topic_0000001839268545_table2663151516335">Table 1</a>. For example, if the log backup interval set in the backup policy is 60 minutes, you are advised to set the interval to a value ranging from 30 minutes to 60 minutes.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>It is recommended that the interval be set to 50% to 100% of the log backup interval set in <a href="en-us_topic_0000002058628320.html#EN-US_TOPIC_0000002058628320__en-us_topic_0000002004293194_en-us_topic_0000002004090332_en-us_topic_0000001839268545_table2663151516335">Table 1</a>. For example, if the log backup interval set in the backup policy is 60 minutes, you are advised to set the interval to a value ranging from 30 minutes to 60 minutes.</p>
 </div></div>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><strong>Log backup path</strong></p>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.1 "><p><strong>Log Backup Path</strong></p>
 </td>
-<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>Set the path for storing backup data logs.</p>
-<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>Ensure that the available space in the log backup path is greater than the space to be occupied by all log backup copies, and ensure that the SAP HANA log backup path has at least the permission 755.</li><li>If the path for backing up logs has been set in the production environment, the original log backup path will be changed after this parameter is set.</li><li>The log backup path takes effect only after a backup job is executed.</li></ul>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.4.2.3.1.2 "><p>Set the path for storing data log backup files.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>Ensure that the available space in the log backup path is greater than the space to be occupied by all log backup copies, and ensure that the SAP HANA log backup path permission is at least 755.</li><li>If the log backup path has been set in the production environment, it will be changed after this parameter is set.</li><li>The log backup path takes effect only after a backup job is executed.</li></ul>
 </div></div>
 </td>
 </tr>
@@ -126,7 +128,7 @@
 </td>
 <td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>Select a database type.</p>
 <ul><li><span class="uicontrol"><b>System Database</b></span></li><li><span class="uicontrol"><b>Tenant Database</b></span></li></ul>
-<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>When registering a system database, tenant database, or cluster, you must have the backup administrator permission. You are advised to use SYSTEM as the system database username.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>When registering a system database, tenant database, or cluster, you must have the backup administrator permission. You are advised to use <strong>SYSTEM</strong> as the system database username.</p>
 </div></div>
 </td>
 </tr>
@@ -139,7 +141,7 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span><strong>Instance</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>Selects the corresponding registered instance.</p>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><p>Select the corresponding registered instance.</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><span><strong>Hosts</strong></span></p>
@@ -157,11 +159,11 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.1 "><p><strong id="SAP_HANA_0020__sap_hana_0020_b97876381535">Hdbuserstore KEY</strong></p>
 </td>
-<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><div class="p">If the <strong>Hdbuserstore</strong> mode is selected in cluster deployment mode, you need to set the <strong>Hdbuserstore KEY</strong> parameter on all hosts where the database resides.<ol type="a"><li id="SAP_HANA_0020__sap_hana_0020_li956131217138">Use PuTTY to log in to the host where the SAP HANA database is located as user <strong id="SAP_HANA_0020__sap_hana_0020_b71588346225">root</strong>.</li><li id="SAP_HANA_0020__sap_hana_0020_li12561312191314">Run the following command to switch to the SAP HANA database user, for example, <strong id="SAP_HANA_0020__sap_hana_0020_b14361547171616">s00adm</strong>:<pre class="screen" id="SAP_HANA_0020__sap_hana_0020_screen556111127132">su - <em id="SAP_HANA_0020__sap_hana_0020_i5967165483218">s00adm</em></pre>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.2.2.4.2.1.4.2.3.1.2 "><div class="p">If the <strong>Hdbuserstore</strong> mode is selected when the database is deployed in a cluster, you need to set the <strong>Hdbuserstore KEY</strong> parameter on all hosts where the database resides.<ol type="a"><li id="SAP_HANA_0020__sap_hana_0020_li956131217138">Use PuTTY to log in to the host where the SAP HANA database is located as user <strong id="SAP_HANA_0020__sap_hana_0020_b71588346225">root</strong>.</li><li id="SAP_HANA_0020__sap_hana_0020_li12561312191314">Run the following command to switch to the SAP HANA database user, for example, <strong id="SAP_HANA_0020__sap_hana_0020_b14361547171616">s00adm</strong>:<pre class="screen" id="SAP_HANA_0020__sap_hana_0020_screen556111127132">su - <em id="SAP_HANA_0020__sap_hana_0020_i5967165483218">s00adm</em></pre>
 </li><li id="SAP_HANA_0020__sap_hana_0020_li456101219137">Run the following command to set the <strong id="SAP_HANA_0020__sap_hana_0020_b1427812162614">Hdbuserstore KEY</strong> parameter:<pre class="screen" id="SAP_HANA_0020__sap_hana_0020_screen656116121137">hdbuserstore set <em id="SAP_HANA_0020__sap_hana_0020_i256141216131">S00SAPDB</em> "<em id="SAP_HANA_0020__sap_hana_0020_i1856115128131">hana1</em>:30013" SYSTEM <em id="SAP_HANA_0020__sap_hana_0020_i1256111121131">1234</em></pre>
-<p id="SAP_HANA_0020__sap_hana_0020_p05619121136">In the preceding command, <strong id="SAP_HANA_0020__sap_hana_0020_b521230132516">S00SAPDB</strong> is the <strong id="SAP_HANA_0020__sap_hana_0020_b1822330192517">KEY</strong> parameter set by the user, <strong id="SAP_HANA_0020__sap_hana_0020_b22283002511">hana1</strong> is the host name, <strong id="SAP_HANA_0020__sap_hana_0020_b3221030152511">30013</strong> is the default port number, and <strong id="SAP_HANA_0020__sap_hana_0020_b192203092515">1234</strong> is the database password. Replace them with the actual values.</p>
+<p id="SAP_HANA_0020__sap_hana_0020_p05619121136">In the preceding command, <em id="SAP_HANA_0020__sap_hana_0020_i41931751168">S00SAPDB</em> is the <strong id="SAP_HANA_0020__sap_hana_0020_b1822330192517">KEY</strong> parameter set by the user, <em id="SAP_HANA_0020__sap_hana_0020_i1671112915169">hana1</em> is the host name, <strong id="SAP_HANA_0020__sap_hana_0020_b3221030152511">30013</strong> is the default port number, and <em id="SAP_HANA_0020__sap_hana_0020_i14362414201612">1234</em> is the database password. Replace them with the actual values.</p>
 </li><li id="SAP_HANA_0020__sap_hana_0020_li756171241312">Run the following command to check the <strong id="SAP_HANA_0020__sap_hana_0020_b126331397276">Hdbuserstore KEY</strong> parameter:<pre class="screen" id="SAP_HANA_0020__sap_hana_0020_screen45611512171320">hdbuserstore list</pre>
-<p id="SAP_HANA_0020__sap_hana_0020_p12561201211135">In the following command output, the line where <strong id="SAP_HANA_0020__sap_hana_0020_b8867621494">KEY</strong> is located is the <strong id="SAP_HANA_0020__sap_hana_0020_b9867172696">Hdbuserstore KEY</strong> parameter.</p>
+<p id="SAP_HANA_0020__sap_hana_0020_p12561201211135">In the following command output, the <strong id="SAP_HANA_0020__sap_hana_0020_b9867172696">Hdbuserstore KEY</strong> parameter is displayed in the line that contains <strong id="SAP_HANA_0020__sap_hana_0020_b122591972317">KEY</strong>.</p>
 <p id="SAP_HANA_0020__sap_hana_0020_p17561512171316"><span><img id="SAP_HANA_0020__sap_hana_0020_image3561171216130" src="en-us_image_0000002058723905.png"></span></p>
 </li></ol>
 </div>
@@ -189,7 +191,7 @@
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>Parent topic:</strong> <a href="SAP_HANA_0019.html">Backing Up the SAP HANA Database (SAP HANA Application Entry) (Only for 1.6.0 and Later Versions)</a></div>
+<div class="parentlink"><strong>Parent topic:</strong> <a href="SAP_HANA_0019.html">Backing Up the SAP HANA Database (SAP HANA from the Applications Path) (Only for 1.6.0 and Later Versions)</a></div>
 </div>
 </div>
 

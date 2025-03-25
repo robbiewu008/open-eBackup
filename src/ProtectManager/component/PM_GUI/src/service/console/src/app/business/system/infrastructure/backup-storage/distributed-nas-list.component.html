@@ -1,4 +1,3 @@
-<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-fullpage" *ngIf="!isRbac">
   <div class="aui-header-1">
     <lv-group lvGutter="8px">
       <h1>{{ 'system_backup_storage_unit_group_label' | i18n }}</h1>
@@ -20,55 +20,34 @@
 
   <div class="aui-block aui-paginator-container custom-main-tab">
     <lv-tabs [(lvActiveIndex)]="activeIndex" lvType="card">
-        <lv-tab
-          lvTitle="{{ 'system_backup_storage_unit_group_label' | i18n }}"
-          lvId="unitGroup"
-        >
-          <ng-template lv-tab-lazy>
-            <div>
-              <div class="aui-operation">
-                <lv-group>
-                  <lv-pro-button-group
-                    [config]="optsConfig"
-                    [bindData]="selectionData"
-                  >
-                  </lv-pro-button-group>
-                </lv-group>
+      <lv-tab lvTitle="{{ 'system_backup_storage_unit_group_label' | i18n }}" lvId="unitGroup">
+        <ng-template lv-tab-lazy>
+          <div>
+            <div class="aui-operation">
+              <lv-group>
+                <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData">
+                </lv-pro-button-group>
+              </lv-group>
+              <lv-group lvGutter="8px">
                 <lv-group lvGutter="8px">
-                  <lv-group lvGutter="8px">
-                    <button
-                      class="aui-button-icon"
-                      lv-button
-                      lvSize="auto"
-                      (click)="dataTable.fetchData()"
-                    >
-                      <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
-                    </button>
-                  </lv-group>
+                  <button class="aui-button-icon" lv-button lvSize="auto" (click)="dataTable.fetchData()">
+                    <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
+                  </button>
                 </lv-group>
-              </div>
-              <lv-pro-table
-                #dataTable
-                [config]="tableConfig"
-                [data]="tableData"
-              >
-              </lv-pro-table>
+              </lv-group>
             </div>
-          </ng-template>
-        </lv-tab>
-        <lv-tab
-          lvTitle="{{ 'system_backup_storage_unit_label' | i18n }}"
-          lvId="unit"
-        >
-          <ng-template lv-tab-lazy>
-            <aui-backup-storage-unit></aui-backup-storage-unit>
-          </ng-template>
-        </lv-tab>
+            <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData">
+            </lv-pro-table>
+          </div>
+        </ng-template>
+      </lv-tab>
+      <lv-tab lvTitle="{{ 'system_backup_storage_unit_label' | i18n }}" lvId="unit">
+        <ng-template lv-tab-lazy>
+          <aui-backup-storage-unit></aui-backup-storage-unit>
+        </ng-template>
+      </lv-tab>
 
-      <lv-tab
-        lvTitle="{{ 'system_backup_storage_device_label' | i18n }}"
-        lvId="device"
-      >
+      <lv-tab lvTitle="{{ 'system_backup_storage_device_label' | i18n }}" lvId="device">
         <ng-template lv-tab-lazy>
           <aui-backup-storage-device></aui-backup-storage-device>
         </ng-template>
@@ -77,10 +56,34 @@
   </div>
 </div>
 
-<ng-template #deviceTypeTPl let-item>
-  <span lv-overflow>{{item.deviceType | textMap: 'poolStorageDeviceType'}}</span>
-</ng-template>
+<div *ngIf="isRbac">
+  <lv-tabs [(lvActiveIndex)]="activeIndex" lvType="default">
+    <lv-tab lvTitle="{{ 'system_backup_storage_unit_group_label' | i18n }}" lvId="unitGroup">
+      <div>
+        <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData">
+        </lv-pro-table>
+      </div>
+    </lv-tab>
+    <lv-tab lvTitle="{{ 'system_backup_storage_unit_label' | i18n }}" lvId="unit">
+      <aui-backup-storage-unit [isRbac]="isRbac" [data]="data" [isGeneral]="isGeneral" [isDetail]="isDetail"
+        [resourceSetMap]="resourceSetMap" (rbacUnitSelectChange)="
+            rbacSelectionChange(
+              $event,
+              dataMap.storagePoolBackupStorageType.unit.value
+            )
+          "></aui-backup-storage-unit>
+    </lv-tab>
+  </lv-tabs>
+</div>
 
 <ng-template #deviceTypeTPl let-item>
-  <span lv-overflow>{{item.deviceType | textMap: 'poolStorageDeviceType'}}</span>
+  <span lv-overflow>{{
+    item.deviceType | textMap: 'poolStorageDeviceType'
+    }}</span>
 </ng-template>
+
+<!-- <ng-template #deviceTypeTPl let-item>
+  <span lv-overflow>{{
+    item.deviceType | textMap: 'poolStorageDeviceType'
+    }}</span>
+</ng-template> -->

@@ -124,7 +124,9 @@ export class SQLServerRestoreComponent implements OnInit {
       instance: new FormControl(this.rowCopy.resource_id, {
         validators: [this.baseUtilService.VALID.required()]
       }),
-      path: new FormControl(''),
+      path: new FormControl('', {
+        validators: [this.validPath()]
+      }),
       replaceDatabase: new FormControl(false),
       newName: new FormControl(''),
       preScript: new FormControl('', {
@@ -352,8 +354,8 @@ export class SQLServerRestoreComponent implements OnInit {
   }
   validPath(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      if (!trim(control.value)) {
-        return { required: { value: control.value } };
+      if (!control.value) {
+        return null;
       }
 
       if (!CommonConsts.REGEX.windowsPath.test(control.value)) {
@@ -422,6 +424,9 @@ export class SQLServerRestoreComponent implements OnInit {
 
     if (this.formGroup.value.restoreTo === RestoreV2LocationType.NEW) {
       set(params, 'targetObject', this.formGroup.value.instance);
+      if (this.formGroup.value.path) {
+        set(params, 'extendInfo.newDatabasePath', this.formGroup.value.path);
+      }
     }
 
     if (this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value) {
@@ -436,11 +441,6 @@ export class SQLServerRestoreComponent implements OnInit {
       set(params, 'extendInfo.newDatabaseName', this.formGroup.value.newName);
     } else {
       set(params, 'extendInfo.newDatabaseName', '');
-    }
-    if (this.formGroup.value.path) {
-      set(params, 'extendInfo.newDatabasePath', this.formGroup.value.path);
-    } else if (this.formGroup.value.restoreTo === RestoreV2LocationType.NEW) {
-      set(params, 'extendInfo.newDatabasePath', '');
     }
     return params;
   }
@@ -460,7 +460,7 @@ export class SQLServerRestoreComponent implements OnInit {
       .subscribe(res => {
         this.isSupport = res?.newDatabasePath;
         if (res?.newDatabasePath) {
-          this.formGroup.get('path').clearValidators();
+          this.formGroup.get('path').setValidators([this.validPath()]);
         } else {
           this.formGroup
             .get('path')

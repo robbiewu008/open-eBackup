@@ -288,6 +288,13 @@ const routes: Routes = [
           import('./settings/config-network/config-network.module').then(
             mod => mod.ConfigNetworkModule
           )
+      },
+      {
+        path: 'settings/service-oriented-nms',
+        loadChildren: () =>
+          import(
+            './settings/service-oriented-nms/service-oriented-nms.module'
+          ).then(mod => mod.ServiceOrientedNMSModule)
       }
     ]
   }

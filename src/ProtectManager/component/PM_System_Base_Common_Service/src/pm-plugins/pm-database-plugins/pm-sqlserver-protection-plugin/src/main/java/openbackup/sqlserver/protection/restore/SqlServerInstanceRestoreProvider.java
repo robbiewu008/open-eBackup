@@ -134,6 +134,7 @@ public class SqlServerInstanceRestoreProvider extends AbstractDbRestoreIntercept
 
         // 设置nodes
         sqlServerBaseService.supplyNodes(task);
+        setCopyRestoreNeedWritable(task);
         return task;
     }
 

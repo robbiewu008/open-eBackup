@@ -39,6 +39,12 @@ FREE_SPACE_MIN=$8
 # 安装私钥
 PRIVATE_KEY=$9
 
+# 安装包类型
+PACKAGE_TYPE=${10}
+
+#是否是业务IP
+IS_BUSINESS_IP_EXIST=${11}
+
 # Register directory
 OPERATION_DIR=${INSTALL_PATH}/register
 OPERATION_LOG=${INSTALL_PATH}/register/register.log
@@ -256,15 +262,24 @@ CheckShaValue()
 UnzipPackage()
 {
     cd ${OPERATION_DIR}
-    if [ "$SYSTEM_NAME" = "AIX" ] || [ "$SYSTEM_NAME" = "SunOS" ]; then
+    if [ "$SYSTEM_NAME" = "SunOS" ]; then
         PACKAGE_ZIP_NAME=${PACKAGE_NAME}
         unzip ${PACKAGE_ZIP_NAME} >/dev/null 2>&1
         return $?
     else
-       PACKAGE_ZIP_NAME=${PACKAGE_NAME%_${SHA256_VALUE}*}
-       mv ${PACKAGE_NAME} ${PACKAGE_ZIP_NAME}
-       unzip ${OPERATION_DIR}/${PACKAGE_ZIP_NAME} >/dev/null 2>&1
-       return $?
+        PACKAGE_ZIP_NAME=${PACKAGE_NAME%_${SHA256_VALUE}*}
+        mv ${PACKAGE_NAME} ${PACKAGE_ZIP_NAME}
+        if [ -z "$PACKAGE_TYPE" ] || [ "$PACKAGE_TYPE" = "zip" ]; then
+            unzip ${OPERATION_DIR}/${PACKAGE_ZIP_NAME} >/dev/null 2>&1
+            return $?
+        elif [ "$PACKAGE_TYPE" = "tar" ]; then
+            PrintProcess "tar"
+           tar -xf "${OPERATION_DIR}/${PACKAGE_ZIP_NAME}" >/dev/null 2>&1
+            return $?
+        else
+            echo "Unsupported package type: ${PACKAGE_TYPE}"
+            return 1
+        fi
     fi
 }
 
@@ -334,6 +349,12 @@ InstallAgent()
         INSTALL_RESULT=$?
         unset PRIVATE_KEY
         return 0
+    elif [ "$IS_BUSINESS_IP_EXIST" = "false" ]; then
+      PrintProcess "===============begin auto register install without ip===============" "$LINENO"
+              echo "${PRIVATE_KEY}" | sh install.sh -mode push >> "${OPERATION_LOG}"
+              INSTALL_RESULT=$?
+              unset PRIVATE_KEY
+              return 0
     else
         PrintProcess "===============begin auto register install===============" "$LINENO"
         echo "${PRIVATE_KEY}" | sh install.sh -mode push "$AGENT_IP" >> "${OPERATION_LOG}"

@@ -16,8 +16,10 @@ import static openbackup.openstack.protection.access.provider.OpenstackRestorePr
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
+import openbackup.access.framework.resource.persistence.dao.ProtectedResourceMapper;
 import openbackup.data.protection.access.provider.sdk.anti.ransomware.CopyRansomwareService;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
+import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnum;
@@ -44,6 +46,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +59,7 @@ import java.util.Optional;
  */
 public class OpenstackRestoreProviderTest {
     private OpenstackRestoreProvider openstackRestoreProvider;
+    private final ProtectedResourceMapper protectedResourceMapper = Mockito.mock(ProtectedResourceMapper.class);
     private static final ResourceService resourceService = PowerMockito.mock(ResourceService.class);
     private static final CopyRestApi copyRestApi = PowerMockito.mock(CopyRestApi.class);
     private static final MessageTemplate<String> messageTemplate = PowerMockito.mock(MessageTemplate.class);
@@ -66,6 +70,7 @@ public class OpenstackRestoreProviderTest {
     public void init() {
         openstackRestoreProvider = new OpenstackRestoreProvider(resourceService, copyRestApi, messageTemplate);
         openstackRestoreProvider.setCopyRansomwareService(copyRansomwareService);
+        openstackRestoreProvider.setProtectedResourceMapper(protectedResourceMapper);
     }
 
     /**
@@ -92,6 +97,39 @@ public class OpenstackRestoreProviderTest {
         Map<String, String> advanceParams = restoreTask.getAdvanceParams();
         Assert.assertEquals("1", advanceParams.get(OpenstackConstant.RESTORE_LEVEL));
         Assert.assertEquals(domain.getAuth(), restoreTask.getTargetObject().getAuth());
+    }
+
+    /**
+     * 用例场景：Openstack整机恢复过滤掉1.3.0及以下版本的代理 <br/>
+     * 前置条件：Openstack恢复对象参数正确 <br/>
+     * 检查点：过滤掉代理为1.3及以下版本，校验过滤逻辑正确(VersionRangeChecker校验方法正确)
+     */
+    @Test
+    public void test_restore_intercept_filter_agents_success() {
+        RestoreTask restoreTask = mockRestoreTask();
+        Copy copy = new Copy();
+        copy.setGeneratedBy(CopyGeneratedByEnum.BY_BACKUP.value());
+        PowerMockito.when(copyRestApi.queryCopyByID(any())).thenReturn(copy);
+        ProtectedResource domain = MockFactory.mockProtectedResource();
+        domain.setAuth(new Authentication());
+        Mockito.when(resourceService.getResourceById(ArgumentMatchers.anyBoolean(), ArgumentMatchers.any()))
+            .thenReturn(Optional.of(domain));
+        List<ProtectedResource> protectedResources = new ArrayList<>();
+        List<Endpoint> agents = new ArrayList<>();
+        mockProtectedResource(protectedResources, agents, "id1", "1.2.0");
+        mockProtectedResource(protectedResources, agents, "id3", "1.3.RC1.SPC18");
+        mockProtectedResource(protectedResources, agents, "id4", "1.3.RC1.SPC17.B068");
+        mockProtectedResource(protectedResources, agents, "id11", "1.5.RC2");
+        mockProtectedResource(protectedResources, agents, "id21", "1.6.RC1");
+        mockProtectedResource(protectedResources, agents, "id31", "1.6.RC1.SPC1");
+        mockProtectedResource(protectedResources, agents, "id41", "1.6.0.SPC1.B01.abc");
+        mockProtectedResource(protectedResources, agents, "id2", "1.6.RC3.B02");
+        restoreTask.getAdvanceParams().put(OpenstackConstant.RESTORE_LEVEL, OpenstackConstant.VM_RESTORE);
+        restoreTask.setAgents(agents);
+        Mockito.when(protectedResourceMapper.queryOnlineAgentListByAppLabel(any()))
+            .thenReturn(protectedResources);
+        restoreTask = openstackRestoreProvider.initialize(restoreTask);
+        Assert.assertEquals(5, restoreTask.getAgents().size());
     }
 
     /**
@@ -197,5 +235,16 @@ public class OpenstackRestoreProviderTest {
         subObject.setUuid("subObject_id");
         restoreTask.setSubObjects(Collections.singletonList(subObject));
         return restoreTask;
+    }
+
+    private void mockProtectedResource(List<ProtectedResource> protectedResources,
+        List<Endpoint> agents, String id, String version) {
+        ProtectedResource protectedResource = new ProtectedResource();
+        protectedResource.setUuid(id);
+        protectedResource.setVersion(version);
+        protectedResources.add(protectedResource);
+        Endpoint endpoint = new Endpoint();
+        endpoint.setId(id);
+        agents.add(endpoint);
     }
 }

@@ -73,7 +73,7 @@ export class SummaryComponent implements OnInit {
       },
       {
         key: 'parentName',
-        name: this.i18n.get('protection_proxy_host_label'),
+        name: this.i18n.get('protection_clients_label'),
         filter: {
           type: 'search',
           filterMode: 'contains'
@@ -130,7 +130,7 @@ export class SummaryComponent implements OnInit {
       },
       {
         key: 'parentName',
-        name: this.i18n.get('protection_proxy_host_label')
+        name: this.i18n.get('protection_clients_label')
       },
       {
         key: 'osUser',

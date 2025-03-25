@@ -110,20 +110,10 @@ export class InstanceRestoreComponent implements OnInit {
       path: new FormControl('', {
         validators: [
           this.validPath(),
-          this.baseUtilService.VALID.required(),
           this.baseUtilService.VALID.maxLength(2048)
         ]
       })
     });
-    // sqlserver数据库级恢复无需填写路径项
-    if (
-      this.rowCopy.resource_sub_type ===
-        DataMap.Resource_Type.SQLServerInstance.value &&
-      this.isFileLevelRestore
-    ) {
-      this.formGroup.get('path').clearValidators();
-      this.formGroup.get('path').updateValueAndValidity();
-    }
     this.formGroup.get('restoreTo').valueChanges.subscribe(res => {
       this.instanceOptions = [];
       if (
@@ -143,11 +133,9 @@ export class InstanceRestoreComponent implements OnInit {
         this.restoreType === RestoreType.FileRestore &&
         res === RestoreV2LocationType.NEW
       ) {
-        this.formGroup.get('path').enable();
         this.locationLabel = this.i18n.get('explore_target_host_cluster_label');
         this.getHosts();
       } else {
-        this.formGroup.get('path').disable();
         this.locationLabel = this.i18n.get('common_location_label');
         if (
           includes(
@@ -188,8 +176,8 @@ export class InstanceRestoreComponent implements OnInit {
 
   validPath(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
-      if (!trim(control.value)) {
-        return { required: { value: control.value } };
+      if (!control.value) {
+        return null;
       }
 
       if (!CommonConsts.REGEX.windowsPath.test(control.value)) {
@@ -482,12 +470,6 @@ export class InstanceRestoreComponent implements OnInit {
           newDatabasePath: this.formGroup.value.path
         }
       });
-      if (
-        this.rowCopy.resource_sub_type ===
-        DataMap.Resource_Type.SQLServerInstance.value
-      ) {
-        delete params['extendInfo'].newDatabasePath;
-      }
     }
 
     if (this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value) {

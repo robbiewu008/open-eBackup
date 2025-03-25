@@ -3,9 +3,9 @@
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
   If a copy of the MPL was not distributed with this file, You can obtain one at
   http://mozilla.org/MPL/2.0/.
-
+  
   Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-
+  
   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
@@ -17,7 +17,7 @@
         <lv-form [formGroup]='formGroup' class="formGroup" [lvLabelColon]='false'>
             <lv-form-item *ngIf="showProxyHost">
                 <lv-form-label>
-                    {{'protection_proxy_host_label' | i18n}}
+                    {{'protection_clients_label' | i18n}}
                     <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_proxy_host_help_label' | i18n}}"
                         lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
                         lvColorState='true'></i>
@@ -48,9 +48,8 @@
                 </lv-form-control>
             </lv-form-item>
             <!-- 修改索引设置 -->
-            <ng-container *ngIf="isVirtualMachine">
-                <aui-update-index [formGroup]="formGroup" [extParams]="extParams"></aui-update-index>
-            </ng-container>
+            <aui-update-index [formGroup]="formGroup" [extParams]="extParams"
+                [noNeedMgt]="!isVirtualMachine || resourceType===dataMap.Resource_Type.vmGroup.value"></aui-update-index>
             <lv-form-item *ngIf="false">
                 <lv-form-label>
                     {{'protection_protect_pre_script_label' | i18n}}
@@ -75,30 +74,31 @@
                         {{'protection_concurrent_number_label' | i18n}}
                     </lv-form-label>
                     <lv-form-control [lvErrorTip]='concurrentErrorTip'>
-                        <input lv-input type='text' formControlName='concurrent' placeholder="1~10" />
+                        <input lv-input type='text' formControlName='concurrent' placeholder="1~99999999" />
+                    </lv-form-control>
+                </lv-form-item>
+                <!-- 虚拟机组按规则过滤需要覆盖策略 -->
+                <lv-form-item *ngIf="!isVirtualMachine || isGroupRule">
+                    <lv-form-label>
+                        {{'protection_overwrite_policy_label' | i18n}}
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-radio-group formControlName="slaOverwrite">
+                            <lv-group [lvGutter]="'8px'" lvDirection='vertical' class="mgt-8">
+                                <lv-radio [lvValue]="true" [lvDisabled]="resourceData.ext_parameters">
+                                    {{'protection_overwrite_sla_label' | i18n}}
+                                </lv-radio>
+                                <lv-radio [lvValue]="false" [lvDisabled]="resourceData.ext_parameters">
+                                    {{'protection_not_overwrite_sla_label' | i18n}}
+                                    <i lv-icon="aui-icon-help" *ngIf="!isGroupRule"
+                                        lv-tooltip="{{'protection_not_overwrite_modify_sla_label' | i18n:[selectedTitle]}}"
+                                        lvTooltipTheme="light" style="vertical-align: sub;" lvColorState='true'></i>
+                                </lv-radio>
+                            </lv-group>
+                        </lv-radio-group>
                     </lv-form-control>
                 </lv-form-item>
                 <ng-container *ngIf="!isVirtualMachine">
-                    <lv-form-item>
-                        <lv-form-label>
-                            {{'protection_overwrite_policy_label' | i18n}}
-                        </lv-form-label>
-                        <lv-form-control>
-                            <lv-radio-group formControlName="slaOverwrite">
-                                <lv-group [lvGutter]="'8px'" lvDirection='vertical' class="mgt-8">
-                                    <lv-radio [lvValue]="true" [lvDisabled]="resourceData.ext_parameters">
-                                        {{'protection_overwrite_sla_label' | i18n}}
-                                    </lv-radio>
-                                    <lv-radio [lvValue]="false" [lvDisabled]="resourceData.ext_parameters">
-                                        {{'protection_not_overwrite_sla_label' | i18n}}
-                                        <i lv-icon="aui-icon-help"
-                                            lv-tooltip="{{'protection_not_overwrite_modify_sla_label' | i18n:[selectedTitle]}}"
-                                            lvTooltipTheme="light" style="vertical-align: sub;" lvColorState='true'></i>
-                                    </lv-radio>
-                                </lv-group>
-                            </lv-radio-group>
-                        </lv-form-control>
-                    </lv-form-item>
                     <lv-form-item>
                         <lv-form-label>
                             {{'protection_apply_policy_label' | i18n}}

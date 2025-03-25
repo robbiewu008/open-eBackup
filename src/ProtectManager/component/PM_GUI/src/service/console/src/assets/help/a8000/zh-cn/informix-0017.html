@@ -1,0 +1,102 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤7：执行备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="informix-0010.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="informix-0017">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤7：执行备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="informix-0017"></a><a name="informix-0017"></a>
+
+<h1 class="topictitle1">步骤7：执行备份</h1>
+<div><p>执行备份前将需要保护的资源关联到指定SLA，系统将对这些资源按照SLA进行保护，并根据SLA周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><ul><li>手动备份产生的副本保留时长按照SLA中的定义进行保留。</li><li>如果SLA中定义了复制策略或归档策略，则执行手动备份时，<span>OceanProtect</span>会按照SLA的定义执行一次复制或归档。</li><li>如果SLA中未定义日志备份，则无法自动执行日志备份。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="informix-0017__zh-cn_topic_0000001839142377_uicontrol1138252616373">“<span id="informix-0017__zh-cn_topic_0000001839142377_text73821261375">保护</span> &gt; 数据库 &gt; Informix/GBase 8s”</span>。</span></li><li><span>在<span class="uicontrol">“实例”</span>页签，选择需要保护的数据库，单击<span class="uicontrol">“<span>更多</span> &gt; <span>保护</span>”</span>。</span><p><p>您也可以勾选多个数据库进行批量保护。</p>
+</p></li><li><span>选择SLA。</span><p><div class="p" id="informix-0017__zh-cn_topic_0000001964713008_p16181740836">您也可以单击<span class="uicontrol" id="informix-0017__zh-cn_topic_0000001964713008_uicontrol744210206420">“<span id="informix-0017__zh-cn_topic_0000001964713008_text1873812341015">创建</span>”</span>，创建新的SLA。<div class="note" id="informix-0017__zh-cn_topic_0000001964713008_note25947145710"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="informix-0017__zh-cn_topic_0000001964713008_p125947145711"><span id="informix-0017__zh-cn_topic_0000001964713008_ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
+</div></div>
+</div>
+</p></li><li><span>配置备份策略高级参数。</span><p><div class="p">相关参数说明如<a href="#informix-0017__zh-cn_topic_0000001349147581_zh-cn_topic_0000001263775382_table354613271506">表1</a>所示。
+<div class="tablenoborder"><a name="informix-0017__zh-cn_topic_0000001349147581_zh-cn_topic_0000001263775382_table354613271506"></a><a name="zh-cn_topic_0000001349147581_zh-cn_topic_0000001263775382_table354613271506"></a><table cellpadding="4" cellspacing="0" summary="" id="informix-0017__zh-cn_topic_0000001349147581_zh-cn_topic_0000001263775382_table354613271506" frame="border" border="1" rules="all"><caption><b>表1 </b>备份策略高级参数说明</caption><colgroup><col style="width:30.06%"><col style="width:69.94%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="30.06%" id="mcps1.3.3.2.4.2.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="69.94%" id="mcps1.3.3.2.4.2.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span>限速策略</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>备份任务平均每秒最大传输的数据量。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span>源端重删</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><div class="p">开启后，可以减少传输的数据量，但会增加客户端的资源占用。<div class="note" id="informix-0017__zh-cn_topic_0000001839143189_note8885112682911"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="informix-0017__zh-cn_topic_0000001839143189_ul5885426132914"><li id="informix-0017__zh-cn_topic_0000001839143189_li10885172616299">由于同一个代理主机只能和一个存储单元建链，如果开启源端重删，<span class="parmname" id="informix-0017__zh-cn_topic_0000001839143189_parmname1288482662917">“指定目标位置”</span>请选择<span class="parmvalue" id="informix-0017__zh-cn_topic_0000001839143189_parmvalue118843260299">“备份存储单元”</span>。否则，由于智能均衡可能会选择到未建链的存储单元，导致源端重删启用失败。如果不同受保护对象关联了不同SLA，且SLA中指定不同的备份存储单元，请为受保护对象选择不同代理主机，否则将会导致部分备份任务源端重删启用失败。</li><li id="informix-0017__zh-cn_topic_0000001839143189_li9885182662911">如果代理主机已经与一个存储单元建链，当该代理主机未执行源端重删备份任务时，可以在代理主机上执行<strong id="informix-0017__zh-cn_topic_0000001839143189_b9845163710167">dataturbo delete storage_object storage_name=</strong><em id="informix-0017__zh-cn_topic_0000001839143189_i19447038131614">?</em>命令（命令中的<strong id="informix-0017__zh-cn_topic_0000001839143189_b1050314315162">storage_name=</strong><em id="informix-0017__zh-cn_topic_0000001839143189_i1237554410161">?</em>可以通过<strong id="informix-0017__zh-cn_topic_0000001839143189_b11885726112912">dataturbo show storage_object</strong>命令查询），删除与存储单元的源端重删链接。再选择该代理主机执行源端重删备份任务，则可以成功与新的存储单元建链。</li><li id="informix-0017__zh-cn_topic_0000001839143189_li11885142615297">请参考<a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect兼容性查询</a>工具查看主机的操作系统类型是否支持源端重删。若不支持，配置源端重删后将不会生效。</li><li id="informix-0017__zh-cn_topic_0000001839143189_li7883549153219">若使用内置代理（即ProtectAgent合并部署到<span id="informix-0017__zh-cn_topic_0000001839143189_text13835155817114">OceanProtect</span>）进行备份，配置源端重删后将不会生效。</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span>任务失败告警</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>开启后，任务执行失败后自动发送告警，下次任务成功后告警自动清除。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span>失败后自动重试</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>开启后，备份任务失败后系统自动重试。</p>
+<div class="p">支持重试次数为1~5次，等待时长为1~30分钟。如设置为重试3次，等待5分钟，即每5分钟后重试一次，总共重试3次。<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>自动重试时系统会创建一个新的备份任务，如果该备份任务不在设定的时间窗内则不会执行，此次备份失败。</p>
+</div></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>单击<span class="uicontrol" id="informix-0017__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p><p id="informix-0017__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p>
+</p></li><li><strong>可选：</strong><span>执行手动备份。</span><p><p>当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
+<ol type="a"><li>在需要备份的数据库所在行单击<span class="uicontrol">“更多 &gt; 手动备份”</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>支持选择多个资源批量进行手动备份。勾选多个资源，在页面左上角选择<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。</p>
+</div></div>
+</li><li>设置手动备份产生的副本名称。<p>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p>
+</li><li>选择保护策略：全量备份、增量备份、差异备份或日志备份。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="informix-0017__zh-cn_topic_0000001964713008_p13522118194919"><span id="informix-0017__zh-cn_topic_0000001964713008_ph19374310343">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
+</div></div>
+</li><li>单击<span class="uicontrol">“确定”</span>。</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="informix-0010.html">备份Informix/GBase 8s</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

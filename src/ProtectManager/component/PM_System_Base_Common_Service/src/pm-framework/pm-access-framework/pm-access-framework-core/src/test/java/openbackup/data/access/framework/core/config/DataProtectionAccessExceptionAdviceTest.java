@@ -85,7 +85,7 @@ public class DataProtectionAccessExceptionAdviceTest {
     public void handle_LegoCheckedException_success_when_controller_throw_DataProtectionAccessException_with_errorCode()
         throws Exception {
         PowerMockito.doThrow(new DataProtectionAccessException(CommonErrorCode.ACCESS_DENIED, new String[] {}))
-            .when(configMapService).getValueFromSecretByKey(anyString());
+            .when(configMapService).getValueFromSecretByKey(anyString(), false);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(URL);
         MockHttpServletResponse response = mockMvc.perform(requestBuilder)
             .andExpect(status().isForbidden()).andDo(MockMvcResultHandlers.print()).andReturn().getResponse();

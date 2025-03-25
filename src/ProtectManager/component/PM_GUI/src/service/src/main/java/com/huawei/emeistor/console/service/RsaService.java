@@ -12,22 +12,17 @@
 */
 package com.huawei.emeistor.console.service;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
 /**
  * rsa公私钥对生成接口层
  *
  */
 public interface RsaService {
     /**
-     * 公钥生成
+     * 公钥私钥生成
      *
-     * @return 公钥
-     * @throws NoSuchAlgorithmException 异常
-     * @throws IOException io异常
+     * @param isOverwrite 是否覆盖已有的
      */
-    String generateKeyPair() throws NoSuchAlgorithmException, IOException;
+    void generateKeyPair(boolean isOverwrite) ;
 
     /**
      * 解密操作
@@ -36,4 +31,11 @@ public interface RsaService {
      * @return 解密内容
      */
     String decrypt(String encrytedText);
+
+    /**
+     * 查询公钥
+     *
+     * @return 公钥
+     */
+    String queryPublicKey();
 }

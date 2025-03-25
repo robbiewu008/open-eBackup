@@ -27,6 +27,7 @@ import {
   DataMap,
   DataMapService,
   DATE_PICKER_MODE,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getLabelList,
   getPermissionMenuItem,
@@ -81,6 +82,7 @@ import {
   values
 } from 'lodash';
 import { map } from 'rxjs/operators';
+import { GetLabelOptionsService } from '../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-dorado-file-system',
@@ -138,7 +140,8 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
     private takeManualBackupService: TakeManualBackupService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit() {
@@ -308,13 +311,17 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
                   hasProtectPermission(val)
                 );
               })
-            ) !== size(data) || !size(data)
+            ) !== size(data) ||
+            !size(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX
           );
         },
         permission: OperateItems.DeactivateProtection,
         disabledTips: this.i18n.get(
           'protection_partial_resources_deactive_label'
         ),
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n),
         label: this.i18n.get('protection_deactive_protection_label'),
         onClick: data => {
           this.protectService
@@ -512,8 +519,11 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -640,15 +650,23 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
 
     if (!isEmpty(filters.conditions_v2)) {
       const conditionsTemp = JSON.parse(filters.conditions_v2);
+      if (isUndefined(conditionsTemp.name)) {
+        this.name = '';
+      } else {
+        this.name = conditionsTemp.name[1];
+      }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
       }
       assign(defaultConditions, conditionsTemp);
+    } else {
+      this.name = '';
     }
 
     assign(params, { conditions: JSON.stringify(defaultConditions) });
@@ -806,17 +824,12 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
   }
 
   search() {
-    assign(this.dataTable.filterMap, {
-      filters: [
-        {
-          filterMode: 'contains',
-          caseSensitive: false,
-          key: 'name',
-          value: trim(this.name)
-        }
-      ]
+    this.dataTable.filterChange({
+      filterMode: 'contains',
+      caseSensitive: false,
+      key: 'name',
+      value: trim(this.name)
     });
-    this.dataTable.fetchData();
   }
 
   rescan() {

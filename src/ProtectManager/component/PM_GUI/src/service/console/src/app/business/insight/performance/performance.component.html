@@ -1,4 +1,3 @@
-<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-fullpage">
     <div class="aui-header-1 header-container" pmpermission pmOperation='ChangePerformanceStatus'>
         <lv-group lvGutter='8px' *ngIf="!isDataBackupOrDecouple">
             <h1>{{performanceMonitorLabel}}</h1>
@@ -50,9 +50,13 @@
             </div>
         </div>
     </div>
-    <lv-alert lvType="info" lvClosable="false" *ngIf="!showMonitor && appUtilsService.isDecouple">
-        {{'insight_decouple_performance_no_data_tip_label' | i18n}}
-    </lv-alert>
+    <ng-container *ngIf="appUtilsService.isDecouple">
+        <lv-alert lvType="info" lvClosable="false" *ngIf="showMonitor">{{'insight_decouple_performance_e1000_tip_label' | i18n}}</lv-alert>
+        <lv-alert lvType="info" lvClosable="false" *ngIf="!showMonitor">
+            <span [innerHTML]="e1000ViewHelp"></span>
+        </lv-alert>
+    </ng-container>
+    
     <div class="echart-container aui-block">
         <div class="cluster-container">
             <lv-menu #menu [lvMenus]="clusters" [(lvActiveItemId)]="activeNode" [lvTheme]="'light'"
@@ -84,8 +88,8 @@
                 </div>
             </div>
             <div class="performance-no-data aui-block" *ngIf="!showMonitor && hasRemoveHistoryData">
-                <lv-empty [lvDescription]="'common_open_performance_link_label' | i18n"></lv-empty>
-                <button *ngIf="isDataBackupOrDecouple" lv-button lvType="primary" class="btn" (click)="switchMonitor()">
+                <lv-empty [lvDescription]="(appUtilsService.isDecouple ? 'insight_decouple_performance_no_data_tip_label' : 'common_open_performance_link_label') | i18n"></lv-empty>
+                <button *ngIf="isDataBackupOrDecouple && !appUtilsService.isDecouple" lv-button lvType="primary" class="btn" (click)="switchMonitor()">
                     {{'common_open_label'|i18n}}
                 </button>
             </div>

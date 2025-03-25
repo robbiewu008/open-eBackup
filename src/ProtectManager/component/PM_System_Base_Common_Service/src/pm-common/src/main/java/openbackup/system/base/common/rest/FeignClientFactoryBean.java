@@ -26,7 +26,6 @@ import java.lang.reflect.Type;
  * Feign Client Configuration
  *
  * @param <T> template param
- *
  */
 public abstract class FeignClientFactoryBean<T> implements FactoryBean<T> {
     private final Class<T> type;

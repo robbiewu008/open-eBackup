@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * postgre单实例provider
@@ -112,7 +113,9 @@ public class PostgreInstanceProvider implements ResourceProvider {
     private void setPostgreInstance(ProtectedResource resource, String checkResult) {
         Map<String, String> messageMap = JSONObject.fromObject(checkResult).toMap(String.class);
         resource.setVersion(messageMap.get(DatabaseConstants.VERSION));
-        resource.setExtendInfoByKey(DatabaseConstants.DATA_DIRECTORY, messageMap.get(DatabaseConstants.DATA_DIRECTORY));
+        Map<String, String> extendInfo = Optional.ofNullable(resource.getExtendInfo()).orElseGet(HashMap::new);
+        extendInfo.putAll(messageMap);
+        resource.setExtendInfo(extendInfo);
     }
 
     @Override
@@ -120,6 +123,9 @@ public class PostgreInstanceProvider implements ResourceProvider {
         log.info("start update postgre instance parameters check. resource name: {}", resource.getName());
         // check实例端口是否被修改
         instanceResourceService.checkSignalInstancePortIsChanged(resource);
+        // 检查实例连通性
+        String checkResult = checkConnection(resource);
+        setPostgreInstance(resource, checkResult);
 
         // 检查实例连通性
         checkConnection(resource);

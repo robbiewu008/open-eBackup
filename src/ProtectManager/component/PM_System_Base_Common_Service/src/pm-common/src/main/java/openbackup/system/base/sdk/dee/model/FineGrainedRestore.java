@@ -14,6 +14,8 @@ package openbackup.system.base.sdk.dee.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 文件和文件目录信息
  *
@@ -21,6 +23,8 @@ import lombok.Data;
 @Data
 public class FineGrainedRestore {
     private String path;
+
+    private String parentPath;
 
     private String modifyTime;
 
@@ -35,6 +39,8 @@ public class FineGrainedRestore {
     private String resType;
 
     private Object tapeOffsetMeta;
+
+    private List<Object> sort;
 
     private RestoreFilesResponse children;
 }

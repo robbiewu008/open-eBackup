@@ -192,7 +192,6 @@ public class GaussDBServiceImpl implements GaussDBService {
             StorageRepository logRepository = BeanTools.copy(repositories.get(0), StorageRepository::new);
             logRepository.setType(RepositoryTypeEnum.LOG.getType());
             backupTask.addRepository(logRepository);
-            repositories.remove(0);
         }
         repositories.add(GaussDBClusterUtils.getCacheRepository(repositories.get(0)));
         Map<String, String> advanceParams = Optional.ofNullable(backupTask.getAdvanceParams()).orElse(new HashMap<>());

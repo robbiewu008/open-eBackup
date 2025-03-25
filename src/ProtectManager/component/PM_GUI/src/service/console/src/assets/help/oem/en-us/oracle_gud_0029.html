@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -30,12 +30,12 @@
   <div>
    <p>After resources to be protected are associated with an SLA, the system protects the resources based on the SLA.</p>
    <div class="section"></div>
-   <div class="section" id="oracle_gud_0029__section68231216228">
+   <div class="section">
     <h4 class="sectiontitle">Prerequisites</h4>
-    <ul id="oracle_gud_0029__ul512180103212">
-     <li id="oracle_gud_0029__li712119013220">You are advised to disable KRB trace of the database. Otherwise, a large number of KRB trace files will be generated during the backup, occupying the storage space of the host. For details about how to disable KRB trace, see <a href="oracle_gud_0105.html">How Do I Disable the KRB Trace of an Oracle Database?</a>.</li>
-     <li id="oracle_gud_0029__li168585418321">For 1.6.0 and later versions: If you need to perform snapshot-based backup at the storage layer in ASM scenarios, contact technical support engineers to configure Udev in the production environment. For details, see <a href="oracle_gud_0132.html">Configuring Udev (Applicable to Snapshot-based Backup at the Storage Layer)</a>.</li>
-     <li id="oracle_gud_0029__li584882135013">For 1.6.0 and later versions: If you need to perform snapshot-based backup at the storage layer in non-ASM scenarios, ensure that the directories where the data, control, and log files, as well as pfile and spfile parameter files of the Oracle database reside have been mounted to OceanStor Dorado.</li>
+    <ul>
+     <li>You are advised to disable KRB trace of the database. Otherwise, a large number of KRB trace files will be generated during the backup, occupying the storage space of the host. For details about how to disable KRB trace, see .</li>
+     <li>For 1.6.0 and later versions, if you need to perform snapshot-based backup at the storage layer in ASM scenarios, contact technical support engineers to configure Udev in the production environment. For details, see .</li>
+     <li>For 1.6.0 and later versions, if you need to perform snapshot-based backup at the storage layer in non-ASM scenarios, ensure that the directories where the data, control, and log files, as well as pfile and spfile parameter files of the Oracle database reside have been mounted to OceanStor Dorado.</li>
     </ul>
    </div>
    <div class="section">
@@ -141,7 +141,7 @@
        <div class="notebody">
         <ul>
          <li>You are advised not to restart the ProtectAgent host or ProtectAgent service when performing a backup job. Otherwise, the backup job may be suspended. If the backup job is suspended for a long time after the restart, terminate the job and perform the backup again.</li>
-         <li><span id="oracle_gud_0029__ph1559428114314">When the <span id="oracle_gud_0029__text22246311345">product</span> detects data file changes during log backup, the log backup job automatically changes to a full backup. During the time when a log backup job is automatically changing to a full backup (you can choose <strong id="oracle_gud_0029__b57514217582">Insight</strong> &gt; <strong id="oracle_gud_0029__b07511421585">Jobs</strong> and select the corresponding backup job to view the job details), the other backup jobs delivered will fail to be locked. As a result, the other backup jobs fail to be executed.</span></li>
+         <li><span>When the <span></span> detects data file changes during log backup, the log backup job automatically changes to a full backup. During the time when a log backup job is automatically changing to a full backup (you can choose <strong>Insight</strong> &gt; <strong>Jobs</strong> and select the corresponding backup job to view the job details), the other backup jobs delivered will fail to be locked. As a result, the other backup jobs fail to be executed.</span></li>
         </ul>
        </div>
       </div></li>

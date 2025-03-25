@@ -12,6 +12,8 @@
 */
 package openbackup.obs.plugin.service.impl;
 
+import static openbackup.system.base.common.constants.Constants.INTERNAL_AGENT_KEY;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
@@ -64,9 +66,6 @@ public class ObjectStorageAgentServiceImpl implements ObjectStorageAgentService 
     private static final int SIZE = 100;
 
     private static final String TYPE = "type";
-
-    // 内置agent的key
-    private static final String INTERNAL_AGENT_KEY = "scenario";
 
     // 内置agent的value
     private static final String INTERNAL_AGENT_VALUE = "1";

@@ -21,15 +21,15 @@ import {
 import { OptionItem } from '@iux/live';
 import {
   BaseUtilService,
-  CookieService,
-  I18NService,
   CommonConsts,
+  CookieService,
   DataMap,
   DataMapService,
+  I18NService,
   SftpManagerApiService,
   SFTP_USERNAME_BLACKLIST
 } from 'app/shared';
-import { assign, isUndefined, includes, isEmpty } from 'lodash';
+import { assign, includes, isEmpty, isUndefined } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -39,7 +39,7 @@ import { Observable, Observer } from 'rxjs';
 })
 export class AddUserComponent implements OnInit {
   node;
-  passLenVal = 8;
+  passLenVal = 12;
   maxLenVal = 64;
   passComplexVal = 3;
   passContiunVal = 3;

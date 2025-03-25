@@ -1,4 +1,3 @@
-<div class="aui-operation" *ngIf="!componentData">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-operation" *ngIf="!componentData">
   <lv-group [lvGutter]="groupCommon.middleRowGutter">
     <button lvType="primary" lv-button (click)="addTargetCluster()" pmpermission pmOperation="AddingTargetCluster">
       {{ 'common_add_label' | i18n }}

@@ -17,9 +17,11 @@ import {
   DataMap,
   DataMapService,
   I18NService,
-  ProtectedResourceApiService
+  ProtectedResourceApiService,
+  ResourceDetailType
 } from 'app/shared';
 import { TableCols, TableConfig } from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   assign,
   each,
@@ -51,6 +53,7 @@ export class HCSHostSummaryComponent implements OnInit {
     private i18n: I18NService,
     private appService: AppService,
     private dataMapService: DataMapService,
+    private appUtilsService: AppUtilsService,
     private protectedResourceApiService: ProtectedResourceApiService
   ) {}
 
@@ -182,62 +185,15 @@ export class HCSHostSummaryComponent implements OnInit {
   }
 
   getResourceDetail() {
-    this.protectedResourceApiService
-      .ListResources({
-        pageNo: CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE,
-        queryDependency: true,
-        conditions: JSON.stringify({
-          uuid: this.source.rootUuid || this.source.root_uuid
-        })
-      })
-      .subscribe((res: any) => {
-        if (first(res.records)) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            this.tableData = {
-              data: [],
-              total: 0
-            };
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getDisk(agentsId);
-        }
-      });
-  }
-
-  getDisk(agentsId, recordsTemp?: any[], startPage?: number) {
-    const params = {
-      agentId: agentsId,
-      envId: this.source.rootUuid || this.source.root_uuid,
-      resourceIds: [this.source.uuid || this.source.root_uuid],
-      pageNo: startPage || 1,
-      pageSize: 200,
-      conditions: JSON.stringify({
-        resourceType: 'APS-disk',
-        uuid: this.source.uuid,
-        regionId: this.source.extendInfo.regionId
-      })
-    };
-
-    this.appService.ListResourcesDetails(params).subscribe(res => {
-      if (!recordsTemp) {
-        recordsTemp = [];
-      }
-      if (!isNumber(startPage)) {
-        startPage = 1;
-      }
-      recordsTemp = [...recordsTemp, ...res.records];
-      const ext_parameters = this.source?.protectedObject?.extParameters;
-      if (
-        startPage === Math.ceil(res.totalCount / 200) ||
-        res.totalCount === 0
-      ) {
+    this.appUtilsService
+      .getResourcesDetails(
+        this.source,
+        ResourceDetailType.apsDisk,
+        {},
+        { regionId: this.source.extendInfo.regionId }
+      )
+      .subscribe(recordsTemp => {
+        const ext_parameters = this.source?.protectedObject?.extParameters;
         each(recordsTemp, item => {
           assign(item, {
             size: item.extendInfo?.size,
@@ -245,8 +201,10 @@ export class HCSHostSummaryComponent implements OnInit {
             kinds: item.extendInfo?.category,
             sla:
               ext_parameters &&
-              (ext_parameters.all_disk === 'True' ||
-                ext_parameters.disk_info.includes(item.uuid)),
+              (ext_parameters?.all_disk === 'True' ||
+                isEmpty(ext_parameters?.disk_info) ||
+                (!!ext_parameters?.disk_info &&
+                  ext_parameters.disk_info.includes(item.uuid))),
             name: `${item.name}(${item.uuid})`
           });
         });
@@ -254,11 +212,7 @@ export class HCSHostSummaryComponent implements OnInit {
           data: recordsTemp,
           total: size(recordsTemp)
         };
-        return;
-      }
-      startPage++;
-      this.getDisk(agentsId, recordsTemp, startPage);
-    });
+      });
   }
 
   initDetailData(data: any) {

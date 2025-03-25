@@ -44,4 +44,8 @@ public class ResourceGroupDetailVo {
     private ResourceGroupProtectedObjectVo protectedObject;
 
     private List<ResourceGroupMemberVo> resourceGroupMembers;
+
+    private String groupType;
+
+    private String extendStr;
 }

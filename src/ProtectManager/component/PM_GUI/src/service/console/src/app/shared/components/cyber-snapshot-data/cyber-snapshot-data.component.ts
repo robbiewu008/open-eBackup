@@ -29,12 +29,7 @@ import {
   CopiesDetectReportService,
   CopiesService
 } from 'app/shared/api/services';
-import {
-  CAPACITY_UNIT,
-  CommonConsts,
-  DataMap,
-  SYSTEM_TIME
-} from 'app/shared/consts';
+import { CAPACITY_UNIT, CommonConsts, DataMap } from 'app/shared/consts';
 import {
   CookieService,
   DataMapService,
@@ -66,6 +61,7 @@ import {
   TableData
 } from '../pro-table';
 import { SystemTimeService } from 'app/shared/services/system-time.service';
+import { getPermissionMenuItem } from 'app/shared/utils';
 
 @Component({
   selector: 'aui-cyber-snapshot-data',
@@ -170,7 +166,9 @@ export class CyberSnapshotDataComponent
       this.apiStorageBackupPluginService
     );
     this.snapshotListComponent.getOptItems();
-    this.optItems = cloneDeep(this.snapshotListComponent.optItems);
+    this.optItems = getPermissionMenuItem(
+      cloneDeep(this.snapshotListComponent.optItems)
+    );
     if (this.isHistory) {
       this.optItems = filter(this.optItems, (item: any) => {
         item.divide = false;

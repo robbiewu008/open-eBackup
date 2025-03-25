@@ -20,18 +20,18 @@ import {
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MessageService, ModalRef, UploadFile } from '@iux/live';
 import {
+  AgentsSubType,
   BaseUtilService,
+  ClientManagerApiService,
+  CommonConsts,
   DataMap,
+  DataMapService,
   I18NService,
+  PluginsStorageService,
   ProductStoragesApiService,
   ProtectedEnvironmentApiService,
-  DataMapService,
   ProtectedResourceApiService,
-  WarningMessageService,
-  CommonConsts,
-  AgentsSubType,
-  ClientManagerApiService,
-  PluginsStorageService
+  WarningMessageService
 } from 'app/shared';
 import {
   ProTableComponent,
@@ -78,12 +78,30 @@ export class AddStorageComponent implements OnInit {
   certSize = '';
   crlName = '';
   crlSize = '';
+  isNasSupportType = [
+    this.deviceStorageType.DoradoV7.value,
+    this.deviceStorageType.OceanStorDoradoV7.value,
+    this.deviceStorageType.OceanStorDorado_6_1_3.value,
+    this.deviceStorageType.OceanStor_6_1_3.value,
+    this.deviceStorageType.OceanProtect.value
+  ];
 
   typeOptions = this.dataMapService
     .toArray('Device_Storage_Type')
     .filter(v => (v.isLeaf = true))
     .filter(item => {
       return item.value !== DataMap.Device_Storage_Type.Other.value;
+    })
+    .filter(item => {
+      if (
+        includes(
+          [DataMap.Deploy_Type.e6000.value, DataMap.Deploy_Type.decouple.value],
+          this.i18n.get('deploy_type')
+        )
+      ) {
+        return !includes(this.isNasSupportType, item.value);
+      }
+      return true;
     });
   typeValues = map(this.dataMapService.toArray('Device_Storage_Type'), 'value');
   hostOptions = [];
@@ -111,9 +129,16 @@ export class AddStorageComponent implements OnInit {
   isTestSevice = [
     this.deviceStorageType.DoradoV7.value,
     this.deviceStorageType.OceanStorDoradoV7.value,
-    this.deviceStorageType.OceanStorDorado_6_1_3.value
+    this.deviceStorageType.OceanStorDorado_6_1_3.value,
+    this.deviceStorageType.OceanStor_6_1_3.value,
+    this.deviceStorageType.OceanProtect.value
   ];
   isShow = false;
+  ndmpMaxNum = 64;
+  otherMaxNum = 32;
+  placeholderLabel = this.i18n.get('system_placeholder_range_label', [
+    this.otherMaxNum
+  ]);
 
   deviceNameErrorTip = assign(
     {},
@@ -141,7 +166,7 @@ export class AddStorageComponent implements OnInit {
   );
   taskErrorTip = {
     ...this.baseUtilService.rangeErrorTip,
-    invalidRang: this.i18n.get('common_valid_rang_label', [1, 64])
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, this.otherMaxNum])
   };
   hostBuiltinLabel = this.i18n.get('protection_hcs_host_builtin_label');
   hostExternalLabel = this.i18n.get('protection_hcs_host_external_label');
@@ -188,7 +213,9 @@ export class AddStorageComponent implements OnInit {
   initForm() {
     this.formGroup = this.fb.group({
       type: new FormControl(
-        DataMap.Device_Storage_Type.OceanStorDorado_6_1_3.value,
+        this.appUtilsService.isDistributed || this.appUtilsService.isDecouple
+          ? DataMap.Device_Storage_Type.OceanStorPacific.value
+          : DataMap.Device_Storage_Type.OceanStorDorado_6_1_3.value,
         {
           validators: [this.baseUtilService.VALID.required()],
           updateOn: 'change'
@@ -234,7 +261,13 @@ export class AddStorageComponent implements OnInit {
       proxyHost: new FormControl([]),
       isSelected: new FormControl(false),
       selectedIp: new FormControl([]),
-      taskNum: new FormControl('8')
+      taskNum: new FormControl(this.otherMaxNum, {
+        validators: [
+          this.baseUtilService.VALID.required(),
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.rangeValue(1, this.otherMaxNum)
+        ]
+      })
     });
 
     this.formGroup.get('type').valueChanges.subscribe(res => {
@@ -432,6 +465,7 @@ export class AddStorageComponent implements OnInit {
         .ShowResource({ resourceId: this.item.uuid })
         .subscribe(res => {
           this.agentData = get(res, 'dependencies.agents', []);
+          this.selectLastSelectedHost();
         });
     }
 
@@ -452,7 +486,16 @@ export class AddStorageComponent implements OnInit {
         'IPV4ADDR'
       )
     };
-    if (this.item.subType === this.deviceStorageType.ndmp.value) {
+    if (
+      [
+        this.deviceStorageType.DoradoV7.value,
+        this.deviceStorageType.OceanStorDoradoV7.value,
+        this.deviceStorageType.OceanStorDorado_6_1_3.value,
+        this.deviceStorageType.OceanStor_6_1_3.value,
+        this.deviceStorageType.OceanProtect.value,
+        this.deviceStorageType.ndmp.value
+      ].includes(this.item.subType)
+    ) {
       assign(item, {
         taskNum: this.item.extendInfo?.maxConcurrentJobNumber
       });
@@ -460,11 +503,6 @@ export class AddStorageComponent implements OnInit {
     this.formGroup.patchValue(item);
     defer(() => {
       this.enableBtnFn();
-      if (this.item.name) {
-        this.formGroup.get('equipment_name').disable();
-      } else {
-        this.formGroup.get('equipment_name').enable();
-      }
     });
   }
 
@@ -511,8 +549,33 @@ export class AddStorageComponent implements OnInit {
     } else {
       this.formGroup.get('port').setValue('8088');
     }
-    // 设备类型为NDMP Server时，增加代理主机
-    if (type === this.deviceStorageType.ndmp.value) {
+    this.changeTasknum(type);
+    this.formGroup.get('proxyHost').updateValueAndValidity();
+    this.formGroup.get('fqdn').updateValueAndValidity();
+    this.formGroup.get('port').updateValueAndValidity();
+    this.formGroup.get('username').updateValueAndValidity();
+    this.formGroup.get('password').updateValueAndValidity();
+    this.formGroup.get('taskNum').updateValueAndValidity();
+  }
+
+  changeTasknum(type) {
+    if (includes(this.isTestSevice, type)) {
+      this.formGroup
+        .get('taskNum')
+        .setValidators([
+          this.baseUtilService.VALID.required(),
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.rangeValue(1, this.otherMaxNum)
+        ]);
+      this.formGroup.get('taskNum').setValue(this.otherMaxNum);
+      this.placeholderLabel = this.i18n.get('system_placeholder_range_label', [
+        this.otherMaxNum
+      ]);
+      this.taskErrorTip.invalidRang = this.i18n.get('common_valid_rang_label', [
+        1,
+        this.otherMaxNum
+      ]);
+    } else if (type === this.deviceStorageType.ndmp.value) {
       if (this.exterAgent) {
         this.getProxyOptions();
         this.formGroup
@@ -523,20 +586,23 @@ export class AddStorageComponent implements OnInit {
       this.formGroup
         .get('taskNum')
         .setValidators([
+          this.baseUtilService.VALID.required(),
           this.baseUtilService.VALID.integer(),
-          this.baseUtilService.VALID.rangeValue(1, 64)
+          this.baseUtilService.VALID.rangeValue(1, this.ndmpMaxNum)
         ]);
+      this.formGroup.get('taskNum').setValue('8');
+      this.placeholderLabel = this.i18n.get('system_placeholder_range_label', [
+        this.ndmpMaxNum
+      ]);
+      this.taskErrorTip.invalidRang = this.i18n.get('common_valid_rang_label', [
+        1,
+        this.ndmpMaxNum
+      ]);
     } else {
       this.formGroup.get('verify_status').setValue(true);
       this.formGroup.get('proxyHost').clearValidators();
       this.formGroup.get('taskNum').clearValidators();
     }
-    this.formGroup.get('proxyHost').updateValueAndValidity();
-    this.formGroup.get('fqdn').updateValueAndValidity();
-    this.formGroup.get('port').updateValueAndValidity();
-    this.formGroup.get('username').updateValueAndValidity();
-    this.formGroup.get('password').updateValueAndValidity();
-    this.formGroup.get('taskNum').updateValueAndValidity();
   }
 
   getProxyOptions() {
@@ -563,10 +629,28 @@ export class AddStorageComponent implements OnInit {
         });
         this.hostOptions = hostArray;
         if (this.item && this.agentData) {
-          this.formGroup.get('proxyHost').setValue(map(this.agentData, 'uuid'));
+          this.selectLastSelectedHost();
         }
       }
     );
+  }
+
+  selectLastSelectedHost() {
+    if (isEmpty(this.agentData) || isEmpty(this.hostOptions)) {
+      return;
+    }
+    this.formGroup.get('proxyHost').setValue(map(this.agentData, 'uuid'));
+    each(this.agentData, item => {
+      if (!find(this.hostOptions, { uuid: item.uuid })) {
+        this.hostOptions.unshift({
+          ...item,
+          key: item.uuid,
+          label: `${item.name}(${item.endpoint})`,
+          value: item.rootUuid || item.parentUuid,
+          isLeaf: true
+        });
+      }
+    });
   }
 
   test() {
@@ -612,7 +696,7 @@ export class AddStorageComponent implements OnInit {
       });
     }
     const params = {
-      name: !this.item ? this.formGroup.value.equipment_name : this.item.name,
+      name: this.formGroup.value.equipment_name,
       type: 'StorageEquipment',
       subType: this.formGroup.value.type,
       endpoint: this.formGroup.value.fqdn,
@@ -667,7 +751,8 @@ export class AddStorageComponent implements OnInit {
         });
       });
       assign(params.extendInfo, {
-        repIps: JSON.stringify(arr)
+        repIps: JSON.stringify(arr),
+        maxConcurrentJobNumber: Number(this.formGroup.get('taskNum')?.value)
       });
     }
     return params;

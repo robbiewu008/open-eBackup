@@ -82,4 +82,9 @@ public class ResourceGroupPo {
      * 资源组所属范围资源uuid
      */
     private String scopeResourceId;
+
+    /**
+     * 资源组类型：manual-手动选择，rule-按规则过滤
+     */
+    private String groupType;
 }

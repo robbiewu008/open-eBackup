@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -39,7 +39,7 @@
    <p>This section describes how to restore a PostgreSQL instance that has been backed up to its original location or a new location.</p>
    <div class="section">
     <h4 class="sectiontitle">Context</h4>
-    <p>Backup and replication copies (data cannot be restored to the original location) can be used for restoration.</p>
+    <p>Backup and replication copies can be used for restoration. Restoration to the original location or a new location is supported. Replication copies cannot be used for restoration to the original location.</p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Prerequisites</h4>
@@ -54,7 +54,7 @@
    <ul>
     <li>If the port of the target instance is occupied, release the occupied port before the restoration.</li>
     <li>If the target instance is a cluster instance, the Pgpool service on each node must have been stopped and the Pgpool port must not be occupied. Otherwise, the restoration fails.</li>
-    <li>Stop the PostgreSQL database before the restoration. For the PostgreSQL database in the HACS scenario, you need to manually freeze the HACS cluster by running the <strong>crm configure property maintenance-mode=true</strong> command before performing the restoration operation. Only after the HACS cluster is frozen, you can manually stop the PostgreSQL database and perform the restoration operation. After the PostgreSQL database is restored successfully, you need to manually run the <strong>crm configure property maintenance-mode=false</strong> command to unfreeze the HACS cluster.</li>
+    <li>Stop the PostgreSQL database before the restoration. For the PostgreSQL database in the HACS scenario, you need to manually freeze the HACS cluster by running the <strong>crm configure property maintenance-mode=true</strong> command before restoration. You can manually stop the PostgreSQL database and perform restoration only after the HACS cluster is frozen. After the PostgreSQL instance is restored successfully, you need to manually run the <strong>crm configure property maintenance-mode=false</strong> command to unfreeze the HACS cluster.</li>
     <li>Before restoring a Patroni cluster, clear etcd data.
      <ol>
       <li>Run the <strong>systemctl stop patroni</strong> command on each node to stop all nodes in the cluster.</li>
@@ -70,20 +70,11 @@
       <li>Find and record the value of <strong>namespace</strong>, as shown in the following figure.<p><span><img src="en-us_image_0000001953608009.png"></span></p></li>
       <li>Run the <strong>etcdctl del --prefix " </strong><em>namespace</em><strong> "</strong> command to delete etcd data.<p>Example: <strong>etcdctl del --prefix " </strong><strong>/service148new/ "</strong></p></li>
      </ol></li>
-    <li>For 1.6.0 and later versions, to restore a PostgreSQL cluster deployed based on Patroni to its original location using log copies, you need to configure the <strong>patroni.yml</strong> file in advance. The configuration is as follows:<p>In the <strong>patroni.yml</strong> file, add the following configuration to <strong>bootstrap</strong>:</p> <pre class="screen"> method: OceanProtectPITR
+    <li>For 1.6.0 and later versions, to restore a Patroni-based PostgreSQL cluster to its original location or a new location using log copies, you need to configure the <strong>patroni.yml</strong> file in advance. The configuration is as follows:<p>In the <strong>patroni.yml</strong> file, add the following configuration to <strong>bootstrap</strong>:</p> <pre class="screen"> method: OceanProtectPITR
  OceanProtectPITR:
     command: "mv <em>$PGDATA/../OceanProtectData/DATADIR $PGDATA/../</em>"
     no_params: True
-    keep_existing_recovery_conf: True</pre>
-     <div class="note">
-      <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
-      <div class="notebody">
-       <ul>
-        <li><em>$PGDATA/../</em> is the upper-level directory of the data directory, for example, <strong>/usr/local/pgsqltest</strong>.</li>
-        <li><em>DATADIR</em> in <em>$PGDATA/../OceanProtectData/DATADIR</em> indicates the data directory name, for example, <strong>/usr/local/pgsqltest/OceanProtectData/data</strong>.</li>
-       </ul>
-      </div>
-     </div></li>
+    keep_existing_recovery_conf: True</pre></li>
    </ul>
    <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
@@ -120,6 +111,10 @@
               <p>When performing restoration to a new location, if the copy has a tablespace directory other than the data directory, ensure that the operating system user who installs the database in the new location instance can access the tablespace directory with the same name on the host in the new location.</p>
              </div>
             </div></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><strong>Tag</strong></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.2 "><p>If you select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for restoration, you can use <span class="uicontrol"><b>Tag</b></span> to quickly filter and manage resources.</p></td>
           </tr>
           <tr>
            <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.1.2.2.3.1.1 "><p><span><strong>Location</strong></span></p></td>

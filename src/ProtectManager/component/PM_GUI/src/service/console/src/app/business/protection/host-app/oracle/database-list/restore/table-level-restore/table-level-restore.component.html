@@ -1,4 +1,3 @@
-<div class="aui-text-help-sm restore-tip mgb-16">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-text-help-sm restore-tip mgb-16">
   {{ 'protection_oracle_restore_title_label' | i18n:[rowCopy?.resource_name, resourceProperties.version] }}
 </div>
 
@@ -175,30 +175,46 @@
 
 <ng-template #selectTable>
   <lv-treetable
+    class="tree-border"
     [lvData]="treeData"
     #lvTreeTable
     lvCompareWith="data.uniqueId"
     lvVirtualScroll
-    [lvScroll]="{ y: '400px' }"
+    [lvScroll]="{ y: '400px', x: '100%', autosize: false }"
     [lvVirtualMinBuffer]="800"
     [lvVirtualMaxBuffer]="1200"
     [lvVirtualTrackBy]="trackByIndex"
     lvSelectionMode="multiple"
     [lvSelection]="selectionData"
+    [lvResize]="true"
+    lvResizeMode="expand"
     (lvSelectionChange)="selectionChange($event)"
   >
     <thead>
     <tr>
       <th lvCellKey="data.uniqueId">{{ 'common_name_label'|i18n }}</th>
-      <ng-container *ngTemplateOutlet="tableTHTpl">
-      </ng-container>
+      <th>
+          <span class="custom-required">
+          {{ 'protection_oracle_restore_belong_user_name_label'|i18n }}
+          </span>
+      </th>
+      <th>
+          <span class="custom-required">
+              {{ 'protection_oracle_restore_belong_table_space_label'|i18n }}
+          </span>
+      </th>
+      <th>
+          <span class="custom-required">
+              {{ 'protection_oracle_restore_table_name_label'|i18n }}
+          </span>
+      </th>
     </tr>
     </thead>
     <tbody>
     <ng-container *ngTemplateOutlet="bodyContentTpl; context: { $implicit: lvTreeTable.renderData }"></ng-container>
     <ng-template #bodyContentTpl let-data>
         <ng-template lv-virtual-scroll let-virtualItem>
-          <tr>
+          <tr *ngIf="!virtualItem.data?.hidden">
             <td
               [lvRowData]="virtualItem"
               lvShowCheckbox
@@ -230,6 +246,7 @@
 <ng-template #displayTable>
   <button lv-button (click)="deleteItem(null,true)" class="mgb-8" [disabled]="!displayData.length">{{ 'protection_clear_all_label'|i18n }}</button>
   <lv-datatable
+    class="tree-border"
     [lvData]="displayData"
     lvCompareWith="uniqueId"
     [lvScroll]="{ y: '400px' }"
@@ -238,7 +255,21 @@
     <thead>
     <tr>
       <th lvCellKey="data.name">{{ 'common_name_label'|i18n }}</th>
-        <ng-container *ngTemplateOutlet="tableTHTpl"></ng-container>
+      <th>
+          <span class="custom-required">
+          {{ 'protection_oracle_restore_belong_user_name_label'|i18n }}
+          </span>
+      </th>
+      <th>
+          <span class="custom-required">
+              {{ 'protection_oracle_restore_belong_table_space_label'|i18n }}
+          </span>
+      </th>
+      <th>
+          <span class="custom-required">
+              {{ 'protection_oracle_restore_table_name_label'|i18n }}
+          </span>
+      </th>
       <th width="100px">{{ 'common_operation_label'|i18n }}</th>
     </tr>
     </thead>
@@ -256,24 +287,6 @@
     </tr>
     </tbody>
   </lv-datatable>
-</ng-template>
-
-<ng-template #tableTHTpl>
-    <th>
-          <span class="custom-required">
-          {{ 'protection_oracle_restore_belong_user_name_label'|i18n }}
-          </span>
-    </th>
-    <th>
-          <span class="custom-required">
-              {{ 'protection_oracle_restore_belong_table_space_label'|i18n }}
-          </span>
-    </th>
-    <th>
-          <span class="custom-required">
-              {{ 'protection_oracle_restore_table_name_label'|i18n }}
-          </span>
-    </th>
 </ng-template>
 
 <ng-template #titleTpl>
@@ -312,7 +325,9 @@
                     lvValueKey="value"
                     formControlName="target_user_name"
                     lvShowClear
-                    lvShowFilter lvFilterKey="label" lvFilterMode="contains">
+                    lvShowFilter lvFilterKey="label" lvFilterMode="contains"
+                    [lvDisabled]="!!item.rowGroup.get('target_user_name')?.disabled"
+            >
             </lv-select>
         </lv-form-control>
     </lv-form>
@@ -322,12 +337,19 @@
     <lv-form [formGroup]="item.rowGroup">
         <ng-container *ngIf="isCDB else selectTpl">
             <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
-                <lv-cascader [lvOptions]="item.tableSpaceOptions" formControlName="target_table_space_info" lvShowClear></lv-cascader>
+                <lv-cascader [lvOptions]="item.tableSpaceOptions" formControlName="target_table_space_info" lvShowClear
+                             [lvDisabled]="!!item.rowGroup.get('target_table_space_info')?.disabled"
+                ></lv-cascader>
             </lv-form-control>
         </ng-container>
         <ng-template #selectTpl>
             <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
-                <lv-select [lvOptions]="targetTableSpaces" lvValueKey="value" formControlName="target_table_space" lvShowClear lvShowFilter lvFilterMode="contains" lvFilterKey="label"></lv-select>
+                <lv-select
+                        [lvDisabled]="!!item.rowGroup.get('target_table_space')?.disabled"
+                        [lvOptions]="targetTableSpaces" lvValueKey="value"
+                        formControlName="target_table_space"
+                        lvShowClear lvShowFilter lvFilterMode="contains" lvFilterKey="label"
+                ></lv-select>
             </lv-form-control>
         </ng-template>
     </lv-form>

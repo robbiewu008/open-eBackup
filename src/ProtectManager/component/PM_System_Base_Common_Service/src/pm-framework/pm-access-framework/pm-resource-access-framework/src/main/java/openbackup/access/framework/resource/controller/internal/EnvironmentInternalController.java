@@ -91,7 +91,7 @@ import javax.validation.Valid;
 @RequestMapping("/v2/internal")
 public class EnvironmentInternalController {
     // 延迟时间，单位min
-    private static final int DELAY_MINUTE = 5;
+    private static final int DELAY_MINUTE = 8;
 
     // 更新
     private static final String UPDATE = "2";
@@ -222,6 +222,11 @@ public class EnvironmentInternalController {
             queryIpResponse = getIpResponse(ocUrl, hcsToken, ipQueryRequest);
         } finally {
             StringUtil.clean(hcsToken);
+        }
+        // hcs多朵云场景临时规避 当agent处于不通的云时 此处查不到agent内大网 故直接用agent上报的ip (针对手动安装场景 填写了eip)
+        if (VerifyUtil.isEmpty(queryIpResponse) || VerifyUtil.isEmpty(queryIpResponse.getObjList())) {
+            log.error("Fail to query ip from environment, will use endpoint reported from agent!");
+            return;
         }
         String ip = queryIpResponse.getObjList().get(0).getExternalRelayIpAddress();
         log.info("Set agent environment for hcs. The ip is {}, id:{}", ip, environment.getUuid());

@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
@@ -20,9 +20,9 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤5：创建远端设备管理员">
+<meta name="DC.Title" content="步骤4：下载并导入证书">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="commonshares_0021.html">
+<meta name="DC.Relation" scheme="URI" content="commonshares_0022.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
@@ -33,64 +33,51 @@
 <meta name="DC.Identifier" content="commonshares_0027">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤5：创建远端设备管理员</title>
+<title>步骤4：下载并导入证书</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="commonshares_0027"></a><a name="commonshares_0027"></a>
 
-<h1 class="topictitle1">步骤5：创建远端设备管理员</h1>
-<div><p id="commonshares_0027__zh-cn_topic_0000001792344074_p1976143411408">在复制的从端集群创建远端设备管理员，用于复制过程中对主端集群进行验证。</p>
-<div class="section" id="commonshares_0027__zh-cn_topic_0000001792344074_section2539113917248"><h4 class="sectiontitle">操作步骤</h4><ol id="commonshares_0027__zh-cn_topic_0000001792344074_ol666545192420"><li id="commonshares_0027__zh-cn_topic_0000001792344074_zh-cn_topic_0000001092505479_li13830188165220"><span>登录复制从端集群的<span id="commonshares_0027__zh-cn_topic_0000001792344074_text9943134084513">OceanProtect</span>管理界面。</span></li><li id="commonshares_0027__zh-cn_topic_0000001792344074_zh-cn_topic_0000001092505479_li1570821013536"><span>选择<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792344074_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="commonshares_0027__zh-cn_topic_0000001792344074_text173551249987">系统</span> &gt; <span id="commonshares_0027__zh-cn_topic_0000001792344074_text484521122916">安全</span> &gt; <span id="commonshares_0027__zh-cn_topic_0000001792344074_text129918425291">用户和角色</span>”</span>。</span></li><li id="commonshares_0027__zh-cn_topic_0000001792344074_li15799464290"><span>单击<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792344074_uicontrol18262010308">“<span id="commonshares_0027__zh-cn_topic_0000001792344074_text472862943013">创建</span>”</span>。</span><p><p id="commonshares_0027__zh-cn_topic_0000001792344074_p1212664063010">相关参数说明如<a href="#commonshares_0027__zh-cn_topic_0000001792344074_table146051654173010">表1</a>所示。</p>
+<h1 class="topictitle1">步骤4：下载并导入证书</h1>
+<div><p id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p3314585811">使用复制功能前，请先在复制的主端集群导入从端集群的CA证书，否则系统将无法验证其所访问设备的信息，安全性存在风险。</p>
+<div class="section" id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section17774134611364"><a name="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section17774134611364"></a><a name="zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section17774134611364"></a><h4 class="sectiontitle">在从端集群下载证书</h4><ol id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_ol11979102814374"><li id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li1597932883716"><span>登录复制从端集群的<span id="commonshares_0027__zh-cn_topic_0000001792503794_text20981175294311">OceanProtect</span>管理界面。</span></li><li id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li10897959114110"><span>选择<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_text113848306235"><span id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text8949174614917">系统</span></span> &gt; <span id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_text484521122916"><span id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text2943115917492">安全</span></span> &gt; <span id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text823315459535">证书</span>”</span>。</span></li><li id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li791619610427"><span>在<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol1514113235454">“<span id="commonshares_0027__zh-cn_topic_0000001792503794_text5580124432715">类型</span>”</span>为<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol7482102811457">“<span id="commonshares_0027__zh-cn_topic_0000001792503794_text1886519544273">服务端证书</span>”</span>的行，单击<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol41349391483">“<span id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text14725505213">更多</span> &gt; <span id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text17920199185314">下载CA证书</span>”</span>。</span><p><p id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p184648437483">下载CA证书，并妥善保存。</p>
+</p></li></ol>
+</div>
+<div class="section" id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section0846167203710"><h4 class="sectiontitle">在主端集群导入证书</h4><ol id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_ol191881157546"><li id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li918818505418"><span>登录复制主端集群的<span id="commonshares_0027__zh-cn_topic_0000001792503794_text5894195154417">OceanProtect</span>管理界面。</span></li><li id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li5188859549"><span>选择<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol4188155105413">“<span id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text18188175115412"><span id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text151885525410">系统</span></span> &gt; <span id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text151880535411"><span id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text518818514547">安全</span></span> &gt; <span id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_text31881452546">证书</span>”</span>。</span></li><li id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li8602191845419"><span>单击<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol754082417548">“添加外部证书”</span>，配置外部证书信息。</span><p><p id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p6842196195513">相关参数说明如<a href="#commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_table146451017195515">表1</a>所示。</p>
 
-<div class="tablenoborder"><a name="commonshares_0027__zh-cn_topic_0000001792344074_table146051654173010"></a><a name="zh-cn_topic_0000001792344074_table146051654173010"></a><table cellpadding="4" cellspacing="0" summary="" id="commonshares_0027__zh-cn_topic_0000001792344074_table146051654173010" frame="border" border="1" rules="all"><caption><b>表1 </b>用户参数说明</caption><colgroup><col style="width:40.93%"><col style="width:59.07%"></colgroup><thead align="left"><tr id="commonshares_0027__zh-cn_topic_0000001792344074_row1560535415303"><th align="left" class="cellrowborder" valign="top" width="40.93%" id="mcps1.3.2.2.3.2.2.2.3.1.1"><p id="commonshares_0027__zh-cn_topic_0000001792344074_p560518547300">参数</p>
+<div class="tablenoborder"><a name="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_table146451017195515"></a><a name="zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_table146451017195515"></a><table cellpadding="4" cellspacing="0" summary="" id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_table146451017195515" frame="border" border="1" rules="all"><caption><b>表1 </b>外部证书参数说明</caption><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead align="left"><tr id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_row9645117195517"><th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.3.2.2.2.3.1.1"><p id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p764691705516">参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="59.07%" id="mcps1.3.2.2.3.2.2.2.3.1.2"><p id="commonshares_0027__zh-cn_topic_0000001792344074_p1605195418305">说明</p>
+<th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.3.2.3.2.2.2.3.1.2"><p id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p156461317125516">说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr id="commonshares_0027__zh-cn_topic_0000001792344074_row518361118419"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p618331184117"><span id="commonshares_0027__zh-cn_topic_0000001792344074_text15210203084113">用户类型</span></p>
+<tbody><tr id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_row1764681714553"><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p1664631795513"><span id="commonshares_0027__zh-cn_topic_0000001792503794_text727963297">名称</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p6183211114111">选择<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792344074_uicontrol1447425204616">“<span id="commonshares_0027__zh-cn_topic_0000001792344074_text102662481475">本地用户</span>”</span>。</p>
-</td>
-</tr>
-<tr id="commonshares_0027__zh-cn_topic_0000001792344074_row76051154203011"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p156051454113019"><span id="commonshares_0027__zh-cn_topic_0000001792344074_text1356165615311">名称</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p196051254183018">自定义用户名称。</p>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p4646151720551">自定义证书名称。</p>
 </td>
 </tr>
-<tr id="commonshares_0027__zh-cn_topic_0000001792344074_row359718368413"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p19597143610419"><span id="commonshares_0027__zh-cn_topic_0000001792344074_text10395175319414">登录认证方式</span></p>
+<tr id="commonshares_0027__zh-cn_topic_0000001792503794_row2056614550311"><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p1954581110245"><span id="commonshares_0027__zh-cn_topic_0000001792503794_text17970152316297">类型</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p9561817134711">选择<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792344074_uicontrol1869185813468">“<span id="commonshares_0027__zh-cn_topic_0000001792344074_text724773110484">登录密码</span>”</span>。</p>
-</td>
-</tr>
-<tr id="commonshares_0027__zh-cn_topic_0000001792344074_row11605195433015"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p1660565410309"><span id="commonshares_0027__zh-cn_topic_0000001792344074_text152714132322">密码</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p7605754153016">设置用户的密码。</p>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><p id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p1854516112242">选择<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol3429191832618">“<span id="commonshares_0027__zh-cn_topic_0000001792503794_text1971105810395">备份集群/多域集群/复制集群</span>”</span>。</p>
 </td>
 </tr>
-<tr id="commonshares_0027__zh-cn_topic_0000001792344074_row19605145412304"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p18605165416301"><span id="commonshares_0027__zh-cn_topic_0000001792344074_text1371812323419">确认密码</span></p>
+<tr id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_row48663202555"><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.1 "><p id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p8867202065516"><span id="commonshares_0027__zh-cn_topic_0000001792503794_text8265143919291">CA证书</span></p>
 </td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p260511541306">确认用户的密码。</p>
-</td>
-</tr>
-<tr id="commonshares_0027__zh-cn_topic_0000001792344074_row96054545308"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p136055546308"><span id="commonshares_0027__zh-cn_topic_0000001792344074_text1153752823417">角色</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p166051454203013">选择<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792344074_uicontrol584234113619">“<span id="commonshares_0027__zh-cn_topic_0000001792344074_text11729135453616">远端设备管理员</span>”</span>。</p>
-</td>
-</tr>
-<tr id="commonshares_0027__zh-cn_topic_0000001792344074_row126056541304"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p1560518547306"><span id="commonshares_0027__zh-cn_topic_0000001792344074_text5271104363516">描述</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="commonshares_0027__zh-cn_topic_0000001792344074_p560513546306">用户的描述信息。</p>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.3.2.3.2.2.2.3.1.2 "><div class="p" id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_p38671320165517">单击<span><img id="commonshares_0027__zh-cn_topic_0000001792503794_image158881574223" src="zh-cn_image_0000002083844920.png"></span>，导入<a href="#commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_section17774134611364">在从端集群下载的证书</a>。<div class="note" id="commonshares_0027__zh-cn_topic_0000001792503794_note11649816202117"><span class="notetitle"> 说明： </span><div class="notebody"><p id="commonshares_0027__zh-cn_topic_0000001792503794_p1364911652113">对于1.5.0版本，请单击<span><img id="commonshares_0027__zh-cn_topic_0000001792503794_image107471433122117" src="zh-cn_image_0000002119363401.png"></span>。</p>
+</div></div>
+</div>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-</p></li><li id="commonshares_0027__zh-cn_topic_0000001792344074_li4503143713309"><span>单击<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792344074_uicontrol874772112385">“确定”</span>。</span></li></ol>
+</p></li><li id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_li19188559547"><span>单击<span class="uicontrol" id="commonshares_0027__zh-cn_topic_0000001792503794_zh-cn_topic_0000001102065552_uicontrol13370659125718">“确定”</span>。</span><p><div class="note" id="commonshares_0027__zh-cn_topic_0000001792503794_note1311013186169"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="commonshares_0027__zh-cn_topic_0000001792503794_p1315615274261">导入证书过程中，如果系统报错提示证书已存在，则说明主端集群已存在与从端集群相同的CA证书。该情况下，您无需导入证书，直接执行后续步骤。</p>
+</div></div>
+</p></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="commonshares_0021.html">复制通用共享副本</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="commonshares_0022.html">复制通用共享副本</a></div>
 </div>
 </div>
 

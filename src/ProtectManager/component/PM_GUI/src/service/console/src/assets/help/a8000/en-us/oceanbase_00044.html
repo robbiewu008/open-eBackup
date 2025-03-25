@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -42,7 +42,7 @@
 <div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li></ul>
 <ul><li>During the first restoration, ensure that the value of <strong>restore_concurrency</strong> of the OceanBase database is not <strong>0</strong>. The recommended value is <strong>10</strong>.</li><li>Ensure that at least one idle resource pool exists in the OceanBase database and its CPUs and memory are greater than or equal to those of the original tenant. Otherwise, create a resource pool. For details about how to create a resource pool, see the <a href="https://en.oceanbase.com/docs/common-oceanbase-database-10000000001167105" target="_blank" rel="noopener noreferrer">OceanBase official document</a>.</li></ul>
 </div>
-<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="oceanbase_00044__en-us_topic_0000001839142377_uicontrol4958517162719"><b><span id="oceanbase_00044__en-us_topic_0000001839142377_text695841713270"><strong>Explore</strong></span> &gt; <span id="oceanbase_00044__en-us_topic_0000001839142377_text1595819176270"><strong>Copy Data</strong></span> &gt; <span id="oceanbase_00044__en-us_topic_0000001839142377_text14787949194912"><strong>Databases</strong></span> &gt; OceanBase</b></span>.</span></li><li><span>Search for OceanBase copies by resource or copy.</span><p><ul><li>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> page, find the cluster or tenant set to be restored by name and click the name.</li><li>On the <span class="uicontrol"><b><span><strong>Copy</strong></span></b></span> page, find the target copy based on the copy information, and choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Restore</strong></span></b></span> in the row where the copy is located.</li></ul>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="oceanbase_00044__en-us_topic_0000001839142377_uicontrol4958517162719"><b><span id="oceanbase_00044__en-us_topic_0000001839142377_text695841713270"><strong>Explore</strong></span> &gt; <span id="oceanbase_00044__en-us_topic_0000001839142377_text1595819176270"><strong>Copy Data</strong></span> &gt; <span id="oceanbase_00044__en-us_topic_0000001839142377_text14787949194912"><strong>Databases</strong></span> &gt; OceanBase</b></span>.</span></li><li><span>Search for OceanBase copies by resource or copy.</span><p><ul><li>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> page, find the cluster or tenant set to be restored by name and click the name.</li><li>On the <span class="uicontrol"><b><span><strong>Copies</strong></span></b></span> page, find the target copy based on the copy information, and choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Restore</strong></span></b></span> in the row where the copy is located.</li></ul>
 <p>This section uses the database resource dimension as an example to describe the related operations.</p>
 </p></li><li><span>Select the resource for copy-based restoration.</span></li><li><span>Specify a copy or a point in time for restoration.</span><p><ul><li>Restoration using a specified copy<ol type="a"><li>Select the year, month, and day in sequence to find the copy.<p>If <span><img src="en-us_image_0000001792742910.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p>
 </li><li>On the copy data page, click <span><img src="en-us_image_0000001792583182.png"></span> and choose <span class="menucascade"><b><span class="uicontrol"><span><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Restore</strong></span></span></b></span> in the row where the desired copy is located.</li></ol>

@@ -14,16 +14,19 @@ package openbackup.system.base.util;
 
 import com.google.common.collect.ImmutableSet;
 
-import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.constants.RequestForwardRetryConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
+import openbackup.system.base.common.exception.NonForwardableException;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.network.Ipv6AddressUtil;
+import openbackup.system.base.redis.RedisSetService;
 import openbackup.system.base.sdk.infrastructure.InfrastructureRestApi;
+import openbackup.system.base.service.ManageIpStartInitService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +43,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -56,20 +60,26 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @Component
 public class ForwardOtherNodeUtil {
-    private static final String PM_BASE_POD_NAME = "pm-system-base";
-
     // PM SystemBase微服务监听的端口
     private static final int PM_BASE_PORT = 30081;
-    private static final Set<Long> networkErrorCodes = ImmutableSet.of(CommonErrorCode.CONNECT_LDAP_SERVER_FAILED,
-        CommonErrorCode.ALARM_SMTP_CONNECT_FAILED, CommonErrorCode.CONNECT_ADFS_SERVER_TIMEOUT,
-        CommonErrorCode.ALARM_CONNECT_PROXY_FAILED);
 
-    @Qualifier("pmSystemBaseRestTemplate")
+    private static final Set<Long> networkErrorCodes =
+        ImmutableSet.of(CommonErrorCode.CONNECT_LDAP_SERVER_FAILED, CommonErrorCode.DOMAIN_NAME_RESOLVED_FAILED,
+            CommonErrorCode.ALARM_SMTP_CONNECT_FAILED, CommonErrorCode.CONNECT_ADFS_SERVER_TIMEOUT,
+            CommonErrorCode.ALARM_CONNECT_PROXY_FAILED, CommonErrorCode.SEND_EMAIL_DYNAMIC_PWD_FAILED);
+
+    @Qualifier("nodeForwardRestTemplate")
     @Autowired
-    private RestTemplate pmMsRestTemplate;
+    private RestTemplate nodeForwardRestTemplate;
 
     @Autowired
     private InfrastructureRestApi infrastructureRestApi;
+
+    @Autowired
+    private ManageIpStartInitService manageIpStartInitService;
+
+    @Autowired
+    private RedisSetService redisSetService;
 
     /**
      * 尝试转发给其他节点
@@ -84,6 +94,12 @@ public class ForwardOtherNodeUtil {
         String actionName) {
         // 目前节点级的重试只适用于单控和测试主机网络不通，但无法确定是网卡故障或者网络链路故障，因此尝试将请求转发到其它节点做一次重试
         // 如果重试可以成功，则返回成功节点的请求，如果转发非200，则仍然返回本节点处理的请求（业务检查导致的失败，所有节点都应该一致）
+        if (networkErrorCodes.contains(ex.getErrorCode())) {
+            // 如果当前的失败是网络引起的 则需要移除优先队列 其他错误如认证失败等 则不需要移除
+            String currentIp = System.getenv("POD_IP");
+            redisSetService.removeFromSet(Constants.HIGH_PRIORITY_NODE_CACHE_KEY, currentIp);
+            log.warn("Request is failed on current node: {}, will remove from high priority node", currentIp);
+        }
         if (needForwardToOtherNodes(ex, request.getHeader(RequestForwardRetryConstant.HTTP_HEADER_INTERNAL_RETRY))) {
             Optional<String> resp = forwardToOtherNodes(request, body, actionName);
             if (resp.isPresent()) {
@@ -95,35 +111,51 @@ public class ForwardOtherNodeUtil {
 
     private Optional<String> forwardToOtherNodes(HttpServletRequest httpServletRequest, Object body,
         String actionName) {
-        List<String> forwardIps = getForwardIps();
-        log.info("The {} request is failed on this node, need retry by other nodes {}", actionName, forwardIps);
-        LegoCheckedException rethrowEx = null;
+        Set<String> highPriorityIps = redisSetService.getAllFromSet(Constants.HIGH_PRIORITY_NODE_CACHE_KEY);
+        Set<String> mangeIpNodes = redisSetService.getAllFromSet(Constants.NODE_WITH_MANAGE_IP_CACHE_KEY);
+        Optional<String> result = Optional.empty();
+        Set<String> priorityIps = new HashSet<>();
+        priorityIps.addAll(highPriorityIps);
+        priorityIps.addAll(mangeIpNodes);
+        if (!VerifyUtil.isEmpty(priorityIps)) {
+            result = forwardToNode(httpServletRequest, body, actionName, new ArrayList<>(priorityIps));
+        }
+        if (result.isPresent()) {
+            return result;
+        }
+        log.debug("request {} retry on high priority nodes:{} failed, will continue on the rest nodes", actionName,
+            priorityIps);
+        // 如果高优先级队列和有管理ip的列表都没有成功 则继续尝试剩余的节点
+        List<String> ipSet = getForwardIps(priorityIps);
+        result = forwardToNode(httpServletRequest, body, actionName, ipSet);
+        if (result.isPresent()) {
+            return result;
+        }
+        log.debug("request {} retry on rest nodes:{} failed, will return fail", actionName, ipSet);
+        return result;
+    }
+
+    private Optional<String> forwardToNode(HttpServletRequest httpServletRequest, Object body, String actionName,
+        List<String> forwardIps) {
         for (String ip : forwardIps) {
             try {
                 URI uri = buildUri(httpServletRequest.getRequestURI(), ip);
                 ResponseEntity<String> responseEntity = forwardTryAllNodeRequestByIp(httpServletRequest, body, uri);
                 if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                    log.info("Request {} retry on node {} success.", actionName, ip);
-                    return Optional.of(
-                        StringUtils.isNotEmpty(responseEntity.getBody()) ? responseEntity.getBody() : "SUCCESS");
+                    log.debug("Request {} retry on node {} success.", actionName, ip);
+                    // 调用成功 加入到优先级列表 供下次调用
+                    manageIpStartInitService.addToPriorityList(Constants.HIGH_PRIORITY_NODE_CACHE_KEY, ip);
+                    return Optional
+                        .of(StringUtils.isNotEmpty(responseEntity.getBody()) ? responseEntity.getBody() : "SUCCESS");
                 }
-
-                log.info("Request {} retry on node {} failed, status code is {}.", actionName, ip,
-                    responseEntity.getStatusCode().value());
             } catch (LegoCheckedException ex) {
-                // 当转发其他节点获得的异常非网络失败的异常时，说明这个节点可以连通，应该复用对应业务错误码，否则可能导致覆盖，仍然报网络异常
-                if (!networkErrorCodes.contains(ex.getErrorCode())) {
-                    rethrowEx = ex;
-                }
+                log.warn("node :{} get network related exception,  will try on other node, ex:", ip,
+                    ExceptionUtil.getErrorMessage(ex));
             } catch (Exception ex) {
                 // 转发其它节点只是尝试看能否成功，如果发生未知异常忽略即可
                 log.error("Request {} retry on node {} failed.", actionName, ip, ExceptionUtil.getErrorMessage(ex));
             }
         }
-        if (rethrowEx != null) {
-            throw rethrowEx;
-        }
-
         return Optional.empty();
     }
 
@@ -131,20 +163,17 @@ public class ForwardOtherNodeUtil {
         URI uri) {
         HttpHeaders httpHeaders = buildHeader(httpServletRequest);
         HttpEntity<Object> httpEntity = new HttpEntity<>(body, httpHeaders);
-        return pmMsRestTemplate.exchange(uri,
+        return nodeForwardRestTemplate.exchange(uri,
             Objects.requireNonNull(HttpMethod.resolve(httpServletRequest.getMethod())), httpEntity, String.class);
     }
 
-    private List<String> getForwardIps() {
-        try {
-            List<String> ipList = infrastructureRestApi.getEndpoints(PM_BASE_POD_NAME).getData();
-            // 当前节点不再转发
-            ipList.remove(System.getenv("POD_IP"));
-            return ipList;
-        } catch (FeignException | LegoCheckedException e) {
-            log.error("Get base system pod ips failed", ExceptionUtil.getErrorMessage(e));
-            return Collections.emptyList();
-        }
+    private List<String> getForwardIps(Set<String> priorityIps) {
+        List<String> ipList = infrastructureRestApi.getEndpoints(Constants.PM_ENDPOINT_NAME).getData();
+        Set<String> ipSet = new HashSet<>();
+        ipList.stream()
+            .filter(element -> !priorityIps.contains(element)) // 筛选出不在 linkedList 中的元素
+            .forEach(ipSet::add); // 添加到结果列表中
+        return new ArrayList<>(ipSet);
     }
 
     private URI buildUri(String uri, String ip) {
@@ -176,6 +205,13 @@ public class ForwardOtherNodeUtil {
 
     private boolean needForwardToOtherNodes(LegoCheckedException ex, String retryHeader) {
         // 只针对特定错误码以及原始请求（重试标识为空）进行精准的跨控制器转发重试。
-        return networkErrorCodes.contains(ex.getErrorCode()) && VerifyUtil.isEmpty(retryHeader);
+        if (!networkErrorCodes.contains(ex.getErrorCode()) || !VerifyUtil.isEmpty(retryHeader)) {
+            return false;
+        }
+        if ((ex.getCause() instanceof NonForwardableException)) {
+            log.warn("current cause is marked as non forwardable , will not forward, cause:{}", ex.getCause());
+            return false;
+        }
+        return true;
     }
 }

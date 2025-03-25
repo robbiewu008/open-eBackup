@@ -89,6 +89,11 @@ export class AddLimitComponent implements OnInit {
           subType: DataMap.Resource_Type.hyperVVm.value,
           type: 'Hyper-V',
           label: 'Hyper-V'
+        },
+        {
+          subType: DataMap.Resource_Type.nutanixVm.value,
+          type: ApplicationType.Nutanix,
+          label: 'Nutanix'
         }
       ]
     },

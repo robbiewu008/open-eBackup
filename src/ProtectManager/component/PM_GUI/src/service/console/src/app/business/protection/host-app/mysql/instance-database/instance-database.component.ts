@@ -26,6 +26,7 @@ import {
   DataMap,
   DataMapService,
   DATE_PICKER_MODE,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getLabelList,
   getPermissionMenuItem,
@@ -85,6 +86,7 @@ import { map } from 'rxjs/operators';
 import { RegisterComponent } from './register/register.component';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
 import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
+import { GetLabelOptionsService } from '../../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-instance-database',
@@ -125,7 +127,8 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
     private takeManualBackupService: TakeManualBackupService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit() {
@@ -279,13 +282,17 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
                   hasProtectPermission(val)
                 );
               })
-            ) !== size(data) || !size(data)
+            ) !== size(data) ||
+            !size(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX
           );
         },
         permission: OperateItems.DeactivateProtection,
         disabledTips: this.i18n.get(
           'protection_partial_resources_deactive_label'
         ),
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n),
         label: this.i18n.get('protection_deactive_protection_label'),
         onClick: data => {
           this.protectService
@@ -609,8 +616,11 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -898,9 +908,10 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
         delete conditionsTemp.equipmentType;
       }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;

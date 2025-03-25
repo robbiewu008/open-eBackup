@@ -163,7 +163,7 @@ export class HomeComponent implements OnInit {
           akLoading: false
         })
         .subscribe(res => {
-          this.enableMonitor = res === 'true';
+          this.enableMonitor = res.isPerformanceConfigOpen;
         });
     }
   }
@@ -178,7 +178,7 @@ export class HomeComponent implements OnInit {
           clustersType: cluster.clusterType
         })
         .subscribe(res => {
-          this.enableMonitor = res === 'true';
+          this.enableMonitor = res.isPerformanceConfigOpen;
         });
       this.curNode = cluster;
     });

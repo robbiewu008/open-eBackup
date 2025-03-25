@@ -268,6 +268,11 @@ public class DatabaseConstants {
     public static final String VERSION = "version";
 
     /**
+     * 实例名
+     */
+    public static final String INST_NAME = "inst_name";
+
+    /**
      * 版本
      */
     public static final String ORACLE_VERSION = "database_version";
@@ -448,6 +453,11 @@ public class DatabaseConstants {
     public static final String LOG_COPY_BEGIN_TIME_KEY = "beginTime";
 
     /**
+     * 日志副本结束时间的健值
+     */
+    public static final String LOG_COPY_END_TIME_KEY = "endTime";
+
+    /**
      * 数据库模式key
      */
     public static final String DB_MODE_KEY = "databaseMode";
@@ -476,4 +486,9 @@ public class DatabaseConstants {
      * 存储资源信息
      */
     public static final String STORAGES = "storages";
+
+    /**
+     * 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True。该字段默认为 False，字段不存在也为 False。
+     */
+    public static final String IS_COPY_RESTORE_NEED_WRITABLE = "isCopyRestoreNeedWritable";
 }

@@ -39,9 +39,11 @@ import {
 } from 'app/shared/api/services';
 import {
   ProTableComponent,
+  TableCols,
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   assign,
   cloneDeep,
@@ -54,6 +56,7 @@ import {
   isEmpty,
   isNumber,
   isString,
+  isUndefined,
   set,
   size,
   some,
@@ -82,6 +85,9 @@ export class VolumeRestoreComponent implements OnInit {
   formGroup: FormGroup;
   tableConfig: TableConfig;
   tableData: TableData;
+  diskTableConfig: TableConfig;
+  diskTableData: TableData;
+  diskOptions = [];
   targetData = [];
   displayData = [];
   resourceData;
@@ -134,10 +140,13 @@ export class VolumeRestoreComponent implements OnInit {
   @ViewChild('capacityTpl', { static: true })
   capacityTpl: TemplateRef<any>;
   @ViewChild('volumeTable', { static: false }) volumeTable: ProTableComponent;
+  @ViewChild('selectDiskTpl', { static: true }) selectDiskTpl: TemplateRef<any>;
+  @ViewChild('starTpl', { static: true }) starTpl: TemplateRef<any>;
 
   constructor(
     public i18n: I18NService,
     public baseUtilService: BaseUtilService,
+    public appUtilsService: AppUtilsService,
     private fb: FormBuilder,
     private modal: ModalRef,
     private dataMapService: DataMapService,
@@ -249,6 +258,9 @@ export class VolumeRestoreComponent implements OnInit {
         return;
       }
       defer(() => this.getVolumes(res));
+      if (this.isSystemBackup) {
+        defer(() => this.getHostDisks());
+      }
     });
 
     this.formGroup.statusChanges.subscribe(res => {
@@ -289,8 +301,36 @@ export class VolumeRestoreComponent implements OnInit {
       ) {
         this.formGroup.get('restoreTo').setValue(RestoreV2LocationType.NEW);
       }
-      this.volumeChange();
+      if (res === DataMap.windowsVolumeBackupType.bareMetal.value) {
+        this.windowsBareMetalChange();
+      } else {
+        each(this.tableData.data, item => {
+          item.disabled = false;
+        });
+        this.tableData = {
+          data: this.tableData.data,
+          total: this.tableData.total
+        };
+      }
+      defer(() => {
+        this.volumeChange();
+      });
     });
+  }
+
+  private windowsBareMetalChange() {
+    each(this.tableData.data, item => {
+      const isSpecialVolume =
+        !isUndefined(item.volumeType) && item.volumeType !== 3;
+      if (isSpecialVolume) {
+        item.disabled = true;
+      }
+      if (!find(this.targetData, { name: item.name }) && isSpecialVolume) {
+        this.selectionPort.push(item);
+      }
+    });
+    this.volumeTable.setSelections(this.selectionPort);
+    this.volumeTable._selectionChange(this.selectionPort);
   }
 
   initTable() {
@@ -375,12 +415,8 @@ export class VolumeRestoreComponent implements OnInit {
                 volumeOptions: filter(this.volumeOptions, item => {
                   return (
                     toNumber(item.size ?? 0) >= tmp.size &&
-                    !(
-                      this.isWindows &&
-                      this.formGroup.get('restorationType').value ===
-                        DataMap.windowsVolumeBackupType.volume.value &&
-                      item.volumeType !== '3'
-                    )
+                    (!this.isWindows ||
+                      (this.isWindows && this.getVolumeBackupable(item, tmp)))
                   );
                 })
               });
@@ -399,7 +435,6 @@ export class VolumeRestoreComponent implements OnInit {
       }
     };
     const properties = JSON.parse(this.rowCopy.properties);
-
     const volumeArray = properties.volumeInfoSet;
     each(volumeArray, item => {
       if (!this.isWindows) {
@@ -426,6 +461,105 @@ export class VolumeRestoreComponent implements OnInit {
       data: this.displayData,
       total: size(this.displayData)
     };
+
+    if (!this.isWindows && this.isSystemBackup) {
+      const cols: TableCols[] = [
+        {
+          key: 'diskName',
+          name: this.i18n.get('common_restore_disk_name_label')
+        },
+        {
+          key: 'diskSize',
+          name: this.i18n.get('common_size_label'),
+          cellRender: this.capacityTpl
+        },
+        {
+          key: 'targetName',
+          name: this.i18n.get('common_target_disk_label'),
+          thExtra: this.starTpl,
+          cellRender: this.selectDiskTpl
+        }
+      ];
+
+      this.diskTableConfig = {
+        table: {
+          colDisplayControl: false,
+          compareWith: 'diskName',
+          async: false,
+          columns: cols
+        },
+        pagination: {
+          mode: 'simple',
+          showPageSizeOptions: false,
+          winTablePagination: true,
+          pageSize: CommonConsts.PAGE_SIZE_SMALL,
+          showTotal: true
+        }
+      };
+
+      const properties = JSON.parse(this.rowCopy.properties);
+
+      const diskArray = properties.diskInfoSet;
+      if (!isEmpty(diskArray)) {
+        this.diskTableData = {
+          data: diskArray.map(item => {
+            return assign(item, {
+              size: item.diskSize
+            });
+          }),
+          total: size(diskArray)
+        };
+      }
+    }
+  }
+
+  targetDiskChange(e) {
+    each(this.diskOptions, item => {
+      item.disabled = !!find(this.tableData.data, { targetDisk: item.value });
+    });
+    each(this.tableData.data, item => {
+      item.diskOptions = this.diskOptions.filter(
+        val => val.size >= item.diskSize
+      );
+    });
+    this.disableOkBtn();
+  }
+
+  getHostDisks() {
+    this.diskOptions = [];
+    each(this.tableData.data, item => {
+      item.diskOptions = [];
+      item.targetDisk = '';
+    });
+    const extParameters = {
+      envId: this.formGroup.get('host').value,
+      resourceType: DataMap.Resource_Type.fileset.value,
+      conditions: JSON.stringify({
+        is_OS_restore: true
+      })
+    };
+    this.appUtilsService.getResourceByRecursion(
+      extParameters,
+      params =>
+        this.protectedEnvironmentApiService.ListEnvironmentResource(params),
+      resource => {
+        this.diskOptions = resource.map(item => {
+          return assign(item, {
+            value: item.extendInfo.diskName,
+            label: item.extendInfo.diskName,
+            size: item.extendInfo.diskSize,
+            id: item.extendInfo.diskId,
+            isLeaf: true
+          });
+        });
+        each(this.diskTableData.data, item => {
+          item.diskOptions = this.diskOptions.filter(
+            val => val.size >= item.diskSize
+          );
+        });
+        this.disableOkBtn();
+      }
+    );
   }
 
   search(e) {
@@ -559,10 +693,8 @@ export class VolumeRestoreComponent implements OnInit {
           each(recordsTemp, item => {
             if (!this.isWindows) {
               this.parseLinuxVolume(item, tableData);
-            } else if (
-              this.isWindows &&
-              item.extendInfo?.fileSystem === 'NTFS'
-            ) {
+            } else if (this.isWindows) {
+              // EFI和Recovery不能作为恢复目标
               tableData.push(
                 assign(item, {
                   key: get(item, 'extendInfo.volumeName'),
@@ -572,6 +704,12 @@ export class VolumeRestoreComponent implements OnInit {
                   fileSystem: get(item, 'extendInfo.fileSystem'),
                   volumeType: get(item, 'extendInfo.volumeType'),
                   volumeName: get(item, 'extendInfo.volumeName'),
+                  isVolumeBackupable: !(
+                    get(item, 'extendInfo.volumeName') ===
+                      'EFI System Partition' ||
+                    get(item, 'extendInfo.partitionName') === 'Recovery'
+                  ),
+                  isBackupable: get(item, 'extendInfo.isBackupable'),
                   isLeaf: true
                 })
               );
@@ -683,6 +821,21 @@ export class VolumeRestoreComponent implements OnInit {
         'extendInfo.reboot_system_after_restore',
         this.formGroup.value.reboot_system_after_restore
       );
+      assign(params.extendInfo, {
+        diskMap: JSON.stringify(
+          this.diskTableData.data.map(item => {
+            const tmpTargetDisk = find(item.diskOptions, {
+              value: item.targetDisk
+            });
+            return {
+              sourceDiskName: item.diskName,
+              sourceDiskSize: item.diskSize,
+              targetDiskName: item.targetDisk,
+              targetDiskSize: Number(tmpTargetDisk.size)
+            };
+          })
+        )
+      });
     }
     if (this.isWindows) {
       set(
@@ -767,12 +920,8 @@ export class VolumeRestoreComponent implements OnInit {
       item.volumeOptions = this.volumeOptions.filter(tmp => {
         return (
           toNumber(tmp.size ?? 0) >= item.size &&
-          !(
-            this.isWindows &&
-            this.formGroup.get('restorationType').value ===
-              DataMap.windowsVolumeBackupType.volume.value &&
-            tmp.volumeType !== '3'
-          )
+          (!this.isWindows ||
+            (this.isWindows && this.getVolumeBackupable(item, tmp)))
         );
       });
       // 若因为裸机和卷的切换导致原本可选的没了，就需要更新
@@ -790,9 +939,26 @@ export class VolumeRestoreComponent implements OnInit {
     }
   }
 
+  getVolumeBackupable(item, volume) {
+    const isBackupCondition =
+      volume.isBackupable === '1' &&
+      !(item.mountType !== 'FAT32' && volume.volumeType === '0');
+
+    if (
+      this.formGroup.get('restorationType').value ===
+      DataMap.windowsVolumeBackupType.volume.value
+    ) {
+      return isBackupCondition && volume.isVolumeBackupable;
+    } else {
+      return isBackupCondition;
+    }
+  }
+
   disableOkBtn() {
     if (this.formGroup.value.enable_bare_metal_restore) {
-      this.modal.getInstance().lvOkDisabled = this.formGroup.invalid;
+      this.modal.getInstance().lvOkDisabled =
+        this.formGroup.invalid ||
+        !!find(this.diskTableData?.data, item => !item.targetDisk);
     } else {
       if (this.formGroup.value.restoreTo === RestoreV2LocationType.ORIGIN) {
         this.modal.getInstance().lvOkDisabled =

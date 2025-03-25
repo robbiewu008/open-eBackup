@@ -10,7 +10,7 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -23,12 +23,15 @@ import {
   BaseUtilService,
   CommonConsts,
   DataMap,
+  GlobalService,
   I18NService,
   ProtectResourceAction
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   assign,
   each,
+  find,
   has,
   includes,
   isArray,
@@ -36,14 +39,14 @@ import {
   toNumber,
   trim
 } from 'lodash';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'aui-advanced-parameter',
   templateUrl: './advanced-parameter.component.html',
   styleUrls: ['./advanced-parameter.component.less']
 })
-export class AdvancedParameterComponent implements OnInit {
+export class AdvancedParameterComponent implements OnInit, OnDestroy {
   resourceData;
   resourceType;
   formGroup: FormGroup;
@@ -74,17 +77,27 @@ export class AdvancedParameterComponent implements OnInit {
   isExpanded = false;
   batchModify = false;
   extParams;
+  hasRansomware = false; // 用于判断是否有已创建的防勒索策略
+  isOsBackup = false; // 用于判断是否打开了操作系统备份
+  ransomwareStatus$: Subscription = new Subscription();
 
   constructor(
     public fb: FormBuilder,
     private i18n: I18NService,
+    private globalService: GlobalService,
     private baseUtilService: BaseUtilService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    public appUtilsService: AppUtilsService
   ) {}
 
   ngOnInit() {
     this.getOsType();
+    this.getRansomwareStatus();
     this.initForm();
+  }
+
+  ngOnDestroy() {
+    this.ransomwareStatus$.unsubscribe();
   }
 
   initDetailData(data) {
@@ -108,18 +121,25 @@ export class AdvancedParameterComponent implements OnInit {
       this.osType =
         this.resourceData[0].environment_os_type ||
         this.resourceData[0]?.environment?.osType;
+      this.isOsBackup = !!find(this.resourceData, item => item.osBackup);
     } else if (this.resourceData) {
       this.osType =
         this.resourceData.environment_os_type ||
         this.resourceData?.environment?.osType;
+      this.isOsBackup = this.resourceData.osBackup;
     }
   }
 
-  initForm() {
-    const resource = isArray(this.resourceData)
-      ? this.resourceData[0]
-      : this.resourceData;
+  getRansomwareStatus() {
+    // 开启了防勒索策略的资源是不能开小文件聚合的
+    this.ransomwareStatus$ = this.globalService
+      .getState('syncRansomwareStatus')
+      .subscribe(res => {
+        this.hasRansomware = res;
+      });
+  }
 
+  initForm() {
     this.scriptPlaceholder =
       this.osType === DataMap.Os_Type.windows.value
         ? this.i18n.get('protection_fileset_advance_script_windows_label')
@@ -307,6 +327,9 @@ export class AdvancedParameterComponent implements OnInit {
     }
     if (this.batchModify) {
       this.isModified = true;
+    }
+    if (this.isOsBackup) {
+      this.formGroup.get('crossFileBackup').setValue(true);
     }
   }
 

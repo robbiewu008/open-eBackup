@@ -437,6 +437,16 @@ public enum ResourceSubTypeEnum {
      */
     NUTANIX_STORAGE_POOL(208, "NutanixStoragePool", "Nutanix"),
 
+    /**
+     * Exchange subType (来源于python)
+     */
+    EXCHANGE_ONLINE(209, "ExchangeOnline", "Exchange"),
+
+    /**
+     * Exchange Online subType (来源于python)
+     */
+    EXCHANGE_ONLINE_BACKUP_SET(210, "ExchangeOnlineBackupSet", "Exchange")
+
     ;
 
     private static final List<String> COMMON_AGENT_LIST = Collections.unmodifiableList(

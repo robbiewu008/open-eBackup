@@ -19,12 +19,14 @@ import {
 } from '@angular/core';
 import {
   CommonConsts,
+  DataMap,
+  DataMapService,
   I18NService,
   JOB_ORIGIN_TYPE,
   JobAPIService,
   WarningMessageService
 } from 'app/shared';
-import { assign, size } from 'lodash';
+import { assign, includes, map, reject, size } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { TableCols, TableConfig } from 'app/shared/components/pro-table';
@@ -43,6 +45,23 @@ export class BatchRetryComponent implements OnInit {
     data: [],
     total: 0
   };
+  statusArr = map(
+    reject(this.dataMapService.toArray('Job_status'), item =>
+      includes(
+        [
+          DataMap.Job_status.running.value,
+          DataMap.Job_status.initialization.value,
+          DataMap.Job_status.pending.value,
+          DataMap.Job_status.aborting.value,
+          DataMap.Job_status.dispatching.value,
+          DataMap.Job_status.redispatch.value,
+          DataMap.Job_status.dispatch_failed.value
+        ],
+        item.value
+      )
+    ),
+    'value'
+  );
   @ViewChild('warningWindowTpl', { static: true })
   warningWindowTpl: TemplateRef<void>;
 
@@ -50,7 +69,8 @@ export class BatchRetryComponent implements OnInit {
     private jobApiService: JobAPIService,
     public i18n: I18NService,
     private batchOperateService: BatchOperateService,
-    private warningMessageService: WarningMessageService
+    private warningMessageService: WarningMessageService,
+    private dataMapService: DataMapService
   ) {}
 
   ngOnInit() {

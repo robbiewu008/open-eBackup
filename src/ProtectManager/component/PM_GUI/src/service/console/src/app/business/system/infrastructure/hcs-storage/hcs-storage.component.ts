@@ -227,8 +227,10 @@ export class HcsStorageComponent implements OnInit, AfterViewInit {
                 port: data.port,
                 username: data.username,
                 enableCert: data.enableCert,
+                certification: data.certification,
                 certName: data.certName,
                 certSize: data.certSize,
+                revocationList: data.revocationList,
                 crlName: data.crlName,
                 crlSize: data.crlSize,
                 storageType:

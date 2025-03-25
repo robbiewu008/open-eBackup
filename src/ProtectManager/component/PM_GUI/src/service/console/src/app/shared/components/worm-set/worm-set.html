@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup sla-policy" [lvLabelColon]="false">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,10 +11,11 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup sla-policy" [lvLabelColon]="false">
   <ng-container>
     <lv-form-item>
       <lv-form-control>
-        <lv-switch  formControlName="convert_worm_switch" lvDisabled="{{formGroup.value.convert_worm_switch}}"></lv-switch><span>{{'common_set_worm_copy_label'|i18n}}</span>
+        <lv-switch  formControlName="convert_worm_switch" lvDisabled="{{formGroup.value.convert_worm_switch}}"></lv-switch><span>&nbsp;&nbsp;{{'common_set_worm_copy_label'|i18n}}</span>
         <lv-form-label>{{'common_open_worm_tips_label'|i18n}}</lv-form-label>
         <lv-alert  *ngIf="formGroup.value.convert_worm_switch" lvType="info"><p class="lv-alert-desc">{{'common_worm_retention_label'|i18n}}</p></lv-alert>
       </lv-form-control>
@@ -26,7 +26,7 @@
         <lv-form-control>
             <lv-radio-group formControlName="worm_validity_type" [lvGroupName]="'retentionTypeGroup'">
                 <lv-group [lvGutter]="'20px'">
-                    <lv-radio [lvValue]="1" [lvDisabled]="data.source_copy_type===dataMap.CopyData_Backup_Type.log.value&&isSQLServerAndHbase">
+                    <lv-radio [lvValue]="1">
                     {{'common_worm_same_validity_label' | i18n}}
                   </lv-radio>
                     <lv-radio [lvValue]="2">

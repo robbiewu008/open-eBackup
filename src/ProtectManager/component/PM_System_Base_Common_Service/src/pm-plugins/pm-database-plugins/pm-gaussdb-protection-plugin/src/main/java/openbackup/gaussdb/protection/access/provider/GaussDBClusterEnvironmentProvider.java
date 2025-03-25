@@ -29,6 +29,7 @@ import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.provider.DatabaseEnvironmentProvider;
 import openbackup.gaussdb.protection.access.constant.GaussDBConstant;
 import openbackup.gaussdb.protection.access.service.GaussDBService;
@@ -47,6 +48,7 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -76,6 +78,9 @@ public class GaussDBClusterEnvironmentProvider extends DatabaseEnvironmentProvid
 
     @Autowired
     private GaussDBAgentProvider gaussDBAgentProvider;
+
+    @Autowired
+    private ResourceService resourceService;
 
     /**
      * DatabaseResourceProvider
@@ -130,6 +135,12 @@ public class GaussDBClusterEnvironmentProvider extends DatabaseEnvironmentProvid
 
             // 校验注册集群是否重复并设置uuid
             generateUniqueUuid(environment, existingEnvironments);
+        } else {
+            // 修改项目时，更新实例的所属项目字段
+            log.info("start to modify parentName");
+            Map<String, Object> updateKv = new HashMap<>();
+            updateKv.put("parent_name", environment.getName());
+            resourceService.updateSubResource(Collections.singletonList(environment.getUuid()), updateKv);
         }
 
         // endpoint 适配sla

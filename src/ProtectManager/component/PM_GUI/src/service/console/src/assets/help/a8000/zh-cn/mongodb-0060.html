@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
@@ -20,53 +20,177 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="登录OceanProtect管理界面">
+<meta name="DC.Title" content="管理MongoDB副本">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="mongodb-0058.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="mongodb-0060">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>登录OceanProtect管理界面</title>
+<title>管理MongoDB副本</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="mongodb-0060"></a><a name="mongodb-0060"></a>
 
+<h1 class="topictitle1">管理MongoDB副本</h1>
+<div><p>您可以在<span>OceanProtect</span>上对副本数据执行相关操作。</p>
+<p>您需要登录管理界面，选择<span class="uicontrol">“<span id="mongodb-0060__zh-cn_topic_0000001839142377_text732145416391">数据利用</span> &gt; <span id="mongodb-0060__zh-cn_topic_0000001839142377_text1932135423913">副本数据</span> &gt; <span id="mongodb-0060__zh-cn_topic_0000001839142377_text12694336586">大数据</span> &gt; MongoDB”</span>，进入MongoDB副本页面。</p>
+<ul><li>单击<span class="uicontrol">“资源”</span>以资源维度执行相关操作，该页面的操作均是针对当前资源的复制副本，请在复制副本所在的集群执行以下操作。<p>具体操作任务如<a href="#mongodb-0060__table14710939161317">表1</a>所示。</p>
 
-  <h1 class="topictitle1">登录OceanProtect管理界面</h1>
+<div class="tablenoborder"><a name="mongodb-0060__table14710939161317"></a><a name="table14710939161317"></a><table cellpadding="4" cellspacing="0" summary="" id="mongodb-0060__table14710939161317" frame="border" border="1" rules="all"><caption><b>表1 </b>复制副本相关操作</caption><colgroup><col style="width:21.32%"><col style="width:47.339999999999996%"><col style="width:31.34%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="21.32%" id="mcps1.3.3.1.3.2.4.1.1"><p>任务</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="47.339999999999996%" id="mcps1.3.3.1.3.2.4.1.2"><p>任务描述</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="31.34%" id="mcps1.3.3.1.3.2.4.1.3"><p>界面入口</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>为复制副本创建保护</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当您需要对复制副本执行周期性复制或归档时，可以通过该操作实现。</p>
+<p><strong>注意事项</strong></p>
+<p>如果当前选择的资源未产生复制副本，则无法关联SLA对该资源进行保护。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>在资源所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>保护</span>”</span>，关联复制SLA或归档SLA，对复制副本进行复制或归档。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>修改复制副本关联的SLA</p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>您可以通过该操作修改复制副本关联的SLA。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>在资源所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>修改保护</span>”</span>，为复制副本关联新的SLA。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>移除对复制副本的保护</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当不需要再对复制副本执行保护时，可以通过移除保护计划来实现。移除后系统将无法对该复制副本执行保护。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>在资源所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>移除保护</span>”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>激活对复制副本的保护</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>复制副本的保护计划被禁用后，您可以通过激活操作使复制副本的保护计划重新生效。激活后系统将按照保护计划对复制副本执行保护。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>单击<span class="uicontrol">“<span>更多</span> &gt; <span>激活保护</span>”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>禁用对复制副本的保护</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当您暂时不需要再对复制副本执行周期性保护时，可以通过禁用其保护计划来实现。禁用后系统将不会执行该复制副本的自动保护任务。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>单击<span class="uicontrol">“<span>更多</span> &gt; <span>禁用保护</span>”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><p>对复制副本执行一次手动复制</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当您需要对复制副本立即执行一次复制，可以通过该操作实现。</p>
+<p><strong>注意事项</strong></p>
+<p>执行该操作前，请确保已对当前资源创建基于复制副本的SLA，并且该SLA为复制SLA。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动复制</span>”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><div class="p">更改所属用户<div class="note" id="mongodb-0060__zh-cn_topic_0000001839143185_note6966434109"><span class="notetitle"> 说明： </span><div class="notebody"><p id="mongodb-0060__zh-cn_topic_0000001839143185_zh-cn_topic_0000001792344090_p1816719214566">仅1.6.0及后续版本支持此功能。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当您需要对资源及其所有副本更改所属用户，并将副本原本占用的配额切换至新的所属用户，可以通过该操作实现。</p>
+<div class="p"><strong>注意事项</strong><ul><li>仅系统管理员有修改所属用户的权限。</li><li>仅支持修改为数据保护管理员或自定义角色的用户。</li><li>更改所属用户后，该资源的所有信息均不在原所属用户下展示。</li></ul>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p>在资源所在行单击“更多 &gt; 更改所属用户”。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>单击“副本”以副本维度执行相关操作。<p>具体操作任务如<a href="#mongodb-0060__zh-cn_topic_0000001263933990_zh-cn_topic_0000001090712911_table51069596392">表2</a>所示。</p>
 
-  <div><p id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_p1478171213391">OceanProtect软件是<span id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_text97041310134520">OceanProtect</span>的业务管理平台。<span id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_text348355711213">OceanProtect</span>出厂时，OceanProtect软件已经加载在<span id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_text42401420144511">OceanProtect</span>中。在任意一台与<span id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_text7668172364517">OceanProtect</span>连接的维护终端上，通过浏览器访问<span id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_text1547232417454">OceanProtect</span>的管理网口IP地址，可以登录OceanProtect管理界面。</p>
-<div class="section" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_section18417111113913"><h4 class="sectiontitle">前提条件</h4><ul id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_ul8857127391"><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li5101179153911">使用OceanProtect管理界面前请先检查维护终端是否满足使用要求：<ul id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_ul799715418417"><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li12143461">操作系统及浏览器的兼容性<p id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_p42182293"><a name="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li12143461"></a><a name="zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li12143461"></a>OceanProtect管理界面支持多种操作系统和浏览器，具体的兼容性信息可以通过<a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect兼容性查询工具</a>进行查询。</p>
-</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li1221219654310">为了保证显示正常，建议浏览器缩放比例或系统显示比例为100%。<ul id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_ul49951113154312"><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li1299591317436">Windows 7操作系统通过“控制面板 &gt; 显示”进行设置，其他操作系统请根据实际界面操作。</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li1146913272430">浏览器通过按“Ctrl+0”（Windows）或“Command+0”（MAC OS）快速进行设置。</li></ul>
-</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li485191293915">维护终端和OceanProtect通信正常。</li></ul>
-</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li141267489369">使用ADFS登录需要系统管理员提前开启并配置Windows ADFS，具体操作请参见<span id="mongodb-0060__zh-cn_topic_0000001839223161_cite188325201913">《OceanProtect <span id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001792502994_ph14959193919202">备份一体机 1.5.0-1.6.0</span> 管理员指南》</span>中的“管理Windows ADFS配置（适用于1.6.0及后续版本）”章节。</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li12259654112310">使用AD域账号登录需要系统管理员提前开启并配置LDAP服务，具体操作步骤请参见<span id="mongodb-0060__zh-cn_topic_0000001839223161_cite163813111913">《OceanProtect <span id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001792502994_ph14959193919202_1">备份一体机 1.5.0-1.6.0</span> 管理员指南》</span>中的“配置LDAP服务”章节，配置时服务器类型请选择<span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_uicontrol1849942620810">“Windows AD域服务器”</span>。</li></ul>
+<div class="tablenoborder"><a name="mongodb-0060__zh-cn_topic_0000001263933990_zh-cn_topic_0000001090712911_table51069596392"></a><a name="zh-cn_topic_0000001263933990_zh-cn_topic_0000001090712911_table51069596392"></a><table cellpadding="4" cellspacing="0" summary="" id="mongodb-0060__zh-cn_topic_0000001263933990_zh-cn_topic_0000001090712911_table51069596392" frame="border" border="1" rules="all"><caption><b>表2 </b>MongoDB副本相关操作</caption><colgroup><col style="width:21.3%"><col style="width:47.3%"><col style="width:31.4%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="21.3%" id="mcps1.3.3.2.2.2.4.1.1"><p>任务</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="47.3%" id="mcps1.3.3.2.2.2.4.1.2"><p>任务描述</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="31.4%" id="mcps1.3.3.2.2.2.4.1.3"><p>界面入口</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.2.2.4.1.1 "><div class="p">手动归档<div class="note" id="mongodb-0060__zh-cn_topic_0000001839143185_note1993101364115"><span class="notetitle"> 说明： </span><div class="notebody"><p id="mongodb-0060__zh-cn_topic_0000001839143185_zh-cn_topic_0000001792344090_p1816719214566_1">仅1.6.0及后续版本支持此功能。</p>
+</div></div>
 </div>
-<div class="section" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_section16569161111390"><h4 class="sectiontitle">背景信息</h4><ul id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_ul128791223910"><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li16871912143913">本文以Windows操作系统为例，介绍如何登录OceanProtect管理界面。</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li9881712143919">如果当前登录用户在会话超时时限内（默认为60分钟，可修改）未执行任何操作，系统将会自动退出，用户需要重新登录。</li></ul>
+</td>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当您需要手动将副本归档至归档存储时，可以通过该操作实现。</p>
+<p><strong>注意事项</strong></p>
+<p>仅全量备份副本及其对应的复制副本、级联复制副本，以及永久增量（合成全量）备份副本及其对应的复制副本、级联复制副本支持手动归档。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.2.2.4.1.3 "><p>在副本所在行单击<span class="uicontrol">“<span>更多</span> &gt; 手动归档”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.2.2.4.1.1 "><p>修改副本保留策略</p>
+<p style="color:#FF0000;"></p>
+</td>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当您需要重新设置副本的保留时长时，可以通过该操作实现。</p>
+<p><strong>注意事项</strong></p>
+<ul><li>修改后从当前时间开始计算副本保留时长。</li><li>修改副本保留时长时，不允许全量副本的保留时长小于增量副本（基于该全量副本执行增量备份产生的副本）的保留时长。</li></ul>
+</td>
+<td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.2.2.4.1.3 "><p>在副本所在行单击<span class="uicontrol">“<span>更多</span> &gt; 修改保留策略”</span>。</p>
+<p>您可以设置为永久保留或保留xx天/周/月/年。</p>
+<p></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.2.2.4.1.1 "><p>删除副本</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>当您不再需要某个副本或某个副本不可用时，可以删除该副本，以释放存储空间。</p>
+<p><strong>注意事项</strong></p>
+<ul><li>同一资源下存在多个全量副本时，不允许删除最近一次全量副本。</li><li>同一资源下存在多个副本时，仅存在一个全量备份副本时，允许删除该全量备份副本。</li><li>同一资源下存在多个副本时，仅存在一个全量复制副本时，不允许删除该全量复制副本。</li><li>删除全量副本时，系统会同步删除依赖其的增量副本。</li></ul>
+</td>
+<td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.2.2.4.1.3 "><div class="p">在副本所在行单击“更多 &gt; <span id="mongodb-0060__zh-cn_topic_0000001839143185_text1659218118342">删除</span>”，或勾选待删除副本后单击列表上方的“<span id="mongodb-0060__zh-cn_topic_0000001839143185_text7770103919243">删除</span>”。<div class="note" id="mongodb-0060__zh-cn_topic_0000001839143185_note172661250175414"><span class="notetitle"> 说明： </span><div class="notebody"><p id="mongodb-0060__zh-cn_topic_0000001839143185_p15266165085416">对于1.6.0及后续版本，如果在副本删除失败后需强制删除数据库中的副本数据，请在弹出的对话框中勾选“删除失败后强制删除副本数据”。</p>
+</div></div>
 </div>
-<div class="section" id="mongodb-0060__zh-cn_topic_0000001839223161_section68728346020"><h4 class="sectiontitle">注意事项</h4><p id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_p0745181922716">请使用不同类型的浏览器分别访问OceanProtect和DeviceManager管理界面，避免出现用户在一个管理界面注销账号或者切换语言时，导致另一个管理界面也同时退出或者切换语言。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.2.2.4.1.1 "><p>反向复制/级联复制复制副本</p>
+</td>
+<td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p>
+<p>如果您希望将复制副本复制回源端以恢复源端数据，或者将复制副本复制至其他集群以进行异地容灾，可以通过本操作实现。</p>
+<p><strong>注意事项</strong></p>
+<p>执行反向复制前请先从源端删除复制副本对应的备份副本，否则会导致复制失败。</p>
+</td>
+<td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.2.2.4.1.3 "><div class="p">在复制副本所在行单击“更多 &gt; <span id="mongodb-0060__zh-cn_topic_0000001839143185_text191285272345">复制</span>”。配置副本复制参数：<ol id="mongodb-0060__zh-cn_topic_0000001839143185_ol15113142311175"><li id="mongodb-0060__zh-cn_topic_0000001839143185_li0113202310179">选择<span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000001839143185_uicontrol1611634014176">“复制目标集群”</span>。<ul id="mongodb-0060__zh-cn_topic_0000001839143185_ul2991182216"><li id="mongodb-0060__zh-cn_topic_0000001839143185_li3998812219">当<span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000001839143185_uicontrol630794164212">“复制目标集群”</span>为源端集群时，即为反向复制。</li><li id="mongodb-0060__zh-cn_topic_0000001839143185_li1419217379216">当<span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000001839143185_uicontrol118058437428">“复制目标集群”</span>为其他集群时，即为级联复制。</li></ul>
+</li><li id="mongodb-0060__zh-cn_topic_0000001839143185_li8112182510382">对于1.6.0及后续版本，请选择“复制目标端用户”。</li><li id="mongodb-0060__zh-cn_topic_0000001839143185_li83719248152">对于1.6.0及后续版本，请输入复制目标端用户的密码，并单击“认证”。</li><li id="mongodb-0060__zh-cn_topic_0000001839143185_li222198163919">选择复制的“指定目标位置”。</li><li id="mongodb-0060__zh-cn_topic_0000001839143185_li1564916443171">设置副本保留时长。</li><li id="mongodb-0060__zh-cn_topic_0000001839143185_li6696135771714">开启/关闭重删、压缩开关。<p id="mongodb-0060__zh-cn_topic_0000001839143185_p325810594214"><a name="mongodb-0060__zh-cn_topic_0000001839143185_li6696135771714"></a><a name="zh-cn_topic_0000001839143185_li6696135771714"></a>建议开启，以提升复制效率。</p>
+</li><li id="mongodb-0060__zh-cn_topic_0000001839143185_li3458142216186">开启/关闭任务失败告警。</li></ol>
 </div>
-<div class="section" id="mongodb-0060__zh-cn_topic_0000001839223161_section282214712010"><h4 class="sectiontitle">操作步骤</h4><ol id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_ol209118121399"><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li591912153913"><span>在维护终端运行浏览器。</span></li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li20912125396"><span>在地址栏中输入“https://XXX.XXX.XXX.XXX:25080”并按“Enter”。</span><p><p id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_p12910125393">系统进入OceanProtect登录界面。</p>
-<p id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_p52511430122816">XXX.XXX.XXX.XXX表示控制器的管理IP地址。</p>
-<div class="note" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_note3586171123916"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_p174581341192616">浏览器可能会提示网站的安全证书有问题，此时只要确认IP地址正确，您仍然可以选择忽略该提示并继续访问OceanProtect管理界面。</p>
-</div></div>
-</p></li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li159131263913"><span>（可选）设置语言类型。</span><p><p id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_p8119698510">OceanProtect支持简体中文和英文两种语言类型。</p>
-</p></li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li193721144141515"><span>设置登录方式。</span><p><ul id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_ul11664752171617"><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li29183327433">本地用户：通过本地认证登录OceanProtect。</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li6664165216168">LDAP用户/LDAP用户组：通过LDAP域认证登录OceanProtect。只有配置好LDAP服务器之后，才能通过LDAP域认证登录OceanProtect。</li></ul>
-</p></li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li1493191253912"><span>在“用户名”和“密码”中输入登录的用户名和密码。</span><p><div class="note" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_note85872119398"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_ul11933129391"><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li1493171273913">当出现“验证码”时请输入正确的验证码。</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li14932124392">首次登录OceanProtect时，<span class="parmvalue" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_parmvalue7268446121118">“sysadmin”</span>的默认密码请参见<a href="https://support.huawei.com/enterprise/zh/flash-storage/oceanprotect-databackup-pid-258115661?category=operation-maintenance" target="_blank" rel="noopener noreferrer">《OceanProtect 备份一体机 1.5.0-1.6.0 账号列表》</a>。为了避免由于密码泄露给OceanProtect带来安全风险，请在后续使用中定期修改登录密码。有关修改密码的详细操作，请参见<a href="https://support.huawei.com/enterprise/zh/flash-storage/oceanprotect-databackup-pid-258115661?category=operation-maintenance" target="_blank" rel="noopener noreferrer">《OceanProtect 备份一体机 1.5.0-1.6.0 账号列表》</a>。</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li1176020228233">如果登录用户启用了<span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_uicontrol542563819285">“登录密码+邮件动态口令”</span>认证方式，请单击<span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_uicontrol18377191419251">“发送动态口令”</span>，系统将发送动态口令至您设置的<span style="color:#6C7280;">收件人邮箱地址</span>。请填写收到的动态口令。</li></ul>
-</div></div>
-</p></li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li1343118293413"><span>登录OceanProtect管理界面。</span><p><ul id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_ul8366615143612"><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li1236612155368">单击“登录”，系统进入OceanProtect管理界面。<div class="fignone" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_fig158348102017"><span class="figcap"><b>图1 </b>OceanProtect 1.5.0主界面</span><br><span><img id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_image05171817153915" src="zh-cn_image_0000001792346086.png"></span></div>
-<p id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_p4669547397"></p>
-<div class="fignone" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_fig3244103532616"><span class="figcap"><b>图2 </b>OceanProtect 1.6.0主界面</span><br><span><img class="eddx" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_image14244335122620" src="zh-cn_image_0000002075965341.png"></span></div>
-<p id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_p1625172052810"></p>
-<div class="note" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_note1959019117396"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_ul129511213918"><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li145612201515">不同产品版本和型号的界面可能会有少许差异，界面展示的信息请以实际界面为准。</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li13953127396">当您在实际操作中，需要了解每个操作步骤的详细描述，单击界面上的<span><img id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_image1233892945616" src="zh-cn_image_0000001792505822.png"></span>，可查看联机帮助。</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li18951412103910">单击界面右上角的用户名，在弹出的菜单中选择“注销”，可退出OceanProtect。</li></ul>
-</div></div>
-</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li280319301206">单击“使用ADFS登录”，跳转到ADFS登录界面输入用户名和密码后进入OceanProtect管理界面<div class="fignone" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_fig1224812264351"><span class="figcap"><b>图3 </b>OceanProtect 1.5.0主界面</span><br><span><img id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_image846519413810" src="zh-cn_image_0000001934583553.png"></span></div>
-<p id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_p84651463812"></p>
-<div class="fignone" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_fig115795592354"><span class="figcap"><b>图4 </b>OceanProtect 1.6.0主界面</span><br><span><img class="eddx" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_image1589144814348" src="zh-cn_image_0000002039934102.png"></span></div>
-<p id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_p386305111349"></p>
-<div class="note" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_note1446517416380"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_ul134657415383"><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li2768152019357">仅支持1.6.0及后续版本。</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li2813720811">若使用ADFS登录OceanProtect管理界面，需要先创建ADFS用户。</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li646513411381">不同产品版本和型号的界面可能会有少许差异，界面展示的信息请以实际界面为准。</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li174654493813">当您在实际操作中，需要了解每个操作步骤的详细描述，单击界面上的<span><img id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_image20466642386" src="zh-cn_image_0000001891343828.png"></span>，可查看联机帮助。</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li154660483819">单击界面右上角的用户名，在弹出的菜单中选择“注销”，可退出OceanProtect。</li><li id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_li59331136162815">如果Windows ADFS服务器操作系统是Windows Server 2016，请在<span class="menucascade" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_menucascade1760418221548">“<span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_uicontrol1560418227418">控制面板</span> &gt; <span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_uicontrol68095338412">程序</span> &gt; <span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_uicontrol1019012441513">程序和功能</span> &gt; <span class="uicontrol" id="mongodb-0060__zh-cn_topic_0000001839223161_zh-cn_topic_0000001839224845_uicontrol10249125561">查看已安装的更新</span>”</span>界面中查询并确保已安装KB403880补丁。</li></ul>
-</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.3.2.2.2.4.1.1 mcps1.3.3.2.2.2.4.1.2 mcps1.3.3.2.2.2.4.1.3 "><p>注：恢复数据库的配置类似<a href="mongodb-0046.html">恢复MongoDB</a>，本节不再重复说明。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </li></ul>
-</p></li></ol>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="mongodb-0058.html">副本</a></div>
 </div>
 </div>
-
 
 <div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
 </html>

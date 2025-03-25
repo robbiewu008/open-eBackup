@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -63,8 +63,9 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="30.599999999999998%" headers="mcps1.3.1.2.3.2.2.2.3.1.1 "><p>Filter Criteria</p>
 </td>
-<td class="cellrowborder" valign="top" width="69.39999999999999%" headers="mcps1.3.1.2.3.2.2.2.3.1.2 "><p>Enter filter criteria and press <strong>Enter</strong> to filter an object or a directory in a path in the target bucket for protection.</p>
-<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>Special characters \:*?"&lt;&gt;| cannot be contained in the prefix.</li><li>The prefix cannot start with a slash (/).</li><li>The prefix cannot contain two consecutive slashes (/).</li></ul>
+<td class="cellrowborder" valign="top" width="69.39999999999999%" headers="mcps1.3.1.2.3.2.2.2.3.1.2 "><p>Enter a prefix and press <strong>Enter</strong> to filter an object or a directory in a path in the target bucket for protection.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>The prefix is the relative path from the bucket to be backed up to an individual object or directory.<p>For example, the prefix of the <strong>test/test.doc</strong> file in the bucket to be backed up is <strong>test/test.doc</strong>, and the prefix of the data in the <strong>test/test1/test2</strong> directory in the bucket to be backed up is <strong>test/test1/test2</strong>.</p>
+</li><li>Special characters \:*?"&lt;&gt;| cannot be contained in the prefix.</li><li>The prefix cannot start with a slash (/).</li><li>The prefix cannot contain two consecutive slashes (/).</li></ul>
 </div></div>
 </td>
 </tr>

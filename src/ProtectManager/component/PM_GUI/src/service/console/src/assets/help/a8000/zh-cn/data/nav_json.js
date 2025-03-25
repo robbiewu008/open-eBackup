@@ -172,8 +172,7 @@ naviData = [
                       {
                         id: 61,
                         parentId: 54,
-                        name:
-                          '步骤6：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        name: '步骤6：（可选）开启备份链路加密开关',
                         local: 'oracle_gud_0025.html'
                       },
                       {
@@ -219,14 +218,15 @@ naviData = [
                       {
                         id: 70,
                         parentId: 69,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'oracle_gud_0036.html'
                       },
                       {
                         id: 71,
                         parentId: 69,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
                         local: 'oracle_gud_0036_1.html'
                       },
                       {
@@ -309,7 +309,8 @@ naviData = [
                           {
                             id: 85,
                             parentId: 82,
-                            name: '创建介质集（归档存储是磁带库）',
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'oracle_gud_0050.html'
                           }
                         ]
@@ -551,8 +552,7 @@ naviData = [
                       {
                         id: 117,
                         parentId: 110,
-                        name:
-                          '步骤7：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        name: '步骤7：（可选）开启备份链路加密开关',
                         local: 'mysql-0018.html'
                       },
                       {
@@ -575,7 +575,7 @@ naviData = [
                 id: 102,
                 parentId: 28,
                 name: '复制',
-                local: 'oracle_gud_000035_12.html',
+                local: 'oracle_gud_000035_8.html',
                 children: [
                   {
                     id: 122,
@@ -586,68 +586,62 @@ naviData = [
                       {
                         id: 123,
                         parentId: 122,
-                        name: '规划复制网络',
-                        local: 'mysql-0026.html'
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'fc_gud_0026_8.html'
                       },
                       {
                         id: 124,
                         parentId: 122,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_13.html'
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_15.html'
                       },
                       {
                         id: 125,
-                        parentId: 122,
-                        name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_25.html'
-                      },
-                      {
-                        id: 126,
                         parentId: 122,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'mysql-0028.html'
                       },
                       {
-                        id: 127,
+                        id: 126,
                         parentId: 122,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'mysql-0029.html'
                       },
                       {
-                        id: 128,
+                        id: 127,
                         parentId: 122,
                         name: '步骤4：下载并导入证书',
                         local: 'mysql-0030.html'
                       },
                       {
-                        id: 129,
+                        id: 128,
                         parentId: 122,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'mysql-0031.html'
                       },
                       {
-                        id: 130,
+                        id: 129,
                         parentId: 122,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'mysql-00311.html'
                       },
                       {
-                        id: 131,
+                        id: 130,
                         parentId: 122,
-                        name: '步骤6：添加目标集群',
+                        name: '步骤6：添加复制集群',
                         local: 'mysql-0032.html'
                       },
                       {
-                        id: 132,
+                        id: 131,
                         parentId: 122,
                         name: '步骤7：创建复制SLA',
                         local: 'mysql-0033.html'
                       },
                       {
-                        id: 133,
+                        id: 132,
                         parentId: 122,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'mysql-0034.html'
@@ -663,54 +657,55 @@ naviData = [
                 local: 'mysql-0035.html',
                 children: [
                   {
-                    id: 134,
+                    id: 133,
                     parentId: 103,
                     name: '归档MySQL/MariaDB/GreatSQL备份副本',
                     local: 'mysql-0038.html',
                     children: [
                       {
-                        id: 136,
-                        parentId: 134,
+                        id: 135,
+                        parentId: 133,
                         name: '步骤1：添加归档存储',
                         local: 'mysql-0039.html',
                         children: [
                           {
-                            id: 138,
-                            parentId: 136,
+                            id: 137,
+                            parentId: 135,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'mysql-0040.html'
                           },
                           {
-                            id: 139,
-                            parentId: 136,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 138,
+                            parentId: 135,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'mysql-0041.html'
                           }
                         ]
                       },
                       {
-                        id: 137,
-                        parentId: 134,
-                        name: '步骤2：创建归档SLA',
+                        id: 136,
+                        parentId: 133,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'mysql-0042.html'
                       }
                     ]
                   },
                   {
-                    id: 135,
+                    id: 134,
                     parentId: 103,
                     name: '归档MySQL/MariaDB/GreatSQL复制副本',
                     local: 'mysql-0043.html',
                     children: [
                       {
-                        id: 140,
-                        parentId: 135,
-                        name: '步骤1：创建归档SLA',
+                        id: 139,
+                        parentId: 134,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'mysql-0044.html'
                       },
                       {
-                        id: 141,
-                        parentId: 135,
+                        id: 140,
+                        parentId: 134,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'mysql-0045.html'
                       }
@@ -725,7 +720,7 @@ naviData = [
                 local: 'mysql-0046.html',
                 children: [
                   {
-                    id: 142,
+                    id: 141,
                     parentId: 104,
                     name: '恢复MySQL/MariaDB/GreatSQL数据库',
                     local: 'mysql-0049.html'
@@ -739,13 +734,13 @@ naviData = [
                 local: 'mysql-0050.html',
                 children: [
                   {
-                    id: 143,
+                    id: 142,
                     parentId: 105,
                     name: '全局搜索资源',
                     local: 'mysql-0052.html'
                   },
                   {
-                    id: 144,
+                    id: 143,
                     parentId: 105,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'mysql-00522.html'
@@ -759,19 +754,19 @@ naviData = [
                 local: 'mysql-0068.html',
                 children: [
                   {
-                    id: 145,
+                    id: 144,
                     parentId: 106,
                     name: '关于SLA',
                     local: 'mysql-0069.html'
                   },
                   {
-                    id: 146,
+                    id: 145,
                     parentId: 106,
                     name: '查看SLA信息',
                     local: 'mysql-0070.html'
                   },
                   {
-                    id: 147,
+                    id: 146,
                     parentId: 106,
                     name: '管理SLA',
                     local: 'mysql-0071.html'
@@ -785,13 +780,13 @@ naviData = [
                 local: 'mysql-0072.html',
                 children: [
                   {
-                    id: 148,
+                    id: 147,
                     parentId: 107,
                     name: '查看MySQL/MariaDB/GreatSQL副本信息',
                     local: 'mysql-0073.html'
                   },
                   {
-                    id: 149,
+                    id: 148,
                     parentId: 107,
                     name: '管理MySQL/MariaDB/GreatSQL副本',
                     local: 'mysql-0074.html'
@@ -805,25 +800,25 @@ naviData = [
                 local: 'mysql-0075.html',
                 children: [
                   {
-                    id: 150,
+                    id: 149,
                     parentId: 108,
                     name: '查看MySQL/MariaDB/GreatSQL数据库环境信息',
                     local: 'mysql-0076.html'
                   },
                   {
-                    id: 151,
+                    id: 150,
                     parentId: 108,
                     name: '管理数据库',
                     local: 'mysql-0077.html'
                   },
                   {
-                    id: 152,
+                    id: 151,
                     parentId: 108,
                     name: '管理数据库实例',
                     local: 'zh-cn_topic_0000001883230926.html'
                   },
                   {
-                    id: 153,
+                    id: 152,
                     parentId: 108,
                     name: '管理数据库集群',
                     local: 'mysql-0078.html'
@@ -839,77 +834,155 @@ naviData = [
             local: 'zh-cn_topic_0000001826879832.html',
             children: [
               {
-                id: 154,
+                id: 153,
                 parentId: 29,
                 name: '备份',
-                local: 'sql-0008.html',
+                local: 'sql-0009.html',
                 children: [
                   {
-                    id: 162,
-                    parentId: 154,
+                    id: 161,
+                    parentId: 153,
                     name: '备份前准备',
-                    local: 'sql-0011.html'
+                    local: 'sql-0012.html'
                   },
                   {
-                    id: 163,
-                    parentId: 154,
+                    id: 162,
+                    parentId: 153,
                     name: '备份SQL Server数据库',
-                    local: 'sql-0012.html',
+                    local: 'sql-0013.html',
                     children: [
                       {
-                        id: 164,
-                        parentId: 163,
+                        id: 163,
+                        parentId: 162,
                         name: '步骤1：检查并配置数据库环境',
-                        local: 'sql-0013.html'
-                      },
-                      {
-                        id: 165,
-                        parentId: 163,
-                        name: '步骤2：设置Windows PowerShell权限',
                         local: 'sql-0014.html'
                       },
                       {
-                        id: 166,
-                        parentId: 163,
+                        id: 164,
+                        parentId: 162,
+                        name: '步骤2：设置Windows PowerShell权限',
+                        local: 'sql-0015.html'
+                      },
+                      {
+                        id: 165,
+                        parentId: 162,
                         name: '步骤4：开启sysadmin权限',
                         local: 'sql-0016.html'
                       },
                       {
-                        id: 167,
-                        parentId: 163,
+                        id: 166,
+                        parentId: 162,
                         name: '步骤5：设置日志备份恢复模式',
                         local: 'sql-0017.html'
                       },
                       {
-                        id: 168,
-                        parentId: 163,
+                        id: 167,
+                        parentId: 162,
                         name: '步骤3：注册SQL Server数据库',
-                        local: 'sql-0015.html'
-                      },
-                      {
-                        id: 169,
-                        parentId: 163,
-                        name: '步骤6：创建限速策略',
                         local: 'sql-0018.html'
                       },
                       {
+                        id: 168,
+                        parentId: 162,
+                        name: '步骤6：创建限速策略',
+                        local: 'sql-0019.html'
+                      },
+                      {
+                        id: 169,
+                        parentId: 162,
+                        name: '步骤7：（可选）开启备份链路加密开关',
+                        local: 'sql-0021.html'
+                      },
+                      {
                         id: 170,
-                        parentId: 163,
-                        name:
-                          '步骤7：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
-                        local: 'zh-cn_topic_0000002051554157.html'
+                        parentId: 162,
+                        name: '步骤8：创建备份SLA',
+                        local: 'sql-0022.html'
                       },
                       {
                         id: 171,
-                        parentId: 163,
-                        name: '步骤8：创建备份SLA',
-                        local: 'sql-0020.html'
+                        parentId: 162,
+                        name: '步骤9：执行备份',
+                        local: 'sql-0023.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 154,
+                parentId: 29,
+                name: '复制',
+                local: 'sql-0024.html',
+                children: [
+                  {
+                    id: 172,
+                    parentId: 154,
+                    name: '复制SQL Server数据库副本',
+                    local: 'sql-0027.html',
+                    children: [
+                      {
+                        id: 173,
+                        parentId: 172,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'sql-0029.html'
                       },
                       {
-                        id: 172,
-                        parentId: 163,
-                        name: '步骤9：执行备份',
-                        local: 'sql-0021.html'
+                        id: 174,
+                        parentId: 172,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'sql-0030.html'
+                      },
+                      {
+                        id: 175,
+                        parentId: 172,
+                        name: '步骤2：（可选）创建IPsec策略',
+                        local: 'sql-0031.html'
+                      },
+                      {
+                        id: 176,
+                        parentId: 172,
+                        name: '步骤3：可选：开启复制链路加密开关',
+                        local: 'sql-0032.html'
+                      },
+                      {
+                        id: 177,
+                        parentId: 172,
+                        name: '步骤4：下载并导入证书',
+                        local: 'sql-0033.html'
+                      },
+                      {
+                        id: 178,
+                        parentId: 172,
+                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
+                        local: 'sql-0034.html'
+                      },
+                      {
+                        id: 179,
+                        parentId: 172,
+                        name:
+                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
+                        local: 'sql-0035.html'
+                      },
+                      {
+                        id: 180,
+                        parentId: 172,
+                        name: '步骤6：添加复制集群',
+                        local: 'sql-0036.html'
+                      },
+                      {
+                        id: 181,
+                        parentId: 172,
+                        name: '步骤7：创建复制SLA',
+                        local: 'sql-0037.html'
+                      },
+                      {
+                        id: 182,
+                        parentId: 172,
+                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
+                        local: 'sql-0038.html'
                       }
                     ]
                   }
@@ -918,77 +991,61 @@ naviData = [
               {
                 id: 155,
                 parentId: 29,
-                name: '复制',
-                local: 'sql-0024.html',
+                name: '归档',
+                local: 'sql-0039.html',
                 children: [
                   {
-                    id: 173,
+                    id: 183,
                     parentId: 155,
-                    name: '复制SQL Server数据库副本',
-                    local: 'sql-0027.html',
+                    name: '归档SQL Server备份副本',
+                    local: 'sql-0042.html',
                     children: [
                       {
-                        id: 174,
-                        parentId: 173,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'sql-0029.html'
+                        id: 185,
+                        parentId: 183,
+                        name: '步骤1：添加归档存储',
+                        local: 'sql-0043.html',
+                        children: [
+                          {
+                            id: 187,
+                            parentId: 185,
+                            name: '添加对象存储（归档存储是对象存储）',
+                            local: 'sql-0044.html'
+                          },
+                          {
+                            id: 188,
+                            parentId: 185,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
+                            local: 'sql-0045.html'
+                          }
+                        ]
                       },
                       {
-                        id: 175,
-                        parentId: 173,
-                        name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'sql-0030.html'
+                        id: 186,
+                        parentId: 183,
+                        name: '步骤2：创建备份副本归档SLA',
+                        local: 'sql-0046.html'
+                      }
+                    ]
+                  },
+                  {
+                    id: 184,
+                    parentId: 155,
+                    name: '归档SQL Server复制副本',
+                    local: 'sql-0047.html',
+                    children: [
+                      {
+                        id: 189,
+                        parentId: 184,
+                        name: '步骤1：创建复制副本归档SLA',
+                        local: 'sql-0048.html'
                       },
                       {
-                        id: 176,
-                        parentId: 173,
-                        name: '步骤2：（可选）创建IPsec策略',
-                        local: 'sql-0031.html'
-                      },
-                      {
-                        id: 177,
-                        parentId: 173,
-                        name:
-                          '步骤3：可选：开启复制链路加密开关（适用于X系列备份一体机）',
-                        local: 'sql-0032.html'
-                      },
-                      {
-                        id: 178,
-                        parentId: 173,
-                        name: '步骤4：下载并导入证书',
-                        local: 'sql-0033.html'
-                      },
-                      {
-                        id: 179,
-                        parentId: 173,
-                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
-                        local: 'sql-0034.html'
-                      },
-                      {
-                        id: 180,
-                        parentId: 173,
-                        name:
-                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'zh-cn_topic_0000002010400808.html'
-                      },
-                      {
-                        id: 181,
-                        parentId: 173,
-                        name: '步骤6：添加复制集群',
-                        local: 'sql-0035.html'
-                      },
-                      {
-                        id: 182,
-                        parentId: 173,
-                        name: '步骤7：创建复制SLA',
-                        local: 'sql-0036.html'
-                      },
-                      {
-                        id: 183,
-                        parentId: 173,
-                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
-                        local: 'sql-0037.html'
+                        id: 190,
+                        parentId: 184,
+                        name: '步骤2：创建复制副本周期性归档',
+                        local: 'sql-0049.html'
                       }
                     ]
                   }
@@ -997,168 +1054,118 @@ naviData = [
               {
                 id: 156,
                 parentId: 29,
-                name: '归档',
-                local: 'sql-0038.html',
+                name: '恢复',
+                local: 'sql-0050.html',
                 children: [
                   {
-                    id: 184,
+                    id: 191,
                     parentId: 156,
-                    name: '归档SQL Server备份副本',
-                    local: 'sql-0041.html',
-                    children: [
-                      {
-                        id: 186,
-                        parentId: 184,
-                        name: '步骤1：添加归档存储',
-                        local: 'sql-0042.html',
-                        children: [
-                          {
-                            id: 188,
-                            parentId: 186,
-                            name: '添加对象存储（归档存储是对象存储）',
-                            local: 'sql-0043.html'
-                          },
-                          {
-                            id: 189,
-                            parentId: 186,
-                            name: '创建介质集（归档存储是磁带库）',
-                            local: 'sql-0044.html'
-                          }
-                        ]
-                      },
-                      {
-                        id: 187,
-                        parentId: 184,
-                        name: '步骤2：创建归档SLA',
-                        local: 'sql-0045.html'
-                      }
-                    ]
+                    name: '恢复SQL Server数据库',
+                    local: 'sql-0053.html'
                   },
                   {
-                    id: 185,
+                    id: 192,
                     parentId: 156,
-                    name: '归档SQL Server复制副本',
-                    local: 'sql-0046.html',
-                    children: [
-                      {
-                        id: 190,
-                        parentId: 185,
-                        name: '步骤1：创建归档SLA',
-                        local: 'sql-0047.html'
-                      },
-                      {
-                        id: 191,
-                        parentId: 185,
-                        name: '步骤2：创建复制副本周期性归档',
-                        local: 'sql-0048.html'
-                      }
-                    ]
+                    name: '恢复SQL Server实例中的单个或多个数据库',
+                    local: 'sql-0054.html'
                   }
                 ]
               },
               {
                 id: 157,
                 parentId: 29,
-                name: '恢复',
-                local: 'sql-0049.html',
+                name: '全局搜索',
+                local: 'sql-0055.html',
                 children: [
-                  {
-                    id: 192,
-                    parentId: 157,
-                    name: '恢复SQL Server数据库',
-                    local: 'sql-0052.html'
-                  },
                   {
                     id: 193,
                     parentId: 157,
-                    name: '恢复SQL Server实例中的单个或多个数据库',
-                    local: 'sql-0152.html'
+                    name: '关于全局搜索',
+                    local: 'sql-0056.html'
+                  },
+                  {
+                    id: 194,
+                    parentId: 157,
+                    name: '全局搜索副本数据',
+                    local: 'sql-0057.html'
+                  },
+                  {
+                    id: 195,
+                    parentId: 157,
+                    name: '全局搜索资源',
+                    local: 'sql-0058.html'
+                  },
+                  {
+                    id: 196,
+                    parentId: 157,
+                    name: '全局标签搜索（适用于1.6.0及后续版本）',
+                    local: 'sql-0059.html'
                   }
                 ]
               },
               {
                 id: 158,
                 parentId: 29,
-                name: '全局搜索',
-                local: 'sql-0053.html',
+                name: 'SLA',
+                local: 'sql-0062.html',
                 children: [
                   {
-                    id: 194,
+                    id: 197,
                     parentId: 158,
-                    name: '全局搜索资源',
-                    local: 'sql-0054.html'
+                    name: '查看SLA信息',
+                    local: 'sql-0064.html'
                   },
                   {
-                    id: 195,
+                    id: 198,
                     parentId: 158,
-                    name: '全局标签搜索（适用于1.6.0及后续版本）',
-                    local: 'sql-0055.html'
+                    name: '管理SLA',
+                    local: 'sql-0065.html'
                   }
                 ]
               },
               {
                 id: 159,
                 parentId: 29,
-                name: 'SLA',
-                local: 'sql-0058.html',
+                name: '副本',
+                local: 'sql-0066.html',
                 children: [
                   {
-                    id: 196,
+                    id: 199,
                     parentId: 159,
-                    name: '查看SLA信息',
-                    local: 'sql-0060.html'
+                    name: '查看SQL Server副本信息',
+                    local: 'sql-0067.html'
                   },
                   {
-                    id: 197,
+                    id: 200,
                     parentId: 159,
-                    name: '管理SLA',
-                    local: 'sql-0061.html'
+                    name: '管理SQL Server副本',
+                    local: 'sql-0068.html'
                   }
                 ]
               },
               {
                 id: 160,
                 parentId: 29,
-                name: '副本',
-                local: 'sql-0062.html',
-                children: [
-                  {
-                    id: 198,
-                    parentId: 160,
-                    name: '查看SQL Server副本信息',
-                    local: 'sql-0063.html'
-                  },
-                  {
-                    id: 199,
-                    parentId: 160,
-                    name: '管理SQL Server副本',
-                    local: 'sql-0064.html'
-                  }
-                ]
-              },
-              {
-                id: 161,
-                parentId: 29,
                 name: 'SQL Server数据库环境',
-                local: 'sql-0065.html',
+                local: 'sql-0069.html',
                 children: [
-                  {
-                    id: 200,
-                    parentId: 161,
-                    name: '查看SQL Server数据库环境信息',
-                    local: 'sql-0066.html'
-                  },
                   {
                     id: 201,
-                    parentId: 161,
-                    name: '管理SQL Server',
-                    local: 'sql-0067.html'
+                    parentId: 160,
+                    name: '查看SQL Server数据库环境信息',
+                    local: 'sql-0070.html'
                   },
                   {
                     id: 202,
-                    parentId: 161,
+                    parentId: 160,
+                    name: '管理SQL Server',
+                    local: 'sql-0071.html'
+                  },
+                  {
+                    id: 203,
+                    parentId: 160,
                     name: '管理SQL Server数据库集群',
-                    local: 'sql-0068.html'
+                    local: 'sql-0072.html'
                   }
                 ]
               }
@@ -1171,70 +1178,69 @@ naviData = [
             local: 'zh-cn_topic_0000001826879840.html',
             children: [
               {
-                id: 203,
+                id: 204,
                 parentId: 30,
                 name: '备份',
                 local: 'postgresql-0005.html',
                 children: [
                   {
-                    id: 211,
-                    parentId: 203,
+                    id: 212,
+                    parentId: 204,
                     name: '备份前准备',
                     local: 'postgresql-0008.html'
                   },
                   {
-                    id: 212,
-                    parentId: 203,
+                    id: 213,
+                    parentId: 204,
                     name: '备份PostgreSQL',
                     local: 'postgresql-0009.html',
                     children: [
                       {
-                        id: 213,
-                        parentId: 212,
+                        id: 214,
+                        parentId: 213,
                         name:
                           '步骤1：检查并开启PostgreSQL数据库安装用户sudo权限',
                         local: 'zh-cn_topic_0000001951390817.html'
                       },
                       {
-                        id: 214,
-                        parentId: 212,
+                        id: 215,
+                        parentId: 213,
                         name: '步骤2：开启归档模式',
                         local: 'postgresql-0010_0.html'
                       },
                       {
-                        id: 215,
-                        parentId: 212,
+                        id: 216,
+                        parentId: 213,
                         name: '步骤3：注册PostgreSQL单实例下的数据库',
                         local: 'postgresql-0011.html'
                       },
                       {
-                        id: 216,
-                        parentId: 212,
+                        id: 217,
+                        parentId: 213,
                         name: '步骤4：注册PostgreSQL集群实例下的数据库',
                         local: 'postgresql-0012.html'
                       },
                       {
-                        id: 217,
-                        parentId: 212,
+                        id: 218,
+                        parentId: 213,
                         name: '步骤5：创建限速策略',
                         local: 'postgresql-0013.html'
                       },
                       {
-                        id: 218,
-                        parentId: 212,
-                        name:
-                          '步骤6：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 219,
+                        parentId: 213,
+                        name: '步骤6：（可选）开启备份链路加密开关',
                         local: 'postgresql-0014.html'
                       },
                       {
-                        id: 219,
-                        parentId: 212,
+                        id: 220,
+                        parentId: 213,
                         name: '步骤7：创建备份SLA',
                         local: 'postgresql-0015.html'
                       },
                       {
-                        id: 220,
-                        parentId: 212,
+                        id: 221,
+                        parentId: 213,
                         name: '步骤8：执行备份',
                         local: 'postgresql-0016.html'
                       }
@@ -1243,82 +1249,83 @@ naviData = [
                 ]
               },
               {
-                id: 204,
+                id: 205,
                 parentId: 30,
                 name: '复制',
-                local: 'oracle_gud_000035_7.html',
+                local: 'oracle_gud_000035_5.html',
                 children: [
                   {
-                    id: 221,
-                    parentId: 204,
+                    id: 222,
+                    parentId: 205,
                     name: '复制PostgreSQL数据库副本',
                     local: 'postgresql-0021.html',
                     children: [
                       {
-                        id: 222,
-                        parentId: 221,
+                        id: 223,
+                        parentId: 222,
                         name: '规划复制网络',
                         local: 'postgresql-0022.html'
                       },
                       {
-                        id: 223,
-                        parentId: 221,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_8.html'
-                      },
-                      {
                         id: 224,
-                        parentId: 221,
+                        parentId: 222,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_17.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'fc_gud_0026_5.html'
                       },
                       {
                         id: 225,
-                        parentId: 221,
+                        parentId: 222,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_11.html'
+                      },
+                      {
+                        id: 226,
+                        parentId: 222,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'postgresql-0024.html'
                       },
                       {
-                        id: 226,
-                        parentId: 221,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 227,
+                        parentId: 222,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'postgresql-0025.html'
                       },
                       {
-                        id: 227,
-                        parentId: 221,
+                        id: 228,
+                        parentId: 222,
                         name: '步骤4：下载并导入证书',
                         local: 'postgresql-0026.html'
                       },
                       {
-                        id: 228,
-                        parentId: 221,
-                        name: '步骤5：创建远端设备管理员',
+                        id: 229,
+                        parentId: 222,
+                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'postgresql-0027.html'
                       },
                       {
-                        id: 229,
-                        parentId: 221,
-                        name: '创建远端设备管理员（适用于1.6.0及后续版本）',
+                        id: 230,
+                        parentId: 222,
+                        name:
+                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'postgresql-0027_a1.html'
                       },
                       {
-                        id: 230,
-                        parentId: 221,
+                        id: 231,
+                        parentId: 222,
                         name: '步骤6：添加复制集群',
                         local: 'postgresql-0028.html'
                       },
                       {
-                        id: 231,
-                        parentId: 221,
+                        id: 232,
+                        parentId: 222,
                         name: '步骤7：创建复制SLA',
                         local: 'postgresql-0029.html'
                       },
                       {
-                        id: 232,
-                        parentId: 221,
+                        id: 233,
+                        parentId: 222,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'postgresql-0030.html'
                       }
@@ -1327,60 +1334,61 @@ naviData = [
                 ]
               },
               {
-                id: 205,
+                id: 206,
                 parentId: 30,
                 name: '归档',
                 local: 'postgresql-0031.html',
                 children: [
                   {
-                    id: 233,
-                    parentId: 205,
+                    id: 234,
+                    parentId: 206,
                     name: '归档PostgreSQL备份副本',
                     local: 'postgresql-0034.html',
                     children: [
                       {
-                        id: 235,
-                        parentId: 233,
+                        id: 236,
+                        parentId: 234,
                         name: '步骤1：添加归档存储',
                         local: 'postgresql-0035.html',
                         children: [
                           {
-                            id: 237,
-                            parentId: 235,
+                            id: 238,
+                            parentId: 236,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'postgresql-0036.html'
                           },
                           {
-                            id: 238,
-                            parentId: 235,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 239,
+                            parentId: 236,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'postgresql-0037.html'
                           }
                         ]
                       },
                       {
-                        id: 236,
-                        parentId: 233,
-                        name: '步骤2：创建归档SLA',
+                        id: 237,
+                        parentId: 234,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'postgresql-0038.html'
                       }
                     ]
                   },
                   {
-                    id: 234,
-                    parentId: 205,
+                    id: 235,
+                    parentId: 206,
                     name: '归档PostgreSQL复制副本',
                     local: 'postgresql-0039.html',
                     children: [
                       {
-                        id: 239,
-                        parentId: 234,
-                        name: '步骤1：创建归档SLA',
+                        id: 240,
+                        parentId: 235,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'postgresql-0040.html'
                       },
                       {
-                        id: 240,
-                        parentId: 234,
+                        id: 241,
+                        parentId: 235,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'postgresql-0041.html'
                       }
@@ -1389,106 +1397,112 @@ naviData = [
                 ]
               },
               {
-                id: 206,
+                id: 207,
                 parentId: 30,
                 name: '恢复',
                 local: 'postgresql-0042.html',
                 children: [
                   {
-                    id: 241,
-                    parentId: 206,
+                    id: 242,
+                    parentId: 207,
                     name: '恢复PostgreSQL',
                     local: 'postgresql-0045.html'
                   }
                 ]
               },
               {
-                id: 207,
+                id: 208,
                 parentId: 30,
                 name: '全局搜索',
                 local: 'postgresql-0027_a2.html',
                 children: [
                   {
-                    id: 242,
-                    parentId: 207,
+                    id: 243,
+                    parentId: 208,
+                    name: '关于全局搜索',
+                    local: 'fc_gud_gs2.html'
+                  },
+                  {
+                    id: 244,
+                    parentId: 208,
                     name: '全局搜索资源',
                     local: 'postgresql-0027_a3.html'
                   },
                   {
-                    id: 243,
-                    parentId: 207,
+                    id: 245,
+                    parentId: 208,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'postgresql-0027_a4.html'
                   }
                 ]
               },
               {
-                id: 208,
+                id: 209,
                 parentId: 30,
                 name: 'SLA',
                 local: 'postgresql-0050.html',
                 children: [
                   {
-                    id: 244,
-                    parentId: 208,
+                    id: 246,
+                    parentId: 209,
                     name: '关于SLA',
                     local: 'postgresql-0051.html'
                   },
                   {
-                    id: 245,
-                    parentId: 208,
+                    id: 247,
+                    parentId: 209,
                     name: '查看SLA信息',
                     local: 'postgresql-0052.html'
                   },
                   {
-                    id: 246,
-                    parentId: 208,
+                    id: 248,
+                    parentId: 209,
                     name: '管理SLA',
                     local: 'postgresql-0053.html'
                   }
                 ]
               },
               {
-                id: 209,
+                id: 210,
                 parentId: 30,
                 name: '副本',
                 local: 'postgresql-0054.html',
                 children: [
                   {
-                    id: 247,
-                    parentId: 209,
+                    id: 249,
+                    parentId: 210,
                     name: '查看PostgreSQL副本信息',
                     local: 'postgresql-0055.html'
                   },
                   {
-                    id: 248,
-                    parentId: 209,
+                    id: 250,
+                    parentId: 210,
                     name: '管理PostgreSQL副本',
                     local: 'postgresql-0056.html'
                   }
                 ]
               },
               {
-                id: 210,
+                id: 211,
                 parentId: 30,
                 name: 'PostgreSQL集群环境',
                 local: 'postgresql-0057.html',
                 children: [
                   {
-                    id: 249,
-                    parentId: 210,
+                    id: 251,
+                    parentId: 211,
                     name: '查看PostgreSQL环境信息',
                     local: 'postgresql-0058.html'
                   },
                   {
-                    id: 250,
-                    parentId: 210,
+                    id: 252,
+                    parentId: 211,
                     name: '管理PostgreSQL',
                     local: 'postgresql-0059.html'
                   },
                   {
-                    id: 251,
-                    parentId: 210,
+                    id: 253,
+                    parentId: 211,
                     name: '管理PostgreSQL数据库集群',
                     local: 'postgresql-0060.html'
                   }
@@ -1503,57 +1517,56 @@ naviData = [
             local: 'zh-cn_topic_0000001873759405.html',
             children: [
               {
-                id: 252,
+                id: 254,
                 parentId: 31,
                 name: '备份',
                 local: 'DB2-00003.html',
                 children: [
                   {
-                    id: 260,
-                    parentId: 252,
+                    id: 262,
+                    parentId: 254,
                     name: '备份前准备',
                     local: 'DB2-00006.html'
                   },
                   {
-                    id: 261,
-                    parentId: 252,
-                    name: '备份DB2数据库/DB2表空间集',
+                    id: 263,
+                    parentId: 254,
+                    name: '备份DB2数据库/表空间集',
                     local: 'DB2-00007.html',
                     children: [
                       {
-                        id: 262,
-                        parentId: 261,
+                        id: 264,
+                        parentId: 263,
                         name: '步骤1：注册DB2数据库',
                         local: 'DB2-00008.html'
                       },
                       {
-                        id: 263,
-                        parentId: 261,
+                        id: 265,
+                        parentId: 263,
                         name: '步骤2：创建DB2表空间集',
                         local: 'DB2-00009.html'
                       },
                       {
-                        id: 264,
-                        parentId: 261,
+                        id: 266,
+                        parentId: 263,
                         name: '步骤3：创建限速策略',
                         local: 'DB2-00010.html'
                       },
                       {
-                        id: 265,
-                        parentId: 261,
-                        name:
-                          '步骤4：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
-                        local: 'DB2-00011.html'
+                        id: 267,
+                        parentId: 263,
+                        name: '步骤4：（可选）开启备份链路加密开关',
+                        local: 'DB2-00011_a1.html'
                       },
                       {
-                        id: 266,
-                        parentId: 261,
+                        id: 268,
+                        parentId: 263,
                         name: '步骤5：创建备份SLA',
                         local: 'DB2-00012.html'
                       },
                       {
-                        id: 267,
-                        parentId: 261,
+                        id: 269,
+                        parentId: 263,
                         name: '步骤6：执行备份',
                         local: 'DB2-00013.html'
                       }
@@ -1562,83 +1575,83 @@ naviData = [
                 ]
               },
               {
-                id: 253,
+                id: 255,
                 parentId: 31,
                 name: '复制',
                 local: 'DB2-00016.html',
                 children: [
                   {
-                    id: 268,
-                    parentId: 253,
+                    id: 270,
+                    parentId: 255,
                     name: '复制DB2副本',
                     local: 'DB2-00018.html',
                     children: [
                       {
-                        id: 269,
-                        parentId: 268,
+                        id: 271,
+                        parentId: 270,
                         name: '规划复制网络',
                         local: 'DB2-00019.html'
                       },
                       {
-                        id: 270,
-                        parentId: 268,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_14.html'
-                      },
-                      {
-                        id: 271,
-                        parentId: 268,
-                        name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_29.html'
-                      },
-                      {
                         id: 272,
-                        parentId: 268,
+                        parentId: 270,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'fc_gud_0026_9.html'
+                      },
+                      {
+                        id: 273,
+                        parentId: 270,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_19.html'
+                      },
+                      {
+                        id: 274,
+                        parentId: 270,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'DB2-00021.html'
                       },
                       {
-                        id: 273,
-                        parentId: 268,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 275,
+                        parentId: 270,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'DB2-00022.html'
                       },
                       {
-                        id: 274,
-                        parentId: 268,
+                        id: 276,
+                        parentId: 270,
                         name: '步骤4：下载并导入证书',
                         local: 'DB2-00023.html'
                       },
                       {
-                        id: 275,
-                        parentId: 268,
+                        id: 277,
+                        parentId: 270,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'DB2-00024.html'
                       },
                       {
-                        id: 276,
-                        parentId: 268,
+                        id: 278,
+                        parentId: 270,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'DB2-00024_a1.html'
                       },
                       {
-                        id: 277,
-                        parentId: 268,
-                        name: '步骤6：添加目标集群',
+                        id: 279,
+                        parentId: 270,
+                        name: '步骤6：添加复制集群',
                         local: 'DB2-00025.html'
                       },
                       {
-                        id: 278,
-                        parentId: 268,
+                        id: 280,
+                        parentId: 270,
                         name: '步骤7：创建复制SLA',
                         local: 'DB2-00026.html'
                       },
                       {
-                        id: 279,
-                        parentId: 268,
+                        id: 281,
+                        parentId: 270,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'DB2-00027.html'
                       }
@@ -1647,60 +1660,60 @@ naviData = [
                 ]
               },
               {
-                id: 254,
+                id: 256,
                 parentId: 31,
                 name: '归档',
                 local: 'DB2-00028.html',
                 children: [
                   {
-                    id: 280,
-                    parentId: 254,
+                    id: 282,
+                    parentId: 256,
                     name: '归档DB2备份副本',
                     local: 'DB2-00031.html',
                     children: [
                       {
-                        id: 282,
-                        parentId: 280,
+                        id: 284,
+                        parentId: 282,
                         name: '步骤1：添加归档存储',
                         local: 'DB2-00032.html',
                         children: [
                           {
-                            id: 284,
-                            parentId: 282,
+                            id: 286,
+                            parentId: 284,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'DB2-00033.html'
                           },
                           {
-                            id: 285,
-                            parentId: 282,
+                            id: 287,
+                            parentId: 284,
                             name: '创建介质集（归档存储是磁带库）',
                             local: 'DB2-00034.html'
                           }
                         ]
                       },
                       {
-                        id: 283,
-                        parentId: 280,
-                        name: '步骤2：创建归档SLA',
+                        id: 285,
+                        parentId: 282,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'DB2-00035.html'
                       }
                     ]
                   },
                   {
-                    id: 281,
-                    parentId: 254,
+                    id: 283,
+                    parentId: 256,
                     name: '归档DB2复制副本',
                     local: 'DB2-00036.html',
                     children: [
                       {
-                        id: 286,
-                        parentId: 281,
-                        name: '步骤1：创建归档SLA',
+                        id: 288,
+                        parentId: 283,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'DB2-00037.html'
                       },
                       {
-                        id: 287,
-                        parentId: 281,
+                        id: 289,
+                        parentId: 283,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'DB2-00038.html'
                       }
@@ -1709,106 +1722,106 @@ naviData = [
                 ]
               },
               {
-                id: 255,
+                id: 257,
                 parentId: 31,
                 name: '恢复',
                 local: 'DB2-00039.html',
                 children: [
                   {
-                    id: 288,
-                    parentId: 255,
+                    id: 290,
+                    parentId: 257,
                     name: '恢复DB2数据库/表空间集',
                     local: 'DB2-00042.html'
                   }
                 ]
               },
               {
-                id: 256,
+                id: 258,
                 parentId: 31,
                 name: '全局搜索',
                 local: 'DB2-00039_a1.html',
                 children: [
                   {
-                    id: 289,
-                    parentId: 256,
+                    id: 291,
+                    parentId: 258,
                     name: '全局搜索资源',
                     local: 'DB2-00039_a2.html'
                   },
                   {
-                    id: 290,
-                    parentId: 256,
+                    id: 292,
+                    parentId: 258,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'DB2-00039_a3.html'
                   }
                 ]
               },
               {
-                id: 257,
+                id: 259,
                 parentId: 31,
                 name: 'SLA',
                 local: 'DB2-00046.html',
                 children: [
                   {
-                    id: 291,
-                    parentId: 257,
+                    id: 293,
+                    parentId: 259,
                     name: '关于SLA',
                     local: 'DB2-00047.html'
                   },
                   {
-                    id: 292,
-                    parentId: 257,
+                    id: 294,
+                    parentId: 259,
                     name: '查看SLA信息',
                     local: 'DB2-00048.html'
                   },
                   {
-                    id: 293,
-                    parentId: 257,
+                    id: 295,
+                    parentId: 259,
                     name: '管理SLA',
                     local: 'DB2-00049.html'
                   }
                 ]
               },
               {
-                id: 258,
+                id: 260,
                 parentId: 31,
                 name: '副本',
                 local: 'DB2-00050.html',
                 children: [
                   {
-                    id: 294,
-                    parentId: 258,
+                    id: 296,
+                    parentId: 260,
                     name: '查看DB2副本信息',
                     local: 'DB2-00051.html'
                   },
                   {
-                    id: 295,
-                    parentId: 258,
+                    id: 297,
+                    parentId: 260,
                     name: '管理DB2副本',
                     local: 'DB2-00052.html'
                   }
                 ]
               },
               {
-                id: 259,
+                id: 261,
                 parentId: 31,
                 name: 'DB2集群环境',
                 local: 'DB2-00053.html',
                 children: [
                   {
-                    id: 296,
-                    parentId: 259,
+                    id: 298,
+                    parentId: 261,
                     name: '查询DB2信息',
                     local: 'DB2-00054.html'
                   },
                   {
-                    id: 297,
-                    parentId: 259,
+                    id: 299,
+                    parentId: 261,
                     name: '管理DB2集群/表空间集',
                     local: 'DB2-00055.html'
                   },
                   {
-                    id: 298,
-                    parentId: 259,
+                    id: 300,
+                    parentId: 261,
                     name: '管理DB2数据库/表空间集',
                     local: 'DB2-00056.html'
                   }
@@ -1823,206 +1836,58 @@ naviData = [
             local: 'zh-cn_topic_0000001873759417.html',
             children: [
               {
-                id: 299,
+                id: 301,
                 parentId: 32,
                 name: '备份',
-                local: 'informix-0005.html',
+                local: 'informix-0007.html',
                 children: [
                   {
-                    id: 307,
-                    parentId: 299,
+                    id: 309,
+                    parentId: 301,
                     name: '备份Informix/GBase 8s',
-                    local: 'informix-0008.html',
+                    local: 'informix-0010.html',
                     children: [
                       {
-                        id: 308,
-                        parentId: 307,
-                        name: '步骤1：配置XBSA库路径',
-                        local: 'zh-cn_topic_0000001792358014.html'
-                      },
-                      {
-                        id: 309,
-                        parentId: 307,
-                        name: '步骤2：注册Informix/GBase 8s集群',
-                        local: 'informix-0009.html'
-                      },
-                      {
                         id: 310,
-                        parentId: 307,
-                        name: '步骤3：注册Informix/GBase 8s实例',
-                        local: 'informix-0010.html'
-                      },
-                      {
-                        id: 311,
-                        parentId: 307,
-                        name: '步骤4：创建限速策略',
+                        parentId: 309,
+                        name: '步骤1：配置XBSA库路径',
                         local: 'informix-0011.html'
                       },
                       {
-                        id: 312,
-                        parentId: 307,
-                        name:
-                          '步骤5：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 311,
+                        parentId: 309,
+                        name: '步骤2：注册Informix/GBase 8s集群',
                         local: 'informix-0012.html'
                       },
                       {
-                        id: 313,
-                        parentId: 307,
-                        name: '步骤6：创建备份SLA',
+                        id: 312,
+                        parentId: 309,
+                        name: '步骤3：注册Informix/GBase 8s实例',
                         local: 'informix-0013.html'
                       },
                       {
-                        id: 314,
-                        parentId: 307,
-                        name: '步骤7：执行备份',
+                        id: 313,
+                        parentId: 309,
+                        name: '步骤4：创建限速策略',
                         local: 'informix-0014.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 300,
-                parentId: 32,
-                name: '复制',
-                local: 'oracle_gud_000035_2.html',
-                children: [
-                  {
-                    id: 315,
-                    parentId: 300,
-                    name: '复制Informix/GBase 8s数据库副本',
-                    local: 'informix-0019.html',
-                    children: [
+                      },
+                      {
+                        id: 314,
+                        parentId: 309,
+                        name: '步骤5：（可选）开启备份链路加密开关',
+                        local: 'informix-0015.html'
+                      },
+                      {
+                        id: 315,
+                        parentId: 309,
+                        name: '步骤6：创建备份SLA',
+                        local: 'informix-0016.html'
+                      },
                       {
                         id: 316,
-                        parentId: 315,
-                        name: '规划复制网络',
-                        local: 'informix-0020.html'
-                      },
-                      {
-                        id: 317,
-                        parentId: 315,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_3.html'
-                      },
-                      {
-                        id: 318,
-                        parentId: 315,
-                        name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_8.html'
-                      },
-                      {
-                        id: 319,
-                        parentId: 315,
-                        name: '步骤2：（可选）创建IPsec策略',
-                        local: 'informix-0022.html'
-                      },
-                      {
-                        id: 320,
-                        parentId: 315,
-                        name:
-                          '步骤3：（可选）：开启复制链路加密开关（适用于X系列备份一体机）',
-                        local: 'informix-0023.html'
-                      },
-                      {
-                        id: 321,
-                        parentId: 315,
-                        name: '步骤4：下载并导入证书',
-                        local: 'informix-0024.html'
-                      },
-                      {
-                        id: 322,
-                        parentId: 315,
-                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
-                        local: 'informix-0025.html'
-                      },
-                      {
-                        id: 323,
-                        parentId: 315,
-                        name:
-                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'zh-cn_topic_0000002046568669.html'
-                      },
-                      {
-                        id: 324,
-                        parentId: 315,
-                        name: '步骤6：添加复制集群',
-                        local: 'informix-0026.html'
-                      },
-                      {
-                        id: 325,
-                        parentId: 315,
-                        name: '步骤7：创建复制SLA',
-                        local: 'informix-0027.html'
-                      },
-                      {
-                        id: 326,
-                        parentId: 315,
-                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
-                        local: 'informix-0028.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 301,
-                parentId: 32,
-                name: '归档',
-                local: 'informix-0029.html',
-                children: [
-                  {
-                    id: 327,
-                    parentId: 301,
-                    name: '归档Informix/GBase 8s备份副本',
-                    local: 'informix-0032.html',
-                    children: [
-                      {
-                        id: 329,
-                        parentId: 327,
-                        name: '步骤1：添加归档存储',
-                        local: 'informix-0033.html',
-                        children: [
-                          {
-                            id: 331,
-                            parentId: 329,
-                            name: '添加对象存储（归档存储是对象存储）',
-                            local: 'informix-0034.html'
-                          },
-                          {
-                            id: 332,
-                            parentId: 329,
-                            name: '创建介质集（归档存储是磁带库）',
-                            local: 'informix-0035.html'
-                          }
-                        ]
-                      },
-                      {
-                        id: 330,
-                        parentId: 327,
-                        name: '步骤2：创建归档SLA',
-                        local: 'informix-0036.html'
-                      }
-                    ]
-                  },
-                  {
-                    id: 328,
-                    parentId: 301,
-                    name: '归档Informix/GBase 8s复制副本',
-                    local: 'informix-0037.html',
-                    children: [
-                      {
-                        id: 333,
-                        parentId: 328,
-                        name: '步骤1：创建归档SLA',
-                        local: 'informix-0038.html'
-                      },
-                      {
-                        id: 334,
-                        parentId: 328,
-                        name: '步骤2：创建复制副本周期性归档',
-                        local: 'informix-0039.html'
+                        parentId: 309,
+                        name: '步骤7：执行备份',
+                        local: 'informix-0017.html'
                       }
                     ]
                   }
@@ -2031,79 +1896,193 @@ naviData = [
               {
                 id: 302,
                 parentId: 32,
-                name: '恢复',
-                local: 'informix-0040.html',
+                name: '复制',
+                local: 'informix-0020.html',
                 children: [
                   {
-                    id: 335,
+                    id: 317,
                     parentId: 302,
-                    name: '恢复Informix/GBase 8s',
-                    local: 'informix-0043.html'
+                    name: '复制Informix/GBase 8s数据库副本',
+                    local: 'informix-0023.html',
+                    children: [
+                      {
+                        id: 318,
+                        parentId: 317,
+                        name: '规划复制网络',
+                        local: 'informix-0024.html'
+                      },
+                      {
+                        id: 319,
+                        parentId: 317,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'informix-0025.html'
+                      },
+                      {
+                        id: 320,
+                        parentId: 317,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'informix-0026.html'
+                      },
+                      {
+                        id: 321,
+                        parentId: 317,
+                        name: '步骤2：（可选）创建IPsec策略',
+                        local: 'informix-0027.html'
+                      },
+                      {
+                        id: 322,
+                        parentId: 317,
+                        name: '步骤3：（可选）：开启复制链路加密开关',
+                        local: 'informix-0028.html'
+                      },
+                      {
+                        id: 323,
+                        parentId: 317,
+                        name: '步骤4：下载并导入证书',
+                        local: 'informix-0029.html'
+                      },
+                      {
+                        id: 324,
+                        parentId: 317,
+                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
+                        local: 'informix-0030.html'
+                      },
+                      {
+                        id: 325,
+                        parentId: 317,
+                        name:
+                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
+                        local: 'informix-0031.html'
+                      },
+                      {
+                        id: 326,
+                        parentId: 317,
+                        name: '步骤6：添加复制集群',
+                        local: 'informix-0032.html'
+                      },
+                      {
+                        id: 327,
+                        parentId: 317,
+                        name: '步骤7：创建复制SLA',
+                        local: 'informix-0033.html'
+                      },
+                      {
+                        id: 328,
+                        parentId: 317,
+                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
+                        local: 'informix-0034.html'
+                      }
+                    ]
                   }
                 ]
               },
               {
                 id: 303,
                 parentId: 32,
-                name: '全局搜索',
-                local: 'informix-0044.html',
+                name: '归档',
+                local: 'informix-0035.html',
                 children: [
                   {
-                    id: 336,
+                    id: 329,
                     parentId: 303,
-                    name: '全局搜索资源',
-                    local: 'informix-0045.html'
+                    name: '归档Informix/GBase 8s备份副本',
+                    local: 'informix-0038.html',
+                    children: [
+                      {
+                        id: 331,
+                        parentId: 329,
+                        name: '步骤1：添加归档存储',
+                        local: 'informix-0039.html',
+                        children: [
+                          {
+                            id: 333,
+                            parentId: 331,
+                            name: '添加对象存储（归档存储是对象存储）',
+                            local: 'informix-0040.html'
+                          },
+                          {
+                            id: 334,
+                            parentId: 331,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
+                            local: 'informix-0041.html'
+                          }
+                        ]
+                      },
+                      {
+                        id: 332,
+                        parentId: 329,
+                        name: '步骤2：创建备份副本归档SLA',
+                        local: 'informix-0042.html'
+                      }
+                    ]
                   },
                   {
-                    id: 337,
+                    id: 330,
                     parentId: 303,
-                    name: '全局标签搜索（适用于1.6.0及后续版本）',
-                    local: 'zh-cn_topic_0000002038759717.html'
+                    name: '归档Informix/GBase 8s复制副本',
+                    local: 'informix-0043.html',
+                    children: [
+                      {
+                        id: 335,
+                        parentId: 330,
+                        name: '步骤1：创建复制副本归档SLA',
+                        local: 'informix-0044.html'
+                      },
+                      {
+                        id: 336,
+                        parentId: 330,
+                        name: '步骤2：创建复制副本周期性归档',
+                        local: 'informix-0045.html'
+                      }
+                    ]
                   }
                 ]
               },
               {
                 id: 304,
                 parentId: 32,
-                name: 'SLA',
-                local: 'informix-0048.html',
+                name: '恢复',
+                local: 'informix-0046.html',
                 children: [
                   {
-                    id: 338,
+                    id: 337,
                     parentId: 304,
-                    name: '关于SLA',
+                    name: '恢复Informix/GBase 8s',
                     local: 'informix-0049.html'
-                  },
-                  {
-                    id: 339,
-                    parentId: 304,
-                    name: '查看SLA信息',
-                    local: 'informix-0050.html'
-                  },
-                  {
-                    id: 340,
-                    parentId: 304,
-                    name: '管理SLA',
-                    local: 'informix-0051.html'
                   }
                 ]
               },
               {
                 id: 305,
                 parentId: 32,
-                name: '副本',
-                local: 'informix-0052.html',
+                name: '全局搜索',
+                local: 'informix-0050.html',
                 children: [
                   {
-                    id: 341,
+                    id: 338,
                     parentId: 305,
-                    name: '查看Informix/GBase 8s副本信息',
+                    name: '关于全局搜索',
+                    local: 'informix-0051.html'
+                  },
+                  {
+                    id: 339,
+                    parentId: 305,
+                    name: '全局搜索副本数据',
+                    local: 'informix-0052.html'
+                  },
+                  {
+                    id: 340,
+                    parentId: 305,
+                    name: '全局搜索资源',
                     local: 'informix-0053.html'
                   },
                   {
-                    id: 342,
+                    id: 341,
                     parentId: 305,
-                    name: '管理Informix/GBase 8s副本',
+                    name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'informix-0054.html'
                   }
                 ]
@@ -2111,26 +2090,72 @@ naviData = [
               {
                 id: 306,
                 parentId: 32,
-                name: 'Informix/GBase 8s集群环境',
-                local: 'informix-0055.html',
+                name: 'SLA',
+                local: 'informix-0057.html',
                 children: [
+                  {
+                    id: 342,
+                    parentId: 306,
+                    name: '关于SLA',
+                    local: 'informix-0058.html'
+                  },
                   {
                     id: 343,
                     parentId: 306,
-                    name: '查看Informix/GBase 8s环境信息',
-                    local: 'informix-0056.html'
+                    name: '查看SLA信息',
+                    local: 'informix-0059.html'
                   },
                   {
                     id: 344,
                     parentId: 306,
-                    name: '管理Informix/GBase 8s',
-                    local: 'informix-0057.html'
-                  },
+                    name: '管理SLA',
+                    local: 'informix-0060.html'
+                  }
+                ]
+              },
+              {
+                id: 307,
+                parentId: 32,
+                name: '副本',
+                local: 'informix-0061.html',
+                children: [
                   {
                     id: 345,
-                    parentId: 306,
+                    parentId: 307,
+                    name: '查看Informix/GBase 8s副本信息',
+                    local: 'informix-0062.html'
+                  },
+                  {
+                    id: 346,
+                    parentId: 307,
+                    name: '管理Informix/GBase 8s副本',
+                    local: 'informix-0063.html'
+                  }
+                ]
+              },
+              {
+                id: 308,
+                parentId: 32,
+                name: 'Informix/GBase 8s集群环境',
+                local: 'informix-0064.html',
+                children: [
+                  {
+                    id: 347,
+                    parentId: 308,
+                    name: '查看Informix/GBase 8s环境信息',
+                    local: 'informix-0065.html'
+                  },
+                  {
+                    id: 348,
+                    parentId: 308,
+                    name: '管理Informix/GBase 8s',
+                    local: 'informix-0066.html'
+                  },
+                  {
+                    id: 349,
+                    parentId: 308,
                     name: '管理Informix/GBase 8s数据库集群',
-                    local: 'informix-0058.html'
+                    local: 'informix-0067.html'
                   }
                 ]
               }
@@ -2143,57 +2168,50 @@ naviData = [
             local: 'zh-cn_topic_0000001873679197.html',
             children: [
               {
-                id: 346,
+                id: 350,
                 parentId: 33,
                 name: '备份',
                 local: 'opengauss-0006.html',
                 children: [
                   {
-                    id: 354,
-                    parentId: 346,
+                    id: 358,
+                    parentId: 350,
                     name: '备份前准备',
                     local: 'opengauss-0009.html'
                   },
                   {
-                    id: 355,
-                    parentId: 346,
-                    name: '备份openGauss/磐维CMDB',
+                    id: 359,
+                    parentId: 350,
+                    name: '备份openGauss',
                     local: 'opengauss-0010.html',
                     children: [
                       {
-                        id: 356,
-                        parentId: 355,
-                        name: '步骤1：开启归档模式（仅适用于磐维CMDB）',
-                        local: 'postgresql-0010.html'
-                      },
-                      {
-                        id: 357,
-                        parentId: 355,
-                        name: '步骤2：注册openGauss/磐维CMDB集群',
+                        id: 360,
+                        parentId: 359,
+                        name: '步骤2：注册openGauss集群',
                         local: 'opengauss-0011.html'
                       },
                       {
-                        id: 358,
-                        parentId: 355,
+                        id: 361,
+                        parentId: 359,
                         name: '步骤3：创建限速策略',
                         local: 'opengauss-0012.html'
                       },
                       {
-                        id: 359,
-                        parentId: 355,
-                        name:
-                          '步骤4：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 362,
+                        parentId: 359,
+                        name: '步骤4：（可选）开启备份链路加密开关',
                         local: 'opengauss-0013.html'
                       },
                       {
-                        id: 360,
-                        parentId: 355,
+                        id: 363,
+                        parentId: 359,
                         name: '步骤5：创建备份SLA',
                         local: 'opengauss-0014.html'
                       },
                       {
-                        id: 361,
-                        parentId: 355,
+                        id: 364,
+                        parentId: 359,
                         name: '步骤6：执行备份',
                         local: 'opengauss-0015.html'
                       }
@@ -2202,83 +2220,83 @@ naviData = [
                 ]
               },
               {
-                id: 347,
+                id: 351,
                 parentId: 33,
                 name: '复制',
-                local: 'oracle_gud_000035_5.html',
+                local: 'oracle_gud_000035_3.html',
                 children: [
                   {
-                    id: 362,
-                    parentId: 347,
-                    name: '复制openGauss/磐维CMDB数据库副本',
+                    id: 365,
+                    parentId: 351,
+                    name: '复制openGauss数据库副本',
                     local: 'opengauss-0020.html',
                     children: [
                       {
-                        id: 363,
-                        parentId: 362,
+                        id: 366,
+                        parentId: 365,
                         name: '规划复制网络',
                         local: 'opengauss-0021.html'
                       },
                       {
-                        id: 364,
-                        parentId: 362,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_6.html'
-                      },
-                      {
-                        id: 365,
-                        parentId: 362,
+                        id: 367,
+                        parentId: 365,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_13.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'fc_gud_0026_4.html'
                       },
                       {
-                        id: 366,
-                        parentId: 362,
+                        id: 368,
+                        parentId: 365,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_7.html'
+                      },
+                      {
+                        id: 369,
+                        parentId: 365,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'opengauss-0023.html'
                       },
                       {
-                        id: 367,
-                        parentId: 362,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 370,
+                        parentId: 365,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'opengauss-0024.html'
                       },
                       {
-                        id: 368,
-                        parentId: 362,
+                        id: 371,
+                        parentId: 365,
                         name: '步骤4：下载并导入证书',
                         local: 'opengauss-0025.html'
                       },
                       {
-                        id: 369,
-                        parentId: 362,
+                        id: 372,
+                        parentId: 365,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'opengauss-0026.html'
                       },
                       {
-                        id: 370,
-                        parentId: 362,
+                        id: 373,
+                        parentId: 365,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'opengauss-0026_a1.html'
                       },
                       {
-                        id: 371,
-                        parentId: 362,
-                        name: '步骤6：添加目标集群',
+                        id: 374,
+                        parentId: 365,
+                        name: '步骤6：添加复制集群',
                         local: 'opengauss-0027.html'
                       },
                       {
-                        id: 372,
-                        parentId: 362,
+                        id: 375,
+                        parentId: 365,
                         name: '步骤7：创建复制SLA',
                         local: 'opengauss-0028.html'
                       },
                       {
-                        id: 373,
-                        parentId: 362,
+                        id: 376,
+                        parentId: 365,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'opengauss-0029.html'
                       }
@@ -2287,60 +2305,61 @@ naviData = [
                 ]
               },
               {
-                id: 348,
+                id: 352,
                 parentId: 33,
                 name: '归档',
                 local: 'opengauss-0030.html',
                 children: [
                   {
-                    id: 374,
-                    parentId: 348,
-                    name: '归档openGauss/磐维CMDB备份副本',
+                    id: 377,
+                    parentId: 352,
+                    name: '归档openGauss备份副本',
                     local: 'opengauss-0033.html',
                     children: [
                       {
-                        id: 376,
-                        parentId: 374,
+                        id: 379,
+                        parentId: 377,
                         name: '步骤1：添加归档存储',
                         local: 'opengauss-0034.html',
                         children: [
                           {
-                            id: 378,
-                            parentId: 376,
+                            id: 381,
+                            parentId: 379,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'opengauss-0035.html'
                           },
                           {
-                            id: 379,
-                            parentId: 376,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 382,
+                            parentId: 379,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'opengauss-0036.html'
                           }
                         ]
                       },
                       {
-                        id: 377,
-                        parentId: 374,
-                        name: '步骤2：创建归档SLA',
+                        id: 380,
+                        parentId: 377,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'opengauss-0037.html'
                       }
                     ]
                   },
                   {
-                    id: 375,
-                    parentId: 348,
-                    name: '归档openGauss/磐维CMDB复制副本',
+                    id: 378,
+                    parentId: 352,
+                    name: '归档openGauss复制副本',
                     local: 'opengauss-0038.html',
                     children: [
                       {
-                        id: 380,
-                        parentId: 375,
-                        name: '步骤1：创建归档SLA',
+                        id: 383,
+                        parentId: 378,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'opengauss-0039.html'
                       },
                       {
-                        id: 381,
-                        parentId: 375,
+                        id: 384,
+                        parentId: 378,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'opengauss-0040.html'
                       }
@@ -2349,107 +2368,107 @@ naviData = [
                 ]
               },
               {
-                id: 349,
+                id: 353,
                 parentId: 33,
                 name: '恢复',
                 local: 'opengauss-0041.html',
                 children: [
                   {
-                    id: 382,
-                    parentId: 349,
-                    name: '恢复openGauss/磐维CMDB',
+                    id: 385,
+                    parentId: 353,
+                    name: '恢复openGauss',
                     local: 'opengauss-0044.html'
                   }
                 ]
               },
               {
-                id: 350,
+                id: 354,
                 parentId: 33,
                 name: '全局搜索',
                 local: 'opengauss-0026_a2.html',
                 children: [
                   {
-                    id: 383,
-                    parentId: 350,
+                    id: 386,
+                    parentId: 354,
                     name: '全局搜索资源',
                     local: 'opengauss-0026_a3.html'
                   },
                   {
-                    id: 384,
-                    parentId: 350,
+                    id: 387,
+                    parentId: 354,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'opengauss-0026_a4.html'
                   }
                 ]
               },
               {
-                id: 351,
+                id: 355,
                 parentId: 33,
                 name: 'SLA',
                 local: 'opengauss-0049.html',
                 children: [
                   {
-                    id: 385,
-                    parentId: 351,
+                    id: 388,
+                    parentId: 355,
                     name: '关于SLA',
                     local: 'opengauss-0050.html'
                   },
                   {
-                    id: 386,
-                    parentId: 351,
+                    id: 389,
+                    parentId: 355,
                     name: '查看SLA信息',
                     local: 'opengauss-0051.html'
                   },
                   {
-                    id: 387,
-                    parentId: 351,
+                    id: 390,
+                    parentId: 355,
                     name: '管理SLA',
                     local: 'opengauss-0052.html'
                   }
                 ]
               },
               {
-                id: 352,
+                id: 356,
                 parentId: 33,
                 name: '副本',
                 local: 'opengauss-0053.html',
                 children: [
                   {
-                    id: 388,
-                    parentId: 352,
-                    name: '查看openGauss/磐维CMDB副本信息',
+                    id: 391,
+                    parentId: 356,
+                    name: '查看openGauss副本信息',
                     local: 'opengauss-0054.html'
                   },
                   {
-                    id: 389,
-                    parentId: 352,
-                    name: '管理openGauss/磐维CMDB副本',
+                    id: 392,
+                    parentId: 356,
+                    name: '管理openGauss副本',
                     local: 'opengauss-0055.html'
                   }
                 ]
               },
               {
-                id: 353,
+                id: 357,
                 parentId: 33,
-                name: 'openGauss/磐维CMDB数据库环境',
+                name: 'openGauss数据库环境',
                 local: 'opengauss-0056.html',
                 children: [
                   {
-                    id: 390,
-                    parentId: 353,
-                    name: '查看openGauss/磐维CMDB信息',
+                    id: 393,
+                    parentId: 357,
+                    name: '查看openGauss信息',
                     local: 'opengauss-0057.html'
                   },
                   {
-                    id: 391,
-                    parentId: 353,
-                    name: '管理openGauss/磐维CMDB',
+                    id: 394,
+                    parentId: 357,
+                    name: '管理openGauss',
                     local: 'opengauss-0058.html'
                   },
                   {
-                    id: 392,
-                    parentId: 353,
-                    name: '管理openGauss/磐维CMDB集群',
+                    id: 395,
+                    parentId: 357,
+                    name: '管理openGauss集群',
                     local: 'opengauss-0059.html'
                   }
                 ]
@@ -2463,63 +2482,62 @@ naviData = [
             local: 'zh-cn_topic_0000001827039680.html',
             children: [
               {
-                id: 393,
+                id: 396,
                 parentId: 34,
                 name: '备份',
                 local: 'gaussdbT_00006.html',
                 children: [
                   {
-                    id: 401,
-                    parentId: 393,
+                    id: 404,
+                    parentId: 396,
                     name: '备份前准备',
                     local: 'gaussdbT_00009.html'
                   },
                   {
-                    id: 402,
-                    parentId: 393,
+                    id: 405,
+                    parentId: 396,
                     name: '备份GaussDB T数据库',
                     local: 'gaussdbT_00010.html',
                     children: [
                       {
-                        id: 403,
-                        parentId: 402,
+                        id: 406,
+                        parentId: 405,
                         name: '步骤1：检查并配置数据库环境',
                         local: 'gaussdbT_00011.html'
                       },
                       {
-                        id: 404,
-                        parentId: 402,
+                        id: 407,
+                        parentId: 405,
                         name: '步骤2：设置Redo日志模式',
                         local: 'gaussdbT_00071.html'
                       },
                       {
-                        id: 405,
-                        parentId: 402,
+                        id: 408,
+                        parentId: 405,
                         name: '步骤3：注册GaussDB T数据库',
                         local: 'gaussdbT_00012.html'
                       },
                       {
-                        id: 406,
-                        parentId: 402,
-                        name:
-                          '步骤4：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 409,
+                        parentId: 405,
+                        name: '步骤4：（可选）开启备份链路加密开关',
                         local: 'gaussdbT_00013.html'
                       },
                       {
-                        id: 407,
-                        parentId: 402,
+                        id: 410,
+                        parentId: 405,
                         name: '步骤5：（可选）创建限速策略',
                         local: 'gaussdbT_00014.html'
                       },
                       {
-                        id: 408,
-                        parentId: 402,
+                        id: 411,
+                        parentId: 405,
                         name: '步骤6：创建备份SLA',
                         local: 'gaussdbT_00015.html'
                       },
                       {
-                        id: 409,
-                        parentId: 402,
+                        id: 412,
+                        parentId: 405,
                         name: '步骤7：执行备份',
                         local: 'gaussdbT_00016.html'
                       }
@@ -2528,83 +2546,83 @@ naviData = [
                 ]
               },
               {
-                id: 394,
+                id: 397,
                 parentId: 34,
                 name: '复制',
                 local: 'gaussdbT_00019.html',
                 children: [
                   {
-                    id: 410,
-                    parentId: 394,
+                    id: 413,
+                    parentId: 397,
                     name: '复制GaussDB T数据库副本',
                     local: 'gaussdbT_00021.html',
                     children: [
                       {
-                        id: 411,
-                        parentId: 410,
+                        id: 414,
+                        parentId: 413,
                         name: '规划复制网络',
                         local: 'gaussdbT_00022.html'
                       },
                       {
-                        id: 412,
-                        parentId: 410,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 415,
+                        parentId: 413,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'gaussdbT_00023.html'
                       },
                       {
-                        id: 413,
-                        parentId: 410,
+                        id: 416,
+                        parentId: 413,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_30.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_20.html'
                       },
                       {
-                        id: 414,
-                        parentId: 410,
+                        id: 417,
+                        parentId: 413,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'gaussdbT_00024.html'
                       },
                       {
-                        id: 415,
-                        parentId: 410,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 418,
+                        parentId: 413,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'gaussdbT_00025.html'
                       },
                       {
-                        id: 416,
-                        parentId: 410,
+                        id: 419,
+                        parentId: 413,
                         name: '步骤4：下载并导入证书',
                         local: 'gaussdbT_00026.html'
                       },
                       {
-                        id: 417,
-                        parentId: 410,
+                        id: 420,
+                        parentId: 413,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'gaussdbT_00027.html'
                       },
                       {
-                        id: 418,
-                        parentId: 410,
+                        id: 421,
+                        parentId: 413,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'gaussdbT_00027_a1.html'
                       },
                       {
-                        id: 419,
-                        parentId: 410,
+                        id: 422,
+                        parentId: 413,
                         name: '步骤6：添加复制集群',
                         local: 'gaussdbT_00028.html'
                       },
                       {
-                        id: 420,
-                        parentId: 410,
+                        id: 423,
+                        parentId: 413,
                         name: '步骤7：创建复制SLA',
                         local: 'gaussdbT_00029.html'
                       },
                       {
-                        id: 421,
-                        parentId: 410,
+                        id: 424,
+                        parentId: 413,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'gaussdbT_00030.html'
                       }
@@ -2613,60 +2631,60 @@ naviData = [
                 ]
               },
               {
-                id: 395,
+                id: 398,
                 parentId: 34,
                 name: '归档',
                 local: 'gaussdbT_00031.html',
                 children: [
                   {
-                    id: 422,
-                    parentId: 395,
+                    id: 425,
+                    parentId: 398,
                     name: '归档GaussDB T备份副本',
                     local: 'gaussdbT_00034.html',
                     children: [
                       {
-                        id: 424,
-                        parentId: 422,
+                        id: 427,
+                        parentId: 425,
                         name: '步骤1：添加归档存储',
                         local: 'gaussdbT_00035.html',
                         children: [
                           {
-                            id: 426,
-                            parentId: 424,
+                            id: 429,
+                            parentId: 427,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'gaussdbT_00036.html'
                           },
                           {
-                            id: 427,
-                            parentId: 424,
+                            id: 430,
+                            parentId: 427,
                             name: '创建介质集（归档存储是磁带库）',
                             local: 'gaussdbT_00037.html'
                           }
                         ]
                       },
                       {
-                        id: 425,
-                        parentId: 422,
-                        name: '步骤2：创建归档SLA',
+                        id: 428,
+                        parentId: 425,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'gaussdbT_00038.html'
                       }
                     ]
                   },
                   {
-                    id: 423,
-                    parentId: 395,
+                    id: 426,
+                    parentId: 398,
                     name: '归档GaussDB T复制副本',
                     local: 'gaussdbT_00039.html',
                     children: [
                       {
-                        id: 428,
-                        parentId: 423,
-                        name: '步骤1：创建归档SLA',
+                        id: 431,
+                        parentId: 426,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'gaussdbT_00040.html'
                       },
                       {
-                        id: 429,
-                        parentId: 423,
+                        id: 432,
+                        parentId: 426,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'gaussdbT_00041.html'
                       }
@@ -2675,100 +2693,100 @@ naviData = [
                 ]
               },
               {
-                id: 396,
+                id: 399,
                 parentId: 34,
                 name: '恢复',
                 local: 'gaussdbT_00042.html',
                 children: [
                   {
-                    id: 430,
-                    parentId: 396,
+                    id: 433,
+                    parentId: 399,
                     name: '恢复GaussDB T数据库',
                     local: 'gaussdbT_00045.html'
                   }
                 ]
               },
               {
-                id: 397,
+                id: 400,
                 parentId: 34,
                 name: '全局搜索',
                 local: 'gaussdbT_00042_a1.html',
                 children: [
                   {
-                    id: 431,
-                    parentId: 397,
+                    id: 434,
+                    parentId: 400,
                     name: '全局搜索资源',
                     local: 'gaussdbT_00042_a2.html'
                   },
                   {
-                    id: 432,
-                    parentId: 397,
+                    id: 435,
+                    parentId: 400,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'gaussdbT_00042_a3.html'
                   }
                 ]
               },
               {
-                id: 398,
+                id: 401,
                 parentId: 34,
                 name: 'SLA',
                 local: 'gaussdbT_00049.html',
                 children: [
                   {
-                    id: 433,
-                    parentId: 398,
+                    id: 436,
+                    parentId: 401,
                     name: '关于SLA',
                     local: 'gaussdbT_00050.html'
                   },
                   {
-                    id: 434,
-                    parentId: 398,
+                    id: 437,
+                    parentId: 401,
                     name: '查看SLA信息',
                     local: 'gaussdbT_00051.html'
                   },
                   {
-                    id: 435,
-                    parentId: 398,
+                    id: 438,
+                    parentId: 401,
                     name: '管理SLA',
                     local: 'gaussdbT_00052.html'
                   }
                 ]
               },
               {
-                id: 399,
+                id: 402,
                 parentId: 34,
                 name: '副本',
                 local: 'gaussdbT_00053.html',
                 children: [
                   {
-                    id: 436,
-                    parentId: 399,
+                    id: 439,
+                    parentId: 402,
                     name: '查看GaussDB T副本信息',
                     local: 'gaussdbT_00054.html'
                   },
                   {
-                    id: 437,
-                    parentId: 399,
+                    id: 440,
+                    parentId: 402,
                     name: '管理GaussDB T副本',
                     local: 'gaussdbT_00055.html'
                   }
                 ]
               },
               {
-                id: 400,
+                id: 403,
                 parentId: 34,
                 name: 'GaussDB T数据库环境',
                 local: 'gaussdbT_00056.html',
                 children: [
                   {
-                    id: 438,
-                    parentId: 400,
+                    id: 441,
+                    parentId: 403,
                     name: '查看GaussDB T数据库环境信息',
                     local: 'gaussdbT_00057.html'
                   },
                   {
-                    id: 439,
-                    parentId: 400,
+                    id: 442,
+                    parentId: 403,
                     name: '管理数据库',
                     local: 'gaussdbT_00058.html'
                   }
@@ -2783,83 +2801,82 @@ naviData = [
             local: 'zh-cn_topic_0000001873759409.html',
             children: [
               {
-                id: 440,
+                id: 443,
                 parentId: 35,
                 name: '概述',
                 local: 'zh-cn_topic_0000001879213805.html',
                 children: [
                   {
-                    id: 450,
-                    parentId: 440,
+                    id: 453,
+                    parentId: 443,
                     name: '功能概述',
                     local: 'zh-cn_topic_0000001832454472.html'
                   }
                 ]
               },
               {
-                id: 441,
+                id: 444,
                 parentId: 35,
                 name: '约束与限制',
                 local: 'zh-cn_topic_0000001832294664.html'
               },
               {
-                id: 442,
+                id: 445,
                 parentId: 35,
                 name: '备份',
                 local: 'TiDB_00004.html',
                 children: [
                   {
-                    id: 451,
-                    parentId: 442,
+                    id: 454,
+                    parentId: 445,
                     name: '备份前准备',
                     local: 'TiDB_00007.html'
                   },
                   {
-                    id: 452,
-                    parentId: 442,
+                    id: 455,
+                    parentId: 445,
                     name: '备份TiDB备份资源',
                     local: 'TiDB_00008.html',
                     children: [
                       {
-                        id: 453,
-                        parentId: 452,
+                        id: 456,
+                        parentId: 455,
                         name: '步骤1：注册TiDB集群',
                         local: 'TiDB_00009.html'
                       },
                       {
-                        id: 454,
-                        parentId: 452,
+                        id: 457,
+                        parentId: 455,
                         name: '步骤2：注册TiDB数据库',
                         local: 'TiDB_00010.html'
                       },
                       {
-                        id: 455,
-                        parentId: 452,
+                        id: 458,
+                        parentId: 455,
                         name: '步骤3：注册TiDB表集',
                         local: 'TiDB_00011.html'
                       },
                       {
-                        id: 456,
-                        parentId: 452,
+                        id: 459,
+                        parentId: 455,
                         name: '步骤4：创建限速策略',
                         local: 'TiDB_00012.html'
                       },
                       {
-                        id: 457,
-                        parentId: 452,
-                        name:
-                          '步骤5：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 460,
+                        parentId: 455,
+                        name: '步骤5：（可选）开启备份链路加密开关',
                         local: 'TiDB_00013.html'
                       },
                       {
-                        id: 458,
-                        parentId: 452,
+                        id: 461,
+                        parentId: 455,
                         name: '步骤6：创建备份SLA',
                         local: 'TiDB_00014.html'
                       },
                       {
-                        id: 459,
-                        parentId: 452,
+                        id: 462,
+                        parentId: 455,
                         name: '步骤7：执行备份',
                         local: 'TiDB_00015.html'
                       }
@@ -2868,77 +2885,77 @@ naviData = [
                 ]
               },
               {
-                id: 443,
+                id: 446,
                 parentId: 35,
                 name: '复制',
                 local: 'TiDB_00018.html',
                 children: [
                   {
-                    id: 460,
-                    parentId: 443,
+                    id: 463,
+                    parentId: 446,
                     name: '复制TiDB副本',
                     local: 'TiDB_00020.html',
                     children: [
                       {
-                        id: 461,
-                        parentId: 460,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 464,
+                        parentId: 463,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'TiDB_00022.html'
                       },
                       {
-                        id: 462,
-                        parentId: 460,
+                        id: 465,
+                        parentId: 463,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_26.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_16.html'
                       },
                       {
-                        id: 463,
-                        parentId: 460,
+                        id: 466,
+                        parentId: 463,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'TiDB_00023.html'
                       },
                       {
-                        id: 464,
-                        parentId: 460,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 467,
+                        parentId: 463,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'TiDB_00024.html'
                       },
                       {
-                        id: 465,
-                        parentId: 460,
+                        id: 468,
+                        parentId: 463,
                         name: '步骤4：下载并导入证书',
                         local: 'TiDB_00025.html'
                       },
                       {
-                        id: 466,
-                        parentId: 460,
+                        id: 469,
+                        parentId: 463,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'TiDB_00026.html'
                       },
                       {
-                        id: 467,
-                        parentId: 460,
+                        id: 470,
+                        parentId: 463,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'TiDB_0002600.html'
                       },
                       {
-                        id: 468,
-                        parentId: 460,
-                        name: '步骤6：添加目标集群',
+                        id: 471,
+                        parentId: 463,
+                        name: '步骤6：添加复制集群',
                         local: 'TiDB_00027.html'
                       },
                       {
-                        id: 469,
-                        parentId: 460,
+                        id: 472,
+                        parentId: 463,
                         name: '步骤7：创建复制SLA',
                         local: 'TiDB_00028.html'
                       },
                       {
-                        id: 470,
-                        parentId: 460,
+                        id: 473,
+                        parentId: 463,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'TiDB_00029.html'
                       }
@@ -2947,60 +2964,61 @@ naviData = [
                 ]
               },
               {
-                id: 444,
+                id: 447,
                 parentId: 35,
                 name: '归档',
                 local: 'TiDB_00030.html',
                 children: [
                   {
-                    id: 471,
-                    parentId: 444,
+                    id: 474,
+                    parentId: 447,
                     name: '归档TiDB备份副本',
                     local: 'TiDB_00033.html',
                     children: [
                       {
-                        id: 473,
-                        parentId: 471,
+                        id: 476,
+                        parentId: 474,
                         name: '步骤1：添加归档存储',
                         local: 'TiDB_00034.html',
                         children: [
                           {
-                            id: 475,
-                            parentId: 473,
+                            id: 478,
+                            parentId: 476,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'TiDB_00035.html'
                           },
                           {
-                            id: 476,
-                            parentId: 473,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 479,
+                            parentId: 476,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'TiDB_00036.html'
                           }
                         ]
                       },
                       {
-                        id: 474,
-                        parentId: 471,
-                        name: '步骤2：创建归档SLA',
+                        id: 477,
+                        parentId: 474,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'TiDB_00037.html'
                       }
                     ]
                   },
                   {
-                    id: 472,
-                    parentId: 444,
+                    id: 475,
+                    parentId: 447,
                     name: '归档TiDB复制副本',
                     local: 'TiDB_00038.html',
                     children: [
                       {
-                        id: 477,
-                        parentId: 472,
-                        name: '步骤1：创建归档SLA',
+                        id: 480,
+                        parentId: 475,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'TiDB_00039.html'
                       },
                       {
-                        id: 478,
-                        parentId: 472,
+                        id: 481,
+                        parentId: 475,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'TiDB_00040.html'
                       }
@@ -3009,118 +3027,118 @@ naviData = [
                 ]
               },
               {
-                id: 445,
+                id: 448,
                 parentId: 35,
                 name: '恢复',
                 local: 'TiDB_00041.html',
                 children: [
                   {
-                    id: 479,
-                    parentId: 445,
+                    id: 482,
+                    parentId: 448,
                     name: '恢复TiDB备份资源',
                     local: 'TiDB_00044.html'
                   },
                   {
-                    id: 480,
-                    parentId: 445,
+                    id: 483,
+                    parentId: 448,
                     name: '恢复TiDB备份资源中的单个或多个表',
                     local: 'TiDB_00045.html'
                   }
                 ]
               },
               {
-                id: 446,
+                id: 449,
                 parentId: 35,
                 name: '全局搜索',
                 local: 'TiDB_00046.html',
                 children: [
                   {
-                    id: 481,
-                    parentId: 446,
+                    id: 484,
+                    parentId: 449,
                     name: '全局搜索资源',
                     local: 'TiDB_00047.html'
                   },
                   {
-                    id: 482,
-                    parentId: 446,
+                    id: 485,
+                    parentId: 449,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'TiDB_000471.html'
                   }
                 ]
               },
               {
-                id: 447,
+                id: 450,
                 parentId: 35,
                 name: 'SLA',
                 local: 'TiDB_00050.html',
                 children: [
                   {
-                    id: 483,
-                    parentId: 447,
+                    id: 486,
+                    parentId: 450,
                     name: '关于SLA',
                     local: 'TiDB_000501.html'
                   },
                   {
-                    id: 484,
-                    parentId: 447,
+                    id: 487,
+                    parentId: 450,
                     name: '查看SLA信息',
                     local: 'TiDB_00052.html'
                   },
                   {
-                    id: 485,
-                    parentId: 447,
+                    id: 488,
+                    parentId: 450,
                     name: '管理SLA',
                     local: 'TiDB_00053.html'
                   }
                 ]
               },
               {
-                id: 448,
+                id: 451,
                 parentId: 35,
                 name: '副本',
                 local: 'TiDB_00054.html',
                 children: [
                   {
-                    id: 486,
-                    parentId: 448,
+                    id: 489,
+                    parentId: 451,
                     name: '查看TiDB副本信息',
                     local: 'TiDB_00055.html'
                   },
                   {
-                    id: 487,
-                    parentId: 448,
+                    id: 490,
+                    parentId: 451,
                     name: '管理TiDB副本',
                     local: 'TiDB_00056.html'
                   }
                 ]
               },
               {
-                id: 449,
+                id: 452,
                 parentId: 35,
                 name: 'TiDB集群环境',
                 local: 'TiDB_00057.html',
                 children: [
                   {
-                    id: 488,
-                    parentId: 449,
+                    id: 491,
+                    parentId: 452,
                     name: '查询TiDB信息',
                     local: 'TiDB_00058.html'
                   },
                   {
-                    id: 489,
-                    parentId: 449,
+                    id: 492,
+                    parentId: 452,
                     name: '管理TiDB集群',
                     local: 'TiDB_00059.html'
                   },
                   {
-                    id: 490,
-                    parentId: 449,
+                    id: 493,
+                    parentId: 452,
                     name: '管理数据库',
                     local: 'TiDB_00060.html'
                   },
                   {
-                    id: 491,
-                    parentId: 449,
+                    id: 494,
+                    parentId: 452,
                     name: '管理表集',
                     local: 'TiDB_00061.html'
                   }
@@ -3135,63 +3153,62 @@ naviData = [
             local: 'zh-cn_topic_0000001826879852.html',
             children: [
               {
-                id: 492,
+                id: 495,
                 parentId: 36,
                 name: '备份',
                 local: 'oceanbase_00005.html',
                 children: [
                   {
-                    id: 500,
-                    parentId: 492,
+                    id: 503,
+                    parentId: 495,
                     name: '备份前准备',
                     local: 'oceanbase_00008.html'
                   },
                   {
-                    id: 501,
-                    parentId: 492,
+                    id: 504,
+                    parentId: 495,
                     name: '备份OceanBase',
                     local: 'oceanbase_00009.html',
                     children: [
                       {
-                        id: 502,
-                        parentId: 501,
+                        id: 505,
+                        parentId: 504,
                         name: '步骤1：检查并开启NFSv4.1服务',
                         local: 'zh-cn_topic_0000001839342213.html'
                       },
                       {
-                        id: 503,
-                        parentId: 501,
+                        id: 506,
+                        parentId: 504,
                         name: '步骤2：注册OceanBase集群',
                         local: 'oceanbase_00010.html'
                       },
                       {
-                        id: 504,
-                        parentId: 501,
+                        id: 507,
+                        parentId: 504,
                         name: '步骤3：注册OceanBase租户集',
                         local: 'oceanbase_00011.html'
                       },
                       {
-                        id: 505,
-                        parentId: 501,
+                        id: 508,
+                        parentId: 504,
                         name: '步骤4：（可选）创建限速策略',
                         local: 'oceanbase_00012.html'
                       },
                       {
-                        id: 506,
-                        parentId: 501,
-                        name:
-                          '步骤5：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 509,
+                        parentId: 504,
+                        name: '步骤5：（可选）开启备份链路加密开关',
                         local: 'oceanbase_00013.html'
                       },
                       {
-                        id: 507,
-                        parentId: 501,
+                        id: 510,
+                        parentId: 504,
                         name: '步骤6：创建备份SLA',
                         local: 'oceanbase_00014.html'
                       },
                       {
-                        id: 508,
-                        parentId: 501,
+                        id: 511,
+                        parentId: 504,
                         name: '步骤7：执行备份',
                         local: 'oceanbase_00015.html'
                       }
@@ -3200,82 +3217,83 @@ naviData = [
                 ]
               },
               {
-                id: 493,
+                id: 496,
                 parentId: 36,
                 name: '复制',
-                local: 'oracle_gud_000035_6.html',
+                local: 'oracle_gud_000035_4.html',
                 children: [
                   {
-                    id: 509,
-                    parentId: 493,
+                    id: 512,
+                    parentId: 496,
                     name: '复制OceanBase副本',
                     local: 'oceanbase_00020.html',
                     children: [
                       {
-                        id: 510,
-                        parentId: 509,
+                        id: 513,
+                        parentId: 512,
                         name: '规划复制网络',
                         local: 'oceanbase_00021.html'
                       },
                       {
-                        id: 511,
-                        parentId: 509,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_7.html'
-                      },
-                      {
-                        id: 512,
-                        parentId: 509,
+                        id: 514,
+                        parentId: 512,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_15.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'oceanbase_000210.html'
                       },
                       {
-                        id: 513,
-                        parentId: 509,
+                        id: 515,
+                        parentId: 512,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_9.html'
+                      },
+                      {
+                        id: 516,
+                        parentId: 512,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'oceanbase_00023.html'
                       },
                       {
-                        id: 514,
-                        parentId: 509,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 517,
+                        parentId: 512,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'oceanbase_00024.html'
                       },
                       {
-                        id: 515,
-                        parentId: 509,
+                        id: 518,
+                        parentId: 512,
                         name: '步骤4：下载并导入证书',
                         local: 'oceanbase_00025.html'
                       },
                       {
-                        id: 516,
-                        parentId: 509,
-                        name: '步骤5：创建远端设备管理员',
+                        id: 519,
+                        parentId: 512,
+                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'oceanbase_00026.html'
                       },
                       {
-                        id: 517,
-                        parentId: 509,
-                        name: '创建远端设备管理员（适用于1.6.0及后续版本）',
+                        id: 520,
+                        parentId: 512,
+                        name:
+                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'oceanbase_00026_a1.html'
                       },
                       {
-                        id: 518,
-                        parentId: 509,
+                        id: 521,
+                        parentId: 512,
                         name: '步骤6：添加目标集群',
                         local: 'oceanbase_00027.html'
                       },
                       {
-                        id: 519,
-                        parentId: 509,
+                        id: 522,
+                        parentId: 512,
                         name: '步骤7：创建复制SLA',
                         local: 'oceanbase_00028.html'
                       },
                       {
-                        id: 520,
-                        parentId: 509,
+                        id: 523,
+                        parentId: 512,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'oceanbase_00029.html'
                       }
@@ -3284,60 +3302,61 @@ naviData = [
                 ]
               },
               {
-                id: 494,
+                id: 497,
                 parentId: 36,
                 name: '归档',
                 local: 'oceanbase_00030.html',
                 children: [
                   {
-                    id: 521,
-                    parentId: 494,
+                    id: 524,
+                    parentId: 497,
                     name: '归档OceanBase备份副本',
                     local: 'oceanbase_00033.html',
                     children: [
                       {
-                        id: 523,
-                        parentId: 521,
+                        id: 526,
+                        parentId: 524,
                         name: '步骤1：添加归档存储',
                         local: 'oceanbase_00034.html',
                         children: [
                           {
-                            id: 525,
-                            parentId: 523,
+                            id: 528,
+                            parentId: 526,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'oceanbase_00035.html'
                           },
                           {
-                            id: 526,
-                            parentId: 523,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 529,
+                            parentId: 526,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'oceanbase_00036.html'
                           }
                         ]
                       },
                       {
-                        id: 524,
-                        parentId: 521,
-                        name: '步骤2：创建归档SLA',
+                        id: 527,
+                        parentId: 524,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'oceanbase_00037.html'
                       }
                     ]
                   },
                   {
-                    id: 522,
-                    parentId: 494,
+                    id: 525,
+                    parentId: 497,
                     name: '归档OceanBase复制副本',
                     local: 'oceanbase_00038.html',
                     children: [
                       {
-                        id: 527,
-                        parentId: 522,
-                        name: '步骤1：创建归档SLA',
+                        id: 530,
+                        parentId: 525,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'oceanbase_00039.html'
                       },
                       {
-                        id: 528,
-                        parentId: 522,
+                        id: 531,
+                        parentId: 525,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'oceanbase_00040.html'
                       }
@@ -3346,106 +3365,106 @@ naviData = [
                 ]
               },
               {
-                id: 495,
+                id: 498,
                 parentId: 36,
                 name: '恢复',
                 local: 'oceanbase_00041.html',
                 children: [
                   {
-                    id: 529,
-                    parentId: 495,
+                    id: 532,
+                    parentId: 498,
                     name: '恢复OceanBase',
                     local: 'oceanbase_00044.html'
                   }
                 ]
               },
               {
-                id: 496,
+                id: 499,
                 parentId: 36,
                 name: '全局搜索',
                 local: 'oceanbase_00026_a2.html',
                 children: [
                   {
-                    id: 530,
-                    parentId: 496,
+                    id: 533,
+                    parentId: 499,
                     name: '全局搜索资源',
                     local: 'oceanbase_00026_a3.html'
                   },
                   {
-                    id: 531,
-                    parentId: 496,
+                    id: 534,
+                    parentId: 499,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'oceanbase_00026_a4.html'
                   }
                 ]
               },
               {
-                id: 497,
+                id: 500,
                 parentId: 36,
                 name: 'SLA',
                 local: 'oceanbase_00050.html',
                 children: [
                   {
-                    id: 532,
-                    parentId: 497,
+                    id: 535,
+                    parentId: 500,
                     name: '关于SLA',
                     local: 'oceanbase_00051.html'
                   },
                   {
-                    id: 533,
-                    parentId: 497,
+                    id: 536,
+                    parentId: 500,
                     name: '查看SLA信息',
                     local: 'oceanbase_00052.html'
                   },
                   {
-                    id: 534,
-                    parentId: 497,
+                    id: 537,
+                    parentId: 500,
                     name: '管理SLA',
                     local: 'oceanbase_00053.html'
                   }
                 ]
               },
               {
-                id: 498,
+                id: 501,
                 parentId: 36,
                 name: '副本',
                 local: 'oceanbase_00054.html',
                 children: [
                   {
-                    id: 535,
-                    parentId: 498,
+                    id: 538,
+                    parentId: 501,
                     name: '查看OceanBase副本信息',
                     local: 'oceanbase_00055.html'
                   },
                   {
-                    id: 536,
-                    parentId: 498,
+                    id: 539,
+                    parentId: 501,
                     name: '管理OceanBase副本',
                     local: 'oceanbase_00056.html'
                   }
                 ]
               },
               {
-                id: 499,
+                id: 502,
                 parentId: 36,
                 name: 'OceanBase集群环境',
                 local: 'oceanbase_00057.html',
                 children: [
                   {
-                    id: 537,
-                    parentId: 499,
+                    id: 540,
+                    parentId: 502,
                     name: '查看OceanBase环境信息',
                     local: 'oceanbase_00058.html'
                   },
                   {
-                    id: 538,
-                    parentId: 499,
+                    id: 541,
+                    parentId: 502,
                     name: '管理集群',
                     local: 'oceanbase_00059.html'
                   },
                   {
-                    id: 539,
-                    parentId: 499,
+                    id: 542,
+                    parentId: 502,
                     name: '管理租户集',
                     local: 'oceanbase_00060.html'
                   }
@@ -3460,71 +3479,70 @@ naviData = [
             local: 'zh-cn_topic_0000001827039708.html',
             children: [
               {
-                id: 540,
+                id: 543,
                 parentId: 37,
                 name: '备份',
                 local: 'tdsql_gud_006.html',
                 children: [
                   {
-                    id: 548,
-                    parentId: 540,
+                    id: 551,
+                    parentId: 543,
                     name: '约束与限制',
                     local: 'tdsql_gud_082.html'
                   },
                   {
-                    id: 549,
-                    parentId: 540,
+                    id: 552,
+                    parentId: 543,
                     name: '备份前准备',
                     local: 'tdsql_gud_081.html'
                   },
                   {
-                    id: 550,
-                    parentId: 540,
+                    id: 553,
+                    parentId: 543,
                     name: '备份TDSQL数据库',
                     local: 'tdsql_gud_009.html',
                     children: [
                       {
-                        id: 551,
-                        parentId: 550,
+                        id: 554,
+                        parentId: 553,
                         name:
                           '步骤1：开启TDSQL数据库权限（适用于非分布式实例）',
                         local: 'tdsql_gud_010.html'
                       },
                       {
-                        id: 552,
-                        parentId: 550,
+                        id: 555,
+                        parentId: 553,
                         name:
                           '步骤2：开启zkmeta自动备份功能（适用于分布式实例）',
                         local: 'tdsql_gud_080.html'
                       },
                       {
-                        id: 553,
-                        parentId: 550,
+                        id: 556,
+                        parentId: 553,
                         name: '步骤3：注册TDSQL数据库',
                         local: 'tdsql_gud_011.html'
                       },
                       {
-                        id: 554,
-                        parentId: 550,
+                        id: 557,
+                        parentId: 553,
                         name: '步骤4：（可选）创建限速策略',
                         local: 'tdsql_gud_012.html'
                       },
                       {
-                        id: 555,
-                        parentId: 550,
-                        name:
-                          '步骤5：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 558,
+                        parentId: 553,
+                        name: '步骤5：（可选）开启备份链路加密开关',
                         local: 'tdsql_gud_013.html'
                       },
                       {
-                        id: 556,
-                        parentId: 550,
+                        id: 559,
+                        parentId: 553,
                         name: '步骤6：创建备份SLA',
                         local: 'tdsql_gud_014.html'
                       },
                       {
-                        id: 557,
-                        parentId: 550,
+                        id: 560,
+                        parentId: 553,
                         name: '步骤7：执行备份',
                         local: 'tdsql_gud_015.html'
                       }
@@ -3533,89 +3551,91 @@ naviData = [
                 ]
               },
               {
-                id: 541,
+                id: 544,
                 parentId: 37,
                 name: '复制',
                 local: 'tdsql_gud_018.html',
                 children: [
                   {
-                    id: 558,
-                    parentId: 541,
+                    id: 561,
+                    parentId: 544,
                     name: '约束与限制',
                     local: 'tdsql_gud_019.html'
                   },
                   {
-                    id: 559,
-                    parentId: 541,
+                    id: 562,
+                    parentId: 544,
                     name: '复制TDSQL数据库副本',
                     local: 'tdsql_gud_020.html',
                     children: [
                       {
-                        id: 560,
-                        parentId: 559,
+                        id: 563,
+                        parentId: 562,
                         name: '规划复制网络',
                         local: 'tdsql_gud_021.html'
                       },
                       {
-                        id: 561,
-                        parentId: 559,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 564,
+                        parentId: 562,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'tdsql_gud_022.html'
                       },
                       {
-                        id: 562,
-                        parentId: 559,
+                        id: 565,
+                        parentId: 562,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
                         local: 'tdsql_gud_0026_1.html'
                       },
                       {
-                        id: 563,
-                        parentId: 559,
-                        name: '步骤2：（可选）创建IPsec策略',
+                        id: 566,
+                        parentId: 562,
+                        name:
+                          '步骤2：（可选）创建IPsec策略（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
                         local: 'tdsql_gud_023.html'
                       },
                       {
-                        id: 564,
-                        parentId: 559,
+                        id: 567,
+                        parentId: 562,
                         name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                          '步骤3：（可选）开启复制链路加密开关（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
                         local: 'tdsql_gud_024.html'
                       },
                       {
-                        id: 565,
-                        parentId: 559,
+                        id: 568,
+                        parentId: 562,
                         name: '步骤4：下载并导入证书',
                         local: 'tdsql_gud_025.html'
                       },
                       {
-                        id: 566,
-                        parentId: 559,
+                        id: 569,
+                        parentId: 562,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'tdsql_gud_026.html'
                       },
                       {
-                        id: 567,
-                        parentId: 559,
+                        id: 570,
+                        parentId: 562,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'zh-cn_topic_0000002044460125.html'
+                        local: 'tdsql_gud_026_1.html'
                       },
                       {
-                        id: 568,
-                        parentId: 559,
+                        id: 571,
+                        parentId: 562,
                         name: '步骤6：添加复制集群',
                         local: 'tdsql_gud_027.html'
                       },
                       {
-                        id: 569,
-                        parentId: 559,
+                        id: 572,
+                        parentId: 562,
                         name: '步骤7：创建复制SLA',
                         local: 'tdsql_gud_028.html'
                       },
                       {
-                        id: 570,
-                        parentId: 559,
+                        id: 573,
+                        parentId: 562,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'tdsql_gud_029.html'
                       }
@@ -3624,60 +3644,61 @@ naviData = [
                 ]
               },
               {
-                id: 542,
+                id: 545,
                 parentId: 37,
                 name: '归档',
                 local: 'tdsql_gud_030.html',
                 children: [
                   {
-                    id: 571,
-                    parentId: 542,
+                    id: 574,
+                    parentId: 545,
                     name: '归档TDSQL备份副本',
                     local: 'tdsql_gud_033.html',
                     children: [
                       {
-                        id: 573,
-                        parentId: 571,
+                        id: 576,
+                        parentId: 574,
                         name: '步骤1：添加归档存储',
                         local: 'tdsql_gud_034.html',
                         children: [
                           {
-                            id: 575,
-                            parentId: 573,
+                            id: 578,
+                            parentId: 576,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'tdsql_gud_035.html'
                           },
                           {
-                            id: 576,
-                            parentId: 573,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 579,
+                            parentId: 576,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'tdsql_gud_036.html'
                           }
                         ]
                       },
                       {
-                        id: 574,
-                        parentId: 571,
-                        name: '步骤2：创建归档SLA',
+                        id: 577,
+                        parentId: 574,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'tdsql_gud_037.html'
                       }
                     ]
                   },
                   {
-                    id: 572,
-                    parentId: 542,
+                    id: 575,
+                    parentId: 545,
                     name: '归档TDSQL复制副本',
                     local: 'tdsql_gud_038.html',
                     children: [
                       {
-                        id: 577,
-                        parentId: 572,
-                        name: '步骤1：创建归档SLA',
+                        id: 580,
+                        parentId: 575,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'tdsql_gud_039.html'
                       },
                       {
-                        id: 578,
-                        parentId: 572,
+                        id: 581,
+                        parentId: 575,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'tdsql_gud_040.html'
                       }
@@ -3686,106 +3707,106 @@ naviData = [
                 ]
               },
               {
-                id: 543,
+                id: 546,
                 parentId: 37,
                 name: '恢复',
                 local: 'tdsql_gud_041.html',
                 children: [
                   {
-                    id: 579,
-                    parentId: 543,
+                    id: 582,
+                    parentId: 546,
                     name: '恢复TDSQL数据库',
                     local: 'tdsql_gud_044.html'
                   }
                 ]
               },
               {
-                id: 544,
+                id: 547,
                 parentId: 37,
                 name: '全局搜索',
                 local: 'tdsql_gud_045.html',
                 children: [
                   {
-                    id: 580,
-                    parentId: 544,
+                    id: 583,
+                    parentId: 547,
                     name: '全局搜索资源',
                     local: 'tdsql_gud_047.html'
                   },
                   {
-                    id: 581,
-                    parentId: 544,
+                    id: 584,
+                    parentId: 547,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
-                    local: 'zh-cn_topic_0000002002686458.html'
+                    local: 'tdsql_gud_047_1.html'
                   }
                 ]
               },
               {
-                id: 545,
+                id: 548,
                 parentId: 37,
                 name: 'SLA',
                 local: 'tdsql_gud_059.html',
                 children: [
                   {
-                    id: 582,
-                    parentId: 545,
+                    id: 585,
+                    parentId: 548,
                     name: '关于SLA',
                     local: 'tdsql_gud_060.html'
                   },
                   {
-                    id: 583,
-                    parentId: 545,
+                    id: 586,
+                    parentId: 548,
                     name: '查看SLA信息',
                     local: 'tdsql_gud_061.html'
                   },
                   {
-                    id: 584,
-                    parentId: 545,
+                    id: 587,
+                    parentId: 548,
                     name: '管理SLA',
                     local: 'tdsql_gud_062.html'
                   }
                 ]
               },
               {
-                id: 546,
+                id: 549,
                 parentId: 37,
                 name: '副本',
                 local: 'tdsql_gud_063.html',
                 children: [
                   {
-                    id: 585,
-                    parentId: 546,
+                    id: 588,
+                    parentId: 549,
                     name: '查看TDSQL副本信息',
                     local: 'tdsql_gud_064.html'
                   },
                   {
-                    id: 586,
-                    parentId: 546,
+                    id: 589,
+                    parentId: 549,
                     name: '管理TDSQL副本',
                     local: 'tdsql_gud_065.html'
                   }
                 ]
               },
               {
-                id: 547,
+                id: 550,
                 parentId: 37,
                 name: 'TDSQL数据库环境',
                 local: 'tdsql_gud_066.html',
                 children: [
                   {
-                    id: 587,
-                    parentId: 547,
+                    id: 590,
+                    parentId: 550,
                     name: '查看TDSQL数据库环境信息',
                     local: 'tdsql_gud_067.html'
                   },
                   {
-                    id: 588,
-                    parentId: 547,
+                    id: 591,
+                    parentId: 550,
                     name: '管理数据库集群',
                     local: 'tdsql_gud_069.html'
                   },
                   {
-                    id: 589,
-                    parentId: 547,
+                    id: 592,
+                    parentId: 550,
                     name: '管理数据库实例',
                     local: 'tdsql_gud_068.html'
                   }
@@ -3800,63 +3821,62 @@ naviData = [
             local: 'zh-cn_topic_0000001873759369.html',
             children: [
               {
-                id: 590,
+                id: 593,
                 parentId: 38,
                 name: '备份',
                 local: 'dameng-00005.html',
                 children: [
                   {
-                    id: 598,
-                    parentId: 590,
+                    id: 601,
+                    parentId: 593,
                     name: '备份前准备',
                     local: 'dameng-00008.html'
                   },
                   {
-                    id: 599,
-                    parentId: 590,
+                    id: 602,
+                    parentId: 593,
                     name: '备份Dameng',
                     local: 'dameng-00009.html',
                     children: [
                       {
-                        id: 600,
-                        parentId: 599,
+                        id: 603,
+                        parentId: 602,
                         name: '步骤1：开启DmAPService服务',
                         local: 'dameng-00010.html'
                       },
                       {
-                        id: 601,
-                        parentId: 599,
+                        id: 604,
+                        parentId: 602,
                         name: '步骤2：开启数据库本地归档',
                         local: 'dameng-00011.html'
                       },
                       {
-                        id: 602,
-                        parentId: 599,
+                        id: 605,
+                        parentId: 602,
                         name: '步骤3：注册Dameng数据库',
                         local: 'dameng-00012.html'
                       },
                       {
-                        id: 603,
-                        parentId: 599,
+                        id: 606,
+                        parentId: 602,
                         name: '步骤4：（可选）创建限速策略',
                         local: 'dameng-00012_1.html'
                       },
                       {
-                        id: 604,
-                        parentId: 599,
-                        name:
-                          '步骤5：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 607,
+                        parentId: 602,
+                        name: '步骤5：（可选）开启备份链路加密开关',
                         local: 'dameng-00014.html'
                       },
                       {
-                        id: 605,
-                        parentId: 599,
+                        id: 608,
+                        parentId: 602,
                         name: '步骤6：创建备份SLA',
                         local: 'dameng-00015.html'
                       },
                       {
-                        id: 606,
-                        parentId: 599,
+                        id: 609,
+                        parentId: 602,
                         name: '步骤7：执行备份',
                         local: 'dameng-00016.html'
                       }
@@ -3865,77 +3885,77 @@ naviData = [
                 ]
               },
               {
-                id: 591,
+                id: 594,
                 parentId: 38,
                 name: '复制',
-                local: 'oracle_gud_000035_10.html',
+                local: 'oracle_gud_000035_6.html',
                 children: [
                   {
-                    id: 607,
-                    parentId: 591,
+                    id: 610,
+                    parentId: 594,
                     name: '复制Dameng数据库副本',
                     local: 'dameng-00021.html',
                     children: [
                       {
-                        id: 608,
-                        parentId: 607,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_11.html'
-                      },
-                      {
-                        id: 609,
-                        parentId: 607,
+                        id: 611,
+                        parentId: 610,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_22.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'fc_gud_0026_6.html'
                       },
                       {
-                        id: 610,
-                        parentId: 607,
+                        id: 612,
+                        parentId: 610,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_12.html'
+                      },
+                      {
+                        id: 613,
+                        parentId: 610,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'dameng-00024.html'
                       },
                       {
-                        id: 611,
-                        parentId: 607,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 614,
+                        parentId: 610,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'dameng-00025.html'
                       },
                       {
-                        id: 612,
-                        parentId: 607,
+                        id: 615,
+                        parentId: 610,
                         name: '步骤4：下载并导入证书',
                         local: 'dameng-00026.html'
                       },
                       {
-                        id: 613,
-                        parentId: 607,
+                        id: 616,
+                        parentId: 610,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'dameng-00027.html'
                       },
                       {
-                        id: 614,
-                        parentId: 607,
+                        id: 617,
+                        parentId: 610,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'dameng-00027_a1.html'
                       },
                       {
-                        id: 615,
-                        parentId: 607,
+                        id: 618,
+                        parentId: 610,
                         name: '步骤6：添加复制集群',
                         local: 'dameng-00028.html'
                       },
                       {
-                        id: 616,
-                        parentId: 607,
+                        id: 619,
+                        parentId: 610,
                         name: '步骤7：创建复制SLA',
                         local: 'dameng-00029.html'
                       },
                       {
-                        id: 617,
-                        parentId: 607,
+                        id: 620,
+                        parentId: 610,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'dameng-00030.html'
                       }
@@ -3944,60 +3964,61 @@ naviData = [
                 ]
               },
               {
-                id: 592,
+                id: 595,
                 parentId: 38,
                 name: '归档',
                 local: 'dameng-00031.html',
                 children: [
                   {
-                    id: 618,
-                    parentId: 592,
+                    id: 621,
+                    parentId: 595,
                     name: '归档Dameng备份副本',
                     local: 'dameng-00034.html',
                     children: [
                       {
-                        id: 620,
-                        parentId: 618,
+                        id: 623,
+                        parentId: 621,
                         name: '步骤1：添加归档存储',
                         local: 'dameng-00035.html',
                         children: [
                           {
-                            id: 622,
-                            parentId: 620,
+                            id: 625,
+                            parentId: 623,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'dameng-00036.html'
                           },
                           {
-                            id: 623,
-                            parentId: 620,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 626,
+                            parentId: 623,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'dameng-00037.html'
                           }
                         ]
                       },
                       {
-                        id: 621,
-                        parentId: 618,
+                        id: 624,
+                        parentId: 621,
                         name: '步骤2：创建备份副本归档SLA',
                         local: 'dameng-00038.html'
                       }
                     ]
                   },
                   {
-                    id: 619,
-                    parentId: 592,
+                    id: 622,
+                    parentId: 595,
                     name: '归档Dameng复制副本',
                     local: 'dameng-00039.html',
                     children: [
                       {
-                        id: 624,
-                        parentId: 619,
+                        id: 627,
+                        parentId: 622,
                         name: '步骤1：创建复制副本归档SLA',
                         local: 'dameng-00040.html'
                       },
                       {
-                        id: 625,
-                        parentId: 619,
+                        id: 628,
+                        parentId: 622,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'dameng-00041.html'
                       }
@@ -4006,100 +4027,100 @@ naviData = [
                 ]
               },
               {
-                id: 593,
+                id: 596,
                 parentId: 38,
                 name: '恢复',
                 local: 'dameng-00042.html',
                 children: [
                   {
-                    id: 626,
-                    parentId: 593,
+                    id: 629,
+                    parentId: 596,
                     name: '恢复Dameng',
                     local: 'dameng-00045.html'
                   }
                 ]
               },
               {
-                id: 594,
+                id: 597,
                 parentId: 38,
                 name: '全局搜索',
                 local: 'dameng-00027_a2.html',
                 children: [
                   {
-                    id: 627,
-                    parentId: 594,
+                    id: 630,
+                    parentId: 597,
                     name: '全局搜索资源',
                     local: 'dameng-00027_a3.html'
                   },
                   {
-                    id: 628,
-                    parentId: 594,
+                    id: 631,
+                    parentId: 597,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'dameng-00027_a4.html'
                   }
                 ]
               },
               {
-                id: 595,
+                id: 598,
                 parentId: 38,
                 name: 'SLA',
                 local: 'dameng-00050.html',
                 children: [
                   {
-                    id: 629,
-                    parentId: 595,
+                    id: 632,
+                    parentId: 598,
                     name: '关于SLA',
                     local: 'dameng-00051.html'
                   },
                   {
-                    id: 630,
-                    parentId: 595,
+                    id: 633,
+                    parentId: 598,
                     name: '查看SLA信息',
                     local: 'dameng-00052.html'
                   },
                   {
-                    id: 631,
-                    parentId: 595,
+                    id: 634,
+                    parentId: 598,
                     name: '管理SLA',
                     local: 'dameng-00053.html'
                   }
                 ]
               },
               {
-                id: 596,
+                id: 599,
                 parentId: 38,
                 name: '副本',
                 local: 'dameng-00054.html',
                 children: [
                   {
-                    id: 632,
-                    parentId: 596,
+                    id: 635,
+                    parentId: 599,
                     name: '查看Dameng副本信息',
                     local: 'dameng-00055.html'
                   },
                   {
-                    id: 633,
-                    parentId: 596,
+                    id: 636,
+                    parentId: 599,
                     name: '管理Dameng副本',
                     local: 'dameng-00056.html'
                   }
                 ]
               },
               {
-                id: 597,
+                id: 600,
                 parentId: 38,
                 name: 'Dameng环境',
                 local: 'dameng-00057.html',
                 children: [
                   {
-                    id: 634,
-                    parentId: 597,
+                    id: 637,
+                    parentId: 600,
                     name: '查看Dameng环境信息',
                     local: 'dameng-00058.html'
                   },
                   {
-                    id: 635,
-                    parentId: 597,
+                    id: 638,
+                    parentId: 600,
                     name: '管理Dameng',
                     local: 'dameng-00059.html'
                   }
@@ -4114,62 +4135,62 @@ naviData = [
             local: 'zh-cn_topic_0000001827039700.html',
             children: [
               {
-                id: 636,
+                id: 639,
                 parentId: 39,
                 name: '备份',
                 local: 'kingbase-00005.html',
                 children: [
                   {
-                    id: 644,
-                    parentId: 636,
+                    id: 647,
+                    parentId: 639,
                     name: '备份前准备',
                     local: 'kingbase-00007_a1.html'
                   },
                   {
-                    id: 645,
-                    parentId: 636,
+                    id: 648,
+                    parentId: 639,
                     name: '备份Kingbase实例',
                     local: 'kingbase-00008.html',
                     children: [
                       {
-                        id: 646,
-                        parentId: 645,
+                        id: 649,
+                        parentId: 648,
                         name: '步骤1：sys_rman初始化配置',
                         local: 'zh-cn_topic_0000002015631765.html'
                       },
                       {
-                        id: 647,
-                        parentId: 645,
+                        id: 650,
+                        parentId: 648,
                         name: '步骤2：注册Kingbase单实例下的数据库',
                         local: 'kingbase-00009.html'
                       },
                       {
-                        id: 648,
-                        parentId: 645,
+                        id: 651,
+                        parentId: 648,
                         name: '步骤3：注册Kingbase集群实例下的数据库',
                         local: 'kingbase-00010.html'
                       },
                       {
-                        id: 649,
-                        parentId: 645,
+                        id: 652,
+                        parentId: 648,
                         name: '步骤4：创建限速策略',
                         local: 'kingbase-00011.html'
                       },
                       {
-                        id: 650,
-                        parentId: 645,
+                        id: 653,
+                        parentId: 648,
                         name: '步骤5：（可选）开启备份链路加密开关',
                         local: 'kingbase-00012.html'
                       },
                       {
-                        id: 651,
-                        parentId: 645,
+                        id: 654,
+                        parentId: 648,
                         name: '步骤6：创建备份SLA',
                         local: 'kingbase-00013.html'
                       },
                       {
-                        id: 652,
-                        parentId: 645,
+                        id: 655,
+                        parentId: 648,
                         name: '步骤7：执行备份',
                         local: 'kingbase-00014.html'
                       }
@@ -4178,83 +4199,83 @@ naviData = [
                 ]
               },
               {
-                id: 637,
+                id: 640,
                 parentId: 39,
                 name: '复制',
-                local: 'oracle_gud_000035_11.html',
+                local: 'oracle_gud_000035_7.html',
                 children: [
                   {
-                    id: 653,
-                    parentId: 637,
+                    id: 656,
+                    parentId: 640,
                     name: '复制Kingbase副本',
                     local: 'kingbase-00019.html',
                     children: [
                       {
-                        id: 654,
-                        parentId: 653,
+                        id: 657,
+                        parentId: 656,
                         name: '规划复制网络',
                         local: 'kingbase-00020.html'
                       },
                       {
-                        id: 655,
-                        parentId: 653,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_12.html'
-                      },
-                      {
-                        id: 656,
-                        parentId: 653,
+                        id: 658,
+                        parentId: 656,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_23.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'fc_gud_0026_7.html'
                       },
                       {
-                        id: 657,
-                        parentId: 653,
+                        id: 659,
+                        parentId: 656,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_13.html'
+                      },
+                      {
+                        id: 660,
+                        parentId: 656,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'kingbase-00022.html'
                       },
                       {
-                        id: 658,
-                        parentId: 653,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 661,
+                        parentId: 656,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'kingbase-00023.html'
                       },
                       {
-                        id: 659,
-                        parentId: 653,
+                        id: 662,
+                        parentId: 656,
                         name: '步骤4：下载并导入证书',
                         local: 'kingbase-00024.html'
                       },
                       {
-                        id: 660,
-                        parentId: 653,
+                        id: 663,
+                        parentId: 656,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'kingbase-00025.html'
                       },
                       {
-                        id: 661,
-                        parentId: 653,
+                        id: 664,
+                        parentId: 656,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'kingbase-00025_a1.html'
                       },
                       {
-                        id: 662,
-                        parentId: 653,
-                        name: '步骤6：添加目标集群',
+                        id: 665,
+                        parentId: 656,
+                        name: '步骤6：添加复制集群',
                         local: 'kingbase-00026.html'
                       },
                       {
-                        id: 663,
-                        parentId: 653,
+                        id: 666,
+                        parentId: 656,
                         name: '步骤7：创建复制SLA',
                         local: 'kingbase-00027.html'
                       },
                       {
-                        id: 664,
-                        parentId: 653,
+                        id: 667,
+                        parentId: 656,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'kingbase-00028.html'
                       }
@@ -4263,60 +4284,61 @@ naviData = [
                 ]
               },
               {
-                id: 638,
+                id: 641,
                 parentId: 39,
                 name: '归档',
                 local: 'kingbase-00029.html',
                 children: [
                   {
-                    id: 665,
-                    parentId: 638,
+                    id: 668,
+                    parentId: 641,
                     name: '归档Kingbase备份副本',
                     local: 'kingbase-00032.html',
                     children: [
                       {
-                        id: 667,
-                        parentId: 665,
+                        id: 670,
+                        parentId: 668,
                         name: '步骤1：添加归档存储',
                         local: 'kingbase-00033.html',
                         children: [
                           {
-                            id: 669,
-                            parentId: 667,
+                            id: 672,
+                            parentId: 670,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'kingbase-00034.html'
                           },
                           {
-                            id: 670,
-                            parentId: 667,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 673,
+                            parentId: 670,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'kingbase-00035.html'
                           }
                         ]
                       },
                       {
-                        id: 668,
-                        parentId: 665,
-                        name: '步骤2：创建归档SLA',
+                        id: 671,
+                        parentId: 668,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'kingbase-00036.html'
                       }
                     ]
                   },
                   {
-                    id: 666,
-                    parentId: 638,
+                    id: 669,
+                    parentId: 641,
                     name: '归档Kingbase复制副本',
                     local: 'kingbase-00037.html',
                     children: [
                       {
-                        id: 671,
-                        parentId: 666,
-                        name: '步骤1：创建归档SLA',
+                        id: 674,
+                        parentId: 669,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'kingbase-00038.html'
                       },
                       {
-                        id: 672,
-                        parentId: 666,
+                        id: 675,
+                        parentId: 669,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'kingbase-00039.html'
                       }
@@ -4325,106 +4347,106 @@ naviData = [
                 ]
               },
               {
-                id: 639,
+                id: 642,
                 parentId: 39,
                 name: '恢复',
                 local: 'kingbase-00040.html',
                 children: [
                   {
-                    id: 673,
-                    parentId: 639,
+                    id: 676,
+                    parentId: 642,
                     name: '恢复Kingbase实例',
                     local: 'kingbase-00043.html'
                   }
                 ]
               },
               {
-                id: 640,
+                id: 643,
                 parentId: 39,
                 name: '全局搜索',
                 local: 'kingbase-00025_a2.html',
                 children: [
                   {
-                    id: 674,
-                    parentId: 640,
+                    id: 677,
+                    parentId: 643,
                     name: '全局搜索资源',
                     local: 'kingbase-00025_a3.html'
                   },
                   {
-                    id: 675,
-                    parentId: 640,
+                    id: 678,
+                    parentId: 643,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'kingbase-00025_a4.html'
                   }
                 ]
               },
               {
-                id: 641,
+                id: 644,
                 parentId: 39,
                 name: 'SLA',
                 local: 'kingbase-00048.html',
                 children: [
                   {
-                    id: 676,
-                    parentId: 641,
+                    id: 679,
+                    parentId: 644,
                     name: '关于SLA',
                     local: 'kingbase-00049.html'
                   },
                   {
-                    id: 677,
-                    parentId: 641,
+                    id: 680,
+                    parentId: 644,
                     name: '查看SLA信息',
                     local: 'kingbase-00050.html'
                   },
                   {
-                    id: 678,
-                    parentId: 641,
+                    id: 681,
+                    parentId: 644,
                     name: '管理SLA',
                     local: 'kingbase-00051.html'
                   }
                 ]
               },
               {
-                id: 642,
+                id: 645,
                 parentId: 39,
                 name: '副本',
                 local: 'kingbase-00052.html',
                 children: [
                   {
-                    id: 679,
-                    parentId: 642,
+                    id: 682,
+                    parentId: 645,
                     name: '查看Kingbase副本信息',
                     local: 'kingbase-00053.html'
                   },
                   {
-                    id: 680,
-                    parentId: 642,
+                    id: 683,
+                    parentId: 645,
                     name: '管理Kingbase副本',
                     local: 'kingbase-00054.html'
                   }
                 ]
               },
               {
-                id: 643,
+                id: 646,
                 parentId: 39,
                 name: 'Kingbase集群环境',
                 local: 'kingbase-00055.html',
                 children: [
                   {
-                    id: 681,
-                    parentId: 643,
+                    id: 684,
+                    parentId: 646,
                     name: '查看Kingbase环境信息',
                     local: 'kingbase-00056.html'
                   },
                   {
-                    id: 682,
-                    parentId: 643,
+                    id: 685,
+                    parentId: 646,
                     name: '管理Kingbase',
                     local: 'kingbase-00057.html'
                   },
                   {
-                    id: 683,
-                    parentId: 643,
+                    id: 686,
+                    parentId: 646,
                     name: '管理Kingbase数据库集群',
                     local: 'kingbase-00058.html'
                   }
@@ -4439,314 +4461,326 @@ naviData = [
             local: 'zh-cn_topic_0000001873759373.html',
             children: [
               {
-                id: 684,
+                id: 687,
                 parentId: 40,
                 name: '备份',
-                local: 'goldendb-00005.html',
+                local: 'goldendb-00007.html',
                 children: [
                   {
-                    id: 692,
-                    parentId: 684,
+                    id: 695,
+                    parentId: 687,
                     name: '备份前准备',
-                    local: 'goldendb-00008.html'
+                    local: 'goldendb-00010.html'
                   },
                   {
-                    id: 693,
-                    parentId: 684,
+                    id: 696,
+                    parentId: 687,
                     name: '备份GoldenDB数据库',
-                    local: 'goldendb-00009.html',
+                    local: 'goldendb-00011.html',
                     children: [
                       {
-                        id: 694,
-                        parentId: 693,
+                        id: 697,
+                        parentId: 696,
                         name: '步骤1：注册GoldenDB集群',
-                        local: 'goldendb-00010.html'
-                      },
-                      {
-                        id: 695,
-                        parentId: 693,
-                        name: '步骤2：创建GoldenDB实例',
-                        local: 'goldendb-00011.html'
-                      },
-                      {
-                        id: 696,
-                        parentId: 693,
-                        name: '步骤3：创建限速策略',
                         local: 'goldendb-00012.html'
                       },
                       {
-                        id: 697,
-                        parentId: 693,
-                        name:
-                          '步骤4：（可选）开启备份链路加密开关 （适用于X系列备份一体机）',
+                        id: 698,
+                        parentId: 696,
+                        name: '步骤2：创建GoldenDB实例',
                         local: 'goldendb-00013.html'
                       },
                       {
-                        id: 698,
-                        parentId: 693,
-                        name: '步骤5：创建备份SLA',
+                        id: 699,
+                        parentId: 696,
+                        name: '步骤3：创建限速策略',
                         local: 'goldendb-00014.html'
                       },
                       {
-                        id: 699,
-                        parentId: 693,
-                        name: '步骤6：执行备份',
+                        id: 700,
+                        parentId: 696,
+                        name: '步骤4：（可选）开启备份链路加密开关 ',
                         local: 'goldendb-00015.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 685,
-                parentId: 40,
-                name: '复制',
-                local: 'oracle_gud_000035_9.html',
-                children: [
-                  {
-                    id: 700,
-                    parentId: 685,
-                    name: '复制GoldenDB副本',
-                    local: 'goldendb-00020.html',
-                    children: [
+                      },
                       {
                         id: 701,
-                        parentId: 700,
-                        name: '规划复制网络',
-                        local: 'goldendb-00021.html'
+                        parentId: 696,
+                        name: '步骤5：创建备份SLA',
+                        local: 'goldendb-00016.html'
                       },
                       {
                         id: 702,
-                        parentId: 700,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_10.html'
-                      },
-                      {
-                        id: 703,
-                        parentId: 700,
-                        name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_19.html'
-                      },
-                      {
-                        id: 704,
-                        parentId: 700,
-                        name: '步骤2：（可选）创建IPsec策略',
-                        local: 'goldendb-00023.html'
-                      },
-                      {
-                        id: 705,
-                        parentId: 700,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
-                        local: 'goldendb-00024.html'
-                      },
-                      {
-                        id: 706,
-                        parentId: 700,
-                        name: '步骤4：下载并导入证书',
-                        local: 'goldendb-00025.html'
-                      },
-                      {
-                        id: 707,
-                        parentId: 700,
-                        name: '步骤5：创建远端设备管理员',
-                        local: 'goldendb-00026.html'
-                      },
-                      {
-                        id: 708,
-                        parentId: 700,
-                        name:
-                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'zh-cn_topic_0000002010566636.html'
-                      },
-                      {
-                        id: 709,
-                        parentId: 700,
-                        name: '步骤6：添加复制集群',
-                        local: 'goldendb-00027.html'
-                      },
-                      {
-                        id: 710,
-                        parentId: 700,
-                        name: '步骤7：创建复制SLA',
-                        local: 'goldendb-00028.html'
-                      },
-                      {
-                        id: 711,
-                        parentId: 700,
-                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
-                        local: 'goldendb-00029.html'
+                        parentId: 696,
+                        name: '步骤6：执行备份',
+                        local: 'goldendb-00017.html'
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                id: 686,
-                parentId: 40,
-                name: '归档',
-                local: 'goldendb-00030.html',
-                children: [
-                  {
-                    id: 712,
-                    parentId: 686,
-                    name: '归档GoldenDB备份副本',
-                    local: 'goldendb-00033.html',
-                    children: [
-                      {
-                        id: 714,
-                        parentId: 712,
-                        name: '步骤1：添加归档存储',
-                        local: 'goldendb-00034.html',
-                        children: [
-                          {
-                            id: 716,
-                            parentId: 714,
-                            name: '添加对象存储（归档存储是对象存储）',
-                            local: 'goldendb-00035.html'
-                          },
-                          {
-                            id: 717,
-                            parentId: 714,
-                            name: '创建介质集（归档存储是磁带库）',
-                            local: 'goldendb-00036.html'
-                          }
-                        ]
-                      },
-                      {
-                        id: 715,
-                        parentId: 712,
-                        name: '步骤2：创建归档SLA',
-                        local: 'goldendb-00037.html'
-                      }
-                    ]
-                  },
-                  {
-                    id: 713,
-                    parentId: 686,
-                    name: '归档GoldenDB复制副本',
-                    local: 'goldendb-00038.html',
-                    children: [
-                      {
-                        id: 718,
-                        parentId: 713,
-                        name: '步骤1：创建归档SLA',
-                        local: 'goldendb-00039.html'
-                      },
-                      {
-                        id: 719,
-                        parentId: 713,
-                        name: '步骤2：创建复制副本周期性归档',
-                        local: 'goldendb-00040.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 687,
-                parentId: 40,
-                name: '恢复',
-                local: 'goldendb-00041.html',
-                children: [
-                  {
-                    id: 720,
-                    parentId: 687,
-                    name: '恢复GoldenDB',
-                    local: 'goldendb-00044.html'
                   }
                 ]
               },
               {
                 id: 688,
                 parentId: 40,
-                name: '全局搜索',
-                local: 'goldendb-00045.html',
+                name: '复制',
+                local: 'goldendb-00020.html',
                 children: [
                   {
-                    id: 721,
+                    id: 703,
                     parentId: 688,
-                    name: '全局搜索资源',
-                    local: 'goldendb-00047.html'
-                  },
-                  {
-                    id: 722,
-                    parentId: 688,
-                    name: '全局标签搜索（适用于1.6.0及后续版本）',
-                    local: 'zh-cn_topic_0000002002838402.html'
+                    name: '复制GoldenDB副本',
+                    local: 'goldendb-00023.html',
+                    children: [
+                      {
+                        id: 704,
+                        parentId: 703,
+                        name: '规划复制网络',
+                        local: 'goldendb-00024.html'
+                      },
+                      {
+                        id: 705,
+                        parentId: 703,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'goldendb-00025.html'
+                      },
+                      {
+                        id: 706,
+                        parentId: 703,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'goldendb-00026.html'
+                      },
+                      {
+                        id: 707,
+                        parentId: 703,
+                        name: '步骤2：（可选）创建IPsec策略',
+                        local: 'goldendb-00027.html'
+                      },
+                      {
+                        id: 708,
+                        parentId: 703,
+                        name: '步骤3：（可选）开启复制链路加密开关',
+                        local: 'goldendb-00028.html'
+                      },
+                      {
+                        id: 709,
+                        parentId: 703,
+                        name: '步骤4：下载并导入证书',
+                        local: 'goldendb-00029.html'
+                      },
+                      {
+                        id: 710,
+                        parentId: 703,
+                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
+                        local: 'goldendb-00030.html'
+                      },
+                      {
+                        id: 711,
+                        parentId: 703,
+                        name:
+                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
+                        local: 'goldendb-00031.html'
+                      },
+                      {
+                        id: 712,
+                        parentId: 703,
+                        name: '步骤6：添加复制集群',
+                        local: 'goldendb-00032.html'
+                      },
+                      {
+                        id: 713,
+                        parentId: 703,
+                        name: '步骤7：创建复制SLA',
+                        local: 'goldendb-00033.html'
+                      },
+                      {
+                        id: 714,
+                        parentId: 703,
+                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
+                        local: 'goldendb-00034.html'
+                      }
+                    ]
                   }
                 ]
               },
               {
                 id: 689,
                 parentId: 40,
-                name: 'SLA',
-                local: 'goldendb-00050.html',
+                name: '归档',
+                local: 'goldendb-00035.html',
                 children: [
                   {
-                    id: 723,
+                    id: 715,
                     parentId: 689,
-                    name: '关于SLA',
-                    local: 'goldendb-00051.html'
+                    name: '归档GoldenDB备份副本',
+                    local: 'goldendb-00038.html',
+                    children: [
+                      {
+                        id: 717,
+                        parentId: 715,
+                        name: '步骤1：添加归档存储',
+                        local: 'goldendb-00039.html',
+                        children: [
+                          {
+                            id: 719,
+                            parentId: 717,
+                            name: '添加对象存储（归档存储是对象存储）',
+                            local: 'goldendb-00040.html'
+                          },
+                          {
+                            id: 720,
+                            parentId: 717,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
+                            local: 'goldendb-00041.html'
+                          }
+                        ]
+                      },
+                      {
+                        id: 718,
+                        parentId: 715,
+                        name: '步骤2：创建备份副本归档SLA',
+                        local: 'goldendb-00042.html'
+                      }
+                    ]
                   },
                   {
-                    id: 724,
+                    id: 716,
                     parentId: 689,
-                    name: '查看SLA信息',
-                    local: 'goldendb-00052.html'
-                  },
-                  {
-                    id: 725,
-                    parentId: 689,
-                    name: '管理SLA',
-                    local: 'goldendb-00053.html'
+                    name: '归档GoldenDB复制副本',
+                    local: 'goldendb-00043.html',
+                    children: [
+                      {
+                        id: 721,
+                        parentId: 716,
+                        name: '步骤1：创建复制副本归档SLA',
+                        local: 'goldendb-00044.html'
+                      },
+                      {
+                        id: 722,
+                        parentId: 716,
+                        name: '步骤2：创建复制副本周期性归档',
+                        local: 'goldendb-00045.html'
+                      }
+                    ]
                   }
                 ]
               },
               {
                 id: 690,
                 parentId: 40,
-                name: '副本',
-                local: 'goldendb-00054.html',
+                name: '恢复',
+                local: 'goldendb-00046.html',
                 children: [
                   {
-                    id: 726,
+                    id: 723,
                     parentId: 690,
-                    name: '查看GoldenDB副本信息',
-                    local: 'goldendb-00055.html'
-                  },
-                  {
-                    id: 727,
-                    parentId: 690,
-                    name: '管理GoldenDB副本',
-                    local: 'goldendb-00056.html'
+                    name: '恢复GoldenDB',
+                    local: 'goldendb-00049.html'
                   }
                 ]
               },
               {
                 id: 691,
                 parentId: 40,
-                name: 'GoldenDB集群环境',
+                name: '全局搜索',
+                local: 'goldendb-00050.html',
+                children: [
+                  {
+                    id: 724,
+                    parentId: 691,
+                    name: '关于全局搜索',
+                    local: 'goldendb-00051.html'
+                  },
+                  {
+                    id: 725,
+                    parentId: 691,
+                    name: '全局搜索副本数据',
+                    local: 'goldendb-00052.html'
+                  },
+                  {
+                    id: 726,
+                    parentId: 691,
+                    name: '全局搜索资源',
+                    local: 'goldendb-00053.html'
+                  },
+                  {
+                    id: 727,
+                    parentId: 691,
+                    name: '全局标签搜索（适用于1.6.0及后续版本）',
+                    local: 'goldendb-00054.html'
+                  }
+                ]
+              },
+              {
+                id: 692,
+                parentId: 40,
+                name: 'SLA',
                 local: 'goldendb-00057.html',
                 children: [
                   {
                     id: 728,
-                    parentId: 691,
-                    name: '查看GoldenDB环境信息',
+                    parentId: 692,
+                    name: '关于SLA',
                     local: 'goldendb-00058.html'
                   },
                   {
                     id: 729,
-                    parentId: 691,
-                    name: '管理实例',
+                    parentId: 692,
+                    name: '查看SLA信息',
                     local: 'goldendb-00059.html'
                   },
                   {
                     id: 730,
-                    parentId: 691,
-                    name: '管理集群',
+                    parentId: 692,
+                    name: '管理SLA',
                     local: 'goldendb-00060.html'
+                  }
+                ]
+              },
+              {
+                id: 693,
+                parentId: 40,
+                name: '副本',
+                local: 'goldendb-00061.html',
+                children: [
+                  {
+                    id: 731,
+                    parentId: 693,
+                    name: '查看GoldenDB副本信息',
+                    local: 'goldendb-00062.html'
+                  },
+                  {
+                    id: 732,
+                    parentId: 693,
+                    name: '管理GoldenDB副本',
+                    local: 'goldendb-00063.html'
+                  }
+                ]
+              },
+              {
+                id: 694,
+                parentId: 40,
+                name: 'GoldenDB集群环境',
+                local: 'goldendb-00064.html',
+                children: [
+                  {
+                    id: 733,
+                    parentId: 694,
+                    name: '查看GoldenDB环境信息',
+                    local: 'goldendb-00065.html'
+                  },
+                  {
+                    id: 734,
+                    parentId: 694,
+                    name: '管理实例',
+                    local: 'goldendb-00066.html'
+                  },
+                  {
+                    id: 735,
+                    parentId: 694,
+                    name: '管理集群',
+                    local: 'goldendb-00067.html'
                   }
                 ]
               }
@@ -4759,75 +4793,74 @@ naviData = [
             local: 'zh-cn_topic_0000001827039692.html',
             children: [
               {
-                id: 731,
+                id: 736,
                 parentId: 41,
                 name: '备份',
                 local: 'TPOPS_GaussDB_00006.html',
                 children: [
                   {
-                    id: 739,
-                    parentId: 731,
+                    id: 744,
+                    parentId: 736,
                     name: '备份前准备',
                     local: 'TPOPS_GaussDB_00009.html'
                   },
                   {
-                    id: 740,
-                    parentId: 731,
+                    id: 745,
+                    parentId: 736,
                     name: '备份GaussDB实例',
                     local: 'TPOPS_GaussDB_00010.html',
                     children: [
                       {
-                        id: 741,
-                        parentId: 740,
+                        id: 746,
+                        parentId: 745,
                         name: '步骤1：获取管理面地址和端口',
                         local: 'TPOPS_GaussDB_00014.html'
                       },
                       {
-                        id: 742,
-                        parentId: 740,
+                        id: 747,
+                        parentId: 745,
                         name: '步骤2：在TPOPS节点上开启XBSA备份的白名单',
                         local: 'TPOPS_GaussDB_00013.html'
                       },
                       {
-                        id: 743,
-                        parentId: 740,
+                        id: 748,
+                        parentId: 745,
                         name: '步骤3：在TPOPS管理界面配置实例的备份默认根路径',
                         local: 'TPOPS_GaussDB_00011.html'
                       },
                       {
-                        id: 744,
-                        parentId: 740,
+                        id: 749,
+                        parentId: 745,
                         name: '步骤4：在TPOPS管理界面打开实例监控',
                         local: 'TPOPS_GaussDB_00012.html'
                       },
                       {
-                        id: 745,
-                        parentId: 740,
+                        id: 750,
+                        parentId: 745,
                         name: '步骤5：注册GaussDB项目',
                         local: 'TPOPS_GaussDB_00015.html'
                       },
                       {
-                        id: 746,
-                        parentId: 740,
-                        name:
-                          '步骤6：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 751,
+                        parentId: 745,
+                        name: '步骤6：（可选）开启备份链路加密开关',
                         local: 'TPOPS_GaussDB_00016.html'
                       },
                       {
-                        id: 747,
-                        parentId: 740,
+                        id: 752,
+                        parentId: 745,
                         name: '步骤7：创建限速策略',
                         local: 'TPOPS_GaussDB_00017.html'
                       },
                       {
-                        id: 748,
-                        parentId: 740,
+                        id: 753,
+                        parentId: 745,
                         name: '步骤8：创建备份SLA',
                         local: 'TPOPS_GaussDB_00018.html'
                       },
                       {
-                        id: 749,
-                        parentId: 740,
+                        id: 754,
+                        parentId: 745,
                         name: '步骤9：执行备份',
                         local: 'TPOPS_GaussDB_00019.html'
                       }
@@ -4836,83 +4869,83 @@ naviData = [
                 ]
               },
               {
-                id: 732,
+                id: 737,
                 parentId: 41,
                 name: '复制',
                 local: 'TPOPS_GaussDB_00022.html',
                 children: [
                   {
-                    id: 750,
-                    parentId: 732,
+                    id: 755,
+                    parentId: 737,
                     name: '复制GaussDB副本',
                     local: 'TPOPS_GaussDB_00024.html',
                     children: [
                       {
-                        id: 751,
-                        parentId: 750,
+                        id: 756,
+                        parentId: 755,
                         name: '规划复制网络',
                         local: 'TPOPS_GaussDB_00025.html'
                       },
                       {
-                        id: 752,
-                        parentId: 750,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 757,
+                        parentId: 755,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'TPOPS_GaussDB_00026.html'
                       },
                       {
-                        id: 753,
-                        parentId: 750,
+                        id: 758,
+                        parentId: 755,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_7.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_4.html'
                       },
                       {
-                        id: 754,
-                        parentId: 750,
+                        id: 759,
+                        parentId: 755,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'TPOPS_GaussDB_00027.html'
                       },
                       {
-                        id: 755,
-                        parentId: 750,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 760,
+                        parentId: 755,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'TPOPS_GaussDB_00028.html'
                       },
                       {
-                        id: 756,
-                        parentId: 750,
+                        id: 761,
+                        parentId: 755,
                         name: '步骤4：下载并导入证书',
                         local: 'TPOPS_GaussDB_00029.html'
                       },
                       {
-                        id: 757,
-                        parentId: 750,
+                        id: 762,
+                        parentId: 755,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'TPOPS_GaussDB_00030.html'
                       },
                       {
-                        id: 758,
-                        parentId: 750,
+                        id: 763,
+                        parentId: 755,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'TPOPS_GaussDB_000300.html'
                       },
                       {
-                        id: 759,
-                        parentId: 750,
-                        name: '步骤6：添加目标集群',
+                        id: 764,
+                        parentId: 755,
+                        name: '步骤6：添加复制集群',
                         local: 'TPOPS_GaussDB_00031.html'
                       },
                       {
-                        id: 760,
-                        parentId: 750,
+                        id: 765,
+                        parentId: 755,
                         name: '步骤7：创建复制SLA',
                         local: 'TPOPS_GaussDB_00032.html'
                       },
                       {
-                        id: 761,
-                        parentId: 750,
+                        id: 766,
+                        parentId: 755,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'TPOPS_GaussDB_00033.html'
                       }
@@ -4921,60 +4954,61 @@ naviData = [
                 ]
               },
               {
-                id: 733,
+                id: 738,
                 parentId: 41,
                 name: '归档',
                 local: 'TPOPS_GaussDB_00034.html',
                 children: [
                   {
-                    id: 762,
-                    parentId: 733,
+                    id: 767,
+                    parentId: 738,
                     name: '归档GaussDB备份副本',
                     local: 'TPOPS_GaussDB_00037.html',
                     children: [
                       {
-                        id: 764,
-                        parentId: 762,
+                        id: 769,
+                        parentId: 767,
                         name: '步骤1：添加归档存储',
                         local: 'TPOPS_GaussDB_00038.html',
                         children: [
                           {
-                            id: 766,
-                            parentId: 764,
+                            id: 771,
+                            parentId: 769,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'TPOPS_GaussDB_00039.html'
                           },
                           {
-                            id: 767,
-                            parentId: 764,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 772,
+                            parentId: 769,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'TPOPS_GaussDB_00040.html'
                           }
                         ]
                       },
                       {
-                        id: 765,
-                        parentId: 762,
-                        name: '步骤2：创建归档SLA',
+                        id: 770,
+                        parentId: 767,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'TPOPS_GaussDB_00041.html'
                       }
                     ]
                   },
                   {
-                    id: 763,
-                    parentId: 733,
+                    id: 768,
+                    parentId: 738,
                     name: '归档GaussDB复制副本',
                     local: 'TPOPS_GaussDB_00042.html',
                     children: [
                       {
-                        id: 768,
-                        parentId: 763,
-                        name: '步骤1：创建归档SLA',
+                        id: 773,
+                        parentId: 768,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'TPOPS_GaussDB_00043.html'
                       },
                       {
-                        id: 769,
-                        parentId: 763,
+                        id: 774,
+                        parentId: 768,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'TPOPS_GaussDB_00044.html'
                       }
@@ -4983,106 +5017,106 @@ naviData = [
                 ]
               },
               {
-                id: 734,
+                id: 739,
                 parentId: 41,
                 name: '恢复',
                 local: 'TPOPS_GaussDB_00045.html',
                 children: [
                   {
-                    id: 770,
-                    parentId: 734,
+                    id: 775,
+                    parentId: 739,
                     name: '恢复GaussDB实例',
                     local: 'TPOPS_GaussDB_00048.html'
                   }
                 ]
               },
               {
-                id: 735,
+                id: 740,
                 parentId: 41,
                 name: '全局搜索',
                 local: 'TPOPS_GaussDB_000451.html',
                 children: [
                   {
-                    id: 771,
-                    parentId: 735,
+                    id: 776,
+                    parentId: 740,
                     name: '全局搜索资源',
                     local: 'TPOPS_GaussDB_00049.html'
                   },
                   {
-                    id: 772,
-                    parentId: 735,
+                    id: 777,
+                    parentId: 740,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'TPOPS_GaussDB_000491.html'
                   }
                 ]
               },
               {
-                id: 736,
+                id: 741,
                 parentId: 41,
                 name: 'SLA',
                 local: 'TPOPS_GaussDB_00052.html',
                 children: [
                   {
-                    id: 773,
-                    parentId: 736,
+                    id: 778,
+                    parentId: 741,
                     name: '关于SLA',
                     local: 'TPOPS_GaussDB_000540.html'
                   },
                   {
-                    id: 774,
-                    parentId: 736,
+                    id: 779,
+                    parentId: 741,
                     name: '查看SLA信息',
                     local: 'TPOPS_GaussDB_00054.html'
                   },
                   {
-                    id: 775,
-                    parentId: 736,
+                    id: 780,
+                    parentId: 741,
                     name: '管理SLA',
                     local: 'TPOPS_GaussDB_00055.html'
                   }
                 ]
               },
               {
-                id: 737,
+                id: 742,
                 parentId: 41,
                 name: '副本',
                 local: 'TPOPS_GaussDB_00056.html',
                 children: [
                   {
-                    id: 776,
-                    parentId: 737,
+                    id: 781,
+                    parentId: 742,
                     name: '查看GaussDB副本信息',
                     local: 'TPOPS_GaussDB_00057.html'
                   },
                   {
-                    id: 777,
-                    parentId: 737,
+                    id: 782,
+                    parentId: 742,
                     name: '管理GaussDB副本',
                     local: 'TPOPS_GaussDB_00058.html'
                   }
                 ]
               },
               {
-                id: 738,
+                id: 743,
                 parentId: 41,
                 name: 'GaussDB',
                 local: 'TPOPS_GaussDB_00059.html',
                 children: [
                   {
-                    id: 778,
-                    parentId: 738,
+                    id: 783,
+                    parentId: 743,
                     name: '查看GaussDB信息',
                     local: 'TPOPS_GaussDB_00060.html'
                   },
                   {
-                    id: 779,
-                    parentId: 738,
+                    id: 784,
+                    parentId: 743,
                     name: '管理GaussDB项目',
                     local: 'TPOPS_GaussDB_00061.html'
                   },
                   {
-                    id: 780,
-                    parentId: 738,
+                    id: 785,
+                    parentId: 743,
                     name: '管理实例',
                     local: 'TPOPS_GaussDB_00062.html'
                   }
@@ -5097,51 +5131,50 @@ naviData = [
             local: 'zh-cn_topic_0000001873759389.html',
             children: [
               {
-                id: 781,
+                id: 786,
                 parentId: 42,
                 name: '备份',
                 local: 'GBase_8a_00006.html',
                 children: [
                   {
-                    id: 789,
-                    parentId: 781,
+                    id: 794,
+                    parentId: 786,
                     name: '备份前准备',
                     local: 'GBase_8a_00009.html'
                   },
                   {
-                    id: 790,
-                    parentId: 781,
+                    id: 795,
+                    parentId: 786,
                     name: '备份GBase 8a数据库',
                     local: 'GBase_8a_00010.html',
                     children: [
                       {
-                        id: 791,
-                        parentId: 790,
+                        id: 796,
+                        parentId: 795,
                         name: '步骤1：注册GBase 8a数据库',
                         local: 'GBase_8a_00011.html'
                       },
                       {
-                        id: 792,
-                        parentId: 790,
+                        id: 797,
+                        parentId: 795,
                         name: '步骤2：创建限速策略',
                         local: 'GBase_8a_00012.html'
                       },
                       {
-                        id: 793,
-                        parentId: 790,
-                        name:
-                          '步骤3：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 798,
+                        parentId: 795,
+                        name: '步骤3：（可选）开启备份链路加密开关',
                         local: 'GBase_8a_00013.html'
                       },
                       {
-                        id: 794,
-                        parentId: 790,
+                        id: 799,
+                        parentId: 795,
                         name: '步骤4：创建备份SLA',
                         local: 'GBase_8a_00014.html'
                       },
                       {
-                        id: 795,
-                        parentId: 790,
+                        id: 800,
+                        parentId: 795,
                         name: '步骤5：执行备份',
                         local: 'GBase_8a_00015.html'
                       }
@@ -5150,77 +5183,77 @@ naviData = [
                 ]
               },
               {
-                id: 782,
+                id: 787,
                 parentId: 42,
                 name: '复制',
-                local: 'oracle_gud_000035_13.html',
+                local: 'oracle_gud_000035_9.html',
                 children: [
                   {
-                    id: 796,
-                    parentId: 782,
+                    id: 801,
+                    parentId: 787,
                     name: '复制GBase 8a数据库副本',
                     local: 'GBase_8a_00020.html',
                     children: [
                       {
-                        id: 797,
-                        parentId: 796,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 802,
+                        parentId: 801,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'GBase_8a_00022.html'
                       },
                       {
-                        id: 798,
-                        parentId: 796,
+                        id: 803,
+                        parentId: 801,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_27.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_17.html'
                       },
                       {
-                        id: 799,
-                        parentId: 796,
+                        id: 804,
+                        parentId: 801,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'GBase_8a_00023.html'
                       },
                       {
-                        id: 800,
-                        parentId: 796,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 805,
+                        parentId: 801,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'GBase_8a_00024.html'
                       },
                       {
-                        id: 801,
-                        parentId: 796,
+                        id: 806,
+                        parentId: 801,
                         name: '步骤4：下载并导入证书',
                         local: 'GBase_8a_00025.html'
                       },
                       {
-                        id: 802,
-                        parentId: 796,
+                        id: 807,
+                        parentId: 801,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'GBase_8a_00026.html'
                       },
                       {
-                        id: 803,
-                        parentId: 796,
+                        id: 808,
+                        parentId: 801,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'GBase_8a_0002600.html'
                       },
                       {
-                        id: 804,
-                        parentId: 796,
-                        name: '步骤6：添加目标集群',
+                        id: 809,
+                        parentId: 801,
+                        name: '步骤6：添加复制集群',
                         local: 'GBase_8a_00027.html'
                       },
                       {
-                        id: 805,
-                        parentId: 796,
+                        id: 810,
+                        parentId: 801,
                         name: '步骤7：创建复制SLA',
                         local: 'GBase_8a_00028.html'
                       },
                       {
-                        id: 806,
-                        parentId: 796,
+                        id: 811,
+                        parentId: 801,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'GBase_8a_00029.html'
                       }
@@ -5229,60 +5262,61 @@ naviData = [
                 ]
               },
               {
-                id: 783,
+                id: 788,
                 parentId: 42,
                 name: '归档',
                 local: 'GBase_8a_00030.html',
                 children: [
                   {
-                    id: 807,
-                    parentId: 783,
+                    id: 812,
+                    parentId: 788,
                     name: '归档GBase 8a备份副本',
                     local: 'GBase_8a_00033.html',
                     children: [
                       {
-                        id: 809,
-                        parentId: 807,
+                        id: 814,
+                        parentId: 812,
                         name: '步骤1：添加归档存储',
                         local: 'GBase_8a_00034.html',
                         children: [
                           {
-                            id: 811,
-                            parentId: 809,
+                            id: 816,
+                            parentId: 814,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'GBase_8a_00035.html'
                           },
                           {
-                            id: 812,
-                            parentId: 809,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 817,
+                            parentId: 814,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'GBase_8a_00036.html'
                           }
                         ]
                       },
                       {
-                        id: 810,
-                        parentId: 807,
-                        name: '步骤2：创建归档SLA',
+                        id: 815,
+                        parentId: 812,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'GBase_8a_00037.html'
                       }
                     ]
                   },
                   {
-                    id: 808,
-                    parentId: 783,
+                    id: 813,
+                    parentId: 788,
                     name: '归档GBase 8a复制副本',
                     local: 'GBase_8a_00038.html',
                     children: [
                       {
-                        id: 813,
-                        parentId: 808,
-                        name: '步骤1：创建归档SLA',
+                        id: 818,
+                        parentId: 813,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'GBase_8a_00039.html'
                       },
                       {
-                        id: 814,
-                        parentId: 808,
+                        id: 819,
+                        parentId: 813,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'GBase_8a_00040.html'
                       }
@@ -5291,88 +5325,88 @@ naviData = [
                 ]
               },
               {
-                id: 784,
+                id: 789,
                 parentId: 42,
                 name: '恢复',
                 local: 'GBase_8a_00041.html',
                 children: [
                   {
-                    id: 815,
-                    parentId: 784,
+                    id: 820,
+                    parentId: 789,
                     name: '恢复GBase 8a数据库',
                     local: 'GBase_8a_00044.html'
                   }
                 ]
               },
               {
-                id: 785,
+                id: 790,
                 parentId: 42,
                 name: '全局搜索',
                 local: 'GBase_8a_000411.html',
                 children: [
                   {
-                    id: 816,
-                    parentId: 785,
+                    id: 821,
+                    parentId: 790,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'GBase_8a_000451.html'
                   }
                 ]
               },
               {
-                id: 786,
+                id: 791,
                 parentId: 42,
                 name: 'SLA',
                 local: 'GBase_8a_00048.html',
                 children: [
                   {
-                    id: 817,
-                    parentId: 786,
+                    id: 822,
+                    parentId: 791,
                     name: '查看SLA信息',
                     local: 'GBase_8a_00050.html'
                   },
                   {
-                    id: 818,
-                    parentId: 786,
+                    id: 823,
+                    parentId: 791,
                     name: '管理SLA',
                     local: 'GBase_8a_00051.html'
                   }
                 ]
               },
               {
-                id: 787,
+                id: 792,
                 parentId: 42,
                 name: '副本',
                 local: 'GBase_8a_00052.html',
                 children: [
                   {
-                    id: 819,
-                    parentId: 787,
+                    id: 824,
+                    parentId: 792,
                     name: '查看GBase 8a副本信息',
                     local: 'GBase_8a_00053.html'
                   },
                   {
-                    id: 820,
-                    parentId: 787,
+                    id: 825,
+                    parentId: 792,
                     name: '管理GBase 8a副本',
                     local: 'GBase_8a_00054.html'
                   }
                 ]
               },
               {
-                id: 788,
+                id: 793,
                 parentId: 42,
                 name: 'GBase 8a数据库环境',
                 local: 'GBase_8a_00055.html',
                 children: [
                   {
-                    id: 821,
-                    parentId: 788,
+                    id: 826,
+                    parentId: 793,
                     name: '查看GBase 8a数据库环境信息',
                     local: 'GBase_8a_00056.html'
                   },
                   {
-                    id: 822,
-                    parentId: 788,
+                    id: 827,
+                    parentId: 793,
                     name: '管理数据库',
                     local: 'GBase_8a_00057.html'
                   }
@@ -5387,97 +5421,95 @@ naviData = [
             local: 'zh-cn_topic_0000001873679193.html',
             children: [
               {
-                id: 823,
+                id: 828,
                 parentId: 43,
                 name: '备份',
                 local: 'SAP_HANA_00008.html',
                 children: [
                   {
-                    id: 833,
-                    parentId: 823,
+                    id: 838,
+                    parentId: 828,
                     name: '备份前准备',
                     local: 'SAP_HANA_00011.html'
                   },
                   {
-                    id: 834,
-                    parentId: 823,
+                    id: 839,
+                    parentId: 828,
                     name: '备份SAP HANA数据库（通用数据库入口）',
                     local: 'SAP_HANA_00012.html',
                     children: [
                       {
-                        id: 836,
-                        parentId: 834,
+                        id: 841,
+                        parentId: 839,
                         name: '步骤1：注册SAP HANA数据库（File备份方式）',
                         local: 'SAP_HANA_00013.html'
                       },
                       {
-                        id: 837,
-                        parentId: 834,
+                        id: 842,
+                        parentId: 839,
                         name: '步骤2：创建限速策略',
                         local: 'SAP_HANA_00014.html'
                       },
                       {
-                        id: 838,
-                        parentId: 834,
-                        name:
-                          '步骤3：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 843,
+                        parentId: 839,
+                        name: '步骤3：（可选）开启备份链路加密开关',
                         local: 'SAP_HANA_00015.html'
                       },
                       {
-                        id: 839,
-                        parentId: 834,
+                        id: 844,
+                        parentId: 839,
                         name: '步骤4：配置日志备份',
                         local: 'SAP_HANA_00016.html'
                       },
                       {
-                        id: 840,
-                        parentId: 834,
+                        id: 845,
+                        parentId: 839,
                         name: '步骤5：创建备份SLA',
                         local: 'zh-cn_topic_0000002058629252.html'
                       },
                       {
-                        id: 841,
-                        parentId: 834,
+                        id: 846,
+                        parentId: 839,
                         name: '步骤6：执行备份',
                         local: 'SAP_HANA_00024_b2.html'
                       }
                     ]
                   },
                   {
-                    id: 835,
-                    parentId: 823,
+                    id: 840,
+                    parentId: 828,
                     name:
                       '备份SAP HANA数据库（SAP HANA应用入口）（仅1.6.0及后续版本）',
                     local: 'SAP_HANA_00019.html',
                     children: [
                       {
-                        id: 842,
-                        parentId: 835,
+                        id: 847,
+                        parentId: 840,
                         name: '步骤1：注册SAP HANA数据库（Backint备份方式）',
                         local: 'SAP_HANA_00020.html'
                       },
                       {
-                        id: 843,
-                        parentId: 835,
+                        id: 848,
+                        parentId: 840,
                         name: '步骤2：创建限速策略',
                         local: 'SAP_HANA_00022.html'
                       },
                       {
-                        id: 844,
-                        parentId: 835,
-                        name:
-                          '步骤3：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 849,
+                        parentId: 840,
+                        name: '步骤3：（可选）开启备份链路加密开关',
                         local: 'SAP_HANA_00023.html'
                       },
                       {
-                        id: 845,
-                        parentId: 835,
+                        id: 850,
+                        parentId: 840,
                         name: '步骤4：创建备份SLA',
                         local: 'zh-cn_topic_0000002058628320.html'
                       },
                       {
-                        id: 846,
-                        parentId: 835,
+                        id: 851,
+                        parentId: 840,
                         name: '步骤5：执行备份',
                         local: 'SAP_HANA_00025.html'
                       }
@@ -5486,77 +5518,77 @@ naviData = [
                 ]
               },
               {
-                id: 824,
+                id: 829,
                 parentId: 43,
                 name: '复制',
                 local: 'SAP_HANA_00028.html',
                 children: [
                   {
-                    id: 847,
-                    parentId: 824,
+                    id: 852,
+                    parentId: 829,
                     name: '复制SAP HANA数据库副本',
                     local: 'SAP_HANA_00031.html',
                     children: [
                       {
-                        id: 848,
-                        parentId: 847,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 853,
+                        parentId: 852,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'SAP_HANA_00033.html'
                       },
                       {
-                        id: 849,
-                        parentId: 847,
+                        id: 854,
+                        parentId: 852,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
                         local: 'SAP_HANA_00034.html'
                       },
                       {
-                        id: 850,
-                        parentId: 847,
+                        id: 855,
+                        parentId: 852,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'SAP_HANA_00035.html'
                       },
                       {
-                        id: 851,
-                        parentId: 847,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 856,
+                        parentId: 852,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'SAP_HANA_00036.html'
                       },
                       {
-                        id: 852,
-                        parentId: 847,
+                        id: 857,
+                        parentId: 852,
                         name: '步骤4：下载并导入证书',
                         local: 'SAP_HANA_00037.html'
                       },
                       {
-                        id: 853,
-                        parentId: 847,
+                        id: 858,
+                        parentId: 852,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'SAP_HANA_00038.html'
                       },
                       {
-                        id: 854,
-                        parentId: 847,
+                        id: 859,
+                        parentId: 852,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'SAP_HANA_00037_a1.html'
                       },
                       {
-                        id: 855,
-                        parentId: 847,
+                        id: 860,
+                        parentId: 852,
                         name: '步骤6：添加复制集群',
                         local: 'SAP_HANA_00039.html'
                       },
                       {
-                        id: 856,
-                        parentId: 847,
+                        id: 861,
+                        parentId: 852,
                         name: '步骤7：创建复制SLA',
                         local: 'SAP_HANA_00040.html'
                       },
                       {
-                        id: 857,
-                        parentId: 847,
+                        id: 862,
+                        parentId: 852,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'SAP_HANA_00041.html'
                       }
@@ -5565,60 +5597,60 @@ naviData = [
                 ]
               },
               {
-                id: 825,
+                id: 830,
                 parentId: 43,
                 name: '归档',
                 local: 'SAP_HANA_00042.html',
                 children: [
                   {
-                    id: 858,
-                    parentId: 825,
+                    id: 863,
+                    parentId: 830,
                     name: '归档SAP HANA备份副本',
                     local: 'SAP_HANA_00045.html',
                     children: [
                       {
-                        id: 860,
-                        parentId: 858,
+                        id: 865,
+                        parentId: 863,
                         name: '步骤1：添加归档存储',
                         local: 'SAP_HANA_00046.html',
                         children: [
                           {
-                            id: 862,
-                            parentId: 860,
+                            id: 867,
+                            parentId: 865,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'SAP_HANA_00047.html'
                           },
                           {
-                            id: 863,
-                            parentId: 860,
+                            id: 868,
+                            parentId: 865,
                             name: '创建介质集（归档存储是磁带库）',
                             local: 'SAP_HANA_00048.html'
                           }
                         ]
                       },
                       {
-                        id: 861,
-                        parentId: 858,
-                        name: '步骤2：创建归档SLA',
+                        id: 866,
+                        parentId: 863,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'SAP_HANA_00049.html'
                       }
                     ]
                   },
                   {
-                    id: 859,
-                    parentId: 825,
+                    id: 864,
+                    parentId: 830,
                     name: '归档SAP HANA复制副本',
                     local: 'SAP_HANA_00050.html',
                     children: [
                       {
-                        id: 864,
-                        parentId: 859,
-                        name: '步骤1：创建归档SLA',
+                        id: 869,
+                        parentId: 864,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'SAP_HANA_00051.html'
                       },
                       {
-                        id: 865,
-                        parentId: 859,
+                        id: 870,
+                        parentId: 864,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'SAP_HANA_00052.html'
                       }
@@ -5627,146 +5659,146 @@ naviData = [
                 ]
               },
               {
-                id: 826,
+                id: 831,
                 parentId: 43,
                 name: '恢复',
                 local: 'SAP_HANA_00054.html',
                 children: [
                   {
-                    id: 866,
-                    parentId: 826,
+                    id: 871,
+                    parentId: 831,
                     name: '恢复SAP HANA数据库（通用数据库入口）',
                     local: 'SAP_HANA_00057.html'
                   }
                 ]
               },
               {
-                id: 827,
+                id: 832,
                 parentId: 43,
                 name: '全局搜索',
                 local: 'SAP_HANA_00053_a1.html',
                 children: [
                   {
-                    id: 867,
-                    parentId: 827,
+                    id: 872,
+                    parentId: 832,
                     name: '全局搜索资源',
                     local: 'SAP_HANA_00053_a2.html'
                   },
                   {
-                    id: 868,
-                    parentId: 827,
+                    id: 873,
+                    parentId: 832,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'SAP_HANA_00053_a3.html'
                   }
                 ]
               },
               {
-                id: 828,
+                id: 833,
                 parentId: 43,
                 name: 'SLA',
                 local: 'SAP_HANA_00063.html',
                 children: [
                   {
-                    id: 869,
-                    parentId: 828,
+                    id: 874,
+                    parentId: 833,
                     name: '关于SLA',
                     local: 'SAP_HANA_00063_qe.html'
                   },
                   {
-                    id: 870,
-                    parentId: 828,
+                    id: 875,
+                    parentId: 833,
                     name: '查看SLA信息',
                     local: 'SAP_HANA_00065.html'
                   },
                   {
-                    id: 871,
-                    parentId: 828,
+                    id: 876,
+                    parentId: 833,
                     name: '管理SLA',
                     local: 'SAP_HANA_00066.html'
                   }
                 ]
               },
               {
-                id: 829,
+                id: 834,
                 parentId: 43,
                 name: '副本（通用数据库入口）',
                 local: 'SAP_HANA_00067.html',
                 children: [
                   {
-                    id: 872,
-                    parentId: 829,
+                    id: 877,
+                    parentId: 834,
                     name: '查看SAP HANA副本信息',
                     local: 'SAP_HANA_00068.html'
                   },
                   {
-                    id: 873,
-                    parentId: 829,
+                    id: 878,
+                    parentId: 834,
                     name: '管理SAP HANA副本',
                     local: 'SAP_HANA_00069.html'
                   }
                 ]
               },
               {
-                id: 830,
+                id: 835,
                 parentId: 43,
                 name: '副本（SAP HANA应用入口）（仅1.6.0及后续版本）',
                 local: 'SAP_HANA_00067_as11.html',
                 children: [
                   {
-                    id: 874,
-                    parentId: 830,
+                    id: 879,
+                    parentId: 835,
                     name: '查看SAP HANA副本信息',
                     local: 'SAP_HANA_00067_as12.html'
                   },
                   {
-                    id: 875,
-                    parentId: 830,
+                    id: 880,
+                    parentId: 835,
                     name: '管理SAP HANA副本',
                     local: 'SAP_HANA_00067_as13.html'
                   }
                 ]
               },
               {
-                id: 831,
+                id: 836,
                 parentId: 43,
                 name: 'SAP HANA数据库环境（通用数据库入口）',
                 local: 'SAP_HANA_00070.html',
                 children: [
                   {
-                    id: 876,
-                    parentId: 831,
+                    id: 881,
+                    parentId: 836,
                     name: '查看SAP HANA数据库环境信息',
                     local: 'SAP_HANA_00071.html'
                   },
                   {
-                    id: 877,
-                    parentId: 831,
+                    id: 882,
+                    parentId: 836,
                     name: '管理数据库',
                     local: 'SAP_HANA_00072.html'
                   }
                 ]
               },
               {
-                id: 832,
+                id: 837,
                 parentId: 43,
                 name: 'SAP HANA数据库环境（SAP HANA应用入口）',
                 local: 'SAP_HANA_00073.html',
                 children: [
                   {
-                    id: 878,
-                    parentId: 832,
+                    id: 883,
+                    parentId: 837,
                     name: '查看SAP HANA数据库环境信息',
                     local: 'SAP_HANA_00074.html'
                   },
                   {
-                    id: 879,
-                    parentId: 832,
+                    id: 884,
+                    parentId: 837,
                     name: '管理实例',
                     local: 'SAP_HANA_00075.html'
                   },
                   {
-                    id: 880,
-                    parentId: 832,
+                    id: 885,
+                    parentId: 837,
                     name: '管理数据库',
                     local: 'SAP_HANA_00076.html'
                   }
@@ -5783,63 +5815,62 @@ naviData = [
         local: 'zh-cn_topic_0000001948269721.html',
         children: [
           {
-            id: 881,
+            id: 886,
             parentId: 14,
             name: 'ClickHouse数据保护',
             local: 'zh-cn_topic_0000001873759365.html',
             children: [
               {
-                id: 889,
-                parentId: 881,
+                id: 894,
+                parentId: 886,
                 name: '备份',
                 local: 'clickhouse-0003.html',
                 children: [
                   {
-                    id: 898,
-                    parentId: 889,
+                    id: 903,
+                    parentId: 894,
                     name: '备份前准备',
                     local: 'clickhouse-0006.html'
                   },
                   {
-                    id: 899,
-                    parentId: 889,
+                    id: 904,
+                    parentId: 894,
                     name: '备份ClickHouse数据库/ClickHouse表集',
                     local: 'clickhouse-0007.html',
                     children: [
                       {
-                        id: 900,
-                        parentId: 899,
+                        id: 905,
+                        parentId: 904,
                         name: '步骤1：注册ClickHouse集群',
                         local: 'clickhouse-0008.html'
                       },
                       {
-                        id: 901,
-                        parentId: 899,
+                        id: 906,
+                        parentId: 904,
                         name: '步骤2：创建ClickHouse表集',
                         local: 'clickhouse-0009.html'
                       },
                       {
-                        id: 902,
-                        parentId: 899,
+                        id: 907,
+                        parentId: 904,
                         name: '步骤3：创建限速策略',
                         local: 'clickhouse-0010.html'
                       },
                       {
-                        id: 903,
-                        parentId: 899,
-                        name:
-                          '步骤4：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 908,
+                        parentId: 904,
+                        name: '步骤4：（可选）开启备份链路加密开关',
                         local: 'clickhouse-0011.html'
                       },
                       {
-                        id: 904,
-                        parentId: 899,
+                        id: 909,
+                        parentId: 904,
                         name: '步骤5：创建备份SLA',
                         local: 'clickhouse-0012.html'
                       },
                       {
-                        id: 905,
-                        parentId: 899,
+                        id: 910,
+                        parentId: 904,
                         name: '步骤6：执行备份',
                         local: 'clickhouse-0013.html'
                       }
@@ -5848,83 +5879,83 @@ naviData = [
                 ]
               },
               {
-                id: 890,
-                parentId: 881,
+                id: 895,
+                parentId: 886,
                 name: '复制',
-                local: 'oracle_gud_000035_1.html',
+                local: 'oracle_gud_000035_0.html',
                 children: [
                   {
-                    id: 906,
-                    parentId: 890,
+                    id: 911,
+                    parentId: 895,
                     name: '复制ClickHouse副本',
                     local: 'clickhouse-0018.html',
                     children: [
                       {
-                        id: 907,
-                        parentId: 906,
+                        id: 912,
+                        parentId: 911,
                         name: '规划复制网络',
                         local: 'clickhouse-0019.html'
                       },
                       {
-                        id: 908,
-                        parentId: 906,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_2.html'
-                      },
-                      {
-                        id: 909,
-                        parentId: 906,
+                        id: 913,
+                        parentId: 911,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_2.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'fc_gud_0026_0.html'
                       },
                       {
-                        id: 910,
-                        parentId: 906,
+                        id: 914,
+                        parentId: 911,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_1.html'
+                      },
+                      {
+                        id: 915,
+                        parentId: 911,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'clickhouse-0021.html'
                       },
                       {
-                        id: 911,
-                        parentId: 906,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 916,
+                        parentId: 911,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'clickhouse-0022.html'
                       },
                       {
-                        id: 912,
-                        parentId: 906,
+                        id: 917,
+                        parentId: 911,
                         name: '步骤4：下载并导入证书',
                         local: 'clickhouse-0023.html'
                       },
                       {
-                        id: 913,
-                        parentId: 906,
+                        id: 918,
+                        parentId: 911,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'clickhouse-0024.html'
                       },
                       {
-                        id: 914,
-                        parentId: 906,
+                        id: 919,
+                        parentId: 911,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'zh-cn_topic_0000002010575970.html'
                       },
                       {
-                        id: 915,
-                        parentId: 906,
+                        id: 920,
+                        parentId: 911,
                         name: '步骤6：添加复制集群',
                         local: 'clickhouse-0025.html'
                       },
                       {
-                        id: 916,
-                        parentId: 906,
+                        id: 921,
+                        parentId: 911,
                         name: '步骤7：创建复制SLA',
                         local: 'oracle_gud_000041.html'
                       },
                       {
-                        id: 917,
-                        parentId: 906,
+                        id: 922,
+                        parentId: 911,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'clickhouse-0027.html'
                       }
@@ -5933,60 +5964,61 @@ naviData = [
                 ]
               },
               {
-                id: 891,
-                parentId: 881,
+                id: 896,
+                parentId: 886,
                 name: '归档',
                 local: 'clickhouse-0028.html',
                 children: [
                   {
-                    id: 918,
-                    parentId: 891,
+                    id: 923,
+                    parentId: 896,
                     name: '归档ClickHouse备份副本',
                     local: 'clickhouse-0031.html',
                     children: [
                       {
-                        id: 920,
-                        parentId: 918,
+                        id: 925,
+                        parentId: 923,
                         name: '步骤1：添加归档存储',
                         local: 'clickhouse-0032.html',
                         children: [
                           {
-                            id: 922,
-                            parentId: 920,
+                            id: 927,
+                            parentId: 925,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'clickhouse-0033.html'
                           },
                           {
-                            id: 923,
-                            parentId: 920,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 928,
+                            parentId: 925,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'clickhouse-0034.html'
                           }
                         ]
                       },
                       {
-                        id: 921,
-                        parentId: 918,
-                        name: '步骤2：创建归档SLA',
+                        id: 926,
+                        parentId: 923,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'clickhouse-0035.html'
                       }
                     ]
                   },
                   {
-                    id: 919,
-                    parentId: 891,
+                    id: 924,
+                    parentId: 896,
                     name: '归档ClickHouse复制副本',
                     local: 'clickhouse-0036.html',
                     children: [
                       {
-                        id: 924,
-                        parentId: 919,
-                        name: '步骤1：创建归档SLA',
+                        id: 929,
+                        parentId: 924,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'clickhouse-0037.html'
                       },
                       {
-                        id: 925,
-                        parentId: 919,
+                        id: 930,
+                        parentId: 924,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'clickhouse-0038.html'
                       }
@@ -5995,120 +6027,121 @@ naviData = [
                 ]
               },
               {
-                id: 892,
-                parentId: 881,
+                id: 897,
+                parentId: 886,
                 name: '恢复',
                 local: 'clickhouse-0039.html',
                 children: [
                   {
-                    id: 926,
-                    parentId: 892,
+                    id: 931,
+                    parentId: 897,
                     name: '恢复ClickHouse数据库/表集',
                     local: 'clickhouse-0042.html'
                   }
                 ]
               },
               {
-                id: 893,
-                parentId: 881,
+                id: 898,
+                parentId: 886,
                 name: '全局搜索',
                 local: 'zh-cn_topic_0000002038764373.html',
                 children: [
                   {
-                    id: 927,
-                    parentId: 893,
+                    id: 932,
+                    parentId: 898,
                     name: '全局搜索资源',
                     local: 'clickhouse-0043.html'
                   },
                   {
-                    id: 928,
-                    parentId: 893,
+                    id: 933,
+                    parentId: 898,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'zh-cn_topic_0000002002844410.html'
                   }
                 ]
               },
               {
-                id: 894,
-                parentId: 881,
-                name: '数据重删压缩（适用于X系列备份一体机）',
+                id: 899,
+                parentId: 886,
+                name:
+                  '数据重删压缩（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
                 local: 'clickhouse-0044.html',
                 children: [
                   {
-                    id: 929,
-                    parentId: 894,
+                    id: 934,
+                    parentId: 899,
                     name: '关于数据重删压缩',
                     local: 'clickhouse-0045.html'
                   }
                 ]
               },
               {
-                id: 895,
-                parentId: 881,
+                id: 900,
+                parentId: 886,
                 name: 'SLA',
                 local: 'clickhouse-0046.html',
                 children: [
                   {
-                    id: 930,
-                    parentId: 895,
+                    id: 935,
+                    parentId: 900,
                     name: '关于SLA',
                     local: 'clickhouse-0047.html'
                   },
                   {
-                    id: 931,
-                    parentId: 895,
+                    id: 936,
+                    parentId: 900,
                     name: '查看SLA信息',
                     local: 'clickhouse-0048.html'
                   },
                   {
-                    id: 932,
-                    parentId: 895,
+                    id: 937,
+                    parentId: 900,
                     name: '管理SLA',
                     local: 'clickhouse-0049.html'
                   }
                 ]
               },
               {
-                id: 896,
-                parentId: 881,
+                id: 901,
+                parentId: 886,
                 name: '副本',
                 local: 'clickhouse-0050.html',
                 children: [
                   {
-                    id: 933,
-                    parentId: 896,
+                    id: 938,
+                    parentId: 901,
                     name: '查看ClickHouse副本信息',
                     local: 'clickhouse-0051.html'
                   },
                   {
-                    id: 934,
-                    parentId: 896,
+                    id: 939,
+                    parentId: 901,
                     name: '管理ClickHouse副本',
                     local: 'clickhouse-0052.html'
                   }
                 ]
               },
               {
-                id: 897,
-                parentId: 881,
+                id: 902,
+                parentId: 886,
                 name: 'ClickHouse集群环境',
                 local: 'clickhouse-0053.html',
                 children: [
                   {
-                    id: 935,
-                    parentId: 897,
+                    id: 940,
+                    parentId: 902,
                     name: '查询ClickHouse信息',
                     local: 'clickhouse-0054.html'
                   },
                   {
-                    id: 936,
-                    parentId: 897,
+                    id: 941,
+                    parentId: 902,
                     name: '管理ClickHouse集群/表集',
                     local: 'clickhouse-0055.html'
                   },
                   {
-                    id: 937,
-                    parentId: 897,
+                    id: 942,
+                    parentId: 902,
                     name: '管理ClickHouse数据库/表集保护',
                     local: 'clickhouse-0056.html'
                   }
@@ -6117,63 +6150,62 @@ naviData = [
             ]
           },
           {
-            id: 882,
+            id: 887,
             parentId: 14,
             name: 'GaussDB(DWS)数据保护',
             local: 'product_documentation_000029.html',
             children: [
               {
-                id: 938,
-                parentId: 882,
+                id: 943,
+                parentId: 887,
                 name: '备份',
                 local: 'DWS_00006.html',
                 children: [
                   {
-                    id: 947,
-                    parentId: 938,
+                    id: 952,
+                    parentId: 943,
                     name: '备份前准备',
                     local: 'DWS_00009.html'
                   },
                   {
-                    id: 948,
-                    parentId: 938,
+                    id: 953,
+                    parentId: 943,
                     name: '备份GaussDB(DWS)',
                     local: 'DWS_00010.html',
                     children: [
                       {
-                        id: 949,
-                        parentId: 948,
+                        id: 954,
+                        parentId: 953,
                         name: '步骤1：注册GaussDB(DWS)集群',
                         local: 'DWS_00014.html'
                       },
                       {
-                        id: 950,
-                        parentId: 948,
+                        id: 955,
+                        parentId: 953,
                         name: '步骤2：创建GaussDB(DWS)Schema集/表集',
                         local: 'DWS_00015.html'
                       },
                       {
-                        id: 951,
-                        parentId: 948,
-                        name:
-                          '步骤3：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 956,
+                        parentId: 953,
+                        name: '步骤3：（可选）开启备份链路加密开关',
                         local: 'DWS_00016.html'
                       },
                       {
-                        id: 952,
-                        parentId: 948,
+                        id: 957,
+                        parentId: 953,
                         name: '步骤4：创建限速策略',
                         local: 'DWS_00017.html'
                       },
                       {
-                        id: 953,
-                        parentId: 948,
+                        id: 958,
+                        parentId: 953,
                         name: '步骤5：创建备份SLA',
                         local: 'DWS_00018.html'
                       },
                       {
-                        id: 954,
-                        parentId: 948,
+                        id: 959,
+                        parentId: 953,
                         name: '步骤6：执行备份',
                         local: 'DWS_00019.html'
                       }
@@ -6182,77 +6214,77 @@ naviData = [
                 ]
               },
               {
-                id: 939,
-                parentId: 882,
+                id: 944,
+                parentId: 887,
                 name: '复制',
                 local: 'DWS_00022.html',
                 children: [
                   {
-                    id: 955,
-                    parentId: 939,
+                    id: 960,
+                    parentId: 944,
                     name: '复制GaussDB(DWS)备份副本',
                     local: 'DWS_00024.html',
                     children: [
                       {
-                        id: 956,
-                        parentId: 955,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 961,
+                        parentId: 960,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'DWS_00026.html'
                       },
                       {
-                        id: 957,
-                        parentId: 955,
+                        id: 962,
+                        parentId: 960,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_14.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_8.html'
                       },
                       {
-                        id: 958,
-                        parentId: 955,
+                        id: 963,
+                        parentId: 960,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'DWS_00027.html'
                       },
                       {
-                        id: 959,
-                        parentId: 955,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 964,
+                        parentId: 960,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'DWS_00028.html'
                       },
                       {
-                        id: 960,
-                        parentId: 955,
+                        id: 965,
+                        parentId: 960,
                         name: '步骤4：下载并导入证书',
                         local: 'DWS_00029.html'
                       },
                       {
-                        id: 961,
-                        parentId: 955,
+                        id: 966,
+                        parentId: 960,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'DWS_00030.html'
                       },
                       {
-                        id: 962,
-                        parentId: 955,
+                        id: 967,
+                        parentId: 960,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'DWS_00031_a1.html'
                       },
                       {
-                        id: 963,
-                        parentId: 955,
+                        id: 968,
+                        parentId: 960,
                         name: '步骤6：添加复制集群',
                         local: 'DWS_00031.html'
                       },
                       {
-                        id: 964,
-                        parentId: 955,
+                        id: 969,
+                        parentId: 960,
                         name: '步骤7：创建复制SLA',
                         local: 'DWS_00031_b1.html'
                       },
                       {
-                        id: 965,
-                        parentId: 955,
+                        id: 970,
+                        parentId: 960,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'DWS_00033.html'
                       }
@@ -6261,60 +6293,60 @@ naviData = [
                 ]
               },
               {
-                id: 940,
-                parentId: 882,
+                id: 945,
+                parentId: 887,
                 name: '归档',
                 local: 'DWS_00034.html',
                 children: [
                   {
-                    id: 966,
-                    parentId: 940,
+                    id: 971,
+                    parentId: 945,
                     name: '归档GaussDB(DWS)备份副本',
                     local: 'DWS_00037.html',
                     children: [
                       {
-                        id: 968,
-                        parentId: 966,
+                        id: 973,
+                        parentId: 971,
                         name: '步骤1：添加归档存储',
                         local: 'DWS_00038.html',
                         children: [
                           {
-                            id: 970,
-                            parentId: 968,
+                            id: 975,
+                            parentId: 973,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'DWS_00039.html'
                           },
                           {
-                            id: 971,
-                            parentId: 968,
+                            id: 976,
+                            parentId: 973,
                             name: '创建介质集（归档存储是磁带库）',
                             local: 'DWS_00040.html'
                           }
                         ]
                       },
                       {
-                        id: 969,
-                        parentId: 966,
-                        name: '步骤2：创建归档SLA',
+                        id: 974,
+                        parentId: 971,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'DWS_00041.html'
                       }
                     ]
                   },
                   {
-                    id: 967,
-                    parentId: 940,
+                    id: 972,
+                    parentId: 945,
                     name: '归档GaussDB(DWS)复制副本',
                     local: 'DWS_00042.html',
                     children: [
                       {
-                        id: 972,
-                        parentId: 967,
-                        name: '步骤1：创建归档SLA',
+                        id: 977,
+                        parentId: 972,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'DWS_00043.html'
                       },
                       {
-                        id: 973,
-                        parentId: 967,
+                        id: 978,
+                        parentId: 972,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'DWS_00044.html'
                       }
@@ -6323,120 +6355,121 @@ naviData = [
                 ]
               },
               {
-                id: 941,
-                parentId: 882,
+                id: 946,
+                parentId: 887,
                 name: '恢复',
                 local: 'DWS_00045.html',
                 children: [
                   {
-                    id: 974,
-                    parentId: 941,
+                    id: 979,
+                    parentId: 946,
                     name: '恢复GaussDB(DWS)',
                     local: 'DWS_00048.html'
                   }
                 ]
               },
               {
-                id: 942,
-                parentId: 882,
+                id: 947,
+                parentId: 887,
                 name: '全局搜索',
                 local: 'DWS_00045_a1.html',
                 children: [
                   {
-                    id: 975,
-                    parentId: 942,
+                    id: 980,
+                    parentId: 947,
                     name: '全局搜索资源',
                     local: 'DWS_00045_a2.html'
                   },
                   {
-                    id: 976,
-                    parentId: 942,
+                    id: 981,
+                    parentId: 947,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'DWS_00045_a3.html'
                   }
                 ]
               },
               {
-                id: 943,
-                parentId: 882,
-                name: '数据重删压缩（适用于X系列备份一体机）',
-                local: 'DWS_00050.html',
+                id: 948,
+                parentId: 887,
+                name:
+                  '数据重删压缩（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
+                local: 'vmware_gud_000088_1.html',
                 children: [
                   {
-                    id: 977,
-                    parentId: 943,
+                    id: 982,
+                    parentId: 948,
                     name: '关于数据重删压缩',
-                    local: 'DWS_00051.html'
+                    local: 'vmware_gud_000089_1.html'
                   }
                 ]
               },
               {
-                id: 944,
-                parentId: 882,
+                id: 949,
+                parentId: 887,
                 name: 'SLA',
                 local: 'DWS_00052.html',
                 children: [
                   {
-                    id: 978,
-                    parentId: 944,
+                    id: 983,
+                    parentId: 949,
                     name: '关于SLA',
                     local: 'DWS_00053.html'
                   },
                   {
-                    id: 979,
-                    parentId: 944,
+                    id: 984,
+                    parentId: 949,
                     name: '查看SLA信息',
                     local: 'DWS_00054.html'
                   },
                   {
-                    id: 980,
-                    parentId: 944,
+                    id: 985,
+                    parentId: 949,
                     name: '管理SLA',
                     local: 'DWS_00055.html'
                   }
                 ]
               },
               {
-                id: 945,
-                parentId: 882,
+                id: 950,
+                parentId: 887,
                 name: '副本',
                 local: 'DWS_00056.html',
                 children: [
                   {
-                    id: 981,
-                    parentId: 945,
+                    id: 986,
+                    parentId: 950,
                     name: '查看GaussDB(DWS)副本信息',
                     local: 'DWS_00057.html'
                   },
                   {
-                    id: 982,
-                    parentId: 945,
+                    id: 987,
+                    parentId: 950,
                     name: '管理GaussDB(DWS)副本',
                     local: 'DWS_00058.html'
                   }
                 ]
               },
               {
-                id: 946,
-                parentId: 882,
+                id: 951,
+                parentId: 887,
                 name: 'GaussDB(DWS)集群环境',
                 local: 'DWS_00059.html',
                 children: [
                   {
-                    id: 983,
-                    parentId: 946,
+                    id: 988,
+                    parentId: 951,
                     name: '查询GaussDB(DWS)信息',
                     local: 'DWS_00060.html'
                   },
                   {
-                    id: 984,
-                    parentId: 946,
+                    id: 989,
+                    parentId: 951,
                     name: '管理GaussDB(DWS)集群',
                     local: 'DWS_00061.html'
                   },
                   {
-                    id: 985,
-                    parentId: 946,
+                    id: 990,
+                    parentId: 951,
                     name: '管理GaussDB(DWS)',
                     local: 'DWS_00062.html'
                   }
@@ -6445,63 +6478,62 @@ naviData = [
             ]
           },
           {
-            id: 883,
+            id: 888,
             parentId: 14,
             name: 'HBase数据保护',
             local: 'product_documentation_000033.html',
             children: [
               {
-                id: 986,
-                parentId: 883,
+                id: 991,
+                parentId: 888,
                 name: '备份',
                 local: 'hbase_00007.html',
                 children: [
                   {
-                    id: 994,
-                    parentId: 986,
+                    id: 999,
+                    parentId: 991,
                     name: '备份前准备',
                     local: 'hbase_00010.html'
                   },
                   {
-                    id: 995,
-                    parentId: 986,
+                    id: 1000,
+                    parentId: 991,
                     name: '备份HBase备份集',
                     local: 'hbase_00011.html',
                     children: [
                       {
-                        id: 996,
-                        parentId: 995,
+                        id: 1001,
+                        parentId: 1000,
                         name: '步骤1：注册HBase集群',
                         local: 'hbase_00012.html'
                       },
                       {
-                        id: 997,
-                        parentId: 995,
+                        id: 1002,
+                        parentId: 1000,
                         name: '步骤2：创建HBase备份集',
                         local: 'hbase_00013.html'
                       },
                       {
-                        id: 998,
-                        parentId: 995,
+                        id: 1003,
+                        parentId: 1000,
                         name: '步骤3：创建限速策略',
                         local: 'hbase_00014.html'
                       },
                       {
-                        id: 999,
-                        parentId: 995,
-                        name:
-                          '步骤4：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 1004,
+                        parentId: 1000,
+                        name: '步骤4：（可选）开启备份链路加密开关',
                         local: 'hbase_00015.html'
                       },
                       {
-                        id: 1000,
-                        parentId: 995,
+                        id: 1005,
+                        parentId: 1000,
                         name: '步骤5：创建备份SLA',
                         local: 'hbase_00016.html'
                       },
                       {
-                        id: 1001,
-                        parentId: 995,
+                        id: 1006,
+                        parentId: 1000,
                         name: '步骤6：执行备份',
                         local: 'hbase_000017.html'
                       }
@@ -6510,77 +6542,77 @@ naviData = [
                 ]
               },
               {
-                id: 987,
-                parentId: 883,
+                id: 992,
+                parentId: 888,
                 name: '复制',
                 local: 'hbase_00020.html',
                 children: [
                   {
-                    id: 1002,
-                    parentId: 987,
+                    id: 1007,
+                    parentId: 992,
                     name: '复制HBase副本',
                     local: 'hbase_00023.html',
                     children: [
                       {
-                        id: 1003,
-                        parentId: 1002,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 1008,
+                        parentId: 1007,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'hbase_00025.html'
                       },
                       {
-                        id: 1004,
-                        parentId: 1002,
+                        id: 1009,
+                        parentId: 1007,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_28.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_18.html'
                       },
                       {
-                        id: 1005,
-                        parentId: 1002,
+                        id: 1010,
+                        parentId: 1007,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'hbase_00026.html'
                       },
                       {
-                        id: 1006,
-                        parentId: 1002,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 1011,
+                        parentId: 1007,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'hbase_00027.html'
                       },
                       {
-                        id: 1007,
-                        parentId: 1002,
+                        id: 1012,
+                        parentId: 1007,
                         name: '步骤4：下载并导入证书',
                         local: 'hbase_00028.html'
                       },
                       {
-                        id: 1008,
-                        parentId: 1002,
+                        id: 1013,
+                        parentId: 1007,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'hbase_000029.html'
                       },
                       {
-                        id: 1009,
-                        parentId: 1002,
+                        id: 1014,
+                        parentId: 1007,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'zh-cn_topic_0000002046619645.html'
                       },
                       {
-                        id: 1010,
-                        parentId: 1002,
+                        id: 1015,
+                        parentId: 1007,
                         name: '步骤6：添加复制集群',
                         local: 'hbase_00030.html'
                       },
                       {
-                        id: 1011,
-                        parentId: 1002,
+                        id: 1016,
+                        parentId: 1007,
                         name: '步骤7：创建复制SLA',
                         local: 'hbase_00031.html'
                       },
                       {
-                        id: 1012,
-                        parentId: 1002,
+                        id: 1017,
+                        parentId: 1007,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'hbase_00032.html'
                       }
@@ -6589,60 +6621,61 @@ naviData = [
                 ]
               },
               {
-                id: 988,
-                parentId: 883,
+                id: 993,
+                parentId: 888,
                 name: '归档',
                 local: 'hbase_00033.html',
                 children: [
                   {
-                    id: 1013,
-                    parentId: 988,
+                    id: 1018,
+                    parentId: 993,
                     name: '归档HBase备份副本',
                     local: 'hbase_00036.html',
                     children: [
                       {
-                        id: 1015,
-                        parentId: 1013,
-                        name: '步骤1：添加归档存储',
+                        id: 1020,
+                        parentId: 1018,
+                        name: '添加归档存储',
                         local: 'hbase_00037.html',
                         children: [
                           {
-                            id: 1017,
-                            parentId: 1015,
+                            id: 1022,
+                            parentId: 1020,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'hbase_00038.html'
                           },
                           {
-                            id: 1018,
-                            parentId: 1015,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1023,
+                            parentId: 1020,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'hbase_00039.html'
                           }
                         ]
                       },
                       {
-                        id: 1016,
-                        parentId: 1013,
-                        name: '步骤2：创建归档SLA',
+                        id: 1021,
+                        parentId: 1018,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'hbase_000040.html'
                       }
                     ]
                   },
                   {
-                    id: 1014,
-                    parentId: 988,
+                    id: 1019,
+                    parentId: 993,
                     name: '归档HBase复制副本',
                     local: 'hbase_00041.html',
                     children: [
                       {
-                        id: 1019,
-                        parentId: 1014,
-                        name: '步骤1：创建归档SLA',
+                        id: 1024,
+                        parentId: 1019,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'hbase_00042.html'
                       },
                       {
-                        id: 1020,
-                        parentId: 1014,
+                        id: 1025,
+                        parentId: 1019,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'hbase_00043.html'
                       }
@@ -6651,106 +6684,106 @@ naviData = [
                 ]
               },
               {
-                id: 989,
-                parentId: 883,
+                id: 994,
+                parentId: 888,
                 name: '恢复',
                 local: 'hbase_00044.html',
                 children: [
                   {
-                    id: 1021,
-                    parentId: 989,
+                    id: 1026,
+                    parentId: 994,
                     name: '恢复HBase备份集',
                     local: 'hbase_00047.html'
                   },
                   {
-                    id: 1022,
-                    parentId: 989,
+                    id: 1027,
+                    parentId: 994,
                     name: '恢复HBase备份集中的单个或多个表',
                     local: 'hbase_00048.html'
                   }
                 ]
               },
               {
-                id: 990,
-                parentId: 883,
+                id: 995,
+                parentId: 888,
                 name: '全局搜索',
                 local: 'hbase_00049.html',
                 children: [
                   {
-                    id: 1023,
-                    parentId: 990,
+                    id: 1028,
+                    parentId: 995,
                     name: '全局搜索资源',
                     local: 'hbase_00050.html'
                   },
                   {
-                    id: 1024,
-                    parentId: 990,
+                    id: 1029,
+                    parentId: 995,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'zh-cn_topic_0000002038765521.html'
                   }
                 ]
               },
               {
-                id: 991,
-                parentId: 883,
+                id: 996,
+                parentId: 888,
                 name: 'SLA',
                 local: 'hbase_00053.html',
                 children: [
                   {
-                    id: 1025,
-                    parentId: 991,
+                    id: 1030,
+                    parentId: 996,
                     name: '查看SLA信息',
                     local: 'hbase_00055.html'
                   },
                   {
-                    id: 1026,
-                    parentId: 991,
+                    id: 1031,
+                    parentId: 996,
                     name: '管理SLA',
                     local: 'hbase_00056.html'
                   }
                 ]
               },
               {
-                id: 992,
-                parentId: 883,
+                id: 997,
+                parentId: 888,
                 name: '副本',
                 local: 'hbase_00057.html',
                 children: [
                   {
-                    id: 1027,
-                    parentId: 992,
+                    id: 1032,
+                    parentId: 997,
                     name: '查看HBase副本信息',
                     local: 'hbase_00058.html'
                   },
                   {
-                    id: 1028,
-                    parentId: 992,
+                    id: 1033,
+                    parentId: 997,
                     name: '管理HBase副本',
                     local: 'hbase_00059.html'
                   }
                 ]
               },
               {
-                id: 993,
-                parentId: 883,
+                id: 998,
+                parentId: 888,
                 name: 'HBase集群环境',
                 local: 'hbase_00060.html',
                 children: [
                   {
-                    id: 1029,
-                    parentId: 993,
+                    id: 1034,
+                    parentId: 998,
                     name: '查询HBase信息',
                     local: 'hbase_00061.html'
                   },
                   {
-                    id: 1030,
-                    parentId: 993,
+                    id: 1035,
+                    parentId: 998,
                     name: '管理HBase集群',
                     local: 'hbase_00062.html'
                   },
                   {
-                    id: 1031,
-                    parentId: 993,
+                    id: 1036,
+                    parentId: 998,
                     name: '管理备份集保护',
                     local: 'hbase_00063.html'
                   }
@@ -6759,95 +6792,94 @@ naviData = [
             ]
           },
           {
-            id: 884,
+            id: 889,
             parentId: 14,
             name: 'Hive数据保护',
             local: 'zh-cn_topic_0000001827039684.html',
             children: [
               {
-                id: 1032,
-                parentId: 884,
+                id: 1037,
+                parentId: 889,
                 name: '概述',
                 local: 'hive_00002.html',
                 children: [
                   {
-                    id: 1041,
-                    parentId: 1032,
+                    id: 1046,
+                    parentId: 1037,
                     name: '功能概览',
                     local: 'hive_00004.html'
                   },
                   {
-                    id: 1042,
-                    parentId: 1032,
+                    id: 1047,
+                    parentId: 1037,
                     name: '约束与限制',
                     local: 'hive_00005.html'
                   }
                 ]
               },
               {
-                id: 1033,
-                parentId: 884,
+                id: 1038,
+                parentId: 889,
                 name: '备份',
                 local: 'hive_00007.html',
                 children: [
                   {
-                    id: 1043,
-                    parentId: 1033,
+                    id: 1048,
+                    parentId: 1038,
                     name: '备份前准备',
                     local: 'hive_00010.html'
                   },
                   {
-                    id: 1044,
-                    parentId: 1033,
+                    id: 1049,
+                    parentId: 1038,
                     name: '备份Hive备份集',
                     local: 'hive_00011.html',
                     children: [
                       {
-                        id: 1045,
-                        parentId: 1044,
+                        id: 1050,
+                        parentId: 1049,
                         name: '步骤1：开启数据库表所在目录的快照功能',
                         local: 'hive_00012.html'
                       },
                       {
-                        id: 1046,
-                        parentId: 1044,
+                        id: 1051,
+                        parentId: 1049,
                         name: '步骤2：（可选）生成并获取证书',
                         local: 'hive_00014.html'
                       },
                       {
-                        id: 1047,
-                        parentId: 1044,
+                        id: 1052,
+                        parentId: 1049,
                         name: '步骤3：注册Hive集群',
                         local: 'hive_00015.html'
                       },
                       {
-                        id: 1048,
-                        parentId: 1044,
+                        id: 1053,
+                        parentId: 1049,
                         name: '步骤4：创建Hive备份集',
                         local: 'hive_00016.html'
                       },
                       {
-                        id: 1049,
-                        parentId: 1044,
+                        id: 1054,
+                        parentId: 1049,
                         name: '步骤5：创建限速策略',
                         local: 'hive_00017.html'
                       },
                       {
-                        id: 1050,
-                        parentId: 1044,
-                        name:
-                          '步骤6：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 1055,
+                        parentId: 1049,
+                        name: '步骤6：（可选）开启备份链路加密开关',
                         local: 'hive_00018.html'
                       },
                       {
-                        id: 1051,
-                        parentId: 1044,
+                        id: 1056,
+                        parentId: 1049,
                         name: '步骤7：创建备份SLA',
                         local: 'hive_00019.html'
                       },
                       {
-                        id: 1052,
-                        parentId: 1044,
+                        id: 1057,
+                        parentId: 1049,
                         name: '步骤8：执行备份',
                         local: 'hive_00020.html'
                       }
@@ -6856,77 +6888,77 @@ naviData = [
                 ]
               },
               {
-                id: 1034,
-                parentId: 884,
+                id: 1039,
+                parentId: 889,
                 name: '复制',
                 local: 'hive_00023.html',
                 children: [
                   {
-                    id: 1053,
-                    parentId: 1034,
+                    id: 1058,
+                    parentId: 1039,
                     name: '复制Hive副本',
                     local: 'hive_00026.html',
                     children: [
                       {
-                        id: 1054,
-                        parentId: 1053,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 1059,
+                        parentId: 1058,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'hive_00028.html'
                       },
                       {
-                        id: 1055,
-                        parentId: 1053,
+                        id: 1060,
+                        parentId: 1058,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_6.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_3.html'
                       },
                       {
-                        id: 1056,
-                        parentId: 1053,
+                        id: 1061,
+                        parentId: 1058,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'hive_00029.html'
                       },
                       {
-                        id: 1057,
-                        parentId: 1053,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 1062,
+                        parentId: 1058,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'hive_00030.html'
                       },
                       {
-                        id: 1058,
-                        parentId: 1053,
+                        id: 1063,
+                        parentId: 1058,
                         name: '步骤4：下载并导入证书',
                         local: 'hive_00031.html'
                       },
                       {
-                        id: 1059,
-                        parentId: 1053,
-                        name: '步骤5：创建远端设备管理员',
+                        id: 1064,
+                        parentId: 1058,
+                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'hive_00032.html'
                       },
                       {
-                        id: 1060,
-                        parentId: 1053,
+                        id: 1065,
+                        parentId: 1058,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'zh-cn_topic_0000002010579886.html'
                       },
                       {
-                        id: 1061,
-                        parentId: 1053,
+                        id: 1066,
+                        parentId: 1058,
                         name: '步骤6：添加复制集群',
                         local: 'hive_00033.html'
                       },
                       {
-                        id: 1062,
-                        parentId: 1053,
+                        id: 1067,
+                        parentId: 1058,
                         name: '步骤7：创建复制SLA',
                         local: 'hive_00034.html'
                       },
                       {
-                        id: 1063,
-                        parentId: 1053,
+                        id: 1068,
+                        parentId: 1058,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'hive_00035.html'
                       }
@@ -6935,60 +6967,61 @@ naviData = [
                 ]
               },
               {
-                id: 1035,
-                parentId: 884,
+                id: 1040,
+                parentId: 889,
                 name: '归档',
                 local: 'hive_00036.html',
                 children: [
                   {
-                    id: 1064,
-                    parentId: 1035,
+                    id: 1069,
+                    parentId: 1040,
                     name: '归档Hive备份副本',
                     local: 'hive_00039.html',
                     children: [
                       {
-                        id: 1066,
-                        parentId: 1064,
+                        id: 1071,
+                        parentId: 1069,
                         name: '步骤1：添加归档存储',
                         local: 'hive_00040.html',
                         children: [
                           {
-                            id: 1068,
-                            parentId: 1066,
+                            id: 1073,
+                            parentId: 1071,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'hive_00041.html'
                           },
                           {
-                            id: 1069,
-                            parentId: 1066,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1074,
+                            parentId: 1071,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'hive_00042.html'
                           }
                         ]
                       },
                       {
-                        id: 1067,
-                        parentId: 1064,
-                        name: '步骤2：创建归档SLA',
+                        id: 1072,
+                        parentId: 1069,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'hive_00043.html'
                       }
                     ]
                   },
                   {
-                    id: 1065,
-                    parentId: 1035,
+                    id: 1070,
+                    parentId: 1040,
                     name: '归档Hive复制副本',
                     local: 'hive_00044.html',
                     children: [
                       {
-                        id: 1070,
-                        parentId: 1065,
-                        name: '步骤1：创建归档SLA',
+                        id: 1075,
+                        parentId: 1070,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'hive_00045.html'
                       },
                       {
-                        id: 1071,
-                        parentId: 1065,
+                        id: 1076,
+                        parentId: 1070,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'hive_00046.html'
                       }
@@ -6997,106 +7030,106 @@ naviData = [
                 ]
               },
               {
-                id: 1036,
-                parentId: 884,
+                id: 1041,
+                parentId: 889,
                 name: '恢复',
                 local: 'hive_00047.html',
                 children: [
                   {
-                    id: 1072,
-                    parentId: 1036,
+                    id: 1077,
+                    parentId: 1041,
                     name: '恢复Hive备份集',
                     local: 'hive_00049.html'
                   },
                   {
-                    id: 1073,
-                    parentId: 1036,
+                    id: 1078,
+                    parentId: 1041,
                     name: '恢复Hive备份集中的单个或多个表',
                     local: 'hive_00050.html'
                   }
                 ]
               },
               {
-                id: 1037,
-                parentId: 884,
+                id: 1042,
+                parentId: 889,
                 name: '全局搜索',
                 local: 'hive_00051.html',
                 children: [
                   {
-                    id: 1074,
-                    parentId: 1037,
+                    id: 1079,
+                    parentId: 1042,
                     name: '全局搜索资源',
                     local: 'hive_00052.html'
                   },
                   {
-                    id: 1075,
-                    parentId: 1037,
+                    id: 1080,
+                    parentId: 1042,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'zh-cn_topic_0000002002845722.html'
                   }
                 ]
               },
               {
-                id: 1038,
-                parentId: 884,
+                id: 1043,
+                parentId: 889,
                 name: 'SLA',
                 local: 'hive_00055.html',
                 children: [
                   {
-                    id: 1076,
-                    parentId: 1038,
+                    id: 1081,
+                    parentId: 1043,
                     name: '查看SLA信息',
                     local: 'hive_00057.html'
                   },
                   {
-                    id: 1077,
-                    parentId: 1038,
+                    id: 1082,
+                    parentId: 1043,
                     name: '管理SLA',
                     local: 'hive_00058.html'
                   }
                 ]
               },
               {
-                id: 1039,
-                parentId: 884,
+                id: 1044,
+                parentId: 889,
                 name: '副本',
                 local: 'hive_00059.html',
                 children: [
                   {
-                    id: 1078,
-                    parentId: 1039,
-                    name: '查询Hive副本信息',
+                    id: 1083,
+                    parentId: 1044,
+                    name: '查看Hive副本信息',
                     local: 'hive_00060.html'
                   },
                   {
-                    id: 1079,
-                    parentId: 1039,
+                    id: 1084,
+                    parentId: 1044,
                     name: '管理Hive副本',
                     local: 'hive_00061.html'
                   }
                 ]
               },
               {
-                id: 1040,
-                parentId: 884,
+                id: 1045,
+                parentId: 889,
                 name: 'Hive集群环境',
                 local: 'hive_00062.html',
                 children: [
                   {
-                    id: 1080,
-                    parentId: 1040,
+                    id: 1085,
+                    parentId: 1045,
                     name: '查询Hive信息',
                     local: 'hive_00063.html'
                   },
                   {
-                    id: 1081,
-                    parentId: 1040,
+                    id: 1086,
+                    parentId: 1045,
                     name: '管理Hive集群',
                     local: 'hive_00064.html'
                   },
                   {
-                    id: 1082,
-                    parentId: 1040,
+                    id: 1087,
+                    parentId: 1045,
                     name: '管理备份集',
                     local: 'hive_00065.html'
                   }
@@ -7105,383 +7138,394 @@ naviData = [
             ]
           },
           {
-            id: 885,
+            id: 890,
             parentId: 14,
             name: 'MongoDB数据保护',
             local: 'zh-cn_topic_0000001873679221.html',
             children: [
               {
-                id: 1083,
-                parentId: 885,
+                id: 1088,
+                parentId: 890,
                 name: '备份',
-                local: 'mongodb-0005.html',
+                local: 'mongodb-0007.html',
                 children: [
                   {
-                    id: 1091,
-                    parentId: 1083,
+                    id: 1096,
+                    parentId: 1088,
                     name: '备份前准备',
-                    local: 'mongodb-0008.html'
+                    local: 'mongodb-0010.html'
                   },
                   {
-                    id: 1092,
-                    parentId: 1083,
+                    id: 1097,
+                    parentId: 1088,
                     name: '备份MongoDB数据库',
-                    local: 'mongodb-0009.html',
+                    local: 'mongodb-0011.html',
                     children: [
                       {
-                        id: 1093,
-                        parentId: 1092,
+                        id: 1098,
+                        parentId: 1097,
                         name: '步骤1：注册MongoDB实例',
-                        local: 'mongodb-0010.html'
-                      },
-                      {
-                        id: 1094,
-                        parentId: 1092,
-                        name: '步骤2：（可选）创建限速策略',
-                        local: 'mongodb-0011.html'
-                      },
-                      {
-                        id: 1095,
-                        parentId: 1092,
-                        name:
-                          '步骤3：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
                         local: 'mongodb-0012.html'
                       },
                       {
-                        id: 1096,
-                        parentId: 1092,
-                        name: '步骤4：创建备份SLA',
+                        id: 1099,
+                        parentId: 1097,
+                        name: '步骤2：（可选）创建限速策略',
                         local: 'mongodb-0013.html'
                       },
                       {
-                        id: 1097,
-                        parentId: 1092,
-                        name: '步骤5：执行备份',
-                        local: 'mongodb-0014.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 1084,
-                parentId: 885,
-                name: '复制',
-                local: 'oracle_gud_000035_0.html',
-                children: [
-                  {
-                    id: 1098,
-                    parentId: 1084,
-                    name: '复制MongoDB副本',
-                    local: 'mongodb-0019.html',
-                    children: [
-                      {
-                        id: 1099,
-                        parentId: 1098,
-                        name: '规划复制网络',
-                        local: 'mongodb-0020.html'
-                      },
-                      {
                         id: 1100,
-                        parentId: 1098,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_0.html'
+                        parentId: 1097,
+                        name: '步骤3：（可选）开启备份链路加密开关',
+                        local: 'mongodb-0014.html'
                       },
                       {
                         id: 1101,
-                        parentId: 1098,
-                        name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_0.html'
+                        parentId: 1097,
+                        name: '步骤4：创建备份SLA',
+                        local: 'mongodb-0015.html'
                       },
                       {
                         id: 1102,
-                        parentId: 1098,
-                        name: '步骤2：（可选）创建IPsec策略',
-                        local: 'mongodb-0022.html'
-                      },
-                      {
-                        id: 1103,
-                        parentId: 1098,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
-                        local: 'mongodb-0023.html'
-                      },
-                      {
-                        id: 1104,
-                        parentId: 1098,
-                        name: '步骤4：下载并导入证书',
-                        local: 'mongodb-0024.html'
-                      },
-                      {
-                        id: 1105,
-                        parentId: 1098,
-                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
-                        local: 'mongodb-0025.html'
-                      },
-                      {
-                        id: 1106,
-                        parentId: 1098,
-                        name:
-                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'zh-cn_topic_0000002010413522.html'
-                      },
-                      {
-                        id: 1107,
-                        parentId: 1098,
-                        name: '步骤6：添加复制集群',
-                        local: 'mongodb-0026.html'
-                      },
-                      {
-                        id: 1108,
-                        parentId: 1098,
-                        name: '步骤7：创建复制SLA',
-                        local: 'mongodb-0027.html'
-                      },
-                      {
-                        id: 1109,
-                        parentId: 1098,
-                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
-                        local: 'mongodb-0028.html'
+                        parentId: 1097,
+                        name: '步骤5：执行备份',
+                        local: 'mongodb-0016.html'
                       }
                     ]
-                  }
-                ]
-              },
-              {
-                id: 1085,
-                parentId: 885,
-                name: '归档',
-                local: 'mongodb-0029.html',
-                children: [
-                  {
-                    id: 1110,
-                    parentId: 1085,
-                    name: '归档MongoDB备份副本',
-                    local: 'mongodb-0032.html',
-                    children: [
-                      {
-                        id: 1112,
-                        parentId: 1110,
-                        name: '步骤1：添加归档存储',
-                        local: 'mongodb-0033.html',
-                        children: [
-                          {
-                            id: 1114,
-                            parentId: 1112,
-                            name: '添加对象存储（归档存储是对象存储）',
-                            local: 'mongodb-0034.html'
-                          },
-                          {
-                            id: 1115,
-                            parentId: 1112,
-                            name: '创建介质集（归档存储是磁带库）',
-                            local: 'mongodb-0035.html'
-                          }
-                        ]
-                      },
-                      {
-                        id: 1113,
-                        parentId: 1110,
-                        name: '步骤2：创建归档SLA',
-                        local: 'mongodb-0036.html'
-                      }
-                    ]
-                  },
-                  {
-                    id: 1111,
-                    parentId: 1085,
-                    name: '归档MongoDB复制副本',
-                    local: 'mongodb-0037.html',
-                    children: [
-                      {
-                        id: 1116,
-                        parentId: 1111,
-                        name: '步骤1：创建归档SLA',
-                        local: 'mongodb-0038.html'
-                      },
-                      {
-                        id: 1117,
-                        parentId: 1111,
-                        name: '步骤2：创建复制副本周期性归档',
-                        local: 'mongodb-0039.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 1086,
-                parentId: 885,
-                name: '恢复',
-                local: 'mongodb-0040.html',
-                children: [
-                  {
-                    id: 1118,
-                    parentId: 1086,
-                    name: '恢复MongoDB',
-                    local: 'mongodb-0043.html'
-                  }
-                ]
-              },
-              {
-                id: 1087,
-                parentId: 885,
-                name: '全局搜索',
-                local: 'mongodb-0044.html',
-                children: [
-                  {
-                    id: 1119,
-                    parentId: 1087,
-                    name: '全局搜索资源',
-                    local: 'mongodb-0046.html'
-                  },
-                  {
-                    id: 1120,
-                    parentId: 1087,
-                    name: '全局标签搜索（适用于1.6.0及后续版本）',
-                    local: 'zh-cn_topic_0000002002841954.html'
-                  }
-                ]
-              },
-              {
-                id: 1088,
-                parentId: 885,
-                name: 'SLA',
-                local: 'zh-cn_topic_0000001954665865.html',
-                children: [
-                  {
-                    id: 1121,
-                    parentId: 1088,
-                    name: '关于SLA',
-                    local: 'vmware_gud_000026.html'
-                  },
-                  {
-                    id: 1122,
-                    parentId: 1088,
-                    name: '查看SLA信息',
-                    local: 'zh-cn_topic_0000001927506528.html'
-                  },
-                  {
-                    id: 1123,
-                    parentId: 1088,
-                    name: '管理SLA',
-                    local: 'zh-cn_topic_0000001927347172.html'
                   }
                 ]
               },
               {
                 id: 1089,
-                parentId: 885,
-                name: '副本',
-                local: 'mongodb-0053.html',
+                parentId: 890,
+                name: '复制',
+                local: 'mongodb-0017.html',
                 children: [
                   {
-                    id: 1124,
+                    id: 1103,
                     parentId: 1089,
-                    name: '查看MongoDB副本信息',
-                    local: 'mongodb-0054.html'
-                  },
-                  {
-                    id: 1125,
-                    parentId: 1089,
-                    name: '管理MongoDB副本',
-                    local: 'mongodb-0055.html'
+                    name: '复制MongoDB副本',
+                    local: 'mongodb-0020.html',
+                    children: [
+                      {
+                        id: 1104,
+                        parentId: 1103,
+                        name: '规划复制网络',
+                        local: 'mongodb-0021.html'
+                      },
+                      {
+                        id: 1105,
+                        parentId: 1103,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'mongodb-0022.html'
+                      },
+                      {
+                        id: 1106,
+                        parentId: 1103,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'mongodb-0023.html'
+                      },
+                      {
+                        id: 1107,
+                        parentId: 1103,
+                        name: '步骤2：（可选）创建IPsec策略',
+                        local: 'mongodb-0024.html'
+                      },
+                      {
+                        id: 1108,
+                        parentId: 1103,
+                        name: '步骤3：（可选）开启复制链路加密开关',
+                        local: 'mongodb-0025.html'
+                      },
+                      {
+                        id: 1109,
+                        parentId: 1103,
+                        name: '步骤4：下载并导入证书',
+                        local: 'mongodb-0026.html'
+                      },
+                      {
+                        id: 1110,
+                        parentId: 1103,
+                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
+                        local: 'mongodb-0027.html'
+                      },
+                      {
+                        id: 1111,
+                        parentId: 1103,
+                        name:
+                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
+                        local: 'mongodb-0028.html'
+                      },
+                      {
+                        id: 1112,
+                        parentId: 1103,
+                        name: '步骤6：添加复制集群',
+                        local: 'mongodb-0029.html'
+                      },
+                      {
+                        id: 1113,
+                        parentId: 1103,
+                        name: '步骤7：创建复制SLA',
+                        local: 'mongodb-0030.html'
+                      },
+                      {
+                        id: 1114,
+                        parentId: 1103,
+                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
+                        local: 'mongodb-0031.html'
+                      }
+                    ]
                   }
                 ]
               },
               {
                 id: 1090,
-                parentId: 885,
-                name: 'MongoDB环境',
-                local: 'mongodb-0056.html',
+                parentId: 890,
+                name: '归档',
+                local: 'mongodb-0032.html',
                 children: [
                   {
-                    id: 1126,
+                    id: 1115,
                     parentId: 1090,
-                    name: '查看MongoDB环境信息',
-                    local: 'mongodb-0057.html'
+                    name: '归档MongoDB备份副本',
+                    local: 'mongodb-0035.html',
+                    children: [
+                      {
+                        id: 1117,
+                        parentId: 1115,
+                        name: '步骤1：添加归档存储',
+                        local: 'mongodb-0036.html',
+                        children: [
+                          {
+                            id: 1119,
+                            parentId: 1117,
+                            name: '添加对象存储（归档存储是对象存储）',
+                            local: 'mongodb-0037.html'
+                          },
+                          {
+                            id: 1120,
+                            parentId: 1117,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
+                            local: 'mongodb-0038.html'
+                          }
+                        ]
+                      },
+                      {
+                        id: 1118,
+                        parentId: 1115,
+                        name: '步骤2：创建备份副本归档SLA',
+                        local: 'mongodb-0039.html'
+                      }
+                    ]
+                  },
+                  {
+                    id: 1116,
+                    parentId: 1090,
+                    name: '归档MongoDB复制副本',
+                    local: 'mongodb-0040.html',
+                    children: [
+                      {
+                        id: 1121,
+                        parentId: 1116,
+                        name: '步骤1：创建复制副本归档SLA',
+                        local: 'mongodb-0041.html'
+                      },
+                      {
+                        id: 1122,
+                        parentId: 1116,
+                        name: '步骤2：创建复制副本周期性归档',
+                        local: 'mongodb-0042.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 1091,
+                parentId: 890,
+                name: '恢复',
+                local: 'mongodb-0043.html',
+                children: [
+                  {
+                    id: 1123,
+                    parentId: 1091,
+                    name: '恢复MongoDB',
+                    local: 'mongodb-0046.html'
+                  }
+                ]
+              },
+              {
+                id: 1092,
+                parentId: 890,
+                name: '全局搜索',
+                local: 'mongodb-0047.html',
+                children: [
+                  {
+                    id: 1124,
+                    parentId: 1092,
+                    name: '关于全局搜索',
+                    local: 'mongodb-0048.html'
+                  },
+                  {
+                    id: 1125,
+                    parentId: 1092,
+                    name: '全局搜索副本数据',
+                    local: 'mongodb-0049.html'
+                  },
+                  {
+                    id: 1126,
+                    parentId: 1092,
+                    name: '全局搜索资源',
+                    local: 'mongodb-0050.html'
                   },
                   {
                     id: 1127,
-                    parentId: 1090,
+                    parentId: 1092,
+                    name: '全局标签搜索（适用于1.6.0及后续版本）',
+                    local: 'mongodb-0051.html'
+                  }
+                ]
+              },
+              {
+                id: 1093,
+                parentId: 890,
+                name: 'SLA',
+                local: 'mongodb-0054.html',
+                children: [
+                  {
+                    id: 1128,
+                    parentId: 1093,
+                    name: '关于SLA',
+                    local: 'mongodb-0055.html'
+                  },
+                  {
+                    id: 1129,
+                    parentId: 1093,
+                    name: '查看SLA信息',
+                    local: 'mongodb-0056.html'
+                  },
+                  {
+                    id: 1130,
+                    parentId: 1093,
+                    name: '管理SLA',
+                    local: 'mongodb-0057.html'
+                  }
+                ]
+              },
+              {
+                id: 1094,
+                parentId: 890,
+                name: '副本',
+                local: 'mongodb-0058.html',
+                children: [
+                  {
+                    id: 1131,
+                    parentId: 1094,
+                    name: '查看MongoDB副本信息',
+                    local: 'mongodb-0059.html'
+                  },
+                  {
+                    id: 1132,
+                    parentId: 1094,
+                    name: '管理MongoDB副本',
+                    local: 'mongodb-0060.html'
+                  }
+                ]
+              },
+              {
+                id: 1095,
+                parentId: 890,
+                name: 'MongoDB环境',
+                local: 'mongodb-0061.html',
+                children: [
+                  {
+                    id: 1133,
+                    parentId: 1095,
+                    name: '查看MongoDB环境信息',
+                    local: 'mongodb-0062.html'
+                  },
+                  {
+                    id: 1134,
+                    parentId: 1095,
                     name: '管理MongoDB',
-                    local: 'mongodb-0058.html'
+                    local: 'mongodb-0063.html'
                   }
                 ]
               }
             ]
           },
           {
-            id: 886,
+            id: 891,
             parentId: 14,
             name: 'ElasticSearch数据保护',
             local: 'zh-cn_topic_0000001873759397.html',
             children: [
               {
-                id: 1128,
-                parentId: 886,
+                id: 1135,
+                parentId: 891,
                 name: '备份',
                 local: 'ES_gud_00007.html',
                 children: [
                   {
-                    id: 1136,
-                    parentId: 1128,
+                    id: 1143,
+                    parentId: 1135,
                     name: '备份前准备',
                     local: 'ES_gud_00010.html'
                   },
                   {
-                    id: 1137,
-                    parentId: 1128,
+                    id: 1144,
+                    parentId: 1135,
                     name: '备份Elasticsearch集群',
                     local: 'ES_gud_00011.html',
                     children: [
                       {
-                        id: 1138,
-                        parentId: 1137,
+                        id: 1145,
+                        parentId: 1144,
                         name: '步骤1：（可选）开启安全加密模式',
                         local: 'ES_gud_00012.html'
                       },
                       {
-                        id: 1139,
-                        parentId: 1137,
+                        id: 1146,
+                        parentId: 1144,
                         name: '步骤2：创建并配置挂载目录',
                         local: 'ES_gud_00013.html'
                       },
                       {
-                        id: 1140,
-                        parentId: 1137,
+                        id: 1147,
+                        parentId: 1144,
                         name: '步骤3：注册Elasticsearch集群',
                         local: 'ES_gud_00014.html'
                       },
                       {
-                        id: 1141,
-                        parentId: 1137,
+                        id: 1148,
+                        parentId: 1144,
                         name: '步骤4：创建Elasticsearch备份集',
                         local: 'ES_gud_00015.html'
                       },
                       {
-                        id: 1142,
-                        parentId: 1137,
+                        id: 1149,
+                        parentId: 1144,
                         name: '步骤5：创建限速策略',
                         local: 'ES_gud_00016.html'
                       },
                       {
-                        id: 1143,
-                        parentId: 1137,
-                        name:
-                          '步骤6：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 1150,
+                        parentId: 1144,
+                        name: '步骤6：（可选）开启备份链路加密开关',
                         local: 'ES_gud_00017.html'
                       },
                       {
-                        id: 1144,
-                        parentId: 1137,
+                        id: 1151,
+                        parentId: 1144,
                         name: '步骤7：创建备份SLA',
                         local: 'ES_gud_00018.html'
                       },
                       {
-                        id: 1145,
-                        parentId: 1137,
+                        id: 1152,
+                        parentId: 1144,
                         name: '步骤8：执行备份',
                         local: 'ES_gud_00019.html'
                       }
@@ -7490,77 +7534,77 @@ naviData = [
                 ]
               },
               {
-                id: 1129,
-                parentId: 886,
+                id: 1136,
+                parentId: 891,
                 name: '复制',
                 local: 'ES_gud_00022.html',
                 children: [
                   {
-                    id: 1146,
-                    parentId: 1129,
+                    id: 1153,
+                    parentId: 1136,
                     name: '复制Elasticsearch副本',
                     local: 'ES_gud_00025.html',
                     children: [
                       {
-                        id: 1147,
-                        parentId: 1146,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 1154,
+                        parentId: 1153,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'ES_gud_00027.html'
                       },
                       {
-                        id: 1148,
-                        parentId: 1146,
+                        id: 1155,
+                        parentId: 1153,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_24.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_14.html'
                       },
                       {
-                        id: 1149,
-                        parentId: 1146,
+                        id: 1156,
+                        parentId: 1153,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'ES_gud_00028.html'
                       },
                       {
-                        id: 1150,
-                        parentId: 1146,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 1157,
+                        parentId: 1153,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'ES_gud_00029.html'
                       },
                       {
-                        id: 1151,
-                        parentId: 1146,
+                        id: 1158,
+                        parentId: 1153,
                         name: '步骤4：下载并导入证书',
                         local: 'ES_gud_00030.html'
                       },
                       {
-                        id: 1152,
-                        parentId: 1146,
+                        id: 1159,
+                        parentId: 1153,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'ES_gud_00031.html'
                       },
                       {
-                        id: 1153,
-                        parentId: 1146,
+                        id: 1160,
+                        parentId: 1153,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'zh-cn_topic_0000002046700657.html'
                       },
                       {
-                        id: 1154,
-                        parentId: 1146,
+                        id: 1161,
+                        parentId: 1153,
                         name: '步骤6：添加复制集群',
                         local: 'ES_gud_00032.html'
                       },
                       {
-                        id: 1155,
-                        parentId: 1146,
+                        id: 1162,
+                        parentId: 1153,
                         name: '步骤7：创建复制SLA',
                         local: 'ES_gud_00033.html'
                       },
                       {
-                        id: 1156,
-                        parentId: 1146,
+                        id: 1163,
+                        parentId: 1153,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'ES_gud_00034.html'
                       }
@@ -7569,60 +7613,61 @@ naviData = [
                 ]
               },
               {
-                id: 1130,
-                parentId: 886,
+                id: 1137,
+                parentId: 891,
                 name: '归档',
                 local: 'ES_gud_00035.html',
                 children: [
                   {
-                    id: 1157,
-                    parentId: 1130,
+                    id: 1164,
+                    parentId: 1137,
                     name: '归档Elasticsearch备份副本',
                     local: 'ES_gud_00038.html',
                     children: [
                       {
-                        id: 1159,
-                        parentId: 1157,
+                        id: 1166,
+                        parentId: 1164,
                         name: '步骤1：添加归档存储',
                         local: 'ES_gud_00039.html',
                         children: [
                           {
-                            id: 1161,
-                            parentId: 1159,
+                            id: 1168,
+                            parentId: 1166,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'ES_gud_00040.html'
                           },
                           {
-                            id: 1162,
-                            parentId: 1159,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1169,
+                            parentId: 1166,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'ES_gud_00041.html'
                           }
                         ]
                       },
                       {
-                        id: 1160,
-                        parentId: 1157,
-                        name: '步骤2：创建归档SLA',
+                        id: 1167,
+                        parentId: 1164,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'ES_gud_00042.html'
                       }
                     ]
                   },
                   {
-                    id: 1158,
-                    parentId: 1130,
+                    id: 1165,
+                    parentId: 1137,
                     name: '归档Elasticsearch复制副本',
                     local: 'ES_gud_00043.html',
                     children: [
                       {
-                        id: 1163,
-                        parentId: 1158,
-                        name: '步骤1：创建归档SLA',
+                        id: 1170,
+                        parentId: 1165,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'ES_gud_00044.html'
                       },
                       {
-                        id: 1164,
-                        parentId: 1158,
+                        id: 1171,
+                        parentId: 1165,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'ES_gud_00045.html'
                       }
@@ -7631,106 +7676,106 @@ naviData = [
                 ]
               },
               {
-                id: 1131,
-                parentId: 886,
+                id: 1138,
+                parentId: 891,
                 name: '恢复',
                 local: 'ES_gud_00046.html',
                 children: [
                   {
-                    id: 1165,
-                    parentId: 1131,
+                    id: 1172,
+                    parentId: 1138,
                     name: '恢复Elasticsearch备份集',
                     local: 'ES_gud_00049.html'
                   },
                   {
-                    id: 1166,
-                    parentId: 1131,
+                    id: 1173,
+                    parentId: 1138,
                     name: '恢复Elasticsearch备份集中的单个或多个索引',
                     local: 'ES_gud_00050.html'
                   }
                 ]
               },
               {
-                id: 1132,
-                parentId: 886,
+                id: 1139,
+                parentId: 891,
                 name: '全局搜索',
                 local: 'ES_gud_00047_a1.html',
                 children: [
                   {
-                    id: 1167,
-                    parentId: 1132,
+                    id: 1174,
+                    parentId: 1139,
                     name: '全局搜索资源',
                     local: 'ES_gud_00047_a2.html'
                   },
                   {
-                    id: 1168,
-                    parentId: 1132,
+                    id: 1175,
+                    parentId: 1139,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'ES_gud_00047_a3.html'
                   }
                 ]
               },
               {
-                id: 1133,
-                parentId: 886,
+                id: 1140,
+                parentId: 891,
                 name: 'SLA',
                 local: 'ES_gud_00055.html',
                 children: [
                   {
-                    id: 1169,
-                    parentId: 1133,
+                    id: 1176,
+                    parentId: 1140,
                     name: '查看SLA信息',
                     local: 'ES_gud_00057.html'
                   },
                   {
-                    id: 1170,
-                    parentId: 1133,
+                    id: 1177,
+                    parentId: 1140,
                     name: '管理SLA',
                     local: 'ES_gud_00058.html'
                   }
                 ]
               },
               {
-                id: 1134,
-                parentId: 886,
+                id: 1141,
+                parentId: 891,
                 name: '副本',
                 local: 'ES_gud_00059.html',
                 children: [
                   {
-                    id: 1171,
-                    parentId: 1134,
-                    name: '查询Elasticsearch副本信息',
+                    id: 1178,
+                    parentId: 1141,
+                    name: '查看Elasticsearch副本信息',
                     local: 'ES_gud_00060.html'
                   },
                   {
-                    id: 1172,
-                    parentId: 1134,
+                    id: 1179,
+                    parentId: 1141,
                     name: '管理Elasticsearch副本',
                     local: 'ES_gud_00061.html'
                   }
                 ]
               },
               {
-                id: 1135,
-                parentId: 886,
+                id: 1142,
+                parentId: 891,
                 name: 'Elasticsearch集群环境',
                 local: 'ES_gud_00062.html',
                 children: [
                   {
-                    id: 1173,
-                    parentId: 1135,
+                    id: 1180,
+                    parentId: 1142,
                     name: '查询Elasticsearch信息',
                     local: 'ES_gud_00063.html'
                   },
                   {
-                    id: 1174,
-                    parentId: 1135,
+                    id: 1181,
+                    parentId: 1142,
                     name: '管理Elasticsearch集群',
                     local: 'ES_gud_00064.html'
                   },
                   {
-                    id: 1175,
-                    parentId: 1135,
+                    id: 1182,
+                    parentId: 1142,
                     name: '管理备份集',
                     local: 'ES_gud_00065.html'
                   }
@@ -7739,75 +7784,74 @@ naviData = [
             ]
           },
           {
-            id: 887,
+            id: 892,
             parentId: 14,
             name: 'HDFS数据保护',
             local: 'product_documentation_000031.html',
             children: [
               {
-                id: 1176,
-                parentId: 887,
+                id: 1183,
+                parentId: 892,
                 name: '备份',
                 local: 'hdfs_00007.html',
                 children: [
                   {
-                    id: 1184,
-                    parentId: 1176,
+                    id: 1191,
+                    parentId: 1183,
                     name: '备份前准备',
                     local: 'hdfs_00010.html'
                   },
                   {
-                    id: 1185,
-                    parentId: 1176,
+                    id: 1192,
+                    parentId: 1183,
                     name: '备份HDFS文件集',
                     local: 'hdfs_00011.html',
                     children: [
                       {
-                        id: 1186,
-                        parentId: 1185,
+                        id: 1193,
+                        parentId: 1192,
                         name: '步骤1：开启HDFS目录的快照功能',
                         local: 'hdfs_00012.html'
                       },
                       {
-                        id: 1187,
-                        parentId: 1185,
+                        id: 1194,
+                        parentId: 1192,
                         name: '步骤2：检查HDFS ACL的开关状态',
                         local: 'hdfs_00013.html'
                       },
                       {
-                        id: 1188,
-                        parentId: 1185,
+                        id: 1195,
+                        parentId: 1192,
                         name: '步骤3：注册HDFS集群',
                         local: 'hdfs_00014.html'
                       },
                       {
-                        id: 1189,
-                        parentId: 1185,
+                        id: 1196,
+                        parentId: 1192,
                         name: '步骤4：创建HDFS文件集',
                         local: 'hdfs_00015.html'
                       },
                       {
-                        id: 1190,
-                        parentId: 1185,
+                        id: 1197,
+                        parentId: 1192,
                         name: '步骤5：创建限速策略',
                         local: 'hdfs_00016.html'
                       },
                       {
-                        id: 1191,
-                        parentId: 1185,
-                        name:
-                          '步骤6：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 1198,
+                        parentId: 1192,
+                        name: '步骤6：（可选）开启备份链路加密开关',
                         local: 'hdfs_00017.html'
                       },
                       {
-                        id: 1192,
-                        parentId: 1185,
+                        id: 1199,
+                        parentId: 1192,
                         name: '步骤7：创建备份SLA',
                         local: 'hdfs_00018.html'
                       },
                       {
-                        id: 1193,
-                        parentId: 1185,
+                        id: 1200,
+                        parentId: 1192,
                         name: '步骤8：执行备份',
                         local: 'hdfs_00019.html'
                       }
@@ -7816,77 +7860,77 @@ naviData = [
                 ]
               },
               {
-                id: 1177,
-                parentId: 887,
+                id: 1184,
+                parentId: 892,
                 name: '复制',
                 local: 'hdfs_00022.html',
                 children: [
                   {
-                    id: 1194,
-                    parentId: 1177,
+                    id: 1201,
+                    parentId: 1184,
                     name: '复制HDFS副本',
                     local: 'hdfs_00025.html',
                     children: [
                       {
-                        id: 1195,
-                        parentId: 1194,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 1202,
+                        parentId: 1201,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'hdfs_00027.html'
                       },
                       {
-                        id: 1196,
-                        parentId: 1194,
+                        id: 1203,
+                        parentId: 1201,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_1.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_0.html'
                       },
                       {
-                        id: 1197,
-                        parentId: 1194,
+                        id: 1204,
+                        parentId: 1201,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'hdfs_00028.html'
                       },
                       {
-                        id: 1198,
-                        parentId: 1194,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 1205,
+                        parentId: 1201,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'hdfs_00029.html'
                       },
                       {
-                        id: 1199,
-                        parentId: 1194,
+                        id: 1206,
+                        parentId: 1201,
                         name: '步骤4：下载并导入证书',
                         local: 'hdfs_00030.html'
                       },
                       {
-                        id: 1200,
-                        parentId: 1194,
-                        name: '步骤5：创建远端设备管理员',
+                        id: 1207,
+                        parentId: 1201,
+                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'hdfs_00031.html'
                       },
                       {
-                        id: 1201,
-                        parentId: 1194,
+                        id: 1208,
+                        parentId: 1201,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'zh-cn_topic_0000002046697729.html'
                       },
                       {
-                        id: 1202,
-                        parentId: 1194,
+                        id: 1209,
+                        parentId: 1201,
                         name: '步骤6：添加复制集群',
                         local: 'hdfs_00032.html'
                       },
                       {
-                        id: 1203,
-                        parentId: 1194,
+                        id: 1210,
+                        parentId: 1201,
                         name: '步骤7：创建复制SLA',
                         local: 'hdfs_00033.html'
                       },
                       {
-                        id: 1204,
-                        parentId: 1194,
+                        id: 1211,
+                        parentId: 1201,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'hdfs_00034.html'
                       }
@@ -7895,60 +7939,61 @@ naviData = [
                 ]
               },
               {
-                id: 1178,
-                parentId: 887,
+                id: 1185,
+                parentId: 892,
                 name: '归档',
                 local: 'hdfs_00035.html',
                 children: [
                   {
-                    id: 1205,
-                    parentId: 1178,
+                    id: 1212,
+                    parentId: 1185,
                     name: '归档HDFS备份副本',
                     local: 'hdfs_00038.html',
                     children: [
                       {
-                        id: 1207,
-                        parentId: 1205,
+                        id: 1214,
+                        parentId: 1212,
                         name: '步骤1：添加归档存储',
                         local: 'hdfs_00039.html',
                         children: [
                           {
-                            id: 1209,
-                            parentId: 1207,
+                            id: 1216,
+                            parentId: 1214,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'hdfs_00040.html'
                           },
                           {
-                            id: 1210,
-                            parentId: 1207,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1217,
+                            parentId: 1214,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'hdfs_00041.html'
                           }
                         ]
                       },
                       {
-                        id: 1208,
-                        parentId: 1205,
-                        name: '步骤2：创建归档SLA',
+                        id: 1215,
+                        parentId: 1212,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'hdfs_00042.html'
                       }
                     ]
                   },
                   {
-                    id: 1206,
-                    parentId: 1178,
+                    id: 1213,
+                    parentId: 1185,
                     name: '归档HDFS复制副本',
                     local: 'hdfs_00043.html',
                     children: [
                       {
-                        id: 1211,
-                        parentId: 1206,
-                        name: '步骤1：创建归档SLA',
+                        id: 1218,
+                        parentId: 1213,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'hdfs_00044.html'
                       },
                       {
-                        id: 1212,
-                        parentId: 1206,
+                        id: 1219,
+                        parentId: 1213,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'hdfs_00045.html'
                       }
@@ -7957,112 +8002,112 @@ naviData = [
                 ]
               },
               {
-                id: 1179,
-                parentId: 887,
+                id: 1186,
+                parentId: 892,
                 name: '恢复',
                 local: 'hdfs_00046.html',
                 children: [
                   {
-                    id: 1213,
-                    parentId: 1179,
+                    id: 1220,
+                    parentId: 1186,
                     name: '恢复HDFS文件集',
                     local: 'hdfs_00048.html'
                   },
                   {
-                    id: 1214,
-                    parentId: 1179,
+                    id: 1221,
+                    parentId: 1186,
                     name: '恢复HDFS文件集中的单个或多个文件',
                     local: 'hdfs_00049.html'
                   }
                 ]
               },
               {
-                id: 1180,
-                parentId: 887,
+                id: 1187,
+                parentId: 892,
                 name: '全局搜索',
                 local: 'hdfs_00050.html',
                 children: [
                   {
-                    id: 1215,
-                    parentId: 1180,
+                    id: 1222,
+                    parentId: 1187,
                     name: '全局搜索副本数据',
                     local: 'hdfs_00051.html'
                   },
                   {
-                    id: 1216,
-                    parentId: 1180,
+                    id: 1223,
+                    parentId: 1187,
                     name: '全局搜索资源',
                     local: 'hdfs_00052.html'
                   },
                   {
-                    id: 1217,
-                    parentId: 1180,
+                    id: 1224,
+                    parentId: 1187,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'zh-cn_topic_0000002002686646.html'
                   }
                 ]
               },
               {
-                id: 1181,
-                parentId: 887,
+                id: 1188,
+                parentId: 892,
                 name: 'SLA',
                 local: 'hdfs_00055.html',
                 children: [
                   {
-                    id: 1218,
-                    parentId: 1181,
+                    id: 1225,
+                    parentId: 1188,
                     name: '查看SLA信息',
                     local: 'hdfs_00057.html'
                   },
                   {
-                    id: 1219,
-                    parentId: 1181,
+                    id: 1226,
+                    parentId: 1188,
                     name: '管理SLA',
                     local: 'hdfs_00058.html'
                   }
                 ]
               },
               {
-                id: 1182,
-                parentId: 887,
+                id: 1189,
+                parentId: 892,
                 name: '副本',
                 local: 'hdfs_00059.html',
                 children: [
                   {
-                    id: 1220,
-                    parentId: 1182,
-                    name: '查询HDFS副本信息',
+                    id: 1227,
+                    parentId: 1189,
+                    name: '查看HDFS副本信息',
                     local: 'hdfs_00060.html'
                   },
                   {
-                    id: 1221,
-                    parentId: 1182,
+                    id: 1228,
+                    parentId: 1189,
                     name: '管理HDFS副本',
                     local: 'hdfs_00061.html'
                   }
                 ]
               },
               {
-                id: 1183,
-                parentId: 887,
+                id: 1190,
+                parentId: 892,
                 name: 'HDFS集群环境',
                 local: 'hdfs_00062.html',
                 children: [
                   {
-                    id: 1222,
-                    parentId: 1183,
+                    id: 1229,
+                    parentId: 1190,
                     name: '查询HDFS信息',
                     local: 'hdfs_00063.html'
                   },
                   {
-                    id: 1223,
-                    parentId: 1183,
+                    id: 1230,
+                    parentId: 1190,
                     name: '管理HDFS集群',
                     local: 'hdfs_00064.html'
                   },
                   {
-                    id: 1224,
-                    parentId: 1183,
+                    id: 1231,
+                    parentId: 1190,
                     name: '管理HDFS文件集',
                     local: 'hdfs_00065.html'
                   }
@@ -8071,57 +8116,56 @@ naviData = [
             ]
           },
           {
-            id: 888,
+            id: 893,
             parentId: 14,
             name: 'Redis数据保护',
             local: 'zh-cn_topic_0000001873759393.html',
             children: [
               {
-                id: 1225,
-                parentId: 888,
+                id: 1232,
+                parentId: 893,
                 name: '备份',
                 local: 'redis-00003.html',
                 children: [
                   {
-                    id: 1234,
-                    parentId: 1225,
+                    id: 1241,
+                    parentId: 1232,
                     name: '备份前准备',
                     local: 'redis-00006.html'
                   },
                   {
-                    id: 1235,
-                    parentId: 1225,
+                    id: 1242,
+                    parentId: 1232,
                     name: '备份Redis集群',
                     local: 'redis-00007.html',
                     children: [
                       {
-                        id: 1236,
-                        parentId: 1235,
+                        id: 1243,
+                        parentId: 1242,
                         name: '步骤1：注册Redis集群',
                         local: 'redis-00008.html'
                       },
                       {
-                        id: 1237,
-                        parentId: 1235,
+                        id: 1244,
+                        parentId: 1242,
                         name: '步骤2：创建限速策略',
                         local: 'redis-00009.html'
                       },
                       {
-                        id: 1238,
-                        parentId: 1235,
-                        name:
-                          '步骤3：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 1245,
+                        parentId: 1242,
+                        name: '步骤3：（可选）开启备份链路加密开关',
                         local: 'redis-00010.html'
                       },
                       {
-                        id: 1239,
-                        parentId: 1235,
+                        id: 1246,
+                        parentId: 1242,
                         name: '步骤4：创建备份SLA',
                         local: 'redis-00011.html'
                       },
                       {
-                        id: 1240,
-                        parentId: 1235,
+                        id: 1247,
+                        parentId: 1242,
                         name: '步骤5：执行备份',
                         local: 'redis-00012.html'
                       }
@@ -8130,83 +8174,83 @@ naviData = [
                 ]
               },
               {
-                id: 1226,
-                parentId: 888,
+                id: 1233,
+                parentId: 893,
                 name: '复制',
-                local: 'oracle_gud_000035_3.html',
+                local: 'oracle_gud_000035_1.html',
                 children: [
                   {
-                    id: 1241,
-                    parentId: 1226,
+                    id: 1248,
+                    parentId: 1233,
                     name: '复制Redis副本',
                     local: 'redis-00017.html',
                     children: [
                       {
-                        id: 1242,
-                        parentId: 1241,
+                        id: 1249,
+                        parentId: 1248,
                         name: '规划复制网络',
                         local: 'redis-00018.html'
                       },
                       {
-                        id: 1243,
-                        parentId: 1241,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_4.html'
-                      },
-                      {
-                        id: 1244,
-                        parentId: 1241,
+                        id: 1250,
+                        parentId: 1248,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_10.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'fc_gud_0026_2.html'
                       },
                       {
-                        id: 1245,
-                        parentId: 1241,
+                        id: 1251,
+                        parentId: 1248,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_5.html'
+                      },
+                      {
+                        id: 1252,
+                        parentId: 1248,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'redis-00020.html'
                       },
                       {
-                        id: 1246,
-                        parentId: 1241,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 1253,
+                        parentId: 1248,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'redis-00021.html'
                       },
                       {
-                        id: 1247,
-                        parentId: 1241,
+                        id: 1254,
+                        parentId: 1248,
                         name: '步骤4：下载并导入证书',
                         local: 'redis-00022.html'
                       },
                       {
-                        id: 1248,
-                        parentId: 1241,
-                        name: '步骤5：创建远端设备管理员',
+                        id: 1255,
+                        parentId: 1248,
+                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'redis-00023.html'
                       },
                       {
-                        id: 1249,
-                        parentId: 1241,
+                        id: 1256,
+                        parentId: 1248,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'zh-cn_topic_0000002046614601.html'
                       },
                       {
-                        id: 1250,
-                        parentId: 1241,
+                        id: 1257,
+                        parentId: 1248,
                         name: '步骤6：添加复制集群',
                         local: 'redis-00024.html'
                       },
                       {
-                        id: 1251,
-                        parentId: 1241,
+                        id: 1258,
+                        parentId: 1248,
                         name: '步骤7：创建复制SLA',
                         local: 'redis-00025.html'
                       },
                       {
-                        id: 1252,
-                        parentId: 1241,
+                        id: 1259,
+                        parentId: 1248,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'redis-00026.html'
                       }
@@ -8215,60 +8259,61 @@ naviData = [
                 ]
               },
               {
-                id: 1227,
-                parentId: 888,
+                id: 1234,
+                parentId: 893,
                 name: '归档',
                 local: 'redis-00027.html',
                 children: [
                   {
-                    id: 1253,
-                    parentId: 1227,
+                    id: 1260,
+                    parentId: 1234,
                     name: '归档Redis备份副本',
                     local: 'redis-00030.html',
                     children: [
                       {
-                        id: 1255,
-                        parentId: 1253,
+                        id: 1262,
+                        parentId: 1260,
                         name: '步骤1：添加归档存储',
                         local: 'redis-00031.html',
                         children: [
                           {
-                            id: 1257,
-                            parentId: 1255,
+                            id: 1264,
+                            parentId: 1262,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'redis-00032.html'
                           },
                           {
-                            id: 1258,
-                            parentId: 1255,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1265,
+                            parentId: 1262,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'redis-00033.html'
                           }
                         ]
                       },
                       {
-                        id: 1256,
-                        parentId: 1253,
-                        name: '步骤2：创建归档SLA',
+                        id: 1263,
+                        parentId: 1260,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'redis-00034.html'
                       }
                     ]
                   },
                   {
-                    id: 1254,
-                    parentId: 1227,
+                    id: 1261,
+                    parentId: 1234,
                     name: '归档Redis复制副本',
                     local: 'redis-00035.html',
                     children: [
                       {
-                        id: 1259,
-                        parentId: 1254,
-                        name: '步骤1：创建归档SLA',
+                        id: 1266,
+                        parentId: 1261,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'redis-00036.html'
                       },
                       {
-                        id: 1260,
-                        parentId: 1254,
+                        id: 1267,
+                        parentId: 1261,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'redis-00037.html'
                       }
@@ -8277,120 +8322,121 @@ naviData = [
                 ]
               },
               {
-                id: 1228,
-                parentId: 888,
+                id: 1235,
+                parentId: 893,
                 name: '恢复',
                 local: 'redis-00038.html',
                 children: [
                   {
-                    id: 1261,
-                    parentId: 1228,
+                    id: 1268,
+                    parentId: 1235,
                     name: '恢复Redis集群',
                     local: 'redis-00041.html'
                   }
                 ]
               },
               {
-                id: 1229,
-                parentId: 888,
+                id: 1236,
+                parentId: 893,
                 name: '全局搜索',
                 local: 'zh-cn_topic_0000002038763381.html',
                 children: [
                   {
-                    id: 1262,
-                    parentId: 1229,
+                    id: 1269,
+                    parentId: 1236,
                     name: '全局搜索资源',
                     local: 'redis-00042.html'
                   },
                   {
-                    id: 1263,
-                    parentId: 1229,
+                    id: 1270,
+                    parentId: 1236,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'zh-cn_topic_0000002002843406.html'
                   }
                 ]
               },
               {
-                id: 1230,
-                parentId: 888,
-                name: '数据重删压缩（适用于X系列备份一体机）',
+                id: 1237,
+                parentId: 893,
+                name:
+                  '数据重删压缩（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
                 local: 'redis-00043.html',
                 children: [
                   {
-                    id: 1264,
-                    parentId: 1230,
+                    id: 1271,
+                    parentId: 1237,
                     name: '关于数据重删压缩',
                     local: 'redis-00044.html'
                   }
                 ]
               },
               {
-                id: 1231,
-                parentId: 888,
+                id: 1238,
+                parentId: 893,
                 name: 'SLA',
                 local: 'redis-00045.html',
                 children: [
                   {
-                    id: 1265,
-                    parentId: 1231,
+                    id: 1272,
+                    parentId: 1238,
                     name: '关于SLA',
                     local: 'redis-00046.html'
                   },
                   {
-                    id: 1266,
-                    parentId: 1231,
+                    id: 1273,
+                    parentId: 1238,
                     name: '查看SLA信息',
                     local: 'redis-00047.html'
                   },
                   {
-                    id: 1267,
-                    parentId: 1231,
+                    id: 1274,
+                    parentId: 1238,
                     name: '管理SLA',
                     local: 'redis-00048.html'
                   }
                 ]
               },
               {
-                id: 1232,
-                parentId: 888,
+                id: 1239,
+                parentId: 893,
                 name: '副本',
                 local: 'redis-00049.html',
                 children: [
                   {
-                    id: 1268,
-                    parentId: 1232,
+                    id: 1275,
+                    parentId: 1239,
                     name: '查看Redis副本信息',
                     local: 'redis-00050.html'
                   },
                   {
-                    id: 1269,
-                    parentId: 1232,
+                    id: 1276,
+                    parentId: 1239,
                     name: '管理Redis副本',
                     local: 'redis-00051.html'
                   }
                 ]
               },
               {
-                id: 1233,
-                parentId: 888,
+                id: 1240,
+                parentId: 893,
                 name: 'Redis集群环境',
                 local: 'redis-00052.html',
                 children: [
                   {
-                    id: 1270,
-                    parentId: 1233,
+                    id: 1277,
+                    parentId: 1240,
                     name: '查询Redis信息',
                     local: 'redis-00053.html'
                   },
                   {
-                    id: 1271,
-                    parentId: 1233,
+                    id: 1278,
+                    parentId: 1240,
                     name: '管理Redis集群',
                     local: 'redis-00054.html'
                   },
                   {
-                    id: 1272,
-                    parentId: 1233,
+                    id: 1279,
+                    parentId: 1240,
                     name: '管理Redis集群保护',
                     local: 'redis-00055.html'
                   }
@@ -8407,120 +8453,119 @@ naviData = [
         local: 'zh-cn_topic_0000001918470736.html',
         children: [
           {
-            id: 1273,
+            id: 1280,
             parentId: 15,
             name: 'VMware数据保护',
             local: 'product_documentation_000027.html',
             children: [
               {
-                id: 1278,
-                parentId: 1273,
+                id: 1285,
+                parentId: 1280,
                 name: '备份',
                 local: 'vmware_gud_0007.html',
                 children: [
                   {
-                    id: 1287,
-                    parentId: 1278,
+                    id: 1294,
+                    parentId: 1285,
                     name: '备份前准备',
                     local: 'vmware_gud_0014.html'
                   },
                   {
-                    id: 1288,
-                    parentId: 1278,
+                    id: 1295,
+                    parentId: 1285,
                     name: '备份VMware虚拟机',
                     local: 'vmware_gud_0015.html',
                     children: [
                       {
-                        id: 1289,
-                        parentId: 1288,
+                        id: 1296,
+                        parentId: 1295,
                         name: '步骤1：检查并安装VMware Tools',
                         local: 'vmware_gud_0016.html'
                       },
                       {
-                        id: 1290,
-                        parentId: 1288,
+                        id: 1297,
+                        parentId: 1295,
                         name: '步骤2：检查并开启vmware-vapi-endpoint服务',
                         local: 'vmware_gud_0017.html'
                       },
                       {
-                        id: 1291,
-                        parentId: 1288,
+                        id: 1298,
+                        parentId: 1295,
                         name: '步骤3：配置应用一致性备份脚本',
                         local: 'vmware_gud_0018.html',
                         children: [
                           {
-                            id: 1300,
-                            parentId: 1291,
+                            id: 1307,
+                            parentId: 1298,
                             name: 'DB2数据库',
                             local: 'vmware_gud_0019.html'
                           },
                           {
-                            id: 1301,
-                            parentId: 1291,
+                            id: 1308,
+                            parentId: 1298,
                             name: 'Oracle数据库',
                             local: 'vmware_gud_0020.html'
                           },
                           {
-                            id: 1302,
-                            parentId: 1291,
+                            id: 1309,
+                            parentId: 1298,
                             name: 'Sybase数据库',
                             local: 'vmware_gud_0021.html'
                           },
                           {
-                            id: 1303,
-                            parentId: 1291,
+                            id: 1310,
+                            parentId: 1298,
                             name: 'MySQL数据库',
                             local: 'vmware_gud_0022.html'
                           }
                         ]
                       },
                       {
-                        id: 1292,
-                        parentId: 1288,
+                        id: 1299,
+                        parentId: 1295,
                         name: '步骤4：获取VMware证书',
                         local: 'vmware_gud_0023.html'
                       },
                       {
-                        id: 1293,
-                        parentId: 1288,
+                        id: 1300,
+                        parentId: 1295,
                         name: '步骤5：注册VMware虚拟化环境',
                         local: 'vmware_gud_0024.html'
                       },
                       {
-                        id: 1294,
-                        parentId: 1288,
+                        id: 1301,
+                        parentId: 1295,
                         name:
                           '步骤6：（可选）创建VMware虚拟机组（适用于1.6.0及后续版本）',
                         local: 'vmware_gud_0024_1.html'
                       },
                       {
-                        id: 1295,
-                        parentId: 1288,
+                        id: 1302,
+                        parentId: 1295,
                         name: '步骤7：（可选）创建限速策略',
                         local: 'vmware_gud_0025.html'
                       },
                       {
-                        id: 1296,
-                        parentId: 1288,
-                        name:
-                          '步骤8：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 1303,
+                        parentId: 1295,
+                        name: '步骤8：（可选）开启备份链路加密开关',
                         local: 'vmware_gud_0026.html'
                       },
                       {
-                        id: 1297,
-                        parentId: 1288,
-                        name: '步骤9：（可选）登录iSCSI启动器',
+                        id: 1304,
+                        parentId: 1295,
+                        name: '步骤9：登录iSCSI启动器',
                         local: 'vmwate_gud_0110.html'
                       },
                       {
-                        id: 1298,
-                        parentId: 1288,
+                        id: 1305,
+                        parentId: 1295,
                         name: '步骤10：创建备份SLA',
                         local: 'vmware_gud_0027.html'
                       },
                       {
-                        id: 1299,
-                        parentId: 1288,
+                        id: 1306,
+                        parentId: 1295,
                         name: '步骤11：执行备份',
                         local: 'vmware_gud_0028.html'
                       }
@@ -8529,77 +8574,79 @@ naviData = [
                 ]
               },
               {
-                id: 1279,
-                parentId: 1273,
+                id: 1286,
+                parentId: 1280,
                 name: '复制',
                 local: 'vmware_gud_0031.html',
                 children: [
                   {
-                    id: 1304,
-                    parentId: 1279,
+                    id: 1311,
+                    parentId: 1286,
                     name: '复制VMware虚拟机副本',
                     local: 'vmware_gud_0034.html',
                     children: [
                       {
-                        id: 1305,
-                        parentId: 1304,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 1312,
+                        parentId: 1311,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'vmware_gud_0036.html'
                       },
                       {
-                        id: 1306,
-                        parentId: 1304,
+                        id: 1313,
+                        parentId: 1311,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_9.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'vmware_gud_0026_1.html'
                       },
                       {
-                        id: 1307,
-                        parentId: 1304,
-                        name: '步骤2：（可选）创建IPsec策略',
+                        id: 1314,
+                        parentId: 1311,
+                        name:
+                          '步骤2：（可选）创建IPsec策略（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
                         local: 'vmware_gud_0036_1.html'
                       },
                       {
-                        id: 1308,
-                        parentId: 1304,
+                        id: 1315,
+                        parentId: 1311,
                         name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                          '步骤3：（可选）开启复制链路加密开关（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
                         local: 'vmware_gud_0038.html'
                       },
                       {
-                        id: 1309,
-                        parentId: 1304,
+                        id: 1316,
+                        parentId: 1311,
                         name: '步骤4：下载并导入证书',
                         local: 'vmware_gud_0039.html'
                       },
                       {
-                        id: 1310,
-                        parentId: 1304,
+                        id: 1317,
+                        parentId: 1311,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'vmware_gud_0040.html'
                       },
                       {
-                        id: 1311,
-                        parentId: 1304,
+                        id: 1318,
+                        parentId: 1311,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'zh-cn_topic_0000002008299624.html'
+                        local: 'vmware_gud_0040_1.html'
                       },
                       {
-                        id: 1312,
-                        parentId: 1304,
+                        id: 1319,
+                        parentId: 1311,
                         name: '步骤6：添加复制集群',
                         local: 'vmware_gud_0041.html'
                       },
                       {
-                        id: 1313,
-                        parentId: 1304,
+                        id: 1320,
+                        parentId: 1311,
                         name: '步骤7：创建复制SLA',
                         local: 'vmware_gud_0042_1.html'
                       },
                       {
-                        id: 1314,
-                        parentId: 1304,
+                        id: 1321,
+                        parentId: 1311,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'vmware_gud_0043.html'
                       }
@@ -8608,60 +8655,61 @@ naviData = [
                 ]
               },
               {
-                id: 1280,
-                parentId: 1273,
+                id: 1287,
+                parentId: 1280,
                 name: '归档',
                 local: 'vmware_gud_0044.html',
                 children: [
                   {
-                    id: 1315,
-                    parentId: 1280,
+                    id: 1322,
+                    parentId: 1287,
                     name: '归档VMware备份副本',
                     local: 'vmware_gud_0047.html',
                     children: [
                       {
-                        id: 1317,
-                        parentId: 1315,
+                        id: 1324,
+                        parentId: 1322,
                         name: '步骤1：添加归档存储',
                         local: 'vmware_gud_0048.html',
                         children: [
                           {
-                            id: 1319,
-                            parentId: 1317,
+                            id: 1326,
+                            parentId: 1324,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'vmware_gud_0049.html'
                           },
                           {
-                            id: 1320,
-                            parentId: 1317,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1327,
+                            parentId: 1324,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'vmware_gud_0050.html'
                           }
                         ]
                       },
                       {
-                        id: 1318,
-                        parentId: 1315,
+                        id: 1325,
+                        parentId: 1322,
                         name: '步骤2：创建备份副本归档SLA',
                         local: 'vmware_gud_0051.html'
                       }
                     ]
                   },
                   {
-                    id: 1316,
-                    parentId: 1280,
+                    id: 1323,
+                    parentId: 1287,
                     name: '归档VMware复制副本',
                     local: 'vmware_gud_0052.html',
                     children: [
                       {
-                        id: 1321,
-                        parentId: 1316,
+                        id: 1328,
+                        parentId: 1323,
                         name: '步骤1：创建复制副本归档SLA',
                         local: 'vmware_gud_0053.html'
                       },
                       {
-                        id: 1322,
-                        parentId: 1316,
+                        id: 1329,
+                        parentId: 1323,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'vmware_gud_0054.html'
                       }
@@ -8670,138 +8718,138 @@ naviData = [
                 ]
               },
               {
-                id: 1281,
-                parentId: 1273,
+                id: 1288,
+                parentId: 1280,
                 name: '恢复',
                 local: 'vmware_gud_0055.html',
                 children: [
                   {
-                    id: 1323,
-                    parentId: 1281,
+                    id: 1330,
+                    parentId: 1288,
                     name: '恢复VMware虚拟机',
                     local: 'vmware_gud_0058.html'
                   },
                   {
-                    id: 1324,
-                    parentId: 1281,
+                    id: 1331,
+                    parentId: 1288,
                     name: '恢复VMware虚拟机磁盘',
                     local: 'vmware_gud_0059.html'
                   },
                   {
-                    id: 1325,
-                    parentId: 1281,
+                    id: 1332,
+                    parentId: 1288,
                     name: '恢复VMware虚拟机中的文件',
                     local: 'vmware_gud_0060.html'
                   }
                 ]
               },
               {
-                id: 1282,
-                parentId: 1273,
-                name: '即时恢复',
+                id: 1289,
+                parentId: 1280,
+                name: '即时恢复（仅适用于OceanProtect X系列备份一体机）',
                 local: 'vmware_gud_0061.html',
                 children: [
                   {
-                    id: 1326,
-                    parentId: 1282,
+                    id: 1333,
+                    parentId: 1289,
                     name: '即时恢复VMware虚拟机',
                     local: 'vmware_gud_0064.html'
                   }
                 ]
               },
               {
-                id: 1283,
-                parentId: 1273,
+                id: 1290,
+                parentId: 1280,
                 name: '全局搜索',
                 local: 'vmware_gud_0074.html',
                 children: [
                   {
-                    id: 1327,
-                    parentId: 1283,
+                    id: 1334,
+                    parentId: 1290,
                     name: '关于全局搜索',
                     local: 'vmware_gud_0075.html'
                   },
                   {
-                    id: 1328,
-                    parentId: 1283,
+                    id: 1335,
+                    parentId: 1290,
                     name: '全局搜索副本数据',
                     local: 'vmware_gud_0076.html'
                   },
                   {
-                    id: 1329,
-                    parentId: 1283,
+                    id: 1336,
+                    parentId: 1290,
                     name: '全局搜索资源',
                     local: 'vmware_gud_0077.html'
                   },
                   {
-                    id: 1330,
-                    parentId: 1283,
+                    id: 1337,
+                    parentId: 1290,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
-                    local: 'zh-cn_topic_0000002038754917.html'
+                    local: 'vmware_gud_0077_1.html'
                   }
                 ]
               },
               {
-                id: 1284,
-                parentId: 1273,
+                id: 1291,
+                parentId: 1280,
                 name: 'SLA',
                 local: 'vmware_gud_0080.html',
                 children: [
                   {
-                    id: 1331,
-                    parentId: 1284,
+                    id: 1338,
+                    parentId: 1291,
                     name: '查看SLA信息',
                     local: 'vmware_gud_0082.html'
                   },
                   {
-                    id: 1332,
-                    parentId: 1284,
+                    id: 1339,
+                    parentId: 1291,
                     name: '管理SLA',
                     local: 'vmware_gud_0083.html'
                   }
                 ]
               },
               {
-                id: 1285,
-                parentId: 1273,
+                id: 1292,
+                parentId: 1280,
                 name: '副本',
                 local: 'vmware_gud_0084.html',
                 children: [
                   {
-                    id: 1333,
-                    parentId: 1285,
+                    id: 1340,
+                    parentId: 1292,
                     name: '查看VMware副本信息',
                     local: 'vmware_gud_0085.html'
                   },
                   {
-                    id: 1334,
-                    parentId: 1285,
+                    id: 1341,
+                    parentId: 1292,
                     name: '管理VMware副本',
                     local: 'vmware_gud_0086.html'
                   }
                 ]
               },
               {
-                id: 1286,
-                parentId: 1273,
+                id: 1293,
+                parentId: 1280,
                 name: 'VMware虚拟化环境',
                 local: 'vmware_gud_0087.html',
                 children: [
                   {
-                    id: 1335,
-                    parentId: 1286,
+                    id: 1342,
+                    parentId: 1293,
                     name: '查看VMware虚拟化环境信息',
                     local: 'vmware_gud_0088.html'
                   },
                   {
-                    id: 1336,
-                    parentId: 1286,
+                    id: 1343,
+                    parentId: 1293,
                     name: '管理VMware注册信息',
                     local: 'vmware_gud_0089.html'
                   },
                   {
-                    id: 1337,
-                    parentId: 1286,
+                    id: 1344,
+                    parentId: 1293,
                     name: '管理集群/主机/虚拟机/虚拟机组',
                     local: 'vmware_gud_0090.html'
                   }
@@ -8810,70 +8858,69 @@ naviData = [
             ]
           },
           {
-            id: 1274,
+            id: 1281,
             parentId: 15,
             name: 'FusionCompute数据保护',
             local: 'zh-cn_topic_0000001873679177.html',
             children: [
               {
-                id: 1338,
-                parentId: 1274,
+                id: 1345,
+                parentId: 1281,
                 name: '备份',
                 local: 'fc_gud_0009.html',
                 children: [
                   {
-                    id: 1346,
-                    parentId: 1338,
+                    id: 1353,
+                    parentId: 1345,
                     name: '备份前准备',
                     local: 'fc_gud_0012.html'
                   },
                   {
-                    id: 1347,
-                    parentId: 1338,
+                    id: 1354,
+                    parentId: 1345,
                     name: '备份FusionCompute虚拟机',
                     local: 'fc_gud_0013.html',
                     children: [
                       {
-                        id: 1348,
-                        parentId: 1347,
+                        id: 1355,
+                        parentId: 1354,
                         name: '步骤1：创建FusionCompute对接用户',
                         local: 'fc_gud_0014.html'
                       },
                       {
-                        id: 1349,
-                        parentId: 1347,
+                        id: 1356,
+                        parentId: 1354,
                         name: '步骤2：注册FusionCompute虚拟化环境',
                         local: 'fc_gud_0015.html'
                       },
                       {
-                        id: 1350,
-                        parentId: 1347,
+                        id: 1357,
+                        parentId: 1354,
                         name:
                           '步骤3：（可选）创建FusionCompute虚拟机组（适用于1.6.0及后续版本）',
                         local: 'fc_gud_0024_1.html'
                       },
                       {
-                        id: 1351,
-                        parentId: 1347,
+                        id: 1358,
+                        parentId: 1354,
                         name: '步骤4：（可选）创建限速策略',
                         local: 'fc_gud_0016.html'
                       },
                       {
-                        id: 1352,
-                        parentId: 1347,
-                        name:
-                          '步骤5：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 1359,
+                        parentId: 1354,
+                        name: '步骤5：（可选）开启备份链路加密开关',
                         local: 'fc_gud_0017.html'
                       },
                       {
-                        id: 1353,
-                        parentId: 1347,
+                        id: 1360,
+                        parentId: 1354,
                         name: '步骤6：创建备份SLA',
                         local: 'fc_gud_0018.html'
                       },
                       {
-                        id: 1354,
-                        parentId: 1347,
+                        id: 1361,
+                        parentId: 1354,
                         name: '步骤7：执行备份',
                         local: 'fc_gud_0019.html'
                       }
@@ -8882,77 +8929,79 @@ naviData = [
                 ]
               },
               {
-                id: 1339,
-                parentId: 1274,
+                id: 1346,
+                parentId: 1281,
                 name: '复制',
                 local: 'fc_gud_0022.html',
                 children: [
                   {
-                    id: 1355,
-                    parentId: 1339,
+                    id: 1362,
+                    parentId: 1346,
                     name: '复制FusionCompute虚拟机副本',
                     local: 'fc_gud_0024.html',
                     children: [
                       {
-                        id: 1356,
-                        parentId: 1355,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_15.html'
-                      },
-                      {
-                        id: 1357,
-                        parentId: 1355,
+                        id: 1363,
+                        parentId: 1362,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_31.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'fc_gud_0026_10.html'
                       },
                       {
-                        id: 1358,
-                        parentId: 1355,
-                        name: '步骤2：（可选）创建IPsec策略',
+                        id: 1364,
+                        parentId: 1362,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_21.html'
+                      },
+                      {
+                        id: 1365,
+                        parentId: 1362,
+                        name:
+                          '步骤2：（可选）创建IPsec策略（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
                         local: 'fc_gud_0027.html'
                       },
                       {
-                        id: 1359,
-                        parentId: 1355,
+                        id: 1366,
+                        parentId: 1362,
                         name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                          '步骤3：（可选）开启复制链路加密开关（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
                         local: 'fc_gud_0028.html'
                       },
                       {
-                        id: 1360,
-                        parentId: 1355,
+                        id: 1367,
+                        parentId: 1362,
                         name: '步骤4：下载并导入证书',
                         local: 'fc_gud_0029.html'
                       },
                       {
-                        id: 1361,
-                        parentId: 1355,
+                        id: 1368,
+                        parentId: 1362,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
-                        local: 'fc_gud_0030_0.html'
+                        local: 'fc_gud_0030.html'
                       },
                       {
-                        id: 1362,
-                        parentId: 1355,
+                        id: 1369,
+                        parentId: 1362,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'zh-cn_topic_0000002008271350.html'
+                        local: 'fc_gud_0030_1.html'
                       },
                       {
-                        id: 1363,
-                        parentId: 1355,
+                        id: 1370,
+                        parentId: 1362,
                         name: '步骤6：添加复制集群',
                         local: 'fc_gud_0031.html'
                       },
                       {
-                        id: 1364,
-                        parentId: 1355,
+                        id: 1371,
+                        parentId: 1362,
                         name: '步骤7：创建复制SLA',
                         local: 'fc_gud_0032.html'
                       },
                       {
-                        id: 1365,
-                        parentId: 1355,
+                        id: 1372,
+                        parentId: 1362,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'fc_gud_0033.html'
                       }
@@ -8961,60 +9010,61 @@ naviData = [
                 ]
               },
               {
-                id: 1340,
-                parentId: 1274,
+                id: 1347,
+                parentId: 1281,
                 name: '归档',
                 local: 'fc_gud_0034.html',
                 children: [
                   {
-                    id: 1366,
-                    parentId: 1340,
+                    id: 1373,
+                    parentId: 1347,
                     name: '归档FusionCompute备份副本',
                     local: 'fc_gud_0037.html',
                     children: [
                       {
-                        id: 1368,
-                        parentId: 1366,
+                        id: 1375,
+                        parentId: 1373,
                         name: '步骤1：添加归档存储',
                         local: 'fc_gud_0038.html',
                         children: [
                           {
-                            id: 1370,
-                            parentId: 1368,
+                            id: 1377,
+                            parentId: 1375,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'fc_gud_0039.html'
                           },
                           {
-                            id: 1371,
-                            parentId: 1368,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1378,
+                            parentId: 1375,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'fc_gud_0040.html'
                           }
                         ]
                       },
                       {
-                        id: 1369,
-                        parentId: 1366,
+                        id: 1376,
+                        parentId: 1373,
                         name: '步骤2：创建备份副本归档SLA',
                         local: 'fc_gud_0041.html'
                       }
                     ]
                   },
                   {
-                    id: 1367,
-                    parentId: 1340,
+                    id: 1374,
+                    parentId: 1347,
                     name: '归档FusionCompute复制副本',
                     local: 'fc_gud_0042.html',
                     children: [
                       {
-                        id: 1372,
-                        parentId: 1367,
+                        id: 1379,
+                        parentId: 1374,
                         name: '步骤1：创建复制副本归档SLA',
                         local: 'fc_gud_0043.html'
                       },
                       {
-                        id: 1373,
-                        parentId: 1367,
+                        id: 1380,
+                        parentId: 1374,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'fc_gud_0044.html'
                       }
@@ -9023,124 +9073,124 @@ naviData = [
                 ]
               },
               {
-                id: 1341,
-                parentId: 1274,
+                id: 1348,
+                parentId: 1281,
                 name: '恢复',
                 local: 'fc_gud_0045.html',
                 children: [
                   {
-                    id: 1374,
-                    parentId: 1341,
+                    id: 1381,
+                    parentId: 1348,
                     name: '恢复FusionCompute虚拟机',
                     local: 'fc_gud_0048.html'
                   },
                   {
-                    id: 1375,
-                    parentId: 1341,
+                    id: 1382,
+                    parentId: 1348,
                     name: '恢复FusionCompute虚拟机磁盘',
                     local: 'fc_gud_0049.html'
                   },
                   {
-                    id: 1376,
-                    parentId: 1341,
+                    id: 1383,
+                    parentId: 1348,
                     name: '恢复FusionCompute虚拟机中的文件',
                     local: 'fc_gud_re1.html'
                   }
                 ]
               },
               {
-                id: 1342,
-                parentId: 1274,
+                id: 1349,
+                parentId: 1281,
                 name: '全局搜索',
                 local: 'fc_gud_gs1.html',
                 children: [
                   {
-                    id: 1377,
-                    parentId: 1342,
+                    id: 1384,
+                    parentId: 1349,
                     name: '关于全局搜索',
-                    local: 'zh-cn_topic_0000002038884249.html'
+                    local: 'fc_gud_gs2_1.html'
                   },
                   {
-                    id: 1378,
-                    parentId: 1342,
+                    id: 1385,
+                    parentId: 1349,
                     name: '全局搜索副本数据',
                     local: 'fc_gud_gs3.html'
                   },
                   {
-                    id: 1379,
-                    parentId: 1342,
+                    id: 1386,
+                    parentId: 1349,
                     name: '全局搜索资源',
                     local: 'fc_gud_0050.html'
                   },
                   {
-                    id: 1380,
-                    parentId: 1342,
+                    id: 1387,
+                    parentId: 1349,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
-                    local: 'zh-cn_topic_0000002002642984.html'
+                    local: 'fc_gud_0050_1.html'
                   }
                 ]
               },
               {
-                id: 1343,
-                parentId: 1274,
+                id: 1350,
+                parentId: 1281,
                 name: 'SLA',
                 local: 'fc_gud_0053.html',
                 children: [
                   {
-                    id: 1381,
-                    parentId: 1343,
+                    id: 1388,
+                    parentId: 1350,
                     name: '查看SLA信息',
                     local: 'fc_gud_0055.html'
                   },
                   {
-                    id: 1382,
-                    parentId: 1343,
+                    id: 1389,
+                    parentId: 1350,
                     name: '管理SLA',
                     local: 'fc_gud_0056.html'
                   }
                 ]
               },
               {
-                id: 1344,
-                parentId: 1274,
+                id: 1351,
+                parentId: 1281,
                 name: '副本',
                 local: 'fc_gud_0057.html',
                 children: [
                   {
-                    id: 1383,
-                    parentId: 1344,
+                    id: 1390,
+                    parentId: 1351,
                     name: '查看FusionCompute副本信息',
                     local: 'fc_gud_0058.html'
                   },
                   {
-                    id: 1384,
-                    parentId: 1344,
+                    id: 1391,
+                    parentId: 1351,
                     name: '管理FusionCompute副本',
                     local: 'fc_gud_0059.html'
                   }
                 ]
               },
               {
-                id: 1345,
-                parentId: 1274,
+                id: 1352,
+                parentId: 1281,
                 name: 'FusionCompute虚拟化环境',
                 local: 'fc_gud_0060.html',
                 children: [
                   {
-                    id: 1385,
-                    parentId: 1345,
+                    id: 1392,
+                    parentId: 1352,
                     name: '查看FusionCompute虚拟化环境信息',
                     local: 'fc_gud_0061.html'
                   },
                   {
-                    id: 1386,
-                    parentId: 1345,
+                    id: 1393,
+                    parentId: 1352,
                     name: '管理FusionCompute注册信息',
                     local: 'fc_gud_0062.html'
                   },
                   {
-                    id: 1387,
-                    parentId: 1345,
+                    id: 1394,
+                    parentId: 1352,
                     name: '管理集群/主机/虚拟机/虚拟机组',
                     local: 'fc_gud_0063.html'
                   }
@@ -9149,69 +9199,68 @@ naviData = [
             ]
           },
           {
-            id: 1275,
+            id: 1282,
             parentId: 15,
             name: 'CNware数据保护（适用于1.6.0及后续版本）',
             local: 'zh-cn_topic_0000001873679209.html',
             children: [
               {
-                id: 1388,
-                parentId: 1275,
+                id: 1395,
+                parentId: 1282,
                 name: '备份',
                 local: 'cnware_00007.html',
                 children: [
                   {
-                    id: 1397,
-                    parentId: 1388,
+                    id: 1404,
+                    parentId: 1395,
                     name: '备份前准备',
                     local: 'cnware_00010.html'
                   },
                   {
-                    id: 1398,
-                    parentId: 1388,
+                    id: 1405,
+                    parentId: 1395,
                     name: '备份CNware虚拟机',
                     local: 'cnware_00011.html',
                     children: [
                       {
-                        id: 1399,
-                        parentId: 1398,
+                        id: 1406,
+                        parentId: 1405,
                         name: '步骤1：获取CNware证书',
                         local: 'cnware_00012.html'
                       },
                       {
-                        id: 1400,
-                        parentId: 1398,
+                        id: 1407,
+                        parentId: 1405,
                         name: '步骤2：注册CNware虚拟化环境',
                         local: 'cnware_00013.html'
                       },
                       {
-                        id: 1401,
-                        parentId: 1398,
+                        id: 1408,
+                        parentId: 1405,
                         name: '步骤3：（可选）创建CNware虚拟机组',
                         local: 'cnware_00014.html'
                       },
                       {
-                        id: 1402,
-                        parentId: 1398,
+                        id: 1409,
+                        parentId: 1405,
                         name: '步骤4：（可选）创建限速策略',
                         local: 'cnware_00015.html'
                       },
                       {
-                        id: 1403,
-                        parentId: 1398,
-                        name:
-                          '步骤5：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 1410,
+                        parentId: 1405,
+                        name: '步骤5：（可选）开启备份链路加密开关',
                         local: 'cnware_00016.html'
                       },
                       {
-                        id: 1404,
-                        parentId: 1398,
+                        id: 1411,
+                        parentId: 1405,
                         name: '步骤6：创建备份SLA',
                         local: 'cnware_00017.html'
                       },
                       {
-                        id: 1405,
-                        parentId: 1398,
+                        id: 1412,
+                        parentId: 1405,
                         name: '步骤7：执行备份',
                         local: 'cnware_00018.html'
                       }
@@ -9220,71 +9269,71 @@ naviData = [
                 ]
               },
               {
-                id: 1389,
-                parentId: 1275,
+                id: 1396,
+                parentId: 1282,
                 name: '复制',
                 local: 'cnware_00021.html',
                 children: [
                   {
-                    id: 1406,
-                    parentId: 1389,
+                    id: 1413,
+                    parentId: 1396,
                     name: '复制CNware虚拟机副本',
                     local: 'cnware_00024.html',
                     children: [
                       {
-                        id: 1407,
-                        parentId: 1406,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'cnware_00026.html'
-                      },
-                      {
-                        id: 1408,
-                        parentId: 1406,
+                        id: 1414,
+                        parentId: 1413,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_5.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'cnware_000251.html'
                       },
                       {
-                        id: 1409,
-                        parentId: 1406,
+                        id: 1415,
+                        parentId: 1413,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机）',
+                        local: 'cnware_000261.html'
+                      },
+                      {
+                        id: 1416,
+                        parentId: 1413,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'cnware_00027.html'
                       },
                       {
-                        id: 1410,
-                        parentId: 1406,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 1417,
+                        parentId: 1413,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'cnware_00028.html'
                       },
                       {
-                        id: 1411,
-                        parentId: 1406,
+                        id: 1418,
+                        parentId: 1413,
                         name: '步骤4：下载并导入证书',
                         local: 'cnware_00029.html'
                       },
                       {
-                        id: 1412,
-                        parentId: 1406,
+                        id: 1419,
+                        parentId: 1413,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'cnware_000300.html'
                       },
                       {
-                        id: 1413,
-                        parentId: 1406,
-                        name: '步骤6：添加目标集群',
+                        id: 1420,
+                        parentId: 1413,
+                        name: '步骤6：添加复制集群',
                         local: 'cnware_00031.html'
                       },
                       {
-                        id: 1414,
-                        parentId: 1406,
+                        id: 1421,
+                        parentId: 1413,
                         name: '步骤7：创建复制SLA',
                         local: 'cnware_00032.html'
                       },
                       {
-                        id: 1415,
-                        parentId: 1406,
+                        id: 1422,
+                        parentId: 1413,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'cnware_00033.html'
                       }
@@ -9293,60 +9342,61 @@ naviData = [
                 ]
               },
               {
-                id: 1390,
-                parentId: 1275,
+                id: 1397,
+                parentId: 1282,
                 name: '归档',
                 local: 'cnware_00034.html',
                 children: [
                   {
-                    id: 1416,
-                    parentId: 1390,
+                    id: 1423,
+                    parentId: 1397,
                     name: '归档CNware备份副本',
                     local: 'cnware_00037.html',
                     children: [
                       {
-                        id: 1418,
-                        parentId: 1416,
+                        id: 1425,
+                        parentId: 1423,
                         name: '步骤1：添加归档存储',
                         local: 'cnware_00038.html',
                         children: [
                           {
-                            id: 1420,
-                            parentId: 1418,
+                            id: 1427,
+                            parentId: 1425,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'cnware_00039.html'
                           },
                           {
-                            id: 1421,
-                            parentId: 1418,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1428,
+                            parentId: 1425,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'cnware_00040.html'
                           }
                         ]
                       },
                       {
-                        id: 1419,
-                        parentId: 1416,
-                        name: '步骤2：创建归档SLA',
+                        id: 1426,
+                        parentId: 1423,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'cnware_00041.html'
                       }
                     ]
                   },
                   {
-                    id: 1417,
-                    parentId: 1390,
+                    id: 1424,
+                    parentId: 1397,
                     name: '归档CNware复制副本',
                     local: 'cnware_00042.html',
                     children: [
                       {
-                        id: 1422,
-                        parentId: 1417,
-                        name: '步骤1：创建归档SLA',
+                        id: 1429,
+                        parentId: 1424,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'cnware_00043.html'
                       },
                       {
-                        id: 1423,
-                        parentId: 1417,
+                        id: 1430,
+                        parentId: 1424,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'cnware_00044.html'
                       }
@@ -9355,138 +9405,138 @@ naviData = [
                 ]
               },
               {
-                id: 1391,
-                parentId: 1275,
+                id: 1398,
+                parentId: 1282,
                 name: '恢复',
                 local: 'cnware_00045.html',
                 children: [
                   {
-                    id: 1424,
-                    parentId: 1391,
+                    id: 1431,
+                    parentId: 1398,
                     name: '恢复CNware虚拟机',
                     local: 'cnware_00048.html'
                   },
                   {
-                    id: 1425,
-                    parentId: 1391,
+                    id: 1432,
+                    parentId: 1398,
                     name: '恢复CNware虚拟机磁盘',
                     local: 'cnware_00049.html'
                   },
                   {
-                    id: 1426,
-                    parentId: 1391,
+                    id: 1433,
+                    parentId: 1398,
                     name: '恢复CNware虚拟机中的文件',
                     local: 'cnware_00050.html'
                   }
                 ]
               },
               {
-                id: 1392,
-                parentId: 1275,
+                id: 1399,
+                parentId: 1282,
                 name: '即时恢复',
                 local: 'cnware_00051.html',
                 children: [
                   {
-                    id: 1427,
-                    parentId: 1392,
+                    id: 1434,
+                    parentId: 1399,
                     name: '即时恢复CNware虚拟机',
                     local: 'cnware_00054.html'
                   }
                 ]
               },
               {
-                id: 1393,
-                parentId: 1275,
+                id: 1400,
+                parentId: 1282,
                 name: '全局搜索',
                 local: 'cnware_00064.html',
                 children: [
                   {
-                    id: 1428,
-                    parentId: 1393,
+                    id: 1435,
+                    parentId: 1400,
                     name: '关于全局搜索',
                     local: 'cnware_000641.html'
                   },
                   {
-                    id: 1429,
-                    parentId: 1393,
+                    id: 1436,
+                    parentId: 1400,
                     name: '全局搜索副本数据',
                     local: 'cnware_000642.html'
                   },
                   {
-                    id: 1430,
-                    parentId: 1393,
+                    id: 1437,
+                    parentId: 1400,
                     name: '全局搜索资源',
                     local: 'cnware_00067.html'
                   },
                   {
-                    id: 1431,
-                    parentId: 1393,
+                    id: 1438,
+                    parentId: 1400,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'cnware_000671.html'
                   }
                 ]
               },
               {
-                id: 1394,
-                parentId: 1275,
+                id: 1401,
+                parentId: 1282,
                 name: 'SLA',
                 local: 'cnware_00070.html',
                 children: [
                   {
-                    id: 1432,
-                    parentId: 1394,
+                    id: 1439,
+                    parentId: 1401,
                     name: '查看SLA信息',
                     local: 'cnware_00072.html'
                   },
                   {
-                    id: 1433,
-                    parentId: 1394,
+                    id: 1440,
+                    parentId: 1401,
                     name: '管理SLA',
                     local: 'cnware_00073.html'
                   }
                 ]
               },
               {
-                id: 1395,
-                parentId: 1275,
+                id: 1402,
+                parentId: 1282,
                 name: '副本',
                 local: 'cnware_00074.html',
                 children: [
                   {
-                    id: 1434,
-                    parentId: 1395,
+                    id: 1441,
+                    parentId: 1402,
                     name: '查看CNware副本信息',
                     local: 'cnware_00075.html'
                   },
                   {
-                    id: 1435,
-                    parentId: 1395,
+                    id: 1442,
+                    parentId: 1402,
                     name: '管理CNware副本',
                     local: 'cnware_00076.html'
                   }
                 ]
               },
               {
-                id: 1396,
-                parentId: 1275,
+                id: 1403,
+                parentId: 1282,
                 name: 'CNware虚拟化环境',
                 local: 'cnware_00077.html',
                 children: [
                   {
-                    id: 1436,
-                    parentId: 1396,
+                    id: 1443,
+                    parentId: 1403,
                     name: '查看CNware虚拟化环境信息',
                     local: 'cnware_00078.html'
                   },
                   {
-                    id: 1437,
-                    parentId: 1396,
+                    id: 1444,
+                    parentId: 1403,
                     name: '管理CNware注册信息',
                     local: 'cnware_00079.html'
                   },
                   {
-                    id: 1438,
-                    parentId: 1396,
+                    id: 1445,
+                    parentId: 1403,
                     name: '管理虚拟机/主机/集群',
                     local: 'cnware_00080.html'
                   }
@@ -9495,367 +9545,375 @@ naviData = [
             ]
           },
           {
-            id: 1276,
+            id: 1283,
             parentId: 15,
             name: 'Hyper-V数据保护（适用于1.6.0及后续版本）',
             local: 'zh-cn_topic_0000002037019572.html',
             children: [
               {
-                id: 1439,
-                parentId: 1276,
+                id: 1446,
+                parentId: 1283,
                 name: '备份',
-                local: 'vmware_gud_0007_0.html',
+                local: 'hyper_gud_0007.html',
                 children: [
                   {
-                    id: 1447,
-                    parentId: 1439,
+                    id: 1454,
+                    parentId: 1446,
                     name: '备份前准备',
-                    local: 'vmware_gud_0014_0.html'
+                    local: 'hyper_gud_0014.html'
                   },
                   {
-                    id: 1448,
-                    parentId: 1439,
+                    id: 1455,
+                    parentId: 1446,
                     name: '备份Hyper-V虚拟机',
-                    local: 'vmware_gud_0015_0.html',
+                    local: 'hyper_gud_0015.html',
                     children: [
-                      {
-                        id: 1449,
-                        parentId: 1448,
-                        name: '步骤1：注册Hyper-V虚拟化环境',
-                        local: 'vmware_gud_0024_0.html'
-                      },
-                      {
-                        id: 1450,
-                        parentId: 1448,
-                        name: '步骤2：（可选）创建限速策略',
-                        local: 'vmware_gud_0025_0.html'
-                      },
-                      {
-                        id: 1451,
-                        parentId: 1448,
-                        name: '步骤3：创建备份SLA',
-                        local: 'vmware_gud_0027_0.html'
-                      },
-                      {
-                        id: 1452,
-                        parentId: 1448,
-                        name: '步骤4：执行备份',
-                        local: 'vmware_gud_0028_0.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 1440,
-                parentId: 1276,
-                name: '复制',
-                local: 'vmware_gud_0031_0.html',
-                children: [
-                  {
-                    id: 1453,
-                    parentId: 1440,
-                    name: '复制Hyper-V虚拟机副本',
-                    local: 'vmware_gud_0034_0.html',
-                    children: [
-                      {
-                        id: 1454,
-                        parentId: 1453,
-                        name: '创建复制网络逻辑端口',
-                        local: 'fc_gud_0026_1_20.html'
-                      },
-                      {
-                        id: 1455,
-                        parentId: 1453,
-                        name: '步骤2：（可选）创建IPsec策略',
-                        local: 'vmware_gud_0036_1_0.html'
-                      },
                       {
                         id: 1456,
-                        parentId: 1453,
-                        name: '步骤3：（可选）开启复制链路加密开关',
-                        local: 'vmware_gud_0038_0.html'
+                        parentId: 1455,
+                        name: '步骤1：注册Hyper-V虚拟化环境',
+                        local: 'hyper_gud_0024.html'
                       },
                       {
                         id: 1457,
-                        parentId: 1453,
-                        name: '步骤4：下载并导入证书',
-                        local: 'vmware_gud_0039_0.html'
+                        parentId: 1455,
+                        name: '步骤2：（可选）创建限速策略',
+                        local: 'hyper_gud_0025.html'
                       },
                       {
                         id: 1458,
-                        parentId: 1453,
-                        name: '步骤5：创建远端设备管理员',
-                        local: 'vmware_gud_0040_1.html'
+                        parentId: 1455,
+                        name: '步骤3：创建备份SLA',
+                        local: 'hyper_gud_0027.html'
                       },
                       {
                         id: 1459,
-                        parentId: 1453,
-                        name: '步骤6：添加复制集群',
-                        local: 'vmware_gud_0041_0.html'
-                      },
-                      {
-                        id: 1460,
-                        parentId: 1453,
-                        name: '步骤7：创建复制SLA',
-                        local: 'vmware_gud_0042.html'
-                      },
-                      {
-                        id: 1461,
-                        parentId: 1453,
-                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
-                        local: 'vmware_gud_0043_0.html'
+                        parentId: 1455,
+                        name: '步骤4：执行备份',
+                        local: 'hyper_gud_0028.html'
                       }
                     ]
                   }
                 ]
               },
               {
-                id: 1441,
-                parentId: 1276,
-                name: '归档',
-                local: 'vmware_gud_0044_0.html',
+                id: 1447,
+                parentId: 1283,
+                name: '复制',
+                local: 'hyper_gud_0031.html',
                 children: [
                   {
-                    id: 1462,
-                    parentId: 1441,
-                    name: '归档Hyper-V备份副本',
-                    local: 'vmware_gud_0047_0.html',
+                    id: 1460,
+                    parentId: 1447,
+                    name: '复制Hyper-V虚拟机副本',
+                    local: 'hyper_gud_0034.html',
                     children: [
                       {
+                        id: 1461,
+                        parentId: 1460,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'hyper_gud_0036.html'
+                      },
+                      {
+                        id: 1462,
+                        parentId: 1460,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机）',
+                        local: 'hyper_gud_0036_1.html'
+                      },
+                      {
+                        id: 1463,
+                        parentId: 1460,
+                        name: '步骤2：（可选）创建IPsec策略',
+                        local: 'hyper_gud_0037.html'
+                      },
+                      {
                         id: 1464,
-                        parentId: 1462,
+                        parentId: 1460,
+                        name: '步骤3：（可选）开启复制链路加密开关',
+                        local: 'hyper_gud_0038.html'
+                      },
+                      {
+                        id: 1465,
+                        parentId: 1460,
+                        name: '步骤4：下载并导入证书',
+                        local: 'hyper_gud_0039.html'
+                      },
+                      {
+                        id: 1466,
+                        parentId: 1460,
+                        name: '步骤5：创建远端设备管理员',
+                        local: 'hyper_gud_0040.html'
+                      },
+                      {
+                        id: 1467,
+                        parentId: 1460,
+                        name: '步骤6：添加复制集群',
+                        local: 'hyper_gud_0041.html'
+                      },
+                      {
+                        id: 1468,
+                        parentId: 1460,
+                        name: '步骤7：创建复制SLA',
+                        local: 'hyper_gud_0042.html'
+                      },
+                      {
+                        id: 1469,
+                        parentId: 1460,
+                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
+                        local: 'hyper_gud_0043.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 1448,
+                parentId: 1283,
+                name: '归档',
+                local: 'hyper_gud_0044.html',
+                children: [
+                  {
+                    id: 1470,
+                    parentId: 1448,
+                    name: '归档Hyper-V备份副本',
+                    local: 'hyper_gud_0047.html',
+                    children: [
+                      {
+                        id: 1472,
+                        parentId: 1470,
                         name: '步骤1：添加归档存储',
-                        local: 'vmware_gud_0048_0.html',
+                        local: 'hyper_gud_0048.html',
                         children: [
                           {
-                            id: 1466,
-                            parentId: 1464,
+                            id: 1474,
+                            parentId: 1472,
                             name: '添加对象存储（归档存储是对象存储）',
-                            local: 'vmware_gud_0049_0.html'
+                            local: 'hyper_gud_0049.html'
                           },
                           {
-                            id: 1467,
-                            parentId: 1464,
-                            name: '创建介质集（归档存储是磁带库）',
-                            local: 'vmware_gud_0050_0.html'
+                            id: 1475,
+                            parentId: 1472,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
+                            local: 'hyper_gud_0050.html'
                           }
                         ]
                       },
                       {
-                        id: 1465,
-                        parentId: 1462,
+                        id: 1473,
+                        parentId: 1470,
                         name: '步骤2：创建备份副本归档SLA',
-                        local: 'vmware_gud_0051_0.html'
+                        local: 'hyper_gud_0051.html'
                       }
                     ]
-                  },
-                  {
-                    id: 1463,
-                    parentId: 1441,
-                    name: '归档Hyper-V复制副本',
-                    local: 'vmware_gud_0052_0.html',
-                    children: [
-                      {
-                        id: 1468,
-                        parentId: 1463,
-                        name: '步骤1：创建复制副本归档SLA',
-                        local: 'vmware_gud_0053_0.html'
-                      },
-                      {
-                        id: 1469,
-                        parentId: 1463,
-                        name: '步骤2：创建复制副本周期性归档',
-                        local: 'vmware_gud_0054_0.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 1442,
-                parentId: 1276,
-                name: '恢复',
-                local: 'vmware_gud_0055_0.html',
-                children: [
-                  {
-                    id: 1470,
-                    parentId: 1442,
-                    name: '恢复Hyper-V虚拟机',
-                    local: 'vmware_gud_0058_0.html'
                   },
                   {
                     id: 1471,
-                    parentId: 1442,
-                    name: '恢复Hyper-V虚拟机磁盘',
-                    local: 'vmware_gud_0059_0.html'
-                  },
-                  {
-                    id: 1472,
-                    parentId: 1442,
-                    name: '恢复Hyper-V虚拟机中的文件',
-                    local: 'vmware_gud_0060_0.html'
+                    parentId: 1448,
+                    name: '归档Hyper-V复制副本',
+                    local: 'hyper_gud_0052.html',
+                    children: [
+                      {
+                        id: 1476,
+                        parentId: 1471,
+                        name: '步骤1：创建复制副本归档SLA',
+                        local: 'hyper_gud_0053.html'
+                      },
+                      {
+                        id: 1477,
+                        parentId: 1471,
+                        name: '步骤2：创建复制副本周期性归档',
+                        local: 'hyper_gud_0054.html'
+                      }
+                    ]
                   }
                 ]
               },
               {
-                id: 1443,
-                parentId: 1276,
-                name: '全局搜索',
-                local: 'vmware_gud_0074_0.html',
-                children: [
-                  {
-                    id: 1473,
-                    parentId: 1443,
-                    name: '全局搜索副本数据',
-                    local: 'vmware_gud_0076_1.html'
-                  },
-                  {
-                    id: 1474,
-                    parentId: 1443,
-                    name: '全局搜索资源',
-                    local: 'vmware_gud_0077_0.html'
-                  },
-                  {
-                    id: 1475,
-                    parentId: 1443,
-                    name: '全局标签搜索（适用于1.6.0及后续版本）',
-                    local: 'zh-cn_topic_0000002096124161.html'
-                  }
-                ]
-              },
-              {
-                id: 1444,
-                parentId: 1276,
-                name: 'SLA',
-                local: 'vmware_gud_0080_0.html',
-                children: [
-                  {
-                    id: 1476,
-                    parentId: 1444,
-                    name: '查看SLA信息',
-                    local: 'vmware_gud_0082_0.html'
-                  },
-                  {
-                    id: 1477,
-                    parentId: 1444,
-                    name: '管理SLA',
-                    local: 'vmware_gud_0083_0.html'
-                  }
-                ]
-              },
-              {
-                id: 1445,
-                parentId: 1276,
-                name: '副本',
-                local: 'vmware_gud_0084_0.html',
+                id: 1449,
+                parentId: 1283,
+                name: '恢复',
+                local: 'hyper_gud_0055.html',
                 children: [
                   {
                     id: 1478,
-                    parentId: 1445,
-                    name: '查看Hyper-V副本信息',
-                    local: 'vmware_gud_0085_0.html'
+                    parentId: 1449,
+                    name: '恢复Hyper-V虚拟机',
+                    local: 'hyper_gud_0058.html'
                   },
                   {
                     id: 1479,
-                    parentId: 1445,
-                    name: '管理Hyper-V副本',
-                    local: 'vmware_gud_0086_0.html'
+                    parentId: 1449,
+                    name: '恢复Hyper-V虚拟机磁盘',
+                    local: 'hyper_gud_0059.html'
+                  },
+                  {
+                    id: 1480,
+                    parentId: 1449,
+                    name: '恢复Hyper-V虚拟机中的文件',
+                    local: 'hyper_gud_0060.html'
                   }
                 ]
               },
               {
-                id: 1446,
-                parentId: 1276,
-                name: 'Hyper-V虚拟化环境',
-                local: 'vmware_gud_0087_0.html',
+                id: 1450,
+                parentId: 1283,
+                name: '全局搜索',
+                local: 'hyper_gud_0074.html',
                 children: [
                   {
-                    id: 1480,
-                    parentId: 1446,
-                    name: '查看Hyper-V虚拟化环境信息',
-                    local: 'vmware_gud_0088_0.html'
-                  },
-                  {
                     id: 1481,
-                    parentId: 1446,
-                    name: '管理Hyper-V注册信息',
-                    local: 'vmware_gud_0089_0.html'
+                    parentId: 1450,
+                    name: '全局搜索副本数据',
+                    local: 'hyper_gud_0076.html'
                   },
                   {
                     id: 1482,
-                    parentId: 1446,
+                    parentId: 1450,
+                    name: '全局搜索资源',
+                    local: 'hyper_gud_0077.html'
+                  },
+                  {
+                    id: 1483,
+                    parentId: 1450,
+                    name: '全局标签搜索（适用于1.6.0及后续版本）',
+                    local: 'hyper_gud_00077.html'
+                  }
+                ]
+              },
+              {
+                id: 1451,
+                parentId: 1283,
+                name: 'SLA',
+                local: 'hyper_gud_0080.html',
+                children: [
+                  {
+                    id: 1484,
+                    parentId: 1451,
+                    name: '查看SLA信息',
+                    local: 'hyper_gud_0082.html'
+                  },
+                  {
+                    id: 1485,
+                    parentId: 1451,
+                    name: '管理SLA',
+                    local: 'hyper_gud_0083.html'
+                  }
+                ]
+              },
+              {
+                id: 1452,
+                parentId: 1283,
+                name: '副本',
+                local: 'hyper_gud_0084.html',
+                children: [
+                  {
+                    id: 1486,
+                    parentId: 1452,
+                    name: '查看Hyper-V副本信息',
+                    local: 'hyper_gud_0085.html'
+                  },
+                  {
+                    id: 1487,
+                    parentId: 1452,
+                    name: '管理Hyper-V副本',
+                    local: 'hyper_gud_0086.html'
+                  }
+                ]
+              },
+              {
+                id: 1453,
+                parentId: 1283,
+                name: 'Hyper-V虚拟化环境',
+                local: 'hyper_gud_0087.html',
+                children: [
+                  {
+                    id: 1488,
+                    parentId: 1453,
+                    name: '查看Hyper-V虚拟化环境信息',
+                    local: 'hyper_gud_0088.html'
+                  },
+                  {
+                    id: 1489,
+                    parentId: 1453,
+                    name: '管理Hyper-V注册信息',
+                    local: 'hyper_gud_0089.html'
+                  },
+                  {
+                    id: 1490,
+                    parentId: 1453,
                     name: '管理集群/主机/虚拟机/虚拟机组',
-                    local: 'vmware_gud_0090_0.html'
+                    local: 'hyper_gud_0090.html'
                   }
                 ]
               }
             ]
           },
           {
-            id: 1277,
+            id: 1284,
             parentId: 15,
             name: 'FusionOne Compute数据保护（适用于1.6.0及后续版本）',
             local: 'zh-cn_topic_0000002085703925.html',
             children: [
               {
-                id: 1483,
-                parentId: 1277,
+                id: 1491,
+                parentId: 1284,
                 name: '备份',
                 local: 'foc_gud_0009.html',
                 children: [
                   {
-                    id: 1491,
-                    parentId: 1483,
+                    id: 1499,
+                    parentId: 1491,
                     name: '备份前准备',
                     local: 'foc_gud_0012.html'
                   },
                   {
-                    id: 1492,
-                    parentId: 1483,
+                    id: 1500,
+                    parentId: 1491,
                     name: '备份FusionOne Compute虚拟机',
                     local: 'foc_gud_0013.html',
                     children: [
                       {
-                        id: 1493,
-                        parentId: 1492,
+                        id: 1501,
+                        parentId: 1500,
                         name: '步骤1：创建FusionOne Compute对接用户',
                         local: 'foc_gud_0014.html'
                       },
                       {
-                        id: 1494,
-                        parentId: 1492,
+                        id: 1502,
+                        parentId: 1500,
                         name: '步骤2：注册FusionOne Compute虚拟化环境',
                         local: 'foc_gud_0015.html'
                       },
                       {
-                        id: 1495,
-                        parentId: 1492,
+                        id: 1503,
+                        parentId: 1500,
                         name: '步骤3：（可选）创建FusionOne Compute虚拟机组',
                         local: 'foc_gud_0016.html'
                       },
                       {
-                        id: 1496,
-                        parentId: 1492,
+                        id: 1504,
+                        parentId: 1500,
                         name: '步骤4：（可选）创建限速策略',
                         local: 'foc_gud_0017.html'
                       },
                       {
-                        id: 1497,
-                        parentId: 1492,
-                        name:
-                          '步骤5：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 1505,
+                        parentId: 1500,
+                        name: '步骤5：（可选）开启备份链路加密开关',
                         local: 'foc_gud_0018.html'
                       },
                       {
-                        id: 1498,
-                        parentId: 1492,
+                        id: 1506,
+                        parentId: 1500,
                         name: '步骤6：创建备份SLA',
                         local: 'foc_gud_0019.html'
                       },
                       {
-                        id: 1499,
-                        parentId: 1492,
+                        id: 1507,
+                        parentId: 1500,
                         name: '步骤7：执行备份',
                         local: 'foc_gud_0020.html'
                       }
@@ -9864,63 +9922,72 @@ naviData = [
                 ]
               },
               {
-                id: 1484,
-                parentId: 1277,
+                id: 1492,
+                parentId: 1284,
                 name: '复制',
                 local: 'foc_gud_0021.html',
                 children: [
                   {
-                    id: 1500,
-                    parentId: 1484,
+                    id: 1508,
+                    parentId: 1492,
                     name: '复制FusionOne Compute虚拟机副本',
                     local: 'foc_gud_0024.html',
                     children: [
                       {
-                        id: 1501,
-                        parentId: 1500,
-                        name: '步骤1：创建复制网络逻辑端口',
+                        id: 1509,
+                        parentId: 1508,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'foc_gud_0025_1.html'
+                      },
+                      {
+                        id: 1510,
+                        parentId: 1508,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机）',
                         local: 'foc_gud_0026.html'
                       },
                       {
-                        id: 1502,
-                        parentId: 1500,
-                        name: '步骤2：（可选）创建IPsec策略',
+                        id: 1511,
+                        parentId: 1508,
+                        name:
+                          '步骤2：（可选）创建IPsec策略（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
                         local: 'foc_gud_0027.html'
                       },
                       {
-                        id: 1503,
-                        parentId: 1500,
+                        id: 1512,
+                        parentId: 1508,
                         name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                          '步骤3：（可选）开启复制链路加密开关（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
                         local: 'foc_gud_0028.html'
                       },
                       {
-                        id: 1504,
-                        parentId: 1500,
+                        id: 1513,
+                        parentId: 1508,
                         name: '步骤4：下载并导入证书',
                         local: 'foc_gud_0029.html'
                       },
                       {
-                        id: 1505,
-                        parentId: 1500,
+                        id: 1514,
+                        parentId: 1508,
                         name: '步骤5：创建远端设备管理员',
                         local: 'foc_gud_0031.html'
                       },
                       {
-                        id: 1506,
-                        parentId: 1500,
+                        id: 1515,
+                        parentId: 1508,
                         name: '步骤6：添加复制集群',
-                        local: 'foc_gud_0032.html'
+                        local: 'foc_gud_0032_0.html'
                       },
                       {
-                        id: 1507,
-                        parentId: 1500,
+                        id: 1516,
+                        parentId: 1508,
                         name: '步骤7：创建复制SLA',
                         local: 'foc_gud_0033.html'
                       },
                       {
-                        id: 1508,
-                        parentId: 1500,
+                        id: 1517,
+                        parentId: 1508,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'foc_gud_0034.html'
                       }
@@ -9929,60 +9996,61 @@ naviData = [
                 ]
               },
               {
-                id: 1485,
-                parentId: 1277,
+                id: 1493,
+                parentId: 1284,
                 name: '归档',
                 local: 'foc_gud_0035.html',
                 children: [
                   {
-                    id: 1509,
-                    parentId: 1485,
+                    id: 1518,
+                    parentId: 1493,
                     name: '归档FusionOne Compute备份副本',
                     local: 'foc_gud_0038.html',
                     children: [
                       {
-                        id: 1511,
-                        parentId: 1509,
+                        id: 1520,
+                        parentId: 1518,
                         name: '步骤1：添加归档存储',
                         local: 'foc_gud_0039.html',
                         children: [
                           {
-                            id: 1513,
-                            parentId: 1511,
+                            id: 1522,
+                            parentId: 1520,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'foc_gud_0040.html'
                           },
                           {
-                            id: 1514,
-                            parentId: 1511,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1523,
+                            parentId: 1520,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'foc_gud_0041.html'
                           }
                         ]
                       },
                       {
-                        id: 1512,
-                        parentId: 1509,
+                        id: 1521,
+                        parentId: 1518,
                         name: '步骤2：创建备份副本归档SLA',
                         local: 'foc_gud_0042.html'
                       }
                     ]
                   },
                   {
-                    id: 1510,
-                    parentId: 1485,
+                    id: 1519,
+                    parentId: 1493,
                     name: '归档FusionOne Compute复制副本',
                     local: 'foc_gud_0043.html',
                     children: [
                       {
-                        id: 1515,
-                        parentId: 1510,
+                        id: 1524,
+                        parentId: 1519,
                         name: '步骤1：创建复制副本归档SLA',
                         local: 'foc_gud_0044.html'
                       },
                       {
-                        id: 1516,
-                        parentId: 1510,
+                        id: 1525,
+                        parentId: 1519,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'foc_gud_0045.html'
                       }
@@ -9991,124 +10059,124 @@ naviData = [
                 ]
               },
               {
-                id: 1486,
-                parentId: 1277,
+                id: 1494,
+                parentId: 1284,
                 name: '恢复',
                 local: 'foc_gud_0046.html',
                 children: [
                   {
-                    id: 1517,
-                    parentId: 1486,
+                    id: 1526,
+                    parentId: 1494,
                     name: '恢复FusionOne Compute虚拟机',
                     local: 'foc_gud_0049.html'
                   },
                   {
-                    id: 1518,
-                    parentId: 1486,
+                    id: 1527,
+                    parentId: 1494,
                     name: '恢复FusionOne Compute虚拟机磁盘',
                     local: 'foc_gud_0050.html'
                   },
                   {
-                    id: 1519,
-                    parentId: 1486,
+                    id: 1528,
+                    parentId: 1494,
                     name: '恢复FusionOne Compute虚拟机中的文件',
                     local: 'foc_gud_0051.html'
                   }
                 ]
               },
               {
-                id: 1487,
-                parentId: 1277,
+                id: 1495,
+                parentId: 1284,
                 name: '全局搜索',
                 local: 'foc_gud_0052.html',
                 children: [
                   {
-                    id: 1520,
-                    parentId: 1487,
+                    id: 1529,
+                    parentId: 1495,
                     name: '关于全局搜索',
                     local: 'foc_gud_0053.html'
                   },
                   {
-                    id: 1521,
-                    parentId: 1487,
+                    id: 1530,
+                    parentId: 1495,
                     name: '全局搜索副本数据',
                     local: 'foc_gud_0054.html'
                   },
                   {
-                    id: 1522,
-                    parentId: 1487,
+                    id: 1531,
+                    parentId: 1495,
                     name: '全局搜索资源',
                     local: 'foc_gud_0055.html'
                   },
                   {
-                    id: 1523,
-                    parentId: 1487,
+                    id: 1532,
+                    parentId: 1495,
                     name: '全局标签搜索',
                     local: 'foc_gud_0056.html'
                   }
                 ]
               },
               {
-                id: 1488,
-                parentId: 1277,
+                id: 1496,
+                parentId: 1284,
                 name: 'SLA',
                 local: 'foc_gud_0059.html',
                 children: [
                   {
-                    id: 1524,
-                    parentId: 1488,
+                    id: 1533,
+                    parentId: 1496,
                     name: '查看SLA信息',
                     local: 'foc_gud_0061.html'
                   },
                   {
-                    id: 1525,
-                    parentId: 1488,
+                    id: 1534,
+                    parentId: 1496,
                     name: '管理SLA',
                     local: 'foc_gud_0062.html'
                   }
                 ]
               },
               {
-                id: 1489,
-                parentId: 1277,
+                id: 1497,
+                parentId: 1284,
                 name: '副本',
                 local: 'foc_gud_0063.html',
                 children: [
                   {
-                    id: 1526,
-                    parentId: 1489,
+                    id: 1535,
+                    parentId: 1497,
                     name: '查看FusionOne Compute副本信息',
                     local: 'foc_gud_0064.html'
                   },
                   {
-                    id: 1527,
-                    parentId: 1489,
+                    id: 1536,
+                    parentId: 1497,
                     name: '管理FusionOne Compute副本',
                     local: 'foc_gud_0065.html'
                   }
                 ]
               },
               {
-                id: 1490,
-                parentId: 1277,
+                id: 1498,
+                parentId: 1284,
                 name: 'FusionOne Compute虚拟化环境',
                 local: 'foc_gud_0066.html',
                 children: [
                   {
-                    id: 1528,
-                    parentId: 1490,
+                    id: 1537,
+                    parentId: 1498,
                     name: '查看FusionOne Compute虚拟化环境信息',
                     local: 'foc_gud_0067.html'
                   },
                   {
-                    id: 1529,
-                    parentId: 1490,
+                    id: 1538,
+                    parentId: 1498,
                     name: '管理FusionOne Compute注册信息',
                     local: 'foc_gud_0068.html'
                   },
                   {
-                    id: 1530,
-                    parentId: 1490,
+                    id: 1539,
+                    parentId: 1498,
                     name: '管理集群/主机/虚拟机/虚拟机组',
                     local: 'foc_gud_0069.html'
                   }
@@ -10125,154 +10193,154 @@ naviData = [
         local: 'zh-cn_topic_0000001918630668.html',
         children: [
           {
-            id: 1531,
+            id: 1540,
             parentId: 16,
             name: 'Kubernetes CSI数据保护',
             local: 'zh-cn_topic_0000001873759377.html',
             children: [
               {
-                id: 1533,
-                parentId: 1531,
+                id: 1542,
+                parentId: 1540,
                 name: '备份',
                 local: 'kubernetes_CSI_00006.html',
                 children: [
                   {
-                    id: 1542,
-                    parentId: 1533,
+                    id: 1551,
+                    parentId: 1542,
                     name: '备份前准备（适用于FusionCompute）',
                     local: 'kubernetes_CSI_000091.html',
                     children: [
                       {
-                        id: 1547,
-                        parentId: 1542,
+                        id: 1556,
+                        parentId: 1551,
                         name: '上传Kubernetes安装包至镜像库',
                         local: 'kubernetes_CSI_00069.html'
                       },
                       {
-                        id: 1548,
-                        parentId: 1542,
+                        id: 1557,
+                        parentId: 1551,
                         name: '获取kubeconfig配置文件',
                         local: 'kubernetes_CSI_00065.html'
                       }
                     ]
                   },
                   {
-                    id: 1543,
-                    parentId: 1533,
+                    id: 1552,
+                    parentId: 1542,
                     name: '备份前准备（适用于CCE）',
                     local: 'kubernetes_CSI_000092.html',
                     children: [
                       {
-                        id: 1549,
-                        parentId: 1543,
-                        name: '上传和更新Kubernetes镜像压缩包',
+                        id: 1558,
+                        parentId: 1552,
+                        name: '上传和更新Kubernetes安装包',
                         local: 'kubernetes_CSI_00102.html'
                       },
                       {
-                        id: 1550,
-                        parentId: 1543,
+                        id: 1559,
+                        parentId: 1552,
                         name: '获取kubeconfig配置文件',
                         local: 'kubernetes_CSI_00078.html'
                       }
                     ]
                   },
                   {
-                    id: 1544,
-                    parentId: 1533,
+                    id: 1553,
+                    parentId: 1542,
                     name: '备份前准备（适用于OpenShift）',
                     local: 'kubernetes_CSI_00078_2.html',
                     children: [
                       {
-                        id: 1551,
-                        parentId: 1544,
+                        id: 1560,
+                        parentId: 1553,
                         name: '上传Kubernetes安装包并获取镜像名和Tag信息',
                         local: 'kubernetes_CSI_00078_3.html'
                       },
                       {
-                        id: 1552,
-                        parentId: 1544,
+                        id: 1561,
+                        parentId: 1553,
                         name: '获取kubeconfig配置文件',
                         local: 'kubernetes_CSI_00078_4.html'
                       },
                       {
-                        id: 1553,
-                        parentId: 1544,
+                        id: 1562,
+                        parentId: 1553,
                         name: '获取Token信息',
                         local: 'kubernetes_CSI_00078_5.html'
                       }
                     ]
                   },
                   {
-                    id: 1545,
-                    parentId: 1533,
+                    id: 1554,
+                    parentId: 1542,
                     name: '备份前准备（适用于原生Kubernetes）',
                     local: 'kubernetes_CSI_00078_6.html',
                     children: [
                       {
-                        id: 1554,
-                        parentId: 1545,
+                        id: 1563,
+                        parentId: 1554,
                         name: '上传Kubernetes安装包至Kubernetes集群',
                         local: 'kubernetes_CSI_00078_7.html'
                       },
                       {
-                        id: 1555,
-                        parentId: 1545,
+                        id: 1564,
+                        parentId: 1554,
                         name: '获取kubeconfig配置文件',
                         local: 'kubernetes_CSI_00078_8.html'
                       }
                     ]
                   },
                   {
-                    id: 1546,
-                    parentId: 1533,
+                    id: 1555,
+                    parentId: 1542,
                     name: '备份命名空间/数据集',
                     local: 'kubernetes_CSI_00010.html',
                     children: [
                       {
-                        id: 1556,
-                        parentId: 1546,
+                        id: 1565,
+                        parentId: 1555,
                         name: '步骤1：（可选）查询Kubernetes集群的节点标签',
                         local: 'kubernetes_CSI_00010_1.html'
                       },
                       {
-                        id: 1557,
-                        parentId: 1546,
+                        id: 1566,
+                        parentId: 1555,
                         name: '步骤2：（可选）生成最小权限Token',
                         local: 'kubernetes_CSI_00077.html'
                       },
                       {
-                        id: 1558,
-                        parentId: 1546,
+                        id: 1567,
+                        parentId: 1555,
                         name: '步骤3：注册集群',
                         local: 'kubernetes_CSI_00011.html'
                       },
                       {
-                        id: 1559,
-                        parentId: 1546,
+                        id: 1568,
+                        parentId: 1555,
                         name: '步骤4：注册数据集',
                         local: 'kubernetes_CSI_00012.html'
                       },
                       {
-                        id: 1560,
-                        parentId: 1546,
+                        id: 1569,
+                        parentId: 1555,
                         name: '步骤5：授权资源',
                         local: 'kubernetes_CSI_00013.html'
                       },
                       {
-                        id: 1561,
-                        parentId: 1546,
+                        id: 1570,
+                        parentId: 1555,
                         name: '步骤6：创建限速策略',
                         local: 'kubernetes_CSI_00014.html'
                       },
                       {
-                        id: 1562,
-                        parentId: 1546,
+                        id: 1571,
+                        parentId: 1555,
                         name: '步骤7：创建备份SLA',
                         local: 'kubernetes_CSI_00015.html'
                       },
                       {
-                        id: 1563,
-                        parentId: 1546,
+                        id: 1572,
+                        parentId: 1555,
                         name: '步骤8：执行备份',
                         local: 'kubernetes_CSI_00016.html'
                       }
@@ -10281,77 +10349,77 @@ naviData = [
                 ]
               },
               {
-                id: 1534,
-                parentId: 1531,
+                id: 1543,
+                parentId: 1540,
                 name: '复制',
                 local: 'kubernetes_CSI_00019.html',
                 children: [
                   {
-                    id: 1564,
-                    parentId: 1534,
+                    id: 1573,
+                    parentId: 1543,
                     name: '复制Kubernetes CSI副本',
                     local: 'kubernetes_CSI_00022.html',
                     children: [
                       {
-                        id: 1565,
-                        parentId: 1564,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 1574,
+                        parentId: 1573,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'kubernetes_CSI_00024.html'
                       },
                       {
-                        id: 1566,
-                        parentId: 1564,
+                        id: 1575,
+                        parentId: 1573,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
                         local: 'kubernetes_CSI_00024_1.html'
                       },
                       {
-                        id: 1567,
-                        parentId: 1564,
+                        id: 1576,
+                        parentId: 1573,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'kubernetes_CSI_00025.html'
                       },
                       {
-                        id: 1568,
-                        parentId: 1564,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 1577,
+                        parentId: 1573,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'kubernetes_CSI_00026.html'
                       },
                       {
-                        id: 1569,
-                        parentId: 1564,
+                        id: 1578,
+                        parentId: 1573,
                         name: '步骤4：下载并导入证书',
                         local: 'kubernetes_CSI_00027.html'
                       },
                       {
-                        id: 1570,
-                        parentId: 1564,
+                        id: 1579,
+                        parentId: 1573,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'kubernetes_CSI_00028.html'
                       },
                       {
-                        id: 1571,
-                        parentId: 1564,
+                        id: 1580,
+                        parentId: 1573,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'kubernetes_CSI_00028_a1.html'
                       },
                       {
-                        id: 1572,
-                        parentId: 1564,
-                        name: '步骤6：添加目标集群',
+                        id: 1581,
+                        parentId: 1573,
+                        name: '步骤6：添加复制集群',
                         local: 'kubernetes_CSI_00029.html'
                       },
                       {
-                        id: 1573,
-                        parentId: 1564,
+                        id: 1582,
+                        parentId: 1573,
                         name: '步骤7：创建复制SLA',
                         local: 'kubernetes_CSI_00030.html'
                       },
                       {
-                        id: 1574,
-                        parentId: 1564,
+                        id: 1583,
+                        parentId: 1573,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'kubernetes_CSI_00031.html'
                       }
@@ -10360,60 +10428,61 @@ naviData = [
                 ]
               },
               {
-                id: 1535,
-                parentId: 1531,
+                id: 1544,
+                parentId: 1540,
                 name: '归档',
                 local: 'kubernetes_CSI_00032.html',
                 children: [
                   {
-                    id: 1575,
-                    parentId: 1535,
+                    id: 1584,
+                    parentId: 1544,
                     name: '归档Kubernetes CSI备份副本',
                     local: 'kubernetes_CSI_00035.html',
                     children: [
                       {
-                        id: 1577,
-                        parentId: 1575,
+                        id: 1586,
+                        parentId: 1584,
                         name: '步骤1：添加归档存储',
                         local: 'kubernetes_CSI_00036.html',
                         children: [
                           {
-                            id: 1579,
-                            parentId: 1577,
+                            id: 1588,
+                            parentId: 1586,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'kubernetes_CSI_00037.html'
                           },
                           {
-                            id: 1580,
-                            parentId: 1577,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1589,
+                            parentId: 1586,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'kubernetes_CSI_00038.html'
                           }
                         ]
                       },
                       {
-                        id: 1578,
-                        parentId: 1575,
-                        name: '步骤2：创建归档SLA',
+                        id: 1587,
+                        parentId: 1584,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'kubernetes_CSI_00039.html'
                       }
                     ]
                   },
                   {
-                    id: 1576,
-                    parentId: 1535,
+                    id: 1585,
+                    parentId: 1544,
                     name: '归档Kubernetes CSI复制副本',
                     local: 'kubernetes_CSI_00040.html',
                     children: [
                       {
-                        id: 1581,
-                        parentId: 1576,
-                        name: '步骤1：创建归档SLA',
+                        id: 1590,
+                        parentId: 1585,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'kubernetes_CSI_00041.html'
                       },
                       {
-                        id: 1582,
-                        parentId: 1576,
+                        id: 1591,
+                        parentId: 1585,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'kubernetes_CSI_00042.html'
                       }
@@ -10422,156 +10491,156 @@ naviData = [
                 ]
               },
               {
-                id: 1536,
-                parentId: 1531,
+                id: 1545,
+                parentId: 1540,
                 name: '恢复',
                 local: 'kubernetes_CSI_00043.html',
                 children: [
                   {
-                    id: 1583,
-                    parentId: 1536,
+                    id: 1592,
+                    parentId: 1545,
                     name: '恢复命名空间/数据集',
                     local: 'kubernetes_CSI_00046.html'
                   },
                   {
-                    id: 1584,
-                    parentId: 1536,
+                    id: 1593,
+                    parentId: 1545,
                     name: '恢复PVC',
                     local: 'kubernetes_CSI_00047.html'
                   }
                 ]
               },
               {
-                id: 1537,
-                parentId: 1531,
+                id: 1546,
+                parentId: 1540,
                 name: '全局搜索',
                 local: 'kubernetes_CSI_00043_a1.html',
                 children: [
                   {
-                    id: 1585,
-                    parentId: 1537,
+                    id: 1594,
+                    parentId: 1546,
                     name: '全局搜索资源',
                     local: 'kubernetes_CSI_00043_a2.html'
                   },
                   {
-                    id: 1586,
-                    parentId: 1537,
+                    id: 1595,
+                    parentId: 1546,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'kubernetes_CSI_00043_a3.html'
                   }
                 ]
               },
               {
-                id: 1538,
-                parentId: 1531,
+                id: 1547,
+                parentId: 1540,
                 name: 'SLA',
                 local: 'kubernetes_CSI_00051.html',
                 children: [
                   {
-                    id: 1587,
-                    parentId: 1538,
+                    id: 1596,
+                    parentId: 1547,
                     name: '关于SLA',
                     local: 'kubernetes_CSI_00052.html'
                   },
                   {
-                    id: 1588,
-                    parentId: 1538,
+                    id: 1597,
+                    parentId: 1547,
                     name: '查看SLA信息',
                     local: 'kubernetes_CSI_00053.html'
                   },
                   {
-                    id: 1589,
-                    parentId: 1538,
+                    id: 1598,
+                    parentId: 1547,
                     name: '管理SLA',
                     local: 'kubernetes_CSI_00054.html'
                   }
                 ]
               },
               {
-                id: 1539,
-                parentId: 1531,
+                id: 1548,
+                parentId: 1540,
                 name: '副本',
                 local: 'kubernetes_CSI_00055.html',
                 children: [
                   {
-                    id: 1590,
-                    parentId: 1539,
+                    id: 1599,
+                    parentId: 1548,
                     name: '查看Kubernetes CSI副本信息',
                     local: 'kubernetes_CSI_00056.html'
                   },
                   {
-                    id: 1591,
-                    parentId: 1539,
+                    id: 1600,
+                    parentId: 1548,
                     name: '管理Kubernetes CSI副本',
                     local: 'kubernetes_CSI_00057.html'
                   }
                 ]
               },
               {
-                id: 1540,
-                parentId: 1531,
+                id: 1549,
+                parentId: 1540,
                 name: '集群/命名空间/数据集',
                 local: 'kubernetes_CSI_00058.html',
                 children: [
                   {
-                    id: 1592,
-                    parentId: 1540,
+                    id: 1601,
+                    parentId: 1549,
                     name: '查看信息',
                     local: 'kubernetes_CSI_00059.html'
                   },
                   {
-                    id: 1593,
-                    parentId: 1540,
+                    id: 1602,
+                    parentId: 1549,
                     name: '管理集群',
                     local: 'kubernetes_CSI_00060.html'
                   },
                   {
-                    id: 1594,
-                    parentId: 1540,
+                    id: 1603,
+                    parentId: 1549,
                     name: '管理命名空间/数据集',
                     local: 'kubernetes_CSI_00061.html'
                   }
                 ]
               },
               {
-                id: 1541,
-                parentId: 1531,
+                id: 1550,
+                parentId: 1540,
                 name: '常见问题',
                 local: 'kubernetes_CSI_00062.html',
                 children: [
                   {
-                    id: 1595,
-                    parentId: 1541,
+                    id: 1604,
+                    parentId: 1550,
                     name: '登录OceanProtect管理界面',
                     local: 'kubernetes_CSI_00063.html'
                   },
                   {
-                    id: 1596,
-                    parentId: 1541,
+                    id: 1605,
+                    parentId: 1550,
                     name: '登录DeviceManager管理界面',
                     local: 'kubernetes_CSI_00063_1.html'
                   },
                   {
-                    id: 1597,
-                    parentId: 1541,
+                    id: 1606,
+                    parentId: 1550,
                     name: 'Token认证时获取证书值（适用于CCE）',
                     local: 'kubernetes_CSI_00079.html'
                   },
                   {
-                    id: 1598,
-                    parentId: 1541,
+                    id: 1607,
+                    parentId: 1550,
                     name: '应用一致性备份的生产环境Pod配置（通用）',
                     local: 'kubernetes_CSI_00066.html'
                   },
                   {
-                    id: 1599,
-                    parentId: 1541,
+                    id: 1608,
+                    parentId: 1550,
                     name: '应用一致性备份的生产环境Pod配置（容器应用为MySQL）',
                     local: 'kubernetes_CSI_00067.html'
                   },
                   {
-                    id: 1600,
-                    parentId: 1541,
+                    id: 1609,
+                    parentId: 1550,
                     name:
                       '应用一致性备份的生产环境Pod配置（容器应用为openGauss）',
                     local: 'kubernetes_CSI_00068.html'
@@ -10581,63 +10650,62 @@ naviData = [
             ]
           },
           {
-            id: 1532,
+            id: 1541,
             parentId: 16,
             name: 'Kubernetes FlexVolume数据保护',
             local: 'zh-cn_topic_0000001827039668.html',
             children: [
               {
-                id: 1601,
-                parentId: 1532,
+                id: 1610,
+                parentId: 1541,
                 name: '备份',
                 local: 'kubernetes_gud_00007.html',
                 children: [
                   {
-                    id: 1609,
-                    parentId: 1601,
+                    id: 1618,
+                    parentId: 1610,
                     name: '备份前准备',
                     local: 'kubernetes_gud_00010.html'
                   },
                   {
-                    id: 1610,
-                    parentId: 1601,
+                    id: 1619,
+                    parentId: 1610,
                     name: '备份命名空间/StatefulSet',
                     local: 'kubernetes_gud_00011.html',
                     children: [
                       {
-                        id: 1611,
-                        parentId: 1610,
+                        id: 1620,
+                        parentId: 1619,
                         name: '步骤1：注册集群',
                         local: 'kubernetes_gud_00012.html'
                       },
                       {
-                        id: 1612,
-                        parentId: 1610,
+                        id: 1621,
+                        parentId: 1619,
                         name: '步骤2：授权资源',
                         local: 'kubernetes_gud_00013.html'
                       },
                       {
-                        id: 1613,
-                        parentId: 1610,
-                        name:
-                          '步骤3：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 1622,
+                        parentId: 1619,
+                        name: '步骤3：（可选）开启备份链路加密开关',
                         local: 'kubernetes_gud_00014.html'
                       },
                       {
-                        id: 1614,
-                        parentId: 1610,
+                        id: 1623,
+                        parentId: 1619,
                         name: '步骤4：创建限速策略',
                         local: 'kubernetes_gud_00015.html'
                       },
                       {
-                        id: 1615,
-                        parentId: 1610,
+                        id: 1624,
+                        parentId: 1619,
                         name: '步骤5：创建备份SLA',
                         local: 'kubernetes_gud_00016.html'
                       },
                       {
-                        id: 1616,
-                        parentId: 1610,
+                        id: 1625,
+                        parentId: 1619,
                         name: '步骤6：执行备份',
                         local: 'kubernetes_gud_00017.html'
                       }
@@ -10646,83 +10714,83 @@ naviData = [
                 ]
               },
               {
-                id: 1602,
-                parentId: 1532,
+                id: 1611,
+                parentId: 1541,
                 name: '复制',
                 local: 'kubernetes_gud_00020.html',
                 children: [
                   {
-                    id: 1617,
-                    parentId: 1602,
+                    id: 1626,
+                    parentId: 1611,
                     name: '复制Kubernetes FlexVolume副本',
                     local: 'kubernetes_gud_00023.html',
                     children: [
                       {
-                        id: 1618,
-                        parentId: 1617,
+                        id: 1627,
+                        parentId: 1626,
                         name: '规划复制网络',
                         local: 'kubernetes_gud_00024.html'
                       },
                       {
-                        id: 1619,
-                        parentId: 1617,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 1628,
+                        parentId: 1626,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'kubernetes_gud_00025.html'
                       },
                       {
-                        id: 1620,
-                        parentId: 1617,
+                        id: 1629,
+                        parentId: 1626,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_16.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_10.html'
                       },
                       {
-                        id: 1621,
-                        parentId: 1617,
+                        id: 1630,
+                        parentId: 1626,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'kubernetes_gud_00026.html'
                       },
                       {
-                        id: 1622,
-                        parentId: 1617,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 1631,
+                        parentId: 1626,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'kubernetes_gud_00027.html'
                       },
                       {
-                        id: 1623,
-                        parentId: 1617,
+                        id: 1632,
+                        parentId: 1626,
                         name: '步骤4：下载并导入证书',
                         local: 'kubernetes_gud_00028.html'
                       },
                       {
-                        id: 1624,
-                        parentId: 1617,
+                        id: 1633,
+                        parentId: 1626,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'kubernetes_gud_00029.html'
                       },
                       {
-                        id: 1625,
-                        parentId: 1617,
+                        id: 1634,
+                        parentId: 1626,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'kubernetes_gud_00029_a1.html'
                       },
                       {
-                        id: 1626,
-                        parentId: 1617,
-                        name: '步骤6：添加目标集群',
+                        id: 1635,
+                        parentId: 1626,
+                        name: '步骤6：添加复制集群',
                         local: 'kubernetes_gud_00030.html'
                       },
                       {
-                        id: 1627,
-                        parentId: 1617,
+                        id: 1636,
+                        parentId: 1626,
                         name: '步骤7：创建复制SLA',
                         local: 'kubernetes_gud_00031.html'
                       },
                       {
-                        id: 1628,
-                        parentId: 1617,
+                        id: 1637,
+                        parentId: 1626,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'kubernetes_gud_00032.html'
                       }
@@ -10731,60 +10799,61 @@ naviData = [
                 ]
               },
               {
-                id: 1603,
-                parentId: 1532,
+                id: 1612,
+                parentId: 1541,
                 name: '归档',
                 local: 'kubernetes_gud_00033.html',
                 children: [
                   {
-                    id: 1629,
-                    parentId: 1603,
+                    id: 1638,
+                    parentId: 1612,
                     name: '归档Kubernetes FlexVolume备份副本',
                     local: 'kubernetes_gud_00036.html',
                     children: [
                       {
-                        id: 1631,
-                        parentId: 1629,
+                        id: 1640,
+                        parentId: 1638,
                         name: '步骤1：添加归档存储',
                         local: 'kubernetes_gud_00037.html',
                         children: [
                           {
-                            id: 1633,
-                            parentId: 1631,
+                            id: 1642,
+                            parentId: 1640,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'kubernetes_gud_00038.html'
                           },
                           {
-                            id: 1634,
-                            parentId: 1631,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1643,
+                            parentId: 1640,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'kubernetes_gud_00039.html'
                           }
                         ]
                       },
                       {
-                        id: 1632,
-                        parentId: 1629,
-                        name: '步骤2：创建归档SLA',
+                        id: 1641,
+                        parentId: 1638,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'kubernetes_gud_00040.html'
                       }
                     ]
                   },
                   {
-                    id: 1630,
-                    parentId: 1603,
+                    id: 1639,
+                    parentId: 1612,
                     name: '归档Kubernetes FlexVolume复制副本',
                     local: 'kubernetes_gud_00041.html',
                     children: [
                       {
-                        id: 1635,
-                        parentId: 1630,
-                        name: '步骤1：创建归档SLA',
+                        id: 1644,
+                        parentId: 1639,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'kubernetes_gud_00042.html'
                       },
                       {
-                        id: 1636,
-                        parentId: 1630,
+                        id: 1645,
+                        parentId: 1639,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'kubernetes_gud_00043.html'
                       }
@@ -10793,106 +10862,106 @@ naviData = [
                 ]
               },
               {
-                id: 1604,
-                parentId: 1532,
+                id: 1613,
+                parentId: 1541,
                 name: '恢复',
                 local: 'kubernetes_gud_00044.html',
                 children: [
                   {
-                    id: 1637,
-                    parentId: 1604,
+                    id: 1646,
+                    parentId: 1613,
                     name: '恢复StatefulSet',
                     local: 'kubernetes_gud_00047.html'
                   }
                 ]
               },
               {
-                id: 1605,
-                parentId: 1532,
+                id: 1614,
+                parentId: 1541,
                 name: '全局搜索',
                 local: 'kubernetes_gud_00044_a1.html',
                 children: [
                   {
-                    id: 1638,
-                    parentId: 1605,
+                    id: 1647,
+                    parentId: 1614,
                     name: '全局搜索资源',
                     local: 'kubernetes_gud_00044_a2.html'
                   },
                   {
-                    id: 1639,
-                    parentId: 1605,
+                    id: 1648,
+                    parentId: 1614,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'kubernetes_gud_00044_a3.html'
                   }
                 ]
               },
               {
-                id: 1606,
-                parentId: 1532,
+                id: 1615,
+                parentId: 1541,
                 name: 'SLA',
                 local: 'kubernetes_gud_00051.html',
                 children: [
                   {
-                    id: 1640,
-                    parentId: 1606,
+                    id: 1649,
+                    parentId: 1615,
                     name: '关于SLA',
                     local: 'kubernetes_gud_00052.html'
                   },
                   {
-                    id: 1641,
-                    parentId: 1606,
+                    id: 1650,
+                    parentId: 1615,
                     name: '查看SLA信息',
                     local: 'kubernetes_gud_00053.html'
                   },
                   {
-                    id: 1642,
-                    parentId: 1606,
+                    id: 1651,
+                    parentId: 1615,
                     name: '管理SLA',
                     local: 'kubernetes_gud_00054.html'
                   }
                 ]
               },
               {
-                id: 1607,
-                parentId: 1532,
+                id: 1616,
+                parentId: 1541,
                 name: '副本',
                 local: 'kubernetes_gud_00055.html',
                 children: [
                   {
-                    id: 1643,
-                    parentId: 1607,
+                    id: 1652,
+                    parentId: 1616,
                     name: '查看Kubernetes FlexVolume副本信息',
                     local: 'kubernetes_gud_00056.html'
                   },
                   {
-                    id: 1644,
-                    parentId: 1607,
+                    id: 1653,
+                    parentId: 1616,
                     name: '管理Kubernetes FlexVolume副本',
                     local: 'kubernetes_gud_00057.html'
                   }
                 ]
               },
               {
-                id: 1608,
-                parentId: 1532,
+                id: 1617,
+                parentId: 1541,
                 name: '集群/命名空间/StatefulSet',
                 local: 'kubernetes_gud_00058.html',
                 children: [
                   {
-                    id: 1645,
-                    parentId: 1608,
+                    id: 1654,
+                    parentId: 1617,
                     name: '查看信息',
                     local: 'kubernetes_gud_00059.html'
                   },
                   {
-                    id: 1646,
-                    parentId: 1608,
+                    id: 1655,
+                    parentId: 1617,
                     name: '管理集群',
                     local: 'kubernetes_gud_00060.html'
                   },
                   {
-                    id: 1647,
-                    parentId: 1608,
+                    id: 1656,
+                    parentId: 1617,
                     name: '管理命名空间/StatefulSet',
                     local: 'kubernetes_gud_00061.html'
                   }
@@ -10909,69 +10978,68 @@ naviData = [
         local: 'zh-cn_topic_0000001948269725.html',
         children: [
           {
-            id: 1648,
+            id: 1657,
             parentId: 17,
             name: '华为云Stack数据保护',
             local: 'zh-cn_topic_0000001827039672.html',
             children: [
               {
-                id: 1652,
-                parentId: 1648,
+                id: 1661,
+                parentId: 1657,
                 name: '备份',
                 local: 'hcs_gud_0007.html',
                 children: [
                   {
-                    id: 1660,
-                    parentId: 1652,
+                    id: 1669,
+                    parentId: 1661,
                     name: '备份前准备',
                     local: 'hcs_gud_0010.html'
                   },
                   {
-                    id: 1661,
-                    parentId: 1652,
+                    id: 1670,
+                    parentId: 1661,
                     name: '备份云服务器/云硬盘',
                     local: 'hcs_gud_0011.html',
                     children: [
                       {
-                        id: 1662,
-                        parentId: 1661,
+                        id: 1671,
+                        parentId: 1670,
                         name: '步骤1：获取证书',
                         local: 'hcs_gud_0012.html'
                       },
                       {
-                        id: 1663,
-                        parentId: 1661,
+                        id: 1672,
+                        parentId: 1670,
                         name: '步骤2：注册华为云Stack',
                         local: 'hcs_gud_0014.html'
                       },
                       {
-                        id: 1664,
-                        parentId: 1661,
+                        id: 1673,
+                        parentId: 1670,
                         name: '步骤3：添加租户并授权资源',
                         local: 'hcs_gud_0015.html'
                       },
                       {
-                        id: 1665,
-                        parentId: 1661,
-                        name:
-                          '步骤4：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 1674,
+                        parentId: 1670,
+                        name: '步骤4：（可选）开启备份链路加密开关',
                         local: 'hcs_gud_0016.html'
                       },
                       {
-                        id: 1666,
-                        parentId: 1661,
+                        id: 1675,
+                        parentId: 1670,
                         name: '步骤5：（可选）创建限速策略',
                         local: 'hcs_gud_0017.html'
                       },
                       {
-                        id: 1667,
-                        parentId: 1661,
+                        id: 1676,
+                        parentId: 1670,
                         name: '步骤6：创建备份SLA',
                         local: 'hcs_gud_0018.html'
                       },
                       {
-                        id: 1668,
-                        parentId: 1661,
+                        id: 1677,
+                        parentId: 1670,
                         name: '步骤7：执行备份',
                         local: 'hcs_gud_0019.html'
                       }
@@ -10980,83 +11048,85 @@ naviData = [
                 ]
               },
               {
-                id: 1653,
-                parentId: 1648,
+                id: 1662,
+                parentId: 1657,
                 name: '复制',
                 local: 'hcs_gud_0022.html',
                 children: [
                   {
-                    id: 1669,
-                    parentId: 1653,
+                    id: 1678,
+                    parentId: 1662,
                     name: '复制华为云Stack副本',
                     local: 'hcs_gud_0025.html',
                     children: [
                       {
-                        id: 1670,
-                        parentId: 1669,
+                        id: 1679,
+                        parentId: 1678,
                         name: '规划复制网络',
                         local: 'hcs_gud_0026.html'
                       },
                       {
-                        id: 1671,
-                        parentId: 1669,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 1680,
+                        parentId: 1678,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'hcs_gud_0027.html'
                       },
                       {
-                        id: 1672,
-                        parentId: 1669,
+                        id: 1681,
+                        parentId: 1678,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
                         local: 'hcs_gud_0027_1.html'
                       },
                       {
-                        id: 1673,
-                        parentId: 1669,
-                        name: '步骤2：（可选）创建IPsec策略',
+                        id: 1682,
+                        parentId: 1678,
+                        name:
+                          '步骤2：（可选）创建IPsec策略（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
                         local: 'hcs_gud_0028.html'
                       },
                       {
-                        id: 1674,
-                        parentId: 1669,
+                        id: 1683,
+                        parentId: 1678,
                         name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                          '步骤3：（可选）开启复制链路加密开关（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
                         local: 'hcs_gud_0029.html'
                       },
                       {
-                        id: 1675,
-                        parentId: 1669,
+                        id: 1684,
+                        parentId: 1678,
                         name: '步骤4：下载并导入证书',
                         local: 'hcs_gud_0030.html'
                       },
                       {
-                        id: 1676,
-                        parentId: 1669,
+                        id: 1685,
+                        parentId: 1678,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'hcs_gud_0031.html'
                       },
                       {
-                        id: 1677,
-                        parentId: 1669,
+                        id: 1686,
+                        parentId: 1678,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'zh-cn_topic_0000002044303453.html'
+                        local: 'hcs_gud_0031_1.html'
                       },
                       {
-                        id: 1678,
-                        parentId: 1669,
+                        id: 1687,
+                        parentId: 1678,
                         name: '步骤6：添加复制集群',
                         local: 'hcs_gud_0032.html'
                       },
                       {
-                        id: 1679,
-                        parentId: 1669,
+                        id: 1688,
+                        parentId: 1678,
                         name: '步骤7：创建复制SLA',
                         local: 'hcs_gud_0033.html'
                       },
                       {
-                        id: 1680,
-                        parentId: 1669,
+                        id: 1689,
+                        parentId: 1678,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'hcs_gud_0034.html'
                       }
@@ -11065,60 +11135,61 @@ naviData = [
                 ]
               },
               {
-                id: 1654,
-                parentId: 1648,
+                id: 1663,
+                parentId: 1657,
                 name: '归档',
                 local: 'hcs_gud_0035.html',
                 children: [
                   {
-                    id: 1681,
-                    parentId: 1654,
+                    id: 1690,
+                    parentId: 1663,
                     name: '归档华为云Stack备份副本',
                     local: 'hcs_gud_0038.html',
                     children: [
                       {
-                        id: 1683,
-                        parentId: 1681,
+                        id: 1692,
+                        parentId: 1690,
                         name: '步骤1：添加归档存储',
                         local: 'hcs_gud_0039.html',
                         children: [
                           {
-                            id: 1685,
-                            parentId: 1683,
+                            id: 1694,
+                            parentId: 1692,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'hcs_gud_0040.html'
                           },
                           {
-                            id: 1686,
-                            parentId: 1683,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1695,
+                            parentId: 1692,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'hcs_gud_0041.html'
                           }
                         ]
                       },
                       {
-                        id: 1684,
-                        parentId: 1681,
+                        id: 1693,
+                        parentId: 1690,
                         name: '步骤2：创建备份副本归档SLA',
                         local: 'hcs_gud_0042.html'
                       }
                     ]
                   },
                   {
-                    id: 1682,
-                    parentId: 1654,
+                    id: 1691,
+                    parentId: 1663,
                     name: '归档华为云Stack复制副本',
                     local: 'hcs_gud_0043.html',
                     children: [
                       {
-                        id: 1687,
-                        parentId: 1682,
+                        id: 1696,
+                        parentId: 1691,
                         name: '步骤1：创建复制副本归档SLA',
                         local: 'hcs_gud_0044.html'
                       },
                       {
-                        id: 1688,
-                        parentId: 1682,
+                        id: 1697,
+                        parentId: 1691,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'hcs_gud_0045.html'
                       }
@@ -11127,130 +11198,130 @@ naviData = [
                 ]
               },
               {
-                id: 1655,
-                parentId: 1648,
+                id: 1664,
+                parentId: 1657,
                 name: '恢复',
                 local: 'hcs_gud_0046.html',
                 children: [
                   {
-                    id: 1689,
-                    parentId: 1655,
+                    id: 1698,
+                    parentId: 1664,
                     name: '恢复云服务器/云硬盘',
                     local: 'hcs_gud_0049.html'
                   },
                   {
-                    id: 1690,
-                    parentId: 1655,
+                    id: 1699,
+                    parentId: 1664,
                     name: '恢复弹性云服务器中的文件',
                     local: 'hcs_gud_re1.html'
                   }
                 ]
               },
               {
-                id: 1656,
-                parentId: 1648,
+                id: 1665,
+                parentId: 1657,
                 name: '全局搜索',
                 local: 'hcs_gud_gs1.html',
                 children: [
                   {
-                    id: 1691,
-                    parentId: 1656,
+                    id: 1700,
+                    parentId: 1665,
                     name: '关于全局搜索',
-                    local: 'zh-cn_topic_0000002002687814.html'
+                    local: 'hcs_gud_gs4.html'
                   },
                   {
-                    id: 1692,
-                    parentId: 1656,
+                    id: 1701,
+                    parentId: 1665,
                     name: '全局搜索副本数据',
                     local: 'hcs_gud_gs2.html'
                   },
                   {
-                    id: 1693,
-                    parentId: 1656,
+                    id: 1702,
+                    parentId: 1665,
                     name: '全局搜索资源',
                     local: 'hcs_gud_gs3.html'
                   },
                   {
-                    id: 1694,
-                    parentId: 1656,
+                    id: 1703,
+                    parentId: 1665,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
-                    local: 'zh-cn_topic_0000002038886953.html'
+                    local: 'hcs_gud_gs5.html'
                   }
                 ]
               },
               {
-                id: 1657,
-                parentId: 1648,
+                id: 1666,
+                parentId: 1657,
                 name: 'SLA',
                 local: 'hcs_gud_0053.html',
                 children: [
                   {
-                    id: 1695,
-                    parentId: 1657,
+                    id: 1704,
+                    parentId: 1666,
                     name: '关于SLA',
                     local: 'hcs_gud_0054.html'
                   },
                   {
-                    id: 1696,
-                    parentId: 1657,
+                    id: 1705,
+                    parentId: 1666,
                     name: '查看SLA信息',
                     local: 'hcs_gud_0055.html'
                   },
                   {
-                    id: 1697,
-                    parentId: 1657,
+                    id: 1706,
+                    parentId: 1666,
                     name: '管理SLA',
                     local: 'hcs_gud_0056.html'
                   }
                 ]
               },
               {
-                id: 1658,
-                parentId: 1648,
+                id: 1667,
+                parentId: 1657,
                 name: '副本',
                 local: 'hcs_gud_0057.html',
                 children: [
                   {
-                    id: 1698,
-                    parentId: 1658,
+                    id: 1707,
+                    parentId: 1667,
                     name: '查看华为云Stack副本信息',
                     local: 'hcs_gud_0058.html'
                   },
                   {
-                    id: 1699,
-                    parentId: 1658,
+                    id: 1708,
+                    parentId: 1667,
                     name: '管理华为云Stack副本',
                     local: 'hcs_gud_0059.html'
                   }
                 ]
               },
               {
-                id: 1659,
-                parentId: 1648,
+                id: 1668,
+                parentId: 1657,
                 name: '华为云Stack环境',
                 local: 'hcs_gud_0060.html',
                 children: [
                   {
-                    id: 1700,
-                    parentId: 1659,
+                    id: 1709,
+                    parentId: 1668,
                     name: '查看华为云Stack信息',
                     local: 'hcs_gud_0061.html'
                   },
                   {
-                    id: 1701,
-                    parentId: 1659,
+                    id: 1710,
+                    parentId: 1668,
                     name: '管理华为云Stack注册信息',
                     local: 'hcs_gud_0062.html'
                   },
                   {
-                    id: 1702,
-                    parentId: 1659,
+                    id: 1711,
+                    parentId: 1668,
                     name: '管理租户',
                     local: 'hcs_gud_0063.html'
                   },
                   {
-                    id: 1703,
-                    parentId: 1659,
+                    id: 1712,
+                    parentId: 1668,
                     name: '管理项目/资源集或弹性云服务器',
                     local: 'hcs_gud_0064.html'
                   }
@@ -11259,771 +11330,99 @@ naviData = [
             ]
           },
           {
-            id: 1649,
+            id: 1658,
             parentId: 17,
             name: 'OpenStack数据保护',
             local: 'zh-cn_topic_0000001873679145.html',
             children: [
               {
-                id: 1704,
-                parentId: 1649,
-                name: '备份',
-                local: 'Open_Stack_00006_0.html',
-                children: [
-                  {
-                    id: 1712,
-                    parentId: 1704,
-                    name: '备份前准备',
-                    local: 'Open_Stack_00009_0.html'
-                  },
-                  {
-                    id: 1713,
-                    parentId: 1704,
-                    name: '备份OpenStack云服务器',
-                    local: 'Open_Stack_00010_0.html',
-                    children: [
-                      {
-                        id: 1714,
-                        parentId: 1713,
-                        name: '步骤1：获取KeyStone V3地址',
-                        local: 'Open_Stack_00010_1.html'
-                      },
-                      {
-                        id: 1715,
-                        parentId: 1713,
-                        name: '步骤2：获取证书',
-                        local: 'Open_Stack_00011_0.html'
-                      },
-                      {
-                        id: 1716,
-                        parentId: 1713,
-                        name: '步骤3：创建对接用户',
-                        local: 'Open_Stack_00013.html'
-                      },
-                      {
-                        id: 1717,
-                        parentId: 1713,
-                        name: '步骤4：创建域管理员',
-                        local: 'Open_Stack_00014.html'
-                      },
-                      {
-                        id: 1718,
-                        parentId: 1713,
-                        name: '步骤5：注册OpenStack',
-                        local: 'Open_Stack_00015_0.html'
-                      },
-                      {
-                        id: 1719,
-                        parentId: 1713,
-                        name: '步骤6：添加域',
-                        local: 'Open_Stack_00016.html'
-                      },
-                      {
-                        id: 1720,
-                        parentId: 1713,
-                        name: '步骤7：（可选）创建云服务器组',
-                        local: 'zh-cn_topic_0000001930077496.html'
-                      },
-                      {
-                        id: 1721,
-                        parentId: 1713,
-                        name: '步骤8：创建限速策略',
-                        local: 'Open_Stack_00018_0.html'
-                      },
-                      {
-                        id: 1722,
-                        parentId: 1713,
-                        name:
-                          '步骤9：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
-                        local: 'Open_Stack_00019_0.html'
-                      },
-                      {
-                        id: 1723,
-                        parentId: 1713,
-                        name: '步骤10：（可选）修改Project的快照配额',
-                        local: 'Open_Stack_00020.html'
-                      },
-                      {
-                        id: 1724,
-                        parentId: 1713,
-                        name: '步骤11：创建备份SLA',
-                        local: 'Open_Stack_00021_0.html'
-                      },
-                      {
-                        id: 1725,
-                        parentId: 1713,
-                        name: '步骤12：执行备份',
-                        local: 'Open_Stack_00022_0.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 1705,
-                parentId: 1649,
-                name: '复制',
-                local: 'Open_Stack_00025_0.html',
-                children: [
-                  {
-                    id: 1726,
-                    parentId: 1705,
-                    name: '复制OpenStack副本',
-                    local: 'Open_Stack_00028_0.html',
-                    children: [
-                      {
-                        id: 1727,
-                        parentId: 1726,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'Open_Stack_00030_0.html'
-                      },
-                      {
-                        id: 1728,
-                        parentId: 1726,
-                        name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_33.html'
-                      },
-                      {
-                        id: 1729,
-                        parentId: 1726,
-                        name: '步骤2：（可选）创建IPsec策略',
-                        local: 'Open_Stack_00031_0.html'
-                      },
-                      {
-                        id: 1730,
-                        parentId: 1726,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
-                        local: 'Open_Stack_00032_0.html'
-                      },
-                      {
-                        id: 1731,
-                        parentId: 1726,
-                        name: '步骤4：下载并导入证书',
-                        local: 'Open_Stack_00033_0.html'
-                      },
-                      {
-                        id: 1732,
-                        parentId: 1726,
-                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
-                        local: 'Open_Stack_00034.html'
-                      },
-                      {
-                        id: 1733,
-                        parentId: 1726,
-                        name:
-                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'Open_Stack_000340_0.html'
-                      },
-                      {
-                        id: 1734,
-                        parentId: 1726,
-                        name: '步骤6：添加目标集群',
-                        local: 'Open_Stack_00035_0.html'
-                      },
-                      {
-                        id: 1735,
-                        parentId: 1726,
-                        name: '步骤7：创建复制SLA',
-                        local: 'Open_Stack_00036.html'
-                      },
-                      {
-                        id: 1736,
-                        parentId: 1726,
-                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
-                        local: 'Open_Stack_00037_0.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 1706,
-                parentId: 1649,
-                name: '归档',
-                local: 'Open_Stack_00038_0.html',
-                children: [
-                  {
-                    id: 1737,
-                    parentId: 1706,
-                    name: '归档OpenStack备份副本',
-                    local: 'Open_Stack_00041_0.html',
-                    children: [
-                      {
-                        id: 1739,
-                        parentId: 1737,
-                        name: '步骤1：添加归档存储',
-                        local: 'Open_Stack_00042_0.html',
-                        children: [
-                          {
-                            id: 1741,
-                            parentId: 1739,
-                            name: '添加对象存储（归档存储是对象存储）',
-                            local: 'Open_Stack_00043_0.html'
-                          },
-                          {
-                            id: 1742,
-                            parentId: 1739,
-                            name: '创建介质集（归档存储是磁带库）',
-                            local: 'Open_Stack_00044_0.html'
-                          }
-                        ]
-                      },
-                      {
-                        id: 1740,
-                        parentId: 1737,
-                        name: '步骤2：创建归档SLA',
-                        local: 'Open_Stack_00045_0.html'
-                      }
-                    ]
-                  },
-                  {
-                    id: 1738,
-                    parentId: 1706,
-                    name: '归档OpenStack复制副本',
-                    local: 'Open_Stack_00046_0.html',
-                    children: [
-                      {
-                        id: 1743,
-                        parentId: 1738,
-                        name: '步骤1：创建归档SLA',
-                        local: 'Open_Stack_00047_0.html'
-                      },
-                      {
-                        id: 1744,
-                        parentId: 1738,
-                        name: '步骤2：创建复制副本周期性归档',
-                        local: 'Open_Stack_00048_0.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 1707,
-                parentId: 1649,
-                name: '恢复',
-                local: 'Open_Stack_00049_0.html',
-                children: [
-                  {
-                    id: 1745,
-                    parentId: 1707,
-                    name: '恢复云服务器',
-                    local: 'Open_Stack_00052_0.html'
-                  },
-                  {
-                    id: 1746,
-                    parentId: 1707,
-                    name: '恢复云磁盘',
-                    local: 'Open_Stack_00053_0.html'
-                  },
-                  {
-                    id: 1747,
-                    parentId: 1707,
-                    name: '恢复文件（适用于1.6.0及之后版本）',
-                    local: 'Open_Stack_000531.html'
-                  }
-                ]
-              },
-              {
-                id: 1708,
-                parentId: 1649,
-                name: '全局搜索',
-                local: 'Open_Stack_000532.html',
-                children: [
-                  {
-                    id: 1748,
-                    parentId: 1708,
-                    name: '全局搜索资源',
-                    local: 'Open_Stack_00054_0.html'
-                  },
-                  {
-                    id: 1749,
-                    parentId: 1708,
-                    name: '全局搜索副本数据',
-                    local: 'Open_Stack_000541.html'
-                  },
-                  {
-                    id: 1750,
-                    parentId: 1708,
-                    name: '全局搜索资源',
-                    local: 'Open_Stack_000542.html'
-                  },
-                  {
-                    id: 1751,
-                    parentId: 1708,
-                    name: '全局标签搜索（适用于1.6.0及后续版本）',
-                    local: 'Open_Stack_000543.html'
-                  }
-                ]
-              },
-              {
-                id: 1709,
-                parentId: 1649,
-                name: 'SLA',
-                local: 'Open_Stack_00057_0.html',
-                children: [
-                  {
-                    id: 1752,
-                    parentId: 1709,
-                    name: '关于SLA',
-                    local: 'Open_Stack_00058_0.html'
-                  },
-                  {
-                    id: 1753,
-                    parentId: 1709,
-                    name: '查看SLA信息',
-                    local: 'Open_Stack_00059_0.html'
-                  },
-                  {
-                    id: 1754,
-                    parentId: 1709,
-                    name: '管理SLA',
-                    local: 'Open_Stack_00060_0.html'
-                  }
-                ]
-              },
-              {
-                id: 1710,
-                parentId: 1649,
-                name: '副本',
-                local: 'Open_Stack_00061_0.html',
-                children: [
-                  {
-                    id: 1755,
-                    parentId: 1710,
-                    name: '查看OpenStack副本信息',
-                    local: 'Open_Stack_00062_0.html'
-                  },
-                  {
-                    id: 1756,
-                    parentId: 1710,
-                    name: '管理OpenStack副本',
-                    local: 'Open_Stack_00063_0.html'
-                  }
-                ]
-              },
-              {
-                id: 1711,
-                parentId: 1649,
-                name: 'OpenStack环境信息',
-                local: 'Open_Stack_00064_0.html',
-                children: [
-                  {
-                    id: 1757,
-                    parentId: 1711,
-                    name: '查看OpenStack信息',
-                    local: 'Open_Stack_00065_0.html'
-                  },
-                  {
-                    id: 1758,
-                    parentId: 1711,
-                    name: '管理OpenStack云平台',
-                    local: 'Open_Stack_00066_0.html'
-                  },
-                  {
-                    id: 1759,
-                    parentId: 1711,
-                    name: '管理域',
-                    local: 'Open_Stack_00067.html'
-                  },
-                  {
-                    id: 1760,
-                    parentId: 1711,
-                    name:
-                      '管理项目/云服务器或云服务器组（适用于1.6.0及后续版本）',
-                    local: 'Open_Stack_00068_0.html'
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id: 1650,
-            parentId: 17,
-            name: '华为云Stack GaussDB数据保护',
-            local: 'zh-cn_topic_0000001826879800.html',
-            children: [
-              {
-                id: 1761,
-                parentId: 1650,
-                name: '备份',
-                local: 'hcs_gaussdb_00006.html',
-                children: [
-                  {
-                    id: 1769,
-                    parentId: 1761,
-                    name: '备份前准备',
-                    local: 'hcs_gaussdb_00009.html'
-                  },
-                  {
-                    id: 1770,
-                    parentId: 1761,
-                    name: '备份华为云Stack GaussDB实例',
-                    local: 'hcs_gaussdb_00010.html',
-                    children: [
-                      {
-                        id: 1771,
-                        parentId: 1770,
-                        name: '步骤1：注册华为云Stack GaussDB项目',
-                        local: 'hcs_gaussdb_00011.html'
-                      },
-                      {
-                        id: 1772,
-                        parentId: 1770,
-                        name:
-                          '步骤2：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
-                        local: 'hcs_gaussdb_00012.html'
-                      },
-                      {
-                        id: 1773,
-                        parentId: 1770,
-                        name: '步骤3：创建限速策略',
-                        local: 'hcs_gaussdb_00013.html'
-                      },
-                      {
-                        id: 1774,
-                        parentId: 1770,
-                        name: '步骤4：创建备份SLA',
-                        local: 'hcs_gaussdb_00014.html'
-                      },
-                      {
-                        id: 1775,
-                        parentId: 1770,
-                        name: '步骤5：执行备份',
-                        local: 'hcs_gaussdb_00015.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 1762,
-                parentId: 1650,
-                name: '复制',
-                local: 'hcs_gaussdb_00018.html',
-                children: [
-                  {
-                    id: 1776,
-                    parentId: 1762,
-                    name: '复制华为云Stack GaussDB副本',
-                    local: 'hcs_gaussdb_00021.html',
-                    children: [
-                      {
-                        id: 1777,
-                        parentId: 1776,
-                        name: '规划复制网络',
-                        local: 'hcs_gaussdb_00022.html'
-                      },
-                      {
-                        id: 1778,
-                        parentId: 1776,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'hcs_gaussdb_00023.html'
-                      },
-                      {
-                        id: 1779,
-                        parentId: 1776,
-                        name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_4.html'
-                      },
-                      {
-                        id: 1780,
-                        parentId: 1776,
-                        name: '步骤2：（可选）创建IPsec策略',
-                        local: 'hcs_gaussdb_00024.html'
-                      },
-                      {
-                        id: 1781,
-                        parentId: 1776,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
-                        local: 'hcs_gaussdb_00025.html'
-                      },
-                      {
-                        id: 1782,
-                        parentId: 1776,
-                        name: '步骤4：下载并导入证书',
-                        local: 'hcs_gaussdb_00026.html'
-                      },
-                      {
-                        id: 1783,
-                        parentId: 1776,
-                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
-                        local: 'hcs_gaussdb_00027.html'
-                      },
-                      {
-                        id: 1784,
-                        parentId: 1776,
-                        name:
-                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'hcs_gaussdb_0002700.html'
-                      },
-                      {
-                        id: 1785,
-                        parentId: 1776,
-                        name: '步骤6：添加目标集群',
-                        local: 'hcs_gaussdb_00028.html'
-                      },
-                      {
-                        id: 1786,
-                        parentId: 1776,
-                        name: '步骤7：创建复制SLA',
-                        local: 'hcs_gaussdb_00029.html'
-                      },
-                      {
-                        id: 1787,
-                        parentId: 1776,
-                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
-                        local: 'hcs_gaussdb_00030.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 1763,
-                parentId: 1650,
-                name: '归档',
-                local: 'hcs_gaussdb_00031.html',
-                children: [
-                  {
-                    id: 1788,
-                    parentId: 1763,
-                    name: '归档华为云Stack GaussDB备份副本',
-                    local: 'hcs_gaussdb_00034.html',
-                    children: [
-                      {
-                        id: 1790,
-                        parentId: 1788,
-                        name: '步骤1：添加归档存储',
-                        local: 'hcs_gaussdb_00035.html',
-                        children: [
-                          {
-                            id: 1792,
-                            parentId: 1790,
-                            name: '添加对象存储（归档存储是对象存储）',
-                            local: 'hcs_gaussdb_00036.html'
-                          },
-                          {
-                            id: 1793,
-                            parentId: 1790,
-                            name: '创建介质集（归档存储是磁带库）',
-                            local: 'hcs_gaussdb_00037.html'
-                          }
-                        ]
-                      },
-                      {
-                        id: 1791,
-                        parentId: 1788,
-                        name: '步骤2：创建归档SLA',
-                        local: 'hcs_gaussdb_00038.html'
-                      }
-                    ]
-                  },
-                  {
-                    id: 1789,
-                    parentId: 1763,
-                    name: '归档华为云Stack GaussDB复制副本',
-                    local: 'hcs_gaussdb_00039.html',
-                    children: [
-                      {
-                        id: 1794,
-                        parentId: 1789,
-                        name: '步骤1：创建归档SLA',
-                        local: 'hcs_gaussdb_00040.html'
-                      },
-                      {
-                        id: 1795,
-                        parentId: 1789,
-                        name: '步骤2：创建复制副本周期性归档',
-                        local: 'hcs_gaussdb_00041.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 1764,
-                parentId: 1650,
-                name: '恢复',
-                local: 'hcs_gaussdb_00042.html',
-                children: [
-                  {
-                    id: 1796,
-                    parentId: 1764,
-                    name: '恢复华为云Stack GaussDB实例',
-                    local: 'hcs_gaussdb_00045.html'
-                  }
-                ]
-              },
-              {
-                id: 1765,
-                parentId: 1650,
-                name: '全局搜索',
-                local: 'hcs_gaussdb_0004211.html',
-                children: [
-                  {
-                    id: 1797,
-                    parentId: 1765,
-                    name: '全局搜索资源',
-                    local: 'hcs_gaussdb_00046.html'
-                  },
-                  {
-                    id: 1798,
-                    parentId: 1765,
-                    name: '全局标签搜索（适用于1.6.0及后续版本）',
-                    local: 'hcs_gaussdb_0004222.html'
-                  }
-                ]
-              },
-              {
-                id: 1766,
-                parentId: 1650,
-                name: 'SLA',
-                local: 'hcs_gaussdb_00049.html',
-                children: [
-                  {
-                    id: 1799,
-                    parentId: 1766,
-                    name: '关于SLA',
-                    local: 'hcs_gaussdb_000491.html'
-                  },
-                  {
-                    id: 1800,
-                    parentId: 1766,
-                    name: '查看SLA信息',
-                    local: 'hcs_gaussdb_00051.html'
-                  },
-                  {
-                    id: 1801,
-                    parentId: 1766,
-                    name: '管理SLA',
-                    local: 'hcs_gaussdb_00052.html'
-                  }
-                ]
-              },
-              {
-                id: 1767,
-                parentId: 1650,
-                name: '副本',
-                local: 'hcs_gaussdb_00053.html',
-                children: [
-                  {
-                    id: 1802,
-                    parentId: 1767,
-                    name: '查看华为云Stack GaussDB副本信息',
-                    local: 'hcs_gaussdb_00054.html'
-                  },
-                  {
-                    id: 1803,
-                    parentId: 1767,
-                    name: '管理华为云Stack GaussDB副本',
-                    local: 'hcs_gaussdb_00055.html'
-                  }
-                ]
-              },
-              {
-                id: 1768,
-                parentId: 1650,
-                name: '华为云Stack GaussDB',
-                local: 'hcs_gaussdb_00056.html',
-                children: [
-                  {
-                    id: 1804,
-                    parentId: 1768,
-                    name: '查看华为云Stack GaussDB信息',
-                    local: 'hcs_gaussdb_00057.html'
-                  },
-                  {
-                    id: 1805,
-                    parentId: 1768,
-                    name: '管理华为云Stack GaussDB项目',
-                    local: 'hcs_gaussdb_00058.html'
-                  },
-                  {
-                    id: 1806,
-                    parentId: 1768,
-                    name: '管理实例',
-                    local: 'hcs_gaussdb_00059.html'
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id: 1651,
-            parentId: 17,
-            name: '阿里云数据保护（适用于1.6.0及后续版本）',
-            local: 'zh-cn_topic_0000001826879812.html',
-            children: [
-              {
-                id: 1807,
-                parentId: 1651,
+                id: 1713,
+                parentId: 1658,
                 name: '备份',
                 local: 'Open_Stack_00006.html',
                 children: [
                   {
-                    id: 1815,
-                    parentId: 1807,
+                    id: 1721,
+                    parentId: 1713,
                     name: '备份前准备',
                     local: 'Open_Stack_00009.html'
                   },
                   {
-                    id: 1816,
-                    parentId: 1807,
-                    name: '备份阿里云云服务器',
+                    id: 1722,
+                    parentId: 1713,
+                    name: '备份OpenStack云服务器',
                     local: 'Open_Stack_00010.html',
                     children: [
                       {
-                        id: 1817,
-                        parentId: 1816,
-                        name: '步骤1：获取云服务器ECS的Endpoint',
-                        local: 'zh-cn_topic_0000001888336165.html'
+                        id: 1723,
+                        parentId: 1722,
+                        name: '步骤1：获取KeyStone V3地址',
+                        local: 'Open_Stack_00010_1.html'
                       },
                       {
-                        id: 1818,
-                        parentId: 1816,
-                        name: '步骤2：获取组织的AK',
-                        local: 'zh-cn_topic_0000001841651698.html'
+                        id: 1724,
+                        parentId: 1722,
+                        name: '步骤2：获取证书',
+                        local: 'Open_Stack_00011.html'
                       },
                       {
-                        id: 1819,
-                        parentId: 1816,
-                        name: '步骤3：获取Region ID',
-                        local: 'zh-cn_topic_0000001887970893.html'
+                        id: 1725,
+                        parentId: 1722,
+                        name: '步骤3：创建对接用户',
+                        local: 'Open_Stack_00013.html'
                       },
                       {
-                        id: 1820,
-                        parentId: 1816,
-                        name: '步骤4：注册阿里云组织',
+                        id: 1726,
+                        parentId: 1722,
+                        name: '步骤4：创建域管理员',
+                        local: 'Open_Stack_00014.html'
+                      },
+                      {
+                        id: 1727,
+                        parentId: 1722,
+                        name: '步骤5：注册OpenStack',
                         local: 'Open_Stack_00015.html'
                       },
                       {
-                        id: 1821,
-                        parentId: 1816,
-                        name: '步骤5：创建限速策略',
+                        id: 1728,
+                        parentId: 1722,
+                        name: '步骤6：添加域',
+                        local: 'Open_Stack_00016.html'
+                      },
+                      {
+                        id: 1729,
+                        parentId: 1722,
+                        name: '步骤7：（可选）创建云服务器组',
+                        local: 'zh-cn_topic_0000001930077496.html'
+                      },
+                      {
+                        id: 1730,
+                        parentId: 1722,
+                        name: '步骤8：创建限速策略',
                         local: 'Open_Stack_00018.html'
                       },
                       {
-                        id: 1822,
-                        parentId: 1816,
-                        name:
-                          '步骤6：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
+                        id: 1731,
+                        parentId: 1722,
+                        name: '步骤9：（可选）开启备份链路加密开关',
                         local: 'Open_Stack_00019.html'
                       },
                       {
-                        id: 1823,
-                        parentId: 1816,
-                        name: '步骤7：创建备份SLA',
+                        id: 1732,
+                        parentId: 1722,
+                        name: '步骤10：（可选）修改Project的快照配额',
+                        local: 'Open_Stack_00020.html'
+                      },
+                      {
+                        id: 1733,
+                        parentId: 1722,
+                        name: '步骤11：创建备份SLA',
                         local: 'Open_Stack_00021.html'
                       },
                       {
-                        id: 1824,
-                        parentId: 1816,
-                        name: '步骤8：执行备份',
+                        id: 1734,
+                        parentId: 1722,
+                        name: '步骤12：执行备份',
                         local: 'Open_Stack_00022.html'
                       }
                     ]
@@ -12031,71 +11430,77 @@ naviData = [
                 ]
               },
               {
-                id: 1808,
-                parentId: 1651,
+                id: 1714,
+                parentId: 1658,
                 name: '复制',
                 local: 'Open_Stack_00025.html',
                 children: [
                   {
-                    id: 1825,
-                    parentId: 1808,
-                    name: '复制阿里云副本',
+                    id: 1735,
+                    parentId: 1714,
+                    name: '复制OpenStack副本',
                     local: 'Open_Stack_00028.html',
                     children: [
                       {
-                        id: 1826,
-                        parentId: 1825,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 1736,
+                        parentId: 1735,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'Open_Stack_00030.html'
                       },
                       {
-                        id: 1827,
-                        parentId: 1825,
+                        id: 1737,
+                        parentId: 1735,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_12.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_22.html'
                       },
                       {
-                        id: 1828,
-                        parentId: 1825,
+                        id: 1738,
+                        parentId: 1735,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'Open_Stack_00031.html'
                       },
                       {
-                        id: 1829,
-                        parentId: 1825,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 1739,
+                        parentId: 1735,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'Open_Stack_00032.html'
                       },
                       {
-                        id: 1830,
-                        parentId: 1825,
+                        id: 1740,
+                        parentId: 1735,
                         name: '步骤4：下载并导入证书',
                         local: 'Open_Stack_00033.html'
                       },
                       {
-                        id: 1831,
-                        parentId: 1825,
+                        id: 1741,
+                        parentId: 1735,
+                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
+                        local: 'Open_Stack_00034.html'
+                      },
+                      {
+                        id: 1742,
+                        parentId: 1735,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'Open_Stack_000340.html'
                       },
                       {
-                        id: 1832,
-                        parentId: 1825,
-                        name: '步骤6：添加目标集群',
+                        id: 1743,
+                        parentId: 1735,
+                        name: '步骤6：添加复制集群',
                         local: 'Open_Stack_00035.html'
                       },
                       {
-                        id: 1833,
-                        parentId: 1825,
+                        id: 1744,
+                        parentId: 1735,
                         name: '步骤7：创建复制SLA',
-                        local: 'Ali_000361.html'
+                        local: 'Open_Stack_00036.html'
                       },
                       {
-                        id: 1834,
-                        parentId: 1825,
+                        id: 1745,
+                        parentId: 1735,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'Open_Stack_00037.html'
                       }
@@ -12104,60 +11509,61 @@ naviData = [
                 ]
               },
               {
-                id: 1809,
-                parentId: 1651,
+                id: 1715,
+                parentId: 1658,
                 name: '归档',
                 local: 'Open_Stack_00038.html',
                 children: [
                   {
-                    id: 1835,
-                    parentId: 1809,
-                    name: '归档阿里云备份副本',
+                    id: 1746,
+                    parentId: 1715,
+                    name: '归档OpenStack备份副本',
                     local: 'Open_Stack_00041.html',
                     children: [
                       {
-                        id: 1837,
-                        parentId: 1835,
+                        id: 1748,
+                        parentId: 1746,
                         name: '步骤1：添加归档存储',
                         local: 'Open_Stack_00042.html',
                         children: [
                           {
-                            id: 1839,
-                            parentId: 1837,
+                            id: 1750,
+                            parentId: 1748,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'Open_Stack_00043.html'
                           },
                           {
-                            id: 1840,
-                            parentId: 1837,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1751,
+                            parentId: 1748,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'Open_Stack_00044.html'
                           }
                         ]
                       },
                       {
-                        id: 1838,
-                        parentId: 1835,
-                        name: '步骤2：创建归档SLA',
+                        id: 1749,
+                        parentId: 1746,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'Open_Stack_00045.html'
                       }
                     ]
                   },
                   {
-                    id: 1836,
-                    parentId: 1809,
-                    name: '归档阿里云复制副本',
+                    id: 1747,
+                    parentId: 1715,
+                    name: '归档OpenStack复制副本',
                     local: 'Open_Stack_00046.html',
                     children: [
                       {
-                        id: 1841,
-                        parentId: 1836,
-                        name: '步骤1：创建归档SLA',
+                        id: 1752,
+                        parentId: 1747,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'Open_Stack_00047.html'
                       },
                       {
-                        id: 1842,
-                        parentId: 1836,
+                        id: 1753,
+                        parentId: 1747,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'Open_Stack_00048.html'
                       }
@@ -12166,132 +11572,785 @@ naviData = [
                 ]
               },
               {
-                id: 1810,
-                parentId: 1651,
+                id: 1716,
+                parentId: 1658,
                 name: '恢复',
                 local: 'Open_Stack_00049.html',
                 children: [
                   {
-                    id: 1843,
-                    parentId: 1810,
+                    id: 1754,
+                    parentId: 1716,
                     name: '恢复云服务器',
                     local: 'Open_Stack_00052.html'
                   },
                   {
-                    id: 1844,
-                    parentId: 1810,
+                    id: 1755,
+                    parentId: 1716,
                     name: '恢复云磁盘',
                     local: 'Open_Stack_00053.html'
                   },
                   {
-                    id: 1845,
-                    parentId: 1810,
-                    name: '恢复文件',
-                    local: 'zh-cn_topic_0000001846127238.html'
+                    id: 1756,
+                    parentId: 1716,
+                    name: '恢复文件（适用于1.6.0及之后版本）',
+                    local: 'Open_Stack_000531.html'
                   }
                 ]
               },
               {
-                id: 1811,
-                parentId: 1651,
+                id: 1717,
+                parentId: 1658,
                 name: '全局搜索',
-                local: 'zh-cn_topic_0000002014804512.html',
+                local: 'Open_Stack_000532.html',
                 children: [
                   {
-                    id: 1846,
-                    parentId: 1811,
+                    id: 1757,
+                    parentId: 1717,
                     name: '关于全局搜索',
-                    local: 'zh-cn_topic_0000002014646280.html'
-                  },
-                  {
-                    id: 1847,
-                    parentId: 1811,
-                    name: '全局搜索副本数据',
-                    local: 'vmware_gud_0076_0.html'
-                  },
-                  {
-                    id: 1848,
-                    parentId: 1811,
-                    name: '全局搜索资源',
                     local: 'Open_Stack_00054.html'
                   },
                   {
-                    id: 1849,
-                    parentId: 1811,
+                    id: 1758,
+                    parentId: 1717,
+                    name: '全局搜索副本数据',
+                    local: 'Open_Stack_000541.html'
+                  },
+                  {
+                    id: 1759,
+                    parentId: 1717,
+                    name: '全局搜索资源',
+                    local: 'Open_Stack_000542.html'
+                  },
+                  {
+                    id: 1760,
+                    parentId: 1717,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
-                    local: 'zh-cn_topic_0000002050884109.html'
+                    local: 'Open_Stack_000543.html'
                   }
                 ]
               },
               {
-                id: 1812,
-                parentId: 1651,
+                id: 1718,
+                parentId: 1658,
                 name: 'SLA',
                 local: 'Open_Stack_00057.html',
                 children: [
                   {
-                    id: 1850,
-                    parentId: 1812,
+                    id: 1761,
+                    parentId: 1718,
                     name: '关于SLA',
                     local: 'Open_Stack_00058.html'
                   },
                   {
-                    id: 1851,
-                    parentId: 1812,
+                    id: 1762,
+                    parentId: 1718,
                     name: '查看SLA信息',
                     local: 'Open_Stack_00059.html'
                   },
                   {
-                    id: 1852,
-                    parentId: 1812,
+                    id: 1763,
+                    parentId: 1718,
                     name: '管理SLA',
                     local: 'Open_Stack_00060.html'
                   }
                 ]
               },
               {
-                id: 1813,
-                parentId: 1651,
+                id: 1719,
+                parentId: 1658,
                 name: '副本',
                 local: 'Open_Stack_00061.html',
                 children: [
                   {
-                    id: 1853,
-                    parentId: 1813,
-                    name: '查看阿里云副本信息',
+                    id: 1764,
+                    parentId: 1719,
+                    name: '查看OpenStack副本信息',
                     local: 'Open_Stack_00062.html'
                   },
                   {
-                    id: 1854,
-                    parentId: 1813,
-                    name: '管理阿里云副本',
+                    id: 1765,
+                    parentId: 1719,
+                    name: '管理OpenStack副本',
                     local: 'Open_Stack_00063.html'
                   }
                 ]
               },
               {
-                id: 1814,
-                parentId: 1651,
-                name: '阿里云环境信息',
+                id: 1720,
+                parentId: 1658,
+                name: 'OpenStack环境信息',
                 local: 'Open_Stack_00064.html',
                 children: [
                   {
-                    id: 1855,
-                    parentId: 1814,
-                    name: '查看阿里云资源信息',
+                    id: 1766,
+                    parentId: 1720,
+                    name: '查看OpenStack信息',
                     local: 'Open_Stack_00065.html'
                   },
                   {
-                    id: 1856,
-                    parentId: 1814,
-                    name: '管理阿里云云平台',
+                    id: 1767,
+                    parentId: 1720,
+                    name: '管理OpenStack云平台',
                     local: 'Open_Stack_00066.html'
                   },
                   {
-                    id: 1857,
-                    parentId: 1814,
-                    name: '管理可用区/资源集/云服务器',
+                    id: 1768,
+                    parentId: 1720,
+                    name: '管理域',
+                    local: 'Open_Stack_00067.html'
+                  },
+                  {
+                    id: 1769,
+                    parentId: 1720,
+                    name:
+                      '管理项目/云服务器或云服务器组（适用于1.6.0及后续版本）',
                     local: 'Open_Stack_00068.html'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: 1659,
+            parentId: 17,
+            name: '华为云Stack GaussDB数据保护',
+            local: 'zh-cn_topic_0000001826879800.html',
+            children: [
+              {
+                id: 1770,
+                parentId: 1659,
+                name: '备份',
+                local: 'hcs_gaussdb_00006.html',
+                children: [
+                  {
+                    id: 1778,
+                    parentId: 1770,
+                    name: '备份前准备',
+                    local: 'hcs_gaussdb_00009.html'
+                  },
+                  {
+                    id: 1779,
+                    parentId: 1770,
+                    name: '备份华为云Stack GaussDB实例',
+                    local: 'hcs_gaussdb_00010.html',
+                    children: [
+                      {
+                        id: 1780,
+                        parentId: 1779,
+                        name: '步骤1：注册华为云Stack GaussDB项目',
+                        local: 'hcs_gaussdb_00011.html'
+                      },
+                      {
+                        id: 1781,
+                        parentId: 1779,
+                        name: '步骤2：（可选）开启备份链路加密开关',
+                        local: 'hcs_gaussdb_00012.html'
+                      },
+                      {
+                        id: 1782,
+                        parentId: 1779,
+                        name: '步骤3：创建限速策略',
+                        local: 'hcs_gaussdb_00013.html'
+                      },
+                      {
+                        id: 1783,
+                        parentId: 1779,
+                        name: '步骤4：创建备份SLA',
+                        local: 'hcs_gaussdb_00014.html'
+                      },
+                      {
+                        id: 1784,
+                        parentId: 1779,
+                        name: '步骤5：执行备份',
+                        local: 'hcs_gaussdb_00015.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 1771,
+                parentId: 1659,
+                name: '复制',
+                local: 'hcs_gaussdb_00018.html',
+                children: [
+                  {
+                    id: 1785,
+                    parentId: 1771,
+                    name: '复制华为云Stack GaussDB副本',
+                    local: 'hcs_gaussdb_00021.html',
+                    children: [
+                      {
+                        id: 1786,
+                        parentId: 1785,
+                        name: '规划复制网络',
+                        local: 'hcs_gaussdb_00022.html'
+                      },
+                      {
+                        id: 1787,
+                        parentId: 1785,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'hcs_gaussdb_00023.html'
+                      },
+                      {
+                        id: 1788,
+                        parentId: 1785,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1_2.html'
+                      },
+                      {
+                        id: 1789,
+                        parentId: 1785,
+                        name: '步骤2：（可选）创建IPsec策略',
+                        local: 'hcs_gaussdb_00024.html'
+                      },
+                      {
+                        id: 1790,
+                        parentId: 1785,
+                        name: '步骤3：（可选）开启复制链路加密开关',
+                        local: 'hcs_gaussdb_00025.html'
+                      },
+                      {
+                        id: 1791,
+                        parentId: 1785,
+                        name: '步骤4：下载并导入证书',
+                        local: 'hcs_gaussdb_00026.html'
+                      },
+                      {
+                        id: 1792,
+                        parentId: 1785,
+                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
+                        local: 'hcs_gaussdb_00027.html'
+                      },
+                      {
+                        id: 1793,
+                        parentId: 1785,
+                        name:
+                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
+                        local: 'hcs_gaussdb_0002700.html'
+                      },
+                      {
+                        id: 1794,
+                        parentId: 1785,
+                        name: '步骤6：添加复制集群',
+                        local: 'hcs_gaussdb_00028.html'
+                      },
+                      {
+                        id: 1795,
+                        parentId: 1785,
+                        name: '步骤7：创建复制SLA',
+                        local: 'hcs_gaussdb_00029.html'
+                      },
+                      {
+                        id: 1796,
+                        parentId: 1785,
+                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
+                        local: 'hcs_gaussdb_00030.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 1772,
+                parentId: 1659,
+                name: '归档',
+                local: 'hcs_gaussdb_00031.html',
+                children: [
+                  {
+                    id: 1797,
+                    parentId: 1772,
+                    name: '归档华为云Stack GaussDB备份副本',
+                    local: 'hcs_gaussdb_00034.html',
+                    children: [
+                      {
+                        id: 1799,
+                        parentId: 1797,
+                        name: '步骤1：添加归档存储',
+                        local: 'hcs_gaussdb_00035.html',
+                        children: [
+                          {
+                            id: 1801,
+                            parentId: 1799,
+                            name: '添加对象存储（归档存储是对象存储）',
+                            local: 'hcs_gaussdb_00036.html'
+                          },
+                          {
+                            id: 1802,
+                            parentId: 1799,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
+                            local: 'hcs_gaussdb_00037.html'
+                          }
+                        ]
+                      },
+                      {
+                        id: 1800,
+                        parentId: 1797,
+                        name: '步骤2：创建备份副本归档SLA',
+                        local: 'hcs_gaussdb_00038.html'
+                      }
+                    ]
+                  },
+                  {
+                    id: 1798,
+                    parentId: 1772,
+                    name: '归档华为云Stack GaussDB复制副本',
+                    local: 'hcs_gaussdb_00039.html',
+                    children: [
+                      {
+                        id: 1803,
+                        parentId: 1798,
+                        name: '步骤1：创建复制副本归档SLA',
+                        local: 'hcs_gaussdb_00040.html'
+                      },
+                      {
+                        id: 1804,
+                        parentId: 1798,
+                        name: '步骤2：创建复制副本周期性归档',
+                        local: 'hcs_gaussdb_00041.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 1773,
+                parentId: 1659,
+                name: '恢复',
+                local: 'hcs_gaussdb_00042.html',
+                children: [
+                  {
+                    id: 1805,
+                    parentId: 1773,
+                    name: '恢复华为云Stack GaussDB实例',
+                    local: 'hcs_gaussdb_00045.html'
+                  }
+                ]
+              },
+              {
+                id: 1774,
+                parentId: 1659,
+                name: '全局搜索',
+                local: 'hcs_gaussdb_0004211.html',
+                children: [
+                  {
+                    id: 1806,
+                    parentId: 1774,
+                    name: '全局搜索资源',
+                    local: 'hcs_gaussdb_00046.html'
+                  },
+                  {
+                    id: 1807,
+                    parentId: 1774,
+                    name: '全局标签搜索（适用于1.6.0及后续版本）',
+                    local: 'hcs_gaussdb_0004222.html'
+                  }
+                ]
+              },
+              {
+                id: 1775,
+                parentId: 1659,
+                name: 'SLA',
+                local: 'hcs_gaussdb_00049.html',
+                children: [
+                  {
+                    id: 1808,
+                    parentId: 1775,
+                    name: '关于SLA',
+                    local: 'hcs_gaussdb_000491.html'
+                  },
+                  {
+                    id: 1809,
+                    parentId: 1775,
+                    name: '查看SLA信息',
+                    local: 'hcs_gaussdb_00051.html'
+                  },
+                  {
+                    id: 1810,
+                    parentId: 1775,
+                    name: '管理SLA',
+                    local: 'hcs_gaussdb_00052.html'
+                  }
+                ]
+              },
+              {
+                id: 1776,
+                parentId: 1659,
+                name: '副本',
+                local: 'hcs_gaussdb_00053.html',
+                children: [
+                  {
+                    id: 1811,
+                    parentId: 1776,
+                    name: '查看华为云Stack GaussDB副本信息',
+                    local: 'hcs_gaussdb_00054.html'
+                  },
+                  {
+                    id: 1812,
+                    parentId: 1776,
+                    name: '管理华为云Stack GaussDB副本',
+                    local: 'hcs_gaussdb_00055.html'
+                  }
+                ]
+              },
+              {
+                id: 1777,
+                parentId: 1659,
+                name: '华为云Stack GaussDB',
+                local: 'hcs_gaussdb_00056.html',
+                children: [
+                  {
+                    id: 1813,
+                    parentId: 1777,
+                    name: '查看华为云Stack GaussDB信息',
+                    local: 'hcs_gaussdb_00057.html'
+                  },
+                  {
+                    id: 1814,
+                    parentId: 1777,
+                    name: '管理华为云Stack GaussDB项目',
+                    local: 'hcs_gaussdb_00058.html'
+                  },
+                  {
+                    id: 1815,
+                    parentId: 1777,
+                    name: '管理实例',
+                    local: 'hcs_gaussdb_00059.html'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: 1660,
+            parentId: 17,
+            name: '阿里云数据保护（适用于1.6.0及后续版本）',
+            local: 'zh-cn_topic_0000001826879812.html',
+            children: [
+              {
+                id: 1816,
+                parentId: 1660,
+                name: '备份',
+                local: 'acloud_00108.html',
+                children: [
+                  {
+                    id: 1824,
+                    parentId: 1816,
+                    name: '备份前准备',
+                    local: 'acloud_00111.html'
+                  },
+                  {
+                    id: 1825,
+                    parentId: 1816,
+                    name: '备份阿里云云服务器',
+                    local: 'acloud_00112.html',
+                    children: [
+                      {
+                        id: 1826,
+                        parentId: 1825,
+                        name: '步骤2：获取AccessKey ID',
+                        local: 'acloud_00115.html'
+                      },
+                      {
+                        id: 1827,
+                        parentId: 1825,
+                        name: '步骤4：注册阿里云组织',
+                        local: 'acloud_00117.html'
+                      },
+                      {
+                        id: 1828,
+                        parentId: 1825,
+                        name: '步骤5：创建限速策略',
+                        local: 'acloud_00118.html'
+                      },
+                      {
+                        id: 1829,
+                        parentId: 1825,
+                        name: '步骤6：（可选）开启备份链路加密开关',
+                        local: 'acloud_00119.html'
+                      },
+                      {
+                        id: 1830,
+                        parentId: 1825,
+                        name: '步骤7：创建备份SLA',
+                        local: 'acloud_00120.html'
+                      },
+                      {
+                        id: 1831,
+                        parentId: 1825,
+                        name: '步骤8：执行备份',
+                        local: 'acloud_00121.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 1817,
+                parentId: 1660,
+                name: '复制',
+                local: 'acloud_00124.html',
+                children: [
+                  {
+                    id: 1832,
+                    parentId: 1817,
+                    name: '复制阿里云副本',
+                    local: 'acloud_00127.html',
+                    children: [
+                      {
+                        id: 1833,
+                        parentId: 1832,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'acloud_001281.html'
+                      },
+                      {
+                        id: 1834,
+                        parentId: 1832,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机）',
+                        local: 'acloud_001282.html'
+                      },
+                      {
+                        id: 1835,
+                        parentId: 1832,
+                        name: '步骤2：（可选）创建IPsec策略',
+                        local: 'acloud_00130.html'
+                      },
+                      {
+                        id: 1836,
+                        parentId: 1832,
+                        name: '步骤3：（可选）开启复制链路加密开关',
+                        local: 'acloud_00131.html'
+                      },
+                      {
+                        id: 1837,
+                        parentId: 1832,
+                        name: '步骤4：下载并导入证书',
+                        local: 'acloud_00132.html'
+                      },
+                      {
+                        id: 1838,
+                        parentId: 1832,
+                        name:
+                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
+                        local: 'acloud_00133.html'
+                      },
+                      {
+                        id: 1839,
+                        parentId: 1832,
+                        name: '步骤6：添加复制集群',
+                        local: 'acloud_00134.html'
+                      },
+                      {
+                        id: 1840,
+                        parentId: 1832,
+                        name: '步骤7：创建复制SLA',
+                        local: 'acloud_00135.html'
+                      },
+                      {
+                        id: 1841,
+                        parentId: 1832,
+                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
+                        local: 'acloud_00136.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 1818,
+                parentId: 1660,
+                name: '归档',
+                local: 'acloud_00137.html',
+                children: [
+                  {
+                    id: 1842,
+                    parentId: 1818,
+                    name: '归档阿里云备份副本',
+                    local: 'acloud_00140.html',
+                    children: [
+                      {
+                        id: 1844,
+                        parentId: 1842,
+                        name: '步骤1：添加归档存储',
+                        local: 'acloud_00141.html',
+                        children: [
+                          {
+                            id: 1846,
+                            parentId: 1844,
+                            name: '添加对象存储（归档存储是对象存储）',
+                            local: 'acloud_00142.html'
+                          },
+                          {
+                            id: 1847,
+                            parentId: 1844,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
+                            local: 'acloud_00143.html'
+                          }
+                        ]
+                      },
+                      {
+                        id: 1845,
+                        parentId: 1842,
+                        name: '步骤2：创建备份副本归档SLA',
+                        local: 'acloud_00144.html'
+                      }
+                    ]
+                  },
+                  {
+                    id: 1843,
+                    parentId: 1818,
+                    name: '归档阿里云复制副本',
+                    local: 'acloud_00145.html',
+                    children: [
+                      {
+                        id: 1848,
+                        parentId: 1843,
+                        name: '步骤1：创建复制副本归档SLA',
+                        local: 'acloud_00146.html'
+                      },
+                      {
+                        id: 1849,
+                        parentId: 1843,
+                        name: '步骤2：创建复制副本周期性归档',
+                        local: 'acloud_00147.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 1819,
+                parentId: 1660,
+                name: '恢复',
+                local: 'acloud_00148.html',
+                children: [
+                  {
+                    id: 1850,
+                    parentId: 1819,
+                    name: '恢复云服务器',
+                    local: 'acloud_00151.html'
+                  },
+                  {
+                    id: 1851,
+                    parentId: 1819,
+                    name: '恢复云磁盘',
+                    local: 'acloud_00152.html'
+                  },
+                  {
+                    id: 1852,
+                    parentId: 1819,
+                    name: '恢复文件',
+                    local: 'acloud_00153.html'
+                  }
+                ]
+              },
+              {
+                id: 1820,
+                parentId: 1660,
+                name: '全局搜索',
+                local: 'acloud_00154.html',
+                children: [
+                  {
+                    id: 1853,
+                    parentId: 1820,
+                    name: '关于全局搜索',
+                    local: 'acloud_00155.html'
+                  },
+                  {
+                    id: 1854,
+                    parentId: 1820,
+                    name: '全局搜索副本数据',
+                    local: 'acloud_00156.html'
+                  },
+                  {
+                    id: 1855,
+                    parentId: 1820,
+                    name: '全局搜索资源',
+                    local: 'acloud_00157.html'
+                  },
+                  {
+                    id: 1856,
+                    parentId: 1820,
+                    name: '全局标签搜索（适用于1.6.0及后续版本）',
+                    local: 'acloud_00158.html'
+                  }
+                ]
+              },
+              {
+                id: 1821,
+                parentId: 1660,
+                name: 'SLA',
+                local: 'acloud_00161.html',
+                children: [
+                  {
+                    id: 1857,
+                    parentId: 1821,
+                    name: '关于SLA',
+                    local: 'acloud_00162.html'
+                  },
+                  {
+                    id: 1858,
+                    parentId: 1821,
+                    name: '查看SLA信息',
+                    local: 'acloud_00163.html'
+                  },
+                  {
+                    id: 1859,
+                    parentId: 1821,
+                    name: '管理SLA',
+                    local: 'acloud_00164.html'
+                  }
+                ]
+              },
+              {
+                id: 1822,
+                parentId: 1660,
+                name: '副本',
+                local: 'acloud_00165.html',
+                children: [
+                  {
+                    id: 1860,
+                    parentId: 1822,
+                    name: '查看阿里云副本信息',
+                    local: 'acloud_00166.html'
+                  },
+                  {
+                    id: 1861,
+                    parentId: 1822,
+                    name: '管理阿里云副本',
+                    local: 'acloud_00167.html'
+                  }
+                ]
+              },
+              {
+                id: 1823,
+                parentId: 1660,
+                name: '阿里云环境信息',
+                local: 'acloud_00168.html',
+                children: [
+                  {
+                    id: 1862,
+                    parentId: 1823,
+                    name: '查看阿里云资源信息',
+                    local: 'acloud_00169.html'
+                  },
+                  {
+                    id: 1863,
+                    parentId: 1823,
+                    name: '管理阿里云云平台',
+                    local: 'acloud_00170.html'
+                  },
+                  {
+                    id: 1864,
+                    parentId: 1823,
+                    name: '管理可用区/资源集/云服务器',
+                    local: 'acloud_00171.html'
                   }
                 ]
               }
@@ -12306,114 +12365,114 @@ naviData = [
         local: 'zh-cn_topic_0000001918470740.html',
         children: [
           {
-            id: 1858,
+            id: 1865,
             parentId: 18,
             name: 'Exchange数据保护（适用于1.6.0及后续版本）',
             local: 'zh-cn_topic_0000001826879820.html',
             children: [
               {
-                id: 1860,
-                parentId: 1858,
+                id: 1867,
+                parentId: 1865,
                 name: '备份',
                 local: 'exchange_0012.html',
                 children: [
                   {
-                    id: 1868,
-                    parentId: 1860,
+                    id: 1875,
+                    parentId: 1867,
                     name: '备份前准备',
                     local: 'exchange_0017.html',
                     children: [
                       {
-                        id: 1871,
-                        parentId: 1868,
+                        id: 1878,
+                        parentId: 1875,
                         name: '开启Exchange信息存储服务',
                         local: 'exchange_0018.html'
                       },
                       {
-                        id: 1872,
-                        parentId: 1868,
+                        id: 1879,
+                        parentId: 1875,
                         name: '检查Exchange Writer状态',
                         local: 'exchange_0019.html'
                       },
                       {
-                        id: 1873,
-                        parentId: 1868,
+                        id: 1880,
+                        parentId: 1875,
                         name: '检查Exchange数据库状态',
                         local: 'exchange_0020.html'
                       },
                       {
-                        id: 1874,
-                        parentId: 1868,
+                        id: 1881,
+                        parentId: 1875,
                         name: '配置数据库备份与恢复账户',
                         local: 'exchange_0021.html'
                       },
                       {
-                        id: 1875,
-                        parentId: 1868,
+                        id: 1882,
+                        parentId: 1875,
                         name: '配置邮箱备份与恢复账户',
                         local: 'exchange_0022.html'
                       }
                     ]
                   },
                   {
-                    id: 1869,
-                    parentId: 1860,
+                    id: 1876,
+                    parentId: 1867,
                     name: '备份Exchange单机/可用性组或数据库',
                     local: 'exchange_0024.html',
                     children: [
                       {
-                        id: 1876,
-                        parentId: 1869,
+                        id: 1883,
+                        parentId: 1876,
                         name: '步骤1：注册Exchange单机/可用性组',
                         local: 'exchange_0025.html'
                       },
                       {
-                        id: 1877,
-                        parentId: 1869,
+                        id: 1884,
+                        parentId: 1876,
                         name: '步骤2：创建限速策略',
                         local: 'exchange_0026.html'
                       },
                       {
-                        id: 1878,
-                        parentId: 1869,
+                        id: 1885,
+                        parentId: 1876,
                         name: '步骤3：创建备份SLA',
                         local: 'exchange_0027.html'
                       },
                       {
-                        id: 1879,
-                        parentId: 1869,
+                        id: 1886,
+                        parentId: 1876,
                         name: '步骤4：执行备份',
                         local: 'exchange_0028.html'
                       }
                     ]
                   },
                   {
-                    id: 1870,
-                    parentId: 1860,
+                    id: 1877,
+                    parentId: 1867,
                     name: '备份Exchange邮箱',
                     local: 'exchange_0031.html',
                     children: [
                       {
-                        id: 1880,
-                        parentId: 1870,
+                        id: 1887,
+                        parentId: 1877,
                         name: '步骤1：注册Exchange单机/可用性组',
                         local: 'exchange_0032.html'
                       },
                       {
-                        id: 1881,
-                        parentId: 1870,
+                        id: 1888,
+                        parentId: 1877,
                         name: '步骤2：创建限速策略',
                         local: 'exchange_0033.html'
                       },
                       {
-                        id: 1882,
-                        parentId: 1870,
+                        id: 1889,
+                        parentId: 1877,
                         name: '步骤3：创建备份SLA',
                         local: 'exchange_0034.html'
                       },
                       {
-                        id: 1883,
-                        parentId: 1870,
+                        id: 1890,
+                        parentId: 1877,
                         name: '步骤4：执行备份',
                         local: 'exchange_0035.html'
                       }
@@ -12422,77 +12481,76 @@ naviData = [
                 ]
               },
               {
-                id: 1861,
-                parentId: 1858,
+                id: 1868,
+                parentId: 1865,
                 name: '复制',
                 local: 'exchange_0038.html',
                 children: [
                   {
-                    id: 1884,
-                    parentId: 1861,
+                    id: 1891,
+                    parentId: 1868,
                     name: '复制Exchange数据库副本',
                     local: 'exchange_0040.html',
                     children: [
                       {
-                        id: 1885,
-                        parentId: 1884,
+                        id: 1892,
+                        parentId: 1891,
                         name: '规划复制网络',
                         local: 'exchange_0041.html'
                       },
                       {
-                        id: 1886,
-                        parentId: 1884,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'exchange_0042.html'
-                      },
-                      {
-                        id: 1887,
-                        parentId: 1884,
+                        id: 1893,
+                        parentId: 1891,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_3.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'exchange_00411.html'
                       },
                       {
-                        id: 1888,
-                        parentId: 1884,
+                        id: 1894,
+                        parentId: 1891,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机）',
+                        local: 'exchange_00412.html'
+                      },
+                      {
+                        id: 1895,
+                        parentId: 1891,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'exchange_0043.html'
                       },
                       {
-                        id: 1889,
-                        parentId: 1884,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 1896,
+                        parentId: 1891,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'exchange_0044.html'
                       },
                       {
-                        id: 1890,
-                        parentId: 1884,
+                        id: 1897,
+                        parentId: 1891,
                         name: '步骤4：下载并导入证书',
                         local: 'exchange_0045.html'
                       },
                       {
-                        id: 1891,
-                        parentId: 1884,
-                        name:
-                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
+                        id: 1898,
+                        parentId: 1891,
+                        name: '步骤5：创建远端设备管理员',
                         local: 'exchange_00460.html'
                       },
                       {
-                        id: 1892,
-                        parentId: 1884,
-                        name: '步骤6：添加目标集群',
+                        id: 1899,
+                        parentId: 1891,
+                        name: '步骤6：添加复制集群',
                         local: 'exchange_0047.html'
                       },
                       {
-                        id: 1893,
-                        parentId: 1884,
+                        id: 1900,
+                        parentId: 1891,
                         name: '步骤7：创建复制SLA',
                         local: 'exchange_0048.html'
                       },
                       {
-                        id: 1894,
-                        parentId: 1884,
+                        id: 1901,
+                        parentId: 1891,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'exchange_0049.html'
                       }
@@ -12501,60 +12559,61 @@ naviData = [
                 ]
               },
               {
-                id: 1862,
-                parentId: 1858,
+                id: 1869,
+                parentId: 1865,
                 name: '归档',
                 local: 'exchange_0050.html',
                 children: [
                   {
-                    id: 1895,
-                    parentId: 1862,
+                    id: 1902,
+                    parentId: 1869,
                     name: '归档Exchange备份副本',
                     local: 'exchange_0053.html',
                     children: [
                       {
-                        id: 1897,
-                        parentId: 1895,
+                        id: 1904,
+                        parentId: 1902,
                         name: '步骤1：添加归档存储',
                         local: 'exchange_0054.html',
                         children: [
                           {
-                            id: 1899,
-                            parentId: 1897,
+                            id: 1906,
+                            parentId: 1904,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'exchange_0055.html'
                           },
                           {
-                            id: 1900,
-                            parentId: 1897,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1907,
+                            parentId: 1904,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'exchange_0056.html'
                           }
                         ]
                       },
                       {
-                        id: 1898,
-                        parentId: 1895,
-                        name: '步骤2：创建归档SLA',
+                        id: 1905,
+                        parentId: 1902,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'exchange_0057.html'
                       }
                     ]
                   },
                   {
-                    id: 1896,
-                    parentId: 1862,
+                    id: 1903,
+                    parentId: 1869,
                     name: '归档Exchange复制副本',
                     local: 'exchange_0058.html',
                     children: [
                       {
-                        id: 1901,
-                        parentId: 1896,
-                        name: '步骤1：创建归档SLA',
+                        id: 1908,
+                        parentId: 1903,
+                        name: '步骤1：创建复制副本归档SLA',
                         local: 'exchange_0059.html'
                       },
                       {
-                        id: 1902,
-                        parentId: 1896,
+                        id: 1909,
+                        parentId: 1903,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'exchange_0060.html'
                       }
@@ -12563,45 +12622,45 @@ naviData = [
                 ]
               },
               {
-                id: 1863,
-                parentId: 1858,
+                id: 1870,
+                parentId: 1865,
                 name: '恢复',
                 local: 'exchange_0061.html',
                 children: [
                   {
-                    id: 1903,
-                    parentId: 1863,
+                    id: 1910,
+                    parentId: 1870,
                     name: '恢复单机/可用性组',
                     local: 'exchange_0067.html'
                   },
                   {
-                    id: 1904,
-                    parentId: 1863,
+                    id: 1911,
+                    parentId: 1870,
                     name: '恢复Exchange数据库',
                     local: 'exchange_0068.html'
                   },
                   {
-                    id: 1905,
-                    parentId: 1863,
+                    id: 1912,
+                    parentId: 1870,
                     name: '恢复邮箱',
                     local: 'exchange_0069.html'
                   },
                   {
-                    id: 1906,
-                    parentId: 1863,
+                    id: 1913,
+                    parentId: 1870,
                     name: '邮件级恢复',
                     local: 'exchange_0070.html'
                   },
                   {
-                    id: 1907,
-                    parentId: 1863,
+                    id: 1914,
+                    parentId: 1870,
                     name:
                       '验证恢复后的用户邮箱数据（适用于Microsoft Exchange Server 2010）',
                     local: 'zh-cn_topic_0000001935299986.html'
                   },
                   {
-                    id: 1908,
-                    parentId: 1863,
+                    id: 1915,
+                    parentId: 1870,
                     name:
                       '验证恢复后的用户邮箱数据（适用于Microsoft Exchange Server 2013及后续版本）',
                     local: 'zh-cn_topic_0000001945406733.html'
@@ -12609,92 +12668,92 @@ naviData = [
                 ]
               },
               {
-                id: 1864,
-                parentId: 1858,
+                id: 1871,
+                parentId: 1865,
                 name: '全局搜索',
                 local: 'exchange_00611.html',
                 children: [
                   {
-                    id: 1909,
-                    parentId: 1864,
+                    id: 1916,
+                    parentId: 1871,
                     name: '全局搜索资源',
                     local: 'exchange_0071.html'
                   },
                   {
-                    id: 1910,
-                    parentId: 1864,
-                    name: '全局标签搜索（适用于1.6.0及后续版本）',
+                    id: 1917,
+                    parentId: 1871,
+                    name: '全局标签搜索',
                     local: 'exchange_00711.html'
                   }
                 ]
               },
               {
-                id: 1865,
-                parentId: 1858,
+                id: 1872,
+                parentId: 1865,
                 name: 'SLA',
                 local: 'exchange_0074.html',
                 children: [
                   {
-                    id: 1911,
-                    parentId: 1865,
+                    id: 1918,
+                    parentId: 1872,
                     name: '关于SLA',
                     local: 'exchange_0075.html'
                   },
                   {
-                    id: 1912,
-                    parentId: 1865,
+                    id: 1919,
+                    parentId: 1872,
                     name: '查看SLA信息',
                     local: 'exchange_0076.html'
                   },
                   {
-                    id: 1913,
-                    parentId: 1865,
+                    id: 1920,
+                    parentId: 1872,
                     name: '管理SLA',
                     local: 'exchange_0077.html'
                   }
                 ]
               },
               {
-                id: 1866,
-                parentId: 1858,
+                id: 1873,
+                parentId: 1865,
                 name: '副本',
                 local: 'exchange_0078.html',
                 children: [
                   {
-                    id: 1914,
-                    parentId: 1866,
+                    id: 1921,
+                    parentId: 1873,
                     name: '查看Exchange副本信息',
                     local: 'exchange_0079.html'
                   },
                   {
-                    id: 1915,
-                    parentId: 1866,
+                    id: 1922,
+                    parentId: 1873,
                     name: '管理Exchange副本',
                     local: 'exchange_0080.html'
                   }
                 ]
               },
               {
-                id: 1867,
-                parentId: 1858,
+                id: 1874,
+                parentId: 1865,
                 name: '管理Exchange',
                 local: 'exchange_0081.html',
                 children: [
                   {
-                    id: 1916,
-                    parentId: 1867,
+                    id: 1923,
+                    parentId: 1874,
                     name: '查看Exchange环境信息',
                     local: 'exchange_0082.html'
                   },
                   {
-                    id: 1917,
-                    parentId: 1867,
+                    id: 1924,
+                    parentId: 1874,
                     name: '管理Exchange单机或可用性组',
                     local: 'exchange_0083.html'
                   },
                   {
-                    id: 1918,
-                    parentId: 1867,
+                    id: 1925,
+                    parentId: 1874,
                     name: '管理数据库或邮箱',
                     local: 'exchange_0084.html'
                   }
@@ -12703,50 +12762,50 @@ naviData = [
             ]
           },
           {
-            id: 1859,
+            id: 1866,
             parentId: 18,
             name: 'Active Directory数据保护（适用于1.6.0及后续版本）',
             local: 'zh-cn_topic_0000001826879868.html',
             children: [
               {
-                id: 1919,
-                parentId: 1859,
+                id: 1926,
+                parentId: 1866,
                 name: '备份',
                 local: 'ActiveDirectory-00006.html',
                 children: [
                   {
-                    id: 1927,
-                    parentId: 1919,
+                    id: 1934,
+                    parentId: 1926,
                     name: '备份Active Directory',
                     local: 'ActiveDirectory-00010.html',
                     children: [
                       {
-                        id: 1928,
-                        parentId: 1927,
+                        id: 1935,
+                        parentId: 1934,
                         name: '步骤1：开启Active Directory回收站',
                         local: 'zh-cn_topic_0000002020257438.html'
                       },
                       {
-                        id: 1929,
-                        parentId: 1927,
+                        id: 1936,
+                        parentId: 1934,
                         name: '步骤2：注册Active Directory域控制器',
                         local: 'ActiveDirectory-00013.html'
                       },
                       {
-                        id: 1930,
-                        parentId: 1927,
+                        id: 1937,
+                        parentId: 1934,
                         name: '步骤3：创建限速策略',
                         local: 'ActiveDirectory-00014.html'
                       },
                       {
-                        id: 1931,
-                        parentId: 1927,
+                        id: 1938,
+                        parentId: 1934,
                         name: '步骤4：创建备份SLA',
                         local: 'ActiveDirectory-00016.html'
                       },
                       {
-                        id: 1932,
-                        parentId: 1927,
+                        id: 1939,
+                        parentId: 1934,
                         name: '步骤5：执行备份',
                         local: 'ActiveDirectory-00017.html'
                       }
@@ -12755,71 +12814,71 @@ naviData = [
                 ]
               },
               {
-                id: 1920,
-                parentId: 1859,
+                id: 1927,
+                parentId: 1866,
                 name: '复制',
                 local: 'ActiveDirectory-00020.html',
                 children: [
                   {
-                    id: 1933,
-                    parentId: 1920,
+                    id: 1940,
+                    parentId: 1927,
                     name: '复制Active Directory副本',
                     local: 'ActiveDirectory-00023.html',
                     children: [
                       {
-                        id: 1934,
-                        parentId: 1933,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'ActiveDirectory-00025.html'
-                      },
-                      {
-                        id: 1935,
-                        parentId: 1933,
+                        id: 1941,
+                        parentId: 1940,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_21.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'ActiveDirectory-000241.html'
                       },
                       {
-                        id: 1936,
-                        parentId: 1933,
+                        id: 1942,
+                        parentId: 1940,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机）',
+                        local: 'ActiveDirectory-000242.html'
+                      },
+                      {
+                        id: 1943,
+                        parentId: 1940,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'ActiveDirectory-00026.html'
                       },
                       {
-                        id: 1937,
-                        parentId: 1933,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 1944,
+                        parentId: 1940,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'ActiveDirectory-00027.html'
                       },
                       {
-                        id: 1938,
-                        parentId: 1933,
+                        id: 1945,
+                        parentId: 1940,
                         name: '步骤4：下载并导入证书',
                         local: 'ActiveDirectory-00028.html'
                       },
                       {
-                        id: 1939,
-                        parentId: 1933,
+                        id: 1946,
+                        parentId: 1940,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'ActiveDirectory-000290.html'
                       },
                       {
-                        id: 1940,
-                        parentId: 1933,
-                        name: '步骤6：添加目标集群',
+                        id: 1947,
+                        parentId: 1940,
+                        name: '步骤6：添加复制集群',
                         local: 'ActiveDirectory-00030.html'
                       },
                       {
-                        id: 1941,
-                        parentId: 1933,
+                        id: 1948,
+                        parentId: 1940,
                         name: '步骤7：创建复制SLA',
                         local: 'ActiveDirectory-00031.html'
                       },
                       {
-                        id: 1942,
-                        parentId: 1933,
+                        id: 1949,
+                        parentId: 1940,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'ActiveDirectory-00032.html'
                       }
@@ -12828,180 +12887,161 @@ naviData = [
                 ]
               },
               {
-                id: 1921,
-                parentId: 1859,
+                id: 1928,
+                parentId: 1866,
                 name: '归档',
                 local: 'ActiveDirectory-00033.html',
                 children: [
                   {
-                    id: 1943,
-                    parentId: 1921,
+                    id: 1950,
+                    parentId: 1928,
                     name: '归档Active Directory备份副本',
                     local: 'ActiveDirectory-00036.html',
                     children: [
                       {
-                        id: 1945,
-                        parentId: 1943,
+                        id: 1951,
+                        parentId: 1950,
                         name: '步骤1：添加归档存储',
                         local: 'ActiveDirectory-00037.html',
                         children: [
                           {
-                            id: 1947,
-                            parentId: 1945,
+                            id: 1953,
+                            parentId: 1951,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'ActiveDirectory-00038.html'
                           },
                           {
-                            id: 1948,
-                            parentId: 1945,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 1954,
+                            parentId: 1951,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'ActiveDirectory-00039.html'
                           }
                         ]
                       },
                       {
-                        id: 1946,
-                        parentId: 1943,
-                        name: '步骤2：创建归档SLA',
+                        id: 1952,
+                        parentId: 1950,
+                        name: '步骤2：创建备份副本归档SLA',
                         local: 'ActiveDirectory-00040.html'
-                      }
-                    ]
-                  },
-                  {
-                    id: 1944,
-                    parentId: 1921,
-                    name: '归档Active Directory复制副本',
-                    local: 'ActiveDirectory-00041.html',
-                    children: [
-                      {
-                        id: 1949,
-                        parentId: 1944,
-                        name: '步骤1：创建归档SLA',
-                        local: 'ActiveDirectory-00042.html'
-                      },
-                      {
-                        id: 1950,
-                        parentId: 1944,
-                        name: '步骤2：创建复制副本周期性归档',
-                        local: 'ActiveDirectory-00043.html'
                       }
                     ]
                   }
                 ]
               },
               {
-                id: 1922,
-                parentId: 1859,
+                id: 1929,
+                parentId: 1866,
                 name: '恢复',
                 local: 'ActiveDirectory-00044.html',
                 children: [
                   {
-                    id: 1951,
-                    parentId: 1922,
+                    id: 1955,
+                    parentId: 1929,
                     name: '单域控制器场景恢复Active Directory的系统状态',
                     local: 'ActiveDirectory-00047.html'
                   },
                   {
-                    id: 1952,
-                    parentId: 1922,
+                    id: 1956,
+                    parentId: 1929,
                     name: '单域控制器场景恢复Active Directory的对象',
                     local: 'zh-cn_topic_0000001844891849.html'
                   },
                   {
-                    id: 1953,
-                    parentId: 1922,
+                    id: 1957,
+                    parentId: 1929,
                     name: '主备域控制器场景恢复Active Directory的系统状态',
                     local: 'zh-cn_topic_0000002080463105.html'
                   },
                   {
-                    id: 1954,
-                    parentId: 1922,
+                    id: 1958,
+                    parentId: 1929,
                     name: '主备域控制器场景恢复Active Directory的对象',
                     local: 'zh-cn_topic_0000002044462372.html'
                   }
                 ]
               },
               {
-                id: 1923,
-                parentId: 1859,
+                id: 1930,
+                parentId: 1866,
                 name: '全局搜索',
                 local: 'ActiveDirectory-00048.html',
                 children: [
                   {
-                    id: 1955,
-                    parentId: 1923,
+                    id: 1959,
+                    parentId: 1930,
                     name: '全局搜索资源',
                     local: 'ActiveDirectory-00049.html'
                   },
                   {
-                    id: 1956,
-                    parentId: 1923,
+                    id: 1960,
+                    parentId: 1930,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'ActiveDirectory-000491.html'
                   }
                 ]
               },
               {
-                id: 1924,
-                parentId: 1859,
+                id: 1931,
+                parentId: 1866,
                 name: 'SLA',
                 local: 'ActiveDirectory-00052.html',
                 children: [
                   {
-                    id: 1957,
-                    parentId: 1924,
+                    id: 1961,
+                    parentId: 1931,
                     name: '关于SLA',
                     local: 'ActiveDirectory-000521.html'
                   },
                   {
-                    id: 1958,
-                    parentId: 1924,
+                    id: 1962,
+                    parentId: 1931,
                     name: '查看SLA信息',
                     local: 'ActiveDirectory-000522.html'
                   },
                   {
-                    id: 1959,
-                    parentId: 1924,
+                    id: 1963,
+                    parentId: 1931,
                     name: '管理SLA',
                     local: 'ActiveDirectory-00055.html'
                   }
                 ]
               },
               {
-                id: 1925,
-                parentId: 1859,
+                id: 1932,
+                parentId: 1866,
                 name: '副本',
                 local: 'ActiveDirectory-00056.html',
                 children: [
                   {
-                    id: 1960,
-                    parentId: 1925,
+                    id: 1964,
+                    parentId: 1932,
                     name: '查看Active Directory副本信息',
                     local: 'ActiveDirectory-00057.html'
                   },
                   {
-                    id: 1961,
-                    parentId: 1925,
+                    id: 1965,
+                    parentId: 1932,
                     name: '管理Active Directory副本',
                     local: 'ActiveDirectory-00058.html'
                   }
                 ]
               },
               {
-                id: 1926,
-                parentId: 1859,
+                id: 1933,
+                parentId: 1866,
                 name: 'Active Directory域控制器',
                 local: 'ActiveDirectory-00059.html',
                 children: [
                   {
-                    id: 1962,
-                    parentId: 1926,
+                    id: 1966,
+                    parentId: 1933,
                     name: '查看Active Directory域控制器信息',
                     local: 'ActiveDirectory-00060.html'
                   },
                   {
-                    id: 1963,
-                    parentId: 1926,
+                    id: 1967,
+                    parentId: 1933,
                     name: '管理Active Directory域控制器',
                     local: 'ActiveDirectory-00061.html'
                   }
@@ -13018,135 +13058,135 @@ naviData = [
         local: 'zh-cn_topic_0000001918630672.html',
         children: [
           {
-            id: 1964,
+            id: 1968,
             parentId: 19,
             name: 'NAS文件数据保护',
             local: 'product_documentation_000035.html',
             children: [
               {
-                id: 1970,
-                parentId: 1964,
+                id: 1974,
+                parentId: 1968,
                 name: '备份',
                 local: 'nas_s_0007.html',
                 children: [
                   {
-                    id: 1981,
-                    parentId: 1970,
+                    id: 1985,
+                    parentId: 1974,
                     name: '备份前准备',
                     local: 'nas_s_0010.html'
                   },
                   {
-                    id: 1982,
-                    parentId: 1970,
+                    id: 1986,
+                    parentId: 1974,
                     name: '备份NAS文件系统',
                     local: 'nas_s_0011.html',
                     children: [
                       {
-                        id: 1984,
-                        parentId: 1982,
+                        id: 1988,
+                        parentId: 1986,
                         name: '步骤1：获取存储设备CA证书',
                         local: 'nas_s_0012.html'
                       },
                       {
-                        id: 1985,
-                        parentId: 1982,
+                        id: 1989,
+                        parentId: 1986,
                         name: '步骤2：添加存储设备',
                         local: 'nas_s_0013.html'
                       },
                       {
-                        id: 1986,
-                        parentId: 1982,
+                        id: 1990,
+                        parentId: 1986,
                         name: '步骤3：创建复制网络逻辑端口',
                         local: 'nas_s_0014.html'
                       },
                       {
-                        id: 1987,
-                        parentId: 1982,
+                        id: 1991,
+                        parentId: 1986,
                         name: '步骤4：（可选）创建限速策略',
                         local: 'nas_s_0015.html'
                       },
                       {
-                        id: 1988,
-                        parentId: 1982,
+                        id: 1992,
+                        parentId: 1986,
                         name: '步骤5：创建备份SLA',
                         local: 'nas_s_0016.html'
                       },
                       {
-                        id: 1989,
-                        parentId: 1982,
+                        id: 1993,
+                        parentId: 1986,
                         name: '步骤6：执行备份',
                         local: 'nas_s_0017.html'
                       }
                     ]
                   },
                   {
-                    id: 1983,
-                    parentId: 1970,
+                    id: 1987,
+                    parentId: 1974,
                     name: '备份NAS共享',
                     local: 'nas_s_0020.html',
                     children: [
                       {
-                        id: 1990,
-                        parentId: 1983,
+                        id: 1994,
+                        parentId: 1987,
                         name:
                           '步骤1：（可选）获取存储设备CA证书（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）',
                         local: 'nas_s_0021.html'
                       },
                       {
-                        id: 1991,
-                        parentId: 1983,
+                        id: 1995,
+                        parentId: 1987,
                         name:
                           '步骤2：添加存储设备（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）',
                         local: 'nas_s_0022.html'
                       },
                       {
-                        id: 1992,
-                        parentId: 1983,
+                        id: 1996,
+                        parentId: 1987,
                         name:
                           '步骤3：配置NAS共享信息（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）',
                         local: 'nas_s_0023.html'
                       },
                       {
-                        id: 1993,
-                        parentId: 1983,
+                        id: 1997,
+                        parentId: 1987,
                         name:
                           '步骤4：配置访问权限（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）',
                         local: 'nas_s_0025.html'
                       },
                       {
-                        id: 1994,
-                        parentId: 1983,
+                        id: 1998,
+                        parentId: 1987,
                         name:
                           '步骤5：注册NAS共享（适用于除OceanStor V5/OceanStor Pacific/NetApp ONTAP以外的存储设备）',
                         local: 'nas_s_0024.html'
                       },
                       {
-                        id: 1995,
-                        parentId: 1983,
+                        id: 1999,
+                        parentId: 1987,
                         name: '步骤6：（可选）创建限速策略',
                         local: 'nas_s_0026.html'
                       },
                       {
-                        id: 1996,
-                        parentId: 1983,
+                        id: 2000,
+                        parentId: 1987,
                         name: '步骤7：创建备份SLA',
                         local: 'nas_s_0027.html'
                       },
                       {
-                        id: 1997,
-                        parentId: 1983,
+                        id: 2001,
+                        parentId: 1987,
                         name: '步骤8：开启NFSv4.1服务（适用于X系列备份一体机）',
                         local: 'nas_s_0028_0.html'
                       },
                       {
-                        id: 1998,
-                        parentId: 1983,
+                        id: 2002,
+                        parentId: 1987,
                         name: '步骤9：开启NFSv4.1服务（适用于E系列备份一体机）',
                         local: 'nas_s_0028_2.html'
                       },
                       {
-                        id: 1999,
-                        parentId: 1983,
+                        id: 2003,
+                        parentId: 1987,
                         name: '步骤10：执行备份',
                         local: 'nas_s_0029.html'
                       }
@@ -13155,83 +13195,83 @@ naviData = [
                 ]
               },
               {
-                id: 1971,
-                parentId: 1964,
+                id: 1975,
+                parentId: 1968,
                 name: '复制',
                 local: 'nas_s_0032.html',
                 children: [
                   {
-                    id: 2000,
-                    parentId: 1971,
+                    id: 2004,
+                    parentId: 1975,
                     name: '复制NAS文件系统/NAS共享副本',
                     local: 'nas_s_0035.html',
                     children: [
                       {
-                        id: 2001,
-                        parentId: 2000,
+                        id: 2005,
+                        parentId: 2004,
                         name: '规划复制网络',
                         local: 'nas_s_0036.html'
                       },
                       {
-                        id: 2002,
-                        parentId: 2000,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
+                        id: 2006,
+                        parentId: 2004,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
                         local: 'nas_s_0037.html'
                       },
                       {
-                        id: 2003,
-                        parentId: 2000,
+                        id: 2007,
+                        parentId: 2004,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
                         local: 'nas_s_0037_1.html'
                       },
                       {
-                        id: 2004,
-                        parentId: 2000,
+                        id: 2008,
+                        parentId: 2004,
                         name: '步骤2：（可选）创建IPsec策略',
                         local: 'nas_s_0038.html'
                       },
                       {
-                        id: 2005,
-                        parentId: 2000,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
+                        id: 2009,
+                        parentId: 2004,
+                        name: '步骤3：（可选）开启复制链路加密开关',
                         local: 'nas_s_0039.html'
                       },
                       {
-                        id: 2006,
-                        parentId: 2000,
+                        id: 2010,
+                        parentId: 2004,
                         name: '步骤4：下载并导入证书',
                         local: 'nas_s_0040.html'
                       },
                       {
-                        id: 2007,
-                        parentId: 2000,
+                        id: 2011,
+                        parentId: 2004,
                         name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
                         local: 'nas_s_0041.html'
                       },
                       {
-                        id: 2008,
-                        parentId: 2000,
+                        id: 2012,
+                        parentId: 2004,
                         name:
                           '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
                         local: 'zh-cn_topic_0000002022805444.html'
                       },
                       {
-                        id: 2009,
-                        parentId: 2000,
+                        id: 2013,
+                        parentId: 2004,
                         name: '步骤6：添加复制集群',
                         local: 'nas_s_0042.html'
                       },
                       {
-                        id: 2010,
-                        parentId: 2000,
+                        id: 2014,
+                        parentId: 2004,
                         name: '步骤7：创建复制SLA',
                         local: 'nas_s_0043.html'
                       },
                       {
-                        id: 2011,
-                        parentId: 2000,
+                        id: 2015,
+                        parentId: 2004,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
                         local: 'nas_s_0044.html'
                       }
@@ -13240,60 +13280,61 @@ naviData = [
                 ]
               },
               {
-                id: 1972,
-                parentId: 1964,
+                id: 1976,
+                parentId: 1968,
                 name: '归档',
                 local: 'nas_s_0045.html',
                 children: [
                   {
-                    id: 2012,
-                    parentId: 1972,
+                    id: 2016,
+                    parentId: 1976,
                     name: '归档NAS文件系统/NAS共享备份副本',
                     local: 'nas_s_0048.html',
                     children: [
                       {
-                        id: 2014,
-                        parentId: 2012,
+                        id: 2018,
+                        parentId: 2016,
                         name: '步骤1：添加归档存储',
                         local: 'nas_s_0049.html',
                         children: [
                           {
-                            id: 2016,
-                            parentId: 2014,
+                            id: 2020,
+                            parentId: 2018,
                             name: '添加对象存储（归档存储是对象存储）',
                             local: 'nas_s_0050.html'
                           },
                           {
-                            id: 2017,
-                            parentId: 2014,
-                            name: '创建介质集（归档存储是磁带库）',
+                            id: 2021,
+                            parentId: 2018,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
                             local: 'nas_s_0051.html'
                           }
                         ]
                       },
                       {
-                        id: 2015,
-                        parentId: 2012,
+                        id: 2019,
+                        parentId: 2016,
                         name: '步骤2：创建备份副本归档SLA',
                         local: 'nas_s_0052.html'
                       }
                     ]
                   },
                   {
-                    id: 2013,
-                    parentId: 1972,
+                    id: 2017,
+                    parentId: 1976,
                     name: '归档NAS文件系统/NAS共享复制副本',
                     local: 'nas_s_0053.html',
                     children: [
                       {
-                        id: 2018,
-                        parentId: 2013,
+                        id: 2022,
+                        parentId: 2017,
                         name: '步骤1：创建复制副本归档SLA',
                         local: 'nas_s_0054.html'
                       },
                       {
-                        id: 2019,
-                        parentId: 2013,
+                        id: 2023,
+                        parentId: 2017,
                         name: '步骤2：创建复制副本周期性归档',
                         local: 'nas_s_0055.html'
                       }
@@ -13302,1507 +13343,210 @@ naviData = [
                 ]
               },
               {
-                id: 1973,
-                parentId: 1964,
+                id: 1977,
+                parentId: 1968,
                 name: '恢复',
                 local: 'nas_s_0056.html',
                 children: [
                   {
-                    id: 2020,
-                    parentId: 1973,
+                    id: 2024,
+                    parentId: 1977,
                     name: '恢复NAS文件系统',
                     local: 'nas_s_0059.html'
                   },
                   {
-                    id: 2021,
-                    parentId: 1973,
+                    id: 2025,
+                    parentId: 1977,
                     name: '恢复NAS文件系统中的文件',
                     local: 'nas_s_0060.html'
                   },
                   {
-                    id: 2022,
-                    parentId: 1973,
+                    id: 2026,
+                    parentId: 1977,
                     name: '恢复NAS共享',
                     local: 'nas_s_0061.html'
                   },
                   {
-                    id: 2023,
-                    parentId: 1973,
+                    id: 2027,
+                    parentId: 1977,
                     name: '恢复NAS共享中的文件',
                     local: 'nas_s_0062.html'
                   }
                 ]
               },
               {
-                id: 1974,
-                parentId: 1964,
+                id: 1978,
+                parentId: 1968,
                 name: '全局搜索',
                 local: 'nas_s_0073.html',
                 children: [
                   {
-                    id: 2024,
-                    parentId: 1974,
+                    id: 2028,
+                    parentId: 1978,
+                    name: '关于全局搜索',
+                    local: 'fc_gud_gs2_0.html'
+                  },
+                  {
+                    id: 2029,
+                    parentId: 1978,
                     name: '全局搜索副本数据',
                     local: 'nas_s_0074.html'
                   },
                   {
-                    id: 2025,
-                    parentId: 1974,
+                    id: 2030,
+                    parentId: 1978,
                     name: '全局搜索资源',
                     local: 'nas_s_0075.html'
                   },
                   {
-                    id: 2026,
-                    parentId: 1974,
+                    id: 2031,
+                    parentId: 1978,
                     name: '全局标签搜索（适用于1.6.0及后续版本）',
                     local: 'zh-cn_topic_0000002022936884.html'
                   }
                 ]
               },
               {
-                id: 1975,
-                parentId: 1964,
+                id: 1979,
+                parentId: 1968,
                 name: 'SLA',
                 local: 'nas_s_0078.html',
                 children: [
                   {
-                    id: 2027,
-                    parentId: 1975,
+                    id: 2032,
+                    parentId: 1979,
                     name: '关于SLA',
                     local: 'nas_s_0079.html'
                   },
                   {
-                    id: 2028,
-                    parentId: 1975,
+                    id: 2033,
+                    parentId: 1979,
                     name: '查看SLA信息',
                     local: 'nas_s_0080.html'
                   },
                   {
-                    id: 2029,
-                    parentId: 1975,
+                    id: 2034,
+                    parentId: 1979,
                     name: '管理SLA',
                     local: 'nas_s_0081.html'
                   }
                 ]
               },
               {
-                id: 1976,
-                parentId: 1964,
+                id: 1980,
+                parentId: 1968,
                 name: '副本',
                 local: 'nas_s_0082.html',
                 children: [
                   {
-                    id: 2030,
-                    parentId: 1976,
+                    id: 2035,
+                    parentId: 1980,
                     name: '查看NAS文件系统副本信息',
                     local: 'nas_s_0083.html'
                   },
                   {
-                    id: 2031,
-                    parentId: 1976,
+                    id: 2036,
+                    parentId: 1980,
                     name: '管理NAS文件系统副本',
                     local: 'nas_s_0084.html'
                   },
                   {
-                    id: 2032,
-                    parentId: 1976,
+                    id: 2037,
+                    parentId: 1980,
                     name: '查看NAS共享副本信息',
                     local: 'nas_s_0086.html'
                   },
                   {
-                    id: 2033,
-                    parentId: 1976,
+                    id: 2038,
+                    parentId: 1980,
                     name: '管理NAS共享副本',
                     local: 'nas_s_0087.html'
                   }
                 ]
               },
               {
-                id: 1977,
-                parentId: 1964,
+                id: 1981,
+                parentId: 1968,
                 name: '存储设备信息',
                 local: 'nas_s_0088.html',
                 children: [
                   {
-                    id: 2034,
-                    parentId: 1977,
+                    id: 2039,
+                    parentId: 1981,
                     name: '查看存储设备信息',
                     local: 'nas_s_0089.html'
                   },
                   {
-                    id: 2035,
-                    parentId: 1977,
+                    id: 2040,
+                    parentId: 1981,
                     name: '管理存储设备信息',
                     local: 'nas_s_0090.html'
                   }
                 ]
               },
               {
-                id: 1978,
-                parentId: 1964,
+                id: 1982,
+                parentId: 1968,
                 name: 'NAS文件系统',
                 local: 'nas_s_0091.html',
                 children: [
                   {
-                    id: 2036,
-                    parentId: 1978,
+                    id: 2041,
+                    parentId: 1982,
                     name: '查看NAS文件系统',
                     local: 'nas_s_0092.html'
                   },
                   {
-                    id: 2037,
-                    parentId: 1978,
+                    id: 2042,
+                    parentId: 1982,
                     name: '管理NAS文件系统',
                     local: 'nas_s_0093.html'
                   }
                 ]
               },
               {
-                id: 1979,
-                parentId: 1964,
+                id: 1983,
+                parentId: 1968,
                 name: 'NAS共享',
                 local: 'nas_s_0094.html',
                 children: [
                   {
-                    id: 2038,
-                    parentId: 1979,
+                    id: 2043,
+                    parentId: 1983,
                     name: '查看NAS共享信息',
                     local: 'nas_s_0095.html'
                   },
                   {
-                    id: 2039,
-                    parentId: 1979,
+                    id: 2044,
+                    parentId: 1983,
                     name: '管理NAS共享',
                     local: 'nas_s_0096.html'
                   }
                 ]
               },
               {
-                id: 1980,
-                parentId: 1964,
+                id: 1984,
+                parentId: 1968,
                 name: '常见问题',
                 local: 'nas_s_0097.html',
                 children: [
                   {
-                    id: 2040,
-                    parentId: 1980,
+                    id: 2045,
+                    parentId: 1984,
                     name: '登录DeviceManager管理界面',
                     local: 'nas_s_dm.html'
                   },
                   {
-                    id: 2041,
-                    parentId: 1980,
-                    name: '如何修改目标端重删设置',
+                    id: 2046,
+                    parentId: 1984,
+                    name: '修改目标端重删设置',
                     local: 'zh-cn_topic_0000002062497610.html'
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id: 1965,
-            parentId: 19,
-            name: 'NDMP NAS文件系统数据保护（适用于1.6.0及后续版本）',
-            local: 'zh-cn_topic_0000001952305809.html',
-            children: [
-              {
-                id: 2042,
-                parentId: 1965,
-                name: '备份',
-                local: 'nas_s_0007_0.html',
-                children: [
-                  {
-                    id: 2052,
-                    parentId: 2042,
-                    name: '备份前准备',
-                    local: 'nas_s_0010_0.html'
                   },
                   {
-                    id: 2053,
-                    parentId: 2042,
-                    name: '备份NDMP NAS文件系统',
-                    local: 'nas_s_0011_0.html',
-                    children: [
-                      {
-                        id: 2054,
-                        parentId: 2053,
-                        name: '步骤1：添加存储设备',
-                        local: 'nas_s_0013_0.html'
-                      },
-                      {
-                        id: 2055,
-                        parentId: 2053,
-                        name: '步骤2：（可选）创建限速策略',
-                        local: 'nas_s_0015_0.html'
-                      },
-                      {
-                        id: 2056,
-                        parentId: 2053,
-                        name: '步骤3：创建备份SLA',
-                        local: 'nas_s_0016_0.html'
-                      },
-                      {
-                        id: 2057,
-                        parentId: 2053,
-                        name: '步骤4：执行备份',
-                        local: 'nas_s_0017_0.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2043,
-                parentId: 1965,
-                name: '复制',
-                local: 'nas_s_0032_0.html',
-                children: [
-                  {
-                    id: 2058,
-                    parentId: 2043,
-                    name: '复制NDMP NAS文件系统',
-                    local: 'nas_s_0035_0.html',
-                    children: [
-                      {
-                        id: 2059,
-                        parentId: 2058,
-                        name: '规划复制网络',
-                        local: 'nas_s_0036_0.html'
-                      },
-                      {
-                        id: 2060,
-                        parentId: 2058,
-                        name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'nas_s_0037_1_0.html'
-                      },
-                      {
-                        id: 2061,
-                        parentId: 2058,
-                        name: '步骤2：（可选）创建IPsec策略',
-                        local: 'nas_s_0038_0.html'
-                      },
-                      {
-                        id: 2062,
-                        parentId: 2058,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
-                        local: 'nas_s_0039_0.html'
-                      },
-                      {
-                        id: 2063,
-                        parentId: 2058,
-                        name: '步骤4：下载并导入证书',
-                        local: 'nas_s_0040_0.html'
-                      },
-                      {
-                        id: 2064,
-                        parentId: 2058,
-                        name:
-                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'zh-cn_topic_0000002046636865.html'
-                      },
-                      {
-                        id: 2065,
-                        parentId: 2058,
-                        name: '步骤6：添加复制集群',
-                        local: 'foc_gud_0032_0.html'
-                      },
-                      {
-                        id: 2066,
-                        parentId: 2058,
-                        name: '步骤7：创建复制SLA',
-                        local: 'nas_s_0043_0.html'
-                      },
-                      {
-                        id: 2067,
-                        parentId: 2058,
-                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
-                        local: 'nas_s_0044_0.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2044,
-                parentId: 1965,
-                name: '归档',
-                local: 'nas_s_0045_0.html',
-                children: [
-                  {
-                    id: 2068,
-                    parentId: 2044,
-                    name: '归档NDMP NAS文件系统副本',
-                    local: 'nas_s_0048_0.html',
-                    children: [
-                      {
-                        id: 2070,
-                        parentId: 2068,
-                        name: '步骤1：添加归档存储',
-                        local: 'nas_s_0049_0.html',
-                        children: [
-                          {
-                            id: 2072,
-                            parentId: 2070,
-                            name: '添加对象存储（归档存储是对象存储）',
-                            local: 'nas_s_0050_0.html'
-                          },
-                          {
-                            id: 2073,
-                            parentId: 2070,
-                            name: '创建介质集（归档存储是磁带库）',
-                            local: 'nas_s_0051_0.html'
-                          }
-                        ]
-                      },
-                      {
-                        id: 2071,
-                        parentId: 2068,
-                        name: '步骤2：创建备份副本归档SLA',
-                        local: 'oracle_gud_000031.html'
-                      }
-                    ]
-                  },
-                  {
-                    id: 2069,
-                    parentId: 2044,
-                    name: '归档NDMP NAS文件系统复制副本',
-                    local: 'nas_s_0053_0.html',
-                    children: [
-                      {
-                        id: 2074,
-                        parentId: 2069,
-                        name: '步骤1：创建归档SLA',
-                        local: 'nas_s_0054_0.html'
-                      },
-                      {
-                        id: 2075,
-                        parentId: 2069,
-                        name: '步骤2：创建复制副本周期性归档',
-                        local: 'nas_s_0055_0.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2045,
-                parentId: 1965,
-                name: '恢复',
-                local: 'nas_s_0056_0.html',
-                children: [
-                  {
-                    id: 2076,
-                    parentId: 2045,
-                    name: '恢复NDMP NAS文件系统',
-                    local: 'nas_s_0059_0.html'
-                  },
-                  {
-                    id: 2077,
-                    parentId: 2045,
-                    name: '恢复NDMP NAS文件系统中的文件',
-                    local: 'nas_s_0060_0.html'
-                  }
-                ]
-              },
-              {
-                id: 2046,
-                parentId: 1965,
-                name: '全局搜索',
-                local: 'nas_s_0073_0.html',
-                children: [
-                  {
-                    id: 2078,
-                    parentId: 2046,
-                    name: '全局搜索副本数据',
-                    local: 'nas_s_0074_0.html'
-                  },
-                  {
-                    id: 2079,
-                    parentId: 2046,
-                    name: '全局搜索资源',
-                    local: 'nas_s_0075_0.html'
-                  },
-                  {
-                    id: 2080,
-                    parentId: 2046,
-                    name: '全局标签搜索',
-                    local: 'zh-cn_topic_0000002038775953.html'
-                  }
-                ]
-              },
-              {
-                id: 2047,
-                parentId: 1965,
-                name: 'SLA',
-                local: 'nas_s_0078_0.html',
-                children: [
-                  {
-                    id: 2081,
-                    parentId: 2047,
-                    name: '关于SLA',
-                    local: 'nas_s_0079_0.html'
-                  },
-                  {
-                    id: 2082,
-                    parentId: 2047,
-                    name: '查看SLA信息',
-                    local: 'nas_s_0080_0.html'
-                  },
-                  {
-                    id: 2083,
-                    parentId: 2047,
-                    name: '管理SLA',
-                    local: 'nas_s_0081_0.html'
-                  }
-                ]
-              },
-              {
-                id: 2048,
-                parentId: 1965,
-                name: '副本',
-                local: 'nas_s_0082_0.html',
-                children: [
-                  {
-                    id: 2084,
-                    parentId: 2048,
-                    name: '查看NDMP NAS文件系统副本信息',
-                    local: 'nas_s_0083_0.html'
-                  },
-                  {
-                    id: 2085,
-                    parentId: 2048,
-                    name: '管理NDMP NAS文件系统副本',
-                    local: 'nas_s_0084_0.html'
-                  }
-                ]
-              },
-              {
-                id: 2049,
-                parentId: 1965,
-                name: '存储设备信息',
-                local: 'nas_s_0088_0.html',
-                children: [
-                  {
-                    id: 2086,
-                    parentId: 2049,
-                    name: '查看存储设备信息',
-                    local: 'nas_s_0089_0.html'
-                  },
-                  {
-                    id: 2087,
-                    parentId: 2049,
-                    name: '管理存储设备信息',
-                    local: 'nas_s_0090_0.html'
-                  }
-                ]
-              },
-              {
-                id: 2050,
-                parentId: 1965,
-                name: 'NDMP NAS文件系统',
-                local: 'nas_s_0091_0.html',
-                children: [
-                  {
-                    id: 2088,
-                    parentId: 2050,
-                    name: '查看NDMP NAS文件系统',
-                    local: 'nas_s_0092_0.html'
-                  },
-                  {
-                    id: 2089,
-                    parentId: 2050,
-                    name: '管理NDMP NAS文件系统',
-                    local: 'nas_s_0093_0.html'
-                  }
-                ]
-              },
-              {
-                id: 2051,
-                parentId: 1965,
-                name: '常见问题',
-                local: 'nas_s_0097_0.html',
-                children: [
-                  {
-                    id: 2090,
-                    parentId: 2051,
-                    name: '登录DeviceManager管理界面',
-                    local: 'nas_s_dm_0.html'
-                  },
-                  {
-                    id: 2091,
-                    parentId: 2051,
-                    name: '同一个NDMP Server多个并行任务部分失败',
-                    local: 'zh-cn_topic_0000002017987564.html'
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id: 1966,
-            parentId: 19,
-            name: '文件集数据保护',
-            local: 'zh-cn_topic_0000001873679157.html',
-            children: [
-              {
-                id: 2092,
-                parentId: 1966,
-                name: '备份',
-                local: 'Files-0005.html',
-                children: [
-                  {
-                    id: 2100,
-                    parentId: 2092,
-                    name: '挂载对象存储到数据保护代理主机',
-                    local: 'object-0006.html'
-                  },
-                  {
-                    id: 2101,
-                    parentId: 2092,
-                    name: '备份文件集',
-                    local: 'Files-0008.html',
-                    children: [
-                      {
-                        id: 2102,
-                        parentId: 2101,
-                        name: '步骤1：（可选）创建文件集模板',
-                        local: 'Files-0009.html'
-                      },
-                      {
-                        id: 2103,
-                        parentId: 2101,
-                        name: '步骤2：创建文件集',
-                        local: 'Files-0010.html'
-                      },
-                      {
-                        id: 2104,
-                        parentId: 2101,
-                        name: '步骤3：（可选）创建限速策略',
-                        local: 'Files-0011.html'
-                      },
-                      {
-                        id: 2105,
-                        parentId: 2101,
-                        name:
-                          '步骤4：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
-                        local: 'Files-0012.html'
-                      },
-                      {
-                        id: 2106,
-                        parentId: 2101,
-                        name: '步骤5：创建备份SLA',
-                        local: 'Files-0013.html'
-                      },
-                      {
-                        id: 2107,
-                        parentId: 2101,
-                        name: '步骤6：执行备份',
-                        local: 'Files-0014.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2093,
-                parentId: 1966,
-                name: '复制',
-                local: 'oracle_gud_000035.html',
-                children: [
-                  {
-                    id: 2108,
-                    parentId: 2093,
-                    name: '复制文件集副本',
-                    local: 'Files-0019.html',
-                    children: [
-                      {
-                        id: 2109,
-                        parentId: 2108,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026.html'
-                      },
-                      {
-                        id: 2110,
-                        parentId: 2108,
-                        name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1.html'
-                      },
-                      {
-                        id: 2111,
-                        parentId: 2108,
-                        name: '步骤2：（可选）创建IPsec策略',
-                        local: 'Files-0022.html'
-                      },
-                      {
-                        id: 2112,
-                        parentId: 2108,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
-                        local: 'Files-0023.html'
-                      },
-                      {
-                        id: 2113,
-                        parentId: 2108,
-                        name: '步骤4：下载并导入证书',
-                        local: 'Files-0024.html'
-                      },
-                      {
-                        id: 2114,
-                        parentId: 2108,
-                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
-                        local: 'Files-0025.html'
-                      },
-                      {
-                        id: 2115,
-                        parentId: 2108,
-                        name:
-                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'zh-cn_topic_0000002010555368.html'
-                      },
-                      {
-                        id: 2116,
-                        parentId: 2108,
-                        name: '步骤6：添加复制集群',
-                        local: 'oracle_gud_000040.html'
-                      },
-                      {
-                        id: 2117,
-                        parentId: 2108,
-                        name: '步骤7：创建复制SLA',
-                        local: 'Files-0027.html'
-                      },
-                      {
-                        id: 2118,
-                        parentId: 2108,
-                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
-                        local: 'Files-0028.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2094,
-                parentId: 1966,
-                name: '归档',
-                local: 'Files-0029.html',
-                children: [
-                  {
-                    id: 2119,
-                    parentId: 2094,
-                    name: '归档文件集备份副本',
-                    local: 'Files-0032.html',
-                    children: [
-                      {
-                        id: 2121,
-                        parentId: 2119,
-                        name: '步骤1：添加归档存储',
-                        local: 'Files-0033.html',
-                        children: [
-                          {
-                            id: 2123,
-                            parentId: 2121,
-                            name: '添加对象存储（归档存储是对象存储）',
-                            local: 'Files-0034.html'
-                          },
-                          {
-                            id: 2124,
-                            parentId: 2121,
-                            name: '创建介质集（归档存储是磁带库）',
-                            local: 'Files-0035.html'
-                          }
-                        ]
-                      },
-                      {
-                        id: 2122,
-                        parentId: 2119,
-                        name: '步骤2：创建归档SLA',
-                        local: 'Files-0036.html'
-                      }
-                    ]
-                  },
-                  {
-                    id: 2120,
-                    parentId: 2094,
-                    name: '归档文件集复制副本',
-                    local: 'Files-0037.html',
-                    children: [
-                      {
-                        id: 2125,
-                        parentId: 2120,
-                        name: '步骤1：创建归档SLA',
-                        local: 'Files-0038.html'
-                      },
-                      {
-                        id: 2126,
-                        parentId: 2120,
-                        name: '步骤2：创建复制副本周期性归档',
-                        local: 'Files-0039.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2095,
-                parentId: 1966,
-                name: '恢复',
-                local: 'Files-0040.html',
-                children: [
-                  {
-                    id: 2127,
-                    parentId: 2095,
-                    name: '恢复文件集',
-                    local: 'Files-0043.html'
-                  },
-                  {
-                    id: 2128,
-                    parentId: 2095,
-                    name: '恢复文件集中的单个或多个文件',
-                    local: 'Files-0044.html'
-                  }
-                ]
-              },
-              {
-                id: 2096,
-                parentId: 1966,
-                name: '全局搜索',
-                local: 'Files-0054.html',
-                children: [
-                  {
-                    id: 2129,
-                    parentId: 2096,
-                    name: '全局搜索副本数据',
-                    local: 'Files-0055.html'
-                  },
-                  {
-                    id: 2130,
-                    parentId: 2096,
-                    name: '全局搜索资源',
-                    local: 'Files-0056.html'
-                  },
-                  {
-                    id: 2131,
-                    parentId: 2096,
-                    name: '全局标签搜索（适用于1.6.0及后续版本）',
-                    local: 'zh-cn_topic_0000002002699236.html'
-                  }
-                ]
-              },
-              {
-                id: 2097,
-                parentId: 1966,
-                name: 'SLA',
-                local: 'Files-0059.html',
-                children: [
-                  {
-                    id: 2132,
-                    parentId: 2097,
-                    name: '查看SLA信息',
-                    local: 'Files-0061.html'
-                  },
-                  {
-                    id: 2133,
-                    parentId: 2097,
-                    name: '管理SLA',
-                    local: 'Files-0062.html'
-                  }
-                ]
-              },
-              {
-                id: 2098,
-                parentId: 1966,
-                name: '副本',
-                local: 'Files-0063.html',
-                children: [
-                  {
-                    id: 2134,
-                    parentId: 2098,
-                    name: '查看文件集副本信息',
-                    local: 'Files-0064.html'
-                  },
-                  {
-                    id: 2135,
-                    parentId: 2098,
-                    name: '管理文件集副本',
-                    local: 'Files-0065.html'
-                  }
-                ]
-              },
-              {
-                id: 2099,
-                parentId: 1966,
-                name: '文件集',
-                local: 'Files-0066.html',
-                children: [
-                  {
-                    id: 2136,
-                    parentId: 2099,
-                    name: '查看文件集信息',
-                    local: 'Files-0067.html'
-                  },
-                  {
-                    id: 2137,
-                    parentId: 2099,
-                    name: '管理文件集',
-                    local: 'Files-0068.html'
-                  },
-                  {
-                    id: 2138,
-                    parentId: 2099,
-                    name: '管理文件集模板',
-                    local: 'Files-0069.html'
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id: 1967,
-            parentId: 19,
-            name: '卷数据保护（适用于1.6.0及后续版本）',
-            local: 'zh-cn_topic_0000001826879836.html',
-            children: [
-              {
-                id: 2139,
-                parentId: 1967,
-                name: '备份',
-                local: 'volume_0007.html',
-                children: [
-                  {
-                    id: 2147,
-                    parentId: 2139,
-                    name: '备份卷',
-                    local: 'volume_0010.html',
-                    children: [
-                      {
-                        id: 2148,
-                        parentId: 2147,
-                        name: '步骤1：创建卷',
-                        local: 'volume_0011.html'
-                      },
-                      {
-                        id: 2149,
-                        parentId: 2147,
-                        name: '步骤2：创建限速策略',
-                        local: 'volume_0012.html'
-                      },
-                      {
-                        id: 2150,
-                        parentId: 2147,
-                        name:
-                          '步骤3：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
-                        local: 'volume_0013.html'
-                      },
-                      {
-                        id: 2151,
-                        parentId: 2147,
-                        name: '步骤4：创建备份SLA',
-                        local: 'volume_0014.html'
-                      },
-                      {
-                        id: 2152,
-                        parentId: 2147,
-                        name: '步骤5：执行备份',
-                        local: 'volume_0015.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2140,
-                parentId: 1967,
-                name: '复制',
-                local: 'oracle_gud_000035_14.html',
-                children: [
-                  {
-                    id: 2153,
-                    parentId: 2140,
-                    name: '复制卷副本',
-                    local: 'volume_0021.html',
-                    children: [
-                      {
-                        id: 2154,
-                        parentId: 2153,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_16.html'
-                      },
-                      {
-                        id: 2155,
-                        parentId: 2153,
-                        name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_32.html'
-                      },
-                      {
-                        id: 2156,
-                        parentId: 2153,
-                        name: '步骤2：（可选）创建IPsec策略',
-                        local: 'volume_0024.html'
-                      },
-                      {
-                        id: 2157,
-                        parentId: 2153,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
-                        local: 'volume_0025.html'
-                      },
-                      {
-                        id: 2158,
-                        parentId: 2153,
-                        name: '步骤4：下载并导入证书',
-                        local: 'volume_0026.html'
-                      },
-                      {
-                        id: 2159,
-                        parentId: 2153,
-                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
-                        local: 'volume_0027.html'
-                      },
-                      {
-                        id: 2160,
-                        parentId: 2153,
-                        name:
-                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'zh-cn_topic_0000002010594166.html'
-                      },
-                      {
-                        id: 2161,
-                        parentId: 2153,
-                        name: '步骤6：添加复制集群',
-                        local: 'volume_0028.html'
-                      },
-                      {
-                        id: 2162,
-                        parentId: 2153,
-                        name: '步骤7：创建复制SLA',
-                        local: 'volume_0029.html'
-                      },
-                      {
-                        id: 2163,
-                        parentId: 2153,
-                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
-                        local: 'volume_0030.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2141,
-                parentId: 1967,
-                name: '归档',
-                local: 'volume_0031.html',
-                children: [
-                  {
-                    id: 2164,
-                    parentId: 2141,
-                    name: '归档卷备份副本',
-                    local: 'volume_0034.html',
-                    children: [
-                      {
-                        id: 2166,
-                        parentId: 2164,
-                        name: '步骤1：添加归档存储',
-                        local: 'volume_0035.html',
-                        children: [
-                          {
-                            id: 2168,
-                            parentId: 2166,
-                            name: '添加对象存储（归档存储是对象存储）',
-                            local: 'volume_0036.html'
-                          },
-                          {
-                            id: 2169,
-                            parentId: 2166,
-                            name: '创建介质集（归档存储是磁带库）',
-                            local: 'volume_0037.html'
-                          }
-                        ]
-                      },
-                      {
-                        id: 2167,
-                        parentId: 2164,
-                        name: '步骤2：创建归档SLA',
-                        local: 'volume_0038.html'
-                      }
-                    ]
-                  },
-                  {
-                    id: 2165,
-                    parentId: 2141,
-                    name: '归档卷复制副本',
-                    local: 'volume_0039.html',
-                    children: [
-                      {
-                        id: 2170,
-                        parentId: 2165,
-                        name: '步骤1：创建归档SLA',
-                        local: 'volume_0040.html'
-                      },
-                      {
-                        id: 2171,
-                        parentId: 2165,
-                        name: '步骤2：创建复制副本周期性归档',
-                        local: 'volume_0041.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2142,
-                parentId: 1967,
-                name: '恢复',
-                local: 'volume_0042.html',
-                children: [
-                  {
-                    id: 2172,
-                    parentId: 2142,
-                    name: '恢复卷',
-                    local: 'volume_0045.html'
-                  },
-                  {
-                    id: 2173,
-                    parentId: 2142,
-                    name: '恢复卷副本中的单个或多个文件',
-                    local: 'volume_0046.html'
-                  }
-                ]
-              },
-              {
-                id: 2143,
-                parentId: 1967,
-                name: '全局搜索',
-                local: 'volume_0056.html',
-                children: [
-                  {
-                    id: 2174,
-                    parentId: 2143,
-                    name: '全局搜索副本数据',
-                    local: 'volume_0057.html'
-                  },
-                  {
-                    id: 2175,
-                    parentId: 2143,
-                    name: '全局搜索资源',
-                    local: 'volume_0058.html'
-                  },
-                  {
-                    id: 2176,
-                    parentId: 2143,
-                    name: '全局标签搜索',
-                    local: 'zh-cn_topic_0000002002855252.html'
-                  }
-                ]
-              },
-              {
-                id: 2144,
-                parentId: 1967,
-                name: 'SLA',
-                local: 'volume_0061.html',
-                children: [
-                  {
-                    id: 2177,
-                    parentId: 2144,
-                    name: '关于SLA',
-                    local: 'vmware_gud_000026_1.html'
-                  },
-                  {
-                    id: 2178,
-                    parentId: 2144,
-                    name: '查看SLA信息',
-                    local: 'volume_0063.html'
-                  },
-                  {
-                    id: 2179,
-                    parentId: 2144,
-                    name: '管理SLA',
-                    local: 'volume_0064.html'
-                  }
-                ]
-              },
-              {
-                id: 2145,
-                parentId: 1967,
-                name: '副本',
-                local: 'volume_0065.html',
-                children: [
-                  {
-                    id: 2180,
-                    parentId: 2145,
-                    name: '查看卷副本信息',
-                    local: 'volume_0066.html'
-                  },
-                  {
-                    id: 2181,
-                    parentId: 2145,
-                    name: '管理卷副本',
-                    local: 'volume_0067.html'
-                  }
-                ]
-              },
-              {
-                id: 2146,
-                parentId: 1967,
-                name: '卷',
-                local: 'volume_0068.html',
-                children: [
-                  {
-                    id: 2182,
-                    parentId: 2146,
-                    name: '查看卷信息',
-                    local: 'volume_0069.html'
-                  },
-                  {
-                    id: 2183,
-                    parentId: 2146,
-                    name: '管理卷',
-                    local: 'volume_0070.html'
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id: 1968,
-            parentId: 19,
-            name: '对象存储数据保护（适用于1.6.0及后续版本）',
-            local: 'zh-cn_topic_0000001826879816.html',
-            children: [
-              {
-                id: 2184,
-                parentId: 1968,
-                name: '备份',
-                local: 'object-0003.html',
-                children: [
-                  {
-                    id: 2192,
-                    parentId: 2184,
-                    name: '备份前准备',
-                    local: 'zh-cn_topic_0000001953327945.html',
-                    children: [
-                      {
-                        id: 2194,
-                        parentId: 2192,
-                        name: '在生产端获取Endpoint',
-                        local: 'zh-cn_topic_0000001926224624.html'
-                      },
-                      {
-                        id: 2195,
-                        parentId: 2192,
-                        name: '在生产端获取AK和SK',
-                        local: 'zh-cn_topic_0000001953344001.html'
-                      }
-                    ]
-                  },
-                  {
-                    id: 2193,
-                    parentId: 2184,
-                    name: '备份对象存储',
-                    local: 'object-0007.html',
-                    children: [
-                      {
-                        id: 2196,
-                        parentId: 2193,
-                        name: '步骤1：注册对象存储',
-                        local: 'object-0008.html'
-                      },
-                      {
-                        id: 2197,
-                        parentId: 2193,
-                        name: '步骤2：创建对象集合',
-                        local: 'object-0009.html'
-                      },
-                      {
-                        id: 2198,
-                        parentId: 2193,
-                        name: '步骤3：（可选）创建限速策略',
-                        local: 'object-0010.html'
-                      },
-                      {
-                        id: 2199,
-                        parentId: 2193,
-                        name:
-                          '步骤4：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
-                        local: 'object-0011.html'
-                      },
-                      {
-                        id: 2200,
-                        parentId: 2193,
-                        name: '步骤5：创建备份SLA',
-                        local: 'object-0012.html'
-                      },
-                      {
-                        id: 2201,
-                        parentId: 2193,
-                        name: '步骤6：开启NFSv4.1服务',
-                        local: 'nas_s_0028.html'
-                      },
-                      {
-                        id: 2202,
-                        parentId: 2193,
-                        name: '步骤7：执行备份',
-                        local: 'object-0013.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2185,
-                parentId: 1968,
-                name: '复制',
-                local: 'oracle_gud_000035_4.html',
-                children: [
-                  {
-                    id: 2203,
-                    parentId: 2185,
-                    name: '复制对象存储副本',
-                    local: 'object-0018.html',
-                    children: [
-                      {
-                        id: 2204,
-                        parentId: 2203,
-                        name: '规划复制网络',
-                        local: 'object-0019.html'
-                      },
-                      {
-                        id: 2205,
-                        parentId: 2203,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_5.html'
-                      },
-                      {
-                        id: 2206,
-                        parentId: 2203,
-                        name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_11.html'
-                      },
-                      {
-                        id: 2207,
-                        parentId: 2203,
-                        name: '步骤2：（可选）创建IPsec策略',
-                        local: 'object-0021.html'
-                      },
-                      {
-                        id: 2208,
-                        parentId: 2203,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
-                        local: 'object-0022.html'
-                      },
-                      {
-                        id: 2209,
-                        parentId: 2203,
-                        name: '步骤4：下载并导入证书',
-                        local: 'object-0023.html'
-                      },
-                      {
-                        id: 2210,
-                        parentId: 2203,
-                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
-                        local: 'fc_gud_0030.html'
-                      },
-                      {
-                        id: 2211,
-                        parentId: 2203,
-                        name:
-                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'zh-cn_topic_0000002046625105.html'
-                      },
-                      {
-                        id: 2212,
-                        parentId: 2203,
-                        name: '步骤6：添加复制集群',
-                        local: 'object-0025.html'
-                      },
-                      {
-                        id: 2213,
-                        parentId: 2203,
-                        name: '步骤7：创建复制SLA',
-                        local: 'object-0026.html'
-                      },
-                      {
-                        id: 2214,
-                        parentId: 2203,
-                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
-                        local: 'object-0027.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2186,
-                parentId: 1968,
-                name: '归档',
-                local: 'object-0028.html',
-                children: [
-                  {
-                    id: 2215,
-                    parentId: 2186,
-                    name: '归档对象集合备份副本',
-                    local: 'object-0031.html',
-                    children: [
-                      {
-                        id: 2217,
-                        parentId: 2215,
-                        name: '步骤1：添加归档存储',
-                        local: 'object-0032.html',
-                        children: [
-                          {
-                            id: 2219,
-                            parentId: 2217,
-                            name: '添加对象存储（归档存储是对象存储）',
-                            local: 'object-0033.html'
-                          },
-                          {
-                            id: 2220,
-                            parentId: 2217,
-                            name: '创建介质集（归档存储是磁带库）',
-                            local: 'zh-cn_topic_0000002098646725.html'
-                          }
-                        ]
-                      },
-                      {
-                        id: 2218,
-                        parentId: 2215,
-                        name: '步骤2：创建归档SLA',
-                        local: 'object-0035.html'
-                      }
-                    ]
-                  },
-                  {
-                    id: 2216,
-                    parentId: 2186,
-                    name: '归档对象集合复制副本',
-                    local: 'object-0036.html',
-                    children: [
-                      {
-                        id: 2221,
-                        parentId: 2216,
-                        name: '步骤1：创建归档SLA',
-                        local: 'object-0037.html'
-                      },
-                      {
-                        id: 2222,
-                        parentId: 2216,
-                        name: '步骤2：创建复制副本周期性归档',
-                        local: 'object-0038.html'
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                id: 2187,
-                parentId: 1968,
-                name: '恢复',
-                local: 'object-0039.html',
-                children: [
-                  {
-                    id: 2223,
-                    parentId: 2187,
-                    name: '恢复对象存储',
-                    local: 'object-0042.html'
-                  }
-                ]
-              },
-              {
-                id: 2188,
-                parentId: 1968,
-                name: '全局搜索',
-                local: 'object-0049.html',
-                children: [
-                  {
-                    id: 2224,
-                    parentId: 2188,
-                    name: '全局搜索副本数据',
-                    local: 'object-0050.html'
-                  },
-                  {
-                    id: 2225,
-                    parentId: 2188,
-                    name: '全局搜索资源',
-                    local: 'object-0051.html'
-                  },
-                  {
-                    id: 2226,
-                    parentId: 2188,
-                    name: '全局标签搜索',
-                    local: 'zh-cn_topic_0000002002688946.html'
-                  }
-                ]
-              },
-              {
-                id: 2189,
-                parentId: 1968,
-                name: 'SLA',
-                local: 'object-0054.html',
-                children: [
-                  {
-                    id: 2227,
-                    parentId: 2189,
-                    name: '关于SLA',
-                    local: 'object-0055.html'
-                  },
-                  {
-                    id: 2228,
-                    parentId: 2189,
-                    name: '查看SLA信息',
-                    local: 'object-0056.html'
-                  },
-                  {
-                    id: 2229,
-                    parentId: 2189,
-                    name: '管理SLA',
-                    local: 'object-0057.html'
-                  }
-                ]
-              },
-              {
-                id: 2190,
-                parentId: 1968,
-                name: '副本',
-                local: 'object-0058.html',
-                children: [
-                  {
-                    id: 2230,
-                    parentId: 2190,
-                    name: '查看对象存储副本信息',
-                    local: 'object-0059.html'
-                  },
-                  {
-                    id: 2231,
-                    parentId: 2190,
-                    name: '管理对象存储副本',
-                    local: 'object-0060.html'
-                  }
-                ]
-              },
-              {
-                id: 2191,
-                parentId: 1968,
-                name: '对象存储',
-                local: 'object-0061.html',
-                children: [
-                  {
-                    id: 2232,
-                    parentId: 2191,
-                    name: '查看对象存储信息',
-                    local: 'object-0062.html'
-                  },
-                  {
-                    id: 2233,
-                    parentId: 2191,
-                    name: '管理对象集合',
-                    local: 'object-0063.html'
+                    id: 2047,
+                    parentId: 1984,
+                    name: '查看用户信息',
+                    local: 'zh-cn_topic_0000002064268578.html'
                   }
                 ]
               }
@@ -14811,286 +13555,1641 @@ naviData = [
           {
             id: 1969,
             parentId: 19,
-            name: '通用共享数据保护（适用于1.6.0及后续版本）',
-            local: 'zh-cn_topic_0000001873759353.html',
+            name: 'NDMP NAS文件系统数据保护（适用于1.6.0及后续版本）',
+            local: 'zh-cn_topic_0000001952305809.html',
             children: [
               {
-                id: 2234,
+                id: 2048,
                 parentId: 1969,
                 name: '备份',
-                local: 'commonshares_0007.html',
+                local: 'nas_s_0007_0.html',
                 children: [
                   {
-                    id: 2241,
-                    parentId: 2234,
-                    name: '备份通用共享资源数据',
-                    local: 'commonshares_0010.html',
+                    id: 2057,
+                    parentId: 2048,
+                    name: '备份前准备',
+                    local: 'nas_s_0010_0.html'
+                  },
+                  {
+                    id: 2058,
+                    parentId: 2048,
+                    name: '备份NDMP NAS文件系统',
+                    local: 'nas_s_0011_0.html',
                     children: [
                       {
-                        id: 2242,
-                        parentId: 2241,
-                        name: '步骤1：创建通用共享',
-                        local: 'commonshares_0011.html'
+                        id: 2059,
+                        parentId: 2058,
+                        name: '步骤1：添加存储设备',
+                        local: 'nas_s_0013_0.html'
                       },
                       {
-                        id: 2243,
-                        parentId: 2241,
-                        name: '步骤2：创建限速策略',
-                        local: 'commonshares_0012.html'
+                        id: 2060,
+                        parentId: 2058,
+                        name: '步骤2：（可选）创建文件目录',
+                        local: 'nas_s_0212.html'
                       },
                       {
-                        id: 2244,
-                        parentId: 2241,
-                        name:
-                          '步骤3：（可选）开启备份链路加密开关（适用于X系列备份一体机）',
-                        local: 'commonshares_0013.html'
+                        id: 2061,
+                        parentId: 2058,
+                        name: '步骤3：（可选）创建限速策略',
+                        local: 'nas_s_0015_0.html'
                       },
                       {
-                        id: 2245,
-                        parentId: 2241,
+                        id: 2062,
+                        parentId: 2058,
                         name: '步骤4：创建备份SLA',
-                        local: 'commonshares_0014.html'
+                        local: 'nas_s_0016_0.html'
                       },
                       {
-                        id: 2246,
-                        parentId: 2241,
+                        id: 2063,
+                        parentId: 2058,
                         name: '步骤5：执行备份',
-                        local: 'commonshares_0015.html'
+                        local: 'nas_s_0017_0.html'
                       }
                     ]
                   }
                 ]
               },
               {
-                id: 2235,
+                id: 2049,
                 parentId: 1969,
                 name: '复制',
-                local: 'oracle_gud_000035_8.html',
+                local: 'nas_s_0032_0.html',
                 children: [
                   {
-                    id: 2247,
-                    parentId: 2235,
-                    name: '复制通用共享副本',
-                    local: 'commonshares_0021.html',
+                    id: 2064,
+                    parentId: 2049,
+                    name: '复制NDMP NAS文件系统',
+                    local: 'nas_s_0035_0.html',
                     children: [
                       {
-                        id: 2248,
-                        parentId: 2247,
-                        name: '步骤1：创建复制网络逻辑端口（适用于1.5.0版本）',
-                        local: 'fc_gud_0026_9.html'
+                        id: 2065,
+                        parentId: 2064,
+                        name: '规划复制网络',
+                        local: 'nas_s_0036_0.html'
                       },
                       {
-                        id: 2249,
-                        parentId: 2247,
+                        id: 2066,
+                        parentId: 2064,
                         name:
-                          '步骤1：创建复制网络逻辑端口（适用于1.6.0及后续版本）',
-                        local: 'fc_gud_0026_1_18.html'
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'oracle_gud_000037.html'
                       },
                       {
-                        id: 2250,
-                        parentId: 2247,
+                        id: 2067,
+                        parentId: 2064,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机）',
+                        local: 'zh-cn_topic_0000002096251332.html'
+                      },
+                      {
+                        id: 2068,
+                        parentId: 2064,
                         name: '步骤2：（可选）创建IPsec策略',
-                        local: 'commonshares_0024.html'
+                        local: 'nas_s_0038_0.html'
                       },
                       {
-                        id: 2251,
-                        parentId: 2247,
-                        name:
-                          '步骤3：（可选）开启复制链路加密开关（适用于X系列备份一体机）',
-                        local: 'commonshares_0025.html'
+                        id: 2069,
+                        parentId: 2064,
+                        name: '步骤3：（可选）开启复制链路加密开关',
+                        local: 'nas_s_0039_0.html'
                       },
                       {
-                        id: 2252,
-                        parentId: 2247,
+                        id: 2070,
+                        parentId: 2064,
                         name: '步骤4：下载并导入证书',
-                        local: 'commonshares_0026.html'
+                        local: 'nas_s_0040_0.html'
                       },
                       {
-                        id: 2253,
-                        parentId: 2247,
+                        id: 2071,
+                        parentId: 2064,
                         name: '步骤5：创建远端设备管理员',
-                        local: 'commonshares_0027.html'
+                        local: 'nas_s_0041_0.html'
                       },
                       {
-                        id: 2254,
-                        parentId: 2247,
-                        name:
-                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
-                        local: 'zh-cn_topic_0000002010591334.html'
-                      },
-                      {
-                        id: 2255,
-                        parentId: 2247,
+                        id: 2072,
+                        parentId: 2064,
                         name: '步骤6：添加复制集群',
-                        local: 'commonshares_0028.html'
+                        local: 'nas_s_0042_0.html'
                       },
                       {
-                        id: 2256,
-                        parentId: 2247,
+                        id: 2073,
+                        parentId: 2064,
                         name: '步骤7：创建复制SLA',
-                        local: 'commonshares_0029.html'
+                        local: 'nas_s_0043_0.html'
                       },
                       {
-                        id: 2257,
-                        parentId: 2247,
+                        id: 2074,
+                        parentId: 2064,
                         name: '步骤8：（可选）创建反向复制/级联复制SLA',
-                        local: 'commonshares_0030.html'
+                        local: 'nas_s_0044_0.html'
                       }
                     ]
                   }
                 ]
               },
               {
-                id: 2236,
+                id: 2050,
                 parentId: 1969,
                 name: '归档',
-                local: 'commonshares_0031.html',
+                local: 'nas_s_0045_0.html',
                 children: [
                   {
-                    id: 2258,
-                    parentId: 2236,
-                    name: '归档通用共享资源备份副本',
-                    local: 'commonshares_0034.html',
+                    id: 2075,
+                    parentId: 2050,
+                    name: '归档NDMP NAS文件系统副本',
+                    local: 'nas_s_0048_0.html',
                     children: [
                       {
-                        id: 2260,
-                        parentId: 2258,
+                        id: 2077,
+                        parentId: 2075,
                         name: '步骤1：添加归档存储',
-                        local: 'commonshares_0035.html',
+                        local: 'nas_s_0049_0.html',
                         children: [
                           {
-                            id: 2262,
-                            parentId: 2260,
+                            id: 2079,
+                            parentId: 2077,
                             name: '添加对象存储（归档存储是对象存储）',
-                            local: 'commonshares_0036.html'
+                            local: 'nas_s_0050_0.html'
                           },
                           {
-                            id: 2263,
-                            parentId: 2260,
-                            name: '创建介质集（归档存储是磁带库）',
-                            local: 'commonshares_0037.html'
+                            id: 2080,
+                            parentId: 2077,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
+                            local: 'nas_s_0051_0.html'
                           }
                         ]
                       },
                       {
-                        id: 2261,
-                        parentId: 2258,
-                        name: '步骤2：创建归档SLA',
-                        local: 'commonshares_0038.html'
+                        id: 2078,
+                        parentId: 2075,
+                        name: '步骤2：创建备份副本归档SLA',
+                        local: 'nas_s_0052_0.html'
                       }
                     ]
                   },
                   {
-                    id: 2259,
-                    parentId: 2236,
-                    name: '归档通用共享资源复制副本',
-                    local: 'commonshares_0039.html',
+                    id: 2076,
+                    parentId: 2050,
+                    name: '归档NDMP NAS文件系统复制副本',
+                    local: 'nas_s_0053_0.html',
                     children: [
                       {
-                        id: 2264,
-                        parentId: 2259,
-                        name: '步骤1：创建归档SLA',
-                        local: 'commonshares_0040.html'
+                        id: 2081,
+                        parentId: 2076,
+                        name: '步骤1：创建复制副本归档SLA',
+                        local: 'nas_s_0054_0.html'
                       },
                       {
-                        id: 2265,
-                        parentId: 2259,
+                        id: 2082,
+                        parentId: 2076,
                         name: '步骤2：创建复制副本周期性归档',
-                        local: 'commonshares_0041.html'
+                        local: 'nas_s_0055_0.html'
                       }
                     ]
                   }
                 ]
               },
               {
-                id: 2237,
+                id: 2051,
                 parentId: 1969,
+                name: '恢复',
+                local: 'nas_s_0056_0.html',
+                children: [
+                  {
+                    id: 2083,
+                    parentId: 2051,
+                    name: '恢复NDMP NAS文件系统',
+                    local: 'nas_s_0059_0.html'
+                  },
+                  {
+                    id: 2084,
+                    parentId: 2051,
+                    name: '恢复NDMP NAS文件系统中的文件',
+                    local: 'nas_s_0060_0.html'
+                  }
+                ]
+              },
+              {
+                id: 2052,
+                parentId: 1969,
+                name: '全局搜索',
+                local: 'nas_s_0073_0.html',
+                children: [
+                  {
+                    id: 2085,
+                    parentId: 2052,
+                    name: '全局搜索副本数据',
+                    local: 'nas_s_0074_0.html'
+                  },
+                  {
+                    id: 2086,
+                    parentId: 2052,
+                    name: '全局搜索资源',
+                    local: 'nas_s_0075_0.html'
+                  },
+                  {
+                    id: 2087,
+                    parentId: 2052,
+                    name: '全局标签搜索',
+                    local: 'nas_s_0275.html'
+                  }
+                ]
+              },
+              {
+                id: 2053,
+                parentId: 1969,
+                name: 'SLA',
+                local: 'nas_s_0078_0.html',
+                children: [
+                  {
+                    id: 2088,
+                    parentId: 2053,
+                    name: '关于SLA',
+                    local: 'nas_s_0079_0.html'
+                  },
+                  {
+                    id: 2089,
+                    parentId: 2053,
+                    name: '查看SLA信息',
+                    local: 'nas_s_0080_0.html'
+                  },
+                  {
+                    id: 2090,
+                    parentId: 2053,
+                    name: '管理SLA',
+                    local: 'nas_s_0081_0.html'
+                  }
+                ]
+              },
+              {
+                id: 2054,
+                parentId: 1969,
+                name: '副本',
+                local: 'nas_s_0082_0.html',
+                children: [
+                  {
+                    id: 2091,
+                    parentId: 2054,
+                    name: '查看NDMP NAS文件系统副本信息',
+                    local: 'nas_s_0083_0.html'
+                  },
+                  {
+                    id: 2092,
+                    parentId: 2054,
+                    name: '管理NDMP NAS文件系统副本',
+                    local: 'nas_s_0084_0.html'
+                  }
+                ]
+              },
+              {
+                id: 2055,
+                parentId: 1969,
+                name: '存储设备信息',
+                local: 'nas_s_0088_0.html',
+                children: [
+                  {
+                    id: 2093,
+                    parentId: 2055,
+                    name: '查看存储设备信息',
+                    local: 'nas_s_0089_0.html'
+                  },
+                  {
+                    id: 2094,
+                    parentId: 2055,
+                    name: '管理存储设备信息',
+                    local: 'nas_s_0090_0.html'
+                  }
+                ]
+              },
+              {
+                id: 2056,
+                parentId: 1969,
+                name: 'NDMP NAS文件系统',
+                local: 'nas_s_0091_0.html',
+                children: [
+                  {
+                    id: 2095,
+                    parentId: 2056,
+                    name: '查看NDMP NAS文件系统',
+                    local: 'nas_s_0092_0.html'
+                  },
+                  {
+                    id: 2096,
+                    parentId: 2056,
+                    name: '管理NDMP NAS文件系统',
+                    local: 'nas_s_0093_0.html'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: 1970,
+            parentId: 19,
+            name: '文件集数据保护',
+            local: 'zh-cn_topic_0000001873679157.html',
+            children: [
+              {
+                id: 2097,
+                parentId: 1970,
+                name: '备份',
+                local: 'Files-0005.html',
+                children: [
+                  {
+                    id: 2105,
+                    parentId: 2097,
+                    name: '挂载对象存储到数据保护代理主机',
+                    local: 'object-0006.html'
+                  },
+                  {
+                    id: 2106,
+                    parentId: 2097,
+                    name: '备份文件集',
+                    local: 'Files-0008.html',
+                    children: [
+                      {
+                        id: 2107,
+                        parentId: 2106,
+                        name: '步骤1：（可选）创建文件集模板',
+                        local: 'Files-0009.html'
+                      },
+                      {
+                        id: 2108,
+                        parentId: 2106,
+                        name: '步骤2：创建文件集',
+                        local: 'Files-0010.html'
+                      },
+                      {
+                        id: 2109,
+                        parentId: 2106,
+                        name: '步骤3：（可选）创建限速策略',
+                        local: 'Files-0011.html'
+                      },
+                      {
+                        id: 2110,
+                        parentId: 2106,
+                        name: '步骤4：（可选）开启备份链路加密开关',
+                        local: 'Files-0012.html'
+                      },
+                      {
+                        id: 2111,
+                        parentId: 2106,
+                        name: '步骤5：创建备份SLA',
+                        local: 'Files-0013.html'
+                      },
+                      {
+                        id: 2112,
+                        parentId: 2106,
+                        name: '步骤6：执行备份',
+                        local: 'Files-0014.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 2098,
+                parentId: 1970,
+                name: '复制',
+                local: 'oracle_gud_000035.html',
+                children: [
+                  {
+                    id: 2113,
+                    parentId: 2098,
+                    name: '复制文件集副本',
+                    local: 'Files-0019.html',
+                    children: [
+                      {
+                        id: 2114,
+                        parentId: 2113,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.5.0版本）和OceanProtect E1000（备份存储为OceanProtect））',
+                        local: 'fc_gud_0026.html'
+                      },
+                      {
+                        id: 2115,
+                        parentId: 2113,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'fc_gud_0026_1.html'
+                      },
+                      {
+                        id: 2116,
+                        parentId: 2113,
+                        name: '步骤2：（可选）创建IPsec策略',
+                        local: 'Files-0022.html'
+                      },
+                      {
+                        id: 2117,
+                        parentId: 2113,
+                        name: '步骤3：（可选）开启复制链路加密开关',
+                        local: 'Files-0023.html'
+                      },
+                      {
+                        id: 2118,
+                        parentId: 2113,
+                        name: '步骤4：下载并导入证书',
+                        local: 'Files-0024.html'
+                      },
+                      {
+                        id: 2119,
+                        parentId: 2113,
+                        name: '步骤5：创建远端设备管理员（适用于1.5.0版本）',
+                        local: 'Files-0025.html'
+                      },
+                      {
+                        id: 2120,
+                        parentId: 2113,
+                        name:
+                          '步骤5：创建远端设备管理员（适用于1.6.0及后续版本）',
+                        local: 'zh-cn_topic_0000002010555368.html'
+                      },
+                      {
+                        id: 2121,
+                        parentId: 2113,
+                        name: '步骤6：添加复制集群',
+                        local: 'oracle_gud_000040.html'
+                      },
+                      {
+                        id: 2122,
+                        parentId: 2113,
+                        name: '步骤7：创建复制SLA',
+                        local: 'Files-0027.html'
+                      },
+                      {
+                        id: 2123,
+                        parentId: 2113,
+                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
+                        local: 'Files-0028.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 2099,
+                parentId: 1970,
+                name: '归档',
+                local: 'Files-0029.html',
+                children: [
+                  {
+                    id: 2124,
+                    parentId: 2099,
+                    name: '归档文件集备份副本',
+                    local: 'Files-0032.html',
+                    children: [
+                      {
+                        id: 2126,
+                        parentId: 2124,
+                        name: '步骤1：添加归档存储',
+                        local: 'Files-0033.html',
+                        children: [
+                          {
+                            id: 2128,
+                            parentId: 2126,
+                            name: '添加对象存储（归档存储是对象存储）',
+                            local: 'Files-0034.html'
+                          },
+                          {
+                            id: 2129,
+                            parentId: 2126,
+                            name: '创建介质集（归档存储是磁带库）',
+                            local: 'Files-0035.html'
+                          }
+                        ]
+                      },
+                      {
+                        id: 2127,
+                        parentId: 2124,
+                        name: '步骤2：创建备份副本归档SLA',
+                        local: 'Files-0036.html'
+                      }
+                    ]
+                  },
+                  {
+                    id: 2125,
+                    parentId: 2099,
+                    name: '归档文件集复制副本',
+                    local: 'Files-0037.html',
+                    children: [
+                      {
+                        id: 2130,
+                        parentId: 2125,
+                        name: '步骤1：创建复制副本归档SLA',
+                        local: 'Files-0038.html'
+                      },
+                      {
+                        id: 2131,
+                        parentId: 2125,
+                        name: '步骤2：创建复制副本周期性归档',
+                        local: 'Files-0039.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 2100,
+                parentId: 1970,
+                name: '恢复',
+                local: 'Files-0040.html',
+                children: [
+                  {
+                    id: 2132,
+                    parentId: 2100,
+                    name: '恢复文件集',
+                    local: 'Files-0043.html'
+                  },
+                  {
+                    id: 2133,
+                    parentId: 2100,
+                    name: '恢复文件集中的单个或多个文件',
+                    local: 'Files-0044.html'
+                  }
+                ]
+              },
+              {
+                id: 2101,
+                parentId: 1970,
+                name: '全局搜索',
+                local: 'Files-0054.html',
+                children: [
+                  {
+                    id: 2134,
+                    parentId: 2101,
+                    name: '全局搜索副本数据',
+                    local: 'Files-0055.html'
+                  },
+                  {
+                    id: 2135,
+                    parentId: 2101,
+                    name: '全局搜索资源',
+                    local: 'Files-0056.html'
+                  },
+                  {
+                    id: 2136,
+                    parentId: 2101,
+                    name: '全局标签搜索（适用于1.6.0及后续版本）',
+                    local: 'zh-cn_topic_0000002002699236.html'
+                  }
+                ]
+              },
+              {
+                id: 2102,
+                parentId: 1970,
+                name: 'SLA',
+                local: 'Files-0059.html',
+                children: [
+                  {
+                    id: 2137,
+                    parentId: 2102,
+                    name: '查看SLA信息',
+                    local: 'Files-0061.html'
+                  },
+                  {
+                    id: 2138,
+                    parentId: 2102,
+                    name: '管理SLA',
+                    local: 'Files-0062.html'
+                  }
+                ]
+              },
+              {
+                id: 2103,
+                parentId: 1970,
+                name: '副本',
+                local: 'Files-0063.html',
+                children: [
+                  {
+                    id: 2139,
+                    parentId: 2103,
+                    name: '查看文件集副本信息',
+                    local: 'Files-0064.html'
+                  },
+                  {
+                    id: 2140,
+                    parentId: 2103,
+                    name: '管理文件集副本',
+                    local: 'Files-0065.html'
+                  }
+                ]
+              },
+              {
+                id: 2104,
+                parentId: 1970,
+                name: '文件集',
+                local: 'Files-0066.html',
+                children: [
+                  {
+                    id: 2141,
+                    parentId: 2104,
+                    name: '查看文件集信息',
+                    local: 'Files-0067.html'
+                  },
+                  {
+                    id: 2142,
+                    parentId: 2104,
+                    name: '管理文件集',
+                    local: 'Files-0068.html'
+                  },
+                  {
+                    id: 2143,
+                    parentId: 2104,
+                    name: '管理文件集模板',
+                    local: 'Files-0069.html'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: 1971,
+            parentId: 19,
+            name: '卷数据保护（适用于1.6.0及后续版本）',
+            local: 'zh-cn_topic_0000001826879836.html',
+            children: [
+              {
+                id: 2144,
+                parentId: 1971,
+                name: '备份',
+                local: 'volume_0008.html',
+                children: [
+                  {
+                    id: 2153,
+                    parentId: 2144,
+                    name: '备份卷',
+                    local: 'volume_0011.html',
+                    children: [
+                      {
+                        id: 2154,
+                        parentId: 2153,
+                        name: '步骤1：创建卷',
+                        local: 'volume_0012.html'
+                      },
+                      {
+                        id: 2155,
+                        parentId: 2153,
+                        name: '步骤2：创建限速策略',
+                        local: 'volume_0013.html'
+                      },
+                      {
+                        id: 2156,
+                        parentId: 2153,
+                        name: '步骤3：（可选）开启备份链路加密开关',
+                        local: 'volume_0014.html'
+                      },
+                      {
+                        id: 2157,
+                        parentId: 2153,
+                        name: '步骤4：创建备份SLA',
+                        local: 'volume_0015.html'
+                      },
+                      {
+                        id: 2158,
+                        parentId: 2153,
+                        name: '步骤5：执行备份',
+                        local: 'volume_0016.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 2145,
+                parentId: 1971,
+                name: '复制',
+                local: 'volume_0017.html',
+                children: [
+                  {
+                    id: 2159,
+                    parentId: 2145,
+                    name: '复制卷副本',
+                    local: 'volume_0020.html',
+                    children: [
+                      {
+                        id: 2160,
+                        parentId: 2159,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'volume_0022.html'
+                      },
+                      {
+                        id: 2161,
+                        parentId: 2159,
+                        name: '步骤2：（可选）创建IPsec策略',
+                        local: 'volume_0023.html'
+                      },
+                      {
+                        id: 2162,
+                        parentId: 2159,
+                        name: '步骤3：（可选）开启复制链路加密开关',
+                        local: 'volume_0024.html'
+                      },
+                      {
+                        id: 2163,
+                        parentId: 2159,
+                        name: '步骤4：下载并导入证书',
+                        local: 'volume_0025.html'
+                      },
+                      {
+                        id: 2164,
+                        parentId: 2159,
+                        name: '步骤5：创建远端设备管理员',
+                        local: 'volume_0026.html'
+                      },
+                      {
+                        id: 2165,
+                        parentId: 2159,
+                        name: '步骤6：添加复制集群',
+                        local: 'volume_0027.html'
+                      },
+                      {
+                        id: 2166,
+                        parentId: 2159,
+                        name: '步骤7：创建复制SLA',
+                        local: 'volume_0028.html'
+                      },
+                      {
+                        id: 2167,
+                        parentId: 2159,
+                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
+                        local: 'volume_0029.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 2146,
+                parentId: 1971,
+                name: '归档',
+                local: 'volume_0030.html',
+                children: [
+                  {
+                    id: 2168,
+                    parentId: 2146,
+                    name: '归档卷备份副本',
+                    local: 'volume_0033.html',
+                    children: [
+                      {
+                        id: 2170,
+                        parentId: 2168,
+                        name: '步骤1：添加归档存储',
+                        local: 'volume_0034.html',
+                        children: [
+                          {
+                            id: 2172,
+                            parentId: 2170,
+                            name: '添加对象存储（归档存储是对象存储）',
+                            local: 'volume_0035.html'
+                          },
+                          {
+                            id: 2173,
+                            parentId: 2170,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
+                            local: 'volume_0036.html'
+                          }
+                        ]
+                      },
+                      {
+                        id: 2171,
+                        parentId: 2168,
+                        name: '步骤2：创建备份副本归档SLA',
+                        local: 'volume_0037.html'
+                      }
+                    ]
+                  },
+                  {
+                    id: 2169,
+                    parentId: 2146,
+                    name: '归档卷复制副本',
+                    local: 'volume_0038.html',
+                    children: [
+                      {
+                        id: 2174,
+                        parentId: 2169,
+                        name: '步骤1：创建复制副本归档SLA',
+                        local: 'volume_0039.html'
+                      },
+                      {
+                        id: 2175,
+                        parentId: 2169,
+                        name: '步骤2：创建复制副本周期性归档',
+                        local: 'volume_0040.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 2147,
+                parentId: 1971,
+                name: '恢复',
+                local: 'volume_0041.html',
+                children: [
+                  {
+                    id: 2176,
+                    parentId: 2147,
+                    name: '恢复卷',
+                    local: 'volume_0044.html'
+                  },
+                  {
+                    id: 2177,
+                    parentId: 2147,
+                    name: '恢复卷副本中的单个或多个文件',
+                    local: 'volume_0045.html'
+                  }
+                ]
+              },
+              {
+                id: 2148,
+                parentId: 1971,
+                name: '即时挂载',
+                local: 'volume_0046.html',
+                children: [
+                  {
+                    id: 2178,
+                    parentId: 2148,
+                    name: '关于即时挂载',
+                    local: 'volume_0047.html'
+                  },
+                  {
+                    id: 2179,
+                    parentId: 2148,
+                    name: '约束与限制',
+                    local: 'volume_0048.html'
+                  },
+                  {
+                    id: 2180,
+                    parentId: 2148,
+                    name: '即时挂载卷',
+                    local: 'volume_0049.html'
+                  },
+                  {
+                    id: 2181,
+                    parentId: 2148,
+                    name: '管理卷即时挂载',
+                    local: 'volume_0050.html',
+                    children: [
+                      {
+                        id: 2182,
+                        parentId: 2181,
+                        name: '查看卷即时挂载信息',
+                        local: 'volume_0051.html'
+                      },
+                      {
+                        id: 2183,
+                        parentId: 2181,
+                        name: '管理即时挂载',
+                        local: 'volume_0052.html'
+                      },
+                      {
+                        id: 2184,
+                        parentId: 2181,
+                        name: '创建挂载更新策略',
+                        local: 'volume_0053.html'
+                      },
+                      {
+                        id: 2185,
+                        parentId: 2181,
+                        name: '管理挂载更新策略',
+                        local: 'volume_0054.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 2149,
+                parentId: 1971,
+                name: '全局搜索',
+                local: 'volume_0055.html',
+                children: [
+                  {
+                    id: 2186,
+                    parentId: 2149,
+                    name: '关于全局搜索',
+                    local: 'volume_0056.html'
+                  },
+                  {
+                    id: 2187,
+                    parentId: 2149,
+                    name: '全局搜索副本数据',
+                    local: 'volume_0057.html'
+                  },
+                  {
+                    id: 2188,
+                    parentId: 2149,
+                    name: '全局搜索资源',
+                    local: 'volume_0058.html'
+                  },
+                  {
+                    id: 2189,
+                    parentId: 2149,
+                    name: '全局标签搜索',
+                    local: 'volume_0059.html'
+                  }
+                ]
+              },
+              {
+                id: 2150,
+                parentId: 1971,
+                name: 'SLA',
+                local: 'volume_0062.html',
+                children: [
+                  {
+                    id: 2190,
+                    parentId: 2150,
+                    name: '关于SLA',
+                    local: 'volume_0063.html'
+                  },
+                  {
+                    id: 2191,
+                    parentId: 2150,
+                    name: '查看SLA信息',
+                    local: 'volume_0064.html'
+                  },
+                  {
+                    id: 2192,
+                    parentId: 2150,
+                    name: '管理SLA',
+                    local: 'volume_0065.html'
+                  }
+                ]
+              },
+              {
+                id: 2151,
+                parentId: 1971,
+                name: '副本',
+                local: 'volume_0066.html',
+                children: [
+                  {
+                    id: 2193,
+                    parentId: 2151,
+                    name: '查看卷副本信息',
+                    local: 'volume_0067.html'
+                  },
+                  {
+                    id: 2194,
+                    parentId: 2151,
+                    name: '管理卷副本',
+                    local: 'volume_0068.html'
+                  }
+                ]
+              },
+              {
+                id: 2152,
+                parentId: 1971,
+                name: '卷',
+                local: 'volume_0069.html',
+                children: [
+                  {
+                    id: 2195,
+                    parentId: 2152,
+                    name: '查看卷信息',
+                    local: 'volume_0070.html'
+                  },
+                  {
+                    id: 2196,
+                    parentId: 2152,
+                    name: '管理卷',
+                    local: 'volume_0071.html'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: 1972,
+            parentId: 19,
+            name: '对象存储数据保护（适用于1.6.0及后续版本）',
+            local: 'zh-cn_topic_0000001826879816.html',
+            children: [
+              {
+                id: 2197,
+                parentId: 1972,
+                name: '备份',
+                local: 'object-0003.html',
+                children: [
+                  {
+                    id: 2205,
+                    parentId: 2197,
+                    name: '备份前准备',
+                    local: 'zh-cn_topic_0000001953327945.html',
+                    children: [
+                      {
+                        id: 2207,
+                        parentId: 2205,
+                        name: '在生产端获取Endpoint',
+                        local: 'zh-cn_topic_0000001926224624.html'
+                      },
+                      {
+                        id: 2208,
+                        parentId: 2205,
+                        name: '在生产端获取AK和SK',
+                        local: 'zh-cn_topic_0000001953344001.html'
+                      }
+                    ]
+                  },
+                  {
+                    id: 2206,
+                    parentId: 2197,
+                    name: '备份对象存储',
+                    local: 'object-0007.html',
+                    children: [
+                      {
+                        id: 2209,
+                        parentId: 2206,
+                        name: '步骤1：注册对象存储',
+                        local: 'object-0008.html'
+                      },
+                      {
+                        id: 2210,
+                        parentId: 2206,
+                        name: '步骤2：创建对象集合',
+                        local: 'object-0009.html'
+                      },
+                      {
+                        id: 2211,
+                        parentId: 2206,
+                        name: '步骤3：（可选）创建限速策略',
+                        local: 'object-0010.html'
+                      },
+                      {
+                        id: 2212,
+                        parentId: 2206,
+                        name: '步骤4：（可选）开启备份链路加密开关',
+                        local: 'object-0011.html'
+                      },
+                      {
+                        id: 2213,
+                        parentId: 2206,
+                        name: '步骤5：创建备份SLA',
+                        local: 'object-0012.html'
+                      },
+                      {
+                        id: 2214,
+                        parentId: 2206,
+                        name: '步骤6：开启NFSv4.1服务',
+                        local: 'nas_s_0028.html'
+                      },
+                      {
+                        id: 2215,
+                        parentId: 2206,
+                        name: '步骤7：执行备份',
+                        local: 'object-0013.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 2198,
+                parentId: 1972,
+                name: '复制',
+                local: 'oracle_gud_000035_2.html',
+                children: [
+                  {
+                    id: 2216,
+                    parentId: 2198,
+                    name: '复制对象存储副本',
+                    local: 'object-0018.html',
+                    children: [
+                      {
+                        id: 2217,
+                        parentId: 2216,
+                        name: '规划复制网络',
+                        local: 'object-0019.html'
+                      },
+                      {
+                        id: 2218,
+                        parentId: 2216,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机）',
+                        local: 'fc_gud_0026_1_6.html'
+                      },
+                      {
+                        id: 2219,
+                        parentId: 2216,
+                        name: '步骤2：（可选）创建IPsec策略',
+                        local: 'object-0021.html'
+                      },
+                      {
+                        id: 2220,
+                        parentId: 2216,
+                        name: '步骤3：（可选）开启复制链路加密开关',
+                        local: 'object-0022.html'
+                      },
+                      {
+                        id: 2221,
+                        parentId: 2216,
+                        name: '步骤4：下载并导入证书',
+                        local: 'object-0023.html'
+                      },
+                      {
+                        id: 2222,
+                        parentId: 2216,
+                        name: '步骤5：创建远端设备管理员',
+                        local: 'zh-cn_topic_0000002046625105.html'
+                      },
+                      {
+                        id: 2223,
+                        parentId: 2216,
+                        name: '步骤6：添加复制集群',
+                        local: 'foc_gud_0032.html'
+                      },
+                      {
+                        id: 2224,
+                        parentId: 2216,
+                        name: '步骤7：创建复制SLA',
+                        local: 'object-0026.html'
+                      },
+                      {
+                        id: 2225,
+                        parentId: 2216,
+                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
+                        local: 'object-0027.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 2199,
+                parentId: 1972,
+                name: '归档',
+                local: 'object-0028.html',
+                children: [
+                  {
+                    id: 2226,
+                    parentId: 2199,
+                    name: '归档对象集合备份副本',
+                    local: 'object-0031.html',
+                    children: [
+                      {
+                        id: 2228,
+                        parentId: 2226,
+                        name: '步骤1：添加归档存储',
+                        local: 'object-0032.html',
+                        children: [
+                          {
+                            id: 2230,
+                            parentId: 2228,
+                            name: '添加对象存储（归档存储是对象存储）',
+                            local: 'object-0033.html'
+                          },
+                          {
+                            id: 2231,
+                            parentId: 2228,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
+                            local: 'zh-cn_topic_0000002098646725.html'
+                          }
+                        ]
+                      },
+                      {
+                        id: 2229,
+                        parentId: 2226,
+                        name: '步骤2：创建备份副本归档SLA',
+                        local: 'object-0035.html'
+                      }
+                    ]
+                  },
+                  {
+                    id: 2227,
+                    parentId: 2199,
+                    name: '归档对象集合复制副本',
+                    local: 'object-0036.html',
+                    children: [
+                      {
+                        id: 2232,
+                        parentId: 2227,
+                        name: '步骤1：创建复制副本归档SLA',
+                        local: 'object-0037.html'
+                      },
+                      {
+                        id: 2233,
+                        parentId: 2227,
+                        name: '步骤2：创建复制副本周期性归档',
+                        local: 'object-0038.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 2200,
+                parentId: 1972,
+                name: '恢复',
+                local: 'object-0039.html',
+                children: [
+                  {
+                    id: 2234,
+                    parentId: 2200,
+                    name: '恢复对象存储',
+                    local: 'object-0042.html'
+                  }
+                ]
+              },
+              {
+                id: 2201,
+                parentId: 1972,
+                name: '全局搜索',
+                local: 'object-0049.html',
+                children: [
+                  {
+                    id: 2235,
+                    parentId: 2201,
+                    name: '全局搜索副本数据',
+                    local: 'object-0050.html'
+                  },
+                  {
+                    id: 2236,
+                    parentId: 2201,
+                    name: '全局搜索资源',
+                    local: 'object-0051.html'
+                  },
+                  {
+                    id: 2237,
+                    parentId: 2201,
+                    name: '全局标签搜索',
+                    local: 'zh-cn_topic_0000002002688946.html'
+                  }
+                ]
+              },
+              {
+                id: 2202,
+                parentId: 1972,
+                name: 'SLA',
+                local: 'object-0054.html',
+                children: [
+                  {
+                    id: 2238,
+                    parentId: 2202,
+                    name: '关于SLA',
+                    local: 'object-0055.html'
+                  },
+                  {
+                    id: 2239,
+                    parentId: 2202,
+                    name: '查看SLA信息',
+                    local: 'object-0056.html'
+                  },
+                  {
+                    id: 2240,
+                    parentId: 2202,
+                    name: '管理SLA',
+                    local: 'object-0057.html'
+                  }
+                ]
+              },
+              {
+                id: 2203,
+                parentId: 1972,
+                name: '副本',
+                local: 'object-0058.html',
+                children: [
+                  {
+                    id: 2241,
+                    parentId: 2203,
+                    name: '查看对象存储副本信息',
+                    local: 'object-0059.html'
+                  },
+                  {
+                    id: 2242,
+                    parentId: 2203,
+                    name: '管理对象存储副本',
+                    local: 'object-0060.html'
+                  }
+                ]
+              },
+              {
+                id: 2204,
+                parentId: 1972,
+                name: '对象存储',
+                local: 'object-0061.html',
+                children: [
+                  {
+                    id: 2243,
+                    parentId: 2204,
+                    name: '查看对象存储信息',
+                    local: 'object-0062.html'
+                  },
+                  {
+                    id: 2244,
+                    parentId: 2204,
+                    name: '管理对象集合',
+                    local: 'object-0063.html'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: 1973,
+            parentId: 19,
+            name: '通用共享数据保护（适用于1.6.0及后续版本）',
+            local: 'zh-cn_topic_0000001873759353.html',
+            children: [
+              {
+                id: 2245,
+                parentId: 1973,
+                name: '备份',
+                local: 'commonshares_0008.html',
+                children: [
+                  {
+                    id: 2253,
+                    parentId: 2245,
+                    name: '备份通用共享资源数据',
+                    local: 'commonshares_0011.html',
+                    children: [
+                      {
+                        id: 2254,
+                        parentId: 2253,
+                        name: '步骤1：创建通用共享',
+                        local: 'commonshares_0012.html'
+                      },
+                      {
+                        id: 2255,
+                        parentId: 2253,
+                        name: '步骤2：创建限速策略',
+                        local: 'commonshares_0013.html'
+                      },
+                      {
+                        id: 2256,
+                        parentId: 2253,
+                        name: '步骤3：（可选）开启备份链路加密开关',
+                        local: 'commonshares_0014.html'
+                      },
+                      {
+                        id: 2257,
+                        parentId: 2253,
+                        name: '步骤4：创建备份SLA',
+                        local: 'commonshares_0015.html'
+                      },
+                      {
+                        id: 2258,
+                        parentId: 2253,
+                        name: '步骤5：执行备份',
+                        local: 'commonshares_0016.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 2246,
+                parentId: 1973,
+                name: '复制',
+                local: 'commonshares_0019.html',
+                children: [
+                  {
+                    id: 2259,
+                    parentId: 2246,
+                    name: '复制通用共享副本',
+                    local: 'commonshares_0022.html',
+                    children: [
+                      {
+                        id: 2260,
+                        parentId: 2259,
+                        name:
+                          '步骤1：创建复制网络逻辑端口（适用于OceanProtect X系列备份一体机（1.6.0及后续版本））',
+                        local: 'commonshares_0024.html'
+                      },
+                      {
+                        id: 2261,
+                        parentId: 2259,
+                        name: '步骤2：（可选）创建IPsec策略',
+                        local: 'commonshares_0025.html'
+                      },
+                      {
+                        id: 2262,
+                        parentId: 2259,
+                        name:
+                          '（可选）开启复制链路加密开关（适用于OceanProtect X系列备份一体机和Ocean Protect E1000（备份存储为OceanProtect））',
+                        local: 'commonshares_0026.html'
+                      },
+                      {
+                        id: 2263,
+                        parentId: 2259,
+                        name: '步骤4：下载并导入证书',
+                        local: 'commonshares_0027.html'
+                      },
+                      {
+                        id: 2264,
+                        parentId: 2259,
+                        name: '步骤5：创建远端设备管理员',
+                        local: 'commonshares_0028.html'
+                      },
+                      {
+                        id: 2265,
+                        parentId: 2259,
+                        name: '步骤6：添加复制集群',
+                        local: 'commonshares_0029.html'
+                      },
+                      {
+                        id: 2266,
+                        parentId: 2259,
+                        name: '步骤7：创建复制SLA',
+                        local: 'commonshares_0030.html'
+                      },
+                      {
+                        id: 2267,
+                        parentId: 2259,
+                        name: '步骤8：（可选）创建反向复制/级联复制SLA',
+                        local: 'commonshares_0031.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 2247,
+                parentId: 1973,
+                name: '归档',
+                local: 'commonshares_0032.html',
+                children: [
+                  {
+                    id: 2268,
+                    parentId: 2247,
+                    name: '归档通用共享资源备份副本',
+                    local: 'commonshares_0035.html',
+                    children: [
+                      {
+                        id: 2270,
+                        parentId: 2268,
+                        name: '步骤1：添加归档存储',
+                        local: 'commonshares_0036.html',
+                        children: [
+                          {
+                            id: 2272,
+                            parentId: 2270,
+                            name: '添加对象存储（归档存储是对象存储）',
+                            local: 'commonshares_0037.html'
+                          },
+                          {
+                            id: 2273,
+                            parentId: 2270,
+                            name:
+                              '创建介质集（归档存储是磁带库）（适用于OceanProtect X系列备份一体机）',
+                            local: 'commonshares_0038.html'
+                          }
+                        ]
+                      },
+                      {
+                        id: 2271,
+                        parentId: 2268,
+                        name: '步骤2：创建备份副本归档SLA',
+                        local: 'commonshares_0039.html'
+                      }
+                    ]
+                  },
+                  {
+                    id: 2269,
+                    parentId: 2247,
+                    name: '归档通用共享资源复制副本',
+                    local: 'commonshares_0040.html',
+                    children: [
+                      {
+                        id: 2274,
+                        parentId: 2269,
+                        name: '步骤1：创建复制副本归档SLA',
+                        local: 'commonshares_0041.html'
+                      },
+                      {
+                        id: 2275,
+                        parentId: 2269,
+                        name: '步骤2：创建复制副本周期性归档',
+                        local: 'commonshares_0042.html'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 2248,
+                parentId: 1973,
                 name: '管理共享信息',
                 local: 'commonshares_0046.html',
                 children: [
                   {
-                    id: 2266,
-                    parentId: 2237,
+                    id: 2276,
+                    parentId: 2248,
                     name: '配置共享信息',
                     local: 'commonshares_0047.html'
                   },
                   {
-                    id: 2267,
-                    parentId: 2237,
+                    id: 2277,
+                    parentId: 2248,
                     name: '查看共享信息',
                     local: 'commonshares_0048.html'
                   },
                   {
-                    id: 2268,
-                    parentId: 2237,
+                    id: 2278,
+                    parentId: 2248,
                     name: '删除共享信息',
                     local: 'commonshares_0049.html'
                   }
                 ]
               },
               {
-                id: 2238,
-                parentId: 1969,
+                id: 2249,
+                parentId: 1973,
+                name: '全局搜索',
+                local: 'commonshares_0050.html',
+                children: [
+                  {
+                    id: 2279,
+                    parentId: 2249,
+                    name: '关于全局搜索',
+                    local: 'commonshares_0051.html'
+                  },
+                  {
+                    id: 2280,
+                    parentId: 2249,
+                    name: '全局搜索副本数据',
+                    local: 'commonshares_0052.html'
+                  },
+                  {
+                    id: 2281,
+                    parentId: 2249,
+                    name: '全局搜索资源',
+                    local: 'commonshares_0053.html'
+                  },
+                  {
+                    id: 2282,
+                    parentId: 2249,
+                    name: '全局标签搜索',
+                    local: 'commonshares_0054.html'
+                  }
+                ]
+              },
+              {
+                id: 2250,
+                parentId: 1973,
                 name: 'SLA',
-                local: 'zh-cn_topic_0000001927513108.html',
+                local: 'commonshares_0057.html',
                 children: [
                   {
-                    id: 2269,
-                    parentId: 2238,
+                    id: 2283,
+                    parentId: 2250,
                     name: '关于SLA',
-                    local: 'vmware_gud_000026_0.html'
+                    local: 'commonshares_0058.html'
                   },
                   {
-                    id: 2270,
-                    parentId: 2238,
+                    id: 2284,
+                    parentId: 2250,
                     name: '查看SLA信息',
-                    local: 'zh-cn_topic_0000001954672445.html'
+                    local: 'commonshares_0059.html'
                   },
                   {
-                    id: 2271,
-                    parentId: 2238,
+                    id: 2285,
+                    parentId: 2250,
                     name: '管理SLA',
-                    local: 'zh-cn_topic_0000001927353788.html'
-                  }
-                ]
-              },
-              {
-                id: 2239,
-                parentId: 1969,
-                name: '副本',
-                local: 'commonshares_0059.html',
-                children: [
-                  {
-                    id: 2272,
-                    parentId: 2239,
-                    name: '查看通用共享资源副本信息',
                     local: 'commonshares_0060.html'
-                  },
-                  {
-                    id: 2273,
-                    parentId: 2239,
-                    name: '管理通用共享资源副本',
-                    local: 'commonshares_0061.html'
                   }
                 ]
               },
               {
-                id: 2240,
-                parentId: 1969,
-                name: '通用共享',
-                local: 'commonshares_0062.html',
+                id: 2251,
+                parentId: 1973,
+                name: '副本',
+                local: 'commonshares_0061.html',
                 children: [
                   {
-                    id: 2274,
-                    parentId: 2240,
-                    name: '查看通用共享信息',
-                    local: 'commonshares_0063.html'
+                    id: 2286,
+                    parentId: 2251,
+                    name: '查看通用共享资源副本信息',
+                    local: 'commonshares_0062.html'
                   },
                   {
-                    id: 2275,
-                    parentId: 2240,
+                    id: 2287,
+                    parentId: 2251,
+                    name: '管理通用共享资源副本',
+                    local: 'commonshares_0063.html'
+                  }
+                ]
+              },
+              {
+                id: 2252,
+                parentId: 1973,
+                name: '通用共享',
+                local: 'commonshares_0064.html',
+                children: [
+                  {
+                    id: 2288,
+                    parentId: 2252,
+                    name: '查看通用共享信息',
+                    local: 'commonshares_0065.html'
+                  },
+                  {
+                    id: 2289,
+                    parentId: 2252,
                     name: '管理通用共享',
-                    local: 'commonshares_0064.html'
+                    local: 'commonshares_0066.html'
                   }
                 ]
               }
@@ -15107,298 +15206,298 @@ naviData = [
     local: 'helpcenter_000068.html',
     children: [
       {
-        id: 2276,
+        id: 2290,
         parentId: 4,
         name: '恢复演练',
         local: 'zh-cn_topic_0000001827336292.html',
         children: [
           {
-            id: 2280,
-            parentId: 2276,
+            id: 2294,
+            parentId: 2290,
             name: '创建演练计划',
             local: 'Ransomware0011.html'
           },
           {
-            id: 2281,
-            parentId: 2276,
+            id: 2295,
+            parentId: 2290,
             name: '管理演练计划',
             local: 'zh-cn_topic_0000001867357857.html'
           },
           {
-            id: 2282,
-            parentId: 2276,
+            id: 2296,
+            parentId: 2290,
             name: '总览恢复演练',
             local: 'zh-cn_topic_0000001896690129.html'
           }
         ]
       },
       {
-        id: 2277,
+        id: 2291,
         parentId: 4,
         name: '数据脱敏',
         local: 'helpcenter_000092.html',
         children: [
           {
-            id: 2283,
-            parentId: 2277,
+            id: 2297,
+            parentId: 2291,
             name: '配置数据脱敏',
             local: 'anonymization_0010.html',
             children: [
               {
-                id: 2288,
-                parentId: 2283,
+                id: 2302,
+                parentId: 2297,
                 name: '导入并激活License文件',
                 local: 'anonymization_0011.html'
               },
               {
-                id: 2289,
-                parentId: 2283,
+                id: 2303,
+                parentId: 2297,
                 name: '添加脱敏规则',
                 local: 'anonymization_0012.html'
               },
               {
-                id: 2290,
-                parentId: 2283,
+                id: 2304,
+                parentId: 2297,
                 name: '添加识别规则',
                 local: 'anonymization_0013.html'
               },
               {
-                id: 2291,
-                parentId: 2283,
+                id: 2305,
+                parentId: 2297,
                 name: '创建脱敏策略',
                 local: 'anonymization_0014.html'
               }
             ]
           },
           {
-            id: 2284,
-            parentId: 2277,
+            id: 2298,
+            parentId: 2291,
             name: 'Oracle数据脱敏',
             local: 'anonymization_0015.html'
           },
           {
-            id: 2285,
-            parentId: 2277,
+            id: 2299,
+            parentId: 2291,
             name: '管理数据脱敏',
             local: 'anonymization_0016.html',
             children: [
               {
-                id: 2292,
-                parentId: 2285,
+                id: 2306,
+                parentId: 2299,
                 name: '管理脱敏策略',
                 local: 'anonymization_0017.html'
               },
               {
-                id: 2293,
-                parentId: 2285,
+                id: 2307,
+                parentId: 2299,
                 name: '管理识别规则',
                 local: 'anonymization_0018.html'
               },
               {
-                id: 2294,
-                parentId: 2285,
+                id: 2308,
+                parentId: 2299,
                 name: '管理脱敏规则',
                 local: 'anonymization_0019.html'
               }
             ]
           },
           {
-            id: 2286,
-            parentId: 2277,
+            id: 2300,
+            parentId: 2291,
             name: '脱敏规则类型说明',
             local: 'anonymization_0020.html'
           },
           {
-            id: 2287,
-            parentId: 2277,
+            id: 2301,
+            parentId: 2291,
             name: '配置数据库侦听',
             local: 'anonymization_0021.html'
           }
         ]
       },
       {
-        id: 2278,
+        id: 2292,
         parentId: 4,
         name: '防勒索',
         local: 'helpcenter_000094.html',
         children: [
           {
-            id: 2295,
-            parentId: 2278,
+            id: 2309,
+            parentId: 2292,
             name: '配置副本防勒索',
             local: 'ransome_0011.html',
             children: [
               {
-                id: 2301,
-                parentId: 2295,
+                id: 2315,
+                parentId: 2309,
                 name: '创建防勒索\u0026WORM策略',
                 local: 'ransome_0012.html'
               }
             ]
           },
           {
-            id: 2296,
-            parentId: 2278,
+            id: 2310,
+            parentId: 2292,
             name: '执行副本防勒索（适用于1.5.0版本）',
             local: 'ransome_0013.html',
             children: [
               {
-                id: 2302,
-                parentId: 2296,
+                id: 2316,
+                parentId: 2310,
                 name: 'VMware副本勒索软件检测',
                 local: 'ransome_0014.html'
               },
               {
-                id: 2303,
-                parentId: 2296,
+                id: 2317,
+                parentId: 2310,
                 name: 'NAS文件系统副本勒索软件检测',
                 local: 'ransome_0015.html'
               },
               {
-                id: 2304,
-                parentId: 2296,
+                id: 2318,
+                parentId: 2310,
                 name: 'NAS共享副本勒索软件检测',
                 local: 'ransome_0016.html'
               },
               {
-                id: 2305,
-                parentId: 2296,
+                id: 2319,
+                parentId: 2310,
                 name: '文件集副本勒索软件检测',
                 local: 'ransome_0017.html'
               }
             ]
           },
           {
-            id: 2297,
-            parentId: 2278,
+            id: 2311,
+            parentId: 2292,
             name: '执行副本防勒索（适用于1.6.0及后续版本）',
             local: 'ransome16_001.html',
             children: [
               {
-                id: 2306,
-                parentId: 2297,
+                id: 2320,
+                parentId: 2311,
                 name: 'VMware虚拟机副本勒索软件检测',
                 local: 'ransome16_002.html'
               },
               {
-                id: 2307,
-                parentId: 2297,
+                id: 2321,
+                parentId: 2311,
                 name: 'NAS文件系统副本勒索软件检测',
                 local: 'ransome16_003.html'
               },
               {
-                id: 2308,
-                parentId: 2297,
+                id: 2322,
+                parentId: 2311,
                 name: 'NAS共享副本勒索软件检测',
                 local: 'ransome16_004.html'
               },
               {
-                id: 2309,
-                parentId: 2297,
+                id: 2323,
+                parentId: 2311,
                 name: '文件集副本勒索软件检测',
                 local: 'ransome16_005.html'
               },
               {
-                id: 2310,
-                parentId: 2297,
+                id: 2324,
+                parentId: 2311,
                 name: 'CNware虚拟机副本勒索软件检测',
                 local: 'ransome16_006.html'
               },
               {
-                id: 2311,
-                parentId: 2297,
+                id: 2325,
+                parentId: 2311,
                 name: '华为云Stack副本勒索软件检测',
                 local: 'ransome16_007.html'
               },
               {
-                id: 2312,
-                parentId: 2297,
+                id: 2326,
+                parentId: 2311,
                 name: 'FusionCompute虚拟机副本勒索软件检测',
                 local: 'ransome16_008.html'
               },
               {
-                id: 2313,
-                parentId: 2297,
+                id: 2327,
+                parentId: 2311,
                 name: 'OpenStack云服务器副本勒索软件检测',
                 local: 'ransome16_009.html'
               },
               {
-                id: 2314,
-                parentId: 2297,
+                id: 2328,
+                parentId: 2311,
                 name: 'Hyper-V虚拟机副本勒索软件检测',
                 local: 'ransome16_010.html'
               },
               {
-                id: 2315,
-                parentId: 2297,
+                id: 2329,
+                parentId: 2311,
                 name: 'FusionOne Compute虚拟机副本勒索软件检测',
                 local: 'ransome160_012.html'
               }
             ]
           },
           {
-            id: 2298,
-            parentId: 2278,
+            id: 2312,
+            parentId: 2292,
             name: '管理副本防勒索',
             local: 'ransome_0018.html',
             children: [
               {
-                id: 2316,
-                parentId: 2298,
+                id: 2330,
+                parentId: 2312,
                 name: '管理检测模型',
                 local: 'ransome_0019.html'
               },
               {
-                id: 2317,
-                parentId: 2298,
+                id: 2331,
+                parentId: 2312,
                 name: '管理防勒索\u0026WORM策略',
                 local: 'ransome_0020.html'
               },
               {
-                id: 2318,
-                parentId: 2298,
+                id: 2332,
+                parentId: 2312,
                 name: '管理检测模式',
                 local: 'ransome_0021.html'
               },
               {
-                id: 2319,
-                parentId: 2298,
+                id: 2333,
+                parentId: 2312,
                 name: '管理勒索检测副本',
                 local: 'ransome_0022.html'
               },
               {
-                id: 2320,
-                parentId: 2298,
+                id: 2334,
+                parentId: 2312,
                 name: '管理WORM副本',
                 local: 'ransome_0023.html'
               },
               {
-                id: 2321,
-                parentId: 2298,
+                id: 2335,
+                parentId: 2312,
                 name: '管理感染副本操作限制（适用于1.6.0及后续版本）',
                 local: 'ransome_dis_001.html',
                 children: [
                   {
-                    id: 2322,
-                    parentId: 2321,
+                    id: 2336,
+                    parentId: 2335,
                     name: '新增感染副本操作限制',
                     local: 'ransome_dis_002.html'
                   },
                   {
-                    id: 2323,
-                    parentId: 2321,
+                    id: 2337,
+                    parentId: 2335,
                     name: '浏览感染副本操作限制信息',
                     local: 'ransome_dis_003.html'
                   },
                   {
-                    id: 2324,
-                    parentId: 2321,
+                    id: 2338,
+                    parentId: 2335,
                     name: '修改感染副本操作限制',
                     local: 'ransome_dis_004.html'
                   },
                   {
-                    id: 2325,
-                    parentId: 2321,
+                    id: 2339,
+                    parentId: 2335,
                     name: '删除感染副本操作限制',
                     local: 'ransome_dis_005.html'
                   }
@@ -15407,40 +15506,40 @@ naviData = [
             ]
           },
           {
-            id: 2299,
-            parentId: 2278,
+            id: 2313,
+            parentId: 2292,
             name: '查看资源检测详情（适用于1.5.0版本）',
             local: 'ransome_0024.html',
             children: [
               {
-                id: 2326,
-                parentId: 2299,
+                id: 2340,
+                parentId: 2313,
                 name: '查看所有资源检测详情',
                 local: 'ransome_0025.html'
               },
               {
-                id: 2327,
-                parentId: 2299,
+                id: 2341,
+                parentId: 2313,
                 name: '查看单个资源类型检测详情',
                 local: 'ransome_0026.html'
               }
             ]
           },
           {
-            id: 2300,
-            parentId: 2278,
+            id: 2314,
+            parentId: 2292,
             name: '查看资源检测详情（适用于1.6.0及后续版本）',
             local: 'ransome16_011.html',
             children: [
               {
-                id: 2328,
-                parentId: 2300,
+                id: 2342,
+                parentId: 2314,
                 name: '查看所有资源检测详情',
                 local: 'ransome16_012.html'
               },
               {
-                id: 2329,
-                parentId: 2300,
+                id: 2343,
+                parentId: 2314,
                 name: '查看单个资源类型检测详情',
                 local: 'ransome16_013.html'
               }
@@ -15449,96 +15548,96 @@ naviData = [
         ]
       },
       {
-        id: 2279,
+        id: 2293,
         parentId: 4,
         name: 'Air Gap',
         local: 'helpcenter_000096.html',
         children: [
           {
-            id: 2330,
-            parentId: 2279,
+            id: 2344,
+            parentId: 2293,
             name: '配置Air Gap',
             local: 'airgap_0011.html',
             children: [
               {
-                id: 2333,
-                parentId: 2330,
+                id: 2347,
+                parentId: 2344,
                 name: '创建Air Gap策略',
                 local: 'airgap_0012.html'
               },
               {
-                id: 2334,
-                parentId: 2330,
+                id: 2348,
+                parentId: 2344,
                 name: '关联Air Gap策略',
                 local: 'airgap_0013.html'
               }
             ]
           },
           {
-            id: 2331,
-            parentId: 2279,
+            id: 2345,
+            parentId: 2293,
             name: '管理Air Gap策略',
             local: 'airgap_0014.html',
             children: [
               {
-                id: 2335,
-                parentId: 2331,
+                id: 2349,
+                parentId: 2345,
                 name: '查看Air Gap策略',
                 local: 'airgap_0015.html'
               },
               {
-                id: 2336,
-                parentId: 2331,
+                id: 2350,
+                parentId: 2345,
                 name: '修改Air Gap策略',
                 local: 'airgap_0016.html'
               },
               {
-                id: 2337,
-                parentId: 2331,
+                id: 2351,
+                parentId: 2345,
                 name: '删除Air Gap策略',
                 local: 'airgap_0017.html'
               }
             ]
           },
           {
-            id: 2332,
-            parentId: 2279,
+            id: 2346,
+            parentId: 2293,
             name: '管理存储设备',
             local: 'airgap_0018.html',
             children: [
               {
-                id: 2338,
-                parentId: 2332,
+                id: 2352,
+                parentId: 2346,
                 name: '查看存储设备',
                 local: 'airgap_0019.html'
               },
               {
-                id: 2339,
-                parentId: 2332,
+                id: 2353,
+                parentId: 2346,
                 name: '修改存储设备关联的Air Gap策略',
                 local: 'airgap_0020.html'
               },
               {
-                id: 2340,
-                parentId: 2332,
+                id: 2354,
+                parentId: 2346,
                 name: '移除存储设备关联的Air Gap策略',
                 local: 'airgap_0021.html'
               },
               {
-                id: 2341,
-                parentId: 2332,
+                id: 2355,
+                parentId: 2346,
                 name: '开启存储设备关联的Air Gap策略',
                 local: 'airgap_0022.html'
               },
               {
-                id: 2342,
-                parentId: 2332,
+                id: 2356,
+                parentId: 2346,
                 name: '关闭存储设备关联的Air Gap策略',
                 local: 'airgap_0023.html'
               },
               {
-                id: 2343,
-                parentId: 2332,
+                id: 2357,
+                parentId: 2346,
                 name: '断开存储设备的复制链路（适用于1.6.0及后续版本）',
                 local: 'zh-cn_topic_0000002037030445.html'
               }
@@ -15555,111 +15654,111 @@ naviData = [
     local: 'zh-cn_topic_0000001792345234.html',
     children: [
       {
-        id: 2344,
+        id: 2358,
         parentId: 5,
         name: '配置集群高可用',
         local: 'HA00010.html',
         children: [
           {
-            id: 2347,
-            parentId: 2344,
+            id: 2361,
+            parentId: 2358,
             name: '添加主节点内部通信网络平面',
             local: 'zh-cn_topic_0000001959411965.html',
             children: [
               {
-                id: 2352,
-                parentId: 2347,
+                id: 2366,
+                parentId: 2361,
                 name: '添加主节点内部通信网络平面（适用于1.5.0版本）',
                 local: 'HA00011.html'
               },
               {
-                id: 2353,
-                parentId: 2347,
+                id: 2367,
+                parentId: 2361,
                 name: '添加主节点内部通信网络（适用于1.6.0及后续版本）',
                 local: 'zh-cn_topic_0000001959371749.html'
               }
             ]
           },
           {
-            id: 2348,
-            parentId: 2344,
+            id: 2362,
+            parentId: 2358,
             name: '添加成员节点内部通信网络（适用于1.6.0及后续版本）',
             local: 'zh-cn_topic_0000001930311476.html'
           },
           {
-            id: 2349,
-            parentId: 2344,
+            id: 2363,
+            parentId: 2358,
             name: '添加成员节点',
             local: 'HA00012.html'
           },
           {
-            id: 2350,
-            parentId: 2344,
+            id: 2364,
+            parentId: 2358,
             name: '添加HA成员',
             local: 'HA00013.html'
           },
           {
-            id: 2351,
-            parentId: 2344,
+            id: 2365,
+            parentId: 2358,
             name: '（可选）创建备份存储单元组',
             local: 'HA00014.html'
           }
         ]
       },
-      { id: 2345, parentId: 5, name: '使用集群高可用', local: 'HA00015.html' },
+      { id: 2359, parentId: 5, name: '使用集群高可用', local: 'HA00015.html' },
       {
-        id: 2346,
+        id: 2360,
         parentId: 5,
         name: '管理集群高可用',
         local: 'HA00016.html',
         children: [
           {
-            id: 2354,
-            parentId: 2346,
+            id: 2368,
+            parentId: 2360,
             name: '管理本地集群节点',
             local: 'HA00017.html',
             children: [
               {
-                id: 2361,
-                parentId: 2354,
+                id: 2375,
+                parentId: 2368,
                 name: '查看本地集群节点',
                 local: 'HA00018.html'
               },
               {
-                id: 2362,
-                parentId: 2354,
+                id: 2376,
+                parentId: 2368,
                 name: '管理备节点/成员节点',
                 local: 'HA00019.html',
                 children: [
                   {
-                    id: 2364,
-                    parentId: 2362,
+                    id: 2378,
+                    parentId: 2376,
                     name: '修改备节点/成员节点',
                     local: 'HA00020.html'
                   },
                   {
-                    id: 2365,
-                    parentId: 2362,
+                    id: 2379,
+                    parentId: 2376,
                     name: '删除成员节点',
                     local: 'HA00021.html'
                   }
                 ]
               },
               {
-                id: 2363,
-                parentId: 2354,
+                id: 2377,
+                parentId: 2368,
                 name: '管理HA',
                 local: 'HA00022.html',
                 children: [
                   {
-                    id: 2366,
-                    parentId: 2363,
+                    id: 2380,
+                    parentId: 2377,
                     name: '修改HA参数',
                     local: 'HA00023.html'
                   },
                   {
-                    id: 2367,
-                    parentId: 2363,
+                    id: 2381,
+                    parentId: 2377,
                     name: '移除HA成员',
                     local: 'HA00024.html'
                   }
@@ -15668,174 +15767,174 @@ naviData = [
             ]
           },
           {
-            id: 2355,
-            parentId: 2346,
+            id: 2369,
+            parentId: 2360,
             name: '管理备份存储单元组',
             local: 'HA00025.html',
             children: [
               {
-                id: 2368,
-                parentId: 2355,
+                id: 2382,
+                parentId: 2369,
                 name: '查看备份存储单元组',
                 local: 'HA00026.html'
               },
               {
-                id: 2369,
-                parentId: 2355,
+                id: 2383,
+                parentId: 2369,
                 name: '修改备份存储单元组',
                 local: 'HA00027.html'
               },
               {
-                id: 2370,
-                parentId: 2355,
+                id: 2384,
+                parentId: 2369,
                 name: '删除备份存储单元组',
                 local: 'HA00028.html'
               }
             ]
           },
           {
-            id: 2356,
-            parentId: 2346,
+            id: 2370,
+            parentId: 2360,
             name: '管理备份存储单元（适用于1.5.0版本）',
             local: 'HA00029.html',
             children: [
               {
-                id: 2371,
-                parentId: 2356,
+                id: 2385,
+                parentId: 2370,
                 name: '查看备份存储单元',
                 local: 'HA00030.html'
               },
               {
-                id: 2372,
-                parentId: 2356,
+                id: 2386,
+                parentId: 2370,
                 name: '创建备份存储单元',
                 local: 'HA00031.html'
               },
               {
-                id: 2373,
-                parentId: 2356,
+                id: 2387,
+                parentId: 2370,
                 name: '修改备份存储单元',
                 local: 'HA00032.html'
               },
               {
-                id: 2374,
-                parentId: 2356,
+                id: 2388,
+                parentId: 2370,
                 name: '删除备份存储单元',
                 local: 'HA00033.html'
               },
               {
-                id: 2375,
-                parentId: 2356,
+                id: 2389,
+                parentId: 2370,
                 name: '备份存储单元升级为成员节点',
                 local: 'HA00034.html'
               }
             ]
           },
           {
-            id: 2357,
-            parentId: 2346,
+            id: 2371,
+            parentId: 2360,
             name: '管理备份存储设备（适用于1.6.0及后续版本）',
             local: 'zh-cn_topic_0000001882347881.html',
             children: [
               {
-                id: 2376,
-                parentId: 2357,
+                id: 2390,
+                parentId: 2371,
                 name: '查看备份存储设备',
                 local: 'zh-cn_topic_0000001835508820.html'
               },
               {
-                id: 2377,
-                parentId: 2357,
+                id: 2391,
+                parentId: 2371,
                 name: '创建备份存储设备',
                 local: 'zh-cn_topic_0000001835668628.html'
               },
               {
-                id: 2378,
-                parentId: 2357,
+                id: 2392,
+                parentId: 2371,
                 name: '修改备份存储设备',
                 local: 'zh-cn_topic_0000001882188093.html'
               },
               {
-                id: 2379,
-                parentId: 2357,
+                id: 2393,
+                parentId: 2371,
                 name: '删除备份存储设备',
                 local: 'zh-cn_topic_0000001882347885.html'
               },
               {
-                id: 2380,
-                parentId: 2357,
+                id: 2394,
+                parentId: 2371,
                 name: '备份存储设备升级为成员节点',
                 local: 'zh-cn_topic_0000001835508824.html'
               }
             ]
           },
           {
-            id: 2358,
-            parentId: 2346,
+            id: 2372,
+            parentId: 2360,
             name: '管理备份存储单元（适用于1.6.0及后续版本）',
             local: 'zh-cn_topic_0000001882402333.html',
             children: [
               {
-                id: 2381,
-                parentId: 2358,
+                id: 2395,
+                parentId: 2372,
                 name: '查看备份存储单元',
                 local: 'zh-cn_topic_0000001835723282.html'
               },
               {
-                id: 2382,
-                parentId: 2358,
+                id: 2396,
+                parentId: 2372,
                 name: '创建备份存储单元',
                 local: 'zh-cn_topic_0000001835563470.html'
               },
               {
-                id: 2383,
-                parentId: 2358,
+                id: 2397,
+                parentId: 2372,
                 name: '修改备份存储单元',
                 local: 'zh-cn_topic_0000001882522541.html'
               },
               {
-                id: 2384,
-                parentId: 2358,
+                id: 2398,
+                parentId: 2372,
                 name: '删除备份存储单元',
                 local: 'zh-cn_topic_0000001882402749.html'
               }
             ]
           },
           {
-            id: 2359,
-            parentId: 2346,
+            id: 2373,
+            parentId: 2360,
             name: '管理内部通信网络平面（适用于1.5.0版本）',
             local: 'zh-cn_topic_0000001792502578.html',
             children: [
               {
-                id: 2385,
-                parentId: 2359,
+                id: 2399,
+                parentId: 2373,
                 name: '修改内部通信网络平面',
                 local: 'zh-cn_topic_0000001839221897.html'
               },
               {
-                id: 2386,
-                parentId: 2359,
+                id: 2400,
+                parentId: 2373,
                 name: '删除内部通信网络平面',
                 local: 'zh-cn_topic_0000001839221921.html'
               }
             ]
           },
           {
-            id: 2360,
-            parentId: 2346,
+            id: 2374,
+            parentId: 2360,
             name: '管理内部通信网络（适用于1.6.0及后续版本）',
             local: 'zh-cn_topic_0000001932222576.html',
             children: [
               {
-                id: 2387,
-                parentId: 2360,
+                id: 2401,
+                parentId: 2374,
                 name: '修改内部通信网络',
                 local: 'zh-cn_topic_0000001932381960.html'
               },
               {
-                id: 2388,
-                parentId: 2360,
+                id: 2402,
+                parentId: 2374,
                 name: '删除内部通信网络',
                 local: 'zh-cn_topic_0000001959541113.html'
               }
@@ -15852,96 +15951,96 @@ naviData = [
     local: 'admin-00134.html',
     children: [
       {
-        id: 2389,
+        id: 2403,
         parentId: 6,
         name: '管理性能统计',
         local: 'admin-00135.html',
         children: [
           {
-            id: 2393,
-            parentId: 2389,
+            id: 2407,
+            parentId: 2403,
             name: '性能指标介绍',
             local: 'admin-00136.html'
           },
           {
-            id: 2394,
-            parentId: 2389,
+            id: 2408,
+            parentId: 2403,
             name: '配置性能统计开关',
             local: 'admin-00137.html'
           }
         ]
       },
       {
-        id: 2390,
+        id: 2404,
         parentId: 6,
         name: '管理告警和事件',
         local: 'admin-00139.html'
       },
       {
-        id: 2391,
+        id: 2405,
         parentId: 6,
         name: '管理任务',
         local: 'admin-00140.html',
         children: [
           {
-            id: 2395,
-            parentId: 2391,
+            id: 2409,
+            parentId: 2405,
             name: '查看任务进度',
             local: 'admin-00141.html'
           },
           {
-            id: 2396,
-            parentId: 2391,
+            id: 2410,
+            parentId: 2405,
             name: '停止任务',
             local: 'admin-00142.html'
           },
           {
-            id: 2397,
-            parentId: 2391,
+            id: 2411,
+            parentId: 2405,
             name: '下载任务',
             local: 'admin-00143.html'
           }
         ]
       },
       {
-        id: 2392,
+        id: 2406,
         parentId: 6,
         name: '管理报表',
         local: 'admin-00144.html',
         children: [
           {
-            id: 2398,
-            parentId: 2392,
+            id: 2412,
+            parentId: 2406,
             name: '用户角色权限',
             local: 'admin-00145.html'
           },
           {
-            id: 2399,
-            parentId: 2392,
+            id: 2413,
+            parentId: 2406,
             name: '创建报表',
             local: 'admin-00146.html'
           },
           {
-            id: 2400,
-            parentId: 2392,
+            id: 2414,
+            parentId: 2406,
             name: '查看报表',
             local: 'admin-00147.html'
           },
           {
-            id: 2401,
-            parentId: 2392,
+            id: 2415,
+            parentId: 2406,
             name: '下载报表',
             local: 'admin-00148.html'
           },
           {
-            id: 2402,
-            parentId: 2392,
+            id: 2416,
+            parentId: 2406,
             name: '发送邮件',
             local: 'admin-00149.html'
           },
           {
-            id: 2403,
-            parentId: 2392,
+            id: 2417,
+            parentId: 2406,
             name: '删除报表',
             local: 'admin-00150.html'
           }
@@ -15956,270 +16055,270 @@ naviData = [
     local: 'helpcenter_000110.html',
     children: [
       {
-        id: 2404,
+        id: 2418,
         parentId: 7,
         name: '管理用户（适用于1.5.0版本）',
         local: 'helpcenter_000159.html',
         children: [
           {
-            id: 2429,
-            parentId: 2404,
+            id: 2443,
+            parentId: 2418,
             name: '用户角色介绍',
             local: 'helpcenter_000160.html'
           },
           {
-            id: 2430,
-            parentId: 2404,
+            id: 2444,
+            parentId: 2418,
             name: '创建用户',
             local: 'helpcenter_000161.html'
           },
           {
-            id: 2431,
-            parentId: 2404,
+            id: 2445,
+            parentId: 2418,
             name: '修改用户',
             local: 'helpcenter_000162.html'
           },
           {
-            id: 2432,
-            parentId: 2404,
+            id: 2446,
+            parentId: 2418,
             name: '锁定用户',
             local: 'helpcenter_000163.html'
           },
           {
-            id: 2433,
-            parentId: 2404,
+            id: 2447,
+            parentId: 2418,
             name: '解锁用户',
             local: 'helpcenter_000164.html'
           },
           {
-            id: 2434,
-            parentId: 2404,
-            name: '移除用户',
+            id: 2448,
+            parentId: 2418,
+            name: '删除用户',
             local: 'helpcenter_000165.html'
           },
           {
-            id: 2435,
-            parentId: 2404,
+            id: 2449,
+            parentId: 2418,
             name: '重置用户密码',
             local: 'helpcenter_000166.html'
           },
           {
-            id: 2436,
-            parentId: 2404,
+            id: 2450,
+            parentId: 2418,
             name: '重置系统管理员密码',
             local: 'helpcenter_000167.html'
           }
         ]
       },
       {
-        id: 2405,
+        id: 2419,
         parentId: 7,
         name: '管理RBAC（适用于1.6.0及后续版本）',
         local: 'admin-0055.html',
         children: [
           {
-            id: 2437,
-            parentId: 2405,
+            id: 2451,
+            parentId: 2419,
             name: '内置用户角色介绍',
             local: 'admin-0056.html'
           },
           {
-            id: 2438,
-            parentId: 2405,
+            id: 2452,
+            parentId: 2419,
             name: '创建角色',
             local: 'zh-cn_topic_0000002059543622.html'
           },
           {
-            id: 2439,
-            parentId: 2405,
+            id: 2453,
+            parentId: 2419,
             name: '修改角色',
             local: 'zh-cn_topic_0000002059385278.html'
           },
           {
-            id: 2440,
-            parentId: 2405,
+            id: 2454,
+            parentId: 2419,
             name: '克隆角色',
             local: 'zh-cn_topic_0000002095582433.html'
           },
           {
-            id: 2441,
-            parentId: 2405,
+            id: 2455,
+            parentId: 2419,
             name: '删除角色',
             local: 'zh-cn_topic_0000002095463905.html'
           },
           {
-            id: 2442,
-            parentId: 2405,
+            id: 2456,
+            parentId: 2419,
             name: '创建资源集',
             local: 'zh-cn_topic_0000002059543630.html'
           },
           {
-            id: 2443,
-            parentId: 2405,
+            id: 2457,
+            parentId: 2419,
             name: '删除资源集',
             local: 'zh-cn_topic_0000002059385282.html'
           },
           {
-            id: 2444,
-            parentId: 2405,
+            id: 2458,
+            parentId: 2419,
             name: '修改资源集',
             local: 'zh-cn_topic_0000002095582437.html'
           },
           {
-            id: 2445,
-            parentId: 2405,
+            id: 2459,
+            parentId: 2419,
             name: '创建用户',
             local: 'admin-0057.html'
           },
           {
-            id: 2446,
-            parentId: 2405,
+            id: 2460,
+            parentId: 2419,
             name: '修改用户',
             local: 'admin-0058.html'
           },
           {
-            id: 2447,
-            parentId: 2405,
+            id: 2461,
+            parentId: 2419,
             name: '锁定用户',
             local: 'admin-0059.html'
           },
           {
-            id: 2448,
-            parentId: 2405,
+            id: 2462,
+            parentId: 2419,
             name: '解锁用户',
             local: 'admin-0060.html'
           },
           {
-            id: 2449,
-            parentId: 2405,
-            name: '移除用户',
+            id: 2463,
+            parentId: 2419,
+            name: '删除用户',
             local: 'admin-0061.html'
           },
           {
-            id: 2450,
-            parentId: 2405,
+            id: 2464,
+            parentId: 2419,
             name: '重置用户密码',
             local: 'admin-0062.html'
           },
           {
-            id: 2451,
-            parentId: 2405,
+            id: 2465,
+            parentId: 2419,
             name: '重置系统管理员密码',
             local: 'admin-0063.html'
           },
           {
-            id: 2452,
-            parentId: 2405,
+            id: 2466,
+            parentId: 2419,
             name: '找回密码邮箱设置',
             local: 'admin-0064.html'
           }
         ]
       },
       {
-        id: 2406,
+        id: 2420,
         parentId: 7,
         name: '管理SAML SSO配置',
         local: 'zh-cn_topic_0000001839224453.html',
         children: [
           {
-            id: 2453,
-            parentId: 2406,
+            id: 2467,
+            parentId: 2420,
             name: '创建SAML SSO配置',
             local: 'zh-cn_topic_0000001839144321.html'
           },
           {
-            id: 2454,
-            parentId: 2406,
+            id: 2468,
+            parentId: 2420,
             name: '管理SAML SSO 配置',
             local: 'zh-cn_topic_0000001839224341.html',
             children: [
               {
-                id: 2456,
-                parentId: 2454,
+                id: 2470,
+                parentId: 2468,
                 name: '激活/禁用SAML SSO 配置',
                 local: 'zh-cn_topic_0000001839224301.html'
               },
               {
-                id: 2457,
-                parentId: 2454,
+                id: 2471,
+                parentId: 2468,
                 name: '修改SAML SSO配置',
                 local: 'zh-cn_topic_0000001839144461.html'
               },
               {
-                id: 2458,
-                parentId: 2454,
+                id: 2472,
+                parentId: 2468,
                 name: '删除SAML SSO配置',
                 local: 'zh-cn_topic_0000001839224281.html'
               }
             ]
           },
           {
-            id: 2455,
-            parentId: 2406,
+            id: 2469,
+            parentId: 2420,
             name: '导出元数据',
             local: 'zh-cn_topic_0000001792345298.html'
           }
         ]
       },
       {
-        id: 2407,
+        id: 2421,
         parentId: 7,
         name: '管理配额与功能',
         local: 'zh-cn_topic_0000001792505014.html',
         children: [
           {
-            id: 2459,
-            parentId: 2407,
+            id: 2473,
+            parentId: 2421,
             name: '查看配额与功能',
             local: 'zh-cn_topic_0000001839224473.html'
           },
           {
-            id: 2460,
-            parentId: 2407,
+            id: 2474,
+            parentId: 2421,
             name: '设置配额',
             local: 'zh-cn_topic_0000001839224433.html'
           },
           {
-            id: 2461,
-            parentId: 2407,
-            name: '设置功能（适用于1.6.RC1及之前版本）',
+            id: 2475,
+            parentId: 2421,
+            name: '设置功能',
             local: 'zh-cn_topic_0000001792345246.html'
           }
         ]
       },
       {
-        id: 2408,
+        id: 2422,
         parentId: 7,
-        name: '管理备份集群',
+        name: '管理备份集群（适用于OceanProtect X系列备份一体机）',
         local: 'admin-00067.html',
         children: [
           {
-            id: 2462,
-            parentId: 2408,
-            name: '管理本地集群节点（E系列备份一体机不支持）',
+            id: 2476,
+            parentId: 2422,
+            name: '管理本地集群节点（OceanProtect E1000不支持）',
             local: 'zh-cn_topic_0000001839224397.html',
             children: [
               {
-                id: 2464,
-                parentId: 2462,
+                id: 2478,
+                parentId: 2476,
                 name: '查看本地集群节点',
                 local: 'zh-cn_topic_0000001839144469.html'
               },
               {
-                id: 2465,
-                parentId: 2462,
+                id: 2479,
+                parentId: 2476,
                 name: '管理备节点/成员节点',
                 local: 'zh-cn_topic_0000001792345350.html',
                 children: [
                   {
-                    id: 2466,
-                    parentId: 2465,
+                    id: 2480,
+                    parentId: 2479,
                     name: '修改备节点/成员节点',
                     local: 'zh-cn_topic_0000001792345230.html'
                   },
                   {
-                    id: 2467,
-                    parentId: 2465,
+                    id: 2481,
+                    parentId: 2479,
                     name: '删除成员节点',
                     local: 'zh-cn_topic_0000001792345338.html'
                   }
@@ -16228,62 +16327,62 @@ naviData = [
             ]
           },
           {
-            id: 2463,
-            parentId: 2408,
-            name: '管理多域集群（E系列备份一体机不支持）',
+            id: 2477,
+            parentId: 2422,
+            name: '管理多域集群（OceanProtect E1000不支持）',
             local: 'zh-cn_topic_0000001839224421.html',
             children: [
               {
-                id: 2468,
-                parentId: 2463,
+                id: 2482,
+                parentId: 2477,
                 name: '查看集群信息',
                 local: 'admin-00068.html'
               },
               {
-                id: 2469,
-                parentId: 2463,
+                id: 2483,
+                parentId: 2477,
                 name: '添加外部集群',
                 local: 'admin-00069.html'
               },
               {
-                id: 2470,
-                parentId: 2463,
+                id: 2484,
+                parentId: 2477,
                 name: '修改外部集群信息',
                 local: 'admin-00070.html'
               },
               {
-                id: 2471,
-                parentId: 2463,
+                id: 2485,
+                parentId: 2477,
                 name: '删除外部集群',
                 local: 'admin-00071.html'
               },
               {
-                id: 2472,
-                parentId: 2463,
+                id: 2486,
+                parentId: 2477,
                 name: '指定外部集群为管理集群',
                 local: 'admin-00072.html'
               },
               {
-                id: 2473,
-                parentId: 2463,
+                id: 2487,
+                parentId: 2477,
                 name: '指定外部集群为被管理集群',
                 local: 'admin-00073.html'
               },
               {
-                id: 2474,
-                parentId: 2463,
+                id: 2488,
+                parentId: 2477,
                 name: '授权',
                 local: 'admin-00074.html'
               },
               {
-                id: 2475,
-                parentId: 2463,
+                id: 2489,
+                parentId: 2477,
                 name: '修改本地集群数据保护管理员的授权',
                 local: 'admin-00075.html'
               },
               {
-                id: 2476,
-                parentId: 2463,
+                id: 2490,
+                parentId: 2477,
                 name: '取消本地集群数据保护管理员的授权',
                 local: 'admin-00076.html'
               }
@@ -16292,208 +16391,208 @@ naviData = [
         ]
       },
       {
-        id: 2409,
+        id: 2423,
         parentId: 7,
-        name: '管理复制集群（E系列备份一体机不支持）',
+        name: '管理复制集群',
         local: 'zh-cn_topic_0000001839144457.html',
         children: [
           {
-            id: 2477,
-            parentId: 2409,
+            id: 2491,
+            parentId: 2423,
             name: '添加外部集群',
             local: 'zh-cn_topic_0000001839224425.html'
           },
           {
-            id: 2478,
-            parentId: 2409,
+            id: 2492,
+            parentId: 2423,
             name: '查看集群信息',
             local: 'zh-cn_topic_0000001839144417.html'
           },
           {
-            id: 2479,
-            parentId: 2409,
+            id: 2493,
+            parentId: 2423,
             name: '修改复制集群',
             local: 'zh-cn_topic_0000001839224361.html'
           },
           {
-            id: 2480,
-            parentId: 2409,
+            id: 2494,
+            parentId: 2423,
             name: '删除复制集群',
             local: 'zh-cn_topic_0000001839144453.html'
           }
         ]
       },
       {
-        id: 2410,
+        id: 2424,
         parentId: 7,
-        name: '管理本地存储（E系列备份一体机不支持）',
+        name: '管理本地存储',
         local: 'admin-00078.html',
         children: [
           {
-            id: 2481,
-            parentId: 2410,
+            id: 2495,
+            parentId: 2424,
             name: '查看本地存储信息',
             local: 'admin-00079.html'
           },
           {
-            id: 2482,
-            parentId: 2410,
+            id: 2496,
+            parentId: 2424,
             name: '配置本地存储容量告警阈值',
             local: 'admin-00080.html'
           },
           {
-            id: 2483,
-            parentId: 2410,
+            id: 2497,
+            parentId: 2424,
             name: '查看本地存储认证信息',
             local: 'admin-00081.html'
           },
           {
-            id: 2484,
-            parentId: 2410,
+            id: 2498,
+            parentId: 2424,
             name: '修改本地存储认证信息',
             local: 'admin-00082.html'
           },
           {
-            id: 2485,
-            parentId: 2410,
+            id: 2499,
+            parentId: 2424,
             name: '手动回收空间',
             local: 'admin-00087.html'
           }
         ]
       },
       {
-        id: 2411,
+        id: 2425,
         parentId: 7,
         name: '管理对象存储',
         local: 'helpcenter_000132.html',
         children: [
           {
-            id: 2486,
-            parentId: 2411,
+            id: 2500,
+            parentId: 2425,
             name: '添加归档存储',
             local: 'oracle_gud_000030.html'
           },
           {
-            id: 2487,
-            parentId: 2411,
+            id: 2501,
+            parentId: 2425,
             name: '导入归档存储副本',
             local: 'helpcenter_000134.html'
           },
           {
-            id: 2488,
-            parentId: 2411,
+            id: 2502,
+            parentId: 2425,
             name: '修改归档存储基本信息',
             local: 'helpcenter_000135.html'
           },
           {
-            id: 2489,
-            parentId: 2411,
+            id: 2503,
+            parentId: 2425,
             name: '修改归档存储容量告警阈值',
             local: 'helpcenter_000136.html'
           },
           {
-            id: 2490,
-            parentId: 2411,
+            id: 2504,
+            parentId: 2425,
             name: '查看归档存储信息',
             local: 'helpcenter_000137.html'
           },
           {
-            id: 2491,
-            parentId: 2411,
+            id: 2505,
+            parentId: 2425,
             name: '删除归档存储',
             local: 'helpcenter_000138.html'
           }
         ]
       },
       {
-        id: 2412,
+        id: 2426,
         parentId: 7,
-        name: '管理磁带（E系列备份一体机不支持）',
+        name: '管理磁带（适用于OceanProtect X系列备份一体机）',
         local: 'helpcenter_000139.html',
         children: [
           {
-            id: 2492,
-            parentId: 2412,
+            id: 2506,
+            parentId: 2426,
             name: '管理磁带库',
             local: 'helpcenter_000140.html',
             children: [
               {
-                id: 2494,
-                parentId: 2492,
+                id: 2508,
+                parentId: 2506,
                 name: '扫描磁带库',
                 local: 'helpcenter_000141.html'
               },
               {
-                id: 2495,
-                parentId: 2492,
+                id: 2509,
+                parentId: 2506,
                 name: '管理驱动',
                 local: 'helpcenter_000142.html',
                 children: [
                   {
-                    id: 2497,
-                    parentId: 2495,
+                    id: 2511,
+                    parentId: 2509,
                     name: '查看驱动',
                     local: 'helpcenter_000143.html'
                   },
                   {
-                    id: 2498,
-                    parentId: 2495,
+                    id: 2512,
+                    parentId: 2509,
                     name: '启用驱动',
                     local: 'helpcenter_000144.html'
                   },
                   {
-                    id: 2499,
-                    parentId: 2495,
+                    id: 2513,
+                    parentId: 2509,
                     name: '禁用驱动',
                     local: 'helpcenter_000145.html'
                   }
                 ]
               },
               {
-                id: 2496,
-                parentId: 2492,
+                id: 2510,
+                parentId: 2506,
                 name: '管理磁带',
                 local: 'helpcenter_000146.html',
                 children: [
                   {
-                    id: 2500,
-                    parentId: 2496,
+                    id: 2514,
+                    parentId: 2510,
                     name: '查看磁带',
                     local: 'helpcenter_000147.html'
                   },
                   {
-                    id: 2501,
-                    parentId: 2496,
+                    id: 2515,
+                    parentId: 2510,
                     name: '加载磁带',
                     local: 'helpcenter_000148.html'
                   },
                   {
-                    id: 2502,
-                    parentId: 2496,
+                    id: 2516,
+                    parentId: 2510,
                     name: '卸载磁带',
                     local: 'helpcenter_000149.html'
                   },
                   {
-                    id: 2503,
-                    parentId: 2496,
+                    id: 2517,
+                    parentId: 2510,
                     name: '删除磁带',
                     local: 'helpcenter_000150.html'
                   },
                   {
-                    id: 2504,
-                    parentId: 2496,
+                    id: 2518,
+                    parentId: 2510,
                     name: '识别磁带',
                     local: 'helpcenter_000151.html'
                   },
                   {
-                    id: 2505,
-                    parentId: 2496,
+                    id: 2519,
+                    parentId: 2510,
                     name: '标记磁带为空',
                     local: 'helpcenter_000152.html'
                   },
                   {
-                    id: 2506,
-                    parentId: 2496,
+                    id: 2520,
+                    parentId: 2510,
                     name: '擦除磁带',
                     local: 'helpcenter_000153.html'
                   }
@@ -16502,32 +16601,32 @@ naviData = [
             ]
           },
           {
-            id: 2493,
-            parentId: 2412,
+            id: 2507,
+            parentId: 2426,
             name: '管理介质集',
             local: 'helpcenter_000154.html',
             children: [
               {
-                id: 2507,
-                parentId: 2493,
+                id: 2521,
+                parentId: 2507,
                 name: '创建介质集',
                 local: 'helpcenter_000155.html'
               },
               {
-                id: 2508,
-                parentId: 2493,
+                id: 2522,
+                parentId: 2507,
                 name: '查看介质集',
                 local: 'helpcenter_000156.html'
               },
               {
-                id: 2509,
-                parentId: 2493,
+                id: 2523,
+                parentId: 2507,
                 name: '修改介质集',
                 local: 'helpcenter_000157.html'
               },
               {
-                id: 2510,
-                parentId: 2493,
+                id: 2524,
+                parentId: 2507,
                 name: '删除介质集',
                 local: 'helpcenter_000158.html'
               }
@@ -16536,302 +16635,304 @@ naviData = [
         ]
       },
       {
-        id: 2413,
+        id: 2427,
         parentId: 7,
-        name: '查看系统信息（E系列备份一体机不支持）',
+        name: '查看系统信息（适用于OceanProtect X系列备份一体机）',
         local: 'informix_gud_00040.html',
         children: [
           {
-            id: 2511,
-            parentId: 2413,
+            id: 2525,
+            parentId: 2427,
             name: '查看系统版本信息',
             local: 'informix_gud_00041.html'
           },
           {
-            id: 2512,
-            parentId: 2413,
+            id: 2526,
+            parentId: 2427,
             name: '查看设备ESN',
             local: 'informix_gud_00042.html'
           }
         ]
       },
       {
-        id: 2414,
+        id: 2428,
         parentId: 7,
         name: '管理安全策略',
         local: 'helpcenter_000168.html'
       },
       {
-        id: 2415,
+        id: 2429,
         parentId: 7,
         name: '管理证书',
         local: 'helpcenter_000169.html',
         children: [
           {
-            id: 2513,
-            parentId: 2415,
+            id: 2527,
+            parentId: 2429,
             name: '查看证书信息',
             local: 'helpcenter_000170.html'
           },
           {
-            id: 2514,
-            parentId: 2415,
+            id: 2528,
+            parentId: 2429,
             name: '添加外部证书',
             local: 'helpcenter_000171.html'
           },
           {
-            id: 2515,
-            parentId: 2415,
+            id: 2529,
+            parentId: 2429,
             name: '导入证书',
             local: 'helpcenter_000172.html'
           },
           {
-            id: 2516,
-            parentId: 2415,
+            id: 2530,
+            parentId: 2429,
             name: '导出请求文件',
             local: 'helpcenter_000173.html'
           },
           {
-            id: 2517,
-            parentId: 2415,
+            id: 2531,
+            parentId: 2429,
             name: '修改证书过期告警',
             local: 'helpcenter_000174.html'
           },
           {
-            id: 2518,
-            parentId: 2415,
-            name: '管理证书吊销列表（E系列备份一体机不支持）',
+            id: 2532,
+            parentId: 2429,
+            name: '管理证书吊销列表（适用于OceanProtect X系列备份一体机',
             local: 'helpcenter_000176.html',
             children: [
               {
-                id: 2521,
-                parentId: 2518,
+                id: 2535,
+                parentId: 2532,
                 name: '导入证书吊销列表',
                 local: 'helpcenter_000177.html'
               },
               {
-                id: 2522,
-                parentId: 2518,
+                id: 2536,
+                parentId: 2532,
                 name: '查看证书吊销列表',
                 local: 'helpcenter_000178.html'
               },
               {
-                id: 2523,
-                parentId: 2518,
+                id: 2537,
+                parentId: 2532,
                 name: '下载证书吊销列表',
                 local: 'helpcenter_000179.html'
               },
               {
-                id: 2524,
-                parentId: 2518,
+                id: 2538,
+                parentId: 2532,
                 name: '删除证书吊销列表',
                 local: 'helpcenter_000180.html'
               }
             ]
           },
           {
-            id: 2519,
-            parentId: 2415,
+            id: 2533,
+            parentId: 2429,
             name: '下载证书',
             local: 'helpcenter_000181.html'
           },
           {
-            id: 2520,
-            parentId: 2415,
+            id: 2534,
+            parentId: 2429,
             name: '删除外部证书',
             local: 'helpcenter_000182.html'
           }
         ]
       },
       {
-        id: 2416,
+        id: 2430,
         parentId: 7,
         name: '管理主机受信',
         local: 'helpcenter_000183.html'
       },
       {
-        id: 2417,
+        id: 2431,
         parentId: 7,
         name: '管理日志',
         local: 'helpcenter_000184.html'
       },
       {
-        id: 2418,
+        id: 2432,
         parentId: 7,
         name: '导出查询',
         local: 'zh-cn_topic_0000001839144381.html'
       },
       {
-        id: 2419,
+        id: 2433,
         parentId: 7,
         name: '管理系统数据备份',
         local: 'helpcenter_000185.html',
         children: [
           {
-            id: 2525,
-            parentId: 2419,
+            id: 2539,
+            parentId: 2433,
             name: '配置管理数据备份',
             local: 'helpcenter_000186.html'
           },
           {
-            id: 2526,
-            parentId: 2419,
+            id: 2540,
+            parentId: 2433,
             name: '导出管理数据备份',
             local: 'helpcenter_000187.html'
           },
           {
-            id: 2527,
-            parentId: 2419,
+            id: 2541,
+            parentId: 2433,
             name: '删除管理数据备份',
             local: 'helpcenter_000188.html'
           },
           {
-            id: 2528,
-            parentId: 2419,
+            id: 2542,
+            parentId: 2433,
             name: '导入管理数据备份',
             local: 'helpcenter_000189.html'
           },
           {
-            id: 2529,
-            parentId: 2419,
+            id: 2543,
+            parentId: 2433,
             name: '恢复管理数据',
             local: 'helpcenter_000190.html'
           }
         ]
       },
       {
-        id: 2420,
+        id: 2434,
         parentId: 7,
         name: '管理邮件服务',
         local: 'helpcenter_000191.html'
       },
       {
-        id: 2421,
+        id: 2435,
         parentId: 7,
-        name: '管理事件转储',
+        name: '管理事件转储（适用于OceanProtect X系列备份一体机）',
         local: 'helpcenter_000192.html'
       },
       {
-        id: 2422,
+        id: 2436,
         parentId: 7,
         name: '管理SNMP Trap通知',
         local: 'helpcenter_000193.html'
       },
       {
-        id: 2423,
+        id: 2437,
         parentId: 7,
-        name: '管理SFTP服务（适用于1.5.0版本）（E系列备份一体机不支持）',
+        name:
+          '管理SFTP服务（适用于1.5.0版本）（适用于OceanProtect X系列备份一体机）',
         local: 'helpcenter_000194.html',
         children: [
           {
-            id: 2530,
-            parentId: 2423,
+            id: 2544,
+            parentId: 2437,
             name: '开启SFTP服务',
             local: 'helpcenter_000195.html'
           },
           {
-            id: 2531,
-            parentId: 2423,
+            id: 2545,
+            parentId: 2437,
             name: '查看SFTP服务',
             local: 'helpcenter_000196.html'
           },
           {
-            id: 2532,
-            parentId: 2423,
+            id: 2546,
+            parentId: 2437,
             name: '创建SFTP用户',
             local: 'helpcenter_000197.html'
           },
           {
-            id: 2533,
-            parentId: 2423,
+            id: 2547,
+            parentId: 2437,
             name: '修改SFTP用户密码',
             local: 'helpcenter_000198.html'
           },
           {
-            id: 2534,
-            parentId: 2423,
+            id: 2548,
+            parentId: 2437,
             name: '删除SFTP用户',
             local: 'helpcenter_000199.html'
           }
         ]
       },
       {
-        id: 2424,
+        id: 2438,
         parentId: 7,
-        name: '管理SFTP服务（适用于1.6.0及后续版本）（E系列备份一体机不支持）',
+        name:
+          '管理SFTP服务（适用于1.6.0及后续版本）（适用于OceanProtect X系列备份一体机）',
         local: 'admin-00261.html',
         children: [
           {
-            id: 2535,
-            parentId: 2424,
+            id: 2549,
+            parentId: 2438,
             name: '开启SFTP服务',
             local: 'admin-00262.html'
           },
           {
-            id: 2536,
-            parentId: 2424,
+            id: 2550,
+            parentId: 2438,
             name: '查看SFTP服务',
             local: 'admin-00263.html'
           },
           {
-            id: 2537,
-            parentId: 2424,
+            id: 2551,
+            parentId: 2438,
             name: '创建SFTP用户',
             local: 'admin-00264.html'
           },
           {
-            id: 2538,
-            parentId: 2424,
+            id: 2552,
+            parentId: 2438,
             name: '修改SFTP用户密码',
             local: 'admin-00265.html'
           },
           {
-            id: 2539,
-            parentId: 2424,
+            id: 2553,
+            parentId: 2438,
             name: '删除SFTP用户',
             local: 'admin-00266.html'
           }
         ]
       },
       {
-        id: 2425,
+        id: 2439,
         parentId: 7,
         name: '管理设备时间',
         local: 'helpcenter_000200.html'
       },
       {
-        id: 2426,
+        id: 2440,
         parentId: 7,
         name: '配置LDAP服务',
         local: 'zh-cn_topic_0000001839144385.html'
       },
       {
-        id: 2427,
+        id: 2441,
         parentId: 7,
         name: '管理Windows ADFS配置（适用于1.6.0及后续版本）',
         local: 'admin-0077.html'
       },
       {
-        id: 2428,
+        id: 2442,
         parentId: 7,
         name: '管理备份软件纳管（适用于1.6.0及后续版本）',
         local: 'zh-cn_topic_0000001938830850.html',
         children: [
           {
-            id: 2540,
-            parentId: 2428,
+            id: 2554,
+            parentId: 2442,
             name: '添加备份软件纳管',
             local: 'zh-cn_topic_0000001965949181.html'
           },
           {
-            id: 2541,
-            parentId: 2428,
+            id: 2555,
+            parentId: 2442,
             name: '修改备份软件纳管',
             local: 'zh-cn_topic_0000001966069409.html'
           },
           {
-            id: 2542,
-            parentId: 2428,
+            id: 2556,
+            parentId: 2442,
             name: '删除备份软件纳管',
             local: 'zh-cn_topic_0000001938990182.html'
           }

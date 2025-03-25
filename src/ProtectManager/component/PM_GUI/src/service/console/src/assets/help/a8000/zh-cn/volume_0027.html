@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
@@ -20,9 +20,9 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤5：创建远端设备管理员（适用于1.5.0版本）">
+<meta name="DC.Title" content="步骤6：添加复制集群">
 <meta name="product" content="">
-<meta name="DC.Relation" scheme="URI" content="volume_0021.html">
+<meta name="DC.Relation" scheme="URI" content="volume_0020.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
@@ -33,64 +33,63 @@
 <meta name="DC.Identifier" content="volume_0027">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤5：创建远端设备管理员（适用于1.5.0版本）</title>
+<title>步骤6：添加复制集群</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="volume_0027"></a><a name="volume_0027"></a>
 
-<h1 class="topictitle1">步骤5：创建远端设备管理员（适用于1.5.0版本）</h1>
-<div><p id="volume_0027__zh-cn_topic_0000001792344074_p1976143411408">在复制的从端集群创建远端设备管理员，用于复制过程中对主端集群进行验证。</p>
-<div class="section" id="volume_0027__zh-cn_topic_0000001792344074_section2539113917248"><h4 class="sectiontitle">操作步骤</h4><ol id="volume_0027__zh-cn_topic_0000001792344074_ol666545192420"><li id="volume_0027__zh-cn_topic_0000001792344074_zh-cn_topic_0000001092505479_li13830188165220"><span>登录复制从端集群的<span id="volume_0027__zh-cn_topic_0000001792344074_text9943134084513">OceanProtect</span>管理界面。</span></li><li id="volume_0027__zh-cn_topic_0000001792344074_zh-cn_topic_0000001092505479_li1570821013536"><span>选择<span class="uicontrol" id="volume_0027__zh-cn_topic_0000001792344074_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="volume_0027__zh-cn_topic_0000001792344074_text173551249987">系统</span> &gt; <span id="volume_0027__zh-cn_topic_0000001792344074_text484521122916">安全</span> &gt; <span id="volume_0027__zh-cn_topic_0000001792344074_text129918425291">用户和角色</span>”</span>。</span></li><li id="volume_0027__zh-cn_topic_0000001792344074_li15799464290"><span>单击<span class="uicontrol" id="volume_0027__zh-cn_topic_0000001792344074_uicontrol18262010308">“<span id="volume_0027__zh-cn_topic_0000001792344074_text472862943013">创建</span>”</span>。</span><p><p id="volume_0027__zh-cn_topic_0000001792344074_p1212664063010">相关参数说明如<a href="#volume_0027__zh-cn_topic_0000001792344074_table146051654173010">表1</a>所示。</p>
-
-<div class="tablenoborder"><a name="volume_0027__zh-cn_topic_0000001792344074_table146051654173010"></a><a name="zh-cn_topic_0000001792344074_table146051654173010"></a><table cellpadding="4" cellspacing="0" summary="" id="volume_0027__zh-cn_topic_0000001792344074_table146051654173010" frame="border" border="1" rules="all"><caption><b>表1 </b>用户参数说明</caption><colgroup><col style="width:40.93%"><col style="width:59.07%"></colgroup><thead align="left"><tr id="volume_0027__zh-cn_topic_0000001792344074_row1560535415303"><th align="left" class="cellrowborder" valign="top" width="40.93%" id="mcps1.3.2.2.3.2.2.2.3.1.1"><p id="volume_0027__zh-cn_topic_0000001792344074_p560518547300">参数</p>
+<h1 class="topictitle1">步骤6：添加复制集群</h1>
+<div id="body0000001407916021"><p id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_p173011029113111">在本端集群侧添加目标集群，建立主端设备和从端设备之间的逻辑连接，用于设备之间的数据传输。</p>
+<div class="section" id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_section5343122851716"><h4 class="sectiontitle">前提条件</h4><p id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_p27481329181712">已准备用于复制的目标集群。</p>
+</div>
+<div class="section" id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_section152913359312"><h4 class="sectiontitle">操作步骤</h4><ol id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_ol1038139939"><li id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_li1570821013536"><span>选择<span class="uicontrol" id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_text195451245818">系统</span> &gt; <span id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_text1825116201482">基础设施</span> &gt; <span id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_text2324131633414">集群管理</span>”</span>。</span></li><li id="volume_0027__foc_gud_0032_0_li1125712582118"><span>在<span class="uicontrol" id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_uicontrol855335015454">“<span id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_text11821141684610">复制集群</span>”</span>页签，单击<span class="uicontrol" id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol1645154510534">“<span id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_text26407307349">添加</span>”</span>。</span></li><li id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_li10626045539"><span>配置目标集群参数。</span><p><div class="p" id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_p344744712197">相关参数说明如<a href="#volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_table13641194661910">表1</a>所示。
+<div class="tablenoborder"><a name="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_table13641194661910"></a><a name="foc_gud_0032_0_zh-cn_topic_0000001792344106_table13641194661910"></a><table cellpadding="4" cellspacing="0" summary="" id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_table13641194661910" frame="border" border="1" rules="all"><caption><b>表1 </b>目标集群参数说明</caption><colgroup><col style="width:34.949999999999996%"><col style="width:65.05%"></colgroup><thead align="left"><tr id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_row66412046151918"><th align="left" class="cellrowborder" valign="top" width="34.949999999999996%" id="mcps1.3.3.2.3.2.1.2.2.3.1.1"><p id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_p11641204641917">参数</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="59.07%" id="mcps1.3.2.2.3.2.2.2.3.1.2"><p id="volume_0027__zh-cn_topic_0000001792344074_p1605195418305">说明</p>
+<th align="left" class="cellrowborder" valign="top" width="65.05%" id="mcps1.3.3.2.3.2.1.2.2.3.1.2"><p id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_p3641114610198">说明</p>
 </th>
 </tr>
 </thead>
-<tbody><tr id="volume_0027__zh-cn_topic_0000001792344074_row518361118419"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="volume_0027__zh-cn_topic_0000001792344074_p618331184117"><span id="volume_0027__zh-cn_topic_0000001792344074_text15210203084113">用户类型</span></p>
+<tbody><tr id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_row11154135519445"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_p9154135544411">名称</p>
 </td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="volume_0027__zh-cn_topic_0000001792344074_p6183211114111">选择<span class="uicontrol" id="volume_0027__zh-cn_topic_0000001792344074_uicontrol1447425204616">“<span id="volume_0027__zh-cn_topic_0000001792344074_text102662481475">本地用户</span>”</span>。</p>
-</td>
-</tr>
-<tr id="volume_0027__zh-cn_topic_0000001792344074_row76051154203011"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="volume_0027__zh-cn_topic_0000001792344074_p156051454113019"><span id="volume_0027__zh-cn_topic_0000001792344074_text1356165615311">名称</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="volume_0027__zh-cn_topic_0000001792344074_p196051254183018">自定义用户名称。</p>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_p51549551446">自定义目标集群的名称。</p>
 </td>
 </tr>
-<tr id="volume_0027__zh-cn_topic_0000001792344074_row359718368413"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="volume_0027__zh-cn_topic_0000001792344074_p19597143610419"><span id="volume_0027__zh-cn_topic_0000001792344074_text10395175319414">登录认证方式</span></p>
+<tr id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_row15735172017508"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_p1152814501268">角色</p>
 </td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="volume_0027__zh-cn_topic_0000001792344074_p9561817134711">选择<span class="uicontrol" id="volume_0027__zh-cn_topic_0000001792344074_uicontrol1869185813468">“<span id="volume_0027__zh-cn_topic_0000001792344074_text724773110484">登录密码</span>”</span>。</p>
-</td>
-</tr>
-<tr id="volume_0027__zh-cn_topic_0000001792344074_row11605195433015"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="volume_0027__zh-cn_topic_0000001792344074_p1660565410309"><span id="volume_0027__zh-cn_topic_0000001792344074_text152714132322">密码</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="volume_0027__zh-cn_topic_0000001792344074_p7605754153016">设置用户的密码。</p>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="volume_0027__foc_gud_0032_0_p125401920228">固定为<span class="uicontrol" id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_uicontrol3110113172718">“<span id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_text844584915492">复制目标集群</span>”</span>。</p>
 </td>
 </tr>
-<tr id="volume_0027__zh-cn_topic_0000001792344074_row19605145412304"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="volume_0027__zh-cn_topic_0000001792344074_p18605165416301"><span id="volume_0027__zh-cn_topic_0000001792344074_text1371812323419">确认密码</span></p>
+<tr id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_row17641164617192"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_p1164184612196">IP地址</p>
 </td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="volume_0027__zh-cn_topic_0000001792344074_p260511541306">确认用户的密码。</p>
-</td>
-</tr>
-<tr id="volume_0027__zh-cn_topic_0000001792344074_row96054545308"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="volume_0027__zh-cn_topic_0000001792344074_p136055546308"><span id="volume_0027__zh-cn_topic_0000001792344074_text1153752823417">角色</span></p>
-</td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="volume_0027__zh-cn_topic_0000001792344074_p166051454203013">选择<span class="uicontrol" id="volume_0027__zh-cn_topic_0000001792344074_uicontrol584234113619">“<span id="volume_0027__zh-cn_topic_0000001792344074_text11729135453616">远端设备管理员</span>”</span>。</p>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><div class="p" id="volume_0027__foc_gud_0032_0_p1272311347226">输入目标集群任一控制器的管理、备份或复制IP。<ul id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_ul10691523173813"><li id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_li1869223123818">如果输入目标集群的管理IP，请确保本端与目标端的管理网络连通。</li><li id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_li12657153011405">如果输入目标集群的备份网络IP，请确保本端与目标端的备份网络连通。</li><li id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_li1768111253458">如果输入目标集群的复制网络IP，请确保本端与目标端的复制网络连通。</li></ul>
+<div class="note" id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_note4160173815018"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_ul114693044613"><li id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_li472320144611">管理IP即为登录目标集群管理界面的IP地址。</li><li id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_li174692084618">备份或复制网络IP请登录目标集群的管理界面，选择<span class="uicontrol" id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_uicontrol1664124518511">“<span id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_text16647456516">系统</span> &gt; <span id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_text146641145105111">基础设施</span> &gt; <span id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_text9664154515518">集群管理</span>”</span>，在“备份集群”页签单击集群名称，获取任一控制器的备份网络IP（数据备份引擎）或复制网络IP。</li></ul>
+</div></div>
+</div>
 </td>
 </tr>
-<tr id="volume_0027__zh-cn_topic_0000001792344074_row126056541304"><td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.3.2.2.2.3.1.1 "><p id="volume_0027__zh-cn_topic_0000001792344074_p1560518547306"><span id="volume_0027__zh-cn_topic_0000001792344074_text5271104363516">描述</span></p>
+<tr id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_row18641204619191"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_p116416464192">端口</p>
 </td>
-<td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.3.2.2.2.3.1.2 "><p id="volume_0027__zh-cn_topic_0000001792344074_p560513546306">用户的描述信息。</p>
+<td class="cellrowborder" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="volume_0027__foc_gud_0032_0_p56361611234">目标集群的端口。</p>
+<p id="volume_0027__foc_gud_0032_0_p12932125615229">IP地址框输入管理IP地址时，默认端口为25081；IP地址框输入复制网络IP地址或备份网络IP地址时，默认端口为30068。</p>
+</td>
+</tr>
+<tr id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_row9641346121912"><td class="cellrowborder" valign="top" width="34.949999999999996%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_p164113466197">用户名</p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="65.05%" headers="mcps1.3.3.2.3.2.1.2.2.3.1.2 "><p id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_p1119324620413"><a href="volume_0026.html">步骤5：创建远端设备管理员</a>中创建的用户及其密码。</p>
+</td>
+</tr>
+<tr id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_row12641194631915"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.2.2.3.1.1 "><p id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_p20641646181916">密码</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-</p></li><li id="volume_0027__zh-cn_topic_0000001792344074_li4503143713309"><span>单击<span class="uicontrol" id="volume_0027__zh-cn_topic_0000001792344074_uicontrol874772112385">“确定”</span>。</span></li></ol>
+</div>
+</p></li><li id="volume_0027__foc_gud_0032_0_li14308163482314"><span>单击<span class="uicontrol" id="volume_0027__foc_gud_0032_0_zh-cn_topic_0000001792344106_zh-cn_topic_0000001092505479_uicontrol138611845761">“确定”</span>。</span></li></ol>
 </div>
 </div>
 <div>
 <div class="familylinks">
-<div class="parentlink"><strong>父主题：</strong> <a href="volume_0021.html">复制卷副本</a></div>
+<div class="parentlink"><strong>父主题：</strong> <a href="volume_0020.html">复制卷副本</a></div>
 </div>
 </div>
 

@@ -50,6 +50,7 @@ import {
   each,
   find,
   first,
+  get,
   includes,
   isEmpty,
   map,
@@ -161,6 +162,10 @@ export class CreateDrillComponent implements OnInit {
     this.initForm();
     this.getDrill();
     this.getDrillDetail();
+  }
+
+  setSysTime(control) {
+    this.appUtilsService.setTimePickerCurrent(this.formGroup.get(control));
   }
 
   getDrill() {
@@ -538,11 +543,19 @@ export class CreateDrillComponent implements OnInit {
     if (!this.isSupportMount(item.subType)) {
       return false;
     }
-    if (this.formGroup.value.type === DataMap.drillType.period.value) {
-      return item.mountType === DataMap.recoveryDrillType.liveMount.value;
-    }
     // 日志副本不能使用及时挂载演练
-    return !(
+    if (
+      this.formGroup.value.type === DataMap.drillType.single.value &&
+      this.isLogCopy(item)
+    ) {
+      return false;
+    }
+    return item.mountType === DataMap.recoveryDrillType.liveMount.value;
+  }
+
+  // 是否是日志副本
+  isLogCopy(item) {
+    return (
       item.copyConfig &&
       item.copyOptions &&
       find(item.copyOptions, { value: item.copyConfig })?.source_copy_type ===
@@ -821,6 +834,19 @@ export class CreateDrillComponent implements OnInit {
           })
         })
         .subscribe(res => {
+          // 如果是轻量化Guassdb，需要去掉不完整的日志副本
+          if (
+            item.subType ===
+            DataMap.Resource_Type.lightCloudGaussdbInstance.value
+          ) {
+            res.items = reject(res.items, (copy: any) => {
+              return (
+                copy.source_copy_type ===
+                  DataMap.CopyData_Backup_Type.log.value &&
+                get(JSON.parse(copy.properties), 'canRestore', true) === false
+              );
+            });
+          }
           assign(item, {
             copyOptions: map(res.items, copy => {
               return {

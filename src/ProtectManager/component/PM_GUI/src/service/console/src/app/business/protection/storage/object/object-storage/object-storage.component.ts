@@ -67,6 +67,7 @@ import { SetResourceTagService } from 'app/shared/services/set-resource-tag.serv
 import { ProButton } from 'app/shared/components/pro-button/interface';
 import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
 import { Subject } from 'rxjs';
+import { GetLabelOptionsService } from '../../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-object-storage',
@@ -100,7 +101,8 @@ export class ObjectStorageComponent implements OnInit, OnDestroy {
     private batchOperateService: BatchOperateService,
     private warningMessageService: WarningMessageService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngOnDestroy(): void {
@@ -296,8 +298,11 @@ export class ObjectStorageComponent implements OnInit, OnDestroy {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -395,9 +400,10 @@ export class ObjectStorageComponent implements OnInit, OnDestroy {
         delete conditionsTemp.protocol;
       }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;

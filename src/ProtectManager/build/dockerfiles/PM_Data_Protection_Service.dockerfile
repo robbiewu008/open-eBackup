@@ -76,7 +76,8 @@ RUN python3 -m py_compile /context/src/app/common/security/kmc_util.py /context/
     && mv "/context/src/mount_oper.sh" "/script" \
     && chmod 550 "/script/mount_oper.sh" \
     && chown root:root "/script/mount_oper.sh" \
-    && rm -rf /root/.config/pip
+    && rm -rf /root/.config/pip \
+    && rm -rf /etc/localtime
 
 
 USER 15013

@@ -12,6 +12,8 @@
 */
 package openbackup.data.access.framework.core.agent.impl;
 
+import com.alibaba.fastjson.JSON;
+
 import feign.FeignException;
 import feign.Response;
 import feign.codec.Encoder;
@@ -25,6 +27,9 @@ import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppResource;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AsyncListResourceReq;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AsyncListResourceV2Req;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AsyncNotifyScanRes;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CheckAppReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CleanAgentLogReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CollectAgentLogRsp;
@@ -55,12 +60,15 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.model.host.ManagementIp;
 import openbackup.system.base.common.rest.FeignBuilder;
+import openbackup.system.base.common.utils.CommonUtil;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.agent.model.AgentSupportCompressedPackageType;
+import openbackup.system.base.sdk.agent.model.AgentUpdateRequest;
 import openbackup.system.base.sdk.agent.model.AgentUpdateResponse;
+import openbackup.system.base.sdk.agent.model.AgentUpdateResultResponse;
 import openbackup.system.base.sdk.cert.request.PushUpdateCertToAgentReq;
 import openbackup.system.base.service.AvailableAgentManagementDomainService;
 import openbackup.system.base.service.DeployTypeService;
@@ -68,6 +76,8 @@ import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.RequestUriUtil;
 
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,6 +92,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -96,6 +107,11 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
 
     private static final String SUCCESS_ERROR_CODE = "0";
 
+    private static final int SCAN_SUCCESS_CODE = 0;
+    private static final int SCAN_COUNT_LIMIT = 720;
+    private static final int SCAN_SLEEP_INTERVAL = 5;
+    private static final int SCAN_SEND_RETRY_COUNT = 3;
+
     private boolean isUseProxyForAll;
 
     private final Encoder encoder;
@@ -105,6 +121,9 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
 
     @Autowired
     private DeployTypeService deployTypeService;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
     /**
      * Constructor
@@ -180,6 +199,122 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
             throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Agent network error");
         }
         return convertToPageList(listResourceV2Rsp);
+    }
+
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
+    @Override
+    public PageListResponse<ProtectedResource> getAsyncDetailPageList(String endpoint, Integer port,
+            AsyncListResourceReq request, boolean isUseLongTimeApi) {
+        return getAsyncDetailPageList(request.getJobId(),
+                new AgentCommonParam(request.getAppType(), endpoint, port, true), request.getListResourceV2Req(),
+                isUseLongTimeApi);
+    }
+
+    private PageListResponse<ProtectedResource> getAsyncDetailPageList(String jobId, AgentCommonParam agentCommonParam,
+            ListResourceV2Req listResourceV2Req, boolean isUseLongTimeApi) {
+        URI uri = RequestUriUtil.getRequestUri(agentCommonParam.getEndpoint(), agentCommonParam.getPort());
+        log.info("[Scan] jobId: {}, begin to page async query resources, appType: {}, apiType: {}, uri: {}.", jobId,
+                agentCommonParam.getAppType(), isUseLongTimeApi, uri);
+
+        AgentUnifiedRestApi agentApi = agentCommonParam.isRetry()
+                ? getAgentUnifiedRestApi(agentCommonParam.getEndpoint())
+                : getNoRetryAgentUnifiedRestApi(agentCommonParam.getEndpoint());
+
+        try {
+            RBucket<Boolean> statusBucket = redissonClient.getBucket("scan_status_" + jobId);
+            // 不能使用setIfAbsent，该方法仅在key不存在时设置，当前场景无论key存在与否都需要设置初始化值
+            statusBucket.set(false);
+            RBucket<String> resultBucket = redissonClient.getBucket("scan_result_" + jobId);
+            resultBucket.set("");
+
+            // 5s查询一次agent上报状态，最长等待1小时
+            int waitReportCount = 0;
+            while (!statusBucket.get() && waitReportCount < SCAN_COUNT_LIMIT) {
+                AsyncListResourceReq req = new AsyncListResourceReq(jobId, agentCommonParam.getAppType(),
+                        listResourceV2Req);
+                int count = retryInvokeAgent(uri, waitReportCount, agentApi, req);
+                count++;
+                waitReportCount = count;
+                CommonUtil.sleep(SCAN_SLEEP_INTERVAL, TimeUnit.SECONDS);
+            }
+        } catch (LegoUncheckedException | FeignException e) {
+            log.error("[Scan] jobId: {}, call async agent api failed, uri: {}", jobId, uri, e);
+            throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Agent network error.");
+        }
+
+        return convertAsyncScanList(jobId);
+    }
+
+    private int retryInvokeAgent(URI uri, int count, AgentUnifiedRestApi agentApi, AsyncListResourceReq req) {
+        int waitReportCount = count;
+        if (waitReportCount % (SCAN_SLEEP_INTERVAL * 12) == 0) {
+            long startTime = System.currentTimeMillis();
+            // 等待5min后仍然没有收到agent上报结果时，重新下发一次扫描请求，重试次数不超过十二次
+            int invokeCode = -1000;
+            int failRetryCount = 0;
+            while (SCAN_SUCCESS_CODE != invokeCode && failRetryCount < SCAN_SEND_RETRY_COUNT) {
+                // 下发扫描请求失败，重试3次
+                log.info("[Scan] jobId: {}, async scan retry count: {}, invoke agent api start", req.getJobId(),
+                        waitReportCount);
+                AsyncNotifyScanRes response = agentApi.asyncListResourceDetailV2(uri, req.getAppType(), req.getJobId(),
+                        req.getListResourceV2Req());
+                if (!VerifyUtil.isEmpty(response)) {
+                    invokeCode = response.getCode();
+                    failRetryCount++;
+                }
+                if (SCAN_SUCCESS_CODE != invokeCode) {
+                    log.error("[Scan] jobId: {}, call async agent api failed, uri: {}, code: {}, msg: {}",
+                            req.getJobId(), uri, response.getCode(), response.getMessage());
+                }
+                log.info("[Scan] jobId: {}, async scan retry count: {}, invoke agent api end", req.getJobId(),
+                        waitReportCount);
+            }
+            if (SCAN_SUCCESS_CODE != invokeCode) {
+                log.error("[Scan] jobId: {}, call async agent api failed three times, uri: {}", req.getJobId(), uri);
+                throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Agent network error.");
+            }
+
+            long endTime = System.currentTimeMillis();
+            waitReportCount += ((endTime - startTime) / 1000 / SCAN_SLEEP_INTERVAL);
+        }
+        return waitReportCount;
+    }
+
+    private PageListResponse<ProtectedResource> convertAsyncScanList(String jobId) {
+        RBucket<String> resultBucket = redissonClient.getBucket("scan_result_" + jobId);
+        AsyncListResourceV2Req request = new AsyncListResourceV2Req();
+        if (StringUtils.isNotBlank(resultBucket.get())) {
+            request = JSON.parseObject(resultBucket.get(), AsyncListResourceV2Req.class);
+        }
+        // 上报接口报错直接结束任务抛出异常
+        if (SCAN_SUCCESS_CODE != request.getCode()) {
+            log.error("[Scan] jobId: {}, async agent action report failed, code: {}", jobId, request.getCode());
+            throw new LegoCheckedException(request.getCode(), "Agent async report error.");
+        }
+        PageListResponse<ProtectedResource> pageListResponse = new PageListResponse<>(0, new ArrayList<>());
+        ResourceListDto resourceListDto = request.getResults();
+        pageListResponse.setTotalCount(resourceListDto.getTotal());
+        if (resourceListDto.getItems() == null) {
+            return pageListResponse;
+        }
+        List<AppResource> appResources = resourceListDto.getItems();
+        List<ProtectedResource> records = appResources.stream()
+                .map(appResource -> BeanTools.copy(appResource, ProtectedResource::new)).collect(Collectors.toList());
+        pageListResponse.setRecords(records);
+        return pageListResponse;
+    }
+
+    @Override
+    public void transScanResources(AsyncListResourceV2Req request) {
+        log.debug("[Scan] jobId: {}, async report request: {}", request.getId(), JSON.toJSONString(request));
+        RBucket<Boolean> statusBucket = redissonClient.getBucket("scan_status_" + request.getId());
+        statusBucket.set(true);
+        RBucket<String> resultBucket = redissonClient.getBucket("scan_result_" + request.getId());
+        if (SCAN_SUCCESS_CODE == request.getCode()) {
+            resultBucket.set(JsonUtil.json(request));
+        } else {
+            resultBucket.set("");
+        }
     }
 
     @Routing(destinationIp = "#{endpoint}", port = "#{port}")
@@ -720,7 +855,8 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
         List<SupportPluginDto> plugins = pluginsDto.getSupportPlugins();
         log.debug("Host environment scan, agent support plugins: {}", plugins);
         if (VerifyUtil.isEmpty(plugins)) {
-            throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, "Plugins are empty");
+            log.warn("Plugins are empty");
+            return new ArrayList<>();
         }
         List<ProtectedResource> protectedResources = new ArrayList<>();
         for (SupportPluginDto plugin : plugins) {
@@ -813,6 +949,42 @@ public class AgentUnifiedServiceImpl implements AgentUnifiedService, Initializin
             throw e;
         } catch (FeignException e) {
             log.error("Displaying Agent Installation Commands error, endpoint: {}, port: {}", endpoint, port,
+                ExceptionUtil.getErrorMessage(e));
+            throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Agent network error");
+        }
+    }
+
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
+    @Override
+    public AgentUpdateResultResponse queryAgentUpdateResult(String endpoint, Integer port) {
+        try {
+            URI requestUri = RequestUriUtil.getRequestUri(endpoint, port);
+            log.info("Displaying Agent Installation Commands, uri: {}", requestUri);
+            return getAgentUnifiedRestApi(endpoint).queryAgentUpdateResult(requestUri);
+        } catch (LegoCheckedException e) {
+            log.error("Displaying Agent Installation Commands fail, endpoint: {}, port: {}", endpoint, port,
+                ExceptionUtil.getErrorMessage(e));
+            throw e;
+        } catch (FeignException e) {
+            log.error("Displaying Agent Installation Commands error, endpoint: {}, port: {}", endpoint, port,
+                ExceptionUtil.getErrorMessage(e));
+            throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Agent network error");
+        }
+    }
+
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
+    @Override
+    public AgentUpdateResponse updateAgent(String endpoint, Integer port, AgentUpdateRequest agentUpdateRequest) {
+        try {
+            URI requestUri = RequestUriUtil.getRequestUri(endpoint, port);
+            log.info("update agent Commands, uri: {}", requestUri);
+            return getAgentUnifiedRestApi(endpoint).updateAgent(requestUri, agentUpdateRequest);
+        } catch (LegoCheckedException e) {
+            log.error("update agent fail, endpoint: {}, port: {}", endpoint, port,
+                ExceptionUtil.getErrorMessage(e));
+            throw e;
+        } catch (FeignException e) {
+            log.error("update agent error, endpoint: {}, port: {}", endpoint, port,
                 ExceptionUtil.getErrorMessage(e));
             throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Agent network error");
         }

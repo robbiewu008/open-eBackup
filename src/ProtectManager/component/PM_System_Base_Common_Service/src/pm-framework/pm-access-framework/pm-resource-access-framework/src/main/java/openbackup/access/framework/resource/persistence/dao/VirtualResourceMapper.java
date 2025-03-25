@@ -16,6 +16,7 @@ import com.huawei.emeistor.kms.kmc.util.security.exterattack.ExterAttack;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import openbackup.access.framework.resource.persistence.model.VirtualResourceExtendPo;
 import openbackup.access.framework.resource.persistence.model.VirtualResourceResponsePo;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -39,4 +40,15 @@ public interface VirtualResourceMapper extends BaseMapper<VirtualResourceRespons
      */
     @ExterAttack
     List<VirtualResourceResponsePo> queryVirtualResource(@Param("uuid") String uuid);
+
+
+    /**
+     * 查询所有虚拟机，匹配过滤规则用，生产实际在4000个以内
+     *
+     * @param path path
+     * @param scopeId scopeId
+     * @return VirtualResourceResponsePo 列表
+     */
+    @ExterAttack
+    List<VirtualResourceExtendPo> listAll(@Param("path") String path, @Param("scopeId") String scopeId);
 }

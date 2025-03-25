@@ -1,4 +1,3 @@
-<div class="aui-text-desc desc-mg">{{'protection_select_table_tip_label' | i18n}}</div>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-text-desc desc-mg">{{'protection_select_table_tip_label' | i18n}}</div>
 <lv-group [lvColumns]='["400px", "16px", "400px"]' lvRowGutter="4px">
     <div class="hive-all-table">
         <div class="custom-table-header">{{'protection_selectable_table_label' | i18n}}</div>
@@ -45,7 +45,7 @@
             </tbody>
         </lv-datatable>
         <ng-container *ngIf="totalTable>0">
-          <lv-paginator #pageA lvMode='simple' class="table-paginator" lvShowPageSizeOptions="false"
+          <lv-paginator #pageA lvMode='simple' lvShowPageSizeOptions="false"
                         [lvPageSize]="pageSize" [lvPageIndex]="pageIndex" [lvTotal]="totalTable"
                         (lvPageChange)="pageChange($event)">
           </lv-paginator>

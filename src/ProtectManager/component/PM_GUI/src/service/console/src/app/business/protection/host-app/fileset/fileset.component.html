@@ -1,4 +1,3 @@
-<div class="aui-operation">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-operation">
     <lv-group [lvGutter]="groupCommon.middleRowGutter">
         <button lv-button lvType="primary" (click)="createFileset()" auiRolePermission
             [rolePermission]="roleOperationMap.manageResource" lv-popover [lvPopoverClosable]="true"
@@ -30,7 +30,7 @@
         </button>
     </lv-group>
     <lv-group [lvGutter]="groupCommon.middleRowGutter">
-        <lv-search [lvFocus]="true" (lvSearch)="searchFilesets($event)" [(ngModel)]="queryName"
+        <lv-search [lvFocus]="true" (lvSearch)="searchByName($event)" [(ngModel)]="queryName"
             lvPlaceHolder="{{'common_search_type_label'|i18n:['common_fileset_label'|i18n]}}">
         </lv-search>
         <button class="aui-button-icon" lv-button lvSize="auto" (click)="refresh()">
@@ -80,8 +80,8 @@
                                 [filterTitle]="col.label"></aui-custom-table-search>
                         </div>
                         <div lvCustom *ngIf="col.key === 'labelList'">
-                            <aui-custom-table-search (search)="searchByLabel($event)"
-                                [filterTitle]="col.label"></aui-custom-table-search>
+                            <aui-custom-table-filter (filter)="searchByLabel($event)"
+                                [filterTitle]="col.label"></aui-custom-table-filter>
                         </div>
                     </th>
                 </ng-container>
@@ -120,7 +120,7 @@
                                         {{ item.environment?.osType | textMap: 'Os_Type' | nil}}
                                     </ng-container>
                                     <ng-container *ngSwitchCase="'osBackup'">
-                                         {{ item?.osBackup | textMap: 'copyDataVolume'}} 
+                                         {{ item?.osBackup | textMap: 'copyDataVolume'}}
                                     </ng-container>
                                     <ng-container *ngSwitchCase="'sla_name'">
                                         <ng-container *ngIf="item.sla_id;else emptyTpl">

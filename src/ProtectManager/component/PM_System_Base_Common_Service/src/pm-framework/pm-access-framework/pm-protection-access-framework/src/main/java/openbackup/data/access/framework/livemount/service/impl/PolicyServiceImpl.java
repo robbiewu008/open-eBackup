@@ -171,6 +171,8 @@ public class PolicyServiceImpl implements PolicyService, PolicyServiceApi {
     @Override
     @Transactional
     public void updatePolicy(String policyId, UpdatePolicyRequest updateRequest) {
+        LiveMountPolicyEntity policyEntity = selectPolicyById(policyId);
+
         PolicyBo policyBo = new PolicyBo();
         checkPolicyName(updateRequest.getName());
 
@@ -194,7 +196,6 @@ public class PolicyServiceImpl implements PolicyService, PolicyServiceApi {
         // get the number of live mounts associated with a policy.
         List<LiveMountEntity> liveMountEntities = liveMountService.queryLiveMountEntitiesByPolicyId(policyId);
 
-        LiveMountPolicyEntity policyEntity = selectPolicyById(policyId);
         // 如果周期执行时间有改变，重新初始化周期调度
         if (checkPeriodScheduleHasChanged(policyEntity, updateRequest)) {
             // update live mount scheduled

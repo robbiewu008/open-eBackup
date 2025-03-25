@@ -33,7 +33,8 @@ import {
   RestoreApiV2Service,
   RestoreV2LocationType,
   RestoreV2Type,
-  VmFileReplaceStrategy
+  VmFileReplaceStrategy,
+  ResourceDetailType
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
@@ -364,63 +365,14 @@ export class ApsRestoreComponent implements OnInit {
     } else {
       data = find(this.serverOptions, { uuid: this.formGroup.value.server });
     }
-    this.protectedResourceApiService
-      .ListResources({
-        pageNo: CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE,
-        queryDependency: true,
-        conditions: JSON.stringify({
-          uuid: data.rootUuid || data.root_uuid
-        })
-      })
-      .subscribe((res: any) => {
-        if (first(res.records)) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getDisk(agentsId);
-        }
-      });
-  }
-
-  getDisk(agentsId, recordsTemp?: any[], startPage?: number) {
-    let data;
-    if (this.formGroup.value.restoreLocation === RestoreV2LocationType.ORIGIN) {
-      data = this.resourceData;
-    } else {
-      data = find(this.serverOptions, { uuid: this.formGroup.value.server });
-    }
-    const params = {
-      agentId: agentsId,
-      envId: data.rootUuid || data.root_uuid,
-      resourceIds: [data.uuid || data.root_uuid],
-      pageNo: startPage || 1,
-      pageSize: 200,
-      conditions: JSON.stringify({
-        resourceType: 'APS-disk',
-        uuid: data.uuid,
-        regionId: data.extendInfo.regionId
-      })
-    };
-
-    this.appService.ListResourcesDetails(params).subscribe(res => {
-      if (!recordsTemp) {
-        recordsTemp = [];
-      }
-      if (!isNumber(startPage)) {
-        startPage = 1;
-      }
-      recordsTemp = [...recordsTemp, ...res.records];
-      if (
-        startPage === Math.ceil(res.totalCount / 200) ||
-        res.totalCount === 0
-      ) {
+    this.appUtilsService
+      .getResourcesDetails(
+        data,
+        ResourceDetailType.apsDisk,
+        {},
+        { regionId: data?.extendInfo?.regionId }
+      )
+      .subscribe(recordsTemp => {
         each(recordsTemp, item => {
           assign(item, {
             size: item.extendInfo?.size,
@@ -446,11 +398,7 @@ export class ApsRestoreComponent implements OnInit {
           this.formGroup.get('password').disable();
           this.needPassword = false;
         }
-        return;
-      }
-      startPage++;
-      this.getDisk(agentsId, recordsTemp, startPage);
-    });
+      });
   }
 
   getProxyOptions() {

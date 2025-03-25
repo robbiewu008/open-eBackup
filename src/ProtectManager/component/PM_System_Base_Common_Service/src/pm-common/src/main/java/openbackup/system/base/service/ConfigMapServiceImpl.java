@@ -22,6 +22,8 @@ import openbackup.system.base.sdk.cluster.request.ClusterComponentPwdInfoRequest
 import openbackup.system.base.sdk.infrastructure.model.InfrastructureResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -34,7 +36,11 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class ConfigMapServiceImpl {
+public class ConfigMapServiceImpl implements ApplicationListener<ApplicationReadyEvent> {
+    private static final String SECRET_KEY = "SECRET_KEY";
+
+    private Map<String, JSONArray> secretMap = new HashMap<>();
+
     @Autowired
     private ConfigMapService configMapService;
 
@@ -42,17 +48,27 @@ public class ConfigMapServiceImpl {
      * 解密
      *
      * @param key common-secret中的键
+     * @param isRealTime 是否实时获取基础设施的信息
      * @return 查询到secret中的值
      */
-    public String getValueFromSecretByKey(String key) {
+    public String getValueFromSecretByKey(String key, boolean isRealTime) {
+        JSONArray dataSourceConfig = null;
+        if (!isRealTime && secretMap.get(SECRET_KEY) != null) {
+            dataSourceConfig = secretMap.get(SECRET_KEY);
+        }
         try {
-            JSONArray dataSourceConfig = configMapService.getCommonSecreteMapData().getData();
+            if (dataSourceConfig == null) {
+                dataSourceConfig = configMapService.getCommonSecreteMapData().getData();
+            }
+            if (!isRealTime && secretMap.get(key) == null) {
+                secretMap.put(SECRET_KEY, dataSourceConfig);
+            }
             log.info("get regis information from infra.");
             for (Object obj : dataSourceConfig) {
                 JSONObject object = obj instanceof JSONObject ? (JSONObject) obj : new JSONObject();
                 if (object.containsKey(key)) {
                     String password = object.getString(key);
-                    log.info("set redis auth info success.");
+                    log.info("get redis auth info success.");
                     return password;
                 }
             }
@@ -103,5 +119,11 @@ public class ConfigMapServiceImpl {
      */
     public InfrastructureResponse updateInternalComponentPassword() {
         return configMapService.updateComponentPassword();
+    }
+
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        log.info("start clean up map");
+        secretMap.clear();
     }
 }

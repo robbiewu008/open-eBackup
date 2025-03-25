@@ -15,16 +15,12 @@ import { FormGroup } from '@angular/forms';
 import {
   ApplicationType,
   BaseUtilService,
-  ClustersApiService,
   CommonConsts,
   CookieService,
   DataMap,
   DataMapService,
   I18NService,
   MultiCluster,
-  NasDistributionStoragesApiService,
-  QosService,
-  StorageUnitService,
   StorageUserAuthService
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
@@ -45,29 +41,54 @@ export class SpecifyDestinationLocationComponent implements OnInit {
   @Input() isSlaDetail: boolean;
   @Input() data: any;
   @Input() action: any;
+  @Input() application: any;
   @Input() formGroup: FormGroup;
   @Input() isRetry: boolean;
   @Input() isUsed: boolean;
+  @Input() hasArchival: boolean;
+  @Input() hasReplication: boolean;
   @Output() isDisableQos = new EventEmitter<any>();
   backupStorageTypes = this.dataMapService.toArray(
     'storagePoolBackupStorageType'
   );
   isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
+  allowBasicDisk = false;
+  allowBasicDiskList = [
+    ApplicationType.Fileset,
+    ApplicationType.MySQL,
+    ApplicationType.Dameng,
+    ApplicationType.GoldenDB,
+    ApplicationType.PostgreSQL,
+    ApplicationType.KingBase,
+    ApplicationType.OpenGauss,
+    ApplicationType.TiDB,
+    ApplicationType.TDSQL,
+    ApplicationType.MongoDB,
+    ApplicationType.Informix,
+    ApplicationType.GeneralDatabase,
+    ApplicationType.AntDB,
+    ApplicationType.FusionCompute,
+    ApplicationType.CNware,
+    ApplicationType.HCSCloudHost
+  ];
 
   constructor(
-    public baseUtilService: BaseUtilService,
     public i18n: I18NService,
-    private qosServiceApi: QosService,
-    private cookieService: CookieService,
     public dataMapService: DataMapService,
-    private clusterApiService: ClustersApiService,
-    private nasDistributionStoragesApiService: NasDistributionStoragesApiService,
-    private storageUnitService: StorageUnitService,
-    private storageUserAuthService: StorageUserAuthService,
-    public appUtilsService?: AppUtilsService
+    public baseUtilService: BaseUtilService,
+    public appUtilsService: AppUtilsService,
+    private cookieService: CookieService,
+    private storageUserAuthService: StorageUserAuthService
   ) {}
 
   ngOnInit(): void {
+    if (!this.appUtilsService.isDistributed) {
+      this.allowBasicDiskList = [
+        ...this.allowBasicDiskList,
+        ...[ApplicationType.OpenStack, ApplicationType.KubernetesStatefulSet]
+      ];
+    }
+    this.allowBasicDisk = this.allowBasicDiskList.includes(this.application);
     this.formGroup
       .get('storage_id')
       .setValidators([this.baseUtilService.VALID.required()]);
@@ -77,21 +98,10 @@ export class SpecifyDestinationLocationComponent implements OnInit {
 
     this.getBackupStorageNames();
     if (!this.isSlaDetail) {
-      this.updateData();
       this.listenChanges();
       this.applicationType = get(this.data, 'applicationData');
     } else {
       this.applicationType = get(this.data[0], 'applicationData');
-    }
-  }
-
-  updateData() {
-    // 如果是升级场景，则不校验指定目标位置,之前非必选时不同的资源同一SLA可能对应不同存储单元，不能塞值
-    if (!this.formGroup.get('storage_id').value && !!this.isUsed) {
-      this.formGroup.get('storage_type').clearValidators();
-      this.formGroup.get('storage_id').clearValidators();
-      this.formGroup.get('storage_type').updateValueAndValidity();
-      this.formGroup.get('storage_id').updateValueAndValidity();
     }
   }
 
@@ -103,11 +113,15 @@ export class SpecifyDestinationLocationComponent implements OnInit {
         authType: 2
       })
       .subscribe(res => {
-        this.backupStorageUnitGroupNames = map(res.records, item => {
+        this.backupStorageUnitGroupNames = map(res.records, (item: any) => {
           return {
             isLeaf: true,
             label: item.storageName,
-            disabled: false,
+            disabled:
+              (this.hasArchival ||
+                this.hasReplication ||
+                !this.allowBasicDisk) &&
+              item.storageType === DataMap.poolStorageDeviceType.Server.value,
             value: item.storageId,
             ...item
           };
@@ -151,16 +165,24 @@ export class SpecifyDestinationLocationComponent implements OnInit {
         userId: this.cookieService.get('userId'),
         authType: 1
       })
-      .subscribe(res => {
-        this.backupStorageUnitNames = map(res.records, item => {
+      .subscribe((res: any) => {
+        this.backupStorageUnitNames = map(res.records, (item: any) => {
           return {
             isLeaf: true,
             label: item.storageName,
-            disabled: false,
+            disabled:
+              (this.hasArchival ||
+                this.hasReplication ||
+                !this.allowBasicDisk) &&
+              item.storageType === 'BasicDisk',
             value: item.storageId,
             ...item
           };
         });
+        this.backupStorageUnitNames.sort(
+          (a, b) =>
+            Math.abs(a?.runningStatus - 27) - Math.abs(b?.runningStatus - 27)
+        );
         // x系列除DWS只能指定本地存储单元
         this.backupStorageUnitNames = filter(
           this.backupStorageUnitNames,
@@ -205,6 +227,19 @@ export class SpecifyDestinationLocationComponent implements OnInit {
           .get('storage_id')
           .setValidators(this.baseUtilService.VALID.required());
       }
+      // 当选项只有一个时，自动填充
+      if (res === 'storage_unit' && this.backupStorageUnitNames.length === 1) {
+        this.formGroup
+          .get('storage_id')
+          .setValue(this.backupStorageUnitNames[0].value);
+      } else if (
+        res === 'storage_unit_group' &&
+        this.backupStorageUnitGroupNames.length === 1
+      ) {
+        this.formGroup
+          .get('storage_id')
+          .setValue(this.backupStorageUnitGroupNames[0].value);
+      }
       this.formGroup.get('storage_id').updateValueAndValidity();
       this.updateBackupStorageNames(this.formGroup.get('backupTeams').value);
     });
@@ -214,13 +249,24 @@ export class SpecifyDestinationLocationComponent implements OnInit {
         this.isDisableQos.emit(false);
         return;
       }
-      const flag =
-        find(this.backupStorageUnitNames, { value: res })?.storageType ===
-          'BasicDisk' ||
-        find(this.backupStorageUnitGroupNames, { value: res })?.storageType ===
-          DataMap.poolStorageDeviceType.Server.value;
+      const isGroup =
+        this.formGroup.get('storage_type').value ===
+        DataMap.storagePoolBackupStorageType.group.value;
+      const tmpStorage = isGroup
+        ? find(this.backupStorageUnitGroupNames, { value: res })
+        : find(this.backupStorageUnitNames, { value: res });
+      const flag = [
+        'BasicDisk',
+        DataMap.poolStorageDeviceType.Server.value
+      ].includes(tmpStorage?.storageType);
       this.isDisableQos.emit(flag);
-
+      this.formGroup
+        .get('device_type')
+        .setValue(
+          flag
+            ? DataMap.poolStorageDeviceType.Server.value
+            : tmpStorage?.storageType
+        );
       if (flag) {
         // 本地盘存储单元不支持限速策略、源端重删、目标端重删
         this.formGroup.get('qos_id').setValue('');
@@ -233,10 +279,11 @@ export class SpecifyDestinationLocationComponent implements OnInit {
       }
     });
   }
+
   updateBackupStorageNames(data) {
     if (
       find(data, { action: 'log' }) &&
-      this.formGroup.value.storage_type == 'storage_unit_group'
+      this.formGroup.value.storage_type === 'storage_unit_group'
     ) {
       this.backupStorageUnitGroupNames = map(
         this.backupStorageUnitGroupNames,
@@ -245,10 +292,15 @@ export class SpecifyDestinationLocationComponent implements OnInit {
             isLeaf: true,
             label: item.clusterName,
             ...item,
-            disabled: isEqual(
-              item.storageStrategyType,
-              DataMap.newBackupPolicy.balance.value
-            )
+            disabled:
+              isEqual(
+                item.storageStrategyType,
+                DataMap.newBackupPolicy.balance.value
+              ) ||
+              ((this.hasArchival ||
+                this.hasReplication ||
+                !this.allowBasicDisk) &&
+                item.storageType === DataMap.poolStorageDeviceType.Server.value)
           };
         }
       );
@@ -260,7 +312,11 @@ export class SpecifyDestinationLocationComponent implements OnInit {
             isLeaf: true,
             label: item.clusterName,
             ...item,
-            disabled: false
+            disabled:
+              (this.hasArchival ||
+                this.hasReplication ||
+                !this.allowBasicDisk) &&
+              item.storageType === DataMap.poolStorageDeviceType.Server.value
           };
         }
       );

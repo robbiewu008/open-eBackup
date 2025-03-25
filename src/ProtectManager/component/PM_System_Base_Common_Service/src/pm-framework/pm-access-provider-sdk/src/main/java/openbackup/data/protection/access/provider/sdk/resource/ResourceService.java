@@ -17,6 +17,7 @@ import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.resource.model.ResourceScanDto;
 import openbackup.data.protection.access.provider.sdk.resource.model.ResourceUpsertRes;
+import openbackup.system.base.sdk.resource.model.UpdateCopyUserObjectReq;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -632,4 +633,23 @@ public interface ResourceService {
      * @return 所有子类型的列表
      */
     List<String> getAllSubTypeList();
+
+    /**
+     * 更新副本所属用户（同时修改配额）
+     * 1.修改副本所属用户
+     * 2.根据副本类型同步对应配额给用户
+     * 3.修改对应副本资源集
+     *
+     * @param updateCopyUserObjectReq 更新副本归属用户请求体
+     */
+    void updateCopyUser(UpdateCopyUserObjectReq updateCopyUserObjectReq);
+
+    /**
+     * 更新保护状态
+     *
+     * @param uuids id
+     * @param protectStatus 保护状态
+     * @return 更新结果
+     */
+    int batchUpdateStatusById(List<String> uuids, int protectStatus);
 }

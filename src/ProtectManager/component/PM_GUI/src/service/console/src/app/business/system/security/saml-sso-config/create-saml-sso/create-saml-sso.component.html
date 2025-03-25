@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup">
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'common_name_label' | i18n }}
@@ -49,7 +49,7 @@
       ></textarea>
     </lv-form-control>
   </lv-form-item>
-  <h3>{{ 'system_metadata_config_label' | i18n }}</h3>
+  <h3 class="aui-gutter-column-sm">{{ 'system_metadata_config_label' | i18n }}</h3>
   <lv-form-item>
     <lv-form-label [lvRequired]="!rowData">
       {{ 'system_metadata_file_label' | i18n }}

@@ -21,10 +21,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
-import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.enums.MountTypeEnum;
-import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreModeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
 import openbackup.data.protection.access.provider.sdk.lock.LockResourceBo;
@@ -43,18 +41,17 @@ import openbackup.gaussdbt.protection.access.provider.constant.GaussDBTConstant;
 import openbackup.gaussdbt.protection.access.provider.util.GaussDBTClusterUtil;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-import openbackup.system.base.util.BeanTools;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.OptionalUtil;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -78,6 +75,9 @@ public class GaussDBTRestoreInterceptorProvider extends AbstractDbRestoreInterce
     private final CopyRestApi copyRestApi;
 
     private final SlaQueryService slaQueryService;
+
+    @Autowired
+    private DeployTypeService deployTypeService;
 
     /**
      * Constructor
@@ -104,9 +104,6 @@ public class GaussDBTRestoreInterceptorProvider extends AbstractDbRestoreInterce
     public RestoreTask initialize(RestoreTask task) {
         // 回填GaussDBT环境的agents
         buildRestoreAgents(task);
-
-        // 如果是任意时间带点恢复，需要下发日志仓：3-LOG_REPOSITORY
-        buildRestoreRepositories(task);
 
         // 设置高级参数：targetLocation、
         buildRestoreAdvanceParams(task);
@@ -146,25 +143,6 @@ public class GaussDBTRestoreInterceptorProvider extends AbstractDbRestoreInterce
     }
 
     /**
-     * 任意时间点恢复，下发日志仓
-     *
-     * @param task 恢复任务
-     */
-    private void buildRestoreRepositories(RestoreTask task) {
-        Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElse(new HashMap<>());
-        String restoreTimestamp = advanceParams.get(GaussDBTConstant.RESTORE_TIME_STAMP_KEY);
-        if (!VerifyUtil.isEmpty(restoreTimestamp)) {
-            log.info("restore type is timestamp restore, add a LOG_REPOSITORY");
-            List<StorageRepository> repositories = Optional.ofNullable(task.getRepositories())
-                .orElse(new ArrayList<>());
-            StorageRepository logRepository = BeanTools.copy(repositories.get(0), StorageRepository::new);
-            logRepository.setType(RepositoryTypeEnum.LOG.getType());
-            repositories.add(logRepository);
-            task.setRepositories(repositories);
-        }
-    }
-
-    /**
      * 添加高级参数
      *
      * @param task 恢复任务
@@ -179,6 +157,11 @@ public class GaussDBTRestoreInterceptorProvider extends AbstractDbRestoreInterce
         advanceParams.put(GaussDBTConstant.MOUNT_TYPE_KEY, MountTypeEnum.FULL_PATH_MOUNT.getMountType());
         // 支持多任务
         advanceParams.put(DatabaseConstants.MULTI_POST_JOB, Boolean.TRUE.toString());
+        log.info("gaussDBT restore isPacific:{}", deployTypeService.isPacific());
+        if (deployTypeService.isPacific()) {
+            // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+            advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        }
         Optional<ProtectedResource> protectedResourceOptional = resourceService.getResourceById(
             task.getTargetObject().getUuid());
         if (protectedResourceOptional.isPresent()) {

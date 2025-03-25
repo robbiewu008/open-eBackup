@@ -1,5 +1,5 @@
 {{- $deploytype:= include "getDeployType" . | default "" }}
-{{- if eq $deploytype "d10" }}
+{{- if eq $deploytype "d9"}}
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:

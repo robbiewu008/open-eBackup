@@ -1,0 +1,61 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="手动执行侦测">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002165515188.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="00-OceanCyber 300 1.2.0 联机帮助">
+<meta name="DC.Publisher" content="20250228">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002165355500">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>手动执行侦测</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002165355500"></a><a name="ZH-CN_TOPIC_0000002165355500"></a>
+
+<h1 class="topictitle1">手动执行侦测</h1>
+<div id="body0000001647303838"><p id="ZH-CN_TOPIC_0000002165355500__p8060118">当您需要立即执行一次侦测任务时，可以通过手动侦测实现。</p>
+<div class="section" id="ZH-CN_TOPIC_0000002165355500__section152793194419"><h4 class="sectiontitle">注意事项</h4><p id="ZH-CN_TOPIC_0000002165355500__p196131288443">对于双活域场景从端文件系统不支持智能侦测。</p>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000002165355500__zh-cn_topic_0000001346322404_zh-cn_topic_0000001142022920_section348853001916"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000002165355500__ol93331553183719"><li id="ZH-CN_TOPIC_0000002165355500__li18361042183716"><span>选择<span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__uicontrol11163163816356">“数据安全 &gt; 智能侦测”</span>。</span></li><li id="ZH-CN_TOPIC_0000002165355500__li98301694720"><span>选择“<span id="ZH-CN_TOPIC_0000002165355500__text7822105224219">文件系统</span>”页签。</span></li><li id="ZH-CN_TOPIC_0000002165355500__li1414511249483"><span>在某个文件系统所在行，单击<span class="menucascade" id="ZH-CN_TOPIC_0000002165355500__menucascade188171919274">“<span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__uicontrol187171942719"><span id="ZH-CN_TOPIC_0000002165355500__text0238424205218">更多</span></span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__uicontrol239812204275"><span id="ZH-CN_TOPIC_0000002165355500__text18957123795220">手动侦测</span></span>”</span>。</span><p><div class="note" id="ZH-CN_TOPIC_0000002165355500__note10825550162513"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ZH-CN_TOPIC_0000002165355500__p482513508257">您也可以勾选多个文件系统，单击上方的<span class="menucascade" id="ZH-CN_TOPIC_0000002165355500__menucascade5372186142612">“<span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__uicontrol937215620267"><span id="ZH-CN_TOPIC_0000002165355500__text54657263529">更多</span></span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__uicontrol237226182618"><span id="ZH-CN_TOPIC_0000002165355500__text1855644125219">手动侦测</span></span>”</span>。</p>
+</div></div>
+</p></li><li id="ZH-CN_TOPIC_0000002165355500__li1825014422406"><span>填写快照名称，如果您不设置，系统默认设置快照名称为：snapshot_<em id="ZH-CN_TOPIC_0000002165355500__i9906184164419">时间戳</em>。</span></li><li id="ZH-CN_TOPIC_0000002165355500__li0475826161716"><span>配置快照保留策略。当超过设置的快照保留时长，系统将自动删除过期的快照。</span></li><li id="ZH-CN_TOPIC_0000002165355500__li52696285211"><span>配置<span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__uicontrol19785484395">“<span id="ZH-CN_TOPIC_0000002165355500__text109221073011">备份副本深度侦测</span>”</span>参数。</span><p><div class="p" id="ZH-CN_TOPIC_0000002165355500__p3986165015121">此参数仅适用于OceanProtect专用备份存储设备的文件系统。开启后，OceanCyber 300 数据安全一体机将对备份存储中的备份副本文件进行深度解析和侦测，评估此副本文件之中的原始文件（被备份的生产存储设备上的文件）是否被感染。此功能开启可能导致整体侦测时间延长。<div class="note" id="ZH-CN_TOPIC_0000002165355500__note0587455585"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000002165355500__zh-cn_topic_0000001829819617_ul16617115054712"><li id="ZH-CN_TOPIC_0000002165355500__zh-cn_topic_0000001829819617_li13617185074717">开启<span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__zh-cn_topic_0000001829819617_uicontrol1097720385913">“<span id="ZH-CN_TOPIC_0000002165355500__zh-cn_topic_0000001829819617_text797712382095">备份副本深度侦测</span>”</span>功能后，可调节备份副本侦测算法敏感度。若选择高敏感度，在数据被少量加密或类似操作时可能触发告警，因此会增加误报的风险。非特殊要求的业务场景，建议配置为“中”敏感度。</li><li id="ZH-CN_TOPIC_0000002165355500__zh-cn_topic_0000001829819617_li4617155010477">副本侦测算法敏感度的调节仅对虚拟机、数据库或Veeam针对主机文件的备份副本生效。</li><li id="ZH-CN_TOPIC_0000002165355500__li1153216395578">可以通过备份软件协助确认备份副本对应的被保护对象是否被感染。确认方法如下：<ol type="a" id="ZH-CN_TOPIC_0000002165355500__ol14147944155310"><li id="ZH-CN_TOPIC_0000002165355500__li14147114417539">在OceanCyber管理界面，基于感染的备份副本获取到备份软件中对应备份任务的信息。<ol id="ZH-CN_TOPIC_0000002165355500__ol165704113436"><li id="ZH-CN_TOPIC_0000002165355500__li154231439104319">进入<span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__uicontrol881364874417">“快照管理与恢复”</span>页面，在某个资源所在行，选择<span class="menucascade" id="ZH-CN_TOPIC_0000002165355500__menucascade2070617599516">“<span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__uicontrol370685935114">更多</span> &gt; <span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__uicontrol1170610595515"> 最新侦测结果</span>”</span>。</li><li id="ZH-CN_TOPIC_0000002165355500__li10441113155019">在<span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__uicontrol1532762735216">“备份副本深度侦测：保护对象列表”</span>中，单击保护对象名称，查看<span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__uicontrol137142050185210">“所属备份任务”</span>。<ul id="ZH-CN_TOPIC_0000002165355500__ul95751233195315"><li id="ZH-CN_TOPIC_0000002165355500__li28307353534">若备份软件为Commvault，则该列展示Job ID，对应于备份软件中的Job ID。</li><li id="ZH-CN_TOPIC_0000002165355500__li19447537195313">若备份软件为NetBackup，则该列展示备份任务的Policy。可根据Policy、客户端名称、副本生成时间定位到备份软件中的备份任务。</li><li id="ZH-CN_TOPIC_0000002165355500__li25751533155314">若备份软件为Veeam，则该列展示备份任务名称。可根据备份任务名称、客户端名称、副本生成时间定位到备份软件中的备份任务。</li></ul>
+</li></ol>
+</li><li id="ZH-CN_TOPIC_0000002165355500__li7701142415458">在对应备份软件界面，基于备份任务信息识别对应的被保护对象及副本生成时间。</li><li id="ZH-CN_TOPIC_0000002165355500__li731463414454">基于被保护对象及副本生成时间确认生产存储和主机信息。</li><li id="ZH-CN_TOPIC_0000002165355500__li152568335470">在生产存储上确认原始数据是否被感染。</li></ol>
+</li></ul>
+</div></div>
+</div>
+</p></li><li id="ZH-CN_TOPIC_0000002165355500__li7581828111719"><span>配置<span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__zh-cn_topic_0000001829819617_uicontrol13661013894">“<span id="ZH-CN_TOPIC_0000002165355500__zh-cn_topic_0000001829819617_text156661312913">未感染快照锁定</span>”</span>参数。“<span id="ZH-CN_TOPIC_0000002165355500__zh-cn_topic_0000001829819617_text266111316913">未感染快照锁定</span>”参数指将未侦测到勒索文件的快照锁定。开启后未感染的快照将转为安全快照，快照过期时间会有一定延迟，在快照过期前不允许修改和删除。</span></li><li id="ZH-CN_TOPIC_0000002165355500__li11268540173812"><span>单击<span class="uicontrol" id="ZH-CN_TOPIC_0000002165355500__uicontrol1134151210407">“<span id="ZH-CN_TOPIC_0000002165355500__text069363216526">确定</span>”</span>。</span></li></ol>
+<p id="ZH-CN_TOPIC_0000002165355500__p277611244371"></p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000002165515188.html">执行智能侦测</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

@@ -59,6 +59,7 @@ export const USER_GUIDE_PROTECTION_STEPS = {
     steps: [
       {
         desc: 'protection_guide_client_desc_label',
+        select: true,
         routerLink: RouterUrl.ProtectionHostAppHost
       },
       {
@@ -171,7 +172,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.Dameng,
@@ -214,7 +216,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.LightCloudGaussDB,
@@ -266,7 +269,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.standaloneHost
       },
       {
         id: ApplicationType.GaussDBT,
@@ -309,7 +313,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.GoldenDB,
@@ -342,7 +347,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.Informix,
@@ -354,7 +360,7 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_config_xbsa_path_label',
-              link: 'zh-cn_topic_0000001792358014.html',
+              link: 'informix-0011.html',
               enLink: 'informix-0011.html'
             }
           ],
@@ -382,7 +388,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.KingBase,
@@ -417,7 +424,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.MySQL,
@@ -485,7 +493,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.OceanBase,
@@ -539,7 +548,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.Oracle,
@@ -591,7 +601,36 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.oracle,
+        options: [
+          {
+            key: 'RMAN',
+            value: 'RMAN',
+            label: 'common_oracle_rman_label',
+            isLeaf: true
+          },
+          {
+            key: 'snapshotBackup',
+            value: 'snapshotBackup',
+            label: 'common_oracle_storage_label',
+            isLeaf: true,
+            children: [
+              {
+                key: 'Windows',
+                value: 'Windows',
+                label: 'Windows OS',
+                isLeaf: true
+              },
+              {
+                key: 'Linux',
+                value: 'Linux',
+                label: 'Linux OS',
+                isLeaf: true
+              }
+            ]
+          }
+        ]
       },
       {
         id: ApplicationType.PostgreSQL,
@@ -643,7 +682,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.SQLServer,
@@ -655,17 +695,17 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
           beforeBackup: [
             {
               title: 'protection_guide_oracle_info_ready_label',
-              link: 'sql-0011.html',
+              link: 'sql-0012.html',
               enLink: 'sql-0008.html'
             },
             {
               title: 'protection_guide_oracle_environment_ready_label',
-              link: 'sql-0013.html',
+              link: 'sql-0014.html',
               enLink: 'sql-0010.html'
             },
             {
               title: 'protection_set_powershell_permission_label',
-              link: 'sql-0014.html',
+              link: 'sql-0015.html',
               enLink: 'sql-0011.html'
             },
             {
@@ -719,7 +759,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.TDSQL,
@@ -786,7 +827,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.TiDB,
@@ -842,7 +884,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.OpenGauss,
@@ -884,7 +927,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.GeneralDatabase,
@@ -1007,7 +1051,34 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.vmWare,
+        options: [
+          {
+            key: 'SAN',
+            value: 'SAN',
+            label: 'common_vm_san_label',
+            isLeaf: true
+          },
+          {
+            key: 'HotADD',
+            value: 'HotADD',
+            label: 'common_vm_hot_add_label',
+            isLeaf: true
+          },
+          {
+            key: 'NBD',
+            value: 'NBD',
+            label: 'common_vm_ndb_label',
+            isLeaf: true
+          },
+          {
+            key: 'Storage',
+            value: 'Storage',
+            label: 'common_vm_storage_label',
+            isLeaf: true
+          }
+        ]
       },
       {
         id: ApplicationType.FusionCompute,
@@ -1080,7 +1151,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.standaloneHost
       },
       {
         id: ApplicationType.CNware,
@@ -1153,7 +1225,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyVmHost
       },
       {
         id: ApplicationType.Nutanix,
@@ -1226,7 +1299,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyVmHost
       }
     ]
   },
@@ -1277,12 +1351,13 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.nasFileSystem
       },
       {
         id: DataMap.Resource_Type.ndmp.value,
         subType: DataMap.Resource_Type.ndmp.value,
-        label: 'protection_ndmp_nas_filesystem_label',
+        label: 'protection_ndmp_protocol_label',
         prefix: 'N',
         color: '#EBAA44',
         steps: {
@@ -1305,12 +1380,13 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
             },
             {
               title: 'protection_guide_backup_app_tip_label',
-              titleParams: 'common_nas_file_system_label',
-              routerLink: RouterUrl.ProtectionDoradoFileSystem,
+              titleParams: 'protection_ndmp_protocol_label',
+              routerLink: RouterUrl.ProtectionNdmp,
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.object
       },
       {
         id: ApplicationType.NASShare,
@@ -1375,7 +1451,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.nasShare
       },
       {
         id: ApplicationType.Volume,
@@ -1401,7 +1478,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.ObjectStorage,
@@ -1452,7 +1530,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.object
       },
       {
         id: ApplicationType.Fileset,
@@ -1495,7 +1574,8 @@ export const USER_GUIDE_APPLICATION_CONFIG = [
               hideTips: true
             }
           ]
-        }
+        },
+        clientDeployType: DataMap.clientDeployType.onlyHost
       },
       {
         id: ApplicationType.CommonShare,

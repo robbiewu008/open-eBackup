@@ -310,11 +310,16 @@ export class SlaParseService {
         worm_validity_type: backup.worm_validity_type,
         worm_specified_retention_duration:
           backup.retention.worm_retention_duration,
-        worm_specified_duration_unit: backup.retention.worm_duration_unit,
+        worm_specified_duration_unit:
+          backup.retention.worm_duration_unit ||
+          DataMap.Interval_Unit.day.value,
         ext_parameters: {
           ...backup.ext_parameters,
           storage_id: backup.ext_parameters?.storage_info?.storage_id,
-          storage_type: backup.ext_parameters?.storage_info?.storage_type
+          storage_type: backup.ext_parameters?.storage_info?.storage_type,
+          device_type:
+            backup.ext_parameters?.storage_info?.device_type ||
+            DataMap.poolStorageDeviceType.OceanProtectX.value
         }
       });
       policy_list.push(backup);
@@ -490,6 +495,7 @@ export class SlaParseService {
       }
       const reParams = {
         uuid: replication.uuid,
+        action: replication.action,
         name: replication.name,
         qos_id: replication.ext_parameters.qos_id,
         qos_name: qos ? qos.name : '',
@@ -512,6 +518,7 @@ export class SlaParseService {
         storage_id: replication?.ext_parameters?.storage_info?.storage_id,
         user_id: replication?.ext_parameters?.user_info?.user_id,
         userName: replication?.ext_parameters?.user_info?.username,
+        userType: replication?.ext_parameters?.user_info?.userType,
         replication_target_mode:
           replication?.ext_parameters?.replication_target_mode,
         backupExecuteTrigger:

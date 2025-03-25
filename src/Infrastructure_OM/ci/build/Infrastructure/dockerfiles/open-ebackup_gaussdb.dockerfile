@@ -52,6 +52,7 @@ RUN sh /usr/local/gaussdb/install.sh --mode single -D /usr/local/gaussdb/data  -
     && chmod 750 /usr/local/gaussdb/app/lib/libcrypto.so \
     && chmod 750 /usr/local/gaussdb/app/lib/libcjson.so.1 \
     && chmod 750 /usr/local/gaussdb/app
+
 USER root
 
 # 添加运维账户

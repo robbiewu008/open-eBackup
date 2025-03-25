@@ -23,7 +23,8 @@ import {
   DataMap,
   CookieService,
   ClientManagerApiService,
-  MultiCluster
+  MultiCluster,
+  filterVersion
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
@@ -634,7 +635,7 @@ export class TargetLocationComponent implements OnInit {
             isLeaf: true
           });
         });
-        this.proxyOptions = hostArray;
+        this.proxyOptions = filterVersion(hostArray, this.verifyStatus);
       }
     );
   }

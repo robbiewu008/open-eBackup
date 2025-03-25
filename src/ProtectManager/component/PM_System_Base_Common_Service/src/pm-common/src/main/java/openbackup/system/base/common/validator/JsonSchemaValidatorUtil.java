@@ -146,9 +146,11 @@ public class JsonSchemaValidatorUtil {
     // 处理异常信息
     private static void processErrorMessage(ValidationException exception) {
         List<String> errorMessages = processSubMessages(exception);
+        List<String> params = processSubParams(exception);
+        String[] parameters = params.toArray(new String[0]);
         String errors = String.join(";", errorMessages);
         if (errorMessages.size() != IsmNumberConstant.ZERO) {
-            throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, errors);
+            throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, parameters, errors);
         }
     }
 
@@ -175,5 +177,28 @@ public class JsonSchemaValidatorUtil {
             .append(", ErrorMessage: ")
             .append(exception.getErrorMessage());
         return errorMsgBuilder.toString();
+    }
+
+    // 处理非法参数信息
+    private static List<String> processSubParams(ValidationException exception) {
+        List<String> list = new ArrayList<>();
+        List<ValidationException> causingExceptions = exception.getCausingExceptions();
+        if (causingExceptions != null && causingExceptions.size() > LegoNumberConstant.ONE) {
+            for (ValidationException causingException : causingExceptions) {
+                List<String> subErrorMessages = processSubParams(causingException);
+                list.addAll(subErrorMessages);
+            }
+        } else {
+            String errorKey = exception.getPointerToViolation() == null
+                    ? StringUtils.SPACE
+                    : exception.getPointerToViolation();
+            int lastSlashIndex = errorKey.lastIndexOf("/");
+            if (lastSlashIndex != -1) {
+                String errorParam = errorKey.substring(lastSlashIndex + 1);
+                log.info("======================errorParam is {}", errorParam);
+                list.add(errorParam);
+            }
+        }
+        return list;
     }
 }

@@ -2,6 +2,8 @@ ARG VERSION_3RD
 FROM dme_3rd:$VERSION_3RD
 WORKDIR /opt/OceanStor/100P/ProtectEngine-E/nginx/script
 COPY --chown=65500:99 / /
+RUN yum install iproute -y
+RUN yum install ethtool -y
 RUN useradd OceanProtectNginx -M -N -s /sbin/nologin  -u 65500 -g 99 && \
     python3 -m py_compile kmc_util.py && \
     cp -rf __pycache__/kmc_util.*.pyc kmc_util.pyc && \

@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,12 +11,13 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="Step 2: Creating an Archive SLA">
+  <meta name="DC.Title" content="Step 2: Creating an Archive SLA for Backup Copies">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="hdfs_00040.html">
   <meta name="prodname" content="">
@@ -30,11 +30,11 @@
   <meta name="DC.Identifier" content="hdfs_00044">
   <meta name="DC.Language" content="en-us">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>Step 2: Creating an Archive SLA</title>
+  <title>Step 2: Creating an Archive SLA for Backup Copies</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="hdfs_00044"></a><a name="hdfs_00044"></a>
-  <h1 class="topictitle1">Step 2: Creating an Archive SLA</h1>
+  <h1 class="topictitle1">Step 2: Creating an Archive SLA for Backup Copies</h1>
   <div>
    <p>If you need to archive a generated backup copy, configure an archive SLA by referring to this section.</p>
    <div class="section">
@@ -44,7 +44,6 @@
    <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
     <ol>
-     <li><span></span></li>
      <li><span>Choose <span class="uicontrol" id="hdfs_00044__en-us_topic_0000001839142377_uicontrol8111821122820"><b><span id="hdfs_00044__en-us_topic_0000001839142377_text71111921162814"><strong>Protection</strong></span> &gt; Protection Policies &gt; SLAs</b></span>.</span></li>
      <li><span>Locate the SLA for which you want to create an archive policy and choose <span class="uicontrol" id="hdfs_00044__en-us_topic_0000001792503806_en-us_topic_0000001091370109_uicontrol577717611320"><b><span id="hdfs_00044__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text19646163524813"><strong>More</strong></span> &gt; <span id="hdfs_00044__en-us_topic_0000001792503806_en-us_topic_0000001091370109_text068935811482"><strong>Modify</strong></span></b></span>.</span><p></p><p id="hdfs_00044__en-us_topic_0000001792503806_p1816920251869">The preset SLAs cannot be modified.</p> <p></p></li>
      <li><span>Click the <span class="uicontrol"><b><span><strong>Archive Policy</strong></span></b></span> icon.</span></li>
@@ -61,26 +60,26 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="30.5%" id="mcps1.3.3.2.5.2.2.2.3.1.1"><p>Parameter</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="69.5%" id="mcps1.3.3.2.5.2.2.2.3.1.2"><p>Description</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="30.5%" id="mcps1.3.3.2.4.2.2.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="69.5%" id="mcps1.3.3.2.4.2.2.2.3.1.2"><p>Description</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>A default archive policy name has been set. You can customize the name.</p></td>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>A default archive policy name has been set. You can customize the name.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Archive Storage Type</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p><span class="uicontrol"><b><span><strong>Object Storage</strong></span></b></span> or <span class="uicontrol"><b><span><strong>Tape Library</strong></span></b></span> can be used as the archive storage.</p></td>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span><strong>Archive Storage Type</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p><span class="uicontrol"><b><span><strong>Object Storage</strong></span></b></span> or <span class="uicontrol"><b><span><strong>Tape Library</strong></span></b></span> can be used as archive storage.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Archive Storage</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>Select the added object storage or tape library. You can also click <span class="uicontrol"><b><span><strong>Add</strong></span></b></span> to add an object storage or a tape library.</p></td>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span><strong>Archive Storage</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Select the added object storage or tape library. You can also click <span class="uicontrol"><b><span><strong>Add</strong></span></b></span> to add object storage or a tape library.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Archive Time</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 ">
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span><strong>Archive Time</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 ">
            <div class="p">
             Set the archive time.
             <ul>
@@ -95,8 +94,8 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><strong>Archive &amp; Retention Rules</strong></p></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 ">
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><strong>Archive &amp; Retention Rules</strong></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 ">
            <div class="p">
             Select the backup copy to be archived and set the retention period.
             <ul>
@@ -121,17 +120,17 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 ">
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 ">
            <div class="p">
-            <strong id="hdfs_00044__en-us_topic_0000001792503806_b1466519130620">Drivers</strong>
-            <div class="note" id="hdfs_00044__en-us_topic_0000001792503806_note754320443218">
+            <strong>Drivers</strong>
+            <div class="note">
              <span class="notetitle"> NOTE: </span>
              <div class="notebody">
-              <p id="hdfs_00044__en-us_topic_0000001792503806_en-us_topic_0000001839143189_en-us_topic_0000001839143213_p8320153562113">This parameter is available only in 1.6.0 and later versions.</p>
+              <p>Only 1.6.0 and later versions support this parameter.</p>
              </div>
             </div>
            </div></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 ">
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 ">
            <div class="p">
             This parameter (value range: <strong id="hdfs_00044__en-us_topic_0000001792503806_b4770966376">1</strong> to <strong id="hdfs_00044__en-us_topic_0000001792503806_b1657835153715">32</strong>) is displayed only when you select <span id="hdfs_00044__en-us_topic_0000001792503806_text4453948437"><strong>Tape Library</strong></span> for <strong id="hdfs_00044__en-us_topic_0000001792503806_b183012591975">Archive Storage Type</strong>.
             <div class="note" id="hdfs_00044__en-us_topic_0000001792503806_note765316318178">
@@ -143,28 +142,37 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Rate Limiting Policies</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>Average maximum amount of data that can be transmitted per second in an archive job. If a tape library serves as the archive storage, rate limiting policy configuration is not supported.</p> <p>Select the created rate limiting policy.</p></td>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span><strong>Rate Limiting Policies</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Average maximum amount of data that can be transmitted per second in an archive job. If a tape library serves as the archive storage, rate limiting policy configuration is not supported.</p> <p>Select the created rate limiting policy.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Automatic Indexing</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>After this function is enabled, you can select one or more files in a copy for restoration and search for files, directories, or links in copies on the management page. If a tape library serves as the archive storage, archive copy indexing is not supported.</p> <p>This function cannot be disabled after being enabled.</p></td>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 ">
+           <div class="p">
+            <span id="hdfs_00044__en-us_topic_0000001792503806_text278121420338"><strong>Automatic Indexing</strong></span>
+            <div class="note" id="hdfs_00044__en-us_topic_0000001792503806_note1175910385420">
+             <span class="notetitle"> NOTE: </span>
+             <div class="notebody">
+              <p id="hdfs_00044__en-us_topic_0000001792503806_p18759163818421">This parameter is available only in 1.5.0.</p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>After this function is enabled, you can select one or more files in a copy for restoration and search for files, directories, or links in copies on the management page. If a tape library serves as the archive storage, archive copy indexing is not supported.</p> <p>This function cannot be disabled after being enabled.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Network Acceleration</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>After this function is enabled, Bottleneck Bandwidth and Round-trip propagation time (BBR) can be used for network acceleration. You are advised to enable this function when the network latency is greater than or equal to 20 ms. If a tape library serves as the archive storage, network acceleration configuration is not supported.</p></td>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span><strong>Network Acceleration</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>After this function is enabled, Bottleneck Bandwidth and Round-trip propagation time (BBR) can be used for network acceleration. You are advised to enable this function when the network latency is greater than or equal to 20 ms. If a tape library serves as the archive storage, network acceleration configuration is not supported.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span id="hdfs_00044__en-us_topic_0000001792503806_text4798135584718"><strong>Job Failure Alarm</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>After this function is enabled, an alarm is automatically sent if a job fails and is automatically cleared after successful execution.</p></td>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span id="hdfs_00044__en-us_topic_0000001792503806_text4798135584718"><strong>Job Failure Alarm</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>After this function is enabled, an alarm is automatically sent if a job fails and is automatically cleared after successful execution.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span><strong>Automatic Retry</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>After this function is enabled, the system automatically retries a failed archive job.</p> <p>The number of retries ranges from 1 to 3, and the waiting time ranges from 1 to 30 minutes. For example, if the number of retries is set to 3 and the wait time is set to 5 minutes, the system retries for three times at an interval of 5 minutes.</p>
+          <td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span><strong>Automatic Retry</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>After this function is enabled, the system automatically retries a failed archive job.</p> <p>The number of retries ranges from 1 to 3, and the waiting time ranges from 1 to 30 minutes. For example, if the number of retries is set to 3 and the wait time is set to 5 minutes, the system retries for three times at an interval of 5 minutes.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
-             <p>During automatic retry, the system creates a new archive job.</p>
+             <p>During automatic retry, the system creates an archive job.</p>
             </div>
            </div></td>
          </tr>

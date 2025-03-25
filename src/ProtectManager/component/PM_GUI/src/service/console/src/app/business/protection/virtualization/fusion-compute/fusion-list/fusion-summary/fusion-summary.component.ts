@@ -21,6 +21,7 @@ import {
   ResourceType
 } from 'app/shared';
 import { TableCols, TableConfig } from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { assign, each, isEmpty, size } from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
@@ -45,7 +46,8 @@ export class FusionSummaryComponent implements OnInit {
     private i18n: I18NService,
     private appService: AppService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private dataMapService: DataMapService
+    private dataMapService: DataMapService,
+    private appUtilsService: AppUtilsService
   ) {}
 
   ngOnInit() {
@@ -136,85 +138,23 @@ export class FusionSummaryComponent implements OnInit {
         selectDisk = diskInfo.map(item => JSON.parse(item)?.id);
       }
     }
-    const params = {
-      pageNo: CommonConsts.PAGE_START,
-      pageSize: CommonConsts.PAGE_SIZE,
-      queryDependency: true,
-      conditions: JSON.stringify({
-        subType:
-          this.source?.subType || DataMap.Resource_Type.FusionCompute.value,
-        uuid: this.source.rootUuid || this.source.root_uuid
-      }),
-      akLoading: false
-    };
-    this.protectedResourceApiService
-      .ListResources(params)
-      .subscribe((res: any) => {
-        if (res.records?.length) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            this.tableData = {
-              data: [],
-              total: 0
-            };
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getShowData(agentsId).subscribe(response => {
-            const totalData = [];
-            for (const item of response) {
-              totalData.push(...item.records);
-            }
-            each(totalData, (item: any) => {
-              assign(item, {
-                slot: `${item?.extendInfo.pciType}(${item?.extendInfo.sequenceNum})`,
-                datastore: item?.extendInfo?.datastoreName,
-                capacity: item?.extendInfo?.quantityGB,
-                sla: selectAll ? true : selectDisk.includes(item.uuid)
-              });
-            });
 
-            this.tableData = {
-              data: totalData,
-              total: size(totalData)
-            };
+    this.appUtilsService
+      .getResourcesDetails(this.source, '', {}, {}, false)
+      .subscribe(res => {
+        const totalData = [...res];
+        each(totalData, (item: any) => {
+          assign(item, {
+            slot: `${item?.extendInfo.pciType}(${item?.extendInfo.sequenceNum})`,
+            datastore: item?.extendInfo?.datastoreName,
+            capacity: item?.extendInfo?.quantityGB,
+            sla: selectAll ? true : selectDisk.includes(item.uuid)
           });
-        }
+        });
+        this.tableData = {
+          data: totalData,
+          total: size(totalData)
+        };
       });
-  }
-
-  getShowData(agentsId): Observable<any> {
-    const params = {
-      agentId: agentsId,
-      envId: this.source.rootUuid || this.source.root_uuid,
-      pageNo: 1,
-      pageSize: CommonConsts.PAGE_SIZE,
-      resourceIds: [this.source.uuid]
-    };
-    let curData = [];
-    return this.appService.ListResourcesDetails(params).pipe(
-      mergeMap((response: any) => {
-        curData = [of(response)];
-
-        const totalCount = response.totalCount;
-        const pageCount = Math.ceil(totalCount / CommonConsts.PAGE_SIZE);
-        for (let i = 2; i <= pageCount; i++) {
-          curData.push(
-            this.appService.ListResourcesDetails({
-              agentId: agentsId,
-              envId: this.source.rootUuid || this.source.root_uuid,
-              pageNo: i,
-              pageSize: CommonConsts.PAGE_SIZE,
-              resourceIds: [this.source.uuid]
-            })
-          );
-        }
-        return forkJoin(curData);
-      })
-    );
   }
 }

@@ -1,4 +1,3 @@
-<div class="aui-fullpage init-config-container">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-fullpage init-config-container">
   <div *ngIf="isModify" class="aui-header-1">
     <h1>{{ 'common_network_config_label' | i18n }}</h1>
   </div>
@@ -24,9 +24,6 @@
       <div class="aui-header-5" *ngIf="!isModify">
         <h1>{{ (!isModify ? 'common_init_config_label': 'common_network_config_label') | i18n }}</h1>
       </div>
-      <lv-alert lvType="warning" *ngIf="isModify">
-        {{'common_network_config_tip_label' | i18n}}
-      </lv-alert>
       <lv-group lvGutter="16px" [ngClass]="{'init-display': !isModify, 'network-display': isModify}">
         <!-- 节点选择用于网络配置界面 -->
         <lv-group lvDirection="vertical" lvGutter="8px" class="left-menus" *ngIf="isModify">
@@ -146,7 +143,7 @@
               </button>
               <button lv-button lvType="primary" (click)="createInitConfig()" [disabled]="okBtnDisabled"
                 class="modify-button-content">
-                {{ 'common_ok_label' | i18n }}
+                {{ 'common_valid_ok_label' | i18n }}
               </button>
             </lv-group>
           </div>

@@ -16,10 +16,17 @@ import { BaseModule } from 'app/shared/base.module';
 import { ProTableModule } from '../pro-table';
 import { FileTreeComponent } from './file-tree.component';
 import { BreadcrumbModule } from '@iux/live';
+import { ManualInputPathModule } from '../manual-input-path/manual-input-path.module';
 
 @NgModule({
   declarations: [FileTreeComponent],
-  imports: [CommonModule, BaseModule, ProTableModule, BreadcrumbModule],
+  imports: [
+    CommonModule,
+    BaseModule,
+    ProTableModule,
+    BreadcrumbModule,
+    ManualInputPathModule
+  ],
   exports: [FileTreeComponent]
 })
 export class FileTreeModule {}

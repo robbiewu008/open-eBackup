@@ -108,6 +108,7 @@ export class RegisterVmComponent implements OnInit {
   formGroup: FormGroup;
   originNameList = [];
   originIpList = [];
+  defaultNutanixPort = '9440';
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip,
     invalidName: this.i18n.get('common_valid_name_label'),
@@ -272,6 +273,15 @@ export class RegisterVmComponent implements OnInit {
   }
 
   initForm() {
+    let defaultPort = '443';
+    if (this.isModify) {
+      defaultPort = this.treeSelection[0].port;
+    } else {
+      if (includes([ResourceType.NUTANIX], this.resourceType)) {
+        defaultPort = this.defaultNutanixPort;
+      }
+    }
+
     this.formGroup = this.fb.group({
       name: new FormControl(this.isModify ? this.treeSelection[0].name : '', {
         validators: [
@@ -295,17 +305,14 @@ export class RegisterVmComponent implements OnInit {
           updateOn: 'change'
         }
       ),
-      port: new FormControl(
-        this.isModify ? this.treeSelection[0].port : '443',
-        {
-          validators: [
-            this.baseUtilService.VALID.required(),
-            this.baseUtilService.VALID.integer(),
-            this.baseUtilService.VALID.rangeValue(1, 65535)
-          ],
-          updateOn: 'change'
-        }
-      ),
+      port: new FormControl(defaultPort, {
+        validators: [
+          this.baseUtilService.VALID.required(),
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.rangeValue(1, 65535)
+        ],
+        updateOn: 'change'
+      }),
       userName: new FormControl(
         this.isModify ? this.treeSelection[0].userName : '',
         {

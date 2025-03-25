@@ -3,9 +3,9 @@
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
   If a copy of the MPL was not distributed with this file, You can obtain one at
   http://mozilla.org/MPL/2.0/.
-
+  
   Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-
+  
   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
@@ -75,7 +75,7 @@
   [lvPaginator]="page"
   lvResize
   lvResizeMode="expand"
-  [lvScroll]="tableScrollParams"
+  [lvScroll]="{ x: '100%' }"
 >
   <thead>
     <tr>
@@ -86,6 +86,7 @@
             [lvShowSort]="item.sort"
             [lvShowFilter]="!!item.filters"
             [(lvFilters)]="item.filters"
+            [lvRight]="item.lvRight"
             [attr.width]="item.width"
             [lvAlign]="item.align"
             [ngClass]="{ timeStamp: item.key === 'timeStamp' }"
@@ -107,17 +108,26 @@
                   rowData.resourceType === dataMap.Resource_Type.volume.value
                 "
               ></i>
-                    <i
-                      lv-icon="aui-icon-help"
-                      lv-tooltip="{{
-                        'common_worm_expiration_time_tips_label' | i18n
-                      }}"
-                      lvTooltipTheme="light"
-                      lvTooltipPosition="top"
-                      lvColorState="true"
-                      class="index-icon"
-                      *ngIf="item.key === 'worm_expiration_time'"
-                    ></i>
+              <i
+                lv-icon="aui-icon-help"
+                lv-tooltip="{{
+                  'common_worm_expiration_time_tips_label' | i18n
+                }}"
+                lvTooltipTheme="light"
+                lvTooltipPosition="top"
+                lvColorState="true"
+                class="index-icon"
+                *ngIf="item.key === 'worm_expiration_time'"
+              ></i>
+              <i
+                lv-icon="aui-icon-help"
+                lv-tooltip="{{ 'common_expiration_time_tips_label' | i18n }}"
+                lvTooltipTheme="light"
+                lvTooltipPosition="top"
+                lvColorState="true"
+                class="index-icon"
+                *ngIf="item.key === 'expiration_time' && isExpirationTips"
+              ></i>
             </span>
             <div lvCustom *ngIf="item.key === 'cluster_name'">
               <aui-custom-table-search
@@ -144,15 +154,15 @@
               ></aui-custom-table-search>
             </div>
             <div lvCustom *ngIf="item.key === 'labelList'">
-              <aui-custom-table-search
-                (search)="searchByLabel($event)"
+              <aui-custom-table-filter
+                (filter)="searchByLabel($event)"
                 [filterTitle]="item.label"
-              ></aui-custom-table-search>
+              ></aui-custom-table-filter>
             </div>
           </th>
         </ng-container>
       </ng-container>
-      <th width="16px" style="padding: 0;" lvResizable="false">
+      <th width="16px" style="padding: 0;" lvResizable="false" lvRight="0px">
         <i
           lv-icon="lv-icon-col-setting"
           #colPopover="lvPopover"
@@ -178,7 +188,7 @@
       <tr>
         <ng-container *ngFor="let col of columns">
           <ng-container *ngIf="col.isShow && !col.hidden">
-            <td>
+            <td [lvRight]="col.lvRight">
               <ng-container [ngSwitch]="col.key">
                 <ng-container *ngSwitchCase="'origin_copy_time_stamp'">
                   <div lv-overflow>
@@ -199,11 +209,30 @@
                     </a>
                   </div>
                 </ng-container>
+                <ng-container *ngSwitchCase="'timestamp'">
+                  <div lv-overflow>
+                    {{
+                      item.timestamp / 1000 | date: 'yyyy-MM-dd HH:mm:ss':'UTC'
+                    }}
+                  </div>
+                </ng-container>
+                <ng-container *ngSwitchCase="'userName'">
+                  <span lv-overflow>{{
+                    item.properties ? _parse(item.properties)?.userName ?? '--' : '--'
+                  }}</span>
+                </ng-container>
                 <ng-container *ngSwitchCase="'status'">
                   <aui-status
                     [value]="item.status"
                     type="copydata_validStatus"
                   ></aui-status>
+                </ng-container>
+                <ng-container *ngSwitchCase="'storage_unit_status'">
+                  <aui-status
+                    [value]="item.storage_unit_status"
+                    type="storageUnitStatus"
+                  >
+                  </aui-status>
                 </ng-container>
                 <ng-container *ngSwitchCase="'generated_by'">
                   <span lv-overflow>
@@ -234,7 +263,8 @@
                           resourceType.APSCloudServer.value,
                           resourceType.APSResourceSet.value,
                           resourceType.APSZone.value,
-                          resourceType.hyperVVm.value
+                          resourceType.hyperVVm.value,
+                          dataMap.Resource_Type.nutanixVm.value
                         ].includes(item.resource_sub_type);
                       else normalType
                     "
@@ -255,6 +285,13 @@
                     {{ item?.extend_type | textMap: 'objectBackupLevel' }}
                   </span>
                 </ng-container>
+                <ng-container *ngSwitchCase="'browse_mounted'">
+                    <aui-status
+                            [value]="item.browse_mounted"
+                            type="Browse_LiveMount_Status"
+                    >
+                    </aui-status>
+                </ng-container>
                 <ng-container *ngSwitchCase="'storage_snapshot_flag'">
                   {{
                     !!item?.storage_snapshot_flag | textMap: 'isBusinessOptions'
@@ -273,14 +310,14 @@
                     style="width:20px;height:20px"
                   ></i>
                 </ng-container>
-                <ng-contianer *ngSwitchCase="'worm_expiration_time'">
+                <ng-container *ngSwitchCase="'worm_expiration_time'">
                   {{
                     item.worm_expiration_time
                       ? (item.worm_expiration_time
                         | date: 'yyyy-MM-dd HH:mm:ss':timeZone)
                       : '--'
                   }}
-                </ng-contianer>
+                </ng-container>
                 <ng-container *ngSwitchCase="'isSanClient'">
                   {{
                     (item.properties
@@ -290,16 +327,7 @@
                   }}
                 </ng-container>
                 <ng-container *ngSwitchCase="'isSystemBackup'">
-                  {{
-                    (item.resource_properties
-                      ? rowData?.subType  === dataMap.Resource_Type.fileset.value
-                        ? _parse(item.resource_properties).extendInfo
-                            ?.is_OS_backup === 'true' || false
-                        : _parse(item.resource_properties).ext_parameters
-                            .system_backup_flag
-                      : ''
-                    ) | textMap: 'copyDataVolume'
-                  }}
+                  {{ getSystemBackupStatus(item) | textMap: 'copyDataVolume' }}
                 </ng-container>
                 <ng-container *ngSwitchCase="'isBackupAcl'">
                   {{
@@ -389,7 +417,7 @@
             </td>
           </ng-container>
         </ng-container>
-        <td></td>
+        <td lvRight="0px"></td>
       </tr>
     </ng-container>
   </tbody>
@@ -409,7 +437,6 @@
   <column-filter-tpl
     [tableKey]="tableColumnKey"
     [columns]="columns"
-    (columnsStatusChange)="onColumnsChange()"
   ></column-filter-tpl>
 </ng-template>
 

@@ -1,0 +1,42 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Some Disks Are in the Foreign State After the Windows OS Is Restored">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002102764745">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Some Disks Are in the Foreign State After the Windows OS Is Restored</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002102764745"></a><a name="EN-US_TOPIC_0000002102764745"></a>
+
+<h1 class="topictitle1">Some Disks Are in the Foreign State After the Windows OS Is Restored</h1>
+<div><p>Bare metal restoration of a dynamic disk is performed in the WinPE system. After the restoration is complete, the OS considers the disk as a foreign dynamic disk. As a result, some disks are in the Foreign state after the Windows OS is restored.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><p class="msonormal">You have logged in to the Windows OS.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>In Windows Server 2016 (as an example), press <strong>Windows+R</strong> to open the <strong>Run</strong> dialog box.</span></li><li><span>In the <strong>Run</strong> dialog box, enter <strong>diskmgmt.msc</strong> to access the <strong>Disk Management</strong> page, as shown in <a href="#EN-US_TOPIC_0000002102764745__fig2097983011565">Figure 1</a>.</span><p><div class="fignone" id="EN-US_TOPIC_0000002102764745__fig2097983011565"><a name="EN-US_TOPIC_0000002102764745__fig2097983011565"></a><a name="fig2097983011565"></a><span class="figcap"><b>Figure 1 </b>Disk Management</span><br><span><img src="en-us_image_0000002103092101.png"></span></div>
+</p></li><li><span>Right-click the foreign disk and choose <span class="uicontrol"><b>Import Foreign Disks</b></span> from the shortcut menu.</span></li><li><span>In the <strong>Import Foreign Disks</strong> dialog box, select the disk group and click <span class="uicontrol"><b>OK</b></span>.</span></li></ol>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
@@ -20,87 +20,88 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="Step 1: Creating a Logical Port for the Replication Network (Applicable to 1.5.0)">
+<meta name="DC.Title" content="Step 1: Creating a Replication Network Logical Port (Applicable to OceanProtect X Series Backup Appliances (1.5.0) and OceanProtect E1000 (with the OceanProtect Used as Backup Storage))">
 <meta name="product" content="">
 <meta name="DC.Relation" scheme="URI" content="oracle_gud_0034.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
-<meta name="documenttype" content="usermanual">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="oracle_gud_0036">
 <meta name="DC.Language" content="en-us">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>Step 1: Creating a Logical Port for the Replication Network (Applicable to 1.5.0)</title>
+<title>Step 1: Creating a Replication Network Logical Port (Applicable to OceanProtect X Series Backup Appliances (1.5.0) and OceanProtect E1000 (with the OceanProtect Used as Backup Storage))</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="oracle_gud_0036"></a><a name="oracle_gud_0036"></a>
 
-<h1 class="topictitle1">Step 1: Creating a Logical Port for the Replication Network (Applicable to 1.5.0)</h1>
-<div><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1720618465166">On DeviceManager of the primary and secondary storage systems, you can create logical ports for the replication network to remotely transmit replication data. </p>
-<div class="section" id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_section76551503175"><h4 class="sectiontitle">Prerequisites</h4><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p4324626143813">The replication network IP addresses have been planned at the primary and secondary ends.</p>
+<h1 class="topictitle1">Step 1: Creating a Replication Network Logical Port<span id="fc_gud_0026_9_ph6196532153113"> (Applicable to OceanProtect X Series Backup Appliances (1.5.0) and OceanProtect E1000 (with the OceanProtect Used as Backup Storage))</span></h1>
+<div><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1720618465166">On DeviceManager of the primary and secondary storage systems, you can create replication network logical ports to remotely transmit replication data.</p>
+<div class="section" id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_section76551503175"><h4 class="sectiontitle">Prerequisites</h4><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p4324626143813">The replication network IP addresses have been planned at the primary and secondary ends.</p>
 </div>
-<div class="section" id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_section01286189357"><h4 class="sectiontitle">Procedure</h4><ol id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_ol3195132918350"><li id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_li319522912350"><span>Log in to DeviceManager.</span><p><ol type="a" id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_ol8463855369"><li id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001607531760_en-us_topic_0000001311295305_en-us_topic_0000001149078659_li929117916361">Choose <span class="uicontrol" id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001839143213_en-us_topic_0000001311295305_en-us_topic_0000001149078659_uicontrol1098185683619"><b><span id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text157651936143415"><strong>System</strong></span> &gt; <span id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text49601653123416"><strong>Infrastructure</strong></span> &gt; <span id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text112401684352"><strong>Cluster Management</strong></span></b></span>.</li><li id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_li19932939164117">In the <span class="uicontrol" id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol1050641575312"><b><span id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text133861121163513"><strong>Local Cluster Nodes</strong></span></b></span> area of the <span class="uicontrol" id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol13691645105219"><b><span id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text1763193125313"><strong>Backup Cluster</strong></span></b></span> tab page, click the node name.</li><li id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_li1115217015589">In the <span class="uicontrol" id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol1144724616332"><b><span id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text51761646203516"><strong>Node detail</strong></span></b></span> dialog box that is displayed, click <span class="uicontrol" id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001839143213_uicontrol1544714611335"><b><span id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001839143213_text1624910583612"><strong>Open the device management platform</strong></span></b></span> to go to DeviceManager.</li></ol>
-</p></li><li id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_li1749374163512"><span>Choose <span class="uicontrol" id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_uicontrol6420811144214"><b>Services &gt; Network &gt; Logical Ports</b></span>.</span></li><li id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_li17548185061613"><span>Select <strong id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_b1619211561110">All vStores</strong> for <strong id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_b131921615141119">vStore</strong>.</span></li><li id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_li1020518291423"><span>Click <span class="uicontrol" id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_uicontrol9233246164210"><b>Create</b></span> to create a logical port.</span><p><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p122201058114510"><a href="#oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_table4902520114617">Table 1</a> describes the related parameters.</p>
+<div class="section" id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_section01286189357"><h4 class="sectiontitle">Procedure</h4><ol id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_ol3195132918350"><li id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_li319522912350"><span>Log in to DeviceManager of the primary and secondary storage systems separately.</span><p><ul id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_ul1899151343111"><li id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_li19991413113118">For OceanProtect X series backup appliances, perform the following operations:<ol type="a" id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_ol5625945183219"><li id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_li84033442337">Choose <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b124231410468">System</strong> &gt; <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b233321694610">Infrastructure</strong> &gt; <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b1744421834613">Cluster Management</strong>.</li><li id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_li938315412338">On the <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b4329457314">Backup Clusters</strong> tab page, click a node name under the <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b1632917571116">Local Cluster Nodes</strong> area.</li><li id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_li9647100173410">On the displayed <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b0285722121516">Node Details</strong> page, click <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b142851122171511">Open the device management platform</strong> to go to DeviceManager.</li></ol>
+</li><li id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_li15921125623118">For OceanProtect E1000 (with the OceanProtect used as backup storage), log in to DeviceManager of the backup storage device by referring to <a href="en-us_topic_0000001913343113.html">Logging In to DeviceManager</a>.</li></ul>
+</p></li><li id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_li1749374163512"><span>Choose <span class="uicontrol" id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_uicontrol6420811144214"><b>Services &gt; Network &gt; Logical Ports</b></span>.</span></li><li id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_li17548185061613"><span>Select <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b1619211561110">All vStores</strong> for <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b131921615141119">vStore</strong>.</span></li><li id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_li1020518291423"><span>Click <span class="uicontrol" id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_uicontrol9233246164210"><b>Create</b></span> to create a logical port.</span><p><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p122201058114510"><a href="#oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_table4902520114617">Table 1</a> describes the related parameters.</p>
 
-<div class="tablenoborder"><a name="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_table4902520114617"></a><a name="fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_table4902520114617"></a><table cellpadding="4" cellspacing="0" summary="" id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_table4902520114617" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Logical port parameters</caption><colgroup><col style="width:43.55%"><col style="width:56.45%"></colgroup><thead align="left"><tr id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row12902520144613"><th align="left" class="cellrowborder" valign="top" width="43.55%" id="mcps1.3.3.2.4.2.2.2.3.1.1"><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p11902142011468">Parameter</p>
+<div class="tablenoborder"><a name="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_table4902520114617"></a><a name="fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_table4902520114617"></a><table cellpadding="4" cellspacing="0" summary="" id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_table4902520114617" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Logical port parameters</caption><colgroup><col style="width:43.55%"><col style="width:56.45%"></colgroup><thead align="left"><tr id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row12902520144613"><th align="left" class="cellrowborder" valign="top" width="43.55%" id="mcps1.3.3.2.4.2.2.2.3.1.1"><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p11902142011468">Parameter</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="56.45%" id="mcps1.3.3.2.4.2.2.2.3.1.2"><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p139023200466">Description</p>
+<th align="left" class="cellrowborder" valign="top" width="56.45%" id="mcps1.3.3.2.4.2.2.2.3.1.2"><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p139023200466">Description</p>
 </th>
 </tr>
 </thead>
-<tbody><tr id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row1990214209462"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p179021520174612">Name</p>
+<tbody><tr id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row1990214209462"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p179021520174612">Name</p>
 </td>
-<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p10902122084614">Name of a replication network logical port, which can be customized.</p>
-</td>
-</tr>
-<tr id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row590214206469"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1390242018463">Role</p>
-</td>
-<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p89021220144617">Select <span class="uicontrol" id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_uicontrol1599065984713"><b>Replication</b></span>.</p>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p10902122084614">Name of a replication network logical port, which can be customized.</p>
 </td>
 </tr>
-<tr id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row159021320204618"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p89021320194613">IP Address Type</p>
+<tr id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row590214206469"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1390242018463">Role</p>
 </td>
-<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1790212044613">IP address type of a replication network logical port, which can be IPv4 or IPv6.</p>
-</td>
-</tr>
-<tr id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row2902122013465"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p139021020134618">IP Address</p>
-</td>
-<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p39031820154614">IP address of a replication network logical port.</p>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p89021220144617">Select <span class="uicontrol" id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_uicontrol1599065984713"><b>Replication</b></span>.</p>
 </td>
 </tr>
-<tr id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row10903720194618"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p17903220184614">Subnet Mask</p>
+<tr id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row159021320204618"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p89021320194613">IP Address Type</p>
 </td>
-<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p89031620184617">If an IP address is of IPv4 type, set a subnet mask for the IP address.</p>
-</td>
-</tr>
-<tr id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row070651994917"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1470619193499">Prefix</p>
-</td>
-<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1770671912495">If an IP address is of IPv6 type, set a prefix for the IP address.</p>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1790212044613">IP address type of a replication network logical port, which can be IPv4 or IPv6.</p>
 </td>
 </tr>
-<tr id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row1075519116478"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p475641115470">Gateway</p>
+<tr id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row2902122013465"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p139021020134618">IP Address</p>
 </td>
-<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1675612113472">Gateway used for the IP address of the replication network logical port.</p>
-</td>
-</tr>
-<tr id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row4957112110477"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p6957152119477">Port Type</p>
-</td>
-<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_p1187201353020">Type of the port used to create the replication network logical port. Available options include <strong id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_b131477457191">Ethernet port</strong>, <strong id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_b0147345201911">Bond port</strong>, and <strong id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_b11147945121914">VLAN</strong>.</p>
-<p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_p7393956171420">By default, the ports used for replication have been bonded during initialization of the <span id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_text44851941602">OceanProtect</span>. Therefore, you need to select <strong id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_b202105286193">Bond port</strong> if you do not perform other operations (such as deleting bond ports).</p>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p39031820154614">IP address of a replication network logical port.</p>
 </td>
 </tr>
-<tr id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row3551112915475"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p165511029124718">Home Port</p>
+<tr id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row10903720194618"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p17903220184614">Subnet Mask</p>
 </td>
-<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_p175510297476">Ethernet port, bond port, or VLAN to which the replication network logical port to be created belongs.</p>
-<p id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_p1549136151615">The system has filtered all ports used for the replication network. Select any port in the <strong id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_b4425952103418">Link up</strong> state.</p>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p89031620184617">If an IP address is of IPv4 type, set a subnet mask for the IP address.</p>
+</td>
+</tr>
+<tr id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row070651994917"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1470619193499">Prefix</p>
+</td>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1770671912495">If an IP address is of IPv6 type, set a prefix for the IP address.</p>
+</td>
+</tr>
+<tr id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row1075519116478"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p475641115470">Gateway</p>
+</td>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p1675612113472">Gateway used for the IP address of the replication network logical port.</p>
+</td>
+</tr>
+<tr id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row4957112110477"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p6957152119477">Port Type</p>
+</td>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_p1187201353020">Type of the port used to create the replication network logical port. Available options include <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b131477457191">Ethernet port</strong>, <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b0147345201911">Bond port</strong>, and <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b11147945121914">VLAN</strong>.</p>
+<p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_p7393956171420">By default, the ports used for replication have been bonded during initialization of the <span id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_text44851941602">OceanProtect</span>. Therefore, you need to select <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b202105286193">Bond port</strong> if you do not perform other operations (such as deleting bond ports).</p>
+</td>
+</tr>
+<tr id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_row3551112915475"><td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_p165511029124718">Home Port</p>
+</td>
+<td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_p175510297476">Ethernet port, bond port, or VLAN to which the replication network logical port to be created belongs.</p>
+<p id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_p1549136151615">The system has filtered all ports used for the replication network. Select any port in the <strong id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_b4425952103418">Link up</strong> state.</p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-</p></li><li id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_li1871473615017"><span>Click <span class="uicontrol" id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_uicontrol799991095820"><b>OK</b></span>.</span></li><li id="oracle_gud_0036__fc_gud_0026_11_en-us_topic_0000001839223165_en-us_topic_0000001149078659_li205675443341"><span>Repeat the preceding steps to configure a logical port for each home port.</span></li></ol>
+</p></li><li id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_li1871473615017"><span>Click <span class="uicontrol" id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_uicontrol799991095820"><b>OK</b></span>.</span></li><li id="oracle_gud_0036__fc_gud_0026_9_en-us_topic_0000001839223165_en-us_topic_0000001149078659_li205675443341"><span>Repeat the preceding steps to configure a logical port for each home port.</span></li></ol>
 </div>
 </div>
 <div>

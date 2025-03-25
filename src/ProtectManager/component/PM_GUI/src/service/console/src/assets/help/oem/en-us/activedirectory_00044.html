@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -48,16 +48,19 @@
    </div>
    <div class="section">
     <h4 class="sectiontitle">Precautions</h4>
-    <p>When restoring the system state, do not shut down the domain controller or disconnect it from the network. After the system state is restored, the domain controller automatically restarts and enters the normal mode.</p>
+    <ul>
+     <li id="activedirectory_00044__li4944728151413">When restoring the system state, do not shut down the domain controller or disconnect it from the network.</li>
+     <li id="activedirectory_00044__li1094422814148">After the system state is restored, the domain controller automatically restarts and enters the DSRM. You need to manually exit the DSRM to ensure that the domain controller enters the normal mode. For details, see <a href="en-us_topic_0000002060651416.html">Configuring a Windows Server to Exit the Directory Services Repair Mode</a>.</li>
+    </ul>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
     <ol>
-     <li><span>Choose <span class="uicontrol" id="activedirectory_00044__en-us_topic_0000001839142377_uicontrol193721239145518"><b>Protection &gt; Applications &gt; Active Directory</b></span>.</span></li>
+     <li><span>Choose <span class="uicontrol" id="activedirectory_00044__en-us_topic_0000001839142377_uicontrol193721239145518"><b>Explore &gt; Applications &gt; Active Directory</b></span>.</span></li>
      <li id="activedirectory_00044__li888616341964"><span>You can search for copies by Active Directory resource or copy. This section describes how to search for copies by resource.</span><p></p><p id="activedirectory_00044__en-us_topic_0000001397321757_p624620403810">Locate the resource to be restored by resource name and click the resource name.</p> <p></p></li>
      <li id="activedirectory_00044__li7341134224"><span>Click the <strong id="activedirectory_00044__b59261548204418">Copy Data</strong> tab.</span></li>
      <li id="activedirectory_00044__li182120214713"><span>Select the year, month, and day in sequence to find the copy.</span><p></p><p id="activedirectory_00044__p9918150182310">If <span><img id="activedirectory_00044__image669318410309" src="en-us_image_0000001798060860.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p> <p></p></li>
-     <li id="activedirectory_00044__li52205391340"><span>Restore data using a specified copy.</span><p></p><p id="activedirectory_00044__p7323194318125"><a href="#activedirectory_00044__table194961441141219">Table 1</a> describes the related parameters.</p>
+     <li id="activedirectory_00044__li52205391340"><span>In the row of the copy to be used for restoration, choose <span id="activedirectory_00044__text2864554113918"><strong>More</strong></span> &gt; <strong id="activedirectory_00044__b1434823142919">System State Restoration</strong> to configure restoration parameters.</span><p></p><p id="activedirectory_00044__p7323194318125"><a href="#activedirectory_00044__table194961441141219">Table 1</a> describes the related parameters.</p>
       <div class="tablenoborder">
        <a name="activedirectory_00044__table194961441141219"></a><a name="table194961441141219"></a>
        <table cellpadding="4" cellspacing="0" summary="" id="activedirectory_00044__table194961441141219" frame="border" border="1" rules="all">
@@ -77,7 +80,7 @@
         <tbody>
          <tr id="activedirectory_00044__row84968417127">
           <td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.5.2.5.2.2.2.3.1.1 "><p id="activedirectory_00044__p124963413125"><span id="activedirectory_00044__text136400224309"><strong>Restore To</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.5.2.5.2.2.2.3.1.2 "><p id="activedirectory_00044__p16496164110123">Select <span class="uicontrol" id="activedirectory_00044__uicontrol84961241181211"><b><span id="activedirectory_00044__text19159183316300"><strong>Original location</strong></span></b></span>.</p></td>
+          <td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.5.2.5.2.2.2.3.1.2 "><p id="activedirectory_00044__p16496164110123">Only restoration to <span class="uicontrol" id="activedirectory_00044__uicontrol84961241181211"><b><span id="activedirectory_00044__text19159183316300"><strong>Original location</strong></span></b></span> is supported.</p></td>
          </tr>
          <tr id="activedirectory_00044__row349644119122">
           <td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.5.2.5.2.2.2.3.1.1 "><p id="activedirectory_00044__p249664112126"><span id="activedirectory_00044__text820182793118"><strong>Location</strong></span></p></td>

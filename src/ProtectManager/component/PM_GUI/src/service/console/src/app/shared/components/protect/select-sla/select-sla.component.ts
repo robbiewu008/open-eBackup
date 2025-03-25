@@ -88,6 +88,16 @@ export class SelectSlaComponent implements OnInit {
   pageIndex1 = CommonConsts.PAGE_START;
   pageIndex2 = CommonConsts.PAGE_START;
   valid$ = new Subject<boolean>();
+  policyAction = PolicyAction;
+  hasRansomware = false; // 用于判断该资源是否有已经存在的防勒索策略，目前只用于文件集和nas共享
+  hasAggregationApp = false; // 用于标识该应用的保护高级参数里是否有小文件聚合
+  _intersection = intersection;
+  isBatchProtect = false; // 用于判断批量保护场景
+  actionIconMap = {
+    [DataMap.Sla_Type.gold.value]: 'aui-sla-icon-gold',
+    [DataMap.Sla_Type.silver.value]: 'aui-sla-icon-silver',
+    [DataMap.Sla_Type.bronze.value]: 'aui-sla-icon-bronze'
+  };
   actionsFilterMap = [
     {
       label: this.i18n.get('common_full_backup_label'),
@@ -285,12 +295,23 @@ export class SelectSlaComponent implements OnInit {
   sortChange(source) {
     this.sortKey = source.key;
     this.sortDirection = source.direction;
-    this.getSlaDatas();
+    this.getSlaData();
   }
 
   cyberFilterChange(source) {
     this.honeypotDetectStatus = source.value;
-    this.getSlaDatas();
+    this.getSlaData();
+  }
+
+  getIconIdByAction(name: string) {
+    if (this.isCyber) {
+      return get(
+        this.actionIconMap,
+        name,
+        'aui-sla-icon-cyber-detection-policy'
+      );
+    }
+    return get(this.actionIconMap, name, 'aui-icon-sla-user-define');
   }
 
   getSlaList(createSla?) {
@@ -339,112 +360,139 @@ export class SelectSlaComponent implements OnInit {
         .subscribe(res => {
           this.slaList = res.items;
           this.total = res.total;
-          if (find(res.items, { uuid: createSla })) {
+          const tmpSla = find(res.items, { uuid: createSla });
+          if (
+            find(res.items, { uuid: createSla }) &&
+            !(
+              this.hasAggregationApp &&
+              this.hasRansomware &&
+              !!find(tmpSla.policy_list, { action: PolicyAction.INCREMENT })
+            )
+          ) {
             this.slaChange(createSla);
           }
-          this.slaList.forEach(
-            item =>
-              (item.isWormSLAList = some(
-                item.policy_list,
-                policy => policy?.worm_validity_type >= 1
-              ))
-          );
+          this.slaList.forEach(item => {
+            item.isWormSLAList = some(
+              item.policy_list,
+              policy => policy?.worm_validity_type >= 1
+            );
+            item.disabled =
+              this.hasAggregationApp &&
+              this.hasRansomware &&
+              find(item.policy_list, { action: PolicyAction.INCREMENT });
+          });
         });
     }
   }
 
-  getSlaDatas(createSla?) {
+  getSlaData(createSla?) {
     if (createSla) {
       this.pageIndex2 = CommonConsts.PAGE_START;
     }
     if (this.isRealDetection) {
-      const params = {
-        pageNum: this.pageIndex1,
-        pageSize: this.pageSize
-      };
-      if (this.querySlaName) {
-        assign(params, { name: this.querySlaName });
-      }
-      if (!isEmpty(this.honeypotDetectStatus)) {
-        assign(params, { honeypotDetectStatus: this.honeypotDetectStatus });
-      }
-      if (this.sortKey && this.sortDirection) {
-        assign(params, {
-          orderBy: this.sortKey,
-          orderType: this.sortDirection
-        });
-      }
-      this.ioDetectPolicyService
-        .pageQueryIoDetectPolicy(params)
-        .subscribe(res => {
-          each(res.records, item => {
-            assign(item, {
-              uuid: item.id
-            });
-          });
-          this.slaDatas = res.records;
-          this.total = res.totalCount;
-          if (find(res.records, { uuid: createSla })) {
-            this.selectionRow(createSla);
-          }
-        });
+      this.getRealDetectionPolicyData(createSla);
     } else {
-      const params = {
-        pageNo: this.pageIndex2,
-        pageSize: this.pageSize,
-        applications: this.applications
-      };
-      if (this.querySlaName) {
-        assign(params, { name: this.querySlaName });
-      }
-
-      if (!!this.actions.length) {
-        assign(params, { actions: this.actions });
-      }
-
-      this.slaApiService
-        .pageQueryUsingGET(params)
-        .pipe(
-          map(result => {
-            return this.convertAction(result);
-          })
-        )
-        .subscribe(res => {
-          if (this.isCyberEngine) {
-            each(res.items, item => {
-              assign(item, {
-                policy1: find(item.policy_list, item =>
-                  includes(item.name, '01')
-                ),
-                policy2: find(item.policy_list, item =>
-                  includes(item.name, '02')
-                ),
-                policy3: find(item.policy_list, item =>
-                  includes(item.name, '03')
-                ),
-                policy4: find(item.policy_list, item =>
-                  includes(item.name, '04')
-                )
-              });
-            });
-          }
-          this.slaDatas = res.items;
-          this.total = res.total;
-          // 要判断部署形态
-          if (!this.isCyber) {
-            this.slaDatas.forEach(item => {
-              assign(item, {
-                isWormSLAList: item.policy_list?.some(
-                  e => e?.worm_validity_type >= 1
-                )
-              });
-            });
-          }
-          if (find(res.items, { uuid: createSla })) {
-            this.selectionRow(createSla);
-          }
-        });
+      this.getCommonSlaData(createSla);
     }
+  }
+
+  private getRealDetectionPolicyData(createSla) {
+    const params = {
+      pageNum: this.pageIndex1,
+      pageSize: this.pageSize
+    };
+    if (this.querySlaName) {
+      assign(params, { name: this.querySlaName });
+    }
+    if (!isEmpty(this.honeypotDetectStatus)) {
+      assign(params, { honeypotDetectStatus: this.honeypotDetectStatus });
+    }
+    if (this.sortKey && this.sortDirection) {
+      assign(params, {
+        orderBy: this.sortKey,
+        orderType: this.sortDirection
+      });
+    }
+    this.ioDetectPolicyService
+      .pageQueryIoDetectPolicy(params)
+      .subscribe(res => {
+        each(res.records, item => {
+          assign(item, {
+            uuid: item.id
+          });
+        });
+        this.slaDatas = res.records;
+        this.total = res.totalCount;
+        if (find(res.records, { uuid: createSla })) {
+          this.selectionRow(createSla);
+        }
+      });
+  }
+
+  private getCommonSlaData(createSla) {
+    const params = {
+      pageNo: this.pageIndex2,
+      pageSize: this.pageSize,
+      applications: this.applications
+    };
+    if (this.querySlaName) {
+      assign(params, { name: this.querySlaName });
+    }
+
+    if (!!this.actions.length) {
+      assign(params, { actions: this.actions });
+    }
+
+    const processSlaData = () => {
+      if (this.isCyberEngine) {
+        each(this.slaDatas, item => {
+          assign(item, {
+            policy1: find(item.policy_list, item => includes(item.name, '01')),
+            policy2: find(item.policy_list, item => includes(item.name, '02')),
+            policy3: find(item.policy_list, item => includes(item.name, '03')),
+            policy4: find(item.policy_list, item => includes(item.name, '04'))
+          });
+        });
+      }
+      // 要判断部署形态
+      if (!this.isCyber) {
+        this.slaDatas.forEach(item => {
+          assign(item, {
+            isWormSLAList: item.policy_list?.some(
+              e => e?.worm_validity_type >= 1
+            ),
+            disabled:
+              this.hasAggregationApp &&
+              this.hasRansomware &&
+              find(item.policy_list, { action: PolicyAction.INCREMENT })
+          });
+        });
+      }
+      const tmpSla = find(this.slaDatas, { uuid: createSla });
+      if (
+        find(this.slaDatas, { uuid: createSla }) &&
+        !(
+          this.hasAggregationApp &&
+          this.hasRansomware &&
+          !!find(tmpSla.policy_list, { action: PolicyAction.INCREMENT })
+        )
+      ) {
+        this.selectionRow(createSla);
+      }
+    };
+
+    this.slaApiService
+      .pageQueryUsingGET(params)
+      .pipe(
+        map(result => {
+          return this.convertAction(result);
+        })
+      )
+      .subscribe(res => {
+        this.slaDatas = res.items;
+        this.total = res.total;
+        processSlaData();
+      });
   }
 
   getDetail(e, item) {
@@ -510,7 +558,9 @@ export class SelectSlaComponent implements OnInit {
               ApplicationType.OpenStack,
               ApplicationType.ApsaraStack,
               ApplicationType.TDSQL,
-              ApplicationType.HyperV
+              ApplicationType.HyperV,
+              ApplicationType.CNware,
+              ApplicationType.Nutanix
             ],
             item.application
           )
@@ -541,15 +591,60 @@ export class SelectSlaComponent implements OnInit {
     return res;
   }
 
+  chunkArray(array, size) {
+    const chunks = [];
+    for (let i = 0; i < array.length; i += size) {
+      chunks.push(array.slice(i, i + size));
+    }
+    return chunks;
+  }
+
   getDataWormStatus(data) {
-    const resourceParams = {
-      resourceIds: _map(isArray(data) ? data : [data], 'uuid')
-    };
+    const resourceIdList = _map(isArray(data) ? data : [data], 'uuid');
+    // 因为接口最多一次查100个，所以判断一下
+    if (size(resourceIdList) > 100) {
+      const chunks = this.chunkArray(resourceIdList, 100);
+      each(chunks, item => {
+        this.getWormStatus({
+          resourceIds: item
+        });
+      });
+    } else {
+      this.getWormStatus({
+        resourceIds: resourceIdList
+      });
+    }
+  }
+
+  private getWormStatus(resourceParams) {
     this.antiRansomwarePolicyApiService
       .ShowAntiRansomwarePolicies(resourceParams)
       .subscribe(res => {
         this.isWormData = !!find(res.records, item => item.schedule.setWorm);
+        this.hasRansomware = !!find(
+          res.records,
+          item => item.schedule.needDetect
+        );
+        if (!this.hasAggregationApp) {
+          return;
+        }
+        // 如果后获取完防勒索策略信息再做一次判断
+        this.setSlaDisabled(this.slaList);
+        this.setSlaDisabled(this.slaDatas);
+        // 获取之后通知高级组件
+        this.globalService.emitStore({
+          action: 'syncRansomwareStatus',
+          state: this.hasRansomware
+        });
       });
+  }
+
+  setSlaDisabled(slaArray) {
+    each(slaArray, item => {
+      item.disabled =
+        this.hasRansomware &&
+        find(item.policy_list, { action: PolicyAction.INCREMENT });
+    });
   }
 
   initData(data: any, _?, action?: ProtectResourceAction) {
@@ -557,6 +652,7 @@ export class SelectSlaComponent implements OnInit {
       this.getDataWormStatus(data);
     }
     this.resourceData = isArray(data) ? data[0] : data;
+    this.isBatchProtect = isArray(data);
     this.subResourceType =
       this.resourceData.sub_type || this.resourceData.sourceSubType;
     this.isBatchModify =
@@ -998,7 +1094,7 @@ export class SelectSlaComponent implements OnInit {
         this.subResourceType
       )
     ) {
-      this.applications = [ApplicationType.Common, ApplicationType.HyperV];
+      this.applications = [ApplicationType.HyperV];
     } else if (
       includes([DataMap.Resource_Type.ndmp.value], this.subResourceType)
     ) {
@@ -1026,6 +1122,15 @@ export class SelectSlaComponent implements OnInit {
         ),
         'value'
       );
+    }
+    // 判断这些应用是有小文件聚合的
+    if (
+      !!intersection(this.applications, [
+        ApplicationType.Fileset,
+        ApplicationType.NASShare
+      ]).length
+    ) {
+      this.hasAggregationApp = true;
     }
     this.viewChange(this.selectedSlaView);
   }
@@ -1080,7 +1185,7 @@ export class SelectSlaComponent implements OnInit {
     if (!this.selectedSlaView) {
       this.getSlaList(createSla);
     } else {
-      this.getSlaDatas(createSla);
+      this.getSlaData(createSla);
     }
   }
 
@@ -1188,13 +1293,13 @@ export class SelectSlaComponent implements OnInit {
     }
   }
 
-  slaDatasPageChange(page) {
+  slaDataPageChange(page) {
     this.pageSize = page.pageSize;
     this.pageIndex2 = page.pageIndex;
-    this.getSlaDatas();
+    this.getSlaData();
   }
 
-  slaListpageChange(page) {
+  slaListPageChange(page) {
     this.pageSize = page.pageSize;
     this.pageIndex1 = page.pageIndex;
     this.getSlaList();
@@ -1202,6 +1307,9 @@ export class SelectSlaComponent implements OnInit {
 
   selectionRow(sla_id, notManualClick?) {
     const tmpSla = this.slaDatas.find(item => item.uuid === sla_id);
+    if (tmpSla.disabled) {
+      return;
+    }
     this.isWormSLA =
       !this.isCyber &&
       !!(
@@ -1219,86 +1327,75 @@ export class SelectSlaComponent implements OnInit {
     }
 
     if (this.beforeChange(sla_id) && !notManualClick) {
-      this.messageBox.confirm({
-        lvOkType: 'primary',
-        lvCancelType: 'default',
-        lvContent: this.i18n.get('protection_sla_change_label'),
-        lvOk: () => {
-          assign(this.resourceData, {
-            sla_id,
-            slaObject: this.slaDatas.find(item => item.uuid === sla_id)
-          });
-          this.lvTable.toggleSelection(sla_id);
-          this.valid$.next(!isEmpty(sla_id));
-        },
-        lvCancel: () => {
-          assign(this.resourceData, {
-            sla_id,
-            slaObject: this.slaDatas.find(item => item.uuid === sla_id)
-          });
-          this.lvTable.toggleSelection(sla_id);
-          this.valid$.next(!isEmpty(sla_id));
-          setTimeout(() => {
-            this.selectionRow(this.originalSLAId, true);
-          });
-        },
-        lvAfterClose: result => {
-          if (result && result.trigger === 'close') {
-            assign(this.resourceData, {
-              sla_id,
-              slaObject: this.slaDatas.find(item => item.uuid === sla_id)
-            });
-            this.lvTable.toggleSelection(sla_id);
-            this.valid$.next(!isEmpty(sla_id));
-            setTimeout(() => {
-              this.selectionRow(this.originalSLAId, true);
-            });
-          }
-        }
-      });
+      this.handleSlaChangeConfirm(sla_id);
     } else {
-      assign(this.resourceData, {
-        sla_id,
-        slaObject: this.slaDatas.find(item => item.uuid === sla_id)
-      });
-      this.lvTable.toggleSelection(sla_id);
-      this.valid$.next(!isEmpty(sla_id));
+      this.toggleSelectionAndValid(sla_id);
     }
     this.slaSelectedEvent(this.slaDatas.find(item => item.uuid === sla_id));
     this.compareSlaEncryption();
   }
 
+  private handleSlaChangeConfirm(sla_id) {
+    this.messageBox.confirm({
+      lvOkType: 'primary',
+      lvCancelType: 'default',
+      lvContent: this.i18n.get('protection_sla_change_label'),
+      lvOk: () => {
+        this.toggleSelectionAndValid(sla_id);
+      },
+      lvCancel: () => {
+        this.toggleSelectionAndValid(sla_id);
+        setTimeout(() => {
+          this.selectionRow(this.originalSLAId, true);
+        });
+      },
+      lvAfterClose: result => {
+        if (result && result.trigger === 'close') {
+          this.toggleSelectionAndValid(sla_id);
+          setTimeout(() => {
+            this.selectionRow(this.originalSLAId, true);
+          });
+        }
+      }
+    });
+  }
+
+  private toggleSelectionAndValid(sla_id) {
+    assign(this.resourceData, {
+      sla_id,
+      slaObject: this.slaDatas.find(item => item.uuid === sla_id)
+    });
+    this.lvTable.toggleSelection(sla_id);
+    this.valid$.next(!isEmpty(sla_id));
+  }
+
   searchByName(value) {
     this.querySlaName = trim(value);
-    this.getSlaDatas();
+    this.getSlaData();
   }
 
   filterChange = event => {
     this.actions = event.value;
-    this.getSlaDatas();
+    this.getSlaData();
   };
 
   createSla() {
+    const handleResponse = (policyKey: string) => res => {
+      try {
+        res = JSON.parse(res);
+      } catch (error) {}
+      this.viewChange(this.selectedSlaView, res[policyKey]);
+    };
     if (this.isCyberEngine) {
       if (this.isRealDetection) {
         this.slaService.createRealDetectionPolicy(
-          res => {
-            try {
-              res = JSON.parse(res);
-            } catch (error) {}
-            this.viewChange(this.selectedSlaView, res.policyId);
-          },
+          handleResponse('policyId'),
           null,
           null
         );
       } else {
         this.slaService.createDetectionPolicy(
-          res => {
-            try {
-              res = JSON.parse(res);
-            } catch (error) {}
-            this.viewChange(this.selectedSlaView, res.uuid);
-          },
+          handleResponse('uuid'),
           null,
           null,
           true
@@ -1306,17 +1403,9 @@ export class SelectSlaComponent implements OnInit {
       }
       return;
     }
-    this.slaService.create(
-      res => {
-        try {
-          res = JSON.parse(res);
-        } catch (error) {}
-        this.viewChange(this.selectedSlaView, res.uuid);
-      },
-      {
-        application: this.getApplicationType()
-      }
-    );
+    this.slaService.create(handleResponse('uuid'), {
+      application: this.getApplicationType()
+    });
   }
 
   getApplicationType() {
@@ -1396,6 +1485,34 @@ export class SelectSlaComponent implements OnInit {
 
   vaildBackupPolicy(sla_id) {
     if (
+      includes([DataMap.Resource_Type.oraclePDB.value], this.subResourceType)
+    ) {
+      let result = true;
+      const policy = get(
+        find(
+          this.selectedSlaView ? this.slaDatas : this.slaList,
+          item => item.uuid === sla_id
+        ),
+        'policy_list'
+      );
+      if (
+        find(policy, item =>
+          [PolicyType.REPLICATION, PolicyType.ARCHIVING].includes(item.type)
+        )
+      ) {
+        result = false;
+      }
+
+      if (!result) {
+        this.messageService.error(
+          this.i18n.get(
+            'protection_oracle_pdb_not_support_repl_and_archive_label'
+          )
+        );
+        this.valid$.next(false);
+      }
+      return result;
+    } else if (
       includes(
         [
           DataMap.Resource_Type.ExchangeSingle.value,
@@ -1671,6 +1788,56 @@ export class SelectSlaComponent implements OnInit {
             this.i18n.get('common_copy_a_copy_label'),
             this.i18n.get('common_archive_label')
           ])
+        );
+        this.valid$.next(false);
+      }
+      return result;
+    } else if (
+      includes(
+        [DataMap.Resource_Type.dbTwoDatabase.value],
+        this.subResourceType
+      ) &&
+      this.resourceData?.extendInfo?.clusterType ===
+        DataMap.dbTwoType.standby.value &&
+      this.resourceData?.extendInfo?.deployOperatingSystem === 'Red Hat'
+    ) {
+      let result = true;
+      if (this.selectedSlaView) {
+        const policy = get(
+          find(this.slaDatas, item => item.uuid === sla_id),
+          'policy_list'
+        );
+
+        if (
+          find(
+            policy,
+            item =>
+              item.action === PolicyAction.INCREMENT ||
+              item.action === PolicyAction.DIFFERENCE
+          )
+        ) {
+          result = false;
+        }
+      } else {
+        const policy = get(
+          find(this.slaList, item => item.uuid === sla_id),
+          'policy_list'
+        );
+
+        if (
+          find(
+            policy,
+            item =>
+              item.action === PolicyAction.INCREMENT ||
+              item.action === PolicyAction.DIFFERENCE
+          )
+        ) {
+          result = false;
+        }
+      }
+      if (!result) {
+        this.messageService.error(
+          this.i18n.get('protection_unsupport_rhel_policy_label')
         );
         this.valid$.next(false);
       }

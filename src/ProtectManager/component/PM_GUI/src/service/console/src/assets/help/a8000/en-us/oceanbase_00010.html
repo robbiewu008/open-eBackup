@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -38,46 +38,48 @@
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="oceanbase_00010"></a><a name="oceanbase_00010"></a>
 
 <h1 class="topictitle1">Step 2: Registering an OceanBase Cluster</h1>
-<div><div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Before registering an OceanBase cluster, ensure that each host in the cluster has been registered, that is, ProtectAgent has been installed.</li><li>Due to the restrictions of the NFS4.1 protocol, the host name in the same cluster must be unique.</li></ul>
+<div><p>Before OceanBase backup and restoration, register an OceanBase cluster with the <span>OceanProtect</span>.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Before registering an OceanBase cluster, ensure that each host in the cluster has been registered, that is, ProtectAgent has been installed.</li><li>Before registering an OceanBase cluster, ensure that the cluster contains a host with the OBClient component installed.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Download the OBClient component as follows:</p>
+<ol><li>Access the <a href="https://en.oceanbase.com/softwarecenter" target="_blank" rel="noopener noreferrer">OceanBase Download Center</a> page.</li><li>In the <strong>Drivers and Middleware</strong> area, download <strong>OceanBase Command-Line Client</strong>.</li></ol>
+</div></div>
+</li><li>Due to the restrictions of the NFS4.1 protocol, the host name in the same cluster must be unique.</li></ul>
 </div>
-<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="oceanbase_00010__en-us_topic_0000001839142377_uicontrol1753625610161"><b><span id="oceanbase_00010__en-us_topic_0000001839142377_text19536165671619"><strong>Protection</strong></span> &gt; Databases &gt; OceanBase</b></span>.</span></li><li><span>Click the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register the OceanBase cluster.</span></li><li><span>Configure the cluster information.</span><p><p><a href="#oceanbase_00010__table9362130125912">Table 1</a> describes the related parameters.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="oceanbase_00010__en-us_topic_0000001839142377_uicontrol1753625610161"><b><span id="oceanbase_00010__en-us_topic_0000001839142377_text19536165671619"><strong>Protection</strong></span> &gt; Databases &gt; OceanBase</b></span>.</span></li><li><span>Click the <span class="uicontrol"><b><span><strong>Clusters</strong></span></b></span> tab.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register the OceanBase cluster.</span></li><li><span>Configure the cluster information.</span><p><p><a href="#oceanbase_00010__table9362130125912">Table 1</a> describes the related parameters.</p>
 
-<div class="tablenoborder"><a name="oceanbase_00010__table9362130125912"></a><a name="table9362130125912"></a><table cellpadding="4" cellspacing="0" summary="" id="oceanbase_00010__table9362130125912" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Cluster parameters</caption><colgroup><col style="width:21.61%"><col style="width:78.39%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="21.61%" id="mcps1.3.2.2.4.2.2.2.3.1.1"><p>Parameter</p>
+<div class="tablenoborder"><a name="oceanbase_00010__table9362130125912"></a><a name="table9362130125912"></a><table cellpadding="4" cellspacing="0" summary="" id="oceanbase_00010__table9362130125912" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Cluster parameters</caption><colgroup><col style="width:21.61%"><col style="width:78.39%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="21.61%" id="mcps1.3.3.2.4.2.2.2.3.1.1"><p>Parameter</p>
 </th>
-<th align="left" class="cellrowborder" valign="top" width="78.39%" id="mcps1.3.2.2.4.2.2.2.3.1.2"><p>Description</p>
+<th align="left" class="cellrowborder" valign="top" width="78.39%" id="mcps1.3.3.2.4.2.2.2.3.1.2"><p>Description</p>
 </th>
 </tr>
 </thead>
-<tbody><tr><td class="cellrowborder" valign="top" width="21.61%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+<tbody><tr><td class="cellrowborder" valign="top" width="21.61%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="78.39%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>Customize a cluster name.</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="21.61%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span><strong>Username</strong></span></p>
-</td>
-<td class="cellrowborder" valign="top" width="78.39%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>Enter the username of the OceanBase database administrator.</p>
+<td class="cellrowborder" valign="top" width="78.39%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Customize a cluster name.</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="21.61%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span><strong>Password</strong></span></p>
+<tr><td class="cellrowborder" valign="top" width="21.61%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span><strong>Username</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="78.39%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>Enter the password of the OceanBase database administrator.</p>
-</td>
-</tr>
-<tr><td class="cellrowborder" valign="top" width="21.61%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><strong>Log Archive Interval</strong></p>
-</td>
-<td class="cellrowborder" valign="top" width="78.39%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>Controls the interval for generating checkpoint jobs in cold partitions to promote the OceanBase log archive progress.</p>
+<td class="cellrowborder" valign="top" width="78.39%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Enter the username of the OceanBase database administrator.</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="21.61%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span><strong>OBClient Host</strong></span></p>
+<tr><td class="cellrowborder" valign="top" width="21.61%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span><strong>Password</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="78.39%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>Select the registered OBClient host.</p>
-<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>Before using the OBClient host, you need to install the OBClient components. You can obtain the OBClient components from <a href="https://en.oceanbase.com/softwarecenter" target="_blank" rel="noopener noreferrer">OceanBase Download Center</a>.</p>
-</div></div>
+<td class="cellrowborder" valign="top" width="78.39%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Enter the password of the OceanBase database administrator.</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="21.61%" headers="mcps1.3.2.2.4.2.2.2.3.1.1 "><p><span><strong>OBServer Host</strong></span></p>
+<tr><td class="cellrowborder" valign="top" width="21.61%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><strong>Log Archive Interval</strong></p>
 </td>
-<td class="cellrowborder" valign="top" width="78.39%" headers="mcps1.3.2.2.4.2.2.2.3.1.2 "><p>Select the registered OBServer host and enter its service IP address and port number. The default port number is <strong>2881</strong>.</p>
+<td class="cellrowborder" valign="top" width="78.39%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Controls the interval for generating checkpoint jobs in cold partitions to promote the OceanBase log archive progress.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.61%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span><strong>OBClient Host</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.39%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Select the registered OBClient host.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.61%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span><strong>OBServer Host</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="78.39%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>Select the registered OBServer host and enter its service IP address and port number. The default port number is <strong>2881</strong>.</p>
 <p>If there are multiple OBServer hosts, click <strong>Add</strong> in sequence to add all hosts.</p>
 </td>
 </tr>

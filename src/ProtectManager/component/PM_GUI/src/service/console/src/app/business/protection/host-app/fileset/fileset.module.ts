@@ -27,6 +27,7 @@ import { WarningBatchConfirmModule } from 'app/shared/components/warning-batch-c
 import { CreateFilesetTemplateModule } from './fileset-template-list/create-fileset-template/create-fileset-template.module';
 import { FilesetRestoreModule } from './fileset-restore/fileset-restore.module';
 import { CustomTableSearchModule } from 'app/shared/components/custom-table-search/custom-table-search.module';
+import { CustomTableFilterModule } from '../../../../shared/components/custom-table-filter/custom-table-filter.module';
 @NgModule({
   declarations: [FilesetComponent],
   imports: [
@@ -43,7 +44,8 @@ import { CustomTableSearchModule } from 'app/shared/components/custom-table-sear
     CreateFilesetTemplateModule,
     TakeManualBackupServiceModule,
     WarningBatchConfirmModule,
-    CustomTableSearchModule
+    CustomTableSearchModule,
+    CustomTableFilterModule
   ],
   providers: [ResourceDetailService],
   exports: [FilesetComponent]

@@ -57,6 +57,20 @@ paths:
           default: null
           minLength: 0
           maxLength: 64
+        - name: startPage
+          in: query
+          required: true
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: true
+          type: integer
+          format: int32
+        - name: searchName
+          in: query
+          required: false
+          type: string
       responses:
         '200':
           description: ''

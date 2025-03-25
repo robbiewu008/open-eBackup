@@ -28,8 +28,10 @@ import openbackup.gaussdbt.protection.access.provider.constant.GaussDBTConstant;
 import openbackup.gaussdbt.protection.access.provider.service.GaussDBTSingleService;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -45,6 +47,9 @@ import java.util.Optional;
 @Component
 public class GaussDBTSingleBackupProvider extends AbstractDbBackupInterceptor {
     private final GaussDBTSingleService gaussDBTSingleService;
+
+    @Autowired
+    private DeployTypeService deployTypeService;
 
     public GaussDBTSingleBackupProvider(GaussDBTSingleService gaussDBTSingleService) {
         this.gaussDBTSingleService = gaussDBTSingleService;
@@ -108,6 +113,11 @@ public class GaussDBTSingleBackupProvider extends AbstractDbBackupInterceptor {
         }
         Map<String, String> advanceParams = Optional.ofNullable(backupTask.getAdvanceParams()).orElse(new HashMap<>());
         advanceParams.put(GaussDBTConstant.MOUNT_TYPE_KEY, MountTypeEnum.NON_FULL_PATH_MOUNT.getMountType());
+        log.info("gaussDBT single backup isPacific:{}", deployTypeService.isPacific());
+        if (deployTypeService.isPacific()) {
+            // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+            advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        }
         backupTask.setAdvanceParams(advanceParams);
     }
 

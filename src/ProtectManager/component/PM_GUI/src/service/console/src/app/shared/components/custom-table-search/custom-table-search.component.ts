@@ -46,6 +46,15 @@ export class CustomTableSearchComponent implements OnChanges {
       this.nameSearchPanelVisible = false;
       this.nameFilterTrueValue = '';
     }
+
+    // 用于右侧搜索框触发filterchange时同步表格里搜索框状态
+    if (
+      changes.value &&
+      !!changes.value.currentValue &&
+      changes.value.currentValue !== changes.value.previousValue
+    ) {
+      this.filterByName(changes.value.currentValue, false);
+    }
   }
 
   popoverBeforeOpen = () => {
@@ -69,12 +78,14 @@ export class CustomTableSearchComponent implements OnChanges {
     this.nameSearchPanelVisible = false;
   }
 
-  filterByName(value: string) {
+  filterByName(value: string, isManual = true) {
     this.nameFilterTrueValue = value;
     if (value === null || value === undefined) {
       return;
     }
-    this.search.emit(trim(value));
+    if (isManual) {
+      this.search.emit(trim(value));
+    }
     this.nameSearchPanelVisible = false;
   }
 }

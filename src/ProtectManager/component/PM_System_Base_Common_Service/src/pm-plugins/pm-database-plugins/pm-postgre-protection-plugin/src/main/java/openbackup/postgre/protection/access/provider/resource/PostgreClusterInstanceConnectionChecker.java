@@ -12,6 +12,8 @@
 */
 package openbackup.postgre.protection.access.provider.resource;
 
+import com.google.common.collect.Lists;
+
 import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.access.framework.resource.service.provider.UnifiedResourceConnectionChecker;
@@ -21,17 +23,24 @@ import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CheckAppReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.NodeInfo;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
+import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
+import openbackup.data.protection.access.provider.sdk.resource.CheckReport;
+import openbackup.data.protection.access.provider.sdk.resource.CheckResult;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.data.protection.access.provider.sdk.util.ResourceCheckContextUtil;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.service.InstanceResourceService;
 import openbackup.postgre.protection.access.common.PostgreConstants;
+import openbackup.postgre.protection.access.service.PostgreInstanceService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
+import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 
@@ -39,10 +48,12 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -58,6 +69,10 @@ public class PostgreClusterInstanceConnectionChecker extends UnifiedResourceConn
 
     private final AgentUnifiedService agentUnifiedService;
 
+    private final PostgreInstanceService postgreInstanceService;
+
+    private final ResourceService resourceService;
+
     /**
      * 有参构造
      *
@@ -65,14 +80,19 @@ public class PostgreClusterInstanceConnectionChecker extends UnifiedResourceConn
      * @param agentUnifiedService agent接口实现
      * @param protectedEnvironmentService 环境服务
      * @param instanceResourceService 实例资源服务
+     * @param postgreInstanceService PGSQL实例服务
+     * @param resourceService 资源服务
      */
     public PostgreClusterInstanceConnectionChecker(ProtectedEnvironmentRetrievalsService environmentRetrievalsService,
         AgentUnifiedService agentUnifiedService, ProtectedEnvironmentService protectedEnvironmentService,
-        InstanceResourceService instanceResourceService) {
+        InstanceResourceService instanceResourceService, PostgreInstanceService postgreInstanceService,
+        ResourceService resourceService) {
         super(environmentRetrievalsService, agentUnifiedService);
         this.protectedEnvironmentService = protectedEnvironmentService;
         this.instanceResourceService = instanceResourceService;
         this.agentUnifiedService = agentUnifiedService;
+        this.postgreInstanceService = postgreInstanceService;
+        this.resourceService = resourceService;
     }
 
     @Override
@@ -93,6 +113,14 @@ public class PostgreClusterInstanceConnectionChecker extends UnifiedResourceConn
             }
         } catch (LegoCheckedException | NullPointerException e) {
             log.error("Collecting postgre cluster instance check error", ExceptionUtil.getErrorMessage(e));
+            // 当无法收集到集群实例中子实例的信息时，认为集群实例状态异常，需要更新数据库中集群实例在线信息
+            ProtectedResource protectedResource = resourceService.getResourceById(resource.getUuid())
+                .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "not exist"));
+            String status = LinkStatusEnum.OFFLINE.getStatus().toString();
+            ProtectedResource updateResource = new ProtectedResource();
+            updateResource.setUuid(protectedResource.getUuid());
+            updateResource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY, status);
+            resourceService.updateSourceDirectly(Collections.singletonList(updateResource));
             throw new LegoCheckedException(CommonErrorCode.RESOURCE_LINK_STATUS_OFFLINE,
                 "target environment is offline.");
         }
@@ -103,6 +131,14 @@ public class PostgreClusterInstanceConnectionChecker extends UnifiedResourceConn
                 item -> StringUtils.equals(PostgreConstants.PRIMARY, item.getExtendInfo().get(DatabaseConstants.ROLE)))
             .findFirst();
         if (!childOptional.isPresent()) {
+            // 集群实例无主节点时认为集群实例状态异常，更新数据库中资源信息
+            ProtectedResource protectedResource = resourceService.getResourceById(resource.getUuid())
+                .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "not exist"));
+            String status = LinkStatusEnum.OFFLINE.getStatus().toString();
+            ProtectedResource updateResource = new ProtectedResource();
+            updateResource.setUuid(protectedResource.getUuid());
+            updateResource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY, status);
+            resourceService.updateSourceDirectly(Collections.singletonList(updateResource));
             throw new LegoCheckedException(CommonErrorCode.RESOURCE_LINK_STATUS_OFFLINE,
                 "target environment is offline.");
         }
@@ -146,6 +182,80 @@ public class PostgreClusterInstanceConnectionChecker extends UnifiedResourceConn
         String role = StringUtils.equals(MapUtils.getString(extendInfo, PostgreConstants.IS_PRIMARY),
             PostgreConstants.PRIMARY) ? PostgreConstants.PRIMARY : PostgreConstants.SLAVE;
         childNode.getExtendInfo().put(DatabaseConstants.ROLE, role);
+    }
+
+    @Override
+    public CheckResult<Object> generateCheckResult(ProtectedResource protectedResource) {
+        try {
+            return super.generateCheckResult(protectedResource);
+        } catch (LegoCheckedException | NullPointerException e) {
+            // 当检测集群实例下的子实例发生异常时，认为集群实例状态异常
+            log.error("Generate Check Result postgre cluster instance error", ExceptionUtil.getErrorMessage(e));
+            ProtectedResource instanceResource = resourceService.getResourceById(protectedResource.getParentUuid())
+                .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "not exist"));
+            String status = LinkStatusEnum.OFFLINE.getStatus().toString();
+            ProtectedResource updateResource = new ProtectedResource();
+            updateResource.setUuid(instanceResource.getUuid());
+            updateResource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY, status);
+            resourceService.updateSourceDirectly(Collections.singletonList(updateResource));
+            throw new LegoCheckedException(CommonErrorCode.RESOURCE_LINK_STATUS_OFFLINE,
+                "target environment is offline.");
+        }
+    }
+
+    @Override
+    public List<ActionResult> collectActionResults(List<CheckReport<Object>> checkReport, Map<String, Object> context) {
+        log.info("To deal with PGSQL cluster instance collectActionResults");
+        return super.collectActionResults(updateLinkStatus(checkReport), context);
+    }
+
+    private List<CheckReport<Object>> updateLinkStatus(List<CheckReport<Object>> checkReportList) {
+        String instanceUuid = Optional.ofNullable(checkReportList.get(0))
+            .map(CheckReport::getResource)
+            .map(ProtectedResource::getParentUuid)
+            .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR,
+                "not find pgsql cluster instance resource"));
+        log.info("start update pgsql cluster instance {} linkStatus, checkReport length is {}", instanceUuid,
+            checkReportList.size());
+
+        try {
+            ProtectedResource resource = postgreInstanceService.getResourceById(instanceUuid);
+        } catch (LegoCheckedException | NullPointerException e) {
+            log.info("No need to update the resource status when registering,", ExceptionUtil.getErrorMessage(e));
+            return checkReportList;
+        }
+
+        ProtectedResource resource = postgreInstanceService.getResourceById(instanceUuid);
+        AtomicBoolean isInstanceOnline = new AtomicBoolean(true);
+        resource.getDependencies().get(DatabaseConstants.CHILDREN).forEach(childNode -> {
+            String uuid = childNode.getDependencies().get(DatabaseConstants.AGENTS).get(0).getUuid();
+            if (getCheckResult(uuid, checkReportList)) {
+                log.info("the subinstacne {}, of pgsql cluster instance {} ONLINE", childNode.getUuid(), instanceUuid);
+            } else {
+                log.warn("the subinstacne {}, of pgsql cluster instance {} OFFLINE", childNode.getUuid(), instanceUuid);
+                isInstanceOnline.set(false);
+            }
+        });
+
+        ProtectedResource updateResource = new ProtectedResource();
+        updateResource.setUuid(instanceUuid);
+        updateResource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY, isInstanceOnline.get()
+            ? LinkStatusEnum.ONLINE.getStatus().toString()
+            : LinkStatusEnum.OFFLINE.getStatus().toString());
+
+        resourceService.updateSourceDirectly(Lists.newArrayList(updateResource));
+        log.info("end update pgsql cluster instance {} linkStatus", instanceUuid);
+
+        return checkReportList;
+    }
+
+    private boolean getCheckResult(String uuid, List<CheckReport<Object>> checkReportList) {
+        List<ActionResult> actionResultList = checkReportList.stream()
+            .filter(item -> Objects.equals(uuid, item.getResource().getEnvironment().getUuid()))
+            .flatMap(item -> item.getResults().stream())
+            .map(CheckResult::getResults)
+            .collect(Collectors.toList());
+        return ResourceCheckContextUtil.isSuccess(actionResultList);
     }
 
     @Override

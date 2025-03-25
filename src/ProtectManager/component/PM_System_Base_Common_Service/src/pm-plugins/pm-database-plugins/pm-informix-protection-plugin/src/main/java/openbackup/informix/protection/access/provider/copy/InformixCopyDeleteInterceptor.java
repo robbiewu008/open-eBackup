@@ -12,12 +12,11 @@
 */
 package openbackup.informix.protection.access.provider.copy;
 
-import static openbackup.data.access.framework.copy.mng.util.CopyUtil.getNextCopyByType;
-
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
 import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
 import openbackup.data.protection.access.provider.sdk.copy.DeleteCopyTask;
+import openbackup.data.protection.access.provider.sdk.enums.BackupTypeEnum;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.interceptor.AbstractDbCopyDeleteInterceptor;
 import openbackup.informix.protection.access.constant.InformixConstant;
@@ -34,6 +33,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 /**
  * informix副本删除拦截器
@@ -59,13 +59,6 @@ public class InformixCopyDeleteInterceptor extends AbstractDbCopyDeleteIntercept
     }
 
     @Override
-    protected List<String> getCopiesCopyTypeIsCumulativeIncrement(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
-        // 删除差异副本，会删除该差异副本后面所有的增量副本
-        Copy nextCumulativeCopy = getNextCopyByType(copies, BackupTypeConstants.CUMULATIVE_INCREMENT, thisCopy.getGn());
-        Copy nextCopy = CopyUtil.getSmallerCopy(nextFullCopy, nextCumulativeCopy);
-        return CopyUtil.getCopyUuidsBetweenTwoCopy(copies, thisCopy, nextCopy);
-    }
-    @Override
     protected void handleTask(DeleteCopyTask task, CopyInfoBo copy) {
         log.info("InformixCopyDeleteInterceptor,handleTask,start.");
         Map<String, String> advanceParams = task.getAdvanceParams();
@@ -79,4 +72,39 @@ public class InformixCopyDeleteInterceptor extends AbstractDbCopyDeleteIntercept
     protected boolean shouldSupplyAgent(DeleteCopyTask task, CopyInfoBo copy) {
         return false;
     }
+
+    /**
+     * 删除全量副本时，要删除此副本到下一个全量副本之间的副本
+     *
+     * @param copies 此副本之后的所有副本
+     * @param thisCopy 本个副本
+     * @param nextFullCopy 下个全量副本
+     * @return 需要删除的集合
+     */
+    @Override
+    protected List<String> getCopiesCopyTypeIsFull(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
+        // 前一个日志副本
+        Copy previousLogBackupCopy = copyRestApi.queryLatestFullBackupCopies(thisCopy.getResourceId(),
+                thisCopy.getGn(), BackupTypeEnum.LOG.getAbbreviation()).orElse(null);
+        // 后一个日志副本
+        Copy nextLogBackupCopy = copies.stream()
+                .filter(copy -> copy.getBackupType() == BackupTypeConstants.LOG.getAbBackupType())
+                .findFirst().orElse(null);
+        // 如果之前没有日志副本或者之后没有日志副本
+        if (previousLogBackupCopy == null || nextLogBackupCopy == null) {
+            return CopyUtil.getCopyUuidsBetweenTwoCopy(copies, thisCopy, nextFullCopy);
+        }
+        List<BackupTypeConstants> associatedTypes = new ArrayList<>(Arrays.asList(
+                BackupTypeConstants.DIFFERENCE_INCREMENT, BackupTypeConstants.CUMULATIVE_INCREMENT));
+        return getAssociatedTypeCopiesByBackup(copies, thisCopy, nextFullCopy, associatedTypes);
+    }
+
+    @Override
+    protected List<String> getCopiesCopyTypeIsDifferenceIncrement(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
+        // 删除下一个全量副本前所有增量副本
+        List<Copy> differenceCopies = CopyUtil.getCopiesByCopyType(copies, BackupTypeConstants.DIFFERENCE_INCREMENT);
+        return CopyUtil.getCopyUuidsBetweenTwoCopy(differenceCopies, thisCopy, nextFullCopy);
+    }
 }
+
+

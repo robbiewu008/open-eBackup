@@ -41,6 +41,6 @@ public class SecretController {
      */
     @GetMapping("/redis")
     public String encrypt() {
-        return configMapService.getValueFromSecretByKey(REDIS_AUTH_KEY);
+        return configMapService.getValueFromSecretByKey(REDIS_AUTH_KEY, Boolean.TRUE);
     }
 }

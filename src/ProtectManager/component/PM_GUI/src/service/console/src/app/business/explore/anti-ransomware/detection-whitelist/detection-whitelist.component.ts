@@ -34,7 +34,6 @@ import {
   TableData
 } from 'app/shared/components/pro-table';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
-import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
   assign,
   filter,
@@ -67,7 +66,6 @@ export class DetectionWhitelistComponent implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private dataMapService: DataMapService,
     private drawModalService: DrawModalService,
-    private virtualScroll: VirtualScrollService,
     private warningMessageService: WarningMessageService,
     private whiteListManagementService: WhiteListManagementService
   ) {}
@@ -190,10 +188,6 @@ export class DetectionWhitelistComponent implements OnInit, AfterViewInit {
           selectionMode: 'multiple',
           selectionTrigger: 'selector',
           showSelector: true
-        },
-        scroll: {
-          ...this.virtualScroll.scrollParam,
-          y: '65vh'
         },
         colDisplayControl: false,
         fetchData: (filter: Filters) => {

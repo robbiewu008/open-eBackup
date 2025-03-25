@@ -1,4 +1,3 @@
-<div class="anti-ransomware">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="anti-ransomware">
   <div class="detail">
     <div class="title">
       <ng-container [ngSwitch]="type">
@@ -24,7 +24,7 @@
     </div>
     <div class="refresh-box">
       <div>{{ 'common_home_latest_detection_result_label' | i18n }}</div>
-      <div>{{ queryTime | date: 'yyyy-MM-dd HH:mm:ss' }}</div>
+      <div>{{ queryTime | date: 'yyyy-MM-dd HH:mm:ss': timeZone }}</div>
     </div>
 
     <div class="detection-resource jumpable" (click)="navigate()">

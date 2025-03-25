@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,12 +11,13 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="查询HDFS副本信息">
+  <meta name="DC.Title" content="查看HDFS副本信息">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="hdfs_00059.html">
   <meta name="prodname" content="">
@@ -30,21 +30,21 @@
   <meta name="DC.Identifier" content="hdfs_00060">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>查询HDFS副本信息</title>
+  <title>查看HDFS副本信息</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="hdfs_00060"></a><a name="hdfs_00060"></a>
-  <h1 class="topictitle1">查询HDFS副本信息</h1>
+  <h1 class="topictitle1">查看HDFS副本信息</h1>
   <div>
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
      <li><span>选择<span class="uicontrol" id="hdfs_00060__hdfs_00045_zh-cn_topic_0000001839142377_uicontrol317519513496">“<span id="hdfs_00060__hdfs_00045_zh-cn_topic_0000001839142377_text16175459497">数据利用</span> &gt; <span id="hdfs_00060__hdfs_00045_zh-cn_topic_0000001839142377_text1017555104914">副本数据</span> &gt; <span id="hdfs_00060__hdfs_00045_zh-cn_topic_0000001839142377_text1483910189532">大数据</span> &gt; HDFS”</span>。</span></li>
-     <li><span>选择副本浏览方式浏览副本信息。</span><p></p>
+     <li><span>浏览副本信息。</span><p></p>
       <div class="note">
        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p>复制副本仅支持在复制到的目标集群查看。</p>
+        <p id="hdfs_00060__zh-cn_topic_0000001792503826_p189141741162012">复制副本仅支持在复制到的目标集群查看。</p>
        </div>
       </div>
       <ul>
@@ -167,7 +167,7 @@
               副本的生成方式。
               <ul>
                <li><span id="hdfs_00060__zh-cn_topic_0000001792503826_text9418524142014">备份</span>：由备份任务产生的副本。</li>
-               <li><span id="hdfs_00060__zh-cn_topic_0000001792503826_text1541813249203">复制</span>：由复制任务产生的副本。</li>
+               <li><span id="hdfs_00060__zh-cn_topic_0000001792503826_text124238155813">复制</span>：由复制任务产生的副本。</li>
                <li><span id="hdfs_00060__zh-cn_topic_0000001792503826_text171691481756">对象存储归档</span>：由归档任务（归档存储为对象存储）产生的副本。</li>
                <li><span id="hdfs_00060__zh-cn_topic_0000001792503826_text1762165620514">磁带归档</span>：由归档任务（归档存储为磁带库）产生的副本。</li>
                <li><span id="hdfs_00060__zh-cn_topic_0000001792503826_text2041815242204">导入</span>：由归档存储导入至<span id="hdfs_00060__zh-cn_topic_0000001792503826_text1546918420312">本产品</span>的归档副本。</li>
@@ -201,7 +201,7 @@
                <li id="hdfs_00060__zh-cn_topic_0000001792503826_li994353785116"><span><img id="hdfs_00060__zh-cn_topic_0000001792503826_image05089185413" src="zh-cn_image_0000001792344146.png"></span>：已设置。副本已设置为WORM副本，WORM副本不支持删除和缩短保留时间。</li>
                <li id="hdfs_00060__zh-cn_topic_0000001792503826_li373211419517"><span><img id="hdfs_00060__zh-cn_topic_0000001792503826_image155001184515" src="zh-cn_image_0000001839143265.png"></span>：设置中。副本正在设置为WORM副本。处于该状态的副本不支持删除和修改保留时间。</li>
                <li id="hdfs_00060__zh-cn_topic_0000001792503826_li444514572513"><span><img id="hdfs_00060__zh-cn_topic_0000001792503826_image17671746527" src="zh-cn_image_0000001839223221.png"></span>：设置失败。副本设置为WORM副本失败。设置失败的副本不支持删除和缩短保留时间。</li>
-               <li id="hdfs_00060__zh-cn_topic_0000001792503826_li216064774817"><span><img id="hdfs_00060__zh-cn_topic_0000001792503826_image9564104794819" src="zh-cn_image_0000002090948029.png"></span>：已过期。仅1.60及后续版本存在此状态，WORM副本已过有效期。处于该状态的副本支持删除。</li>
+               <li id="hdfs_00060__zh-cn_topic_0000001792503826_li216064774817"><span><img id="hdfs_00060__zh-cn_topic_0000001792503826_image9564104794819" src="zh-cn_image_0000002090948029.png"></span>：已过期。仅1.6.0及后续版本存在此状态，WORM副本已过有效期。处于该状态的副本支持删除。</li>
               </ul>
              </div></td>
            </tr>
@@ -216,7 +216,16 @@
                </div>
               </div>
              </div></td>
-            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p>当副本为WORM副本时，则显示WORM过期的具体时间。否则，显示为“--”。</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 ">
+             <div class="p">
+              当副本为WORM副本时，则显示WORM过期的具体时间。否则，显示为“--”。
+              <div class="note" id="hdfs_00060__zh-cn_topic_0000001792503826_note173611252434">
+               <span class="notetitle"> 说明： </span>
+               <div class="notebody">
+                <p id="hdfs_00060__zh-cn_topic_0000001792503826_p10361192510430">WORM过期时间以WORM文件系统法规时钟为基准。如果WORM文件系统法规时钟与系统时间不一致，请等待WORM文件系统法规时钟到达当前设置的过期时间后，再查看WORM状态。</p>
+               </div>
+              </div>
+             </div></td>
            </tr>
            <tr>
             <td class="cellrowborder" valign="top" width="7.380000000000001%" headers="mcps1.3.1.2.2.2.2.2.3.2.4.1.1 "><p><span>副本</span></p></td>

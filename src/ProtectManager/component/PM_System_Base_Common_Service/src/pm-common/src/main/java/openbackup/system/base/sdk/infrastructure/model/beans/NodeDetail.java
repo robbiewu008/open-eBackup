@@ -24,12 +24,24 @@ import java.util.List;
  */
 @Data
 public class NodeDetail {
+    //  k8s节点管理ip / 节点外部ip
+    @JsonProperty(value = "management_address")
+    private String managementAddress;
+
     // k8s节点内部ip
     private String address;
 
-    //  k8s节点管理ip
-    @JsonProperty(value = "management_address")
-    private String managementAddress;
+    // k8s高可用ip
+    @JsonProperty(value = "control_plane_endpoint")
+    private String controllerPlaneEndpoint;
+
+    // gaussDB高可用ip
+    @JsonProperty(value = "ha_endpoint")
+    private String haEndpoint;
+
+    // k8s节点集群浮动ip
+    @JsonProperty(value = "service_plane_endpoint")
+    private String servicePlaneEndpoint;
 
     private List<String> componentList;
 

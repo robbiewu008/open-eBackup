@@ -12,12 +12,17 @@
 */
 package openbackup.access.framework.resource.service;
 
+import static openbackup.access.framework.resource.persistence.dao.ProtectedResourceRepositoryImpl.RESOURCE_ALREADY_BIND_SLA;
+
 import com.huawei.oceanprotect.system.base.label.service.LabelService;
 import com.huawei.oceanprotect.system.base.schedule.common.enums.ScheduleType;
 import com.huawei.oceanprotect.system.base.schedule.service.SchedulerService;
 
+import com.google.common.collect.ImmutableMap;
+
 import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.ResourceCertConstant;
+import openbackup.access.framework.resource.persistence.model.ProtectedResourceExtendInfoPo;
 import openbackup.access.framework.resource.util.ResourceCertAlarmUtil;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
 import openbackup.data.access.framework.core.manager.ProviderManager;
@@ -31,12 +36,14 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentDeleteProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceDeleteParams;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.resource.model.AgentTypeEnum;
 import openbackup.data.protection.access.provider.sdk.resource.model.ResourceExtendInfoKeyConstants;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.Constants;
+import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.errors.ResourceLockErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
@@ -79,6 +86,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class ProtectedEnvironmentServiceImpl implements ProtectedEnvironmentService {
+    private static final String BUILT_IN_PROXY_INDEX = "1";
     private static final String PLUGIN_TYPE = "PLUGIN";
     private static final String RESOURCE_LOCK_KEY = "/resource/lock/";
 
@@ -123,6 +131,12 @@ public class ProtectedEnvironmentServiceImpl implements ProtectedEnvironmentServ
 
     @Autowired
     private LabelService labelService;
+
+    @Autowired
+    private ResourceGroupRepository resourceGroupRepository;
+
+    @Autowired
+    private ProtectedResourceRepository repository;
 
     /**
      * 扫描受保护环境
@@ -239,6 +253,8 @@ public class ProtectedEnvironmentServiceImpl implements ProtectedEnvironmentServ
             labelService.deleteByResourceObjectIdsAndLabelIds(
                 Collections.singletonList(environmentId),
                 StringUtils.EMPTY);
+            // 删除环境所有的 resource group
+            resourceGroupRepository.deleteByScopeResourceId(environmentId);
         } catch (SchedulerException e) {
             log.warn("Remove job failed!", e);
         }
@@ -315,10 +331,11 @@ public class ProtectedEnvironmentServiceImpl implements ProtectedEnvironmentServ
             ProtectedEnvironment oldEnvironment = (ProtectedEnvironment) resource.get();
             ProtectedEnvironment updatedEnvironment = buildUpdatedEnvironment(environment, oldEnvironment);
             log.info(
-                    "updated environment {}, ip={}, port={}",
-                    updatedEnvironment.getUuid(),
-                    updatedEnvironment.getEndpoint(),
-                    updatedEnvironment.getPort());
+                "before updated environment {}, ip={}, port={} after update , ip={}, port={}",
+                updatedEnvironment.getUuid(),
+                oldEnvironment.getEndpoint(),
+                oldEnvironment.getPort(), updatedEnvironment.getEndpoint(), updatedEnvironment.getPort());
+            checkIsOthersHasSameEndpointEnvironment(updatedEnvironment);
             this.updateEnvironment(updatedEnvironment);
             // 删除日志级别记录
             protectedResourceRepository.deleteProtectResourceExtendInfoByResourceId(environment.getUuid(),
@@ -337,6 +354,48 @@ public class ProtectedEnvironmentServiceImpl implements ProtectedEnvironmentServ
         submitScanJob(environment, true, true);
         return true;
     }
+
+    private void checkIsOthersHasSameEndpointEnvironment(ProtectedEnvironment updatedEnvironment) {
+        // 查找是否存在对应ip的代理已经存在在环境中
+        Map<String, Object> conditions = getQueryConditions(updatedEnvironment);
+        List<ProtectedResource> resources = resourceService.query(false, 0, 1, conditions).getRecords();
+        if (resources.isEmpty()) {
+            log.info("Has no same endpoint when updated environment: {} environment: {}",
+                    updatedEnvironment.getEndpoint(), updatedEnvironment.getUuid());
+            return;
+        }
+        // 如果存在检查该代理是否是内置代理
+        ProtectedResource oldResource = resources.stream().findFirst().get();
+        List<ProtectedResourceExtendInfoPo> protectedResourceExtendInfoPos = repository
+                .queryExtendInfoListByResourceIdAndKey(oldResource.getUuid(), Constants.INTERNAL_AGENT_KEY);
+        // 如果代理为内置代理并且不是不是其自身则删除该内置代理
+        if (BUILT_IN_PROXY_INDEX.equals(protectedResourceExtendInfoPos.get(0).getValue())
+                && !oldResource.getUuid().equals(updatedEnvironment.getUuid())) {
+            deleteInternalAgent(oldResource.getUuid());
+        }
+    }
+
+    private void deleteInternalAgent(String agentId) {
+        try {
+            log.info("start to deleteInternalAgent when register agentId:{}", agentId);
+            PageListResponse<ProtectedResource> pageListResponse =
+                resourceService.basicQuery(false, IsmNumberConstant.ZERO, IsmNumberConstant.THIRTY_TWO,
+                    ImmutableMap.of("uuid", agentId));
+            if (pageListResponse.getTotalCount() != IsmNumberConstant.ZERO) {
+                String[] resourceIds =
+                    pageListResponse.getRecords().stream().map(ProtectedResource::getUuid).toArray(String[]::new);
+                log.info("delete internal agent when register,size:{},uuid:{}", resourceIds.length, agentId);
+                resourceService.delete(new ResourceDeleteParams(true, true, resourceIds));
+            }
+        } catch (LegoCheckedException exception) {
+            log.error("Delete internal agent failed when register." + ExceptionUtil.getErrorMessage(exception));
+            if (exception.getErrorCode() == RESOURCE_ALREADY_BIND_SLA) {
+                log.warn("When update agent info having resources are bound to SLAs.");
+            }
+            throw new LegoCheckedException(CommonErrorCode.OPERATION_FAILED, "delete internal agent fail");
+        }
+    }
+
 
     @Override
     public void updateInternalAgentAfterSystemDataRecovery(ProtectedEnvironment newEnv) {

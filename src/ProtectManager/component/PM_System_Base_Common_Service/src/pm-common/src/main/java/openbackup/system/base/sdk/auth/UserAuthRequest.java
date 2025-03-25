@@ -12,19 +12,44 @@
 */
 package openbackup.system.base.sdk.auth;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.enums.UserTypeEnum;
 
 /**
  * 功能描述
  *
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Slf4j
 public class UserAuthRequest {
     private String userName;
 
     private String password;
+
+    private String userType;
+
+    private boolean isOnlyAuth;
+
+    // 此处由于调用处过多 故做两种初始化适配 如果初始化时没有传入userType 则默认为COMMON
+    public UserAuthRequest(String userName, String password, String userType, boolean isOnlyAuth) {
+        this.userName = userName;
+        this.password = password;
+        this.userType = (userType == null) ? UserTypeEnum.COMMON.getValue() : userType; // 设定默认值
+        this.isOnlyAuth = isOnlyAuth;
+    }
+
+    public UserAuthRequest() {
+        this(null, null, null, false);
+    }
+
+
+    // 顺便对set进行防呆处理
+    public void setUserType(String userType) {
+        if (userType == null) {
+            this.userType = UserTypeEnum.COMMON.getValue(); // 默认值
+        } else {
+            this.userType = userType;
+        }
+    }
 }

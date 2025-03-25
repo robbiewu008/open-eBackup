@@ -3,13 +3,14 @@
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
   If a copy of the MPL was not distributed with this file, You can obtain one at
   http://mozilla.org/MPL/2.0/.
-
+  
   Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-
+  
   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 <div [ngClass]="{
     'container-visible2': activeIndex !== 3,
     'container-hidden': activeIndex === 3}">
@@ -45,9 +46,18 @@
         <div class="header2">
           <h2>{{'common_config_service_network_label' | i18n}}</h2>
         </div>
+        <lv-alert
+        lvType="info"
+        lvClosable="false"
+      >
+        {{ 'common_config_service_network_tip_label' | i18n }}
+      </lv-alert>
         <lv-tabs [(lvActiveIndex)]="selectedTabIndex">
           <lv-tab [lvId]="'backup'" [lvTitle]="'common_backup_network_config_label' | i18n">
             <aui-config-network-table serviceType="backup" [selectionData]="selectedData"></aui-config-network-table>
+          </lv-tab>
+          <lv-tab [lvId]="'replication'" [lvTitle]="'common_replication_network_label' | i18n">
+            <aui-config-network-table serviceType="replication" [selectionData]="selectedData"></aui-config-network-table>
           </lv-tab>
           <lv-tab [lvId]="'archived'" [lvTitle]="'common_archived_network_config_label' | i18n">
             <aui-config-network-table serviceType="archived" [selectionData]="selectedData"></aui-config-network-table>
@@ -87,10 +97,20 @@
         <div class="header2" *ngIf="fileReceive">
           <h2>{{'common_config_service_network_label' | i18n}}</h2>
         </div>
+        <lv-alert *ngIf="fileReceive"
+        lvType="info"
+        lvClosable="false"
+      >
+        {{ 'common_config_service_network_tip_label' | i18n }}
+      </lv-alert>
         <lv-tabs [(lvActiveIndex)]="selectedTabIndex" *ngIf="fileReceive">
           <lv-tab [lvId]="'backup'" [lvTitle]="'common_backup_network_config_label' | i18n">
             <aui-config-network-table serviceType="backup" [selectionData]="selectedData" [isManual]="false"
               [lldTableData]="rawData?.backupNetworkConfig"></aui-config-network-table>
+          </lv-tab>
+          <lv-tab [lvId]="'replication'" [lvTitle]="'common_replication_network_label' | i18n">
+            <aui-config-network-table serviceType="replication" [selectionData]="selectedData" [isManual]="false"
+              [lldTableData]="rawData?.copyNetworkConfig"></aui-config-network-table>
           </lv-tab>
           <lv-tab [lvId]="'archived'" [lvTitle]="'common_archived_network_config_label' | i18n">
             <aui-config-network-table serviceType="archived" [selectionData]="selectedData" [isManual]="false"
@@ -103,7 +123,7 @@
     <lv-group lvGutter="16px" class="init-button">
       <button lv-button lvType="primary" (click)="createInitConfig()"
         [ngClass]="{ visible: activeIndex !== 2, hidden: activeIndex === 2}"
-        [disabled]="!(this.selectedData['backupValid'] && this.selectedData['archivedValid'])"
+        [disabled]="!(this.selectedData['backupValid'] && this.selectedData['archivedValid'] && this.selectedData['replicationValid'])"
         class="init-button-content">
         {{ 'common_ok_label' | i18n }}
       </button>

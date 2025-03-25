@@ -122,9 +122,10 @@ public class MysqlDatabaseScanner extends AbstractResourceScanProvider {
             AgentDetailDto database = agentUnifiedService.getDetail(ResourceSubTypeEnum.MYSQL_SINGLE_INSTANCE.getType(),
                 environment.getEndpoint(), environment.getPort(), mysqlDbsRequest);
             List<AppResource> resourceList = database.getResourceList();
+            Map<String, String> instanceExtendInfo = instance.getExtendInfo();
             if (ObjectUtils.isEmpty(resourceList)) {
                 log.warn("The instance {} server is in failure or auth is modified.", instance.getUuid());
-                instance.getExtendInfo().put(LINK_STATUS_KEY, LinkStatusEnum.OFFLINE.getStatus().toString());
+                instanceExtendInfo.put(LINK_STATUS_KEY, LinkStatusEnum.OFFLINE.getStatus().toString());
                 return;
             }
             // 定期扫描数据库的过程中，更新实例信息
@@ -140,12 +141,27 @@ public class MysqlDatabaseScanner extends AbstractResourceScanProvider {
                     databaseResource.setVersion(extendInfo.get(VERSION));
                     // 设置数据库的集群类型
                     databaseResource.setExtendInfoByKey(CLUSTER_TYPE, instance.getExtendInfoByKey(CLUSTER_TYPE));
+                    fillExtendMapToolPathAndLibPath(instanceExtendInfo, extendInfo);
                 }
                 resources.add(databaseResource);
             });
             handleDestroyDatabase(instance, resources);
         });
         return resources;
+    }
+
+    private static void fillExtendMapToolPathAndLibPath(Map<String, String> instanceExtendInfo,
+        Map<String, String> extendInfo) {
+        String toolPathKey = "toolPath";
+        String toolPath = instanceExtendInfo.get(toolPathKey);
+        if (StringUtils.isNotEmpty(toolPath)) {
+            extendInfo.put(toolPathKey, toolPath);
+        }
+        String libPathKey = "libraryPath";
+        String libraryPath = instanceExtendInfo.get(libPathKey);
+        if (StringUtils.isNotEmpty(libraryPath)) {
+            extendInfo.put(libPathKey, libraryPath);
+        }
     }
 
     /**

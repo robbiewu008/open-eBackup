@@ -16,7 +16,6 @@ AGENT_CONFIG="/app/bin/agent.openssl.cnf"
 ROOT_PASS=''
 SUBJ="/C=CN/O=Huawei/CN=OceanProtect"
 SYS_CONF="/app/cert/conf"
-COMMON_PARAMS=("\\" "\"" "!" "'" "~" "\`" "@" "#" "$" "%" "^" "&" "(" ")" "-" "_" "=" "+" "|" "[" "{" "}" "]" ";" ":" "," "<" "." ">" "/" " ")
 
 value=
 DIR=`sed -n '/^dir/p' ${CONFIG} | awk '{print $3}'`
@@ -62,18 +61,6 @@ _init_agent_ca() {
   _gen_agent_ca ${RootPassword} $2
 }
 
-# 特殊字符转义，防止send命令注入
-transfor_special_characters() {
-  local input_params=$1
-  out_params=$input_params
-  for((i=0;i<${#COMMON_PARAMS[@]};i++))
-  do
-      out_params=${out_params//${COMMON_PARAMS[i]}/\\${COMMON_PARAMS[i]}}
-  done
-  out_params=${out_params//\?/\\?}
-  echo "${out_params}"
-}
-
 _genca() {
   ROOT_PASS="$1"
   CA_SUBJ="$2"
@@ -82,9 +69,9 @@ _genca() {
   #gen root csr
   _req -config "${CONFIG}" -passin "${ROOT_PASS}" -key "${ROOT_KEY}" -out $DIR/root.csr -subj "${CA_SUBJ}"
   #gen root crt
-  send_root_pass=$(transfor_special_characters "${ROOT_PASS}")
+  printf -v send_root_pass '%q' "${ROOT_PASS}"
 expect <<EOF
-  spawn openssl ca -config ${CONFIG} -selfsign -in $DIR/root.csr -out ${ROOT_CRT} -extensions v3_ca
+  spawn openssl ca -config ${CONFIG} -selfsign -in $DIR/root.csr -out ${ROOT_CRT} -rand_serial -extensions v3_ca
   expect {
     "Enter pass phrase for" {send -- "${send_root_pass}\n";exp_continue;}
     "y/n" {send -- "y\n";exp_continue;}
@@ -106,7 +93,7 @@ _gen_agent_ca() {
   #gen root csr
   _req -config "${CONFIG}" -passin "${ROOT_PASS}" -key "${AGENT_PRI_KEY_PATH}" -out "${AGENT_CA_CSR}" -subj "${CA_SUBJ}"
   #gen root crt
-  send_root_pass=$(transfor_special_characters "${ROOT_PASS}")
+  printf -v send_root_pass '%q' "${ROOT_PASS}"
 expect <<EOF
     spawn openssl x509 -req -in "${AGENT_CA_CSR}" -sha256 -signkey "${AGENT_PRI_KEY_PATH}" -out "${AGENT_CA_PATH}" -days 18250 -extensions v3_ca -extfile "${CONFIG}"
   expect {
@@ -206,7 +193,7 @@ issue() {
   mkdir -p "$folder"
 #  echo "Create the ${cert} certificate"
  # 通过CA证书生成服务端证书文件
-  send_pass=$(transfor_special_characters "$pass")
+  printf -v send_pass '%q' "${pass}"
   local openssl_ssl_config=${config}
   result=$(echo $out | grep "ProtectAgent")
   if [[ "$result" != "" ]]
@@ -214,7 +201,7 @@ issue() {
     openssl_ssl_config=${AGENT_CONFIG}
   fi
 expect <<EOF
-  spawn openssl ca -batch -config ${openssl_ssl_config} -notext -md sha256 -in "$req" -out "$out" -extensions "$@"
+  spawn openssl ca -batch -config ${openssl_ssl_config} -notext -md sha256 -in "$req" -out "$out" -rand_serial -extensions "$@"
   expect {
     "Enter pass phrase" {send -- "${send_pass}\n"}
   }
@@ -331,9 +318,9 @@ _reEncryptKey() {
     fi
   done
   inPassword="${inPassword//\\/\\\\}"
-  inPassword=$(transfor_special_characters "${inPassword}")
+  printf -v inPassword '%q' "${inPassword}"
   outPassword="${outPassword//\\/\\\\}"
-  outPassword=$(transfor_special_characters "${outPassword}")
+  printf -v outPassword '%q' "${outPassword}"
 expect <<EOF
   spawn openssl rsa -in "$inCertPath" -aes256 -out "$outCertPath"
   expect {
@@ -373,9 +360,9 @@ _merge() {
     shift 2
   done
   pwd="${pwd//\\/\\\\}"
-  pwd=$(transfor_special_characters "${pwd}")
+  printf -v pwd '%q' "${pwd}"
   exp="${exp//\\/\\\\}"
-  exp=$(transfor_special_characters "${exp}")
+  printf -v exp '%q' "${exp}"
 expect <<EOF
   spawn openssl pkcs12 -export -clcerts -in "${cert}" -inkey "${key}" -out "${out}"
   expect {
@@ -507,11 +494,6 @@ _req() {
   read_pass "$cert"
   local folder=$(dirname "$out")
   mkdir -p "$folder"
-#  local folder=$(sed -n -e "/^dir *=/p" "${config}" | awk -F= '{print $2}' | awk '{print $1}')
-#  mkdir -p "${folder}"/certs
-#  mkdir -p "${folder}"/newcerts
-#  touch "${folder}/index.txt"
-#  echo "Generate the ${cert} signing request"
   if [[ "$isRedis" == "true" ]]; then
     echo "generating redis csr without keyPass"
     openssl req -config "${config}"  -key "${key}" -new -out "${out}" "$@"

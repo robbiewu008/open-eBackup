@@ -54,6 +54,7 @@ import { TakeManualBackupService } from 'app/shared/services/take-manual-backup.
 import {
   assign,
   clone,
+  cloneDeep,
   each,
   filter,
   find,
@@ -61,6 +62,7 @@ import {
   includes,
   isArray,
   isEmpty,
+  isString,
   isUndefined,
   map,
   mapValues,
@@ -129,6 +131,8 @@ export class HuaWeiStackListComponent implements OnInit, OnChanges {
   disableProtectionTip = '';
   currentDetailItemUuid;
   treeDataDisabled = false;
+
+  tdAlign: boolean | string = false;
 
   @Output() updateTable = new EventEmitter();
 
@@ -219,6 +223,19 @@ export class HuaWeiStackListComponent implements OnInit, OnChanges {
         onClick: () => this.manualBackup(this.selection)
       },
       {
+        id: 'rescan',
+        disabled:
+          !size(this.selection) ||
+          some(this.selection, v => !hasResourcePermission(v)),
+        hidden: !includes(
+          [ResourceType.TENANT, ResourceType.PROJECT],
+          this.tab?.id
+        ),
+        label: this.i18n.get('common_rescan_label'),
+        permission: OperateItems.ScanHCSProject,
+        onClick: () => this.batchRescanEnv()
+      },
+      {
         id: 'addTag',
         permission: OperateItems.AddTag,
         disabled:
@@ -239,7 +256,7 @@ export class HuaWeiStackListComponent implements OnInit, OnChanges {
     ];
     this.moreMenus = getPermissionMenuItem(menus, this.cookieService.role);
     this.tenantMenus = getPermissionMenuItem(
-      filter(menus, v => includes(['addTag', 'removeTag'], v.id)),
+      filter(menus, v => includes(['rescan', 'addTag', 'removeTag'], v.id)),
       this.cookieService.role
     );
   }
@@ -267,6 +284,7 @@ export class HuaWeiStackListComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this.tdAlign = this.tab.id === ResourceType.CLOUD_HOST ? '0px' : false;
     this.getAddBtnstation();
     if (changes.tab) {
       this.columns = [
@@ -309,6 +327,12 @@ export class HuaWeiStackListComponent implements OnInit, OnChanges {
           key: 'path',
           label: this.i18n.get('common_location_label'),
           hidden: this.tab.id === ResourceType.TENANT,
+          isShow: true
+        },
+        {
+          key: 'vm_ip',
+          label: this.i18n.get('common_ip_address_label'),
+          hidden: this.tab.id !== ResourceType.CLOUD_HOST,
           isShow: true
         },
         {
@@ -439,15 +463,25 @@ export class HuaWeiStackListComponent implements OnInit, OnChanges {
                 hasProtectPermission(val)
               );
             })
-          ) !== size(this.selection);
+          ) !== size(this.selection) ||
+          size(this.selection) > CommonConsts.DEACTIVE_PROTECTION_MAX;
         item.tips = item.disabled
           ? this.i18n.get('protection_partial_resources_deactive_label')
           : '';
+        if (size(this.selection) > CommonConsts.DEACTIVE_PROTECTION_MAX) {
+          item.tips = this.i18n.get(
+            'protection_max_deactivate_protection_label'
+          );
+        }
       } else if (item.id === 'addTag') {
         item.disabled =
           !size(this.selection) ||
           some(this.selection, v => !hasResourcePermission(v));
       } else if (item.id === 'removeTag') {
+        item.disabled =
+          !size(this.selection) ||
+          some(this.selection, v => !hasResourcePermission(v));
+      } else if (item.id === 'rescan') {
         item.disabled =
           !size(this.selection) ||
           some(this.selection, v => !hasResourcePermission(v));
@@ -747,13 +781,22 @@ export class HuaWeiStackListComponent implements OnInit, OnChanges {
   }
 
   searchByLabel(label) {
+    label = label.map(e => e.value);
     assign(this.filterParams.source, {
       labelCondition: {
-        labelName: trim(label)
+        labelList: label
       }
     });
     if (isEmpty(label)) {
       delete this.filterParams.source['labelCondition'];
+    }
+    this.refresh();
+  }
+
+  searchByIp(ip) {
+    assign(this.filterParams.source, { vm_ip: [['~~'], trim(ip)] });
+    if (isEmpty(ip)) {
+      delete this.filterParams.source.vm_ip;
     }
     this.refresh();
   }
@@ -832,20 +875,6 @@ export class HuaWeiStackListComponent implements OnInit, OnChanges {
           }
           assign(this.filterParams.source, {
             status: [['in'], ...e.value]
-          });
-        }
-        break;
-      case 'labelList':
-        {
-          if (!e.value.length) {
-            delete this.filterParams.source['labelCondition'];
-            this.refresh();
-            return;
-          }
-          assign(this.filterParams.source, {
-            labelCondition: {
-              labelName: trim(e.value)
-            }
           });
         }
         break;
@@ -1037,6 +1066,31 @@ export class HuaWeiStackListComponent implements OnInit, OnChanges {
       });
   }
 
+  // 批量扫描
+  batchRescanEnv() {
+    this.batchOperateService.selfGetResults(
+      item => {
+        return this.protectedResourceApiService.ScanProtectedResources({
+          resId: item.uuid,
+          akDoException: false,
+          akOperationTips: false,
+          akLoading: false
+        });
+      },
+      map(cloneDeep(this.selection), item => {
+        return assign(item, {
+          isAsyn: true
+        });
+      }),
+      () => {
+        this.selection = [];
+      },
+      '',
+      false,
+      CommonConsts.CONCURRENT_NUM
+    );
+  }
+
   manualBackup(datas, okCallBack?) {
     if (size(datas) > 1) {
       each(datas, item => {
@@ -1200,6 +1254,16 @@ export class HuaWeiStackListComponent implements OnInit, OnChanges {
         }
       }
     });
+  }
+
+  parseVmIp(vmIp): string {
+    if (isString(vmIp)) {
+      return vmIp
+        .split(';')
+        .filter(item => !isEmpty(item))
+        .join(',');
+    }
+    return '';
   }
 
   isActive(item): boolean {

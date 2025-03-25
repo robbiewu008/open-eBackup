@@ -16,7 +16,6 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.ImmutableList;
 
 import lombok.extern.slf4j.Slf4j;
-import openbackup.data.access.client.sdk.api.framework.dme.AvailableTimeRanges;
 import openbackup.data.access.framework.copy.mng.service.CopyService;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
 import openbackup.data.access.framework.core.common.enums.DmeJobStatusEnum;
@@ -39,8 +38,6 @@ import openbackup.database.base.plugin.interceptor.AbstractDbCopyDeleteIntercept
 import openbackup.database.base.plugin.service.InstanceResourceService;
 import openbackup.db2.protection.access.enums.Db2ClusterTypeEnum;
 import openbackup.db2.protection.access.service.Db2Service;
-import openbackup.system.base.common.exception.LegoCheckedException;
-import openbackup.system.base.common.model.PageListResponse;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.copy.CopyRestApi;
@@ -64,6 +61,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 /**
  * db2副本删除provider
@@ -119,41 +117,35 @@ public class Db2CopyDeleteInterceptorProvider extends AbstractDbCopyDeleteInterc
      */
     @Override
     protected List<String> getCopiesCopyTypeIsFull(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
-        List<Copy> associatedCopies = CopyUtil.getCopiesBetweenTwoCopy(copies, thisCopy, nextFullCopy);
-        Copy firstLogCopy = copies.stream()
-            .filter(copy -> copy.getBackupType() == BackupTypeConstants.LOG.getAbBackupType())
-            .findFirst()
-            .orElse(null);
-        List<String> copyUuids = associatedCopies.stream().map(Copy::getUuid).collect(Collectors.toList());
-        if (firstLogCopy == null) {
-            return copyUuids;
+        log.info("db2 getCopiesCopyTypeIsFull copies:{}, thisCopy:{}, nextFullCopy:{}", copies, thisCopy, nextFullCopy);
+        // 前一个日志副本
+        Copy previousLogBackupCopy = copyRestApi.queryLatestFullBackupCopies(thisCopy.getResourceId(),
+                thisCopy.getGn(), BackupTypeEnum.LOG.getAbbreviation()).orElse(null);
+        log.info("db2 getCopiesCopyTypeIsFull previousLogBackupCopy:{}", previousLogBackupCopy);
+        // 后一个日志副本
+        Copy nextLogBackupCopy = copies.stream()
+                .filter(copy -> copy.getBackupType() == BackupTypeConstants.LOG.getAbBackupType())
+                .findFirst().orElse(null);
+        log.info("db2 getCopiesCopyTypeIsFull nextLogBackupCopy:{}", nextLogBackupCopy);
+        // 如果之前没有日志副本或者之后没有日志副本
+        if (previousLogBackupCopy == null || nextLogBackupCopy == null) {
+            log.info("db2 getCopiesCopyTypeIsFull previousLogBackupCopy or nextLogBackupCopy missing");
+            return CopyUtil.getCopyUuidsBetweenTwoCopy(copies, thisCopy, nextFullCopy);
         }
-        String thisCopyBakTime = JSONObject.fromObject(thisCopy.getProperties())
-            .getString(DatabaseConstants.COPY_BACKUP_TIME_KEY);
-        JSONObject firstLogCopyPropertyJson = JSONObject.fromObject(firstLogCopy.getProperties());
-        String firstLogCopyStartTime = firstLogCopyPropertyJson.getString(DatabaseConstants.LOG_COPY_BEGIN_TIME_KEY);
-        if (Objects.equals(firstLogCopyStartTime, thisCopyBakTime)) {
-            return copyUuids;
+        long previousLogCopyEndTime = Long.parseLong(JSONObject.fromObject(previousLogBackupCopy.getProperties())
+                .getString(DatabaseConstants.LOG_COPY_END_TIME_KEY));
+        long nextLogCopyStartTime = Long.parseLong(JSONObject.fromObject(nextLogBackupCopy.getProperties())
+                .getString(DatabaseConstants.LOG_COPY_BEGIN_TIME_KEY));
+        log.info("db2 getCopiesCopyTypeIsFull previousLogCopyEndTime:{},nextLogCopyStartTime:{}",
+                previousLogCopyEndTime, nextLogCopyStartTime);
+        // 如果后一个日志副本连不上前一个日志副本
+        if (previousLogCopyEndTime < nextLogCopyStartTime) {
+            log.info("db2 getCopiesCopyTypeIsFull nextLogCopy cannot connect to previousLogCopy");
+            return CopyUtil.getCopyUuidsBetweenTwoCopy(copies, thisCopy, nextFullCopy);
         }
-        long firLogCopyStartTimestamp = Long.parseLong(firstLogCopyStartTime);
-        if (firLogCopyStartTimestamp > Long.parseLong(thisCopyBakTime)) {
-            return copyUuids;
-        }
-        PageListResponse<AvailableTimeRanges> timeRangesResp;
-        try {
-            timeRangesResp = copyService.listAvailableTimeRanges(thisCopy.getResourceId(), firLogCopyStartTimestamp,
-                firLogCopyStartTimestamp + 1, 100, 0);
-        } catch (LegoCheckedException e) {
-            log.warn("Call list available time ranges interface of dme failed.", e);
-            return Collections.emptyList();
-        }
-        if (timeRangesResp.getTotalCount() == 0) {
-            return copyUuids;
-        }
-        return associatedCopies.stream()
-            .filter(copy -> copy.getBackupType() != BackupTypeConstants.LOG.getAbBackupType())
-            .map(Copy::getUuid)
-            .collect(Collectors.toList());
+        List<BackupTypeConstants> associatedTypes = new ArrayList<>(Arrays.asList(
+                BackupTypeConstants.DIFFERENCE_INCREMENT, BackupTypeConstants.CUMULATIVE_INCREMENT));
+        return getAssociatedTypeCopiesByBackup(copies, thisCopy, nextFullCopy, associatedTypes);
     }
 
     /**
@@ -207,7 +199,6 @@ public class Db2CopyDeleteInterceptorProvider extends AbstractDbCopyDeleteInterc
 
     @Override
     protected void handleTask(DeleteCopyTask task, CopyInfoBo copy) {
-        task.setIsForceDeleted(true);
         if (!super.isResourceExists(task)) {
             return;
         }

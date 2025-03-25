@@ -24,12 +24,13 @@ import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
 
 import openbackup.data.access.client.sdk.api.framework.dme.AvailableTimeRanges;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeUnifiedRestApi;
+import openbackup.data.access.framework.copy.controller.req.CatalogQueryNoReq;
 import openbackup.data.access.framework.copy.mng.service.impl.CopyServiceImpl;
 import openbackup.data.access.framework.core.dao.CopiesProtectionMapper;
 import openbackup.data.access.framework.core.dao.CopyMapper;
-import openbackup.data.access.framework.core.entity.CopiesEntity;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.copy.CopyCommonInterceptor;
+import openbackup.system.base.bean.CopiesEntity;
 import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.PageListResponse;
@@ -173,7 +174,13 @@ public class CopyServiceTest {
         PowerMockito.when(memberClusterService.isNeedForward(anyString())).thenReturn(true);
         PowerMockito.when(copyRestApi.queryCopyByID(anyString())).thenReturn(copy);
         PowerMockito.when(memberClusterService.getClusterRequestInfo(anyString())).thenReturn(clusterRequestInfo);
-        copyService.listCopyCatalogs("123", "123", 0, 0, "{}");
+        CatalogQueryNoReq catalogQueryReq = new CatalogQueryNoReq();
+        catalogQueryReq.setParentPath("123");
+        catalogQueryReq.setPageNo(0);
+        catalogQueryReq.setPageSize(0);
+        catalogQueryReq.setConditions("{}");
+        catalogQueryReq.setSearchAfter(Collections.emptyList());
+        copyService.listCopyCatalogs("123", catalogQueryReq);
         Mockito.verify(targetApi).listCopyCatalogs(any(), anyString(), anyString(), anyMap());
     }
 
@@ -202,14 +209,25 @@ public class CopyServiceTest {
             .thenReturn(mockRestoreFilesResponse(normalFile));
         CopyCommonInterceptor mock = Mockito.mock(CopyCommonInterceptor.class);
         PowerMockito.when(providerManager.findProvider(any(), any(), any())).thenReturn(mock);
-        PageListResponse<FineGrainedRestore> response = copyService.listCopyCatalogs(copyId1, "/mnt", 10, 0, "{}");
+        CatalogQueryNoReq catalogQueryReq = new CatalogQueryNoReq();
+        catalogQueryReq.setParentPath("/mnt");
+        catalogQueryReq.setPageNo(0);
+        catalogQueryReq.setPageSize(10);
+        catalogQueryReq.setConditions("{}");
+        catalogQueryReq.setSearchAfter(Collections.emptyList());
+        PageListResponse<FineGrainedRestore> response = copyService.listCopyCatalogs(copyId1, catalogQueryReq);
         AssertResponse(response);
         final String copyId2 = "2222";
         PowerMockito.when(copyRestApi.queryCopyByID(ArgumentMatchers.eq(copyId2))).thenReturn(mockCopy());
         PowerMockito.when(deeInternalCopyRest.listCopyCatalogs(ArgumentMatchers.any()))
             .thenReturn(mockRestoreFilesResponse(normalFile));
-
-        PageListResponse<FineGrainedRestore> response1 = copyService.listCopyCatalogs(copyId2, "/mnt2", 10, 0, "{}");
+        CatalogQueryNoReq catalogQueryReq2 = new CatalogQueryNoReq();
+        catalogQueryReq2.setParentPath("/mnt2");
+        catalogQueryReq2.setPageNo(0);
+        catalogQueryReq2.setPageSize(10);
+        catalogQueryReq2.setConditions("{}");
+        catalogQueryReq2.setSearchAfter(Collections.emptyList());
+        PageListResponse<FineGrainedRestore> response1 = copyService.listCopyCatalogs(copyId2, catalogQueryReq2);
         AssertResponse(response);
     }
 
@@ -226,8 +244,13 @@ public class CopyServiceTest {
         largeFile.setSize(LARGE_FILE_SIZE);
         PowerMockito.when(deeInternalCopyRest.listCopyCatalogs(ArgumentMatchers.any()))
             .thenReturn(mockRestoreFilesResponse(largeFile));
-
-        PageListResponse<FineGrainedRestore> response = copyService.listCopyCatalogs(copyId1, "/mnt", 10, 0, "{}");
+        CatalogQueryNoReq catalogQueryReq = new CatalogQueryNoReq();
+        catalogQueryReq.setParentPath("/mnt");
+        catalogQueryReq.setPageNo(0);
+        catalogQueryReq.setPageSize(10);
+        catalogQueryReq.setConditions("{}");
+        catalogQueryReq.setSearchAfter(Collections.emptyList());
+        PageListResponse<FineGrainedRestore> response = copyService.listCopyCatalogs(copyId1, catalogQueryReq);
         Assert.assertEquals((long) response.getRecords().get(0).getSize(), LARGE_FILE_SIZE);
     }
 
@@ -303,7 +326,34 @@ public class CopyServiceTest {
 
     @Test
     public void test_close_guest_system_success() {
+        Copy copy = new Copy();
+        copy.setUuid("123");
+        copy.setDeviceEsn("123");
+        ClusterRequestInfo clusterRequestInfo = new ClusterRequestInfo();
+        clusterRequestInfo.setToken("123");
+        clusterRequestInfo.setIp("1.2.3.4");
+        clusterRequestInfo.setPort(22);
+        PowerMockito.when(memberClusterService.isNeedForward(anyString())).thenReturn(true);
+        PowerMockito.when(copyRestApi.queryCopyByID(anyString())).thenReturn(copy);
+        PowerMockito.when(memberClusterService.getClusterRequestInfo(anyString())).thenReturn(clusterRequestInfo);
         PowerMockito.doNothing().when(deeBaseParseRest).closeCopyGuestSystem(ArgumentMatchers.any());
         copyService.closeCopyGuestSystem("123");
+    }
+
+    @Test
+    public void test_open_guest_system_success() {
+        Copy copy = new Copy();
+        copy.setUuid("123");
+        copy.setDeviceEsn("123");
+        ClusterRequestInfo clusterRequestInfo = new ClusterRequestInfo();
+        clusterRequestInfo.setToken("123");
+        clusterRequestInfo.setIp("1.2.3.4");
+        clusterRequestInfo.setPort(22);
+        PowerMockito.when(memberClusterService.isNeedForward(anyString())).thenReturn(true);
+        PowerMockito.when(copyRestApi.queryCopyByID(anyString())).thenReturn(copy);
+        PowerMockito.when(memberClusterService.getClusterRequestInfo(anyString())).thenReturn(clusterRequestInfo);
+        PowerMockito.doNothing()
+            .when(deeBaseParseRest).openCopyGuestSystem(ArgumentMatchers.any(), ArgumentMatchers.any());
+        copyService.openCopyGuestSystem("123");
     }
 }

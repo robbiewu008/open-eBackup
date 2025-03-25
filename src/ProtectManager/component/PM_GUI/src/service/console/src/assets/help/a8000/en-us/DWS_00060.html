@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -38,7 +38,7 @@
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="DWS_00060"></a><a name="DWS_00060"></a>
 
 <h1 class="topictitle1">Querying GaussDB (DWS) Information</h1>
-<div><div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="DWS_00060__dws_00014_en-us_topic_0000001839142377_uicontrol865195012392"><b><span id="DWS_00060__dws_00014_en-us_topic_0000001839142377_text4651950123919"><strong>Protection</strong></span> &gt; Big Data &gt; GaussDB (DWS)</b></span>.</span></li><li><span>On the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab page, query the GaussDB (DWS) cluster information.</span><p><ol type="a"><li>This page displays information about GaussDB (DWS) clusters registered with the <span>OceanProtect</span>.<p><a href="#DWS_00060__en-us_topic_0000001397042233_table14170211115420">Table 1</a> describes the related parameters.</p>
+<div><div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="DWS_00060__dws_00014_en-us_topic_0000001839142377_uicontrol865195012392"><b><span id="DWS_00060__dws_00014_en-us_topic_0000001839142377_text4651950123919"><strong>Protection</strong></span> &gt; Big Data &gt; GaussDB (DWS)</b></span>.</span></li><li><span>On the <span class="uicontrol"><b><span><strong>Clusters</strong></span></b></span> tab page, query the GaussDB (DWS) cluster information.</span><p><ol type="a"><li>This page displays information about GaussDB (DWS) clusters registered with the <span>OceanProtect</span>.<p><a href="#DWS_00060__en-us_topic_0000001397042233_table14170211115420">Table 1</a> describes the related parameters.</p>
 
 <div class="tablenoborder"><a name="DWS_00060__en-us_topic_0000001397042233_table14170211115420"></a><a name="en-us_topic_0000001397042233_table14170211115420"></a><table cellpadding="4" cellspacing="0" summary="" id="DWS_00060__en-us_topic_0000001397042233_table14170211115420" frame="border" border="1" rules="all"><caption><b>Table 1 </b>GaussDB (DWS) cluster information</caption><colgroup><col style="width:19.189999999999998%"><col style="width:80.81%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="19.189999999999998%" id="mcps1.3.1.2.2.2.1.1.3.2.3.1.1"><p>Parameter</p>
 </th>
@@ -62,14 +62,14 @@
 <td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.2 "><p>Specifies the GaussDB (DWS) version.</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.1 "><p>SLA</p>
+<tr><td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.1 "><p><strong>SLA</strong></p>
 </td>
 <td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.2 "><p>If an SLA is associated with a resource, the SLA name is displayed. Otherwise, <strong>--</strong> is displayed.</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.1 "><p><span><strong>SLA Compliance</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.2 "><div class="p">Whether a backup job is successfully executed based on the backup frequency or backup window set in the SLA.<ul id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_ul1823814519293"><li id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919"><strong id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b1092516394564">Met</strong>: If the backup time of a backup job (except for the first full backup) meets the backup time window or backup frequency requirements and the backup job is executed successfully, SLA compliance is met.</li><li id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912"><strong id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b541520442564">Missed</strong>: If the backup time does not meet the backup time window or backup frequency requirements, for example, if the backup frequency set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup frequency or backup window.</li></ul>
+<td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.2 "><div class="p">Whether a backup job is successfully executed based on the backup interval or backup window set in the SLA.<ul id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_ul1823814519293"><li id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919"><strong id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b1092516394564">Met</strong>: If the backup time of a backup job (except for the first full backup) meets the backup time window or backup interval requirements and the backup job is executed successfully, SLA compliance is met.</li><li id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912"><strong id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b541520442564">Missed</strong>: If the backup time does not meet the backup time window or backup interval requirements, for example, if the backup interval set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup interval or backup window.</li></ul>
 </div>
 </td>
 </tr>
@@ -79,13 +79,13 @@
 <ul><li><span><strong>Unprotected</strong></span>: The GaussDB (DWS) cluster is not associated with an SLA, or it is associated with an SLA but protection is disabled.</li><li><span><strong>Protected</strong></span>: The GaussDB (DWS) cluster has been associated with an SLA and protection has been activated.</li><li><span><strong>Creating</strong></span>: The GaussDB (DWS) cluster has been associated with an SLA and protection is being created.</li></ul>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.1 "><p></p>
-<div class="p"><span id="DWS_00060__en-us_topic_0000001792344110_text1045121611529"><strong>Owner</strong></span><div class="note" id="DWS_00060__en-us_topic_0000001792344110_note6159153035311"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="DWS_00060__en-us_topic_0000001792344110_p815914301534">This parameter is available only in 1.5.0.</p>
+<tr><td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.1 "><div class="p"><span id="DWS_00060__en-us_topic_0000001792344110_text1045121611529"><strong>Owner</strong></span><div class="note" id="DWS_00060__en-us_topic_0000001792344110_note6159153035311"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="DWS_00060__en-us_topic_0000001792344110_p815914301534">This parameter is available only in 1.5.0.</p>
 </div></div>
 </div>
 </td>
-<td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.2 "><p>Data protection administrator of the cluster.</p>
-<p>If a data protection administrator is authorized for the cluster, the name of the data protection administrator is displayed. If no authorization is performed, <strong>--</strong> is displayed.</p>
+<td class="cellrowborder" valign="top" width="80.81%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.2 "><p>Data protection administrator to which resources are allocated for management. If <strong>--</strong> is displayed, the resource has not been allocated to the data protection administrator.</p>
+<p>Data protection administrator of the cluster.</p>
+<p>If a data protection administrator is authorized for the cluster, the name of the data protection administrator is displayed. If not authorized, <strong>--</strong> is displayed.</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="19.189999999999998%" headers="mcps1.3.1.2.2.2.1.1.3.2.3.1.1 "><div class="p"><strong id="DWS_00060__en-us_topic_0000001792344110_b827118125517">Tag</strong><div class="note" id="DWS_00060__en-us_topic_0000001792344110_note1330311543247"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="DWS_00060__en-us_topic_0000001792344110_p630385412417">This parameter is available only in 1.6.0 and later versions.</p>
@@ -129,7 +129,7 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.55%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.1 "><p><span><strong>SLA Compliance</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 "><div class="p">Whether a backup job is successfully executed based on the backup frequency or backup window set in the SLA.<ul id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_ul1823814519293_1"><li id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919_1"><strong id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b1092516394564_1">Met</strong>: If the backup time of a backup job (except for the first full backup) meets the backup time window or backup frequency requirements and the backup job is executed successfully, SLA compliance is met.</li><li id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912_1"><strong id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b541520442564_1">Missed</strong>: If the backup time does not meet the backup time window or backup frequency requirements, for example, if the backup frequency set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup frequency or backup window.</li></ul>
+<td class="cellrowborder" valign="top" width="74.45%" headers="mcps1.3.1.2.3.2.1.1.2.2.3.1.2 "><div class="p">Whether a backup job is successfully executed based on the backup interval or backup window set in the SLA.<ul id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_ul1823814519293_1"><li id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li9238184572919_1"><strong id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b1092516394564_1">Met</strong>: If the backup time of a backup job (except for the first full backup) meets the backup time window or backup interval requirements and the backup job is executed successfully, SLA compliance is met.</li><li id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_li189142052112912_1"><strong id="DWS_00060__en-us_topic_0000001792344110_en-us_topic_0000001792344094_b541520442564_1">Missed</strong>: If the backup time does not meet the backup time window or backup interval requirements, for example, if the backup interval set in the SLA for a backup job is once every half an hour but the backup time exceeds half an hour, SLA compliance is missed. In this case, you are advised to adjust the backup interval or backup window.</li></ul>
 </div>
 </td>
 </tr>

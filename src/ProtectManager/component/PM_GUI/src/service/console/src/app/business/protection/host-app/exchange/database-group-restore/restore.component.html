@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup" [ngClass]="{'limit-input-width':limitWidth}">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup" [ngClass]="{'limit-input-width':limitWidth}">
   <!-- 恢复位置 -->
   <lv-form-item *ngIf="!isDrill">
     <lv-form-label lvRequired>
@@ -41,7 +41,7 @@
 
   <!-- 目标单机/可用性组 -->
   <ng-container
-    *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN"
+    *ngIf="formGroup.get('restoreLocation').value === restoreLocationType.ORIGIN"
   >
     <lv-form-item>
       <lv-form-label lvRequired>
@@ -55,7 +55,7 @@
 
   <!-- 新位置选择路径 -->
   <ng-container
-    *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW"
+    *ngIf="formGroup.get('restoreLocation').value === restoreLocationType.NEW"
   >
   <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'host'"></aui-select-tag>
     <lv-form-item>
@@ -113,6 +113,31 @@
     </lv-form-item>
   </ng-container>
 
+<ng-container *ngIf="isLogCopy && isNeedSelectTimeStamp">
+    <!--  单机/DAG日志副本先选数据库  -->
+    <lv-form-item *ngIf="isSingleAndDag">
+        <lv-form-label lvRequired>
+            {{'common_target_to_database_label'|i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select [lvOptions]="sourceData" lvValueKey="value" formControlName="log_copy_restore_database" lvShowClear lvShowFilter lvFilterKey="label" lvFilterMode="contains"></lv-select>
+        </lv-form-control>
+    </lv-form-item>
+
+    <!--  日志副本选择恢复的时间范围  -->
+    <lv-form-item *ngIf="isExchangeDatabase || isSingleAndDag && !_isEmpty(this.formGroup.get('log_copy_restore_database').value)">
+        <lv-form-label lvRequired>
+            {{'protection_exchange_database_log_restore_time_label'|i18n}}
+            <i lv-icon="aui-icon-help" [lv-tooltip]="'protection_exchange_database_log_restore_time_tips_label'|i18n"
+               lvTooltipPosition="top" lvTooltipTheme="light" class="configform-constraint"
+               lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-select [lvOptions]="logCopyTimeStamp" lvValueKey="value" formControlName="log_copy_restore_time_stamp" lvShowClear></lv-select>
+        </lv-form-control>
+    </lv-form-item>
+</ng-container>
+
   <!-- 恢复前自动卸除数据库 -->
   <lv-form-item>
     <lv-form-label lvRequired>
@@ -138,7 +163,9 @@
          lvTooltipPosition="top" lvTooltipTheme="light" class="configform-constraint"
          lvColorState='true'></i>
     </lv-form-label>
-    <lv-switch formControlName="auto_mount"></lv-switch>
+    <lv-form-control>
+        <lv-switch formControlName="auto_mount"></lv-switch>
+    </lv-form-control>
   </lv-form-item>
 
   <!-- 数据库名称(数据库恢复时显示)-->

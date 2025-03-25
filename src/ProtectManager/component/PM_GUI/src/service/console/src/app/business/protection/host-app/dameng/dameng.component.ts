@@ -24,6 +24,7 @@ import {
   DataMap,
   DataMapService,
   DATE_PICKER_MODE,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getLabelList,
   getPermissionMenuItem,
@@ -51,6 +52,7 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { ProtectService } from 'app/shared/services/protect.service';
@@ -80,6 +82,7 @@ import { combineLatest } from 'rxjs';
 import { RegisterComponent } from './register/register.component';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
 import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
+import { GetLabelOptionsService } from 'app/shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-dameng',
@@ -94,7 +97,7 @@ export class DamengComponent implements OnInit, AfterViewInit {
   clusterName: any;
   selectionData = [];
   opts = [];
-
+  currentDetailUuid = '';
   groupCommon = GROUP_COMMON;
 
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
@@ -117,7 +120,9 @@ export class DamengComponent implements OnInit, AfterViewInit {
     private warningMessageService: WarningMessageService,
     private takeManualBackupService: TakeManualBackupService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService,
+    private appUtilsService: AppUtilsService
   ) {}
 
   ngAfterViewInit(): void {
@@ -253,9 +258,13 @@ export class DamengComponent implements OnInit, AfterViewInit {
                   hasProtectPermission(val)
                 );
               })
-            ) !== size(data) || !size(data)
+            ) !== size(data) ||
+            !size(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX
           );
         },
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n),
         permission: OperateItems.DeactivateProtection,
         label: this.i18n.get('protection_deactive_protection_label'),
         onClick: data => {
@@ -531,8 +540,11 @@ export class DamengComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -666,9 +678,10 @@ export class DamengComponent implements OnInit, AfterViewInit {
         delete conditionsTemp.equipmentType;
       }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
@@ -696,6 +709,13 @@ export class DamengComponent implements OnInit, AfterViewInit {
           });
           extendSlaInfo(item);
         });
+        this.appUtilsService.openDetailModalAfterQueryData(
+          {
+            autoPolling: args?.isAutoPolling,
+            records: res.records
+          },
+          this
+        );
         this.tableData = {
           data: res.records,
           total: res.totalCount
@@ -771,8 +791,7 @@ export class DamengComponent implements OnInit, AfterViewInit {
           this.selectionData = [];
           this.dataTable.setSelections([]);
           this.dataTable.fetchData();
-        },
-        restoreWidth: params => this.getResourceDetail(params)
+        }
       }
     );
   }
@@ -816,6 +835,7 @@ export class DamengComponent implements OnInit, AfterViewInit {
   }
 
   getResourceDetail(res) {
+    this.currentDetailUuid = res.uuid;
     this.protectedResourceApiService
       .ShowResource({
         resourceId: res.uuid
@@ -856,7 +876,8 @@ export class DamengComponent implements OnInit, AfterViewInit {
                 return getTableOptsItems(cloneDeep(this.opts), v, this);
               }
             }
-          )
+          ),
+          lvHeader: item?.name
         });
       });
   }

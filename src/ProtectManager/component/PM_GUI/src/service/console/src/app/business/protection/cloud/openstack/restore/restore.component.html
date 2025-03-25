@@ -1,4 +1,3 @@
-<lv-form class="aui-gutter-column-lg">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form class="aui-gutter-column-lg">
     <lv-form-item>
         <lv-form-label>{{'protection_selected_copy_label' | i18n}}</lv-form-label>
         <lv-form-control>
@@ -74,7 +74,7 @@
             <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
                 <lv-form-item>
                     <lv-form-label>
-                        {{'protection_proxy_host_label' | i18n}}
+                        {{'protection_clients_label' | i18n}}
                     </lv-form-label>
                     <lv-form-control>
                         <lv-select [lvOptions]="proxyOptions" formControlName="proxyHost" lvValueKey='value'

@@ -1,4 +1,3 @@
-<p class="aui-text-help-sm aui-gutter-column-md">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<p class="aui-text-help-sm aui-gutter-column-md">
     {{'protection_oracle_restore_title_label' | i18n:[this.rowCopy?.name, oldVersion]}}
 </p>
 <lv-form [formGroup]="formGroup" class="formGroup" [lvLabelColon]='false'>
@@ -22,7 +22,7 @@
         <lv-form-control>
             <lv-radio-group formControlName="restoreTo">
                 <lv-group [lvGutter]="'24px'">
-                    <lv-radio [lv-tooltip]="restoreToNewLocationOnly ? ('protection_origin_restore_disabled_label'| i18n):''"
+                    <lv-radio [lv-tooltip]="restoreToNewLocationOnly ? restoreToNewLocationOnlyTips:''"
                               [lvDisabled]="restoreToNewLocationOnly" [lvValue]="restoreV2LocationType.ORIGIN">
                         {{'common_restore_to_origin_location_label' | i18n}}
                     </lv-radio>
@@ -63,20 +63,19 @@
                 </aui-agent-select>
             </lv-form-control>
         </lv-form-item>
-
-        <lv-alert lvType="info" class="mg-8" [lvClosable]="false">
-            {{'protection_pdb_restore_path_tips_label'|i18n}}
-        </lv-alert>
-
-        <lv-form-item>
-            <lv-form-label lvRequired>
-                {{'common_destination_path_label'|i18n}}
-            </lv-form-label>
-            <lv-form-control [lvErrorTip]='destinationPathErrorTip'>
-                <input type="text" lv-input formControlName="destinationPath">
-            </lv-form-control>
-        </lv-form-item>
     </ng-container>
+
+    <lv-alert lvType="info" class="mg-8" [lvClosable]="false">
+        {{'protection_pdb_restore_path_tips_label'|i18n}}
+    </lv-alert>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_destination_path_label'|i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]='destinationPathErrorTip'>
+            <input type="text" lv-input formControlName="destinationPath">
+        </lv-form-control>
+    </lv-form-item>
 
     <lv-form-item>
         <lv-form-label></lv-form-label>
@@ -106,6 +105,13 @@
                                 </lv-form-control>
                             </ng-container>
                         </lv-group>
+                    </lv-form-control>
+                </lv-form-item>
+                <lv-form-item>
+                    <lv-form-label>{{'protection_after_restoration_open_pdb_label' | i18n}}</lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName='open_pdb'>
+                        </lv-switch>
                     </lv-form-control>
                 </lv-form-item>
                 <lv-form-item>
@@ -142,10 +148,6 @@
                         </ng-container>
                     </lv-form-control>
                 </lv-form-item>
-                <ng-container
-                        *ngIf="restoreV2LocationType.NEW === formGroup.get('restoreTo').value">
-                    <aui-database-config [formGroup]="formGroup" [rowCopy]="rowCopy"></aui-database-config>
-                </ng-container>
             </lv-collapse-panel>
         </lv-collapse>
     </div>

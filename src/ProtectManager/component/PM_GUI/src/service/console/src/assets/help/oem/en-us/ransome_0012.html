@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -38,13 +38,17 @@
   <div>
    <p>This section describes how to set a ransomware protection and WORM policy for backup and replication copies.</p>
    <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <p>If small file aggregation is enabled for a resource, ransomware protection policies cannot be created for the resource.</p>
+   </div>
+   <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
     <ol>
      <li><span>Choose <strong id="ransome_0012__en-us_topic_0000001839142377_b1889510343412">Data Security</strong> &gt; <strong id="ransome_0012__en-us_topic_0000001839142377_b5895134144116">Ransomware Protection</strong> &gt; <strong id="ransome_0012__en-us_topic_0000001839142377_b7895183414418">Ransomware Protection and WORM Configurations</strong>.</span><p></p>
       <div class="note" id="ransome_0012__en-us_topic_0000001839142377_note811715311231">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p id="ransome_0012__en-us_topic_0000001839142377_p201182362315">For 1.5.0, choose Explore &gt; Data Utilization Policies.</p>
+        <p id="ransome_0012__en-us_topic_0000001839142377_p201182362315">For 1.5.0, choose <strong id="ransome_0012__en-us_topic_0000001839142377_b93411301168">Explore</strong> &gt; <strong id="ransome_0012__en-us_topic_0000001839142377_b1889483131614">Data Utilization Policies</strong>.</p>
        </div>
       </div> <p></p></li>
      <li><span>Click <strong>Ransomware Protection and WORM Policies</strong>.</span></li>
@@ -62,14 +66,14 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="19.02%" id="mcps1.3.2.2.4.2.1.2.3.1.1"><p>Parameter</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="80.97999999999999%" id="mcps1.3.2.2.4.2.1.2.3.1.2"><p>Description</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="19.02%" id="mcps1.3.3.2.4.2.1.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="80.97999999999999%" id="mcps1.3.3.2.4.2.1.2.3.1.2"><p>Description</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="19.02%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="80.97999999999999%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p>Ransomware protection and WORM policy name, which can be customized.</p>
+          <td class="cellrowborder" valign="top" width="19.02%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p><span><strong>Name</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="80.97999999999999%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p>Ransomware protection and WORM policy name, which can be customized.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
@@ -78,8 +82,8 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="19.02%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p><span><strong>Description</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="80.97999999999999%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p>Ransomware protection and WORM policy description. You are advised to enter description related to ransomware protection and WORM to facilitate subsequent management.</p></td>
+          <td class="cellrowborder" valign="top" width="19.02%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p><span><strong>Description</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="80.97999999999999%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p>Ransomware protection and WORM policy description. You are advised to enter description related to ransomware protection and WORM to facilitate subsequent management.</p></td>
          </tr>
         </tbody>
        </table>
@@ -97,18 +101,18 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="19.15%" id="mcps1.3.2.2.5.2.1.2.3.1.1"><p>Parameter</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="80.85%" id="mcps1.3.2.2.5.2.1.2.3.1.2"><p>Description</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="19.15%" id="mcps1.3.3.2.5.2.1.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="80.85%" id="mcps1.3.3.2.5.2.1.2.3.1.2"><p>Description</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.2.2.5.2.1.2.3.1.1 "><p><strong>Ransomware Protection Policy</strong></p></td>
-          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.2.2.5.2.1.2.3.1.2 "><p>This option is disabled by default. After this option is enabled, you can set a scheduling plan for the ransomware protection policy to perform ransomware detection on backup and replication copies.</p></td>
+          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><strong>Ransomware Protection Policy</strong></p></td>
+          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>This option is disabled by default. After this option is enabled, you can set a scheduling plan for the ransomware protection policy to perform ransomware detection on backup and replication copies.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.2.2.5.2.1.2.3.1.1 "><p><span><strong>Schedule</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.2.2.5.2.1.2.3.1.2 "><p>This parameter is displayed after <span class="uicontrol"><b>Ransomware Protection Policy</b></span> is enabled.</p> <p>Scheduling plan of the ransomware protection policy.</p>
+          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span><strong>Schedule</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>This parameter is displayed after <span class="uicontrol"><b>Ransomware Protection Policy</b></span> is enabled.</p> <p>Scheduling plan of the ransomware protection policy.</p>
            <ul>
             <li><strong><span><strong>Detect immediately after successful backup or replication</strong></span></strong></li>
             <li><strong><span><strong>Periodic Detection</strong></span></strong>
@@ -129,18 +133,18 @@
            </ul></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.2.2.5.2.1.2.3.1.1 "><p><span><strong>WORM Policy</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.2.2.5.2.1.2.3.1.2 "><p>This option is disabled by default. After this option is enabled, you can set WORM for backup and replication copies.</p></td>
+          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span><strong>WORM Policy</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>This option is disabled by default. After this option is enabled, you can set WORM for backup and replication copies.</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.2.2.5.2.1.2.3.1.1 "><p><span><strong>WORM Setting</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.2.2.5.2.1.2.3.1.2 "><p>This parameter is displayed after <span class="uicontrol"><b><span><strong>WORM Policy</strong></span></b></span> is enabled.</p> <p>When <strong>Ransomware Protection Policy</strong> is enabled, this parameter is used to set uninfected copies as WORM copies after ransomware detection is complete.</p> <p>When <strong>Ransomware Protection Policy</strong> is disabled, this parameter is used to set copies as WORM copies after backup or replication is successful.</p>
+          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span><strong>WORM Setting</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>This parameter is displayed after <span class="uicontrol"><b><span><strong>WORM Policy</strong></span></b></span> is enabled.</p> <p>When <strong>Ransomware Protection Policy</strong> is enabled, this parameter is used to set uninfected copies as WORM copies after ransomware detection is complete.</p> <p>When <strong>Ransomware Protection Policy</strong> is disabled, this parameter is used to set copies as WORM copies after backup or replication is successful.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
              <ul>
               <li>The expiration time of WORM copies will be delayed and the copies cannot be modified or deleted before they expire.</li>
-              <li>WORM copies cannot be archived.</li>
+              <li>For 1.5.0, WORM copies cannot be archived.</li>
              </ul>
             </div>
            </div></td>
@@ -161,14 +165,14 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="25.919999999999998%" id="mcps1.3.2.2.6.2.1.2.3.1.1"><p>Parameter</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="74.08%" id="mcps1.3.2.2.6.2.1.2.3.1.2"><p>Description</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="25.919999999999998%" id="mcps1.3.3.2.6.2.1.2.3.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.08%" id="mcps1.3.3.2.6.2.1.2.3.1.2"><p>Description</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.919999999999998%" headers="mcps1.3.2.2.6.2.1.2.3.1.1 "><p><span><strong>Type</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.08%" headers="mcps1.3.2.2.6.2.1.2.3.1.2 "><p>Type of a resource object.</p>
+          <td class="cellrowborder" valign="top" width="25.919999999999998%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p><span><strong>Type</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.08%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 "><p>Type of a resource object.</p>
            <ul>
             <li><strong><span><strong>Backup Copy</strong></span></strong>: Backup copies of the local cluster</li>
             <li><strong><span><strong>Replicated Copy</strong></span></strong>: Replication copies replicated from other clusters to the local cluster
@@ -181,12 +185,16 @@
            </ul></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.919999999999998%" headers="mcps1.3.2.2.6.2.1.2.3.1.1 "><p><span><strong>Resource Type</strong></span></p></td>
-          <td class="cellrowborder" valign="top" width="74.08%" headers="mcps1.3.2.2.6.2.1.2.3.1.2 "><p>Resource type. Ransomware detection supports only <span class="uicontrol"><b>VMware VM</b></span>, <span class="uicontrol"><b><span><strong>NAS File Systems</strong></span></b></span>, <span class="uicontrol"><b><span><strong>NAS Shares</strong></span></b></span>, <span class="uicontrol"><b><span><strong>Filesets</strong></span></b></span>, <span class="uicontrol"><b>CNware VM</b></span>, <span class="uicontrol"><b>Huawei Cloud Stack</b></span>, <span class="uicontrol"><b>FusionCompute VM</b></span>, <span class="uicontrol"><b>OpenStack Cloud Server</b></span>, <span class="uicontrol"><b>Hyper-V VM</b></span>, and <span class="uicontrol"><b>FusionOne Compute VM</b></span>. WORM is supported for all resources except GaussDB (DWS).</p>
+          <td class="cellrowborder" valign="top" width="25.919999999999998%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p><span><strong>Resource Type</strong></span></p></td>
+          <td class="cellrowborder" valign="top" width="74.08%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 "><p>Resource type. Ransomware detection applies only to <span class="uicontrol"><b>VMware VM</b></span>, <span class="uicontrol"><b><span><strong>NAS File Systems</strong></span></b></span>, <span class="uicontrol"><b><span><strong>NAS Shares</strong></span></b></span>, <span class="uicontrol"><b><span><strong>Filesets</strong></span></b></span>, <span class="uicontrol"><b>CNware VM</b></span>, <span class="uicontrol"><b>Huawei Cloud Stack</b></span>, <span class="uicontrol"><b>FusionCompute VM</b></span>, <span class="uicontrol"><b>OpenStack Cloud Server</b></span>, <span class="uicontrol"><b>Hyper-V VM</b></span>, and <span class="uicontrol"><b>FusionOne Compute VM</b></span>.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
-             <p>For 1.5.0, ransomware detection supports only <span class="uicontrol"><b>VMware</b></span>, <span class="uicontrol"><b><span><strong>NAS File Systems</strong></span></b></span>, <span class="uicontrol"><b><span><strong>Filesets</strong></span></b></span>, and <span class="uicontrol"><b><span><strong>NAS Shares</strong></span></b></span>.</p>
+             <p>For 1.5.0:</p>
+             <ul>
+              <li>Ransomware detection applies only to <span class="uicontrol"><b>VMware</b></span>, <span class="uicontrol"><b><span><strong>NAS File Systems</strong></span></b></span>, <span class="uicontrol"><b><span><strong>NAS Shares</strong></span></b></span>, and <span class="uicontrol"><b><span><strong>Filesets</strong></span></b></span>.</li>
+              <li>WORM is supported for all resources except GaussDB (DWS).</li>
+             </ul>
             </div>
            </div></td>
          </tr>

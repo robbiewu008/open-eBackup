@@ -18,6 +18,8 @@ import { BaseModule } from 'app/shared';
 import { BaseInfoModule } from 'app/shared/components/base-info/base-info.module';
 import { SpecialBaseInfoModule } from 'app/shared/components/special-base-info/special-base-info.module';
 import { ProTableModule } from 'app/shared/components/pro-table';
+import { BaseTableModule } from '../../virtualization-base/base-table/base-table.module';
+import { CustomModalOperateModule } from 'app/shared/components/custom-modal-operate/custom-modal-operate.module';
 
 @NgModule({
   declarations: [SummaryComponent],
@@ -26,7 +28,9 @@ import { ProTableModule } from 'app/shared/components/pro-table';
     BaseModule,
     ProTableModule,
     BaseInfoModule,
-    SpecialBaseInfoModule
+    SpecialBaseInfoModule,
+    BaseTableModule,
+    CustomModalOperateModule
   ],
   exports: [SummaryComponent]
 })

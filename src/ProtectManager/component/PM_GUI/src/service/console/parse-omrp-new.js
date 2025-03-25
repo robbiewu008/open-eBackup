@@ -1,23 +1,9 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
-
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const path = require('path');
 const unzip = require('unzip-stream');
 const { each, includes, find, assign, isEmpty } = require('lodash');
-
 
 const opAlarmTemplateId = '155';
 const opErrorTemplateId = '160';
@@ -29,19 +15,19 @@ const opAlarmName = 'OceanProtect-DataBackup-1.6.0';
 const opErrorName = 'OceanProtect-DataBackup-1.6.0';
 const pacificErrorName = 'OceanStorPacific-8.1.5';
 const doradoErrorName = 'OceanStor-Dorado-6.1.7-OceanProtect-1.5';
-const doradoAlarmName = 'OceanProtect-1.6.0';
-const pacificAlarmName = 'OceanStorPacific-8.2.1';
+const doradoAlarmName = 'OceanProtect-1.7.0';
+const pacificAlarmName = 'OceanStor-Pacific-8.2.1-TR5-2';
 
 const staticToken = 'ySqt4fMivzibfTh4oouKVeg1q0EGyDw5CJ73BL5L';
 const appId = 'com.huawei.ipd.noproduct.tenant_c00377603';
-const enterpriseId = '11111111111111111111111111111111'
+const enterpriseId = '11111111111111111111111111111111';
 
 let opAlarmDocId;
 let opErrorDocId;
 let pacificErrorDocId;
 let doradoErrorDocId;
 let doradoAlarmDocId;
-let pacificAlarmDocId
+let pacificAlarmDocId;
 
 const resourcePath = {};
 
@@ -53,43 +39,44 @@ const getIamToken = () => {
     rejectUnauthorized: false
   };
   const params = {
-    "data": {
-      "attributes": {
-        'account': appId,
-        'secret': staticToken,
-        'project': appId,
-        'enterprise': enterpriseId
+    data: {
+      attributes: {
+        account: appId,
+        secret: staticToken,
+        project: appId,
+        enterprise: enterpriseId
       },
-      "type": "token",
+      type: 'token'
     }
   };
   return new Promise((resolve, reject) => {
     const request = https.request(options, res => {
       let data = '';
       res.setEncoding('utf-8');
-      res.on('data', d => {
-        data += d;
-      }).on('end', () => {
-        try {
-          const token = JSON.parse(data)?.access_token;
-          if (token) {
-            resolve(token);
-          } else {
-            reject(`get error token. pls check url, static token, appId...`);
+      res
+        .on('data', d => {
+          data += d;
+        })
+        .on('end', () => {
+          try {
+            const token = JSON.parse(data)?.access_token;
+            if (token) {
+              resolve(token);
+            } else {
+              reject(`get error token. pls check url, static token, appId...`);
+            }
+          } catch (error) {
+            reject(error);
           }
-        } catch (error) {
-          reject(error);
-        }
-
-      })
+        });
     });
     request.setHeader('Content-Type', 'application/json');
     request.write(JSON.stringify(params));
     request.end();
-  })
-}
+  });
+};
 
-const removeDir = (dirParh) => {
+const removeDir = dirParh => {
   if (fs.existsSync(dirParh)) {
     fs.readdirSync(dirParh).forEach(file => {
       let newPath = path.join(dirParh, file);
@@ -98,10 +85,10 @@ const removeDir = (dirParh) => {
       } else {
         fs.unlinkSync(newPath);
       }
-    })
+    });
     fs.rmdirSync(dirParh);
   }
-}
+};
 
 const writeResource = (docId, folderPath) => {
   const zh_CN = {};
@@ -110,7 +97,7 @@ const writeResource = (docId, folderPath) => {
     let filePath = `${folderPath}/omList/${file}`;
     const suffixName = path.extname(file).substring(1);
     if (suffixName === 'json' && !isEmpty(fs.readFileSync(filePath))) {
-      let resource
+      let resource;
       try {
         resource = JSON.parse(fs.readFileSync(filePath));
       } catch (error) {
@@ -119,7 +106,9 @@ const writeResource = (docId, folderPath) => {
       }
       each([resource], item => {
         // 告警事件
-        if (includes([opAlarmDocId, doradoAlarmDocId, pacificAlarmDocId], docId)) {
+        if (
+          includes([opAlarmDocId, doradoAlarmDocId, pacificAlarmDocId], docId)
+        ) {
           zh_CN[`${item.alarmId}.alarm.name`] = item.cnEventName
             ? item.cnEventName.replace(/\n/g, '<br>')
             : '--';
@@ -153,15 +142,25 @@ const writeResource = (docId, folderPath) => {
         } else {
           // 错误码
           zh_CN[item.errorCodeIdDec] = item.reasonSuggest
-            ? item.reasonSuggest.replace(/\n/g, '<br>')
+            ? item.reasonSuggest
+                .replace(/\n/g, '<br>')
+                .replace(/##[0-9]{2}/g, match => {
+                  // dorado错误码替换占位，例：##00 -> {0}
+                  return `{${parseInt(match.replace('##', ''))}}`;
+                })
             : '--';
           en_US[item.errorCodeIdDec] = item.enReasonSuggest
-            ? item.enReasonSuggest.replace(/\n/g, '<br>')
+            ? item.enReasonSuggest
+                .replace(/\n/g, '<br>')
+                .replace(/##[0-9]{2}/g, match => {
+                  // dorado错误码替换占位，例：##00 -> {0}
+                  return `{${parseInt(match.replace('##', ''))}}`;
+                })
             : '--';
         }
-      })
+      });
     }
-  })
+  });
   //写入中文
   if (fs.existsSync(resourcePath[docId]?.zh)) {
     fs.unlink(resourcePath[docId]?.zh, () => {
@@ -182,7 +181,7 @@ const writeResource = (docId, folderPath) => {
   // 删除文件夹
   setTimeout(() => removeDir(folderPath));
   console.log(`write i18n resource to ${resourcePath[docId]?.zh} success.`);
-}
+};
 
 const downloadResource = (docId, iamToken) => {
   const options = {
@@ -190,128 +189,195 @@ const downloadResource = (docId, iamToken) => {
     path: `/edm/projects/${appId}/documents/${docId}`,
     method: 'GET',
     rejectUnauthorized: false
-  }
+  };
   const req = https.request(options, res => {
     const zipPath = path.join(__dirname, `./omrp_${docId}.zip`);
     let data = '';
     res.setEncoding('binary');
-    res.on('data', d => {
-      data += d;
-    }).on('end', () => {
-      try {
-        fs.writeFile(zipPath, data, 'binary', () => {
-          const folderPath = `./omrp_${docId}`;
-          const unzipStream = fs.createReadStream(zipPath).pipe(unzip.Extract({ path: folderPath }));
-          unzipStream.on('finish', () => {
-            // 删除zip文件
-            fs.unlinkSync(zipPath);
-            // 写入国际化文件
-            setTimeout(() => writeResource(docId, folderPath));
-          })
-        })
-      } catch (error) {
-        throw new Error(`download omrp resource failed.`);
-      }
-    })
-  })
+    res
+      .on('data', d => {
+        data += d;
+      })
+      .on('end', () => {
+        try {
+          fs.writeFile(zipPath, data, 'binary', () => {
+            const folderPath = `./omrp_${docId}`;
+            const unzipStream = fs
+              .createReadStream(zipPath)
+              .pipe(unzip.Extract({ path: folderPath }));
+            unzipStream.on('finish', () => {
+              // 删除zip文件
+              fs.unlinkSync(zipPath);
+              // 写入国际化文件
+              setTimeout(() => writeResource(docId, folderPath));
+            });
+          });
+        } catch (error) {
+          throw new Error(`download omrp resource failed.`);
+        }
+      });
+  });
   req.setHeader('Authorization', iamToken);
   req.setHeader('X-HIC-Info', appId);
   req.setHeader('Content-Type', 'application/octet-stream');
   req.end();
-}
+};
 
 const getResourceDocId = () => {
   const options = {
     hostname: 'rnd-omrp.huawei.com',
     path: '/omrp/rest/push/info',
-    method: 'POST',
-  }
+    method: 'POST'
+  };
   return new Promise((resolve, reject) => {
     const req = http.request(options, res => {
       let data = '';
-      res.on('data', d => {
-        data += d;
-      }).on('end', () => {
-        try {
-          const docIds = JSON.parse(data)?.info;
-          opAlarmDocId = find(docIds, item => Number(item.templateId) === Number(opAlarmTemplateId) && item.versionName === opAlarmName)?.docId;
-          opErrorDocId = find(docIds, item => Number(item.templateId) === Number(opErrorTemplateId) && item.versionName === opErrorName)?.docId;
-          pacificErrorDocId = find(docIds, item => Number(item.templateId) === Number(pacificErrorTemplateId) && item.versionName === pacificErrorName)?.docId;
-          doradoErrorDocId = find(docIds, item => Number(item.templateId) === Number(doradoErrorTemplateId) && item.versionName === doradoErrorName)?.docId;
-          doradoAlarmDocId = find(docIds, item => Number(item.templateId) === Number(doradoAlarmTemplateId) && item.versionName === doradoAlarmName)?.docId;
-          pacificAlarmDocId = find(docIds, item => Number(item.templateId) === Number(pacificAlarmTemplateId) && item.versionName === pacificAlarmName)?.docId;
-          if (opAlarmDocId && opErrorDocId && pacificErrorDocId && doradoErrorDocId && doradoAlarmDocId && pacificAlarmDocId) {
-            assign(resourcePath, {
-              [opAlarmDocId]: {
-                zh: './src/assets/i18n/zh-cn/alarm/common.json',
-                en: './src/assets/i18n/en-us/alarm/common.json'
-              },
-              [opErrorDocId]: {
-                zh: './src/assets/i18n/zh-cn/error-code/common.json',
-                en: './src/assets/i18n/en-us/error-code/common.json'
-              },
-              [pacificErrorDocId]: {
-                zh: './src/assets/i18n/zh-cn/error-code/pacific.json',
-                en: './src/assets/i18n/en-us/error-code/pacific.json'
-              },
-              [doradoErrorDocId]: {
-                zh: './src/assets/i18n/zh-cn/error-code/dorado_616.json',
-                en: './src/assets/i18n/en-us/error-code/dorado_616.json'
-              },
-              [doradoAlarmDocId]: {
-                zh: './src/assets/i18n/zh-cn/alarm/dorado_alarm.json',
-                en: './src/assets/i18n/en-us/alarm/dorado_alarm.json'
-              },
-              [pacificAlarmDocId]: {
-                zh: './src/assets/i18n/zh-cn/alarm/pacific_alarm.json',
-                en: './src/assets/i18n/en-us/alarm/pacific_alarm.json'
-              }
-            });
-            resolve([opAlarmDocId, opErrorDocId, pacificErrorDocId, doradoErrorDocId, doradoAlarmDocId, pacificAlarmDocId]);
-          } else {
-            reject(`opAlarmDocId: ${opAlarmDocId}, opErrorDocId: ${opErrorDocId}, pacificErrorDocId: ${pacificErrorDocId}, doradoErrorDocId:${doradoErrorDocId}, doradoAlarmDocId:${doradoAlarmDocId}, pacificAlarmDocId:${pacificAlarmDocId}`);
+      res
+        .on('data', d => {
+          data += d;
+        })
+        .on('end', () => {
+          try {
+            const docIds = JSON.parse(data)?.info;
+            opAlarmDocId = find(
+              docIds,
+              item =>
+                Number(item.templateId) === Number(opAlarmTemplateId) &&
+                item.versionName === opAlarmName
+            )?.docId;
+            opErrorDocId = find(
+              docIds,
+              item =>
+                Number(item.templateId) === Number(opErrorTemplateId) &&
+                item.versionName === opErrorName
+            )?.docId;
+            pacificErrorDocId = find(
+              docIds,
+              item =>
+                Number(item.templateId) === Number(pacificErrorTemplateId) &&
+                item.versionName === pacificErrorName
+            )?.docId;
+            doradoErrorDocId = find(
+              docIds,
+              item =>
+                Number(item.templateId) === Number(doradoErrorTemplateId) &&
+                item.versionName === doradoErrorName
+            )?.docId;
+            doradoAlarmDocId = find(
+              docIds,
+              item =>
+                Number(item.templateId) === Number(doradoAlarmTemplateId) &&
+                item.versionName === doradoAlarmName
+            )?.docId;
+            pacificAlarmDocId = find(
+              docIds,
+              item =>
+                Number(item.templateId) === Number(pacificAlarmTemplateId) &&
+                item.versionName === pacificAlarmName
+            )?.docId;
+            if (
+              opAlarmDocId &&
+              opErrorDocId &&
+              pacificErrorDocId &&
+              doradoErrorDocId &&
+              doradoAlarmDocId &&
+              pacificAlarmDocId
+            ) {
+              assign(resourcePath, {
+                [opAlarmDocId]: {
+                  zh: './src/assets/i18n/zh-cn/alarm/common.json',
+                  en: './src/assets/i18n/en-us/alarm/common.json'
+                },
+                [opErrorDocId]: {
+                  zh: './src/assets/i18n/zh-cn/error-code/common.json',
+                  en: './src/assets/i18n/en-us/error-code/common.json'
+                },
+                [pacificErrorDocId]: {
+                  zh: './src/assets/i18n/zh-cn/error-code/pacific.json',
+                  en: './src/assets/i18n/en-us/error-code/pacific.json'
+                },
+                [doradoErrorDocId]: {
+                  zh: './src/assets/i18n/zh-cn/error-code/dorado_616.json',
+                  en: './src/assets/i18n/en-us/error-code/dorado_616.json'
+                },
+                [doradoAlarmDocId]: {
+                  zh: './src/assets/i18n/zh-cn/alarm/dorado_alarm.json',
+                  en: './src/assets/i18n/en-us/alarm/dorado_alarm.json'
+                },
+                [pacificAlarmDocId]: {
+                  zh: './src/assets/i18n/zh-cn/alarm/pacific_alarm.json',
+                  en: './src/assets/i18n/en-us/alarm/pacific_alarm.json'
+                }
+              });
+              resolve([
+                opAlarmDocId,
+                opErrorDocId,
+                pacificErrorDocId,
+                doradoErrorDocId,
+                doradoAlarmDocId,
+                pacificAlarmDocId
+              ]);
+            } else {
+              reject(
+                `opAlarmDocId: ${opAlarmDocId}, opErrorDocId: ${opErrorDocId}, pacificErrorDocId: ${pacificErrorDocId}, doradoErrorDocId:${doradoErrorDocId}, doradoAlarmDocId:${doradoAlarmDocId}, pacificAlarmDocId:${pacificAlarmDocId}`
+              );
+            }
+          } catch (error) {
+            reject(error);
           }
-        } catch (error) {
-          reject(error);
-        }
-      })
-    })
+        });
+    });
     req.setHeader('Content-Type', 'application/json');
-    req.write(JSON.stringify([{
-      templateId: opAlarmTemplateId,
-      versionName: opAlarmName
-    }, {
-      templateId: opErrorTemplateId,
-      versionName: opErrorName
-    }, {
-      templateId: pacificErrorTemplateId,
-      versionName: pacificErrorName
-    }, {
-      templateId: doradoErrorTemplateId,
-      versionName: doradoErrorName
-    }, {
-      templateId: doradoAlarmTemplateId,
-      versionName: doradoAlarmName
-    }, {
-      templateId: pacificAlarmTemplateId,
-      versionName: pacificAlarmName
-    }]));
+    req.write(
+      JSON.stringify([
+        {
+          templateId: opAlarmTemplateId,
+          versionName: opAlarmName
+        },
+        {
+          templateId: opErrorTemplateId,
+          versionName: opErrorName
+        },
+        {
+          templateId: pacificErrorTemplateId,
+          versionName: pacificErrorName
+        },
+        {
+          templateId: doradoErrorTemplateId,
+          versionName: doradoErrorName
+        },
+        {
+          templateId: doradoAlarmTemplateId,
+          versionName: doradoAlarmName
+        },
+        {
+          templateId: pacificAlarmTemplateId,
+          versionName: pacificAlarmName
+        }
+      ])
+    );
     req.end();
-  })
-}
+  });
+};
 
 const getOmrpResource = () => {
-  getResourceDocId().then(docIds => {
-    getIamToken().then(iamToken => {
-      each(docIds, docId => {
-        downloadResource(docId, iamToken);
-      })
-    }, error => {
-      throw new Error(`get token failed, cause: ${error}`);
-    })
-  }, error => {
-    throw new Error(`get docId failed, cause: ${error}`);
-  })
-}
+  getResourceDocId().then(
+    docIds => {
+      getIamToken().then(
+        iamToken => {
+          each(docIds, docId => {
+            downloadResource(docId, iamToken);
+          });
+        },
+        error => {
+          throw new Error(`get token failed, cause: ${error}`);
+        }
+      );
+    },
+    error => {
+      throw new Error(`get docId failed, cause: ${error}`);
+    }
+  );
+};
 
 getOmrpResource();

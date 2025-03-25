@@ -128,7 +128,7 @@ public class ObjectStorageProvider implements EnvironmentProvider {
             encryptData(environment);
             // 拼接uuid
             String uuid = environment.getExtendInfo().get(EnvironmentConstant.KEY_STORAGE_TYPE)
-                + SymbolConstant.UNDERLINE + tenantId;
+                + SymbolConstant.UNDERLINE + tenantId + SymbolConstant.UNDERLINE + environment.getEndpoint();
             // 设置uuid
             environment.setUuid(uuid);
             // 校验uuid是否重复，避免重复注册
@@ -290,13 +290,6 @@ public class ObjectStorageProvider implements EnvironmentProvider {
         if (!StringUtils.equals(environment.getEndpoint(), equipment.getEndpoint())) {
             throw new DataProtectionAccessException(CommonErrorCode.ILLEGAL_PARAM,
                 new String[] {environment.getEndpoint()});
-        }
-
-        // 协议不可修改
-        if (!StringUtils.equals(environment.getAuth().getExtendInfo().get(EnvironmentConstant.KEY_USE_HTTPS),
-            equipment.getAuth().getExtendInfo().get(EnvironmentConstant.KEY_USE_HTTPS))) {
-            throw new DataProtectionAccessException(CommonErrorCode.ILLEGAL_PARAM,
-                new String[] {environment.getAuth().getExtendInfo().get(EnvironmentConstant.KEY_USE_HTTPS)});
         }
     }
 

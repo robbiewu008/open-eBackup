@@ -32,13 +32,15 @@ import {
   RESET_PSWD_NAVIGATE_STATUS,
   DataMapService,
   timeZones,
-  ExceptionService
+  ExceptionService,
+  SYSTEM_TIME
 } from 'app/shared';
 import {
   SecurityApiService,
   UsersApiService,
   AuthApiService,
-  ADFSService
+  ADFSService,
+  RsaService
 } from 'app/shared/api/services';
 import {
   AuthApiService as AuthLoginApiService,
@@ -72,6 +74,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { MessageService } from '@iux/live';
 import { SendDynamicCodeRequest } from 'app/shared/api/models';
 import { DatePipe } from '@angular/common';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 type ILastLoginInfo = Pick<
   LoginResponseBody,
@@ -139,11 +142,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     .filter(item => {
       item.isLeaf = true;
       return includes(
-        [
-          DataMap.loginUserType.local.value,
-          DataMap.loginUserType.ldap.value,
-          DataMap.loginUserType.ldapGroup.value
-        ],
+        [DataMap.loginUserType.local.value, DataMap.loginUserType.ldap.value],
         item.value
       );
     });
@@ -190,7 +189,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     private dataMapService: DataMapService,
     private authService: AuthApiService,
     private adfsService: ADFSService,
-    private exceptionService: ExceptionService
+    private exceptionService: ExceptionService,
+    private rsaService: RsaService,
+    private appUtilsService: AppUtilsService
   ) {}
 
   ngOnDestroy(): void {
@@ -816,18 +817,17 @@ export class LoginComponent implements OnInit, OnDestroy {
                 find(currentTimeZones, ['value', lastLoginInfo.lastLoginZone]),
                 'label'
               );
-            const timeZone = !isEmpty(lastLoginZone)
-              ? lastLoginZone.split(' ')[0]
+            const timeZoneArea = !isEmpty(lastLoginZone)
+              ? lastLoginZone.split(' ')[1]
               : '';
-            const lastLoginTimeContent = isNil(lastLoginZone)
-              ? lastLoginInfo.lastLoginTime
-              : this.datePipe.transform(
-                  lastLoginInfo.lastLoginTime,
-                  'yyyy-MM-dd HH:mm:ss',
-                  timeZone
-                ) +
-                ' ' +
-                lastLoginZone;
+            const loginTime = this.datePipe.transform(
+              lastLoginInfo.lastLoginTime,
+              'yyyy-MM-dd HH:mm:ss',
+              SYSTEM_TIME.timeZone
+            );
+            const lastLoginTimeContent = isEmpty(lastLoginZone)
+              ? loginTime
+              : `${loginTime} ${SYSTEM_TIME.timeZone} ${timeZoneArea}`;
             let loginInfoContent = `${this.i18n.get(
               'common_last_login_time_label'
             )}: ${lastLoginTimeContent}\n${this.i18n.get(
@@ -887,6 +887,20 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loginFormGroup.updateValueAndValidity();
   }
 
+  async encryptParam(target: string, publicKey: string): Promise<string> {
+    const key = await this.appUtilsService.importRsaPublicKey(
+      publicKey,
+      'SHA-256'
+    );
+    let encryptedStr = this.appUtilsService.arrayBufferToB64(
+      await this.appUtilsService.rsaEncrypt(
+        this.appUtilsService.utf8ToB64(target),
+        key
+      )
+    );
+    return encryptedStr;
+  }
+
   login() {
     this.setPasswordValidator();
     this.setVerifyCodeValidator();
@@ -900,69 +914,85 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
     this.loginSendDisable = true;
-    this.authApiService
-      .loginUsingPOST({
-        authRequest: this.isOceanProtect
-          ? assign({}, this.loginFormGroup.value, {
-              language: this.i18n.isEn ? 2 : 1
-            })
-          : omit(
-              this.loginFormGroup.value,
-              this.isCyberEngine ? ['dynamicCode'] : ['userType', 'dynamicCode']
-            ),
-        akOperationTips: false,
-        akDoException: false
-      })
-      .subscribe({
-        next: res => {
-          this.loginErrorMsg = '';
-          this.cookieService.set('userId', res.userId);
-          this.cookieService.set('serviceProduct', res.serviceProduct);
-          if (toString(res.modifyPassword) !== 'true') {
-            if (+res.expireDay > 0 && +res.expireDay < 6) {
-              this.message.warning(
-                this.i18n.get('common_expire_day_label', [+res.expireDay]),
-                {
-                  lvMessageKey: 'lvMsg_key_expireDay',
-                  lvShowCloseButton: true
-                }
-              );
-            }
-            const lastLoginInfo: ILastLoginInfo = pick(res, [
-              'lastLoginIp',
-              'lastLoginTime',
-              'lastLoginZone'
-            ]);
-            this.goHome(lastLoginInfo);
-            this.sendLogin();
-            return;
-          }
-          this.getSecurityPolicy().subscribe({
-            next: () => {
-              this.isLogging = false;
-              this.isModifyPasswd = true;
-              this.loginSendDisable = false;
-              this.clearDynamicCodeValidator();
-            },
-            error: () => {
-              this.loginSendDisable = false;
-            }
-          });
-        },
-        error: err => {
-          if (err.error?.errorCode === this.DYNAMIC_CODE_ERROR_CODE) {
-            this.setDynamicCode();
-          }
-          if (!this.needDynamicCode) {
-            this.clearPasswordValidator();
-          }
-          this.clearVerifyCodeValidator();
-          this.loginSendDisable = false;
-          this.isLogging = false;
-          this.initVerifyCode();
-          this.loginErrorMsg = this.exceptionService.getErrorMessage(err.error);
-        }
+    this.rsaService.GetPublicKey({}).subscribe(async res => {
+      const authParams = this.isOceanProtect
+        ? assign({}, this.loginFormGroup.value, {
+            language: this.i18n.isEn ? 2 : 1
+          })
+        : omit(
+            this.loginFormGroup.value,
+            this.isCyberEngine ? ['dynamicCode'] : ['userType', 'dynamicCode']
+          );
+      // RSA加密
+      assign(authParams, {
+        userName: await this.encryptParam(
+          this.loginFormGroup.value.userName,
+          res.publicKey
+        ),
+        password: await this.encryptParam(
+          this.loginFormGroup.value.password,
+          res.publicKey
+        )
       });
+      this.authApiService
+        .loginUsingPOST({
+          authRequest: authParams,
+          akOperationTips: false,
+          akDoException: false
+        })
+        .subscribe({
+          next: res => {
+            this.loginErrorMsg = '';
+            this.cookieService.set('userId', res.userId);
+            this.cookieService.set('serviceProduct', res.serviceProduct);
+            if (toString(res.modifyPassword) !== 'true') {
+              if (+res.expireDay > 0 && +res.expireDay < 6) {
+                this.message.warning(
+                  this.i18n.get('common_expire_day_label', [+res.expireDay]),
+                  {
+                    lvMessageKey: 'lvMsg_key_expireDay',
+                    lvShowCloseButton: true
+                  }
+                );
+              }
+              const lastLoginInfo: ILastLoginInfo = pick(res, [
+                'lastLoginIp',
+                'lastLoginTime',
+                'lastLoginZone'
+              ]);
+              this.goHome(lastLoginInfo);
+              this.sendLogin();
+              return;
+            }
+            this.getSecurityPolicy().subscribe({
+              next: () => {
+                this.isLogging = false;
+                this.isModifyPasswd = true;
+                this.loginSendDisable = false;
+                this.clearDynamicCodeValidator();
+              },
+              error: () => {
+                this.loginSendDisable = false;
+              }
+            });
+          },
+          error: err => {
+            if (err.error?.errorCode === this.DYNAMIC_CODE_ERROR_CODE) {
+              this.setDynamicCode();
+            }
+            if (!this.needDynamicCode) {
+              this.clearPasswordValidator();
+            }
+            this.clearVerifyCodeValidator();
+            this.loginSendDisable = false;
+            this.isLogging = false;
+            this.initVerifyCode();
+            this.loginErrorMsg = this.exceptionService.getErrorMessage(
+              err.error
+            );
+          }
+        });
+    });
   }
 
   adfsLogin() {

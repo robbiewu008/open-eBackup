@@ -70,6 +70,9 @@ public class DmeS3ConnectRequest {
 
     private Integer cloudType;
 
+    @JsonProperty("checkType")
+    private Integer cloudCheckType;
+
     /**
      * DmeS3ConnectRequest
      *
@@ -88,6 +91,7 @@ public class DmeS3ConnectRequest {
         this.setUserName(request.getAk());
         this.setCloudType(request.getCloudType());
         this.setConnectType(request.getConnectType());
+        this.setCloudCheckType(request.getCloudCheckType());
         if (request.isUseHttps()) {
             this.setCertificate(request.getCertName());
             this.setPort(ProtocolPortConstant.HTTPS_PORT);

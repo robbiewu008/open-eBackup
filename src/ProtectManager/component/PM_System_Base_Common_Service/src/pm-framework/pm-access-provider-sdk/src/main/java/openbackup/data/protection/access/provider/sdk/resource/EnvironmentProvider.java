@@ -15,6 +15,7 @@ package openbackup.data.protection.access.provider.sdk.resource;
 import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvider;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.exception.NotImplementedException;
+import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 
 import java.util.Collections;
 import java.util.List;
@@ -77,7 +78,8 @@ public interface EnvironmentProvider extends DataProtectionProvider<String> {
      */
     default Optional<String> healthCheckWithResultStatus(ProtectedEnvironment environment) {
         validate(environment);
-        return Optional.empty();
+        return Optional.ofNullable(environment.getLinkStatus())
+            .filter(status -> !String.valueOf(LinkStatusEnum.OFFLINE.getStatus()).equals(status));
     }
 
     /**

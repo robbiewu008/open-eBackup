@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
   <lv-form-item>
     <lv-form-label>
       {{ 'protection_restore_to_label' | i18n }}
@@ -25,11 +25,7 @@
           <lv-radio
             [lvValue]="restoreLocationType.ORIGIN"
             [lvDisabled]="disableOriginLocation"
-            [lv-tooltip]="
-              disableOriginLocation
-                ? tip
-                : ''
-            "
+            [lv-tooltip]="disableOriginLocation ? tip : ''"
           >
             {{ 'common_restore_to_origin_location_label' | i18n }}
           </lv-radio>
@@ -74,17 +70,16 @@
         lvFilterMode="contains"
         [lvPlaceholder]="placeHolder"
         [lvDisabled]="
-          (restoreType === typeRestore.CommonRestore &&
-            rowCopy.resource_sub_type === 'DWS-table' &&
-            !isGDSBackup)
+          restoreType === typeRestore.CommonRestore &&
+          rowCopy.resource_sub_type === 'DWS-table' &&
+          !isGDSBackup
         "
       >
       </lv-select>
       <div
-        class="tips-container"
         *ngIf="
-          rowCopy.resource_sub_type ===
-            dataMap.Resource_Type.DWS_Schema.value && !formGroup?.value?.cluster
+          restoreType !== typeRestore.CommonRestore &&
+          rowCopy.resource_sub_type !== 'DWS-table'
         "
       >
         <i
@@ -93,13 +88,15 @@
           class="tips-icon"
         ></i>
         <span
-          innerHTML="{{schemaTip}}"
+          [innerHTML]="
+            'protection_dws_cluster_restore_version_tip_label' | i18n
+          "
           class="tips-text"
         >
         </span>
       </div>
     </lv-form-item>
-    <ng-container *ngIf="restoreType === typeRestore.CommonRestore">
+    <ng-container *ngIf="rowCopy.resource_sub_type === 'DWS-table'">
       <lv-form-item>
         <lv-form-label lvRequired>
           {{ 'common_database_label' | i18n }}
@@ -111,10 +108,6 @@
           lvShowFilter
           lvFilterKey="label"
           lvFilterMode="contains"
-          [lvDisabled]="
-            restoreType !== typeRestore.CommonRestore &&
-            rowCopy.resource_sub_type === 'DWS-schema'
-          "
         >
         </lv-select>
       </lv-form-item>

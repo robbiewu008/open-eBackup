@@ -12,6 +12,7 @@
 */
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { CyberDebugLogModule } from '../cyber-debug-log/cyber-debug-log.module';
 import { BaseModule } from 'app/shared';
 import { MultiClusterSwitchModule } from 'app/shared/components/multi-cluster-switch/multi-cluster-switch.module';
 import { DebugLogRoutingModule } from './debug-log-routing.module';
@@ -28,6 +29,7 @@ import { AlertModule } from '@iux/live';
     BaseModule,
     MultiClusterSwitchModule,
     ExportFilesModule,
+    CyberDebugLogModule,
     MultiLogModule,
     AlertModule
   ]

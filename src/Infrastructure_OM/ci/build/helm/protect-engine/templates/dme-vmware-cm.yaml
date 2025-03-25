@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vmware-conf
+  namespace: dpa
+data:
+  PromiseWaitTimeout: "1800000"

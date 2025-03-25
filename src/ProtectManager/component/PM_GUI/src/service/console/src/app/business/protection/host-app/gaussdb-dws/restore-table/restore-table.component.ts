@@ -10,13 +10,12 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
 import {
   BaseUtilService,
   CommonConsts,
-  compareVersion,
   DataMap,
   I18NService,
   ProtectedResourceApiService,
@@ -25,7 +24,16 @@ import {
   RestoreV2LocationType,
   RestoreV2Type
 } from 'app/shared';
-import { filter, find, get, isNumber, isString, map, set } from 'lodash';
+import {
+  filter,
+  find,
+  get,
+  isEmpty,
+  isNumber,
+  isString,
+  map,
+  set
+} from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -37,6 +45,7 @@ export class TableRestoreComponent implements OnInit {
   @Input() rowCopy;
   @Input() childResType;
   @Input() restoreType;
+  @Output() onStatusChange = new EventEmitter<any>();
 
   dataMap = DataMap;
   typeRestore = RestoreType;
@@ -106,7 +115,7 @@ export class TableRestoreComponent implements OnInit {
           .get('cluster')
           .setValidators([this.baseUtilService.VALID.required()]);
 
-        if (this.restoreType === RestoreType.CommonRestore) {
+        if (this.rowCopy.resource_sub_type === 'DWS-table') {
           this.formGroup
             .get('database')
             .setValidators([this.baseUtilService.VALID.required()]);
@@ -126,6 +135,9 @@ export class TableRestoreComponent implements OnInit {
 
     this.formGroup.statusChanges.subscribe(res => {
       this.disableOkBtn();
+      if (this.restoreType !== RestoreType.CommonRestore) {
+        this.onStatusChange.emit();
+      }
     });
 
     if (this.disableOriginLocation) {
@@ -213,17 +225,9 @@ export class TableRestoreComponent implements OnInit {
           JSON.parse(this.rowCopy.properties)?.extendInfo?.extendInfo?.version;
 
         if (
-          this.rowCopy.resource_sub_type ===
+          this.rowCopy.resource_sub_type !==
           DataMap.Resource_Type.DWS_Schema.value
         ) {
-          // 表级恢复的新位置恢复：目标集群只展示版本号大于等于9.1.0版本的，且过滤掉原集群
-          recordsTemp = filter(
-            recordsTemp,
-            item =>
-              compareVersion(item?.version, '9.1.0') !== -1 &&
-              item.uuid !== get(this.resourceData, 'root_uuid')
-          );
-        } else {
           recordsTemp = filter(recordsTemp, item => item?.version === version);
         }
         this.clusterOptions = map(recordsTemp, item => {
@@ -314,7 +318,7 @@ export class TableRestoreComponent implements OnInit {
 
     if (
       this.formGroup.value.restoreTo === RestoreV2LocationType.NEW &&
-      this.restoreType === RestoreType.CommonRestore
+      this.childResType === DataMap.Resource_Type.DWS_Table.value
     ) {
       set(
         params,
@@ -329,6 +333,9 @@ export class TableRestoreComponent implements OnInit {
   }
 
   getTargetParams() {
+    if (isEmpty(this.clusterOptions) || isEmpty(this.databaseOptions)) {
+      return;
+    }
     return {
       ...this.formGroup.value,
       resource:

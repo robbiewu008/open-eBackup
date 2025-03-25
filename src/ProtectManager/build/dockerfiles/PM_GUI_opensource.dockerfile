@@ -16,7 +16,6 @@ ARG mvn_tag=3.6.3-1.3
 #
 # Build Service Image
 #
-#FROM emei-il.huawei.com/misc/boilerplate/mvn:${mvn_tag} as build
 FROM open-ebackup-1.0:base
 
 RUN luseradd -u 15012 -g nobody -s /sbin/nologin pm_gui
@@ -89,7 +88,8 @@ RUN touch "/etc/timezone" \
     && chown root:root "/script/mount_oper.sh" \
     && chown root:root "/script/read_dorado_alarms_from_local.py" \
     && chown root:root "/script/xml2json.py" \
-    && rm -rf /root/.config/pip
+    && rm -rf /root/.config/pip \
+    && rm -rf /etc/localtime
 
 
 USER 15012

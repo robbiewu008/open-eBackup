@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -65,7 +65,7 @@
      </thead>
      <tbody>
       <tr>
-       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p><span><strong>Modify Protection</strong></span></p></td>
+       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p>Modifying protection</p></td>
        <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>You can modify the protection plan of a NAS file system. After the modification, the next backup will be executed based on the new protection plan.</p> <p><strong>Note</strong></p>
         <ul>
          <li>The modification does not affect the protection job that is in progress. The new protection plan is used from the next protection period.</li>
@@ -74,7 +74,7 @@
        <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>In the row of the target resource, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify Protection</strong></span></b></span>.</p></td>
       </tr>
       <tr>
-       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p><span><strong>Remove Protection</strong></span></p></td>
+       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p>Removing protection</p></td>
        <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>You can remove the protection plan if the SLA file system no longer needs to be protected. After the protection plan is removed, the system cannot execute protection jobs for the NAS file system.</p> <p><strong>Note</strong></p>
         <ul>
          <li>When a protection job of the NAS file system is in progress, protection cannot be removed.</li>
@@ -83,18 +83,18 @@
        <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>In the row of the target resource, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Remove Protection</strong></span></b></span>.</p></td>
       </tr>
       <tr>
-       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p><span><strong>Restore</strong></span></p></td>
+       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p>Performing restoration</p></td>
        <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>If a file in the NAS file system is lost or damaged, you can restore the file using its backup.</p></td>
        <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>In the row of the target resource, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Restore</strong></span></b></span>.</p></td>
       </tr>
       <tr>
-       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p><span><strong>Disable Protection</strong></span></p></td>
-       <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>If you do not need to perform periodic protection for the NAS file system, you can disable the protection plan of the NAS file system. After the protection plan is disabled, the system does not automatically back up the NAS file system.</p> <p><strong>Note</strong></p> <p>Disabling protection does not affect ongoing backup jobs.</p></td>
+       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p>Disabling protection</p></td>
+       <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>If you do not need to perform periodic protection for the NAS file system, you can disable the protection plan of the NAS file system. After the protection plan is disabled, the system does not perform automatic backup jobs for the NAS file system.</p> <p><strong>Note</strong></p> <p>Disabling protection does not affect ongoing backup jobs.</p></td>
        <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>In the row of the target resource, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Disable Protection</strong></span></b></span>.</p></td>
       </tr>
       <tr>
-       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p><span><strong>Activate Protection</strong></span></p></td>
-       <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>After the protection plan of the NAS file systems is disabled, you can activate it again. After the protection plan is activated, the system backs up the NAS file system based on the protection plan.</p> <p><strong>Note</strong></p> <p>This operation can be performed only for a NAS file system that has been associated with an SLA and is in the <span class="uicontrol"><b><span><strong>Unprotected</strong></span></b></span> state.</p></td>
+       <td class="cellrowborder" valign="top" width="14.360000000000001%" headers="mcps1.3.5.2.4.1.1 "><p>Activating protection</p></td>
+       <td class="cellrowborder" valign="top" width="57.86%" headers="mcps1.3.5.2.4.1.2 "><p><strong>Scenario</strong></p> <p>After the protection plan of the NAS file system is disabled, you can activate it again. After the protection plan is activated, the system backs up the NAS file system based on the protection plan.</p> <p><strong>Note</strong></p> <p>This operation can be performed only for a NAS file system that has been associated with an SLA and is in the <span class="uicontrol"><b><span><strong>Unprotected</strong></span></b></span> state.</p></td>
        <td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.5.2.4.1.3 "><p>In the row of the target resource, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Activate Protection</strong></span></b></span>.</p></td>
       </tr>
       <tr>

@@ -19,7 +19,7 @@ import {
   PipeTransform,
   ViewChild
 } from '@angular/core';
-import { MessageService, ModalRef } from '@iux/live';
+import { MessageService, ModalRef, PageConfig } from '@iux/live';
 import {
   CommonConsts,
   I18NService,
@@ -54,10 +54,11 @@ export class SelectTableComponent implements OnInit {
   @Input() selectedTableData;
   @Input() modifiedTables;
   pageIndex = CommonConsts.PAGE_START;
-  pageSize = CommonConsts.PAGE_SIZE * 5;
+  pageSize = CommonConsts.PAGE_SIZE_MAX;
   totalTable = 0;
   allTableData = [];
   selectionData = [];
+  dataFlowLabel = `(${this.i18n.get('protection_data_stream_label')})`;
   @ViewChild('pageA', { static: false }) pageA;
   @ViewChild('pageS', { static: false }) pageS;
 
@@ -86,10 +87,10 @@ export class SelectTableComponent implements OnInit {
     }
   }
 
-  getTables(recordsTemp?, startPage?) {
+  getTables(filter?: PageConfig) {
     const params = {
-      pageNo: startPage || CommonConsts.PAGE_START + 1,
-      pageSize: CommonConsts.PAGE_SIZE * 10,
+      pageNo: filter?.pageIndex + 1 || CommonConsts.PAGE_START_EXTRA,
+      pageSize: filter?.pageSize || CommonConsts.PAGE_SIZE * 10,
       envId: this.data?.clusterId,
       parentId: this.data?.backupSetId || '',
       resourceType: 'ElasticsearchIndex'
@@ -97,58 +98,40 @@ export class SelectTableComponent implements OnInit {
     this.protectedEnvironmentApiService
       .ListEnvironmentResource(params)
       .subscribe(res => {
-        if (!recordsTemp) {
-          recordsTemp = [];
-        }
-        if (!isNumber(startPage)) {
-          startPage = CommonConsts.PAGE_START + 1;
-        }
-        startPage++;
-        recordsTemp = [...recordsTemp, ...res.records];
-        if (
-          startPage ===
-            Math.ceil(res.totalCount / (CommonConsts.PAGE_SIZE * 10)) + 1 ||
-          res.totalCount === 0
-        ) {
-          this.allTableData = recordsTemp;
-          this.totalTable = recordsTemp.length;
+        this.allTableData = res.records;
+        this.totalTable = res.totalCount;
 
-          each(this.allTableData, item => {
-            if (item.extendInfo.type === 'DATA_STREAM') {
-              item.name = `${item.name} ( ${this.i18n.get('')} )`;
+        each(this.allTableData, item => {
+          if (item.extendInfo?.isLocked === 'true') {
+            assign(item, {
+              disabled: true
+            });
+          }
+        });
+
+        each(this.modifiedTables, item => {
+          const data = find(this.allTableData, { name: item });
+
+          if (data) {
+            set(data, 'extendInfo.isLocked', 'false');
+            this.selectionData = [...this.selectionData, data];
+
+            if (
+              !find(this.selectedTableData, item => item.name === data.name)
+            ) {
+              this.selectedTableData = [...this.selectedTableData, data];
             }
-            if (item.extendInfo?.isLocked === 'true') {
-              assign(item, {
-                disabled: true
-              });
-            }
-          });
+          }
+        });
 
-          each(this.modifiedTables, item => {
-            const data = find(this.allTableData, { name: item });
+        this.disableOkBtn();
 
-            if (data) {
-              set(data, 'extendInfo.isLocked', 'false');
-              this.selectionData = [...this.selectionData, data];
-
-              if (
-                !find(this.selectedTableData, item => item.name === data.name)
-              ) {
-                this.selectedTableData = [...this.selectedTableData, data];
-              }
-            }
-          });
-
-          this.disableOkBtn();
-
-          each(this.allTableData, item => {
-            if (find(this.selectedTableData, { name: item.name })) {
-              this.selectionData = [...this.selectionData, item];
-            }
-          });
-          return;
-        }
-        this.getTables(recordsTemp, startPage);
+        each(this.allTableData, item => {
+          if (find(this.selectedTableData, { name: item.name })) {
+            this.selectionData = [...this.selectionData, item];
+          }
+        });
+        this.cdr.detectChanges();
       });
   }
 
@@ -157,9 +140,10 @@ export class SelectTableComponent implements OnInit {
     this.disableOkBtn();
   }
 
-  pageChange(page) {
-    this.pageSize = page.pageSize;
-    this.pageIndex = page.pageIndex;
+  pageChange(filter: PageConfig) {
+    this.pageSize = filter.pageSize;
+    this.pageIndex = filter.pageIndex;
+    this.getTables(filter);
   }
 
   clearSelected() {

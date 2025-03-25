@@ -1,4 +1,3 @@
-<lv-alert lvType="info">{{'common_batch_retry_tip_label' | i18n}}</lv-alert>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,7 +11,8 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<aui-job-table [activeIndex]="jobOriginType.HANDLED" (selectionChange)="updateSelections($event)"></aui-job-table>
+<lv-alert lvType="info">{{'common_batch_retry_tip_label' | i18n}}</lv-alert>
+<aui-job-table [activeIndex]="jobOriginType.HANDLED" [statusList]="statusArr" (selectionChange)="updateSelections($event)"></aui-job-table>
 
 <ng-template #warningWindowTpl>
   <div>{{'common_batch_retry_restore_tip_label' | i18n}}</div>

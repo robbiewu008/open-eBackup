@@ -127,7 +127,7 @@ public class OceanBaseRestoreInterceptor extends AbstractDbRestoreInterceptorPro
     }
 
     @Override
-    public RestoreTask initialize(RestoreTask task) {
+    public RestoreTask supplyRestoreTask(RestoreTask task) {
         Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElse(Maps.newHashMap());
 
         advanceParams.put(DatabaseConstants.MULTI_POST_JOB, Boolean.FALSE.toString());

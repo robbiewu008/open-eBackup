@@ -1,4 +1,3 @@
-<ng-container *ngIf="subType === dataMap.Resource_Type.kubernetesClusterCommon.value; else elseTemplate">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<ng-container *ngIf="subType === dataMap.Resource_Type.kubernetesClusterCommon.value; else elseTemplate">
     <h3 class="aui-gutter-column-lg">{{'common_basic_info_label' | i18n}}</h3>
     <lv-group [lvColumns]='["110px", "auto", "auto", "auto"]' class="aui-gutter-column-xl">
         <div>
@@ -47,7 +47,7 @@
                     <span>{{rowItem?.endpoint | nil}}</span>
                 </lv-group>
             </lv-group>
-            <h3 class="aui-gutter-column-md">{{'protection_proxy_host_label' | i18n}}</h3>
+            <h3 class="aui-gutter-column-md">{{'protection_clients_label' | i18n}}</h3>
             <lv-pro-table #clusterNode [config]="nodeTableConfig" [data]="nodeTableData"></lv-pro-table>
         </lv-tab>
         <lv-tab lvTitle="{{'protection_storage_resource_label' | i18n}}">

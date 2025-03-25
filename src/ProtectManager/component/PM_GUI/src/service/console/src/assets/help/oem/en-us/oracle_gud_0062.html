@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -74,7 +74,13 @@
          <li id="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_li15682124913711">OS authentication:<p id="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_p95148598366"><a name="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_li15682124913711"></a><a name="en-us_topic_0000001656561309_en-us_topic_0000001656760969_li15682124913711"></a><strong id="oracle_gud_0062__b20891201811475">export ORACLE_SID=</strong><em id="oracle_gud_0062__i3891141810471">Database instance name</em></p> <p id="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_p145141259153613"><strong id="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_b1597618293715">sqlplus / as sysdba</strong></p></li>
          <li id="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_li105571236103417">Database authentication:<p id="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_p920984963717"><a name="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_li105571236103417"></a><a name="en-us_topic_0000001656561309_en-us_topic_0000001656760969_li105571236103417"></a><strong id="oracle_gud_0062__b59551219184713">export ORACLE_SID=</strong><em id="oracle_gud_0062__i1895571914472">Database instance name</em></p> <p id="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_p182093496371"><strong id="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_b034785743716">sqlplus</strong></p> <p id="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_p17915722412">Enter the name of a user with the <strong id="oracle_gud_0062__b15199825104712">sysdba</strong> permissions as prompted:</p> <pre class="screen" id="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_screen9915112104114"><em id="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_i1915102164113">username </em>as sysdba</pre> <p id="oracle_gud_0062__en-us_topic_0000001656561309_en-us_topic_0000001656760969_p159150224117">Enter the password as prompted.</p></li>
         </ul></li>
-       <li id="oracle_gud_0062__en-us_topic_0000001656561309_li198251911109">Run the following command to shut down the database with the same name:<p id="oracle_gud_0062__en-us_topic_0000001656561309_p96841918142516"><a name="oracle_gud_0062__en-us_topic_0000001656561309_li198251911109"></a><a name="en-us_topic_0000001656561309_li198251911109"></a><strong id="oracle_gud_0062__en-us_topic_0000001656561309_b1025322122520">shutdown immediate;</strong></p></li>
+       <li id="oracle_gud_0062__en-us_topic_0000001656561309_li198251911109">Run the following command to shut down the database with the same name:<p id="oracle_gud_0062__en-us_topic_0000001656561309_p96841918142516"><a name="oracle_gud_0062__en-us_topic_0000001656561309_li198251911109"></a><a name="en-us_topic_0000001656561309_li198251911109"></a><strong id="oracle_gud_0062__en-us_topic_0000001656561309_b1025322122520">shutdown immediate;</strong></p>
+        <div class="note" id="oracle_gud_0062__note470175616170">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="oracle_gud_0062__p127116565174">For an RAC cluster, run this command on all nodes.</p>
+         </div>
+        </div> <p id="oracle_gud_0062__p146421258946">If the following information is displayed, the database is shut down.</p> <pre class="screen" id="oracle_gud_0062__screen730142119511">ORACLE instance shut down.</pre></li>
       </ol> <p></p></li>
      <li id="oracle_gud_0062__li17844445165619"><a name="oracle_gud_0062__li17844445165619"></a><a name="li17844445165619"></a><span>When restoring data to the original location, ensure that the free memory size of the target host must be greater than the total size of the SGA and PGA of the database. Otherwise, the restoration may fail.</span><p></p>
       <div class="p">
@@ -133,7 +139,7 @@ Swap:           99G          0B         99G</pre> <p>If the free memory size is 
        <div class="note">
         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
         <div class="notebody">
-         <p>For 1.6.0 and later versions: If "Mounting succeeded, the target database has started, and data migration starts." is displayed in the restoration job details, you can access the target database.</p>
+         <p>For 1.6.0 and later versions, if "Mounting succeeded, the target database has started, and data migration starts." is displayed in the restoration job details, you can access the target database.</p>
         </div>
        </div>
        <ol type="a">
@@ -348,7 +354,7 @@ Swap:           99G          0B         99G</pre> <p>If the free memory size is 
               <div class="note">
                <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
                <div class="notebody">
-                <p id="oracle_gud_0062__oracle_gud_0058_p63168441018">For 1.6.0 and later versions: If the name of the target database for restoration is the same as that of the original database, scan the restoration target resource after the restoration job is complete to ensure that the obtained instance name information is correct.</p>
+                <p id="oracle_gud_0062__oracle_gud_0058_p63168441018">For 1.6.0 and later versions, if the name of the target database for restoration is the same as that of the original database, scan the restoration target resource after the restoration job is complete to ensure that the obtained instance name information is correct.</p>
                </div>
               </div></li>
             </ol></li>

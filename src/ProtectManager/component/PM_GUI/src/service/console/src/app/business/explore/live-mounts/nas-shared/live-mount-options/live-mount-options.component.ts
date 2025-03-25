@@ -20,7 +20,7 @@ import {
   PortPermisson,
   RootPermisson
 } from 'app/shared';
-import { assign, each, isEmpty, map, pick, trim } from 'lodash';
+import { assign, each, isEmpty, map, omit, pick, trim } from 'lodash';
 
 @Component({
   selector: 'aui-live-mount-nas-shared-options',
@@ -136,16 +136,45 @@ export class LiveMountOptionsComponent implements OnInit {
     }
     const parameters = {} as any;
     const performance = {};
-    const performanceParams = pick(this.formGroup.value, [
+    let performanceParams: any = pick(this.formGroup.value, [
       'min_bandwidth',
       'max_bandwidth',
       'burst_bandwidth',
       'min_iops',
       'max_iops',
       'burst_iops',
-      'burst_time',
       'latency'
     ]);
+
+    if (!this.formGroup.value.bindWidthStatus) {
+      performanceParams = omit(performanceParams, [
+        'min_bandwidth',
+        'max_bandwidth',
+        'burst_bandwidth'
+      ]);
+    }
+
+    if (!this.formGroup.value.iopsStatus) {
+      performanceParams = omit(performanceParams, [
+        'min_iops',
+        'max_iops',
+        'burst_iops'
+      ]);
+    }
+
+    if (
+      (this.formGroup.value.bindWidthStatus &&
+        this.formGroup.value.burst_bandwidth &&
+        this.formGroup.value.bindWidthBurst) ||
+      (this.formGroup.value.iopsStatus &&
+        this.formGroup.value.burst_iops &&
+        this.formGroup.value.iopsBurst)
+    ) {
+      assign(performanceParams, {
+        burst_time: this.formGroup.value.burst_time
+      });
+    }
+
     each(performanceParams, (v, k) => {
       if (isEmpty(trim(String(v)))) {
         return;

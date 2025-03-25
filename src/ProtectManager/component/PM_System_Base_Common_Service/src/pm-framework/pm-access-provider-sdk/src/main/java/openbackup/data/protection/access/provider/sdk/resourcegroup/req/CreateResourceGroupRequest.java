@@ -48,10 +48,14 @@ public class CreateResourceGroupRequest {
     @NotNull
     private String sourceSubType;
 
-    @NotNull
     private List<String> resourceIds;
 
     @Length(min = 1, max = 64)
     @NotNull
     private String scopeResourceId;
+
+    @Length(min = 1, max = 64)
+    private String groupType;
+
+    private String extendStr;
 }

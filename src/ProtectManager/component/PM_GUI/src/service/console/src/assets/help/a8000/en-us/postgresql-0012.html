@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -26,7 +26,7 @@
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
@@ -42,22 +42,16 @@
 </div></div>
 <p>For details, see <a href="postgresql-0011.html">Step 3: Registering the Database of a Single PostgreSQL Instance</a>.</p>
 </li><li>Before registering an instance, check whether the owner of the <strong>bin/lib/share</strong> file in the database installation path is <strong>root</strong>. If the owner is <strong>root</strong>, set <strong>enable_root</strong> to <strong>1</strong> in the <strong>/opt/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/applications/postgresql/conf/switch.conf</strong> configuration file.</li><li>Before registering a PostgreSQL cluster, query the cluster type.<p><strong>Pgpool cluster</strong></p>
-<ol><li>Use PuTTY to log in to the PostgreSQL database host.</li><li>Run the <strong>ps -ef | grep pgpool</strong> command to check whether the cluster is a Pgpool cluster. If the fields in the command output contains <strong>pgpool</strong>, the current cluster is a Pgpool cluster. Otherwise, the current cluster is not a Pgpool cluster.<ul><li>If the following command output is displayed, the current cluster is a Pgpool cluster.</li></ul>
-<p></p>
+<ol><li>Use PuTTY to log in to the PostgreSQL database host.</li><li>Run the <strong>ps -ef | grep pgpool</strong> command to check whether the cluster is a Pgpool cluster. If the command output contains fields related to <strong>pgpool</strong>, the current cluster is a Pgpool cluster. Otherwise, the current cluster is not a Pgpool cluster.<ul><li>If the following command output is displayed, the current cluster is a Pgpool cluster.</li></ul>
+<p><span><img src="en-us_image_0000002100843889.png"></span></p>
 <ul><li>If only the following information is displayed, the current cluster is not a Pgpool cluster.</li></ul>
 <p><span><img src="en-us_image_0000002053191312.png"></span></p>
 </li></ol>
 <p><strong>Patroni cluster</strong></p>
-<ol><li>Use PuTTY to log in to the PostgreSQL database host.</li><li>Run the <strong>ps -ef | grep patroni</strong> command to check whether the cluster is a Patroni cluster. If the fields in the command output contains <strong>patroni</strong>, the current cluster is a Patroni cluster. Otherwise, the current cluster is not a Patroni cluster.<ul><li>If the following command output is displayed, the current cluster is a Patroni cluster.<p><span><img src="en-us_image_0000002089242693.png"></span></p>
-</li></ul>
-<ul><li>If only the following command output is displayed, the current cluster is not a Patroni cluster.<p><span><img src="en-us_image_0000002089366285.png"></span></p>
-</li></ul>
-</li></ol>
-<p><strong>CLup cluster</strong></p>
-<ol><li>Use PuTTY to log in to the PostgreSQL database host.</li><li>Run the <strong>ps -ef | grep clup</strong> command to check whether the cluster is a CLup cluster. If the fields in the command output contains <strong>clup</strong>, the current cluster is a CLup cluster. Otherwise, the current cluster is not a CLup cluster.<ul><li>If the following command output is displayed, the current cluster is a CLup cluster.<p><span><img src="en-us_image_0000002089264013.png"></span></p>
-</li><li>If only the following command output is displayed, the current cluster is not a CLup cluster.<p><span><img src="en-us_image_0000002090796449.png"></span></p>
-<p></p>
-</li></ul>
+<ol><li>Use PuTTY to log in to the PostgreSQL database host.</li><li>Run the <strong>ps -ef | grep patroni</strong> command to check whether the cluster is a Patroni cluster. If command output contains fields related to <strong>patroni</strong>, the current cluster is a Patroni cluster. Otherwise, the current cluster is not a Patroni cluster.<ul><li>If the following command output is displayed, the current cluster is a Patroni cluster.</li></ul>
+<p><span><img src="en-us_image_0000002101715833.png"></span></p>
+<ul><li>If only the following information is displayed in the command output, the current cluster is not a Patroni cluster.</li></ul>
+<p><span><img src="en-us_image_0000002089366285.png"></span></p>
 </li></ol>
 </li></ul>
 </div>
@@ -71,12 +65,12 @@
 </thead>
 <tbody><tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>Enter a custom name.</p>
+<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>Enter a custom cluster name.</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span><strong>Cluster Type</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>Select <strong>Pgpool</strong>, <strong>Patroni</strong>, or <strong>CLup</strong>.</p>
+<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>Available options are <strong>Pgpool</strong> and <strong>Patroni</strong>.</p>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span><strong>Type</strong></span></p>
@@ -91,7 +85,7 @@
 </tr>
 <tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span><strong>Nodes</strong></span></p>
 </td>
-<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>Select the host or CLup server node where the PostgreSQL instance is located.</p>
+<td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>Select the host where the PostgreSQL instance is located.</p>
 </td>
 </tr>
 </tbody>
@@ -111,7 +105,7 @@
 <td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>Username for installing the database.</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span><strong>Cluster</strong></span></p>
+<tr><td class="cellrowborder" valign="top" width="28.050000000000004%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span><strong>Clusters</strong></span></p>
 </td>
 <td class="cellrowborder" valign="top" width="71.95%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>Select the database host to be registered.</p>
 </td>

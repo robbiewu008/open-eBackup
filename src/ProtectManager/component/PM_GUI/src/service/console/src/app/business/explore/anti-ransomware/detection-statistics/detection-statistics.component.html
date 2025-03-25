@@ -1,4 +1,3 @@
-<lv-group [lvColumns]='["auto","auto","auto"]' lvRowGutter="0px" class="overview-top">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-group [lvColumns]='["auto","auto","auto"]' lvRowGutter="0px" class="overview-top">
     <!-- 勒索文件拦截 -->
     <div class="aui-block statistics-block" *ngIf="supportLicense.isFile">
         <h2>{{ 'explore_blocking_files_label' | i18n }}</h2>

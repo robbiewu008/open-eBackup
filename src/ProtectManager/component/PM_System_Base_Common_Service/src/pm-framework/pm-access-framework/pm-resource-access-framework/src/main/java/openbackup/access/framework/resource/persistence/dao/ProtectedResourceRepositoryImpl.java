@@ -132,6 +132,8 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
 
     private static final int NOTIFY_SIZE = 5;
 
+    private static final String USE_OLD_AGENT = "1.3";
+
     private final ProtectedResourceMapper protectedResourceMapper;
 
     private final ProtectedResourceExtendInfoMapper protectedResourceExtendInfoMapper;
@@ -1281,7 +1283,7 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
     }
 
     @Override
-    public void legoHostSighWithOldPrivateKey() {
+    public void legoHostSighWithOldPrivateKey(boolean isFileExits) {
         Map<String, Object> param = new HashMap<>();
         param.put("type", "Host");
         param.put("scenario", AgentTypeEnum.EXTERNAL_AGENT.getValue());
@@ -1290,15 +1292,44 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
         param.put("pageSize", 20000);
         // 查询在线主机
         List<ProtectedResourcePo> protectedResourcePos = this.queryAgentResourceList(param);
+        if (isFileExits) {
+            protectedResourcePos = Optional.of(protectedResourcePos)
+                .map(list -> list.stream()
+                    .filter(protectedResourcePo ->
+                        USE_OLD_AGENT.equals(getHostVersion(protectedResourcePo.getVersion())))
+                    .collect(Collectors.toList()))
+                .orElseGet(ArrayList::new);
+            for (ProtectedResourcePo protectedResourcePo : protectedResourcePos) {
+                ProtectedResourceExtendInfoPo extendInfoPo = protectedResourceExtendInfoMapper.selectOne(
+                    new QueryWrapper<ProtectedResourceExtendInfoPo>()
+                        .eq("resource_id", protectedResourcePo.getUuid())
+                        .eq("key", Constants.USE_OLD_PRIVATE));
+                if (VerifyUtil.isEmpty(extendInfoPo)) {
+                    sighWithOldPrivateKey(protectedResourcePo);
+                }
+            }
+        } else {
+            protectedResourcePos.forEach(this::sighWithOldPrivateKey);
+        }
         log.info("legoHostSighWithOld protectedResourcePos size: {}", protectedResourcePos.size());
-        protectedResourcePos.forEach(protectedResourcePo -> {
-            log.info("legoHostSighWithOld uuid: {}", protectedResourcePo.getUuid());
-            ProtectedResourceExtendInfoPo resourceExtendInfoPo = new ProtectedResourceExtendInfoPo();
-            resourceExtendInfoPo.setUuid(UUID.randomUUID().toString());
-            resourceExtendInfoPo.setResourceId(protectedResourcePo.getUuid());
-            resourceExtendInfoPo.setKey(Constants.USE_OLD_PRIVATE);
-            resourceExtendInfoPo.setValue("1");
-            this.insertProtectedResourceExtendInfoBo(resourceExtendInfoPo);
-        });
+    }
+
+    private void sighWithOldPrivateKey(ProtectedResourcePo protectedResourcePo) {
+        log.info("legoHostSighWithOld uuid: {}", protectedResourcePo.getUuid());
+        ProtectedResourceExtendInfoPo resourceExtendInfoPo = new ProtectedResourceExtendInfoPo();
+        resourceExtendInfoPo.setUuid(UUID.randomUUID().toString());
+        resourceExtendInfoPo.setResourceId(protectedResourcePo.getUuid());
+        resourceExtendInfoPo.setKey(Constants.USE_OLD_PRIVATE);
+        resourceExtendInfoPo.setValue("1");
+        this.insertProtectedResourceExtendInfoBo(resourceExtendInfoPo);
+    }
+
+    private String getHostVersion(String version) {
+        String[] parts = version.split("\\.");
+        if (parts.length >= 2) {
+            return parts[0] + "." + parts[1];
+        } else {
+            throw new IllegalArgumentException("Incorrect version number.");
+        }
     }
 }

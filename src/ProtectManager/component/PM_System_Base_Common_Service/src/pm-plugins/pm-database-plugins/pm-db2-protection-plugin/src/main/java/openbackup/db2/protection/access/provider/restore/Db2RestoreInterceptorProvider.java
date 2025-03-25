@@ -83,6 +83,8 @@ public class Db2RestoreInterceptorProvider extends AbstractDbRestoreInterceptorP
         // 设置恢复的目标对象
         setTargetObject(task);
 
+        super.setCopyRestoreNeedWritable(task);
+
         // 设置速度统计方式为UBC
         TaskUtil.setRestoreTaskSpeedStatisticsEnum(task, SpeedStatisticsEnum.UBC);
 

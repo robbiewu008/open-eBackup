@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -34,26 +34,26 @@
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="opengauss-0114"></a><a name="opengauss-0114"></a>
-  <h1 class="topictitle1">Step 4: (Optional) Enabling Backup Link Encryption<span></span></h1>
+  <h1 class="topictitle1">Step 4: (Optional) Enabling Backup Link Encryption</h1>
   <div>
    <p>To ensure data security, you can enable backup link encryption. This function encrypts the data transmitted during data backup.</p>
    <div class="section">
     <h4 class="sectiontitle">Prerequisites</h4>
-    <p>Ensure that the NFS Kerberos service has been configured for the storage system. Otherwise, backup jobs may fail after backup link encryption is enabled. <span>For details about how to configure the NFS Kerberos service, see "(Optional) Configuring the NFS Kerberos Service" in the <em id="opengauss-0114__en-us_topic_0000001839143225_i10207188469">Installation Guide</em>. </span> Add two users to the AD domain: one with the username <strong>rdadmin</strong> and the other with the username used for <a href="opengauss-0112.html">resource registration</a>. If the user already exists in the AD domain, you do not need to add it.</p>
+    <p>Ensure that the NFS Kerberos service has been configured for the storage system and user <strong>rdadmin</strong> and the user used for <a href="opengauss-0112.html">resource registration</a> have been added to the AD domain. Otherwise, the backup job may fail after backup link encryption is enabled. <span>For details about how to configure the NFS Kerberos service, see "(Optional) Configuring the NFS Kerberos Service" in the <i><cite id="opengauss-0114__en-us_topic_0000001839143225_cite5907115716400">Installation Guide</cite></i> specific to your product model.</span></p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Precautions</h4>
-    <p id="opengauss-0114__en-us_topic_0000001839143225_p1854315715349">After backup link encryption is enabled, the ticket between the agent host and the KDC domain server has a validity period. If the ticket expires, backup jobs may fail. You are advised to prolong the validity period of the ticket in the Kerberos policy on the KDC domain server or configure the ticket to never expire. If the permanent validity period is not configured, you must run the <strong id="opengauss-0114__en-us_topic_0000001839143225_b152622189614">kinit</strong> or <strong id="opengauss-0114__en-us_topic_0000001839143225_b82633181265">net</strong> command on the agent host to re-obtain tickets for users added to the AD domain before the tickets are about to expire. For details, see "Configuring the Client" in the <em id="opengauss-0114__en-us_topic_0000001839143225_i8540135312610">Installation Guide</em>.</p>
+    <p id="opengauss-0114__en-us_topic_0000001839143225_p1854315715349">After backup link encryption is enabled, the ticket between the agent host and the KDC domain server has a validity period. If the ticket expires, backup jobs may fail. You are advised to prolong the validity period of the ticket in the Kerberos policy on the KDC domain server or configure the ticket to never expire. If the ticket is not configured to never expire, you must run the <strong id="opengauss-0114__en-us_topic_0000001839143225_b195916246015">kinit</strong> or <strong id="opengauss-0114__en-us_topic_0000001839143225_b1659142413011">net</strong> command on the agent host to renew the ticket for each user added to the AD domain before it expires. For details, see "Configuring the Client" in the <i><cite id="opengauss-0114__en-us_topic_0000001839143225_cite890601917412">Installation Guide</cite></i> specific to your product model.</p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Creating a Local UNIX Authentication User Group</h4>
-    <p>Before enabling backup link encryption, if the current environment is not added to any domain environment, add the user group to the local authentication user group.</p>
+    <p>Before enabling backup link encryption, if the current environment is not added to any domain environment, add the user group to the local authentication user group. <span>Operations may vary according to storage devices.</span></p>
     <ol>
      <li><span>Log in to DeviceManager.</span><p></p>
       <ol type="a">
-       <li>Choose <span class="uicontrol" id="opengauss-0114__en-us_topic_0000001839143213_en-us_topic_0000001311295305_en-us_topic_0000001149078659_uicontrol1098185683619"><b><span id="opengauss-0114__en-us_topic_0000001839143213_text157651936143415"><strong>System</strong></span> &gt; <span id="opengauss-0114__en-us_topic_0000001839143213_text49601653123416"><strong>Infrastructure</strong></span> &gt; <span id="opengauss-0114__en-us_topic_0000001839143213_text112401684352"><strong>Cluster Management</strong></span></b></span>.</li>
-       <li>In the <span class="uicontrol" id="opengauss-0114__en-us_topic_0000001839143213_uicontrol1050641575312"><b><span id="opengauss-0114__en-us_topic_0000001839143213_text133861121163513"><strong>Local Cluster Nodes</strong></span></b></span> area of the <span class="uicontrol" id="opengauss-0114__en-us_topic_0000001839143213_uicontrol13691645105219"><b><span id="opengauss-0114__en-us_topic_0000001839143213_text1763193125313"><strong>Backup Cluster</strong></span></b></span> tab page, click the node name.</li>
-       <li>In the <span class="uicontrol" id="opengauss-0114__en-us_topic_0000001839143213_uicontrol1144724616332"><b><span id="opengauss-0114__en-us_topic_0000001839143213_text51761646203516"><strong>Node detail</strong></span></b></span> dialog box that is displayed, click <span class="uicontrol" id="opengauss-0114__en-us_topic_0000001839143213_uicontrol1544714611335"><b><span id="opengauss-0114__en-us_topic_0000001839143213_text1624910583612"><strong>Open the device management platform</strong></span></b></span> to go to DeviceManager.</li>
+       <li>Choose <span class="uicontrol" id="opengauss-0114__dameng-00016_uicontrol44119321514"><b><span id="opengauss-0114__dameng-00016_text84113324512">System</span> &gt; <span id="opengauss-0114__dameng-00016_text16411232357">Infrastructure</span> &gt; <span id="opengauss-0114__dameng-00016_text1541132354">Cluster Management</span></b></span>.</li>
+       <li>On the <span class="uicontrol" id="opengauss-0114__dameng-00016_uicontrol1133432319218"><b><span id="opengauss-0114__dameng-00016_text63341323122114">Backup Cluster</span></b></span> tab page, click the node name in the <span class="uicontrol" id="opengauss-0114__dameng-00016_uicontrol633411238219"><b><span id="opengauss-0114__dameng-00016_text13348230215">Local Cluster Nodes</span></b></span> area.</li>
+       <li>In the <span class="uicontrol" id="opengauss-0114__dameng-00016_uicontrol18157104682119"><b><span id="opengauss-0114__dameng-00016_text11157144612211">Node Details</span></b></span> dialog box that is displayed, click <span class="uicontrol" id="opengauss-0114__dameng-00016_uicontrol19157146142112"><b><span id="opengauss-0114__dameng-00016_text11157154610219">Open the device management platform</span></b></span> to go to DeviceManager.</li>
       </ol> <p></p></li>
      <li><span>Choose <strong>Services</strong> &gt; <strong>File Service</strong> &gt; <strong>Authentication Users</strong>.</span></li>
      <li><span>On the <span class="uicontrol"><b>UNIX Users</b></span> tab page, select <span class="uicontrol"><b>Local Authentication User Groups</b></span>.</span></li>
@@ -78,7 +78,7 @@
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>Parent topic:</strong> <a href="opengauss-0111.html">Backing Up openGauss/CMDB</a>
+     <strong>Parent topic:</strong> <a href="opengauss-0111.html">Backing Up openGauss</a>
     </div>
    </div>
   </div>

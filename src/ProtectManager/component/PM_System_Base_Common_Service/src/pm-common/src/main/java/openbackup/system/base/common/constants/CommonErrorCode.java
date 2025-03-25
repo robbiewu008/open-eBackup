@@ -83,6 +83,16 @@ public final class CommonErrorCode {
     public static final long USER_OR_STORAGE_UNIT_NOT_EXIST = 1677930077L;
 
     /**
+     * 执行取消存储单元授权时，由于用户资源绑定的SLA中有策略关联到存储单元，操作失败。
+     */
+    public static final long USER_RESOURCE_SLA_POLICY_RELATED_TO_STORAGE = 1677930089L;
+
+    /**
+     * 执行取消存储单元授权时，由于用户SLA中有策略关联到存储单元，操作失败。
+     */
+    public static final long USER_SLA_POLICY_RELATED_TO_STORAGE = 1677930090L;
+
+    /**
      * UNKNOWN_USER
      */
     public static final long UNKNOWN_USER = 1677929477L;
@@ -326,6 +336,11 @@ public final class CommonErrorCode {
      * 公用的数量超过限制
      */
     public static final long NUMBER_LIMIT = 1677929225L;
+
+    /**
+     * 错误场景：执行日志导出操作，由于存在导出中的任务，操作失败。
+     */
+    public static final long EXIST_EXPORTING_JOB = 1677936641L;
 
     /**
      * 原因：存在正在运行的告警转储任务，无法修改。
@@ -1487,6 +1502,12 @@ public final class CommonErrorCode {
     public static final long NFS_V41_SERVICE_NOT_OPEN = 1677931379L;
 
     /**
+     * 原因：DeviceManager未开启NFSv4.1服务。
+     * 建议：请登录Devicemanager，选择“设置 > 共享设置 > NFS服务”，启用NFSv4.1服务。
+     */
+    public static final long PACIFIC_NFS_V41_SERVICE_NOT_OPEN = 1677931482L;
+
+    /**
      * 原因：开启并行数据存储且在线备份存储单元数量低于系统下限（{0}）。
      * 建议：请确保备份存储单元均为在线状态。
      */
@@ -1802,11 +1823,11 @@ public final class CommonErrorCode {
     public static final long CONNECT_LDAP_SERVER_FAILED = 1677929481L;
 
     /**
-     * 错误场景：执行VMware备份操作时，由于虚拟机正在迁移，无法创建快照，操作失败。
-     * 原因：虚拟机正在迁移，无法创建快照。
-     * 建议：请等待虚拟机完成迁移，重新进行资源扫描后重试。
+     * 错误场景：执行测试连接LDAP服务操作时，由于域名解析失败，操作失败。
+     * 原因：域名（{0}）解析失败。
+     * 建议：请前往DeviceManager设置DNS域名服务器，并确保DNS服务器上已配置域名（{0}）。
      */
-    public static final long VM_IS_BEING_MIGRATED = 1677931473L;
+    public static final long DOMAIN_NAME_RESOLVED_FAILED = 1677935647L;
 
     /**
      * ADFS链接网络超时
@@ -1880,6 +1901,58 @@ public final class CommonErrorCode {
      * 建议：请在“ProtectAgent安装指南”中搜索“安装目录”进行处理。
      */
     public static final long CLIENT_REGISTER_FAILED = 1677873409L;
+
+    /**
+     * 错误场景：执行更换资源所属用户时，由于所修改用户配额不足，操作失败。
+     * 原因：当前用户的用户类型为（{0}），该用户的（{1}）配额不足导致操作失败。
+     * 建议：具体操作请参见“管理员指南”中的“设置配额”章节。
+     */
+    public static final long USER_QUOTA_NOT_ENOUGH = 1677931479L;
+
+    /**
+     * 错误场景：执行更换资源所属用户时，由于待更换的用户不是数据保护管理员，操作失败。
+     * 原因：待更换的用户不是数据保护管理员。
+     * 建议：选择其他用户后重试。
+     */
+    public static final long USER_NOT_DP_ADMIN = 1677931480L;
+
+    /**
+     * 请求超时错误码
+     */
+    public static final long REQUEST_TIMEOUT = 1677929226L;
+
+    /**
+     * 错误场景：执行创建端口时，选择端口类型是绑定端口，由于填写绑定端口名称在底座已存在，创建失败。
+     * 原因：创建的绑定端口名称在底座已存在，创建失败。
+     * 建议：请重新输入绑定端口名称后重试。
+     */
+    public static final long ERROR_BOND_PORT_NAME = 1677929525L;
+
+    /**
+     * 动态口令邮件发送失败
+     */
+    public static final long SEND_EMAIL_DYNAMIC_PWD_FAILED = 1677936128L;
+
+    /**
+     * 错误场景：执行注册受保护PDB集操作时，由于该受保护PDB集内存在已经注册的PDB，操作失败。
+     * 原因：存在已经被注册的PDB:（{0}）。
+     * 建议：请选择未被注册的PDB。
+     */
+    public static final long PROTECTED_PDB_REPEATED = 1677747713L;
+
+    /**
+     * 错误场景：执行创建端口操作时，选择端口类型是绑定端口，由于选择的以太网口已被其它绑定端口占用，创建失败。
+     * 原因：绑定端口({0})选择的以太网端口已被其它绑定端口占用。
+     * 建议：请选择其它未被占用的以太网端口后重试。
+     */
+    public static final long ERROR_DIFFERENT_BOND_PORT_NAME = 1677929526L;
+
+    /**
+     * 错误场景：创建/修改SLA时，域内复制的存储id与备份策略的存储id相同，报错。
+     * 原因：域内复制的存储id与备份策略的存储id不能相同。
+     * 建议：请修改域内复制策略或备份策略的存储单元。
+     */
+    public static final long ERROR_BACKUP_REP_SAME_STORAGEID = 1677749250L;
 
     private CommonErrorCode() {
     }

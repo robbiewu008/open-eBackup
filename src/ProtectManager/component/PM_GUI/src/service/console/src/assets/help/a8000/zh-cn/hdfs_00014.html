@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -40,7 +40,7 @@
 <h1 class="topictitle1">步骤3：注册HDFS集群</h1>
 <div><p>执行HDFS文件集备份恢复前，需要将HDFS集群注册至<span>OceanProtect</span>。</p>
 <div class="section" id="hdfs_00014__section10758914153313"><a name="hdfs_00014__section10758914153313"></a><a name="section10758914153313"></a><h4 class="sectiontitle">前提条件</h4><p>已获取HDFS集群中的<span class="filepath">“hdfs-site.xml”</span>和<span class="filepath">“core-site.xml”</span>文件，获取方法可参考以下步骤：</p>
-<ul><li>大数据平台为CDH（Cloudera's Distribution Apache Of Hadoop）<p>本节以<span style="color:#1C2429;">Cloudera Express 6.3.1</span>版本为例说明，不同版本的操作可能存在差异，可查看CDH产品文档进行操作。</p>
+<ul><li>大数据平台为CDH（Cloudera's Distribution including Apache Hadoop）<p>本节以<span style="color:#1C2429;">Cloudera Express 6.3.1</span>版本为例说明，不同版本的操作可能存在差异，可查看CDH产品文档进行操作。</p>
 <ol><li>使用浏览器，登录<span style="color:#1C2429;">Cloudera</span> Manager。</li><li>选择<span class="uicontrol">“群集 &gt; HDFS”</span>。</li><li>单击HDFS右侧的<span class="uicontrol">“操作 &gt; 下载客户端配置”</span>。</li><li>在下载得到的压缩包中获取<span class="filepath">“hdfs-site.xml”</span>和<span class="filepath">“core-site.xml”</span>文件。</li></ol>
 </li><li>大数据平台为FusionInsight<p>本节以<span style="color:#1C2429;">FusionInsight 6.5.1</span>版本为例说明，不同版本的操作可能存在差异，可查看FusionInsight产品文档进行操作。</p>
 <ol><li>使用浏览器，登录FusionInsight Manager。</li><li>选择<span class="uicontrol">“Cluster &gt; HDFS”</span>。</li><li>在页面右上方选择<span class="uicontrol">“More &gt; Download Client”</span>。</li><li>在下载得到的压缩包中获取<span class="filepath">“hdfs-site.xml”</span>和<span class="filepath">“core-site.xml”</span>文件。</li></ol>
@@ -103,8 +103,10 @@
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.3.2.2.2.2.2.3.1.1 "><p>ACL备份</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>对于1.5.0版本，此参数名称为<span class="uicontrol">“是否备份ACL”</span>。</p>
+</div></div>
 </td>
-<td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>备份ACL的开关</p>
+<td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.3.2.2.2.2.2.3.1.2 "><p>备份ACL的开关。</p>
 <p><span style="color:#282B33;">当大数据平台上HDFS ACL配置“dfs.namenode.acls.enabled”和当前开关同时开启时，才会备份ACL。</span></p>
 </td>
 </tr>

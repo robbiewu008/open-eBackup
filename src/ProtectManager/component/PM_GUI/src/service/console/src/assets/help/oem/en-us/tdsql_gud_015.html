@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -36,10 +36,10 @@
   <a name="tdsql_gud_015"></a><a name="tdsql_gud_015"></a>
   <h1 class="topictitle1">Step 7: Performing Backup</h1>
   <div>
-   <p>Before performing backup, you need to associate the resources to be protected with a specified SLA policy. The system protects the resources based on the SLA policy and periodically performs backup jobs based on the SLA policy. You can perform a backup job immediately through manual backup. For 1.6.0 and later: Multiple instances in the same TDSQL cluster can be backed up or restored at the same time.</p>
+   <p>Before performing backup, you need to associate the resources to be protected with a specified SLA policy. The system protects the resources based on the SLA policy and periodically performs backup jobs based on the SLA policy. You can perform a backup job immediately through manual backup. For 1.6.0 and later versions, multiple instances in the same TDSQL cluster can be backed up or restored at the same time.</p>
    <div class="section">
     <h4 class="sectiontitle">Context</h4>
-    <p id="tdsql_gud_015__tdsql_gud_010_p9667843103811"><span id="tdsql_gud_015__tdsql_gud_010_ph1292522251311">Unless otherwise specified, the operations in this section use TDSQL 10.3.22.1 as an example. The operations may vary depending on the version.</span></p>
+    <p id="tdsql_gud_015__tdsql_gud_010_p9667843103811"><span id="tdsql_gud_015__tdsql_gud_010_ph1292522251311">Unless otherwise specified, the operations in this section use TDSQL 10.3.22.1 as an example. The operations may vary depending on the actual version.</span></p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Precautions</h4>
@@ -55,7 +55,7 @@
      <li>The TDSQL database has been installed in the <span class="filepath"><b>/data/tdsql_run</b></span> directory.</li>
      <li><span>The NTP service has been enabled for the cluster and the clock source configurations are the same.</span></li>
      <li>On the <strong>Instance management</strong> page of the TDSQL CHITU management console, select an instance and choose <strong>Backup &amp; Recovery</strong> &gt; <strong>Backup settings</strong>. Set <span class="parmname"><b>Number of days to save binlog and cold standby</b></span> of the instance to be backed up to the maximum value.</li>
-     <li><span id="tdsql_gud_015__ph1111737722">The database vendor does not support the backup of distributed instances whose DR mode is 1+0 active/standby, or distributed instances does not have the cold standby node. Therefore, ensure that the cold standby node has been selected for the TDSQL distributed instance to be backed up before the backup.</span> For details, see <a href="en-us_topic_0000002061122832.html">Configuring the Cold Standby Node</a>.</li>
+     <li><span id="tdsql_gud_015__ph1111737722">The database vendor does not support the backup of distributed instances whose DR mode is 1+0 active/standby, or distributed instances does not have the cold standby node. Therefore, ensure that the cold standby node has been selected for the TDSQL distributed instance to be backed up before the backup.</span> For details, see <a href="en-us_topic_0000002061122832.html">Configuring a Cold Standby Node</a>.</li>
     </ul>
    </div>
    <div class="section">
@@ -68,12 +68,12 @@
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
         <ul>
-         <li>TDSQL distributed instances do not support <span><strong>Forever Incremental (Synthetic Full) Backup</strong></span>. Therefore, you cannot select an SLA whose protection policy contains <span><strong>Forever Incremental (Synthetic Full) Backup</strong></span> for protection.</li>
-         <li><span>If a WORM policy has been configured for the resource to be protected, select an SLA without a WORM policy to create protection to avoid WORM policy conflicts.</span></li>
+         <li>TDSQL distributed instances do not support forever incremental (synthetic full) backup. Therefore, you cannot select an SLA whose protection policy contains <span><strong>Forever Incremental (Synthetic Full) Backup</strong></span> for protection.</li>
+         <li><span>If a WORM policy has been configured for the resources to be protected, select an SLA without a WORM policy to avoid WORM policy conflicts.</span></li>
         </ul>
        </div>
       </div> <p></p></li>
-     <li><span>For 1.6.0 and later versions: Configure advanced parameters by referring to <a href="#tdsql_gud_015__table1322314598279">Table 1</a>.</span><p></p>
+     <li><span>For 1.6.0 and later versions, configure advanced parameters by referring to <a href="#tdsql_gud_015__table1322314598279">Table 1</a>.</span><p></p>
       <div class="tablenoborder">
        <a name="tdsql_gud_015__table1322314598279"></a><a name="table1322314598279"></a>
        <table cellpadding="4" cellspacing="0" summary="" id="tdsql_gud_015__table1322314598279" frame="border" border="1" rules="all">
@@ -105,12 +105,12 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="37.37%" headers="mcps1.3.5.2.4.2.1.2.3.1.1 "><p>zkmeta Backup</p></td>
+          <td class="cellrowborder" valign="top" width="37.37%" headers="mcps1.3.5.2.4.2.1.2.3.1.1 "><p><strong>zkmeta Backup</strong></p></td>
           <td class="cellrowborder" valign="top" width="62.629999999999995%" headers="mcps1.3.5.2.4.2.1.2.3.1.2 "><p>To restore databases across clusters, enable this function and ensure that the automatic zkmeta backup function is enabled. For details, see <a href="tdsql_gud_080.html">Step 2: Enabling the Automatic zkmeta Backup Function (Applicable to Distributed Instances)</a>.</p>
            <div class="note">
             <span class="notetitle"> NOTE: </span>
             <div class="notebody">
-             <p>This parameter is displayed only when protecting distributed instances.</p>
+             <p>This parameter is displayed only when distributed instances are protected.</p>
             </div>
            </div></td>
          </tr>
@@ -131,7 +131,7 @@
             <div class="note" id="tdsql_gud_015__fc_gud_0019_0_note1550211211513">
              <span class="notetitle"> NOTE: </span>
              <div class="notebody">
-              <p id="tdsql_gud_015__fc_gud_0019_0_p10502162125111">You need to click <strong id="tdsql_gud_015__fc_gud_0019_0_b810018188319">Configure</strong> to set the ransomware protection policy for the resource to be protected if the following conditions are met: <strong id="tdsql_gud_015__fc_gud_0019_0_b17329127414">Archive Time</strong> is not set to <strong id="tdsql_gud_015__fc_gud_0019_0_b938619243">Immediately after successful backup</strong> or <strong id="tdsql_gud_015__fc_gud_0019_0_b84761821247">Archive Policy</strong> is not set to <strong id="tdsql_gud_015__fc_gud_0019_0_b0492172712416">Only the latest copy</strong> in the SLA archive policy, and the ransomware protection policy is not set. For details, see "Creating Ransomware Protection and WORM Policies" in the <i><cite id="tdsql_gud_015__fc_gud_0019_0_cite15733201398">OceanProtect <span id="tdsql_gud_015__fc_gud_0019_0_en-us_topic_0000001792502994_ph662613174472">Appliance 1.5.0-1.6.0</span> Data Backup Feature Guide (Ransomware Protection for Copies)</cite></i>.</p>
+              <p id="tdsql_gud_015__fc_gud_0019_0_p10502162125111">You need to click <strong id="tdsql_gud_015__fc_gud_0019_0_b810018188319">Configure</strong> to set the ransomware protection policy for the resource to be protected if the following conditions are met: <strong id="tdsql_gud_015__fc_gud_0019_0_b17329127414">Archive Time</strong> is not set to <strong id="tdsql_gud_015__fc_gud_0019_0_b938619243">Immediately after successful backup</strong> or <strong id="tdsql_gud_015__fc_gud_0019_0_b84761821247">Archive Policy</strong> is not set to <strong id="tdsql_gud_015__fc_gud_0019_0_b0492172712416">Only the latest copy</strong> in the SLA archive policy, and the ransomware protection policy is not set. For details, see "Creating a Ransomware Protection and WORM Policy" in the <i><cite id="tdsql_gud_015__fc_gud_0019_0_cite191322555252">Data Backup Feature Guide (Ransomware Protection for Copies)</cite></i>.</p>
              </div>
             </div>
            </div></td>
@@ -139,7 +139,7 @@
         </tbody>
        </table>
       </div> <p></p></li>
-     <li><span>Click <span class="uicontrol" id="tdsql_gud_015__en-us_topic_0000001792503842_uicontrol196538515235"><b>OK</b></span>. </span><p></p><p id="tdsql_gud_015__en-us_topic_0000001792503842_p25041111535">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p> <p></p></li>
+     <li><span>Click <span class="uicontrol" id="tdsql_gud_015__en-us_topic_0000001964713008_uicontrol23691650677"><b>OK</b></span>.</span><p></p><p id="tdsql_gud_015__en-us_topic_0000001964713008_en-us_topic_0000001656691397_p25041111535">If the current system time is later than the start time of the first backup specified in the SLA, you can select <strong id="tdsql_gud_015__en-us_topic_0000001964713008_b9624185216713">Execute manual backup now</strong> in the dialog box that is displayed or choose to perform automatic backup periodically based on the backup policy set in the SLA.</p> <p></p></li>
      <li><strong>Optional: </strong><span>Perform manual backup.</span><p></p>
       <div class="p">
        If you want to execute a backup job immediately, perform manual backup through the following operations. Otherwise, skip this step.
@@ -157,8 +157,8 @@
           <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
           <div class="notebody">
            <ul>
-            <li>TDSQL distributed instances do not support <span><strong>Forever Incremental (Synthetic Full) Backup</strong></span>.</li>
-            <li><span>For 1.6.0 and later versions: If the selected protection policy is different from that configured in the associated SLA, the WORM configuration does not take effect.</span></li>
+            <li>TDSQL distributed instances do not support forever incremental (synthetic full) backup.</li>
+            <li><span>For 1.6.0 and later versions, if the selected protection policy is different from that configured in the associated SLA, the WORM configuration does not take effect.</span></li>
            </ul>
           </div>
          </div></li>
@@ -171,7 +171,7 @@
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>Parent topic:</strong> <a href="tdsql_gud_009.html">Backing Up TDSQL Databases</a>
+     <strong>Parent topic:</strong> <a href="tdsql_gud_009.html">Backing Up a TDSQL Database</a>
     </div>
    </div>
   </div>

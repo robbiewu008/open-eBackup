@@ -53,6 +53,7 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.copy.model.CopyInfo;
 import openbackup.system.base.sdk.copy.model.CopyStatus;
+import openbackup.system.base.sdk.copy.model.CopyStorageUnitStatus;
 import openbackup.system.base.sdk.copy.model.CopyWormStatus;
 import openbackup.system.base.sdk.job.constants.JobProgress;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
@@ -220,6 +221,7 @@ public class ArchiveTaskService {
                 "archive copy id can not find in context"));
         copyInfo.setUuid(archiveCopyId);
         copyInfo.setStatus(CopyStatus.NORMAL.getValue());
+        copyInfo.setStorageUnitStatus(CopyStorageUnitStatus.ONLINE.getValue());
         copyInfo.setIsReplicated(originalCopy.getGeneratedBy().equals(CopyGeneratedByEnum.BY_REPLICATED.value()));
         copyInfo.setIsArchived(true);
         final String nowDatetimeStr = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);

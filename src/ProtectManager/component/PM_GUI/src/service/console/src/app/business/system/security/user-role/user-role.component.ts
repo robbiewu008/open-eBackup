@@ -19,6 +19,8 @@ import {
   ViewChild
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import {
   CheckboxModule,
   MenuItem,
@@ -31,15 +33,15 @@ import {
   CookieService,
   DataMap,
   DataMapService,
+  getPermissionMenuItem,
   LANGUAGE,
   MODAL_COMMON,
   OperateItems,
   RoleType,
-  USER_ROLE_TYPE,
   UserRoleDescI18nMap,
   UserRoleI18nMap,
   UserRoleType,
-  getPermissionMenuItem
+  USER_ROLE_TYPE
 } from 'app/shared';
 import {
   RoleApiService,
@@ -52,16 +54,16 @@ import { I18NService } from 'app/shared/services/i18n.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import { WarningMessageService } from 'app/shared/services/warning-message.service';
 import {
-  map as _map,
   assign,
+  defer,
   each,
   extend,
   filter,
   includes,
+  intersection,
   isEmpty,
-  toString,
-  trim,
-  defer
+  map as _map,
+  toString
 } from 'lodash';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -72,8 +74,6 @@ import { ResetpwdComponent } from './resetpwd/resetpwd.component';
 import { SetEmailComponent } from './set-email/set-email.component';
 import { UnlockComponent } from './unlock/unlock.component';
 import { UserdetailComponent } from './userdetail/userdetail.component';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'userrole',
@@ -694,6 +694,24 @@ export class UserroleComponent implements OnInit {
           user.userId === this.cookieService.get('userId') ||
           includes([DataMap.loginUserType.hcs.value], user.userType),
         onClick: (d: any) => {
+          let contentLabel = this.i18n.get('system_user_delete_label', [
+            user.userName
+          ]);
+          if (
+            includes(
+              [
+                DataMap.Deploy_Type.cyberengine.value,
+                DataMap.Deploy_Type.hyperdetect.value
+              ],
+              this.i18n.get('deploy_type')
+            )
+          ) {
+            contentLabel = this.i18n.get(
+              'system_hyperdetect_user_delete_label',
+              [user.userName]
+            );
+          }
+
           this.drawModalService.create({
             lvModalKey: 'warningMessage',
             lvType: 'dialog',
@@ -701,9 +719,7 @@ export class UserroleComponent implements OnInit {
             lvHeader: this.i18n.get('common_danger_label'),
             lvContent: this.warningComponent,
             lvComponentParams: {
-              content: this.i18n.get('system_user_delete_label', [
-                user.userName
-              ]),
+              content: contentLabel,
               userRole: user?.rolesSet[0]?.roleName
             },
             lvWidth: MODAL_COMMON.normalWidth,
@@ -905,16 +921,38 @@ export class WarningComponent implements OnInit {
   dataMap = DataMap;
   showDeleteResource = false;
   isChecked$ = new Subject<boolean>();
+  isOceanProtect = !includes(
+    [
+      DataMap.Deploy_Type.cloudbackup2.value,
+      DataMap.Deploy_Type.cloudbackup.value,
+      DataMap.Deploy_Type.hyperdetect.value,
+      DataMap.Deploy_Type.cyberengine.value
+    ],
+    this.i18n.get('deploy_type')
+  );
 
   constructor(public i18n: I18NService) {}
 
   ngOnInit() {
-    this.showDeleteResource =
-      !includes(
-        ['Role_Auditor', 'Role_RD_Admin', 'Role_DR_Admin'],
+    if (!this.isOceanProtect) {
+      this.showDeleteResource =
+        !includes(
+          ['Role_Auditor', 'Role_RD_Admin', 'Role_DR_Admin'],
+          this.userRole
+        ) &&
+        !includes(
+          [
+            DataMap.Deploy_Type.cyberengine.value,
+            DataMap.Deploy_Type.hyperdetect.value
+          ],
+          this.i18n.get('deploy_type')
+        );
+    } else {
+      this.showDeleteResource = !intersection(
+        ['Role_Auditor', 'Role_RD_Admin', 'Role_DR_Admin', 'Role_SYS_Admin'],
         this.userRole
-      ) &&
-      this.i18n.get('deploy_type') !== DataMap.Deploy_Type.cyberengine.value;
+      ).length;
+    }
   }
 
   warningConfirmChange(e) {

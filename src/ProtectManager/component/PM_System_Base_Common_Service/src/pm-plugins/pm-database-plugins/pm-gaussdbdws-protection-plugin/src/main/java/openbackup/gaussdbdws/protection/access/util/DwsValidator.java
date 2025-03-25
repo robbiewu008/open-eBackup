@@ -71,7 +71,7 @@ public class DwsValidator {
     }
 
     /**
-     * 判断是否存在相同agent的集群uuid或者主机uuid;
+     * 判断集群和主机的uuid集合里是否存在与已使用集群uuid或者主机uuid相同的元素;
      *
      * @param existingEnvironments 已接入的Dws cluster列表
      * @param uuidList 集群和主机的uuid集合
@@ -86,6 +86,23 @@ public class DwsValidator {
                 .forEach(uuid -> checkExistUuid(uuidList, uuid));
             Optional.ofNullable(environment.getDependencies().get(DwsConstant.HOST_AGENT))
                 .orElse(new ArrayList<>())
+                .stream()
+                .map(ProtectedResource::getUuid)
+                .forEach(uuid -> checkExistUuid(uuidList, uuid));
+        }
+    }
+
+    /**
+     * 判断主机的uuid集合里是否存在与已使用集群uuid相同的元素;
+     *
+     * @param existingEnvironments 已接入的Dws cluster列表
+     * @param uuidList 主机的uuid集合
+     */
+    public static void checkDwsExistSameHostAsCluster(List<ProtectedEnvironment> existingEnvironments,
+        List<String> uuidList) {
+        for (ProtectedEnvironment environment : existingEnvironments) {
+            Optional.ofNullable(environment.getDependencies().get(DwsConstant.DWS_CLUSTER_AGENT))
+                .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "name is not exist"))
                 .stream()
                 .map(ProtectedResource::getUuid)
                 .forEach(uuid -> checkExistUuid(uuidList, uuid));

@@ -24,6 +24,8 @@ import java.util.List;
 public class FinegrainedRestoreCopy {
     private String uuid;
 
+    private String originBackupId;
+
     private Integer gn;
 
     private String resourceId;

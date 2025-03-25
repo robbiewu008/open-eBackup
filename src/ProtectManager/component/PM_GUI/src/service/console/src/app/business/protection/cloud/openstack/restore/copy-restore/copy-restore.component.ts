@@ -15,9 +15,9 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
   BaseUtilService,
-  CapacityCalculateLabel,
   CommonConsts,
   DataMap,
+  filterVersion,
   I18NService,
   ProtectedResourceApiService,
   ResourceType,
@@ -34,7 +34,9 @@ import {
   every,
   filter,
   find,
+  findIndex,
   includes,
+  indexOf,
   isEmpty,
   isEqual,
   isString,
@@ -48,8 +50,7 @@ import { Observable, Observer, Subject } from 'rxjs';
 @Component({
   selector: 'aui-copy-restore',
   templateUrl: './copy-restore.component.html',
-  styleUrls: ['./copy-restore.component.less'],
-  providers: [CapacityCalculateLabel]
+  styleUrls: ['./copy-restore.component.less']
 })
 export class CopyRestoreComponent implements OnInit {
   rowCopy;
@@ -96,7 +97,6 @@ export class CopyRestoreComponent implements OnInit {
     public baseUtilService: BaseUtilService,
     private appUtilsService: AppUtilsService,
     private restoreV2Service: RestoreApiV2Service,
-    private capacityCalculateLabel: CapacityCalculateLabel,
     private protectedResourceApiService: ProtectedResourceApiService
   ) {}
 
@@ -134,13 +134,17 @@ export class CopyRestoreComponent implements OnInit {
   }
 
   getResource() {
-    this.restoreToNewLocationOnly = includes(
-      [
-        DataMap.CopyData_generatedType.replicate.value,
-        DataMap.CopyData_generatedType.cascadedReplication.value
-      ],
-      this.rowCopy.generated_by
-    );
+    this.restoreToNewLocationOnly =
+      includes(
+        [
+          DataMap.CopyData_generatedType.replicate.value,
+          DataMap.CopyData_generatedType.reverseReplication.value,
+          DataMap.CopyData_generatedType.cascadedReplication.value
+        ],
+        this.rowCopy.generated_by
+      ) ||
+      this.rowCopy.is_replicated ||
+      this.rowCopy?.resource_status === DataMap.Resource_Status.notExist.value;
     this.resource = JSON.parse(this.rowCopy?.resource_properties || '{}');
     this.resourceLocation = this.resource.path;
     this.originalIP = this.resource.extendInfo?.vm_ip || ''; // 老版本的副本没有vm_ip字段
@@ -312,7 +316,12 @@ export class CopyRestoreComponent implements OnInit {
             });
           }
         });
-        this.proxyOptions = hostArray;
+
+        this.proxyOptions = filterVersion(
+          hostArray,
+          this.verifyStatus,
+          'openstack'
+        );
       }
     );
   }
@@ -389,7 +398,7 @@ export class CopyRestoreComponent implements OnInit {
       // formGroup.value获取到的是变化前的值，valueChange接收到的是实时的值
       const addedArr = difference(res, this.formGroup.value.network);
       const removedArr = difference(this.formGroup.value.network, res);
-      this.createFormIpNode(addedArr, removedArr);
+      this.createFormIpNode(addedArr, removedArr, res);
     });
 
     this.formGroup.statusChanges.subscribe(() => this.vaildParams());
@@ -414,6 +423,16 @@ export class CopyRestoreComponent implements OnInit {
     });
   }
 
+  // 网卡排序，顺序要和虚拟机中原有的顺序保持一致
+  sortNetwork(networks: any[]) {
+    const originNetwork = isString(this.resource.extendInfo?.networks)
+      ? this.resource.extendInfo?.networks.split(';')
+      : [];
+    return networks.sort((a, b) => {
+      return indexOf(originNetwork, a.name) - indexOf(originNetwork, b.name);
+    });
+  }
+
   getVmOptions(resourceId) {
     if (!resourceId) {
       return;
@@ -424,10 +443,12 @@ export class CopyRestoreComponent implements OnInit {
         akDoException: false
       })
       .subscribe(res => {
-        const az = JSON.parse(res.extendInfo.availabilityZone || '{}');
-        const flavor = JSON.parse(res.extendInfo.flavor || '{}');
-        const network = JSON.parse(res.extendInfo.network || '{}');
-        this.cacheVolumeType = JSON.parse(res.extendInfo.volumeType || '{}');
+        const az = JSON.parse(res.extendInfo.availabilityZone || '[]');
+        const flavor = JSON.parse(res.extendInfo.flavor || '[]');
+        const network = this.sortNetwork(
+          JSON.parse(res.extendInfo.network || '[]')
+        );
+        this.cacheVolumeType = JSON.parse(res.extendInfo.volumeType || '[]');
         this.azOptions = map(az, item => {
           return {
             ...item,
@@ -528,8 +549,9 @@ export class CopyRestoreComponent implements OnInit {
    * 根据选中的网络构造表单节点
    * @param addedArr 新选中的节点
    * @param removedArr 被移除的节点
+   * @param networkValue 选中的网卡
    */
-  createFormIpNode(addedArr, removedArr) {
+  createFormIpNode(addedArr, removedArr, networkValue) {
     removedArr.forEach(item => {
       const index = this.networkAndIPControlArr.controls.findIndex(ctrl =>
         isEqual(ctrl.get('value').value, item)
@@ -540,7 +562,15 @@ export class CopyRestoreComponent implements OnInit {
     });
     addedArr = addedArr.map(item => this.networkIPMap.get(item));
     addedArr.forEach(item => {
-      this.networkAndIPControlArr.push(this.getNetworkControl(item));
+      // 顺序和原有顺序一致
+      const network = filter(this.networkOptions, v =>
+        includes(networkValue, v.value)
+      );
+      const insetIndex = findIndex(network, v => v.id === item.id);
+      this.networkAndIPControlArr.insert(
+        insetIndex,
+        this.getNetworkControl(item)
+      );
     });
   }
 
@@ -637,16 +667,16 @@ export class CopyRestoreComponent implements OnInit {
       const params = this.getParams();
       this.restoreV2Service
         .CreateRestoreTask({ CreateRestoreTaskRequestBody: params })
-        .subscribe(
-          res => {
+        .subscribe({
+          next: () => {
             observer.next();
             observer.complete();
           },
-          err => {
+          error: err => {
             observer.error(err);
             observer.complete();
           }
-        );
+        });
     });
   }
 }

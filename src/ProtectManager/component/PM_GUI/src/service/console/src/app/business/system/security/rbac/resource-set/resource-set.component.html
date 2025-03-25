@@ -1,4 +1,3 @@
-<div class="aui-operation">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-operation">
   <lv-group lvGutter="16px">
     <ng-container *ngIf="isSysAdmin">
       <button lv-button lvType="primary" (click)="create()">
@@ -53,21 +53,22 @@
 
 <ng-template #nameTpl let-item>
   <lv-group lvGutter="8px">
-    <span
-      class="aui-link"
-      (click)="getDetail(item)"
-      lv-overflow
-      >{{ item.name }}</span
-    >
+    <span class="aui-link" (click)="getDetail(item)" lv-overflow>{{
+      item.name
+    }}</span>
     <lv-tag
       *ngIf="item?.isDefault && !item?.isPublic"
       [ngModel]="[{ label: i18n.get('system_default_label') }]"
+      lv-tooltip="{{ 'system_resourceset_default_tip_label' | i18n }}"
+      lvTooltipTheme="light"
     ></lv-tag>
     <lv-tag
       *ngIf="item?.isDefault && item?.isPublic"
       [ngModel]="[
         { label: i18n.get('system_resourceset_default_public_label') }
       ]"
+      lv-tooltip="{{ 'system_resourceset_default_public_tip_label' | i18n }}"
+      lvTooltipTheme="light"
     ></lv-tag>
   </lv-group>
 </ng-template>

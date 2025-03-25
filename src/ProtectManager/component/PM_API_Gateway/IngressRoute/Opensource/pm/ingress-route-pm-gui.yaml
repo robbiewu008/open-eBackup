@@ -1,5 +1,5 @@
 {{- $deploytype:= include "getDeployType" . | default "" }}
-{{- if eq $deploytype "d10" }}
+{{- if eq $deploytype "d9"}}
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -81,14 +81,6 @@ spec:
       middlewares:
         - name: middleware-pm-rate-limit-special
     - match: Method(`POST`) && Path(`/console/rest/v1/cert/components/{componentId:[0-9a-zA-z]+}/crls/action/import`)
-      kind: Rule
-      services:
-        - name: pm-gui
-          port: 30080
-          scheme: https
-      middlewares:
-        - name: middleware-pm-rate-limit-special
-    - match: Method(`POST`) && Path(`/console/rest/v2/system/lld/action/upload`)
       kind: Rule
       services:
         - name: pm-gui

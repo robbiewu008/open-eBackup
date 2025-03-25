@@ -27,6 +27,7 @@ import {
   DataMap,
   DataMapService,
   DATE_PICKER_MODE,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getLabelList,
   getPermissionMenuItem,
@@ -100,6 +101,7 @@ import { RegisterClusterComponent as RegisterSQLServerClusterComponent } from '.
 import { RegisterInstanceComponent } from '../../sql-server/register-instance/register-instance.component';
 import { CreateSchemaComponent } from './create-schema/create-schema.component';
 import { RegisterClusterComponent as RegisterDWSClusterComponent } from './register-cluster/register-cluster.component';
+import { GetLabelOptionsService } from '../../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-instance-database',
@@ -153,7 +155,8 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
     private takeManualBackupService: TakeManualBackupService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit() {
@@ -349,13 +352,17 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
                   hasProtectPermission(val)
                 );
               })
-            ) !== size(data) || !size(data)
+            ) !== size(data) ||
+            !size(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX
           );
         },
         permission: OperateItems.DeactivateProtection,
         disabledTips: this.i18n.get(
           'protection_partial_resources_deactive_label'
         ),
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n),
         label: this.i18n.get('protection_deactive_protection_label'),
         onClick: data => {
           this.protectService
@@ -866,6 +873,10 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
         },
         cellRender: this.typeTpl
       },
+      {
+        key: 'instanceType',
+        name: this.i18n.get('protection_instance_type_label')
+      },
       // 所属环境, 默认为environment.name
       {
         key: 'clusterOrHostName',
@@ -1009,8 +1020,11 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -1882,9 +1896,10 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
         }
       }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
@@ -2060,8 +2075,28 @@ export class InstanceDatabaseComponent implements OnInit, AfterViewInit {
       clusterOrHostName: has(item, 'environment.extendInfo.clusterType')
         ? item.environment?.name
         : `${item.environment?.name}(${item.environment?.endpoint})`,
-      linkStatus: item.extendInfo?.linkStatus
+      linkStatus: item.extendInfo?.linkStatus,
+      instanceType: this.getInstanceType(item)
     });
+  }
+  getInstanceType(item) {
+    const clusterLabels = {
+      [DataMap.dbTwoType.standby.value]: () => {
+        if (item.extendInfo?.deployOperatingSystem === 'Red Hat') {
+          return 'RHEL HA';
+        } else {
+          return 'PowerHA';
+        }
+      },
+      [DataMap.dbTwoType.dpf.value]: () => DataMap.dbTwoType.dpf.label,
+      [DataMap.dbTwoType.hadr.value]: () => DataMap.dbTwoType.hadr.label
+    };
+    for (const [type, labelFunction] of Object.entries(clusterLabels)) {
+      if (item.extendInfo.clusterType === type) {
+        return labelFunction();
+      }
+    }
+    return this.i18n.get('explore_db2_instance_label');
   }
 
   formatDbTwoDatabaseData(item: { [key: string]: any }) {

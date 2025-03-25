@@ -1,4 +1,3 @@
-<p class="aui-gutter-column-sm">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<p class="aui-gutter-column-sm">
     {{title}}
     <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_file_level_tip_label' | i18n}}" lvTooltipTheme="light"
         lvTooltipPosition="right" lvColorState='true'></i>
@@ -22,78 +22,141 @@
 <lv-alert lvType="info" *ngIf="searchMax">
     {{'protection_file_level_max_search_label' | i18n}}
 </lv-alert>
-<lv-alert lvType="info" *ngIf="showIndexTip">
-    {{'protection_no_index_tip_label' | i18n}}
-</lv-alert>
-<div class="tree-table-container">
+<lv-form class="aui-gutter-column-md">
+    <lv-alert lvType="info">
+        {{'protection_manual_path_tip_label' | i18n}}
+    </lv-alert>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_path_mode_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group [(ngModel)]="pathMode" [lvGroupName]="'group'" (ngModelChange)="pathModeChange()">
+                <lv-group [lvGutter]="'20px'">
+                    <lv-radio [lvValue]="modeMap.fromTree">
+                        {{ 'protection_path_from_tree_label' | i18n }}
+                    </lv-radio>
+                    <lv-radio [lvValue]="modeMap.fromTag">
+                        {{ 'protection_path_from_input_label' | i18n }}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item *ngIf="pathMode === modeMap.fromTag">
+        <lv-form-label lvRequired>
+            {{'protection_path_from_input_title_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_vm_path_placeholder_tip_label' | i18n}}"
+                lvColorState='true'></i>
+        </lv-form-label>
+        <lv-form-control>
+            <aui-manual-input-path [rowCopy]="copy" (pathChange)="pathChange($event)"></aui-manual-input-path>
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>
+<div class="tree-table-container" *ngIf="pathMode === modeMap.fromTree">
     <div class="header-tab">
         <lv-radio-group [(ngModel)]="pathView" [lvGroupName]="'path'" (ngModelChange)="tabChange()">
             <lv-group lvGutter='14px'>
-                <lv-radio [lvViewType]="'custom'" [lvValue]="'all'">
+                <lv-radio [lvViewType]="'custom'" [lvValue]="totalView">
                     <div>
                         {{'protection_sla_optional_tooltip_step_label' | i18n}}
-                        <span class="num-tag" [ngClass]="{'tag-light': pathView === 'all'}">{{total}}</span>
+                        <span class="num-tag" [ngClass]="{'tag-light': pathView === totalView}">{{total}}</span>
                     </div>
                 </lv-radio>
                 <div class="dash-line"></div>
-                <lv-radio [lvViewType]="'custom'" [lvValue]="'selected'">
+                <lv-radio [lvViewType]="'custom'" [lvValue]="selectedView">
                     <div>
                         {{'common_selected_simple_label' | i18n}}
                         <span class="num-tag"
-                            [ngClass]="{'tag-light': pathView === 'selected'}">{{selectedTotal}}</span>
+                              [ngClass]="{'tag-light': pathView === selectedView}">{{selectedTotal}}</span>
                     </div>
                 </lv-radio>
             </lv-group>
         </lv-radio-group>
     </div>
-    <lv-group lvGutter='14px' [lvColumns]='["auto", "270px"]' class="search-path-container">
-        <ng-container *ngIf="isPathSearchFlag; else elseTemplate">
-            <input #input lv-input [(ngModel)]="currentPath" (keydown.enter)="pathSearch()" (blur)="pathSearch()"
-                [attr.autofocus]="autofocus" />
+    <ng-container *ngIf="([DataMap.Browse_LiveMount_Status.mounted.value,DataMap.Browse_LiveMount_Status.unmountFail.value].includes(copy?.browse_mounted) || copy.indexed === DataMap.CopyData_fileIndex.indexed.value);else unmountContainerTpl">
+        <ng-container *ngIf="pathView === totalView; else elsePathTemplate">
+            <lv-group lvGutter='14px' [lvColumns]='["auto", "270px"]' class="search-path-container">
+                <ng-container *ngIf="isPathSearchFlag; else elseTemplate">
+                    <input #input lv-input [(ngModel)]="currentPath" (keydown.enter)="pathSearch()" (blur)="pathSearch()"
+                           [attr.autofocus]="autofocus" />
+                </ng-container>
+                <ng-template #elseTemplate>
+                    <div class="bread-crumb-path" (click)="pathClick($event)">
+                        <lv-breadcrumb [lvItems]="filePathItems" class="breadcrumb"></lv-breadcrumb>
+                    </div>
+                </ng-template>
+                <div class="search-name">
+                    <lv-search (lvSearch)="searchName($event)" lvPlaceHolder="{{'common_name_label' | i18n}}"
+                               [(ngModel)]="searcKey"></lv-search>
+                </div>
+            </lv-group>
         </ng-container>
-        <ng-template #elseTemplate>
-            <div class="bread-crumb-path" (click)="pathClick($event)">
-                <lv-breadcrumb [lvItems]="filePathItems" class="breadcrumb"></lv-breadcrumb>
-            </div>
-        </ng-template>
-        <div class="search-name">
-            <lv-search (lvSearch)="searchName($event)" lvPlaceHolder="{{'common_name_label' | i18n}}"
-                [(ngModel)]="searcKey"></lv-search>
-        </div>
-    </lv-group>
-    <lv-group class="tree-table" [lvColumns]='["270px", "auto"]'>
-        <div class="tree-container">
-            <lv-tree #tree lvCompareWith="absolutePath" [lvData]="treeData" (lvExpandedChange)="expandedChange($event)"
-                lvSelectionMode="single" [(lvSelection)]="selectionTree" (lvCheck)="pathNodeCheck($event)"
-                [lvBeforeSelected]="beforeSelected" lvShowContentIcon [lvNodeTemplate]='nodeTpl'
-                style="width: auto;"></lv-tree>
-            <ng-template #nodeTpl let-item>
-                <div style="width: 160px;" lv-overflow>
+        <ng-container *ngIf="pathView === totalView; else elseTableTemplate">
+            <lv-group class="tree-table" [lvColumns]='["270px", "auto"]'>
+                    <div class="tree-container">
+                        <lv-tree #tree lvCompareWith="absolutePath" lvSelectionAssociate="false" [lvData]="treeData"
+                                 (lvExpandedChange)="expandedChange($event)" lvSelectionMode="single" [(lvSelection)]="selectionTree"
+                                 (lvCheck)="pathNodeCheck($event)" [lvBeforeSelected]="beforeSelected" lvShowContentIcon
+                                 [lvNodeTemplate]='nodeTpl' style="width: auto;"></lv-tree>
+                        <ng-template #nodeTpl let-item>
+                            <div style="width: 160px;" lv-overflow>
                     <span *ngIf="!item.isMoreBtn">
                         <i lv-icon="{{item.contentToggleIcon}}"></i>
                         {{item.label}}
                     </span>
-                </div>
-                <span class="aui-link" *ngIf="item.isMoreBtn"
-                    (click)="clickMoreFile($event, item)">{{item.label}}</span>
-            </ng-template>
+                            </div>
+                            <span class="aui-link" *ngIf="item.isMoreBtn"
+                                  (click)="clickMoreFile($event, item)">{{item.label}}</span>
+                        </ng-template>
+                    </div>
+                    <div class="table-container">
+                        <lv-group lvDirection='vertical'>
+                            <div style="height: 570px;">
+                                <lv-loading [lvLoading]="tableLoading">
+                                    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+                                </lv-loading>
+                            </div>
+                            <div class="page-total">{{'common_page_total_label' | i18n:[total]}}</div>
+                        </lv-group>
+                    </div>
+                </lv-group>
+        </ng-container>
+    </ng-container>
+    <ng-template #unmountContainerTpl>
+        <lv-loading [lvLoading]="copy?.browse_mounted === DataMap.Browse_LiveMount_Status.mounting.value" [lvLoadingText]="'common_status_mounting_label'|i18n" [lvMask]="false">
+            <div class="empty-container">
+                <lv-empty [lvDescription]="mountTipTpl" *ngIf="[DataMap.Browse_LiveMount_Status.unmount.value,DataMap.Browse_LiveMount_Status.mountFail.value].includes(copy?.browse_mounted) && copy.indexed !== DataMap.CopyData_fileIndex.indexed.value"></lv-empty>
+            </div>
+        </lv-loading>
+    </ng-template>
+    <ng-template #elsePathTemplate>
+        <div class="search-path-container">
+            <lv-search (lvSearch)="searchName($event)" lvPlaceHolder="{{'common_name_label' | i18n}}"
+                       [(ngModel)]="searcKey"></lv-search>
         </div>
+    </ng-template>
+    <ng-template #elseTableTemplate>
         <div class="table-container">
-            <ng-container *ngIf="pathView === 'all'; else elseTableTemplate">
-                <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
-            </ng-container>
-            <ng-template #elseTableTemplate>
-                <lv-pro-table #dataSelectTable [config]="selectTableConfig" [data]="selectTableData"></lv-pro-table>
-            </ng-template>
+            <lv-pro-table #dataSelectTable [config]="selectTableConfig" [data]="selectTableData"></lv-pro-table>
         </div>
-    </lv-group>
+    </ng-template>
+    <ng-template #mountTipTpl>
+        <lv-group lvDirection="vertical" lvGutter="8px" class="mount-tip-container">
+            <span>{{'protection_file_exploration_unmount_tips_label'|i18n}}</span>
+            <button lv-button (click)="fileLevelExploreMount()" lvType="primary">{{'protection_mount_file_exploration_label'|i18n}}</button>
+        </lv-group>
+    </ng-template>
 </div>
-
 <ng-template #fileTpl let-item>
     <span lv-overflow>
         <i lv-icon="{{ item.contentToggleIcon }}" [lvColorState]="true"></i>
         {{ item.name }}
     </span>
+    <p lv-overflow *ngIf="pathView === selectedView" class="aui-number-6 aui-text-desc">
+        {{item.absolutePath}}
+    </p>
 </ng-template>
 
 <ng-template #sizeTpl let-item>

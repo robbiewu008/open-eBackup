@@ -121,6 +121,7 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
   _get = get;
   isDameng = true;
   isOceanBase = true;
+  isDwsNew = false; // 判断dws集群和schema集是否会恢复到新位置
   selectTips = this.i18n.get('protection_target_input_tips_label');
   subObjects = [];
   selectionAssociate = false;
@@ -178,6 +179,17 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
     this.i18n.get('deploy_type')
   );
 
+  // 文件系统类
+  isFileSystemApp = false;
+  modeMap = {
+    fromTree: '1',
+    fromTag: '2'
+  };
+  pathMode = this.modeMap.fromTree;
+  manualInputPath = [];
+  isTrimPrefix = true;
+  isShowTrim = false; // 用于判断文件集是否展示采用原路径开关
+
   rowCopyResPro;
   @ViewChild('searchPopover', { static: false }) searchPopover;
 
@@ -214,6 +226,17 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
       ],
       this.childResType
     );
+    this.isFileSystemApp = includes(
+      [
+        DataMap.Resource_Type.NASShare.value,
+        DataMap.Resource_Type.NASFileSystem.value,
+        DataMap.Resource_Type.ndmp.value,
+        DataMap.Resource_Type.fileset.value,
+        DataMap.Resource_Type.volume.value,
+        DataMap.Resource_Type.HDFSFileset.value
+      ],
+      this.childResType
+    );
     this.getfileLevelRestoreTips();
     this.isDameng = includes(
       [
@@ -226,12 +249,7 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
       [DataMap.Resource_Type.OceanBaseCluster.value],
       this.childResType
     );
-    if (
-      includes(
-        [DataMap.Resource_Type.OceanBaseCluster.value],
-        this.childResType
-      )
-    ) {
+    if (this.isOceanBase) {
       const tenantArray = JSON.parse(this.rowCopy.properties).tenant_list;
       this.tenantOptions = map(tenantArray, item => {
         return {
@@ -248,8 +266,6 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
       this.damengTargetLocation1 = [{ name: this.rowCopy.resource_name }];
       this.inputTarget = this.rowCopy.resource_name;
       this.initForm();
-    } else if (this.isOceanBase) {
-      this.getSchema(`/${get(this.tenant, 'name')}`);
     } else {
       this.getOriginalPath();
     }
@@ -270,6 +286,10 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
         return 'name';
       case DataMap.Resource_Type.tidbCluster.value:
       case DataMap.Resource_Type.tidbDatabase.value:
+      case DataMap.Resource_Type.DWS_Cluster.value:
+      case DataMap.Resource_Type.DWS_Table.value:
+      case DataMap.Resource_Type.DWS_Schema.value:
+      case DataMap.Resource_Type.OceanBaseCluster.value:
         return 'rootPath';
       default:
         return null;
@@ -394,7 +414,7 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getSchema(opt, recordsTemp?, startPage?) {
+  getSchema(opt, isSearch = false, recordsTemp?, startPage?) {
     this.name = '';
     this.copyControllerService
       .ListCopyCatalogs({
@@ -428,22 +448,25 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
               icon: 'aui-icon-dws-schema'
             });
           });
-
           if (
-            this.targetParams?.restore_location === RestoreLocationType.NEW ||
-            this.targetParams?.restoreLocation === RestoreV2LocationType.NEW
+            (this.targetParams?.restore_location === RestoreLocationType.NEW ||
+              this.targetParams?.restoreLocation ===
+                RestoreV2LocationType.NEW) &&
+            !isSearch
           ) {
             this.selectFileData = [];
           }
-          this.selectedLength = 0;
-          this.originalSelection = [];
+          if (!isSearch) {
+            this.originalSelection = [];
+            this.selectedLength = 0;
+          }
           this.modal.getInstance().lvOkDisabled = true;
           this.originalFileData = [...recordsTemp];
           this.total = res.totalCount;
           this.cdr.detectChanges();
           return;
         }
-        this.getSchema(opt, recordsTemp, startPage);
+        this.getSchema(opt, isSearch, recordsTemp, startPage);
       });
   }
 
@@ -537,7 +560,9 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
         compareWith: 'path',
         virtualScroll: true,
         scrollFixed: true,
-        scroll: this.virtualScroll.scrollParam,
+        scroll: {
+          y: '684px'
+        },
         rows: {
           selectionMode: 'multiple',
           selectionTrigger: 'selector',
@@ -611,6 +636,9 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
   }
 
   getOriginalPath() {
+    if (this.isOceanBase) {
+      return;
+    }
     if (
       includes(
         [
@@ -832,11 +860,18 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
   }
 
   searchSource(e) {
+    if (this.isOceanBase && isEmpty(this.tenant)) {
+      return;
+    }
     if (
       ![
         DataMap.Resource_Type.ElasticsearchBackupSet.value,
         DataMap.Resource_Type.tidbCluster.value,
-        DataMap.Resource_Type.tidbDatabase.value
+        DataMap.Resource_Type.tidbDatabase.value,
+        DataMap.Resource_Type.DWS_Cluster.value,
+        DataMap.Resource_Type.DWS_Schema.value,
+        DataMap.Resource_Type.DWS_Table.value,
+        DataMap.Resource_Type.OceanBaseCluster.value
       ].includes(this.rowCopy.resource_sub_type)
     ) {
       this.originalSelection = [];
@@ -854,7 +889,9 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
       if (
         includes([DataMap.Resource_Type.DWS_Cluster.value], this.childResType)
       ) {
-        this.getSchema(this.database);
+        this.getSchema(this.database, true);
+      } else if (this.isOceanBase) {
+        this.getSchema(`/${get(this.tenant, 'name')}`);
       } else {
         this.getTables();
       }
@@ -902,6 +939,8 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
       ) {
         const tmp = this.rowCopyResPro.extendInfo;
         path = `/${tmp.clusterName}/${tmp.databaseName}`;
+      } else if (this.isOceanBase) {
+        path = `/${get(this.tenant, 'name')}`;
       } else {
         const database = find(
           this.databaseOptions,
@@ -946,7 +985,8 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
                   DataMap.Resource_Type.DWS_Schema.value,
                   DataMap.Resource_Type.DWS_Table.value,
                   DataMap.Resource_Type.tidbCluster.value,
-                  DataMap.Resource_Type.tidbDatabase.value
+                  DataMap.Resource_Type.tidbDatabase.value,
+                  DataMap.Resource_Type.OceanBaseCluster.value
                 ],
                 this.rowCopy.resource_sub_type
               )
@@ -957,7 +997,8 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
                   DataMap.Resource_Type.DWS_Database.value,
                   DataMap.Resource_Type.DWS_Schema.value,
                   DataMap.Resource_Type.DWS_Table.value,
-                  DataMap.Resource_Type.tidbCluster.value
+                  DataMap.Resource_Type.tidbCluster.value,
+                  DataMap.Resource_Type.OceanBaseCluster.value
                 ],
                 this.rowCopy.resource_sub_type
               )
@@ -967,7 +1008,8 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
                 [
                   DataMap.Resource_Type.DWS_Database.value,
                   DataMap.Resource_Type.DWS_Schema.value,
-                  DataMap.Resource_Type.DWS_Table.value
+                  DataMap.Resource_Type.DWS_Table.value,
+                  DataMap.Resource_Type.OceanBaseCluster.value
                 ],
                 this.rowCopy.resource_sub_type
               )
@@ -1007,37 +1049,44 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
   }
 
   getCopySourceNode(node, startPage?) {
-    this.copyControllerService
-      .ListCopyCatalogs({
-        memberEsn: this.rowCopy?.device_esn || '',
-        pageNo: startPage || CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE * 10,
-        copyId: this.rowCopy.uuid,
-        parentPath: node.rootPath || '/'
-      })
-      .subscribe(res => {
-        if (
-          includes(
-            [
-              DataMap.Resource_Type.DWS_Cluster.value,
-              DataMap.Resource_Type.DWS_Database.value,
-              DataMap.Resource_Type.DWS_Schema.value,
-              DataMap.Resource_Type.DWS_Table.value
-            ],
-            this.childResType
-          ) &&
-          !!size(res.records) &&
-          node.type === RestoreFileType.Directory
-        ) {
-          node.disabled = false;
-        }
-        this.updataChildren(res, node, true);
-        this.originalFileData = [...this.originalFileData];
-        this.cdr.detectChanges();
+    const params = {
+      memberEsn: this.rowCopy?.device_esn || '',
+      pageNo: startPage || CommonConsts.PAGE_START,
+      pageSize: CommonConsts.PAGE_SIZE * 10,
+      copyId: this.rowCopy.uuid,
+      parentPath: node.rootPath || '/'
+    };
+    // 已索引的副本，请求下一页需要传上一页最后一条数据的sort值
+    const sortValue = node.children[node.children.length - 2]?.sort;
+    if (this.isFileSystemApp && params.pageNo > 0 && !isEmpty(sortValue)) {
+      assign(params, {
+        searchAfter: sortValue
       });
+    }
+    this.copyControllerService.ListCopyCatalogs(params).subscribe(res => {
+      if (
+        includes(
+          [
+            DataMap.Resource_Type.DWS_Cluster.value,
+            DataMap.Resource_Type.DWS_Database.value,
+            DataMap.Resource_Type.DWS_Schema.value,
+            DataMap.Resource_Type.DWS_Table.value
+          ],
+          this.childResType
+        ) &&
+        !!size(res.records) &&
+        node.type === RestoreFileType.Directory
+      ) {
+        node.disabled = false;
+      }
+      this.updataChildren(res, node, true);
+      this.originalFileData = [...this.originalFileData];
+      this.cdr.detectChanges();
+    });
   }
 
   getTargetTree() {
+    this.isShowTrim = false;
     if (
       includes(
         [
@@ -1051,27 +1100,16 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
     ) {
       this.mountedSelection = [this.targetParams.resource];
       this.inputTarget = this.targetParams.resource.name;
-      this.selectFileData = [];
-      each(this.originalSelection, item => {
-        if (!item.isLeaf || item?.isMoreBtn) {
-          return;
-        }
-
-        assign(item, {
-          isLeaf: true,
-          newName: '',
-          invalid: false,
-          errorTips: '',
-          type: RestoreFileType.Directory
-        });
-
-        this.selectFileData.push(item);
-      });
+      this.isDwsNew = true;
+      this.getDwsNewSchemaName();
       // dws集群和schema如果新位置恢复，需要去检测填写的schema是不是重名且不允许恢复
       this.dwsNotAllowedSchemaOption = [];
       this.getNewLocationSchema();
       this.disabledOkbtn();
+      this.cdr.detectChanges();
       return;
+    } else {
+      this.isDwsNew = false;
     }
 
     if (
@@ -1128,6 +1166,9 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
         this.childResType === DataMap.Resource_Type.HBaseBackupSet.value
           ? this.targetParams.resource?.label
           : this.targetParams.resource?.name;
+      if (this.childResType === DataMap.Resource_Type.fileset.value) {
+        this.isShowTrim = true;
+      }
       this.selectFileData = [
         {
           children: includes(
@@ -1136,6 +1177,7 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
               DataMap.Resource_Type.HBaseBackupSet.value,
               DataMap.Resource_Type.ClickHouse.value,
               DataMap.Resource_Type.HiveBackupSet.value,
+              DataMap.Resource_Type.ElasticsearchBackupSet.value,
               DataMap.Resource_Type.fileset.value,
               DataMap.Resource_Type.volume.value,
               DataMap.Resource_Type.tidbCluster.value,
@@ -1153,6 +1195,7 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
               DataMap.Resource_Type.HBaseBackupSet.value,
               DataMap.Resource_Type.ClickHouse.value,
               DataMap.Resource_Type.HiveBackupSet.value,
+              DataMap.Resource_Type.ElasticsearchBackupSet.value,
               DataMap.Resource_Type.fileset.value,
               DataMap.Resource_Type.volume.value,
               DataMap.Resource_Type.tidbCluster.value,
@@ -1218,6 +1261,26 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
   }
 
+  private getDwsNewSchemaName() {
+    const tmpSelectFile = cloneDeep(this.selectFileData);
+    this.selectFileData = [];
+    each(this.originalSelection, item => {
+      if (!item.isLeaf || item?.isMoreBtn) {
+        return;
+      }
+      const tmpFile = find(tmpSelectFile, { rootPath: item.rootPath });
+      assign(item, {
+        isLeaf: true,
+        newName: tmpFile ? tmpFile.newName : '',
+        errorTips: tmpFile ? tmpFile.errorTips : '',
+        invalid: tmpFile ? tmpFile.invalid : false,
+        type: RestoreFileType.Directory
+      });
+
+      this.selectFileData.push(item);
+    });
+  }
+
   validNewName(item) {
     const value = item.newName;
 
@@ -1244,7 +1307,7 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const reg = /^[a-zA-Z\_]{1}[a-zA-Z0-9\_\$\#]{0,62}$/;
+    const reg = /^[a-zA-Z\_\$\#]{1}[a-zA-Z0-9\_\$\#]{0,62}$/;
 
     if (startsWith(trim(value), 'PG_')) {
       item.invalid = true;
@@ -1622,6 +1685,20 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
     }
   }
 
+  getDwsDisplayName(item) {
+    if (
+      [
+        DataMap.Resource_Type.DWS_Cluster.value,
+        DataMap.Resource_Type.DWS_Schema.value
+      ].includes(this.childResType)
+    ) {
+      return item.rootPath
+        .split('/')
+        .slice(-2)
+        .join('/');
+    }
+  }
+
   excludeParentFileSelection(node) {
     if (node.parent) {
       this.originalSelection = reject(this.originalSelection, item => {
@@ -1786,20 +1863,7 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
       (this.targetParams?.restore_location === RestoreLocationType.NEW ||
         this.targetParams?.restoreLocation === RestoreV2LocationType.NEW)
     ) {
-      this.selectFileData = [];
-      each(this.originalSelection, item => {
-        if (!item.isLeaf || item?.isMoreBtn) {
-          return;
-        }
-        assign(item, {
-          isLeaf: true,
-          newName: '',
-          errorTips: '',
-          invalid: false,
-          type: RestoreFileType.Directory
-        });
-        this.selectFileData.push(item);
-      });
+      this.getDwsNewSchemaName();
     }
   }
 
@@ -2147,8 +2211,25 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
     } else {
       this.modal.getInstance().lvOkDisabled = this.rowCopy.isSearchRestore
         ? !this.mountedSelection
-        : !size(this.originalSelection) || !this.mountedSelection;
+        : this.originalSelectionInvalid() || !this.mountedSelection;
     }
+  }
+
+  originalSelectionInvalid() {
+    return this.isFileSystemApp && this.pathMode === this.modeMap.fromTag
+      ? !size(this.manualInputPath)
+      : !size(this.originalSelection);
+  }
+
+  getOriginalSelection() {
+    return this.isFileSystemApp && this.pathMode === this.modeMap.fromTag
+      ? this.manualInputPath
+      : this.getPath(cloneDeep(this.originalSelection));
+  }
+
+  pathModeChange() {
+    this.manualInputPath = [];
+    this.disabledOkbtn();
   }
 
   validTenantName(name: string) {
@@ -2213,6 +2294,42 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
     }
   }
 
+  pathChange(path) {
+    this.manualInputPath = [...path];
+    this.disabledOkbtn();
+  }
+
+  dirname(path) {
+    const lastSlashIndex = path.lastIndexOf('/');
+    return path.substring(0, lastSlashIndex);
+  }
+
+  findCommonParent(paths) {
+    if (!paths || paths.length === 0) {
+      return null;
+    }
+
+    let commonParent = this.dirname(paths[0]);
+
+    for (let i = 1; i < paths.length; i++) {
+      const currentPath = paths[i];
+      while (!startsWith(currentPath, commonParent)) {
+        commonParent = this.dirname(commonParent);
+        if (commonParent === '' || commonParent === '/') {
+          return '/';
+        }
+      }
+    }
+
+    return commonParent;
+  }
+
+  getFilesetPrefix() {
+    const tmpSelection = this.getOriginalSelection();
+    let commonParent = this.findCommonParent(tmpSelection);
+    return commonParent;
+  }
+
   onOK(): Observable<void> {
     return new Observable<void>((observer: Observer<void>) => {
       let tables = cloneDeep(this.originalSelection);
@@ -2267,6 +2384,15 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
           this.childResType
         )
       ) {
+        if (
+          [DataMap.Resource_Type.fileset.value].includes(this.childResType) &&
+          this.isShowTrim &&
+          !this.isTrimPrefix
+        ) {
+          assign(params.extendInfo, {
+            trimPrefix: this.getFilesetPrefix()
+          });
+        }
         if (
           this.targetParams.restoreLocation !== RestoreV2LocationType.ORIGIN
         ) {
@@ -2358,7 +2484,7 @@ export class FileLevelRestoreComponent implements OnInit, AfterViewInit {
           assign(params, {
             subObjects: this.rowCopy.isSearchRestore
               ? [this.rowCopy.searchRestorePath]
-              : this.getPath(cloneDeep(this.originalSelection))
+              : this.getOriginalSelection()
           });
         }
 

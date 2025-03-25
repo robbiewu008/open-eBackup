@@ -248,7 +248,7 @@ public class ProtectedResourceRepositoryImplTest {
         map.put("tag", "%test%");
 
         protectedResourceRepository.queryAgentResourceList(map);
-        protectedResourceRepository.legoHostSighWithOldPrivateKey();
+        protectedResourceRepository.legoHostSighWithOldPrivateKey(false);
         Assert.assertTrue(true);
     }
 

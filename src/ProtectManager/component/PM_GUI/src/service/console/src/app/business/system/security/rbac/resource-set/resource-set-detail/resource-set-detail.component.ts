@@ -15,7 +15,6 @@ import {
   allAppType,
   ApplicationType,
   ClientManagerApiService,
-  CommonConsts,
   DataMap,
   DataMapService,
   GlobalService,
@@ -129,7 +128,17 @@ export class ResourceSetDetailComponent implements OnInit {
       protectionUrl: RouterUrl.ProtectionStorageDeviceInfo,
       copyUrl: RouterUrl.ProtectionStorageDeviceInfo,
       resType: DataMap.Resource_Type.NASFileSystem.value,
-      resourceSetType: ResourceSetType.StorageEquipment
+      resourceSetType: ResourceSetType.StorageEquipment,
+      jobTargetType: [
+        DataMap.Job_Target_Type.DoradoV7.value,
+        DataMap.Job_Target_Type.OceanStorDoradoV7.value,
+        DataMap.Job_Target_Type.OceanStorDorado_6_1_3.value,
+        DataMap.Job_Target_Type.OceanStor_6_1_3.value,
+        DataMap.Job_Target_Type.OceanStor_v5.value,
+        DataMap.Job_Target_Type.OceanStorPacific.value,
+        DataMap.Job_Target_Type.OceanStorDorado.value,
+        DataMap.Job_Target_Type.OceanProtect.value
+      ]
     });
     let otherApp = [
       ResourceSetType.Agent,
@@ -219,10 +228,6 @@ export class ResourceSetDetailComponent implements OnInit {
 
       // 这几个应用有集群节点的概念，和该应用的另一子资源类型相同，所以需要实时获取
       this.parseSpecialDatabaseNum(item);
-
-      if (item.type === ResourceSetType.Agent) {
-        this.getAgentNum();
-      }
     });
 
     this.allSelectedApps.push({
@@ -240,7 +245,8 @@ export class ResourceSetDetailComponent implements OnInit {
         ResourceSetType.PostgreSQL,
         ResourceSetType.Informix,
         ResourceSetType.KingBase,
-        ResourceSetType.MySQL
+        ResourceSetType.MySQL,
+        ResourceSetType.DB2
       ],
       appType => {
         const tmpApp = find(item?.apps, { resourceSetType: appType });
@@ -455,7 +461,8 @@ export class ResourceSetDetailComponent implements OnInit {
         ResourceSetType.PostgreSQL,
         ResourceSetType.Informix,
         ResourceSetType.KingBase,
-        ResourceSetType.MySQL
+        ResourceSetType.MySQL,
+        ResourceSetType.DB2
       ].includes(e.appType)
     ) {
       tmpApplication = find(this.allSelectedApps, {
@@ -479,33 +486,13 @@ export class ResourceSetDetailComponent implements OnInit {
     tmpFileSystem.num += diffNum;
   }
 
-  getAgentNum() {
-    // 内置代理不会出现在界面上，所以手动去除
-    const params = {
-      pageNo: CommonConsts.PAGE_START,
-      pageSize: CommonConsts.PAGE_SIZE,
-      conditions: JSON.stringify({
-        type: 'Host',
-        subType: [
-          DataMap.Resource_Type.DBBackupAgent.value,
-          DataMap.Resource_Type.VMBackupAgent.value,
-          DataMap.Resource_Type.UBackupAgent.value,
-          DataMap.Resource_Type.SBackupAgent.value
-        ],
-        scenario: '1',
-        isCluster: false,
-        resourceSetId: this.data.uuid
-      })
-    };
+  agentNumChange(e) {
+    // 会有跟随资源授权而授权的客户端，所以得直接查数量
 
-    this.clientManagerApiService
-      .queryAgentListInfoUsingGET(params)
-      .subscribe(res => {
-        let tmpClient = find(this.allSelectedApps, {
-          label: this.i18n.get('protection_client_label')
-        });
-        tmpClient.num -= res.totalCount;
-      });
+    let tmpClient = find(this.allSelectedApps, {
+      label: this.i18n.get('protection_client_label')
+    });
+    tmpClient.num = e.num;
   }
 
   copyNumChange(e) {

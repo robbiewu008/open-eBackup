@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -45,7 +45,7 @@
       <div class="note">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p>Replication copies can be viewed only in the target cluster.</p>
+        <p id="exchange_gud_00074__en-us_topic_0000001792503826_p189141741162012">Replication copies can be viewed only in the target cluster.</p>
        </div>
       </div>
       <ul>
@@ -86,7 +86,7 @@
              </ul></td>
            </tr>
            <tr>
-            <td class="cellrowborder" rowspan="3" valign="top" width="18%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Copy</strong></span></p></td>
+            <td class="cellrowborder" rowspan="3" valign="top" width="18%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Copies</strong></span></p></td>
             <td class="cellrowborder" valign="top" width="30%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.1 "><p><span><strong>Quantity</strong></span></p></td>
             <td class="cellrowborder" valign="top" width="52%" headers="mcps1.3.2.2.2.2.2.1.3.2.4.1.2 "><p>Number of backup copies or replication copies of the database instance on the current <span>product</span>.</p></td>
            </tr>
@@ -128,7 +128,7 @@
           </thead>
           <tbody>
            <tr>
-            <td class="cellrowborder" rowspan="9" valign="top" width="15%" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Copy</strong></span></p> <p></p></td>
+            <td class="cellrowborder" rowspan="9" valign="top" width="15%" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Copies</strong></span></p> <p></p></td>
             <td class="cellrowborder" valign="top" width="28.999999999999996%" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Backup Time</strong></span></p></td>
             <td class="cellrowborder" valign="top" width="56.00000000000001%" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.2 "><p>Time when a backup copy is generated.</p></td>
            </tr>
@@ -179,22 +179,44 @@
             <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>Backup type of a generated copy.</p> <p>Options are full, incremental, log, and forever incremental (synthetic full) backup.</p></td>
            </tr>
            <tr>
-            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><strong id="exchange_gud_00074__fc_gud_0058_0_en-us_topic_0000001792503826_b916692512">Expired At</strong></p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 ">
+             <div class="p">
+              <strong id="exchange_gud_00074__fc_gud_0058_0_en-us_topic_0000001792503826_b916692512">Expired At</strong>
+              <div class="note" id="exchange_gud_00074__fc_gud_0058_0_en-us_topic_0000001792503826_note130943715514">
+               <span class="notetitle"> NOTE: </span>
+               <div class="notebody">
+                <p id="exchange_gud_00074__fc_gud_0058_0_en-us_topic_0000001792503826_en-us_topic_0000001656771385_p108956094911">This parameter is available only in 1.5.0SPC26 and later versions.</p>
+               </div>
+              </div>
+             </div></td>
             <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>Copy expiration time. If a copy is permanently valid, <strong id="exchange_gud_00074__fc_gud_0058_0_en-us_topic_0000001792503826_b19549142216517">--</strong> is displayed.</p></td>
            </tr>
            <tr>
             <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><span><strong>WORM</strong></span></span></p></td>
-            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>Indicates whether a copy has been set as a WORM copy.</p>
-             <ul>
-              <li><span><img src="en-us_image_0000001806364650.png"></span>: Disabled. The copy is not set as a WORM copy, that is, the copy is a common copy.</li>
-              <li><span><img src="en-us_image_0000001853243329.png"></span>: Enabled. The copy has been set as a WORM copy. The WORM copy cannot be deleted and its retention period cannot be shortened.</li>
-              <li><span><img src="en-us_image_0000001806364642.png"></span>: Setting. The copy is being set as a WORM copy. A copy in this state cannot be deleted and the retention period cannot be modified.</li>
-              <li><span><img src="en-us_image_0000001853243333.png"></span>: Failed. The copy fails to be set as a WORM copy. A copy which fails to be set as a WORM copy cannot be deleted and the retention period cannot be shortened.</li>
-             </ul></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 ">
+             <div class="p">
+              Whether a copy has been set as a WORM copy. 
+              <ul id="exchange_gud_00074__en-us_topic_0000001792503826_ul75853135118">
+               <li id="exchange_gud_00074__en-us_topic_0000001792503826_li458531175118"><span><img id="exchange_gud_00074__en-us_topic_0000001792503826_image18812012104311" src="en-us_image_0000001792344150.png"></span>: The copy is not set as a WORM copy, that is, the copy is a common copy.</li>
+               <li id="exchange_gud_00074__en-us_topic_0000001792503826_li994353785116"><span><img id="exchange_gud_00074__en-us_topic_0000001792503826_image05089185413" src="en-us_image_0000001792344146.png"></span>: The copy has been set as a WORM copy. The WORM copy cannot be deleted and its retention period cannot be shortened.</li>
+               <li id="exchange_gud_00074__en-us_topic_0000001792503826_li373211419517"><span><img id="exchange_gud_00074__en-us_topic_0000001792503826_image155001184515" src="en-us_image_0000001839143265.png"></span>: The copy is being set as a WORM copy. A copy in this state cannot be deleted and the retention period cannot be modified.</li>
+               <li id="exchange_gud_00074__en-us_topic_0000001792503826_li444514572513"><span><img id="exchange_gud_00074__en-us_topic_0000001792503826_image17671746527" src="en-us_image_0000001839223221.png"></span>: The copy fails to be set as a WORM copy. A copy that fails to be set as a WORM copy cannot be deleted and the retention period cannot be shortened.</li>
+               <li id="exchange_gud_00074__en-us_topic_0000001792503826_li216064774817"><span><img id="exchange_gud_00074__en-us_topic_0000001792503826_image9564104794819" src="en-us_image_0000002090948029.png"></span>: The copy has expired. This state is available only in 1.6.0 and later versions. It indicates that the WORM copy has expired. Copies in this state can be deleted.</li>
+              </ul>
+             </div></td>
            </tr>
            <tr>
             <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><strong>WORM Expiration Time</strong></p></td>
-            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>If a copy is a WORM copy, the WORM expiration time is displayed. Otherwise, <strong id="exchange_gud_00074__en-us_topic_0000001792503826_b1914333131317">--</strong> is displayed.</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 ">
+             <div class="p">
+              If a copy is a WORM copy, the WORM expiration time is displayed. Otherwise, <strong id="exchange_gud_00074__en-us_topic_0000001792503826_b1914333131317">--</strong> is displayed.
+              <div class="note" id="exchange_gud_00074__en-us_topic_0000001792503826_note173611252434">
+               <span class="notetitle"> NOTE: </span>
+               <div class="notebody">
+                <p id="exchange_gud_00074__en-us_topic_0000001792503826_p10361192510430">The WORM expiration time is based on the WORM file system compliance clock. If the WORM file system compliance clock time is inconsistent with the system time, check the WORM status after the WORM file system compliance clock reaches the set expiration time.</p>
+               </div>
+              </div>
+             </div></td>
            </tr>
            <tr>
             <td class="cellrowborder" rowspan="5" valign="top" width="15%" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Resources</strong></span></p> <p></p> <p></p> <p></p></td>
@@ -217,7 +239,7 @@
            </tr>
            <tr>
             <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span><strong>Status</strong></span></p></td>
-            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>Whether the Exchange resource with a copy generated is registered with the current WebUI.</p>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>Whether the Exchange resource with a copy generated is registered with the current <span>product</span> WebUI.</p>
              <ul>
               <li>Yes</li>
               <li>No</li>

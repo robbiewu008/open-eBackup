@@ -1,0 +1,156 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复云磁盘">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="acloud_00148.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+<meta name="DC.Publisher" content="20240320">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="acloud_00152">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复云磁盘</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="acloud_00152"></a><a name="acloud_00152"></a>
+
+<h1 class="topictitle1">恢复云磁盘</h1>
+<div><p>对云服务器备份后，当云服务器的磁盘发生损坏时，可以参考本节恢复云服务器或云磁盘至原位置或新位置。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><p><span>OceanProtect</span>支持使用备份副本、复制副本（不支持恢复至原云服务器）、反向复制副本、归档副本（复制副本的归档副本不支持恢复至原位置）进行云磁盘恢复，支持恢复至原位置或新位置。级联复制副本及其归档副本不支持恢复到原云服务器。</p>
+<ul><li>恢复至原位置<p>恢复到当前云平台的云服务器磁盘，包含已有磁盘和新建磁盘。</p>
+</li><li>恢复至新位置<p>恢复到其他云服务器的已有磁盘。</p>
+</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><p>由于代理主机最多允许挂载24块磁盘，因此在做备份恢复时，如果代理主机已挂载了24块磁盘，系统将等待有空闲槽位时再执行恢复任务。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="acloud_00152__acloud_00147_zh-cn_topic_0000001839142377_uicontrol743231135612">“<span id="acloud_00152__acloud_00147_zh-cn_topic_0000001839142377_text943133112569">数据利用</span> &gt; <span id="acloud_00152__acloud_00147_zh-cn_topic_0000001839142377_text20436317563">副本数据</span> &gt; <span id="acloud_00152__acloud_00147_zh-cn_topic_0000001839142377_text114463112568">云平台</span> &gt; 阿里云”</span>。</span></li><li><span>支持以资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在“资源”页签，根据云服务器名称查找到需要恢复的云服务器，并单击云服务器名称。</p>
+</p></li><li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页面，依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000001861447705.png"></span>，即表示该月、该天存在副本。</p>
+</p></li><li><span>找到要恢复的副本，单击其右侧的“<span>更多</span> &gt; <span>磁盘恢复</span>”。</span></li><li><span>勾选要恢复的云磁盘，进行恢复配置。</span></li><li><span>恢复到原位置或新位置。</span><p><ul><li>恢复到原位置<p>相关参数说明如<a href="#acloud_00152__table52750616234">表1</a>所示。</p>
+
+<div class="tablenoborder"><a name="acloud_00152__table52750616234"></a><a name="table52750616234"></a><table cellpadding="4" cellspacing="0" summary="" id="acloud_00152__table52750616234" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复到原位置参数说明</caption><colgroup><col style="width:29.87%"><col style="width:70.13000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.87%" id="mcps1.3.4.2.6.2.1.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="70.13000000000001%" id="mcps1.3.4.2.6.2.1.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span>目标位置</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>选择备份副本恢复到的云服务器。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span>类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>选择需要待恢复磁盘的类型。可选择“已有磁盘”或“新建磁盘”。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span>目标磁盘名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>选择需要待恢复磁盘名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p>密码</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>待恢复虚拟机的密码，选择系统盘时会出现该参数。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span>代理主机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>选择副本恢复使用的代理主机。</p>
+<p>当用户未选择时，系统会从注册资源时配置的代理主机中选择1到多个代理主机执行恢复。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span>恢复后自动开机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>开启后，恢复任务完成后云服务器将自动开机。默认关闭。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span>恢复前执行副本校验</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>开启后，副本恢复前将执行副本校验，校验副本的完整性。该操作将影响恢复性能。默认关闭。<span style="color:#282B33;">当副本校验状态为“无效”或“--”时，不支持开启此功能。</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>恢复到新位置<div class="p">相关参数说明如<a href="#acloud_00152__table15668141795417">表2</a>所示。
+<div class="tablenoborder"><a name="acloud_00152__table15668141795417"></a><a name="table15668141795417"></a><table cellpadding="4" cellspacing="0" summary="" id="acloud_00152__table15668141795417" frame="border" border="1" rules="all"><caption><b>表2 </b>恢复到新位置参数说明</caption><colgroup><col style="width:29.87%"><col style="width:70.13000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.87%" id="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="70.13000000000001%" id="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span>目标位置</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>选择备份副本恢复到的云服务器。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span>类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>选择需要待恢复磁盘的类型。可选择“已有磁盘”或“新建磁盘”。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span>目标磁盘名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>当类型选择“已有磁盘”时需要选择待恢复磁盘名称。</p>
+<p>当类型选择“新建磁盘”时，默认--。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p>密码</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>待恢复虚拟机的密码，选择系统盘时会出现该参数。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span>代理主机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>选择副本恢复使用的代理主机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span>恢复后自动开机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>开启后，恢复任务完成后云服务器将自动开机。默认关闭。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.87%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.1 "><p><span>恢复前执行副本校验</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="70.13000000000001%" headers="mcps1.3.4.2.6.2.1.2.1.2.2.3.1.2 "><p>开启后，副本恢复前将执行副本校验，校验副本的完整性。该操作将影响恢复性能。默认关闭。当未生成副本校验文件时，不支持开启。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li></ul>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="acloud_00148.html">恢复</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

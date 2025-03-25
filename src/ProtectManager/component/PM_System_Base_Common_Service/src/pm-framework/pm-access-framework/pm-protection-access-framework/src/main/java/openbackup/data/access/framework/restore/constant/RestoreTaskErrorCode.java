@@ -27,6 +27,15 @@ public abstract class RestoreTaskErrorCode {
      */
     public static final long RESTORE_TARGET_ENV_NOT_EXISTED = 1677933068L;
 
+    /**
+     * 错误场景：执行磁带归档恢复操作时，由于磁带不在库，操作失败。</br>
+     *
+     * 原因：磁带（{带库名称：磁带序号；带库名称：磁带序号}）不在库。</br>
+     * 建议：</br>
+     * 1.请将磁带变为在线后重试。</br>
+     */
+    public static final long RESTORE_TAPE_OFFLINE = 1677933078L;
+
     private RestoreTaskErrorCode() {
     }
 }

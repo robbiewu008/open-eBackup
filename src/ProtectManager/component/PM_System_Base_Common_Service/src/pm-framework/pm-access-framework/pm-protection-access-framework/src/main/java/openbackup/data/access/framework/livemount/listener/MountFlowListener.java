@@ -56,6 +56,7 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.copy.model.CopyInfo;
 import openbackup.system.base.sdk.copy.model.CopyStatus;
+import openbackup.system.base.sdk.copy.model.CopyStorageUnitStatus;
 import openbackup.system.base.sdk.copy.model.CopyWormStatus;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.license.enums.FunctionEnum;
@@ -375,6 +376,7 @@ public class MountFlowListener extends AbstractFlowListener {
         cloneCopy.setGeneration(cloneCopy.getGeneration() + 1);
         cloneCopy.setParentCopyUuid(sourceCopy.getUuid());
         cloneCopy.setStatus(CopyStatus.MOUNTING.getValue());
+        cloneCopy.setStorageUnitStatus(CopyStorageUnitStatus.ONLINE.getValue());
         cloneCopy.setUserId(sourceCopy.getUserId());
         cloneCopy.setIndexed(COPY_INDEX_UNINDEXED);
         // set retention time

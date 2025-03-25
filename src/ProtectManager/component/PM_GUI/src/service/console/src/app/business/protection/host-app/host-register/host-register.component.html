@@ -1,4 +1,3 @@
-<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-fullpage">
     <div class="aui-header-1">
         <lv-group lvGutter="8px">
             <i lv-icon="aui-widget-datepicker-previous" [lvColorState]="true" (click)="gotoHost()"></i>
@@ -23,7 +23,7 @@
             <lv-form [formGroup]="formGroup" class="formGroup">
                 <lv-form-item>
                     <lv-form-label lvRequired>
-                        {{'protection_proxy_type_label' | i18n}}
+                        {{'protection_software_package_type_label' | i18n}}
                         <ng-container *ngIf="formGroup.value.type === dataMap.Backup_Proxy.VMware.value">
                             <i lv-icon="aui-icon-help" [lv-tooltip]="contentTemplate" lvTooltipPosition="rightTop"
                                 lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
@@ -55,7 +55,7 @@
                     </lv-form-control>
                 </lv-form-item>
 
-                <ng-container *ngIf="formGroup.value.type === dataMap.Proxy_Type_Options.remoteAgent.value">
+                <ng-container *ngIf="formGroup.value.type === dataMap.softwarePackageType.remoteAgent.value">
                     <lv-form-item>
                         <lv-form-label lvRequired>
                             {{'protection_host_applications_label' | i18n}}
@@ -104,7 +104,7 @@
                 </ng-container>
                 <!-- 共享 -->
                 <ng-container
-                    *ngIf="!isHcsUser && (formGroup.value.type === dataMap.Proxy_Type_Options.remoteAgent.value) && formGroup.value.osType === dataMap.OS_Type.Linux.value">
+                    *ngIf="!isHcsUser && (formGroup.value.type === dataMap.softwarePackageType.remoteAgent.value) && formGroup.value.osType === dataMap.OS_Type.Linux.value">
                     <lv-form-item>
                         <lv-form-label>{{'protection_multi-tenant_sharing_label' | i18n}}
                             <i lv-icon="aui-icon-help"
@@ -149,9 +149,12 @@
                     </lv-form-control>
                 </lv-form-item>
                 <!-- 是否开启源端重删 -->
-                <lv-form-item *ngIf="!appUtilsService.isDistributed && !hideSourceDuplication">
+                <lv-form-item *ngIf="!appUtilsService.isDistributed && !hideSourceDuplication && !isHcsUser">
                     <lv-form-label>
                         {{'protection_sla_source_deduplication_label' | i18n}}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{ 'protection_source_deduplication_tip_label' | i18n }}"
+                                lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"
+                                lvColorState="true"></i>
                     </lv-form-label>
                     <lv-form-control>
                         <lv-radio-group formControlName="isEnableDataturbo">
@@ -199,7 +202,10 @@
                                         <th lvShowCheckbox width='40px' [lvRowsData]='lvTable.renderData'>
                                         </th>
                                         <th lvCellKey="ip">
-                                            {{'common_ip_address_segment_label' | i18n}}
+                                            {{'protection_manage_ip_label' | i18n}}
+                                        </th>
+                                        <th lvCellKey="businessIp">
+                                            {{'protection_business_ips_label' | i18n}}
                                         </th>
                                         <th lvCellKey="port" width='120px'>
                                             <span lv-overflow>
@@ -270,7 +276,10 @@
                                         <tr>
                                             <td width='40px' lvShowCheckbox [lvRowData]='item'></td>
                                             <td>
-                                                <span lv-overflow>{{item.ip | nil}}</span>
+                                                <span lv-overflow>{{item?.manageIp | nil}}</span>
+                                            </td>
+                                            <td>
+                                                <span lv-overflow>{{(item?.ip || item?.businessIp) | nil}}</span>
                                             </td>
                                             <td>
                                                 <span lv-overflow>{{item.port}}</span>

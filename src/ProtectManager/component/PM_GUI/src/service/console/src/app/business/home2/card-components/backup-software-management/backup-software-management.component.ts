@@ -17,9 +17,9 @@ import {
   ExternalSystemService,
   I18NService
 } from 'app/shared';
-import { each, toNumber, toUpper } from 'lodash';
+import { each, toNumber, toUpper, toString } from 'lodash';
 import { finalize } from 'rxjs/operators';
-import ShowExternalSystemInfoParams = ExternalSystemService.ShowExternalSystemInfoParams;
+import GetAllStatusParams = ExternalSystemService.GetAllStatusParams;
 
 @Component({
   selector: 'aui-backup-software-management',
@@ -38,7 +38,23 @@ export class BackupSoftwareManagementComponent {
 
   ngOnInit(): void {
     this.cardInfo.loading = true;
+    this.refreshData();
+  }
+
+  refreshData() {
     this.getExternalSystemList();
+  }
+
+  trackByUuid = (index, item) => {
+    return item.id;
+  };
+
+  jump(data) {
+    if (data.type === 'dpa') {
+      this.jumpToDPA(data);
+    } else {
+      this.jumpToEBackup(data);
+    }
   }
 
   jumpToDPA(data) {
@@ -47,8 +63,26 @@ export class BackupSoftwareManagementComponent {
     window.open(url, '_blank');
   }
 
+  jumpToEBackup(data) {
+    this.externalSystemService
+      .GenerateExternalSystemToken({ uuid: data.systemId })
+      .subscribe(res => {
+        const language = this.i18n.isEn ? 'en' : 'zh';
+        const url = `https://${encodeURI(res.ip)}:${encodeURI(
+          toString(res.port)
+        )}/eBackup/#/login?token=${encodeURIComponent(
+          res.token
+        )}&language=${encodeURIComponent(language)}`;
+        window.open(url, '_blank');
+      });
+  }
+
   getExternalSystemList() {
-    const params: ShowExternalSystemInfoParams = { akLoading: false };
+    this.cardInfo.loading = true;
+    const params: GetAllStatusParams = {
+      akLoading: false,
+      limitTime: this.cardInfo?.selectTime
+    };
     this.externalSystemService
       .getAllStatus(params)
       .pipe(
@@ -60,6 +94,10 @@ export class BackupSoftwareManagementComponent {
         each(res, item => {
           item.usedSize = toNumber(item.usedSize);
           item.totalSize = toNumber(item.totalSize);
+          item.succeedJobs = toNumber(item.totalJobs - item.failedJobs);
+          item.successRate = Math.round(
+            ((item.succeedJobs || 0) / (item.totalJobs || 1)) * 100
+          );
           item.tagLabel = [
             {
               label: item.status
@@ -72,7 +110,7 @@ export class BackupSoftwareManagementComponent {
             Math.round((item.usedSize / (item.totalSize || 1)) * 100 * 100) /
             100;
         });
-        this.externalSystemList = res.slice(0, 2);
+        this.externalSystemList = res;
         this.cardInfo.title = res?.length
           ? `${this.i18n.get('common_external_associated_systems_label')}(${
               res.length

@@ -18,15 +18,27 @@ import { DataBackupComponent } from './data-backup.component';
 import { BaseModule } from 'app/shared';
 import { FileSystemModule } from './file-system/file-system.module';
 import { BackupPolicyModule } from './backup-policy/backup-policy.module';
+import { WhiteListComponent } from './white-list/white-list.component';
+import { ProTableModule } from 'app/shared/components/pro-table';
+import { ProButtonModule } from 'app/shared/components/pro-button';
+import { CreateWhiteListComponent } from './white-list/create-white-list/create-white-list.component';
+import { AssociateFsComponent } from './white-list/associate-policy/associate-fs.component';
 
 @NgModule({
-  declarations: [DataBackupComponent],
+  declarations: [
+    DataBackupComponent,
+    WhiteListComponent,
+    CreateWhiteListComponent,
+    AssociateFsComponent
+  ],
   imports: [
     CommonModule,
     DataBackupRoutingModule,
     BaseModule,
     FileSystemModule,
-    BackupPolicyModule
+    BackupPolicyModule,
+    ProTableModule,
+    ProButtonModule
   ]
 })
 export class DataBackupModule {}

@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -24,6 +24,8 @@
   <meta name="version" content="">
   <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
   <meta name="DC.Publisher" content="20241029">
+  <meta name="documenttype" content="usermanual">
+  <meta name="prodname" content="csbs">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="mysql-0014">
   <meta name="DC.Language" content="en-us">
@@ -34,7 +36,6 @@
   <a name="mysql-0014"></a><a name="mysql-0014"></a>
   <h1 class="topictitle1">Installing Mariabackup</h1>
   <div>
-   <p></p>
    <p>Before performing a backup job for MariaDB, you need to manually install Mariabackup on all MariaDB nodes.</p>
    <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
@@ -42,7 +43,7 @@
      <li id="mysql-0014__li1678375919578"><a name="mysql-0014__li1678375919578"></a><a name="li1678375919578"></a><span>Log in to the host where the MariaDB instance is located and run the following command to check whether Mariabackup has been installed.</span><p></p><pre class="screen">mariabackup --version</pre>
       <ul>
        <li>If the version number is displayed in the command output, Mariabackup has been installed.</li>
-       <li>If no version number is displayed, Mariabackup needs to be installed.</li>
+       <li>If no version number is displayed, Mariabackup has not been installed.</li>
       </ul> <p></p></li>
      <li><span>Install Mariabackup.</span><p></p><p>You can use the binary package or RPM package for installation.</p>
       <ul>

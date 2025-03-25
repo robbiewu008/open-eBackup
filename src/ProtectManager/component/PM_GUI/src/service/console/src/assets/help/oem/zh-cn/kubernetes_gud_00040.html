@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,12 +11,13 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="步骤2：创建归档SLA">
+  <meta name="DC.Title" content="步骤2：创建备份副本归档SLA">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="kubernetes_gud_00036.html">
   <meta name="prodname" content="">
@@ -30,11 +30,11 @@
   <meta name="DC.Identifier" content="kubernetes_gud_00040">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>步骤2：创建归档SLA</title>
+  <title>步骤2：创建备份副本归档SLA</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="kubernetes_gud_00040"></a><a name="kubernetes_gud_00040"></a>
-  <h1 class="topictitle1">步骤2：创建归档SLA</h1>
+  <h1 class="topictitle1">步骤2：创建备份副本归档SLA</h1>
   <div>
    <p id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_p1751984013365">如果您需要对生成的备份副本进行归档，请参考本节配置归档SLA。</p>
    <div class="section" id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_section15371826121012">
@@ -44,7 +44,7 @@
    <div class="section" id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_section32344304103">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_ol112221128161219">
-     <li id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_li149381918143112"><span>选择<span class="uicontrol" id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_uicontrol9143133018394">“<span id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_text1093174963311">保护</span> &gt; <span id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_text18596203494212">保护策略</span> &gt; <span id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_text16431530122616">SLA</span>”</span>。</span></li>
+     <li id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_li149381918143112"><span>选择<span class="uicontrol" id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001839142377_uicontrol8111821122820">“<span id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001839142377_text71111921162814">保护</span> &gt; 保护策略 &gt; SLA”</span>。</span></li>
      <li id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_li649983114125"><span>查找到需要创建归档策略的SLA，单击<span class="uicontrol" id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_uicontrol577717611320">“<span id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text19646163524813">更多</span> &gt; <span id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text068935811482">修改</span>”</span>。</span><p></p><p id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_p1816920251869">系统预置的SLA不支持修改。</p> <p></p></li>
      <li id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_li158166713135"><span>单击<span class="uicontrol" id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_uicontrol12308113618612">“<span id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_text95301130194917">归档策略</span>”</span>图标。</span></li>
      <li id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_li3425152010144"><span>配置归档策略信息。</span><p></p><p id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_p158181314277">单击页面右侧的<span class="uicontrol" id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_uicontrol13380151314273">“<span id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_text83806133272">添加</span>”</span>，可创建多个归档策略，最多允许创建4个归档策略，最多支持归档到4个归档存储。</p> <p id="kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_p10717113412144">相关参数说明如<a href="#kubernetes_gud_00040__zh-cn_topic_0000001792503806_zh-cn_topic_0000001091370109_table13531347181416">表1</a>。</p>

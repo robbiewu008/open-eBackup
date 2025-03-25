@@ -140,7 +140,17 @@ export class CreateResourcesetComponent implements OnInit {
       protectionUrl: RouterUrl.ProtectionStorageDeviceInfo,
       copyUrl: RouterUrl.ProtectionStorageDeviceInfo,
       resType: DataMap.Resource_Type.NASFileSystem.value,
-      resourceSetType: ResourceSetType.StorageEquipment
+      resourceSetType: ResourceSetType.StorageEquipment,
+      jobTargetType: [
+        DataMap.Job_Target_Type.DoradoV7.value,
+        DataMap.Job_Target_Type.OceanStorDoradoV7.value,
+        DataMap.Job_Target_Type.OceanStorDorado_6_1_3.value,
+        DataMap.Job_Target_Type.OceanStor_6_1_3.value,
+        DataMap.Job_Target_Type.OceanStor_v5.value,
+        DataMap.Job_Target_Type.OceanStorPacific.value,
+        DataMap.Job_Target_Type.OceanStorDorado.value,
+        DataMap.Job_Target_Type.OceanProtect.value
+      ]
     });
     let appTypes = [
       { label: this.i18n.get('common_database_label'), apps: allApp.database },
@@ -552,16 +562,16 @@ export class CreateResourcesetComponent implements OnInit {
     });
   }
 
-  onOK(): Observable<void> {
-    return new Observable<void>((observer: Observer<void>) => {
+  onOK(): Observable<any> {
+    return new Observable<any>((observer: Observer<any>) => {
       if (!!this.data) {
         this.resourceSetService
           .modifyResourceSet({
             ResourceSetRequest: this.getParams()
           })
           .subscribe({
-            next: () => {
-              observer.next();
+            next: response => {
+              observer.next(response);
               observer.complete();
             },
             error: error => {
@@ -575,8 +585,8 @@ export class CreateResourcesetComponent implements OnInit {
             ResourceSetRequest: this.getParams()
           })
           .subscribe({
-            next: () => {
-              observer.next();
+            next: response => {
+              observer.next(response);
               observer.complete();
             },
             error: error => {

@@ -98,7 +98,7 @@ public class GlobalExceptionHandlerTest {
      */
     @Test
     public void handle_LegoCheckedException_success_when_controller_throw_LegoCheckedException_with_errorCode() throws Exception {
-        PowerMockito.doThrow(new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR)).when(configMapService).getValueFromSecretByKey(anyString());
+        PowerMockito.doThrow(new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR)).when(configMapService).getValueFromSecretByKey(anyString(), false);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(URL);
         assetError(requestBuilder, status().is5xxServerError(), CommonErrorCode.SYSTEM_ERROR, TEST_MESSAGE);
     }
@@ -110,7 +110,7 @@ public class GlobalExceptionHandlerTest {
      */
     @Test
     public void handle_exception_success_when_controller_throw_LegoCheckedException_with_unknown() throws Exception {
-        PowerMockito.doThrow(new LegoCheckedException(-1)).when(configMapService).getValueFromSecretByKey(anyString());
+        PowerMockito.doThrow(new LegoCheckedException(-1)).when(configMapService).getValueFromSecretByKey(anyString(), false);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(URL);
         assetError(requestBuilder, status().is5xxServerError(), CommonErrorCode.OPERATION_FAILED, TEST_MESSAGE);
     }
@@ -123,7 +123,7 @@ public class GlobalExceptionHandlerTest {
     @Test
     public void handle_exception_success_when_controller_throw_FeignCheckedException() throws Exception {
         FeignException feignException = PowerMockito.mock(FeignException.class);
-        PowerMockito.doThrow(feignException).when(configMapService).getValueFromSecretByKey(anyString());
+        PowerMockito.doThrow(feignException).when(configMapService).getValueFromSecretByKey(anyString(), false);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(URL);
         assetError(requestBuilder, status().is5xxServerError(), CommonErrorCode.OPERATION_FAILED, TEST_MESSAGE);
     }
@@ -135,7 +135,7 @@ public class GlobalExceptionHandlerTest {
      */
     @Test
     public void handle_exception_success_when_controller_throw_Exception() throws Exception {
-        PowerMockito.doThrow(new RuntimeException()).when(configMapService).getValueFromSecretByKey(anyString());
+        PowerMockito.doThrow(new RuntimeException()).when(configMapService).getValueFromSecretByKey(anyString(), false);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(URL);
         assetError(requestBuilder, status().is5xxServerError(), CommonErrorCode.OPERATION_FAILED, TEST_MESSAGE);
     }
@@ -157,7 +157,7 @@ public class GlobalExceptionHandlerTest {
         PowerMockito.when(violation.getMessage()).thenReturn(value);
         violations.add(violation);
         PowerMockito.when(violationException.getConstraintViolations()).thenReturn(violations);
-        PowerMockito.doThrow(violationException).when(configMapService).getValueFromSecretByKey(anyString());
+        PowerMockito.doThrow(violationException).when(configMapService).getValueFromSecretByKey(anyString(), false);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(URL);
         assetError(requestBuilder, status().isBadRequest(), CommonErrorCode.ERR_PARAM, String.join(": ", key, value));
     }
@@ -172,7 +172,7 @@ public class GlobalExceptionHandlerTest {
         HttpMessageNotReadableException exception = PowerMockito.mock(HttpMessageNotReadableException.class);
         JsonMappingException jsonMappingException = PowerMockito.mock(JsonMappingException.class);
         LegoCheckedException legoCheckedException = PowerMockito.mock(LegoCheckedException.class);
-        PowerMockito.doThrow(exception).when(configMapService).getValueFromSecretByKey(anyString());
+        PowerMockito.doThrow(exception).when(configMapService).getValueFromSecretByKey(anyString(), false);
         PowerMockito.when(exception.getCause()).thenReturn(jsonMappingException);
         PowerMockito.when(jsonMappingException.getCause()).thenReturn(legoCheckedException);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(URL);
@@ -188,7 +188,7 @@ public class GlobalExceptionHandlerTest {
     public void handle_exception_success_when_controller_throw_HttpMessageNotReadableException() throws Exception {
         HttpMessageNotReadableException exception = PowerMockito.mock(HttpMessageNotReadableException.class);
         InvalidFormatException invalidFormatException = PowerMockito.mock(InvalidFormatException.class);
-        PowerMockito.doThrow(exception).when(configMapService).getValueFromSecretByKey(anyString());
+        PowerMockito.doThrow(exception).when(configMapService).getValueFromSecretByKey(anyString(), false);
         PowerMockito.when(exception.getCause()).thenReturn(invalidFormatException);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(URL);
 

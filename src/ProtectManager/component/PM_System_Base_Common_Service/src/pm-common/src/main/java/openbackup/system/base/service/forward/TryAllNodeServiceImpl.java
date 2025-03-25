@@ -15,6 +15,7 @@ package openbackup.system.base.service.forward;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
@@ -55,8 +56,6 @@ public class TryAllNodeServiceImpl implements TryAllNodeService {
 
     private static final long RETRY_DELAY_TIME = 3000L;
 
-    private static final String PM_BASE_POD_NAME = "pm-system-base";
-
     @Qualifier("internalRestTemplate")
     @Autowired
     private RestTemplate internalRestTemplate;
@@ -82,7 +81,7 @@ public class TryAllNodeServiceImpl implements TryAllNodeService {
         Object body = isOverwriteBody ? requestBody : RouterServiceUtils.getBodyData(httpRequest);
         List<String> ipList = null;
         try {
-            ipList = infrastructureRestApi.getEndpoints(PM_BASE_POD_NAME).getData();
+            ipList = infrastructureRestApi.getEndpoints(Constants.PM_ENDPOINT_NAME).getData();
         } catch (FeignException | LegoCheckedException e) {
             log.error("Get base pod ip failed", ExceptionUtil.getErrorMessage(e));
             throw LegoCheckedException.cast(e);

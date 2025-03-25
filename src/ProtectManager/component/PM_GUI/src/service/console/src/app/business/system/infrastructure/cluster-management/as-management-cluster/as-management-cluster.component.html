@@ -1,4 +1,3 @@
-<div [innerHTML]="'system_cluster_role_managed_desc_label'|i18n: [data.clusterName]" class='aui-gutter-column-md'></div>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div [innerHTML]="'system_cluster_role_managed_desc_label'|i18n: [data.clusterName]" class='aui-gutter-column-md'></div>
 <lv-form [formGroup]="formGroup">
     <lv-form-item>
         <lv-form-label lvRequired>{{'common_name_label' | i18n}}</lv-form-label>

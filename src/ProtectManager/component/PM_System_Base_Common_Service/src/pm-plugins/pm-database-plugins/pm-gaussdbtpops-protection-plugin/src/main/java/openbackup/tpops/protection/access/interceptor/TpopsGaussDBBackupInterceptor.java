@@ -15,9 +15,12 @@ package openbackup.tpops.protection.access.interceptor;
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterBasicService;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.framework.agent.DefaultProtectAgentSelector;
+import openbackup.data.access.framework.protection.common.constants.AgentKeyConstant;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.backup.v2.PostBackupTask;
+import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.enums.BackupTypeEnum;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
@@ -36,6 +39,10 @@ import openbackup.tpops.protection.access.provider.TpopsGaussDBAgentProvider;
 import openbackup.tpops.protection.access.service.TpopsGaussDBService;
 import openbackup.tpops.protection.access.util.TpopsGaussDBClusterUtils;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -49,6 +56,9 @@ import java.util.Map;
 @Component
 @Slf4j
 public class TpopsGaussDBBackupInterceptor extends AbstractDbBackupInterceptor {
+    @Autowired
+    private DefaultProtectAgentSelector defaultSelector;
+
     private final TpopsGaussDBService tpopsGaussDbService;
 
     private final TpopsGaussDBAgentProvider tpopsGaussDBAgentProvider;
@@ -90,6 +100,17 @@ public class TpopsGaussDBBackupInterceptor extends AbstractDbBackupInterceptor {
      */
     @Override
     protected void supplyAgent(BackupTask backupTask) {
+        Map<String, String> advanceParams = backupTask.getAdvanceParams();
+        if (MapUtils.isNotEmpty(advanceParams) && advanceParams.containsKey((AgentKeyConstant.AGENTS_KEY))) {
+            String agents = MapUtils.getString(advanceParams, AgentKeyConstant.AGENTS_KEY);
+            if (!StringUtils.isEmpty(agents)) {
+                List<Endpoint> endpoints = defaultSelector.selectByAgentParameter(agents, null);
+                if (CollectionUtils.isNotEmpty(endpoints)) {
+                    backupTask.setAgents(endpoints);
+                    return;
+                }
+            }
+        }
         // 获取环境ID
         String envId = backupTask.getProtectEnv().getUuid();
         ProtectedEnvironment protectedEnvironment = tpopsGaussDbService.getEnvironmentById(envId);
@@ -135,12 +156,20 @@ public class TpopsGaussDBBackupInterceptor extends AbstractDbBackupInterceptor {
         String copyPropertiesStr = postBackupTask.getCopyInfo().getProperties();
         JSONObject copyProperties = JSONObject.fromObject(copyPropertiesStr);
         String canRestore = copyProperties.getString(TpopsGaussDBConstant.CAN_RESTORE);
-        if (BackupTypeEnum.LOG.getAbbreviation() == postBackupTask.getBackupType().getAbbreviation()
-            && TpopsGaussDBConstant.FALSE.equals(canRestore)) {
-            log.warn("The canRestore is false.");
-            // 资源（[实例名]）运行[0-备份]任务[1-部分成功]
-            String[] alarmParams = new String[] {postBackupTask.getProtectedObject().getName(), "0", "1"};
-            commonAlarmService.generateAlarm(genLogBackupFailedAlarmParam(alarmParams));
+        if (BackupTypeEnum.LOG.getAbbreviation() == postBackupTask.getBackupType().getAbbreviation()) {
+            if (TpopsGaussDBConstant.FALSE.equals(canRestore)) {
+                log.warn("The canRestore is false. add alarm");
+
+                // 资源（[实例名]）运行[0-备份]任务[1-部分成功]
+                String[] alarmParams = new String[] {postBackupTask.getProtectedObject().getName(), "0", "1", "--"};
+                commonAlarmService.generateAlarm(genLogBackupFailedAlarmParam(alarmParams));
+            } else {
+                log.info("The canRestore is true. remove alarm");
+
+                // 资源（[实例名]）运行[0-备份]任务[1-部分成功]
+                String[] alarmParams = new String[] {postBackupTask.getProtectedObject().getName(), "0", "1", "--"};
+                commonAlarmService.clearAlarm(genLogBackupFailedAlarmParam(alarmParams));
+            }
         }
     }
 

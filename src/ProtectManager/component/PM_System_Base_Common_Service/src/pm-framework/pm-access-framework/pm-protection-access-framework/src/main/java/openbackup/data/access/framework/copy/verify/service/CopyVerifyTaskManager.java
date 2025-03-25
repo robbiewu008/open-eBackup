@@ -12,6 +12,8 @@
 */
 package openbackup.data.access.framework.copy.verify.service;
 
+import static openbackup.system.base.common.constants.Constants.INTERNAL_AGENT_KEY;
+
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -70,9 +72,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class CopyVerifyTaskManager {
-    // 内置agent的key
-    private static final String INTERNAL_AGENT_KEY = "scenario";
-
     private static final String INTERNAL_AGENT_ESN = "internal_agent_esn";
 
     private final CopyVerifyService copyVerifyService;

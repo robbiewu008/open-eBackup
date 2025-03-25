@@ -1,4 +1,3 @@
-<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-fullpage">
     <div class="aui-header-1">
         <lv-group lvGutter='8px'>
             <h1>{{ 'system_ldap_service_config_label' | i18n }}</h1>
@@ -129,6 +129,9 @@
                                         </span>
                                     </lv-group>
                                 </ng-container>
+                                <lv-alert class="alertClass" *ngIf="formGroup.value.protocol === dataMap.ldapProtocol.ldaps.value" lvType="info" lvClosable="false">
+                                    <div class="form-control-input" [innerHTML]="openCertificateTip"></div>
+                                </lv-alert>
                             </lv-form-control>
                         </lv-form-item>
                         <lv-form-item>

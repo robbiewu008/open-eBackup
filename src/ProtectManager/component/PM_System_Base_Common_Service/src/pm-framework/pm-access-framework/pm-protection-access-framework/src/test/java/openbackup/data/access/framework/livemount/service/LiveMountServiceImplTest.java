@@ -19,13 +19,17 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 
 import openbackup.data.access.framework.copy.mng.service.CopyAuthVerifyService;
 import openbackup.data.access.framework.copy.mng.service.CopyService;
 import openbackup.data.access.framework.core.dao.CopyMapper;
-import openbackup.data.access.framework.core.entity.CopiesEntity;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.livemount.common.LiveMountOperateType;
 import openbackup.data.access.framework.livemount.common.LiveMountRestApi;
@@ -48,10 +52,7 @@ import openbackup.data.access.framework.livemount.service.impl.LiveMountServiceI
 import openbackup.data.protection.access.provider.sdk.livemount.LiveMountInterceptorProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-
-import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
-import com.huawei.oceanprotect.job.sdk.JobService;
-
+import openbackup.system.base.bean.CopiesEntity;
 import openbackup.system.base.common.aspect.OperationLogService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
@@ -84,9 +85,6 @@ import openbackup.system.base.sdk.schedule.ScheduleRestApi;
 import openbackup.system.base.sdk.schedule.model.ScheduleResponse;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.ProviderRegistry;
-
-import com.baomidou.mybatisplus.core.MybatisConfiguration;
-import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.assertj.core.util.Lists;

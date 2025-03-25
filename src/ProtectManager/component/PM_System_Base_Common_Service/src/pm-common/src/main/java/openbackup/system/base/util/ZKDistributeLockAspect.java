@@ -49,7 +49,18 @@ public class ZKDistributeLockAspect {
     public Object execTaskWithZKLock(ProceedingJoinPoint joinPoint, ZKDistributeLock zkDistributeLock)
             throws Throwable {
         Object result = new Object();
-        String lockName = zkDistributeLock.lockName();
+        String lockNamePrefix = zkDistributeLock.lockName();
+        String lockIdIndex = zkDistributeLock.lockIdIndex();
+        String lockId = "";
+        if (lockIdIndex != null && !lockIdIndex.isEmpty()) {
+            // 获取方法参数并查找uuid的值
+            Object[] args = joinPoint.getArgs();
+            lockId = (String) args[Integer.parseInt(lockIdIndex)];
+        }
+        String lockName = lockNamePrefix;
+        if (lockId != null && !lockId.isEmpty()) {
+            lockName += "/" + lockId;
+        }
         long tryLockTime = zkDistributeLock.tryLockTime();
         TimeUnit timeUnit = zkDistributeLock.timeUnit();
         long errorCode = zkDistributeLock.errorCode();
@@ -59,16 +70,14 @@ public class ZKDistributeLockAspect {
         try {
             canAcquireLock = zkLock.tryLock(tryLockTime, timeUnit);
             if (!canAcquireLock) {
-                log.info("zk distributed lock : {} is occupied by others.", lockName);
+                log.debug("zk distributed lock : {} is occupied by others.", lockName);
                 if (errorCode > 0L) {
                     throw new LegoCheckedException(errorCode);
                 }
                 return result;
             }
-            log.info("acquire zk distributed lock : {} success.", lockName);
             Object[] args = joinPoint.getArgs();
             result = joinPoint.proceed(args);
-            log.info("exec task end, lock : {}.", lockName);
         } finally {
             if (canAcquireLock && isNeedRelease) {
                 zkLock.unlock();

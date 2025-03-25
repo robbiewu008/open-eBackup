@@ -11,11 +11,6 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 
 #########################################
-# Copyright (c) 2021-2021 Huawei .
-# All rights reserved.
-#
-# Please send feedback to http://www.huawei.com
-#
 # Function 容器的健康检查
 # 使用https调用自己的服务
 # revise note

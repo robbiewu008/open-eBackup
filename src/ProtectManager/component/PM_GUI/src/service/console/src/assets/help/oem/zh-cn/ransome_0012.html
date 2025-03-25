@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -38,6 +38,10 @@
   <div>
    <p>通过本节操作，您可以为备份副本/复制副本设置防勒索&amp;WORM策略。</p>
    <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <p>若资源开启了小文件聚合，则不支持对该资源创建防勒索策略。</p>
+   </div>
+   <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
      <li><span>选择“数据安全 &gt; 防勒索 &gt; 防勒索&amp;WORM配置”。</span><p></p>
@@ -62,14 +66,14 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="19.02%" id="mcps1.3.2.2.4.2.1.2.3.1.1"><p>参数</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="80.97999999999999%" id="mcps1.3.2.2.4.2.1.2.3.1.2"><p>说明</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="19.02%" id="mcps1.3.3.2.4.2.1.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="80.97999999999999%" id="mcps1.3.3.2.4.2.1.2.3.1.2"><p>说明</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="19.02%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p><span>名称</span></p></td>
-          <td class="cellrowborder" valign="top" width="80.97999999999999%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p>用户自定义防勒索&amp;WORM策略的名称。</p>
+          <td class="cellrowborder" valign="top" width="19.02%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p><span>名称</span></p></td>
+          <td class="cellrowborder" valign="top" width="80.97999999999999%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p>用户自定义防勒索&amp;WORM策略的名称。</p>
            <div class="note">
             <span class="notetitle"> 说明： </span>
             <div class="notebody">
@@ -78,8 +82,8 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="19.02%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p><span>描述</span></p></td>
-          <td class="cellrowborder" valign="top" width="80.97999999999999%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p>防勒索&amp;WORM策略描述信息。建议根据防勒索&amp;WORM内容填写描述信息，便于后续管理。</p></td>
+          <td class="cellrowborder" valign="top" width="19.02%" headers="mcps1.3.3.2.4.2.1.2.3.1.1 "><p><span>描述</span></p></td>
+          <td class="cellrowborder" valign="top" width="80.97999999999999%" headers="mcps1.3.3.2.4.2.1.2.3.1.2 "><p>防勒索&amp;WORM策略描述信息。建议根据防勒索&amp;WORM内容填写描述信息，便于后续管理。</p></td>
          </tr>
         </tbody>
        </table>
@@ -97,18 +101,18 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="19.15%" id="mcps1.3.2.2.5.2.1.2.3.1.1"><p>参数</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="80.85%" id="mcps1.3.2.2.5.2.1.2.3.1.2"><p>说明</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="19.15%" id="mcps1.3.3.2.5.2.1.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="80.85%" id="mcps1.3.3.2.5.2.1.2.3.1.2"><p>说明</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.2.2.5.2.1.2.3.1.1 "><p>防勒索策略</p></td>
-          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.2.2.5.2.1.2.3.1.2 "><p>默认关闭。打开后，可为防勒索策略设置调度计划，为备份副本/复制副本进行勒索软件扫描。</p></td>
+          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p>防勒索策略</p></td>
+          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>默认关闭。打开后，可为防勒索策略设置调度计划，为备份副本/复制副本进行勒索软件扫描。</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.2.2.5.2.1.2.3.1.1 "><p><span>调度计划</span></p></td>
-          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.2.2.5.2.1.2.3.1.2 "><p>打开<span class="uicontrol">“防勒索策略”</span>后显示该参数。</p> <p>防勒索策略的调度计划。</p>
+          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span>调度计划</span></p></td>
+          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>打开<span class="uicontrol">“防勒索策略”</span>后显示该参数。</p> <p>防勒索策略的调度计划。</p>
            <ul>
             <li><span>备份或复制成功后立即检测</span>。</li>
             <li><span>周期性检测</span>。
@@ -129,18 +133,18 @@
            </ul></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.2.2.5.2.1.2.3.1.1 "><p><span>WORM策略</span></p></td>
-          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.2.2.5.2.1.2.3.1.2 "><p>默认关闭。打开后，可为备份副本/复制副本进行WORM设置。</p></td>
+          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span>WORM策略</span></p></td>
+          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>默认关闭。打开后，可为备份副本/复制副本进行WORM设置。</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.2.2.5.2.1.2.3.1.1 "><p><span>WORM设置</span></p></td>
-          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.2.2.5.2.1.2.3.1.2 "><p>打开<span class="uicontrol">“<span>WORM策略</span>”</span>后显示该参数。</p> <p>当“防勒索策略”打开后，该参数用于在防勒索检测完成后，设置未感染副本为WORM副本。</p> <p>当“防勒索策略”关闭时，该参数用于备份/复制成功后，设置副本为WORM副本。</p>
+          <td class="cellrowborder" valign="top" width="19.15%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span>WORM设置</span></p></td>
+          <td class="cellrowborder" valign="top" width="80.85%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>打开<span class="uicontrol">“<span>WORM策略</span>”</span>后显示该参数。</p> <p>当“防勒索策略”打开后，该参数用于在防勒索检测完成后，设置未感染副本为WORM副本。</p> <p>当“防勒索策略”关闭时，该参数用于备份/复制成功后，设置副本为WORM副本。</p>
            <div class="note">
             <span class="notetitle"> 说明： </span>
             <div class="notebody">
              <ul>
               <li>WORM副本过期时间会有一定延迟，在副本过期前不允许修改和删除。</li>
-              <li>WORM副本不支持归档。</li>
+              <li>对于1.5.0版本，WORM副本不支持归档。</li>
              </ul>
             </div>
            </div></td>
@@ -161,14 +165,14 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="25.919999999999998%" id="mcps1.3.2.2.6.2.1.2.3.1.1"><p>参数</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="74.08%" id="mcps1.3.2.2.6.2.1.2.3.1.2"><p>说明</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="25.919999999999998%" id="mcps1.3.3.2.6.2.1.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.08%" id="mcps1.3.3.2.6.2.1.2.3.1.2"><p>说明</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.919999999999998%" headers="mcps1.3.2.2.6.2.1.2.3.1.1 "><p><span>类型</span></p></td>
-          <td class="cellrowborder" valign="top" width="74.08%" headers="mcps1.3.2.2.6.2.1.2.3.1.2 "><p>资源对象的类型。</p>
+          <td class="cellrowborder" valign="top" width="25.919999999999998%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p><span>类型</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.08%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 "><p>资源对象的类型。</p>
            <ul>
             <li><span>备份副本</span>：检测本地集群的备份副本。</li>
             <li><span>复制副本</span>：检测其他集群复制到本地集群的复制副本。
@@ -181,12 +185,16 @@
            </ul></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="25.919999999999998%" headers="mcps1.3.2.2.6.2.1.2.3.1.1 "><p><span>资源类型</span></p></td>
-          <td class="cellrowborder" valign="top" width="74.08%" headers="mcps1.3.2.2.6.2.1.2.3.1.2 "><p>资源的类型。防勒索检测仅支持<span class="uicontrol">“VMware虚拟机”</span>、<span class="uicontrol">“<span>NAS文件系统</span>”</span>、<span class="uicontrol">“<span>NAS共享</span>”</span>、<span class="uicontrol">“<span>文件集</span>”</span>、<span class="uicontrol">“CNware虚拟机”</span>、<span class="uicontrol">“华为云Stack”</span>、<span class="uicontrol">“FusionCompute虚拟机”</span>、<span class="uicontrol">“OpenStack云服务器”</span>、<span class="uicontrol">“Hyper-V虚拟机”</span>、<span class="uicontrol">“FusionOne Compute虚拟机”</span>几种资源。WORM支持除GaussDB(DWS)之外的所有资源。</p>
+          <td class="cellrowborder" valign="top" width="25.919999999999998%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p><span>资源类型</span></p></td>
+          <td class="cellrowborder" valign="top" width="74.08%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 "><p>资源的类型。防勒索检测仅支持<span class="uicontrol">“VMware虚拟机”</span>、<span class="uicontrol">“<span>NAS文件系统</span>”</span>、<span class="uicontrol">“<span>NAS共享</span>”</span>、<span class="uicontrol">“<span>文件集</span>”</span>、<span class="uicontrol">“CNware虚拟机”</span>、<span class="uicontrol">“华为云Stack”</span>、<span class="uicontrol">“FusionCompute虚拟机”</span>、<span class="uicontrol">“OpenStack云服务器”</span>、<span class="uicontrol">“Hyper-V虚拟机”</span>、<span class="uicontrol">“FusionOne Compute虚拟机”</span>几种资源。</p>
            <div class="note">
             <span class="notetitle"> 说明： </span>
             <div class="notebody">
-             <p>对于1.5.0版本，防勒索检测仅支持<span class="uicontrol">“VMware”</span>、<span class="uicontrol">“<span>NAS文件系统</span>”</span>、<span class="uicontrol">“<span>NAS共享</span>”</span>、<span class="uicontrol">“<span>文件集</span>”</span>几种资源。</p>
+             <p>对于1.5.0版本：</p>
+             <ul>
+              <li>防勒索检测仅支持<span class="uicontrol">“VMware”</span>、<span class="uicontrol">“<span>NAS文件系统</span>”</span>、<span class="uicontrol">“<span>NAS共享</span>”</span>、<span class="uicontrol">“<span>文件集</span>”</span>几种资源。</li>
+              <li>WORM支持除GaussDB(DWS)之外的所有资源。</li>
+             </ul>
             </div>
            </div></td>
          </tr>

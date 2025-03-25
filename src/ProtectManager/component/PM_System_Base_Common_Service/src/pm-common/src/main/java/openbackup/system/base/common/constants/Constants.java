@@ -14,6 +14,7 @@ package openbackup.system.base.common.constants;
 
 import com.google.common.collect.ImmutableList;
 
+import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
 
 import java.text.SimpleDateFormat;
@@ -267,6 +268,11 @@ public class Constants {
     public static final String BACKUP_NETWORK_FLAG = "backupNetwork";
 
     /**
+     * 内置agent的key
+     */
+    public static final String INTERNAL_AGENT_KEY = "scenario";
+
+    /**
      * resources extend info日志级别
      */
     public static final String LOG_LEVEL = "logLeve";
@@ -315,6 +321,59 @@ public class Constants {
      * 执行成功
      */
     public static final int ERROR_CODE_OK = 0;
+
+    /**
+     * 性能监控删除历史记录
+     */
+    public static final int HAS_REMOVE_HISTORY_DATA = 1;
+
+    /**
+     * 性能监控未删除历史记录
+     */
+    public static final int NO_REMOVE_HISTORY_DATA = 2;
+
+    /**
+     * 建立sftp连接默认重试次数
+     */
+    public static final int DEFAULT_CONNECT_SFTP_RETRY_COUNT = 3;
+
+    /**
+     * 建立sftp连接默认重试时间 1min
+     */
+    public static final long DEFAULT_CONNECT_SFTP_RETRY_INTERVAL = 1000L * 60L;
+
+    /**
+     * 基础设施返回的网络信息中的管理网类型(LogicalType字段)
+     */
+    public static final String MANAGER_IP_LOGICAL_TYPE = "2";
+
+    /**
+     * 高优先级节点列表缓存key
+     */
+    public static final String HIGH_PRIORITY_NODE_CACHE_KEY = "NODE_WITH_HIGH_PRIORITY";
+
+    /**
+     * 高优先级节点列表缓存--锁
+     */
+    public static final String NODE_WITH_MANAGE_IP_CACHE_KEY = "NODE_WITH_MANAGE_IP";
+
+    /**
+     * 更新拥有管理ip的节点列表缓存--锁
+     */
+    public static final String MANAGE_IP_NODE_LOCK_KEY = "LOCK_NODE_WITHOUT_MANAGE_IP";
+
+    /**
+     * agentTypeList用于rbac资源集判断资源是否是agent类型
+     */
+    public static final List<String> AGENT_TYPE_LIST = Collections.unmodifiableList(
+        Arrays.asList(ResourceSubTypeEnum.DB_BACKUP_AGENT.getType(), ResourceSubTypeEnum.VM_BACKUP_AGENT.getType(),
+            ResourceSubTypeEnum.AB_BACKUP_AGENT.getType(), ResourceSubTypeEnum.U_BACKUP_AGENT.getType(),
+            ResourceSubTypeEnum.DWS_BACKUP_AGENT.getType(), ResourceSubTypeEnum.PROTECT_AGENT.getType()));
+
+    /**
+     * RBAC数据库更新相关操作的batch size 用于防止批量操作时单个sql语句耗时过长导致失败
+     */
+    public static final int RBAC_DATABASE_BATCH_SIZE = 1000;
 
     /**
      * Builtin
@@ -372,13 +431,7 @@ public class Constants {
          * 支持CLEAN RESOURCE选项的用户角色
          */
         public static final List<String> CLEAN_RESOURCE_ROLES =
-            Collections.unmodifiableList(Arrays.asList(ROLE_SYS_ADMIN, ROLE_DP_ADMIN));
-
-        /**
-         * 不支持CLEAN RESOURCE选项的被删除用户角色
-         */
-        public static final List<String> NO_DEL_WITH_CLEAN_RES_ROLES =
-                ImmutableList.of(ROLE_DR_ADMIN, ROLE_AUDITOR);
+            Collections.unmodifiableList(Arrays.asList(ROLE_SYS_ADMIN, ROLE_DR_ADMIN));
 
         /**
          * 默认内置角色集合
@@ -388,9 +441,22 @@ public class Constants {
             Constants.ROLE_RD_ADMIN);
 
         /**
+         * 默认内置角色集合-角色名称
+         */
+        public static final List<String> DEFAULT_BUILT_IN_ROLES_NAME_LIST = ImmutableList.of(
+            Constants.Builtin.ROLE_SYS_ADMIN, Builtin.ROLE_AUDITOR, Constants.Builtin.ROLE_DEVICE_MANAGER,
+            Constants.Builtin.ROLE_DR_ADMIN, Constants.Builtin.ROLE_RD_ADMIN);
+
+        /**
          * E1000系列需要屏蔽的角色id集合
          */
         public static final List<String> E1000_NONE_VIEW_ROLES_LIST = ImmutableList.of(Constants.ROLE_DR_ADMIN);
+
+        /**
+         * 安全一体机需要屏蔽的角色id集合
+         */
+        public static final List<String> CYBER_ENGINE_NONE_VIEW_ROLES_LIST =
+            ImmutableList.of(Constants.ROLE_DR_ADMIN, Constants.ROLE_RD_ADMIN);
 
         /**
          * mmdp_admin用户id

@@ -1,0 +1,103 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="恢复GoldenDB">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="goldendb-00046.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
+  <meta name="DC.Publisher" content="20240320">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="goldendb-00049">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>恢复GoldenDB</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="goldendb-00049"></a><a name="goldendb-00049"></a>
+  <h1 class="topictitle1">恢复GoldenDB</h1>
+  <div>
+   <p>当需要对已备份的实例进行恢复时，可以参考本节恢复GoldenDB实例至原机或异机。</p>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p>恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="goldendb-00049__zh-cn_topic_0000001839142377_uicontrol102561512112712">“<span id="goldendb-00049__zh-cn_topic_0000001839142377_text425611128274">数据利用</span> &gt; <span id="goldendb-00049__zh-cn_topic_0000001839142377_text7256181216275">副本数据</span> &gt; <span id="goldendb-00049__zh-cn_topic_0000001839142377_text6155173314912">数据库</span> &gt; <span id="goldendb-00049__zh-cn_topic_0000001839142377_text193501929192917">GoldenDB</span>”</span>。</span></li>
+     <li><span>您可以以资源维度或以副本维度查找副本：</span><p></p>
+      <ul>
+       <li>在<span class="uicontrol">“<span>资源</span>”</span>页签，根据名称查找到需要恢复的实例，并单击实例名称。</li>
+       <li>在<span class="uicontrol">“副本”</span>页签，根据副本信息查找到要进行恢复的副本，在副本所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>恢复</span>”</span>。</li>
+      </ul> <p>以下以数据库资源维度为例说明相关操作。</p> <p></p></li>
+     <li><span>依次选择年、月、天找到副本。</span><p></p><p>当时间下方显示<span><img src="zh-cn_image_0000001792396852.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>在副本所在行，单击<span class="uicontrol">“<span>更多</span> &gt; <span>恢复</span>”</span>。</span><p></p><p>相关参数说明如<a href="#goldendb-00049__zh-cn_topic_0000001263614142_table93951625101715">表1</a>所示。</p>
+      <div class="tablenoborder">
+       <a name="goldendb-00049__zh-cn_topic_0000001263614142_table93951625101715"></a><a name="zh-cn_topic_0000001263614142_table93951625101715"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="goldendb-00049__zh-cn_topic_0000001263614142_table93951625101715" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>恢复GoldenDB实例参数说明
+        </caption>
+        <colgroup>
+         <col style="width:32.53%">
+         <col style="width:67.47%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="32.53%" id="mcps1.3.3.2.4.2.2.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="67.47%" id="mcps1.3.3.2.4.2.2.2.3.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>恢复至</span></p></td>
+          <td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>或<span class="uicontrol">“<span>新位置</span>”</span>。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>位置</span></p></td>
+          <td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>时，默认显示恢复的位置。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>目标集群</span></p></td>
+          <td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>当选择恢复至“<span>新位置</span>”时，默认恢复到原集群。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>目标实例</span></p></td>
+          <td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>当选择恢复至“<span>新位置</span>”时，请选择恢复到的目标实例。</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="goldendb-00046.html">恢复</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

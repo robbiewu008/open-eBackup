@@ -108,7 +108,7 @@ public class RestoreTaskServiceTest {
     private final ResourceSetApi resourceSetApi = mock(ResourceSetApi.class);
 
     private final RestoreTaskService restoreTaskService = new RestoreTaskService(copyRestApi, jobService,
-            dmeUnifiedRestApi, repositoryStrategyManager, resourceLockService);
+            dmeUnifiedRestApi, resourceLockService);
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -117,7 +117,6 @@ public class RestoreTaskServiceTest {
     public void before(){
         restoreTaskService.setDeployTypeService(deployTypeService);
         restoreTaskService.setAvailableAgentManagementDomainService(domainService);
-        restoreTaskService.setCopiesAntiRansomwareDao(copiesAntiRansomwareDao);
         restoreTaskService.setDeeCopiesManagementRestApi(deeCopiesManagementRestApi);
         restoreTaskService.setResourceSetApi(resourceSetApi);
     }

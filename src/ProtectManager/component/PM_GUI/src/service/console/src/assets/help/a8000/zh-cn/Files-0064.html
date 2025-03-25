@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -41,7 +41,7 @@
 <div><p>参考本节查看文件集副本的详细信息。</p>
 <div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="Files-0064__zh-cn_topic_0000001839142377_uicontrol1888202316279">“<span id="Files-0064__zh-cn_topic_0000001839142377_text16882112392716">数据利用</span> &gt; <span id="Files-0064__zh-cn_topic_0000001839142377_text13882182372717">副本数据</span> &gt; 文件系统 &gt; <span id="Files-0064__zh-cn_topic_0000001839142377_text959224913332">文件集</span>”</span>。</span><p><div class="note" id="Files-0064__zh-cn_topic_0000001839142377_note192321935714"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="Files-0064__zh-cn_topic_0000001839142377_p62332915575">对于1.5.0版本，选择<span class="uicontrol" id="Files-0064__zh-cn_topic_0000001839142377_uicontrol35211628145713">“<span id="Files-0064__zh-cn_topic_0000001839142377_text15521328105712">数据利用</span> &gt; <span id="Files-0064__zh-cn_topic_0000001839142377_text9521152813577">副本数据</span> &gt; <span id="Files-0064__zh-cn_topic_0000001839142377_text18417734832">裸机</span> &gt; <span id="Files-0064__zh-cn_topic_0000001839142377_text05221228115716">文件集</span>”</span>。</p>
 </div></div>
-</p></li><li><span>选择副本浏览方式浏览副本信息。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>复制副本仅支持在复制到的目标集群查看。</p>
+</p></li><li><span>选择副本浏览方式浏览副本信息。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="Files-0064__zh-cn_topic_0000001792503826_p189141741162012">复制副本仅支持在复制到的目标集群查看。</p>
 </div></div>
 <ul><li>选择“资源”页签：以文件集维度查看文件集副本信息。当某文件集损坏，您需要恢复该文件集时，建议从该入口进入查找相应时间点副本。<p>参数说明如<a href="#Files-0064__table20406195873110">表1</a>所示。</p>
 
@@ -159,7 +159,9 @@
 </div></div>
 </div>
 </td>
-<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p>当副本为WORM副本时，则显示WORM过期的具体时间。否则，显示为“--”。</p>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><div class="p">当副本为WORM副本时，则显示WORM过期的具体时间。否则，显示为“--”。<div class="note" id="Files-0064__zh-cn_topic_0000001792503826_note173611252434"><span class="notetitle"> 说明： </span><div class="notebody"><p id="Files-0064__zh-cn_topic_0000001792503826_p10361192510430">WORM过期时间以WORM文件系统法规时钟为基准。如果WORM文件系统法规时钟与系统时间不一致，请等待WORM文件系统法规时钟到达当前设置的过期时间后，再查看WORM状态。</p>
+</div></div>
+</div>
 </td>
 </tr>
 <tr><td class="cellrowborder" valign="top" width="13.900000000000002%" headers="mcps1.3.2.2.2.2.2.2.2.2.4.1.1 "><p><span>副本</span></p>

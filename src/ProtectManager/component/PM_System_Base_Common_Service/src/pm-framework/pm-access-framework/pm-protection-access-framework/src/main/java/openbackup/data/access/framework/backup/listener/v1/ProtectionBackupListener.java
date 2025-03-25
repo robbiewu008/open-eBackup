@@ -31,11 +31,8 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.sla.Policy;
 import openbackup.data.protection.access.provider.sdk.sla.Sla;
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.JSONObject;
-import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.kafka.annotations.MessageListener;
 import openbackup.system.base.sdk.job.JobCenterRestApi;
@@ -135,7 +132,12 @@ public class ProtectionBackupListener {
             return;
         }
 
-        BackupObject backupObject = toBackupObject(consumerString);
+        Optional<BackupObject> backupObjectOpt = toBackupObject(consumerString);
+        if (!backupObjectOpt.isPresent()) {
+            log.error("Task is already be stopped or failed!");
+            return;
+        }
+        BackupObject backupObject = backupObjectOpt.get();
         if (!jobService.isJobPresent(backupObject.getRequestId())) {
             log.info("Job({}) not exist, no need to process", backupObject.getRequestId());
             return;
@@ -163,20 +165,10 @@ public class ProtectionBackupListener {
 
     // 新老应用下发备份前校验是否能够备份及额度
     private void backupPreCheck(JobBo job) {
-        String associatedUserId = job.getUserId();
-        String resourceObjectId = job.getSourceId();
-        List<String> userIdList = userInternalService.getUserIdListByResourceObjectId(resourceObjectId);
-        if (VerifyUtil.isEmpty(userIdList)) {
-            log.error("get empty user id list by resource id:{}, will check quota with user:{}.", resourceObjectId,
-                associatedUserId);
-            userQuotaManager.checkBackupQuota(associatedUserId, null);
-            log.debug("User: {} has ability to backup.", associatedUserId);
-            return;
-        }
-        for (String userId : userIdList) {
-            userQuotaManager.checkBackupQuota(userId, null);
-        }
-        log.info("User list :{}, all have ability to backup.", userIdList);
+        String userId = job.getUserId();
+
+        log.debug("User: {} has ability to backup.", userId);
+        userQuotaManager.checkBackupQuota(userId, null);
     }
 
     private boolean isOldCopyBackup(String resourceSubType, String backupType) {
@@ -194,7 +186,7 @@ public class ProtectionBackupListener {
     }
 
     @ExterAttack
-    private BackupObject toBackupObject(String consumerString) {
+    private Optional<BackupObject> toBackupObject(String consumerString) {
         // 从消息体中取出request_id
         Map map = JsonUtil.read(consumerString, Map.class);
         String requestId = String.valueOf(map.get("request_id"));
@@ -206,7 +198,7 @@ public class ProtectionBackupListener {
         // 从redis中读取转换为protectedObject
         String jsonStr = redis.get("protected_object");
         if (StringUtil.isEmpty(jsonStr)) {
-            throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR, "Task already be stopped or failed!");
+            return Optional.empty();
         }
         ProtectedObject protectedObject = JSONObject.toBean(jsonStr, ProtectedObject.class);
 
@@ -233,6 +225,6 @@ public class ProtectionBackupListener {
 
         Policy policy = JSONObject.fromObject(redis.get("policy")).toBean(Policy.class);
         backupObject.setPolicy(policy);
-        return backupObject;
+        return Optional.of(backupObject);
     }
 }

@@ -15,15 +15,19 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
   BaseUtilService,
   CAPACITY_UNIT,
+  ClientManagerApiService,
   CommonConsts,
   DataMap,
   DatastoreType,
   EnvironmentsService,
+  Features,
+  getBootTypeWarnTipByType,
   I18NService,
   ResourceType,
   RestoreLocationType,
   RestoreManagerService as RestoreService,
   RestoreType,
+  Scene,
   VmRestoreOptionType,
   VmwareService
 } from 'app/shared';
@@ -56,6 +60,7 @@ export class DiskRestoreComponent implements OnInit {
   dataMap = DataMap;
   formGroup: FormGroup;
   resourceProperties;
+  properties;
   restoreLocationType = RestoreLocationType;
   VmRestoreOptionType = VmRestoreOptionType;
   DatastoreType = DatastoreType;
@@ -103,6 +108,10 @@ export class DiskRestoreComponent implements OnInit {
   selectedRdmDiskRow = [];
   sameSelectedRow = [];
   proxyHostOptions = [];
+  isSupport = true;
+
+  // 引导选项不一致提示
+  bootOptionsWarnTip: string;
 
   constructor(
     private fb: FormBuilder,
@@ -110,7 +119,8 @@ export class DiskRestoreComponent implements OnInit {
     private restoreService: RestoreService,
     private vmwareService: VmwareService,
     private i18n: I18NService,
-    private environmentsService: EnvironmentsService
+    private environmentsService: EnvironmentsService,
+    private clientManagerApiService: ClientManagerApiService
   ) {}
 
   ngOnInit() {
@@ -166,6 +176,7 @@ export class DiskRestoreComponent implements OnInit {
 
   initDiskTable() {
     this.resourceProperties = JSON.parse(this.rowCopy.resource_properties);
+    this.properties = JSON.parse(this.rowCopy.properties);
     this.allDiskDatas = cloneDeep(
       JSON.parse(this.rowCopy.properties).vmware_metadata.disk_info
     );
@@ -248,7 +259,7 @@ export class DiskRestoreComponent implements OnInit {
       datastoreCapacity: '',
       guid: [item.GUID],
       options: [[]],
-      diskType: [item.DISKTYPE],
+      diskType: [item.DISKTYPE || 'normal'],
       diskDatastore: new FormControl(
         null,
         this.restoreToNewLocationOnly ||
@@ -374,6 +385,8 @@ export class DiskRestoreComponent implements OnInit {
       });
     }
 
+    this.listenForm();
+
     // 恢复位置选项变化
     this.listenRestoreLocation();
 
@@ -389,13 +402,53 @@ export class DiskRestoreComponent implements OnInit {
     });
   }
 
+  listenForm() {
+    this.formGroup.get('proxyHost').valueChanges.subscribe(res => {
+      if (isEmpty(res)) {
+        this.isSupport = true;
+        return;
+      }
+      const params = {
+        hostUuidsAndIps: res,
+        applicationType: 'VMware',
+        scene: Scene.Restore,
+        buttonNames: [Features.SnapshotGeneration]
+      };
+      this.clientManagerApiService
+        .queryAgentApplicationUsingPOST({
+          AgentCheckSupportParam: params,
+          akOperationTips: false
+        })
+        .subscribe(res => {
+          this.isSupport = res?.SnapshotGeneration;
+          if (!this.isSupport) {
+            this.formGroup.get('isStartupSnapGen').setValue(false);
+          }
+        });
+    });
+  }
+
+  getBootOptionsTip(event) {
+    if (event?.subType === DataMap.Resource_Type.virtualMachine.value) {
+      getBootTypeWarnTipByType(
+        this,
+        event.firmware,
+        this.properties.vmware_metadata?.firmware
+      );
+    } else {
+      this.bootOptionsWarnTip = '';
+    }
+  }
+
   changeLocation(event) {
     this.newLocation = event.path;
     this.formGroup.patchValue({ location: event.path });
     this.selectedVm = event.uuid;
     this.selectedHost = event.parent ? event.parent.uuid : '';
+    this.getBootOptionsTip(event);
     if (
       event.parent &&
+      event.subType === DataMap.Resource_Type.virtualMachine.value &&
       event.parent.subType ===
         DataMap.Resource_Type.clusterComputeResource.value
     ) {
@@ -430,6 +483,7 @@ export class DiskRestoreComponent implements OnInit {
   }
 
   changeVcenter(event) {
+    this.bootOptionsWarnTip = '';
     const selectedObj = event.key;
     if (selectedObj === this.selectedVCenter) {
       return;

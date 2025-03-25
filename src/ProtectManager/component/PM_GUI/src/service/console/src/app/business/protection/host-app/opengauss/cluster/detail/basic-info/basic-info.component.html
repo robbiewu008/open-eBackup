@@ -1,4 +1,3 @@
-<lv-group class='aui-gutter-column-xxl'>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,34 +11,35 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-group class='aui-gutter-column-xxl'>
     <lv-group>
         <i *ngIf="isOnline" lv-icon='aui-sla-cluster-online' class="base-info-icon"></i>
         <i *ngIf="!isOnline" lv-icon='aui-sla-cluster-offline' class="base-info-icon"></i>
     </lv-group>
 
-    <lv-group lvDirection='vertical'  class='info-margin'>
+    <lv-group lvDirection='vertical' class='info-margin'>
         <lv-group class="info" lvGutter='8px'>
-            <span>{{'common_name_label' | i18n}}</span>
-            <span lv-overflow>{{data?.name| nil}}</span>
+            <span class="label-class">{{'common_name_label' | i18n}}</span>
+            <span lv-overflow class="value-class">{{data?.name| nil}}</span>
         </lv-group>
 
     </lv-group>
-      <lv-group lvDirection='vertical' class='info-margin'>
- <lv-group class="info" lvGutter='8px'>
-            <span>{{'common_version_label' | i18n}}</span>
-            <span lv-overflow>{{data?.clusterVersion| nil}}</span>
+    <lv-group lvDirection='vertical' class='info-margin'>
+        <lv-group class="info" lvGutter='8px'>
+            <span class="label-class">{{'common_version_label' | i18n}}</span>
+            <span lv-overflow style="max-width:100px" class="value-class">{{data?.clusterVersion| nil}}</span>
         </lv-group>
-       </lv-group>
-       <lv-group lvDirection='vertical'>
- <lv-group class="info" lvGutter='8px'>
-            <span>{{'common_type_label' | i18n}}</span>
-            <span lv-overflow>{{deployType| textMap:'Opengauss_Deployment_Type' | nil }}</span>
+    </lv-group>
+    <lv-group lvDirection='vertical'>
+        <lv-group class="info" lvGutter='8px'>
+            <span class="label-class">{{'common_type_label' | i18n}}</span>
+            <span lv-overflow class="value-class">{{deployType| textMap:'Opengauss_Deployment_Type' | nil }}</span>
         </lv-group>
-       </lv-group>
+    </lv-group>
 </lv-group>
-<div class="aui-header-2 aui-gutter-column-md" >
+<div class="aui-header-2 aui-gutter-column-md">
     <h2>{{'system_servers_label' | i18n}}</h2>
 </div>
-<lv-pro-table  [config]="tableConfig" [data]="tableData"></lv-pro-table>
+<lv-pro-table [config]="tableConfig" [data]="tableData"></lv-pro-table>
 
 <ng-template #deployTypeTpl let-item>{{item.deployType | textMap:'Opengauss_Deployment_Type'}}</ng-template>

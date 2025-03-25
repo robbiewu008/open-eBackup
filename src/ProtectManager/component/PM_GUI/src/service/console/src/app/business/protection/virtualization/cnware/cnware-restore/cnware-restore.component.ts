@@ -10,7 +10,13 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MessageService, OptionItem } from '@iux/live';
 import {
@@ -22,11 +28,14 @@ import {
   DataMapService,
   I18NService,
   ProtectedResourceApiService,
+  ResourceDetailType,
   ResourceType,
   RestoreApiV2Service,
   RestoreV2LocationType,
   RestoreV2Type,
-  StorageLocation
+  StorageLocation,
+  isJson,
+  getBootTypeWarnTipByType
 } from 'app/shared';
 import {
   TableCols,
@@ -44,27 +53,31 @@ import {
   filter,
   find,
   first,
+  get,
   includes,
+  isArray,
   isEmpty,
   isNumber,
   map,
   omit,
   pick,
   reject,
+  set,
   size,
+  trim,
   values
 } from 'lodash';
-import { Observable, Observer, Subject } from 'rxjs';
+import { Observable, Observer, Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'aui-cnware-restore',
   templateUrl: './cnware-restore.component.html',
   styleUrls: ['./cnware-restore.component.less']
 })
-export class CnwareRestoreComponent implements OnInit {
+export class CnwareRestoreComponent implements OnInit, OnDestroy {
   rowCopy;
   restoreType;
-
+  _isEmpty = isEmpty;
   isDiskRestore = false;
   formGroup: FormGroup;
   restoreLocationType = RestoreV2LocationType;
@@ -93,16 +106,20 @@ export class CnwareRestoreComponent implements OnInit {
 
   targetPortGroupOptions = [];
   cachePortGroupOptions = [];
+  nutaniClusterOptions = [];
   nutaniHostOptions = [];
   isNutanix = false;
 
   resourceProperties;
+  properties; // 副本properties
+  rowCopyBootType; // 副本中记录的bootType，有可能为空
   originLocation;
   serverTreeData = [];
   proxyOptions = [];
   EXIST_DISK = '1';
   NEW_DISK = '2';
   NFS_STORAGE_TYPE = 3; // nfs存储只能选择精简置备
+  bootOptionsWarnTip: string; // 引导选项不一致提示
   typeOptions: OptionItem[] = [
     {
       label: this.i18n.get('protection_recovery_exist_disk_label'),
@@ -126,12 +143,24 @@ export class CnwareRestoreComponent implements OnInit {
       item.isLeaf = true;
       return includes([DataMap.preallocationType.off.value], item.value);
     });
-
+  nameMaxLength = 128;
   nameErrorTip = {
     ...this.baseUtilService.requiredErrorTip,
     invalidName: this.i18n.get('common_bongding_port_name_tips_label'),
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [128])
   };
+  networkHelpLabel = this.i18n.get(
+    'protection_cnware_restore_network_help_label',
+    [ResourceType.CNWARE]
+  );
+
+  // 搜索之前保持原来的数据
+  originalTreeData = [];
+  // 搜索关键字
+  searchVmKey: string;
+  currentSearchKey: string;
+  searchTrigger$ = new Subject<string>();
+  destroy$ = new Subject();
 
   valid$ = new Subject<boolean>();
 
@@ -143,6 +172,8 @@ export class CnwareRestoreComponent implements OnInit {
   >;
   @ViewChild('portGroupTpl', { static: true }) portGroupTpl: TemplateRef<any>;
   @ViewChild('targetIpTpl', { static: true }) targetIpTpl: TemplateRef<any>;
+  @ViewChild('targetIpHeaderTpl', { static: true })
+  targetIpHeaderTpl: TemplateRef<any>;
   @ViewChild('networkNameTpl', { static: true }) networkNameTpl: TemplateRef<
     any
   >;
@@ -154,7 +185,7 @@ export class CnwareRestoreComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private i18n: I18NService,
+    public i18n: I18NService,
     private appService: AppService,
     private dataMapService: DataMapService,
     private messageService: MessageService,
@@ -164,9 +195,25 @@ export class CnwareRestoreComponent implements OnInit {
     private protectedResourceApiService: ProtectedResourceApiService
   ) {}
 
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
+
   ngOnInit(): void {
     this.isNutanix =
       this.rowCopy?.resource_type === DataMap.Resource_Type.nutanix.value;
+    if (this.isNutanix) {
+      this.nameMaxLength = 80;
+      this.nameErrorTip.invalidMaxLength = this.i18n.get(
+        'common_valid_maxlength_label',
+        [80]
+      );
+      this.networkHelpLabel = this.i18n.get(
+        'protection_cnware_restore_network_help_label',
+        [ResourceType.NUTANIX]
+      );
+    }
     this.initConfig();
     this.initForm();
     defer(() => this.getOriginalVmDisk());
@@ -175,6 +222,64 @@ export class CnwareRestoreComponent implements OnInit {
     this.getOriginalTargetDisk();
     this.getOriginalNetworkCard();
     this.getOriginalPortGroupOptions();
+    this.setSearchState();
+  }
+
+  // 由于搜索是输入框change触发，防止触发多次搜索。
+  setSearchState() {
+    this.searchTrigger$
+      .pipe(
+        switchMap(searchKey => {
+          this.searchVmKey = searchKey;
+          return this.protectedResourceApiService.ListResources({
+            akLoading: false,
+            pageNo: CommonConsts.PAGE_START,
+            pageSize: CommonConsts.PAGE_SIZE_MAX,
+            conditions: JSON.stringify({
+              subType: this.isDiskRestore
+                ? [
+                    DataMap.Resource_Type.cNwareHostPool.value,
+                    DataMap.Resource_Type.cNwareCluster.value,
+                    DataMap.Resource_Type.cNwareHost.value,
+                    DataMap.Resource_Type.cNwareVm.value
+                  ]
+                : [
+                    DataMap.Resource_Type.cNwareHostPool.value,
+                    DataMap.Resource_Type.cNwareCluster.value,
+                    DataMap.Resource_Type.cNwareHost.value
+                  ],
+              name: [['~~'], searchKey]
+            })
+          });
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(res => {
+        // 响应结果回来时，搜索值已清空，则不更新树
+        if (!this.currentSearchKey) {
+          return;
+        }
+        each(res.records, item => {
+          assign(item, {
+            label: item.name,
+            contentToggleIcon: this.getResourceIcon(item),
+            children:
+              (this.isDiskRestore &&
+                item.subType === DataMap.Resource_Type.cNwareVm.value) ||
+              item.subType === DataMap.Resource_Type.cNwareHost.value
+                ? null
+                : [],
+            disabled: this.isDiskRestore
+              ? item.subType !== DataMap.Resource_Type.cNwareVm.value
+              : item.subType !== DataMap.Resource_Type.cNwareHost.value,
+            isLeaf: this.isDiskRestore
+              ? item.subType === DataMap.Resource_Type.cNwareVm.value
+              : item.subType === DataMap.Resource_Type.cNwareHost.value,
+            expanded: false
+          });
+        });
+        this.serverTreeData = res.records;
+      });
   }
 
   initCopyVerifyDisableLabel() {
@@ -356,7 +461,8 @@ export class CnwareRestoreComponent implements OnInit {
           },
           {
             key: 'targetIp',
-            name: this.i18n.get('protection_nutanix_target ip_label'),
+            name: this.i18n.get('protection_nutanix_target_ip_label'),
+            thExtra: this.targetIpHeaderTpl,
             cellRender: this.targetIpTpl,
             hidden: !this.isNutanix
           }
@@ -471,6 +577,7 @@ export class CnwareRestoreComponent implements OnInit {
       }
       if (res === RestoreV2LocationType.ORIGIN) {
         this.formGroup.get('targetServer').clearValidators();
+        this.formGroup.get('targetCluster').clearValidators();
         this.formGroup.get('targetRecoveryPool').clearValidators();
         if (this.isDiskRestore) {
           this.getOriginalTargetDisk();
@@ -480,13 +587,16 @@ export class CnwareRestoreComponent implements OnInit {
           }
         }
       } else {
-        this.formGroup
-          .get('targetServer')
-          .setValidators([this.baseUtilService.VALID.required()]);
         if (this.isNutanix) {
-          this.getNutanixHostOps();
+          this.formGroup
+            .get('targetCluster')
+            .setValidators([this.baseUtilService.VALID.required()]);
+          this.getNutanixClusterOps();
         } else {
           this.getEnvironment();
+          this.formGroup
+            .get('targetServer')
+            .setValidators([this.baseUtilService.VALID.required()]);
         }
         if (this.isDiskRestore) {
           defer(() =>
@@ -511,6 +621,7 @@ export class CnwareRestoreComponent implements OnInit {
         }
       }
       this.formGroup.get('targetServer').updateValueAndValidity();
+      this.formGroup.get('targetCluster').updateValueAndValidity();
       this.formGroup.get('targetRecoveryPool').updateValueAndValidity();
     });
 
@@ -522,11 +633,18 @@ export class CnwareRestoreComponent implements OnInit {
         if (this.formGroup.value.restoreTo === RestoreV2LocationType.ORIGIN) {
           return;
         }
+        const selectedRes = first(res);
         if (this.isDiskRestore) {
-          this.getNewTargetDisk(first(res));
+          this.getNewTargetDisk(selectedRes);
+          if (isEmpty(this.rowCopyBootType)) {
+            // rowCopyBootType为空时直接提示启动方式无法获取
+            this.getBootOptionsTip(selectedRes);
+          } else {
+            this.getResourceDetail(selectedRes);
+          }
         } else {
-          this.getDataStore(first(res));
-          this.getPortGroupOptions(first(res));
+          this.getDataStore(selectedRes);
+          this.getPortGroupOptions(selectedRes);
         }
       });
     });
@@ -541,6 +659,12 @@ export class CnwareRestoreComponent implements OnInit {
       }
       this.formGroup.get('targetRecoveryPool').updateValueAndValidity();
       this.resetDiskTablePreallocation();
+    });
+
+    this.formGroup.get('targetCluster').valueChanges.subscribe(res => {
+      if (!res) return;
+      this.formGroup.get('targetServer').setValue([]);
+      this.getNutanixHostOps(res);
     });
 
     // 切换存储池，置备类型重新选择
@@ -574,6 +698,8 @@ export class CnwareRestoreComponent implements OnInit {
       this.rowCopy.is_replicated ||
       this.rowCopy?.resource_status === DataMap.Resource_Status.notExist.value;
     const properties = JSON.parse(this.rowCopy.properties);
+    this.properties = properties;
+    this.rowCopyBootType = get(properties, 'bootType', null);
     this.verifyStatus = properties?.verifyStatus;
 
     this.formGroup = this.fb.group({
@@ -581,9 +707,10 @@ export class CnwareRestoreComponent implements OnInit {
       vmName: new FormControl('', {
         validators: [
           this.baseUtilService.VALID.name(CommonConsts.REGEX.cnwareName, true),
-          this.baseUtilService.VALID.maxLength(128)
+          this.baseUtilService.VALID.maxLength(this.nameMaxLength)
         ]
       }),
+      targetCluster: new FormControl(''),
       targetServer: new FormControl([]),
       targetPool: new FormControl(StorageLocation.Same),
       targetRecoveryPool: new FormControl(''),
@@ -624,7 +751,10 @@ export class CnwareRestoreComponent implements OnInit {
   }
 
   getOriginalPortGroupOptions() {
-    if (this.restoreToNewLocationOnly || this.isDiskRestore) {
+    if (
+      (this.restoreToNewLocationOnly && !this.isNutanix) ||
+      this.isDiskRestore
+    ) {
       return;
     }
     this.getPortGroupOptions({
@@ -640,64 +770,15 @@ export class CnwareRestoreComponent implements OnInit {
     if (isEmpty(targetServer)) {
       return;
     }
-    this.protectedResourceApiService
-      .ListResources({
-        pageNo: CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE,
-        queryDependency: true,
-        conditions: JSON.stringify({
-          uuid: targetServer.rootUuid || targetServer.root_uuid
-        })
-      })
-      .subscribe((res: any) => {
-        if (first(res.records)) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getPortGroup(targetServer, agentsId);
-        }
-      });
-  }
-
-  getPortGroup(
-    targetServer,
-    agentsId,
-    recordsTemp?: any[],
-    startPage?: number
-  ) {
-    const params = {
-      agentId: agentsId,
-      envId: targetServer.rootUuid || targetServer.root_uuid,
-      resourceIds: [targetServer.uuid || targetServer.root_uuid],
-      pageNo: startPage || 1,
-      pageSize: 200,
-      conditions: JSON.stringify({
-        resourceType: this.isNutanix ? 'NutanixNetwork' : 'PortGroup',
-        uuid: targetServer.uuid
-      })
-    };
-
-    this.appService.ListResourcesDetails(params).subscribe(res => {
-      if (!recordsTemp) {
-        recordsTemp = [];
-      }
-      if (!isNumber(startPage)) {
-        startPage = 1;
-      }
-      recordsTemp = [...recordsTemp, ...res.records];
-      if (
-        startPage === Math.ceil(res.totalCount / 200) ||
-        res.totalCount === 0 ||
-        res.totalCount === size(res.records)
-      ) {
+    this.appUtilsService
+      .getResourcesDetails(
+        targetServer,
+        this.isNutanix
+          ? ResourceDetailType.nutanixNetwork
+          : ResourceDetailType.portGroup
+      )
+      .subscribe(recordsTemp => {
         this.targetPortGroupOptions = map(recordsTemp, item => {
-          const details = JSON.parse(item.extendInfo?.details || '{}');
           return assign(item, {
             label: item.parentName
               ? `${item.name} (${item.parentName})`
@@ -706,21 +787,36 @@ export class CnwareRestoreComponent implements OnInit {
           });
         });
         this.cachePortGroupOptions = [];
-        if (!isEmpty(this.networkTableData?.data)) {
-          each(this.networkTableData?.data, item => {
-            item.recoveryPortGroup = '';
-            item.targetIp = '';
-            assign(item, {
-              portGroupOptions: cloneDeep(this.targetPortGroupOptions)
-            });
-          });
-        }
+        this.setPortGroupOptions();
         this.disableOkBtn();
-        return;
+      });
+  }
+
+  getDefaultPortGroup(item): string {
+    // cnware原位置恢复，默认选中原端口
+    if (
+      this.rowCopy?.resource_type === DataMap.Resource_Type.cNware.value &&
+      this.formGroup.value.restoreTo === RestoreV2LocationType.ORIGIN &&
+      isJson(item.metaData)
+    ) {
+      const metaData = JSON.parse(item.metaData);
+      if (find(this.targetPortGroupOptions, { uuid: metaData?.portGroupId })) {
+        return metaData?.portGroupId;
       }
-      startPage++;
-      this.getPortGroup(targetServer, agentsId, recordsTemp, startPage);
-    });
+    }
+    return '';
+  }
+
+  setPortGroupOptions() {
+    if (!isEmpty(this.networkTableData?.data)) {
+      each(this.networkTableData?.data, item => {
+        item.recoveryPortGroup = this.getDefaultPortGroup(item);
+        item.targetIp = '';
+        assign(item, {
+          portGroupOptions: cloneDeep(this.targetPortGroupOptions)
+        });
+      });
+    }
   }
 
   getOriginalVmDisk() {
@@ -755,7 +851,7 @@ export class CnwareRestoreComponent implements OnInit {
   }
 
   getOriginalTargetDisk(isOriginal = true) {
-    if (this.restoreToNewLocationOnly) {
+    if (this.restoreToNewLocationOnly && !this.isNutanix) {
       return;
     }
     if (this.isDiskRestore) {
@@ -787,6 +883,7 @@ export class CnwareRestoreComponent implements OnInit {
     }
     this.protectedResourceApiService
       .ListResources({
+        queryDependency: true,
         pageNo: startPage || CommonConsts.PAGE_START,
         pageSize: CommonConsts.PAGE_SIZE_MAX,
         conditions: JSON.stringify({
@@ -794,7 +891,12 @@ export class CnwareRestoreComponent implements OnInit {
           type: this?.rowCopy?.resource_type
         })
       })
-      .subscribe(res => {
+      .subscribe((res: any) => {
+        const agentId = get(
+          res.records[0]?.dependencies?.agents[0],
+          'uuid',
+          null
+        );
         if (!recordsTemp) {
           recordsTemp = [];
         }
@@ -811,6 +913,7 @@ export class CnwareRestoreComponent implements OnInit {
           this.serverTreeData = map(recordsTemp, item => {
             return {
               ...item,
+              agentId,
               label: item.name,
               disabled: true,
               contentToggleIcon: this.getResourceIcon(item),
@@ -819,15 +922,43 @@ export class CnwareRestoreComponent implements OnInit {
               expanded: false
             };
           });
+          // 保存数据，用于搜索复原
+          this.originalTreeData = cloneDeep(this.serverTreeData);
           return;
         }
         this.getEnvironment(recordsTemp, startPage);
       });
   }
-
-  getNutanixHostOps() {
+  getNutanixClusterOps() {
     const extParams = {
       conditions: JSON.stringify({
+        subType: DataMap.Resource_Type.nutanixCluster.value
+      })
+    };
+
+    this.appUtilsService.getResourceByRecursion(
+      extParams,
+      params => this.protectedResourceApiService.ListResources(params),
+      resource => {
+        const arr = [];
+        each(resource, item => {
+          arr.push({
+            ...item,
+            label: item.name,
+            value: item.uuid,
+            key: item.uuid,
+            isLeaf: true
+          });
+        });
+        this.nutaniClusterOptions = arr;
+      }
+    );
+  }
+
+  getNutanixHostOps(cluster) {
+    const extParams = {
+      conditions: JSON.stringify({
+        parentUuid: cluster,
         subType: DataMap.Resource_Type.nutanixHost.value
       })
     };
@@ -866,88 +997,43 @@ export class CnwareRestoreComponent implements OnInit {
     );
   }
 
-  getDisk(targetServer, agentsId, recordsTemp?: any[], startPage?: number) {
-    const params = {
-      agentId: agentsId,
-      envId: targetServer.rootUuid || targetServer.root_uuid,
-      resourceIds: [targetServer.uuid || targetServer.root_uuid],
-      pageNo: startPage || 1,
-      pageSize: 200,
-      conditions: JSON.stringify({
-        resourceType: this.isNutanix
-          ? DataMap.Resource_Type.nutanixDisk.value
-          : DataMap.Resource_Type.cNwareDisk.value,
-        uuid: targetServer.uuid
-      })
-    };
-
-    this.appService.ListResourcesDetails(params).subscribe(res => {
-      if (!recordsTemp) {
-        recordsTemp = [];
-      }
-      if (!isNumber(startPage)) {
-        startPage = 1;
-      }
-      recordsTemp = [...recordsTemp, ...res.records];
-      if (
-        startPage === Math.ceil(res.totalCount / 200) ||
-        res.totalCount === 0 ||
-        res.totalCount === size(res.records)
-      ) {
-        each(recordsTemp, item => {
-          assign(item, JSON.parse(item.extendInfo?.details));
-        });
-        this.targetDisksOptions = map(recordsTemp, item => {
-          return assign(item, {
-            label: item.name,
-            isLeaf: true
-          });
-        });
-        this.cacheSelectedDisk = [];
-        if (!isEmpty(this.recoveryDiskTableData?.data)) {
-          each(this.recoveryDiskTableData?.data, item => {
-            item.recoveryDisk = '';
-            assign(item, {
-              diskOptions: filter(cloneDeep(this.targetDisksOptions), val => {
-                return this.fiterDisk(val, item);
-              })
-            });
-          });
-        }
-        this.disableOkBtn();
-        return;
-      }
-      startPage++;
-      this.getDisk(targetServer, agentsId, recordsTemp, startPage);
+  batchRecoveryDiskTable(recordsTemp) {
+    each(recordsTemp, item => {
+      assign(item, JSON.parse(item.extendInfo?.details));
     });
+    this.targetDisksOptions = map(recordsTemp, item => {
+      return assign(item, {
+        label: item.name,
+        isLeaf: true
+      });
+    });
+    this.cacheSelectedDisk = [];
+    if (!isEmpty(this.recoveryDiskTableData?.data)) {
+      each(this.recoveryDiskTableData?.data, item => {
+        item.recoveryDisk = '';
+        assign(item, {
+          diskOptions: filter(cloneDeep(this.targetDisksOptions), val => {
+            return this.fiterDisk(val, item);
+          })
+        });
+      });
+    }
   }
 
   getTargetDisk(targetServer) {
     if (isEmpty(targetServer)) {
       return;
     }
-    this.protectedResourceApiService
-      .ListResources({
-        pageNo: CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE,
-        queryDependency: true,
-        conditions: JSON.stringify({
-          uuid: targetServer.rootUuid || targetServer.root_uuid
-        })
-      })
-      .subscribe((res: any) => {
-        if (first(res.records)) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getDisk(targetServer, agentsId);
-        }
+    this.appUtilsService
+      .getResourcesDetails(
+        targetServer,
+        this.isNutanix
+          ? DataMap.Resource_Type.nutanixDisk.value
+          : DataMap.Resource_Type.cNwareDisk.value
+      )
+      .subscribe(recordsTemp => {
+        this.batchRecoveryDiskTable(recordsTemp);
+        this.disableOkBtn();
       });
   }
 
@@ -955,65 +1041,14 @@ export class CnwareRestoreComponent implements OnInit {
     if (isEmpty(targetHost)) {
       return;
     }
-    this.protectedResourceApiService
-      .ListResources({
-        pageNo: CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE,
-        queryDependency: true,
-        conditions: JSON.stringify({
-          uuid: targetHost.rootUuid || targetHost.root_uuid
-        })
-      })
-      .subscribe((res: any) => {
-        if (first(res.records)) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getTargetDataStore(targetHost, agentsId, isOriginal);
-        }
-      });
-  }
-
-  getTargetDataStore(
-    targetHost,
-    agentsId,
-    isOriginal?,
-    recordsTemp?: any[],
-    startPage?: number
-  ) {
-    const params = {
-      agentId: agentsId,
-      envId: targetHost.rootUuid || targetHost.root_uuid,
-      resourceIds: [targetHost.uuid || targetHost.root_uuid],
-      pageNo: startPage || 1,
-      pageSize: 200,
-      conditions: JSON.stringify({
-        resourceType: this.isNutanix
-          ? 'NutanixStorageContainer'
-          : 'StoragePool',
-        uuid: targetHost.uuid
-      })
-    };
-
-    this.appService.ListResourcesDetails(params).subscribe(res => {
-      if (!recordsTemp) {
-        recordsTemp = [];
-      }
-      if (!isNumber(startPage)) {
-        startPage = 1;
-      }
-      recordsTemp = [...recordsTemp, ...res.records];
-      if (
-        startPage === Math.ceil(res.totalCount / 200) ||
-        res.totalCount === 0 ||
-        res.totalCount === size(res.records)
-      ) {
+    this.appUtilsService
+      .getResourcesDetails(
+        targetHost,
+        this.isNutanix
+          ? ResourceDetailType.nutanixStorageContainer
+          : ResourceDetailType.storagePool
+      )
+      .subscribe(recordsTemp => {
         const datastores = map(recordsTemp, item => {
           const details = JSON.parse(item.extendInfo?.details || '{}');
           return assign(item, {
@@ -1040,17 +1075,7 @@ export class CnwareRestoreComponent implements OnInit {
           this.setDiskDatastoreOptions();
         }
         this.disableOkBtn();
-        return;
-      }
-      startPage++;
-      this.getTargetDataStore(
-        targetHost,
-        agentsId,
-        isOriginal,
-        recordsTemp,
-        startPage
-      );
-    });
+      });
   }
 
   getResourceIcon(node) {
@@ -1090,27 +1115,34 @@ export class CnwareRestoreComponent implements OnInit {
       params => this.protectedResourceApiService.ListResources(params),
       resource => {
         each(resource, item => {
-          event.children.push(
-            assign(item, {
-              label: item.name,
-              disabled: this.isDiskRestore
-                ? item.subType !== DataMap.Resource_Type.cNwareVm.value
-                : item.subType !== DataMap.Resource_Type.cNwareHost.value,
-              contentToggleIcon: this.getResourceIcon(item),
-              children:
-                (this.isDiskRestore &&
-                  item.subType === DataMap.Resource_Type.cNwareVm.value) ||
-                item.subType === DataMap.Resource_Type.cNwareHost.value
-                  ? null
-                  : [],
-              isLeaf: this.isDiskRestore
-                ? item.subType === DataMap.Resource_Type.cNwareVm.value
-                : item.subType === DataMap.Resource_Type.cNwareHost.value,
-              expanded: false
-            })
-          );
+          assign(item, {
+            label: item.name,
+            disabled: this.isDiskRestore
+              ? item.subType !== DataMap.Resource_Type.cNwareVm.value
+              : item.subType !== DataMap.Resource_Type.cNwareHost.value,
+            contentToggleIcon: this.getResourceIcon(item),
+            children:
+              (this.isDiskRestore &&
+                item.subType === DataMap.Resource_Type.cNwareVm.value) ||
+              item.subType === DataMap.Resource_Type.cNwareHost.value
+                ? null
+                : [],
+            isLeaf: this.isDiskRestore
+              ? item.subType === DataMap.Resource_Type.cNwareVm.value
+              : item.subType === DataMap.Resource_Type.cNwareHost.value,
+            expanded: false
+          });
+          if (event?.agentId) {
+            // 往下传递客户端ID
+            set(item, 'agentId', event.agentId);
+          }
+          event.children.push(item);
         });
         this.serverTreeData = [...this.serverTreeData];
+        // 保存数据，用于搜索复原
+        if (!this.currentSearchKey) {
+          this.originalTreeData = cloneDeep(this.serverTreeData);
+        }
       }
     );
   }
@@ -1454,15 +1486,12 @@ export class CnwareRestoreComponent implements OnInit {
       return this.resourceProperties.uuid;
     }
     if (this.isNutanix) {
-      return null;
+      return this.dealNutanixPath();
     }
     return this.formGroup.value.targetServer[0]?.uuid;
   }
 
   getRestoreLocation(): string {
-    if (this.isNutanix) {
-      return null;
-    }
     if (this.formGroup.value.restoreTo === RestoreV2LocationType.ORIGIN) {
       if (this.isDiskRestore) {
         return this.resourceProperties.path;
@@ -1472,7 +1501,24 @@ export class CnwareRestoreComponent implements OnInit {
         return paths.join('/');
       }
     } else {
+      if (this.isNutanix) {
+        return this.dealNutanixPath();
+      }
       return this.formGroup.value.targetServer[0]?.path;
+    }
+  }
+
+  dealNutanixPath() {
+    const targetPath = find(this.nutaniHostOptions, {
+      value: first(this.formGroup.value.targetServer)
+    })?.path;
+    const clusterPath = find(this.nutaniClusterOptions, {
+      value: this.formGroup.value.targetCluster
+    })?.path;
+    if (size(this.formGroup.value.targetServer) === 1) {
+      return targetPath;
+    } else {
+      return clusterPath;
     }
   }
 
@@ -1487,6 +1533,75 @@ export class CnwareRestoreComponent implements OnInit {
       : '0';
   }
 
+  // 虚拟机搜索
+  filterChange(value) {
+    this.currentSearchKey = value;
+    if (value === this.searchVmKey || this.isNutanix) {
+      return;
+    }
+    if (!trim(value)) {
+      this.serverTreeData = cloneDeep(this.originalTreeData);
+      return;
+    }
+    this.searchTrigger$.next(trim(value));
+  }
+
+  getResourceDetail(data) {
+    // 根据CNWareId查询客户端ID
+    if (data?.subType !== DataMap.Resource_Type.cNwareVm.value) {
+      return;
+    }
+    // 如果顶层传递了客户端ID，无需再次查询
+    if (data?.agentId) {
+      this.queryVMInfoById(data.agentId, data);
+      return;
+    }
+    this.protectedResourceApiService
+      .ListResources({
+        pageNo: CommonConsts.PAGE_START,
+        pageSize: CommonConsts.PAGE_SIZE,
+        queryDependency: true,
+        conditions: JSON.stringify({
+          uuid: this.resourceProperties?.root_uuid
+        })
+      })
+      .subscribe((res: any) => {
+        if (first(res.records)) {
+          const onlineAgents = res.records[0]?.dependencies?.agents;
+          const agentId = onlineAgents[0].uuid;
+          this.queryVMInfoById(agentId, data);
+        }
+      });
+  }
+
+  queryVMInfoById(agentId, vm) {
+    const params = {
+      agentId: agentId,
+      envId: vm.rootUuid, // 顶层CNWareID
+      resourceIds: [vm.parentUuid], // CNWare主机ID
+      pageNo: CommonConsts.PAGE_START_EXTRA,
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
+      conditions: JSON.stringify({
+        resourceType: DataMap.Resource_Type.cNwareVm.value,
+        uuid: vm.uuid // 虚拟机ID
+      })
+    };
+
+    this.appService.ListResourcesDetails(params).subscribe(res => {
+      this.getBootOptionsTip(res.records);
+    });
+  }
+
+  getBootOptionsTip(rowData?) {
+    const event = isArray(rowData) ? first(rowData) : rowData;
+    if (event?.subType === DataMap.Resource_Type.cNwareVm.value) {
+      const details = JSON.parse(get(event, 'extendInfo.details', '{}'));
+      getBootTypeWarnTipByType(this, details?.bootType, this.rowCopyBootType);
+    } else {
+      this.bootOptionsWarnTip = '';
+    }
+  }
+
   getParams() {
     const params = {
       copyId: this.rowCopy.uuid,
@@ -1495,7 +1610,9 @@ export class CnwareRestoreComponent implements OnInit {
         this.formGroup.value.restoreTo === RestoreV2LocationType.ORIGIN
           ? this.resourceProperties?.environment_uuid
           : this.isNutanix
-          ? this.resourceProperties?.environment_uuid
+          ? find(this.nutaniClusterOptions, {
+              value: this.formGroup.value.targetCluster
+            })?.environment?.uuid
           : this.formGroup.value.targetServer[0]?.rootUuid,
       restoreType: this.isDiskRestore
         ? RestoreV2Type.FileRestore

@@ -20,6 +20,7 @@ import {
   I18NService
 } from 'app/shared';
 import { DataMap, PolicyType, RouterUrl } from 'app/shared/consts';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { find, isBoolean } from 'lodash';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -40,11 +41,13 @@ export class CopyLimitAdvancedParameterComponent implements OnInit, OnDestroy {
   needWorm = false;
   securityTip = this.i18n.get('explore_security_archive_cycle_label');
   _isBoolean = isBoolean;
+  isDistributed = this.appUtilsService.isDistributed;
 
   destroy$ = new Subject();
 
   constructor(
     public baseUtilService: BaseUtilService,
+    public appUtilsService: AppUtilsService,
     private i18n: I18NService,
     private globalService: GlobalService,
     private antiRansomwarePolicyApiService: AntiRansomwarePolicyApiService,
@@ -52,7 +55,7 @@ export class CopyLimitAdvancedParameterComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (this.isDetail) {
+    if (this.isDetail || this.isDistributed) {
       return;
     }
     this.initForm();

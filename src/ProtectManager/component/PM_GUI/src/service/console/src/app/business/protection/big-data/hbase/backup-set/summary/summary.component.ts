@@ -91,7 +91,10 @@ export class SummaryComponent implements OnInit {
     const cols: TableCols[] = [
       {
         key: 'table',
-        name: this.i18n.get('common_table_label')
+        name:
+          this.source.type === DataMap.Resource_Type.Elasticsearch.value
+            ? this.i18n.get('common_index_label')
+            : this.i18n.get('common_table_label')
       }
     ];
 

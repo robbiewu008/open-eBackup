@@ -177,6 +177,12 @@ export class RegisterService {
         return {
           lvWidth: MODAL_COMMON.largeWidth
         };
+      case DataMap.Resource_Type.AntDB.value:
+      case DataMap.Resource_Type.AntDBInstance.value:
+      case DataMap.Resource_Type.AntDBClusterInstance.value:
+        return {
+          lvWidth: MODAL_COMMON.xLargeWidth
+        };
       case DataMap.Resource_Type.tdsqlInstance.value:
         return {
           lvWidth: MODAL_COMMON.xLargeWidth + 200
@@ -230,7 +236,8 @@ export class RegisterService {
         };
       case DataMap.Resource_Type.ObjectSet.value:
         return {
-          lvWidth: MODAL_COMMON.largeWidth + 100
+          lvWidth: MODAL_COMMON.largeWidth + 100,
+          lvAfterOpen: modal => {}
         };
       case DataMap.Resource_Type.commonShare.value:
         return {

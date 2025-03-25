@@ -1,4 +1,3 @@
-<ng-container *ngIf="isDetail; else elseTemplate">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<ng-container *ngIf="isDetail; else elseTemplate">
     <lv-form>
         <lv-form-item *ngIf="_isBoolean(protectData?.backup_res_auto_index)">
             <lv-form-label>{{'protection_backup_index_label' | i18n}}</lv-form-label>
@@ -34,7 +34,7 @@
     </lv-form>
 </ng-container>
 <ng-template #elseTemplate>
-    <div class="update-index-container" *ngIf="initSla && !isHcsUser && (hasBackup || hasArchive)">
+    <div [ngClass]="{'update-index-container': !noNeedMgt}" *ngIf="initSla && !isHcsUser && (hasBackup || hasArchive)">
         <lv-alert lvType="warning" lvClosable="false" *ngIf="false">
             <h2 class="lv-alert-title">
                 {{'protection_modify_index_warn_label' | i18n}}

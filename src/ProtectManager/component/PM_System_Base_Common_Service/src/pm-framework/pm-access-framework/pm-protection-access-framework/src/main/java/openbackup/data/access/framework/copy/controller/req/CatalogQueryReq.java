@@ -15,6 +15,8 @@ package openbackup.data.access.framework.copy.controller.req;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -27,7 +29,6 @@ public class CatalogQueryReq {
     @NotBlank
     String parentPath;
 
-    @NotBlank
     String name;
 
     String conditions;
@@ -35,4 +36,6 @@ public class CatalogQueryReq {
     private int pageSize = 200;
 
     private int pageNum = 0;
+
+    private List<Object> searchAfter;
 }

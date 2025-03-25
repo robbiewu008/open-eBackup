@@ -83,6 +83,11 @@ public class ConfigConstant {
     public static final String REQUEST_IP = "x-forwarded-for";
 
     /**
+     * 远端请求real IP
+     */
+    public static final String REAL_REQUEST_IP = "X-Real-IP";
+
+    /**
      * CONTENT_DISPOSITION标识
      */
     public static final String CONTENT_DISPOSITION = "content-disposition";

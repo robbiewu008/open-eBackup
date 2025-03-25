@@ -12,20 +12,11 @@
 */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProButtonModule } from 'app/shared/components/pro-button';
-import { ProTableModule } from 'app/shared/components/pro-table';
 import { RegisterComponent } from './register.component';
-import { AddNodeModule } from './add-node/add-node.module';
 import { BaseModule } from 'app/shared';
 
 @NgModule({
   declarations: [RegisterComponent],
-  imports: [
-    CommonModule,
-    BaseModule,
-    ProButtonModule,
-    ProTableModule,
-    AddNodeModule
-  ]
+  imports: [CommonModule, BaseModule]
 })
 export class RegisterModule {}

@@ -257,6 +257,9 @@ export class PerformanceTimeChartComponent implements OnInit, OnDestroy {
       this.performanceChart.setOption(this.performanceOption);
       this.cardInfo.loading = false;
     }, 0);
+    window.addEventListener('resize', () => {
+      this.performanceChart?.resize();
+    });
   }
   refreshData() {
     this.cardInfo.loading = true;

@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup">
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'common_role_label' | i18n }}
@@ -19,9 +19,12 @@
     <lv-form-control class="firstSection">
       <lv-radio-group formControlName="role">
         <lv-group lvGutter="16px">
-          <lv-radio [lvValue]="dataMap.initRole.data.value" [lvDisabled]="disableRoleRadio.backup">{{'common_backup_label' | i18n}}</lv-radio>
-          <lv-radio [lvValue]="dataMap.initRole.copy.value" [lvDisabled]="disableRoleRadio.replicate">{{'common_replicate_label' | i18n}}</lv-radio>
-          <lv-radio [lvValue]="dataMap.initRole.dataManage.value" [lvDisabled]="disableRoleRadio.archive">{{'common_archive_label' | i18n}}</lv-radio>
+          <lv-radio [lvValue]="dataMap.initRole.data.value"
+            [lvDisabled]="disableRoleRadio.backup">{{'common_backup_label' | i18n}}</lv-radio>
+          <lv-radio [lvValue]="dataMap.initRole.copy.value"
+            [lvDisabled]="disableRoleRadio.replicate">{{'common_replicate_label' | i18n}}</lv-radio>
+          <lv-radio [lvValue]="dataMap.initRole.dataManage.value"
+            [lvDisabled]="disableRoleRadio.archive">{{'common_archive_label' | i18n}}</lv-radio>
         </lv-group>
       </lv-radio-group>
     </lv-form-control>
@@ -150,6 +153,16 @@
       </lv-form-control>
     </lv-form-item>
   </ng-container>
+  <lv-form-item
+    *ngIf="(formGroup.value.portChoice === '1' &&
+  formGroup.value.homePortType !== dataMap.initHomePortType.ethernet.value) && !(!!this.modifyData && !this.formGroup.get('bondPortName').value)">
+    <lv-form-label>
+      {{'e6000_ifacename_init_by_lld_system_label' | i18n}}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="bondPortNameErrorTip">
+      <input lv-input type="text" formControlName="bondPortName" [lvDisabled]="!!modifyData">
+    </lv-form-control>
+  </lv-form-item>
   <!-- 创建vlan或绑定端口类型的逻辑端口需要mtu-->
   <ng-container *ngIf="(formGroup.value.portChoice === '1' && vlan) || (formGroup.value.portChoice === '1' &&
   formGroup.value.homePortType !== dataMap.initHomePortType.ethernet.value) ||
@@ -161,7 +174,7 @@
         {{ 'common_maximum_transmission_unit_label' | i18n }}
       </lv-form-label>
       <lv-form-control [lvErrorTip]="mtuErrorTip">
-        <input lv-input type="text" formControlName="mtu"/>
+        <input lv-input type="text" formControlName="mtu" />
       </lv-form-control>
     </lv-form-item>
   </ng-container>
@@ -207,4 +220,23 @@ formGroup.value.portChoice === '0')">
       </lv-form-control>
     </lv-form-item>
   </ng-container>
+  <lv-form-item *ngIf="formGroup.get('role').value === dataMap.initRole.data.value">
+    <lv-form-label>
+      {{'common_config_ip_address_failover_label' | i18n}}
+      <i lv-icon="aui-icon-help" lv-tooltip="{{'common_config_ip_address_failover_tip_label' | i18n}}"
+        lvTooltipTheme="light" lvColorState='true' style="margin-left:4px"></i>
+    </lv-form-label>
+    <lv-form-control>
+      <lv-switch formControlName="isFailOver"></lv-switch>
+    </lv-form-control>
+  </lv-form-item>
+  <lv-form-item *ngIf="formGroup.get('isFailOver').value && !vlan">
+    <lv-form-label>
+      {{'common_config_ip_address_failovergroup_label' | i18n}}
+    </lv-form-label>
+    <lv-form-control>
+      <lv-select [lvOptions]="failoverGroupOptions" lvValueKey="value" formControlName="failoverGroupId" lvShowFilter
+        lvFilterKey="label" lvFilterMode="contains" lvShowClear></lv-select>
+    </lv-form-control>
+  </lv-form-item>
 </lv-form>

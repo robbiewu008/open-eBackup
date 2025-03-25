@@ -43,6 +43,9 @@ if [ "${BUILD_PKG_TYPE}" != "OpenSource" ]; then
 	artget pull -d ${WORKHOME}/Agent/ci/LCRP/conf/dependency_client.xml -p "{'AGENT_BRANCH':'${AGENT_BRANCH}','componentVersion':'${componentVersion}','PKG_TYPE':'Windows'}" -user ${cmc_user} -pwd ${cmc_pwd} -ap ${WORKHOME}/temp/
 elif [ "$BUILD_OS_TYPE" = "aarch64" ] || [ "$BUILD_OS_TYPE" = "x86_64" ]; then
 	cp -rf ${OPENSOURCE_REPOSITORY_DIR}/dependency/Linux/* ${WORKHOME}/temp
+	cp -rf ${OPENSOURCE_REPOSITORY_DIR}/dependency/common/*AIX*.xz ${WORKHOME}/temp
+	cp -rf ${OPENSOURCE_REPOSITORY_DIR}/dependency/common/*SunOS*.gz ${WORKHOME}/temp
+	cp -rf ${OPENSOURCE_REPOSITORY_DIR}/dependency/Windows/* ${WORKHOME}/temp
 elif [ "$BUILD_OS_TYPE" = "aix" ] || [ "$BUILD_OS_TYPE" = "solaris" ]; then
 	cp -rf ${OPENSOURCE_REPOSITORY_DIR}/dependency/common/* ${WORKHOME}/temp
 else

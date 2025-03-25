@@ -71,6 +71,7 @@ export class SystemBackupComponent implements OnInit, OnDestroy {
   sizeOptions = CommonConsts.PAGE_SIZE_OPTIONS;
   backupStatus = DataMap.System_Backup_Status;
   groupCommon = GROUP_COMMON;
+  timeZone = SYSTEM_TIME.timeZone;
 
   //策略启用状态
   backupPolicySwitch = false;
@@ -336,13 +337,13 @@ export class SystemBackupComponent implements OnInit, OnDestroy {
         lvOk: modal => {
           return new Promise(resolve => {
             const content = modal.getContentComponent() as ManuallBackupComponent;
-            content.onOk().subscribe(
-              () => {
+            content.onOk().subscribe({
+              next: () => {
                 resolve(true);
                 this.getBackupDatas();
               },
-              () => resolve(false)
-            );
+              error: () => resolve(false)
+            });
           });
         }
       })
@@ -375,14 +376,14 @@ export class SystemBackupComponent implements OnInit, OnDestroy {
           lvOk: modal => {
             return new Promise(resolve => {
               const content = modal.getContentComponent() as PolicyConfigComponent;
-              content.onOk().subscribe(
-                () => {
+              content.onOk().subscribe({
+                next: () => {
                   resolve(true);
                   this.getPolicyData();
                   this.getBackupDatas();
                 },
-                () => resolve(false)
-              );
+                error: () => resolve(false)
+              });
             });
           }
         })
@@ -411,13 +412,13 @@ export class SystemBackupComponent implements OnInit, OnDestroy {
         lvOk: modal => {
           return new Promise(resolve => {
             const content = modal.getContentComponent() as ImportBackupComponent;
-            content.onOk().subscribe(
-              () => {
+            content.onOk().subscribe({
+              next: () => {
                 resolve(true);
                 this.getBackupDatas();
               },
-              () => resolve(false)
-            );
+              error: () => resolve(false)
+            });
           });
         }
       })
@@ -486,7 +487,11 @@ export class SystemBackupComponent implements OnInit, OnDestroy {
     ) {
       this.warningMessageService.create({
         content: this.i18n.get('system_cyber_backup_restore_warn_label', [
-          this.datePipe.transform(item.backupTime, 'yyyy-MM-dd HH:mm:ss')
+          this.datePipe.transform(
+            item.backupTime,
+            'yyyy-MM-dd HH:mm:ss',
+            this.timeZone
+          )
         ]),
         onOK: () => {
           const params = {
@@ -522,13 +527,13 @@ export class SystemBackupComponent implements OnInit, OnDestroy {
         lvOk: modal => {
           return new Promise(resolve => {
             const content = modal.getContentComponent() as BackupRestoreComponent;
-            content.onOk().subscribe(
-              () => {
+            content.onOk().subscribe({
+              next: () => {
                 resolve(true);
                 this.getBackupDatas();
               },
-              () => resolve(false)
-            );
+              error: () => resolve(false)
+            });
           });
         }
       })
@@ -538,7 +543,11 @@ export class SystemBackupComponent implements OnInit, OnDestroy {
   deleteBackup(item) {
     this.warningMessageService.create({
       content: this.i18n.get('system_delete_backup_label', [
-        this.datePipe.transform(item.backupTime, 'yyyy-MM-dd HH:mm:ss')
+        this.datePipe.transform(
+          item.backupTime,
+          'yyyy-MM-dd HH:mm:ss',
+          this.timeZone
+        )
       ]),
       onOK: () => {
         this.sysbackupApiService
@@ -549,8 +558,18 @@ export class SystemBackupComponent implements OnInit, OnDestroy {
   }
 
   exportBackup(item) {
+    this.message.info(this.i18n.get('common_file_download_processing_label'), {
+      lvDuration: 0,
+      lvShowCloseButton: true,
+      lvMessageKey: 'jobDownloadKey'
+    });
     this.sysbackupApiService
-      .downloadBackupUsingGET({ imagesId: item.id })
+      .downloadBackupUsingGET({ imagesId: item.id, akLoading: false })
+      .pipe(
+        finalize(() => {
+          this.message.destroy('jobDownloadKey');
+        })
+      )
       .subscribe(blob => {
         const bf = new Blob([blob], {
           type: 'application/zip'

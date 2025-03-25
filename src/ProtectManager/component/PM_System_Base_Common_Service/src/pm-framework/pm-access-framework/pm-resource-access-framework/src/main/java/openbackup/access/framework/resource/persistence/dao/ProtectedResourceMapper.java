@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import openbackup.access.framework.resource.dto.ResourceDependencyRelation;
 import openbackup.access.framework.resource.persistence.model.ProtectedEnvironmentPo;
 import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.system.base.security.callee.CalleeMethod;
 import openbackup.system.base.security.callee.CalleeMethods;
 
@@ -130,6 +131,12 @@ public interface ProtectedResourceMapper extends BaseMapper<ProtectedResourcePo>
      * RESOURCE_UUID_SQL
      */
     String RESOURCE_UUID_SQL = "select r.uuid from resources r ${ew.customSqlSegment}";
+
+    /**
+     * RESOURCE_BY_UUIDS_SQL
+     */
+    String RESOURCE_BY_UUIDS_SQL = "<script>select * from resources where uuid in" + ID_LIST
+        + "</script>";
 
     /**
      * WITH RECURSIVE tree(uuid, parent_uuid) as (<br/>
@@ -424,4 +431,34 @@ public interface ProtectedResourceMapper extends BaseMapper<ProtectedResourcePo>
      * @return 所有子类型的列表
      */
     List<String> getAllSubTypeList();
+
+    /**
+     * 根据插件应用类型appLabel Type查询在线的代理主机信息
+     *
+     * @param appLabelType appLabelType
+     * @return uuidList
+     */
+    @Select("select distinct "
+        + "res.*, "
+        + "env.endpoint as endpoint, "
+        + "env.os_type as os_type, "
+        + "env.port as port "
+        + "from resources as res "
+        + "left join res_extend_info as res_ext on res.uuid = res_ext.resource_id "
+        + "left join environments as env on res.uuid = env.uuid "
+        + "where res.TYPE = 'Host' "
+        + "and res.SUB_TYPE = 'UBackupAgent' "
+        + "and env.link_status = 1 "
+        + "and res_ext.key = 'agent_applications' "
+        + "and res_ext.value like CONCAT('%',#{appLabelType},'%');")
+    List<ProtectedResource> queryOnlineAgentListByAppLabel(@Param("appLabelType") String appLabelType);
+
+    /**
+     * 根据ids查资源
+     *
+     * @param uuids id集合
+     * @return 资源集合
+     */
+    @Select(RESOURCE_BY_UUIDS_SQL)
+    List<ProtectedResourcePo> listResourceByUuid(@Param("ids") List<String> uuids);
 }

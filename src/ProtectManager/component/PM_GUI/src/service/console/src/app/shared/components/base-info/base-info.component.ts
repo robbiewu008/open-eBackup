@@ -410,7 +410,7 @@ export class BaseInfoComponent implements OnInit, OnDestroy {
         this.formItems[0][0].content = this.source.name;
         this.formItems[0][1].content = this.source.environment?.name;
         this.formItems[0][1].label = this.i18n.get(
-          'protection_host_name_label'
+          'protection_client_name_label'
         );
         this.formItems[0][2].content = this.source.environment?.endpoint;
         this.formItems[0][2].label = this.i18n.get('common_ip_address_label');
@@ -733,7 +733,12 @@ export class BaseInfoComponent implements OnInit, OnDestroy {
         this.formItems[0][0].content = this.source.name;
         this.formItems[0][1].content = this.source?.path;
         this.formItems[0][1].label = this.i18n.get('common_location_label');
-        this.formItems[0][2].content = this.source?.status;
+        if (this.sourceType === DataMap.Resource_Type.nutanixVm.value) {
+          this.formItems[0][2].content = this.source?.extendInfo?.status;
+        } else {
+          this.formItems[0][2].content = this.source?.status;
+        }
+
         break;
       }
       case DataMap.Resource_Type.ExchangeSingle.value: {

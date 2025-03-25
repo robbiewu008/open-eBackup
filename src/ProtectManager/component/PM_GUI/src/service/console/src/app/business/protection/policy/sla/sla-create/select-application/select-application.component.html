@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
     <ng-container *ngIf="!cookieService.isCloudBackup">
         <lv-radio-group formControlName="type" [lvGroupName]="'applicationTypeGroup'" class="application-type-group"
             [ngClass]="{'mgb-specified': formGroup.value.type === applicationTypeView.Specified}">
@@ -41,13 +41,28 @@
                     class="aui-text-help-sm desc">
                     {{'protection_all_resource_desc_label' | i18n}}
                 </div>
-                <div *ngIf="appUtilsService.isDistributed || appUtilsService.isDecouple" class="aui-text-help-sm desc">
+                <div *ngIf="appUtilsService.isDecouple" class="aui-text-help-sm desc">
+                    {{'protection_distributed_or_e1000_all_resource_desc_label' | i18n}}
+                </div>
+                <div *ngIf="appUtilsService.isDistributed" class="aui-text-help-sm desc">
                     {{'protection_distributed_all_resource_desc_label' | i18n}}
                 </div>
             </lv-group>
         </div>
     </ng-container>
     <ng-container *ngIf="formGroup.value.type === applicationTypeView.Specified">
+      <div class="searchStyle" *ngIf="isOceanProtect">
+      <input
+        lv-input
+        lv-autocomplete
+        placeholder="{{'search_resource_keyword_label'|i18n}}"
+        (lvAutocompleteInputChange)="change($event)"
+        (lvAutocompleteSelectedChange)="selectChange($event)"
+        [lvAutocompleteData]="searchData"
+        [lvAutocompleteHighlightContent]="searchValue"
+        [lvAutocompleteVirtualScroll]="true"
+      />
+      </div>
         <!-- 数据库 -->
         <ng-container *ngIf="!!appHostIcons.length">
             <h2 class="line-height-h2 aui-gutter-column-sm">{{'common_database_single_label'|i18n}}</h2>

@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
@@ -20,7 +20,7 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="步骤2：创建归档SLA">
+<meta name="DC.Title" content="步骤2：创建备份副本归档SLA">
 <meta name="product" content="">
 <meta name="DC.Relation" scheme="URI" content="hdfs_00038.html">
 <meta name="prodname" content="">
@@ -33,11 +33,11 @@
 <meta name="DC.Identifier" content="hdfs_00042">
 <meta name="DC.Language" content="zh-cn">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>步骤2：创建归档SLA</title>
+<title>步骤2：创建备份副本归档SLA</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="hdfs_00042"></a><a name="hdfs_00042"></a>
 
-<h1 class="topictitle1">步骤2：创建归档SLA</h1>
+<h1 class="topictitle1">步骤2：创建备份副本归档SLA</h1>
 <div><p>如果您需要对生成的备份副本进行归档，请参考本节配置归档SLA。</p>
 <div class="section"><h4 class="sectiontitle">前提条件</h4><p>已创建备份策略的SLA，如果未创建请先参考<a href="hdfs_00018.html">步骤7：创建备份SLA</a>创建备份策略的SLA。</p>
 </div>
@@ -87,7 +87,7 @@
 </div>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><div class="p">驱动数量<div class="note" id="hdfs_00042__zh-cn_topic_0000001792503806_note754320443218"><span class="notetitle"> 说明： </span><div class="notebody"><p id="hdfs_00042__zh-cn_topic_0000001792503806_zh-cn_topic_0000001839143189_zh-cn_topic_0000001839143213_p8320153562113">仅1.6.0及后续版本支持设置该参数。</p>
+<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><div class="p">驱动数量<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>仅1.6.0及后续版本支持设置该参数。</p>
 </div></div>
 </div>
 </td>
@@ -102,11 +102,13 @@
 <p>选择已创建的限速策略。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p><span>自动索引</span></p>
+<tr><td class="cellrowborder" valign="top" width="30.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><div class="p"><span id="hdfs_00042__zh-cn_topic_0000001792503806_text278121420338">自动索引</span><div class="note" id="hdfs_00042__zh-cn_topic_0000001792503806_note1175910385420"><span class="notetitle"> 说明： </span><div class="notebody"><p id="hdfs_00042__zh-cn_topic_0000001792503806_p18759163818421">仅1.5.0版本存在此参数。</p>
+</div></div>
+</div>
 </td>
 <td class="cellrowborder" valign="top" width="69.5%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p>开启后支持选择副本中的单个或多个文件进行恢复，支持在管理界面上搜索副本中的文件、目录或链接。当归档存储为磁带库时，不支持对归档副本进行索引。</p>
 <p>开启后不支持关闭。</p>
-<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="hdfs_00042__nas_s_0016_p0743109201911">索引需要占用备份存储空间，当系统中的索引文件总数超过10亿时，请按照<span id="hdfs_00042__nas_s_0016_cite23814569190">《OceanProtect <span id="hdfs_00042__nas_s_0016_zh-cn_topic_0000001792502994_ph187704762018">备份一体机 1.5.0-1.6.0</span> 故障处理》</span>中的“创建副本索引失败”章节进行处理。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="hdfs_00042__nas_s_0016_p0743109201911">索引需要占用备份存储空间，当系统中的索引文件总数超过10亿时，请按照<span id="hdfs_00042__nas_s_0016_cite23814569190">《OceanProtect DataBackup 1.5.0-1.6.0 故障处理》</span>中的“创建副本索引失败”章节进行处理。</p>
 </div></div>
 </td>
 </tr>

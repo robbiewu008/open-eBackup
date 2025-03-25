@@ -2,7 +2,7 @@
   "external_storage_type_label": "External",
   "local_storage_type_label": "Local",
   "index_scan_response_error_label": "The system fails to scan the copy",
-  "index_response_error_label": "Failed to insert indexes. Suggestion: 1. Log in to the agent host as user root and run the rpm -q pigz command to check whether the pigz tool has been installed on the agent host. 2. Collect logs and contact technical support for assistance",
+  "index_response_error_label": "Failed to insert indexes. Suggestion: 1. Log in to the client as user root and run the rpm -q pigz command to check whether the pigz tool has been installed on the agent host. 2. Collect logs and contact technical support for assistance",
   "index_copy_status_error_label": "The copy is not in the normal state",
   "dee_scan_identify_filesystem_failed_error_label": "The file system type of the copy cannot be identified. The supported Linux file system types are ext 2/3/4 and XFS, and the supported Windows file system types are NTFS, FAT, and FAT32. Indexes cannot be created for encrypted volumes",
   "dee_scan_identify_guestos_failed_error_label": "The operating system type of the copy cannot be identified. The supported operating systems are Linux and Windows",
@@ -57,5 +57,8 @@
   "e6000_network_type_init_by_lld_system_label": "Service Network Type",
   "e6000_ip_address_init_by_lld_system_label": "IP Address/Mask",
   "e6000_ifacename_init_by_lld_system_label": "Port Name",
-  "unlimited_quota": "Unlimited quota"
+  "unlimited_quota": "Unlimited quota",
+  "index_scan_file_out_of_limit": "The number of files in the copy exceeds the maximum number of indexes allowed in a single copy.",
+  "bond_port_name_label": "bond port name",
+  "upload_test_event_dump_file_label": "dump test file"
 }

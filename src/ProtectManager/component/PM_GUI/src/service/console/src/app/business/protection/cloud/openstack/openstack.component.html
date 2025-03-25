@@ -1,4 +1,3 @@
-<div class="aui-fullpage">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-fullpage">
     <div class="aui-block vm-container">
         <lv-group class="group">
             <lv-group class="left" lvDirection='vertical'>
@@ -26,10 +26,10 @@
                 </div>
                 <div class="tree-container">
                     <ng-container *ngIf="treeData.length;else noDataTpl">
-                        <lv-tree lvCompareWith="uuid" [lvData]='treeData' [(lvSelection)]="treeSelection"
-                            lvSelectionMode='single' [lvBeforeSelected]="beforeSelected" (lvCheck)="nodeCheck($event)"
-                            lvShowContentIcon (lvExpandedChange)="expandedChange($event)" [lvNodeTemplate]='nodeTpl'
-                            [lvScroll]='virtualScroll.scrollParam' lvVirtualScroll>
+                        <lv-tree lvCompareWith="uuid" lvSelectionAssociate="false" [lvData]='treeData'
+                            [(lvSelection)]="treeSelection" lvSelectionMode='single' [lvBeforeSelected]="beforeSelected"
+                            (lvCheck)="nodeCheck($event)" lvShowContentIcon (lvExpandedChange)="expandedChange($event)"
+                            [lvNodeTemplate]='nodeTpl' [lvScroll]='virtualScroll.scrollParam' lvVirtualScroll>
                         </lv-tree>
                     </ng-container>
                 </div>
@@ -44,21 +44,42 @@
                     </lv-tab>
                     <lv-tab lvTitle="{{'common_project_label' | i18n}}({{projectTotal}})" [lvId]="'project'"
                         *ngIf="!treeSelection.length || treeSelection[0]?.type === resourceType.OpenStack || treeSelection[0]?.type === resourceType.StackDomain">
-                        <aui-openstack-list [treeSelection]="treeSelection[0]" [resType]="resourceType.OpenStackProject"
-                            (updateTable)="updateProjectTotal($event)">
-                        </aui-openstack-list>
+                        <ng-template lv-tab-lazy>
+                            <aui-openstack-list [treeSelection]="treeSelection[0]"
+                                [resType]="resourceType.OpenStackProject" (updateTable)="updateProjectTotal($event)">
+                            </aui-openstack-list>
+                        </ng-template>
+                        <div style="visibility: hidden;">
+                            <aui-openstack-list [treeSelection]="treeSelection[0]"
+                                [resType]="resourceType.OpenStackProject" (updateTable)="updateProjectTotal($event)">
+                            </aui-openstack-list>
+                        </div>
                     </lv-tab>
                     <lv-tab lvTitle="{{'common_cloud_server_label' | i18n}}({{cloudHostTotal}})" [lvId]="'cloudHost'">
-                        <aui-openstack-list [treeSelection]="treeSelection[0]"
-                            [resType]="resourceType.OpenStackCloudServer" (updateTable)="updateHostTotal($event)">
-                        </aui-openstack-list>
+                        <ng-template lv-tab-lazy>
+                            <aui-openstack-list [treeSelection]="treeSelection[0]"
+                                [resType]="resourceType.OpenStackCloudServer" (updateTable)="updateHostTotal($event)">
+                            </aui-openstack-list>
+                        </ng-template>
+                        <div style="visibility: hidden;">
+                            <aui-openstack-list [treeSelection]="treeSelection[0]"
+                                [resType]="resourceType.OpenStackCloudServer" (updateTable)="updateHostTotal($event)">
+                            </aui-openstack-list>
+                        </div>
                     </lv-tab>
                     <lv-tab *ngIf="treeSelection.length && treeSelection[0]?.type === resourceType.StackProject"
                         lvTitle="{{'protection_cloud_groups_label' | i18n}} ({{cloudGroupTotal}})"
                         [lvId]="resourceType.CLOUD_GROUP">
-                        <aui-virtualization-group [treeSelection]="treeSelection[0] || []"
-                            [subUnitType]="dataMap.Resource_Type.openStackCloudServer.value"
-                            (updateTable)="updateGroupTotal($event)"></aui-virtualization-group>
+                        <ng-template lv-tab-lazy>
+                            <aui-virtualization-group [treeSelection]="treeSelection[0] || []"
+                                [subUnitType]="dataMap.Resource_Type.openStackCloudServer.value"
+                                (updateTable)="updateGroupTotal($event)"></aui-virtualization-group>
+                        </ng-template>
+                        <div style="visibility: hidden;">
+                            <aui-virtualization-group [treeSelection]="treeSelection[0] || []"
+                                [subUnitType]="dataMap.Resource_Type.openStackCloudServer.value"
+                                (updateTable)="updateGroupTotal($event)"></aui-virtualization-group>
+                        </div>
                     </lv-tab>
                 </lv-tabs>
             </lv-group>

@@ -32,6 +32,7 @@ export class UpdateIndexComponent implements OnInit, OnDestroy {
   @Input() isDetail;
   @Input() protectData;
   @Input() extParams;
+  @Input() noNeedMgt;
 
   initSla = false;
   hasBackup = false;

@@ -19,11 +19,13 @@ import { I18NService } from './i18n.service';
 interface Options {
   content: string | TemplateRef<void>;
   okText?: string;
-  onOK: () => void;
+  onOK: (args?) => void;
   width?: number;
   onCancel?: () => void;
   lvAfterClose?: (rseult: any) => void;
   header?: string;
+  rowData?: any;
+  actionId?: any;
 }
 
 @Injectable({
@@ -47,7 +49,9 @@ export class WarningMessageService {
         lvHeader: options.header || this.i18n.get('common_danger_label'),
         lvContent: this.warningComponent,
         lvComponentParams: {
-          content: options.content
+          content: options.content,
+          rowData: options?.rowData,
+          actionId: options?.actionId
         },
         lvWidth: options.width || MODAL_COMMON.normalWidth,
         lvOkType: 'primary',
@@ -68,7 +72,7 @@ export class WarningMessageService {
             options.onCancel();
           }
         },
-        lvOk: modal => options.onOK(),
+        lvOk: modal => options.onOK(modal),
         lvAfterClose: result => {
           if (options.lvAfterClose) {
             options.lvAfterClose(result);

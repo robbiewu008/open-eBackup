@@ -30,8 +30,8 @@ import java.nio.charset.StandardCharsets;
  * <提供wcc加解密方法>
  * <功能详细描述>
  *
-   * @see [相关类/方法]
-  */
+ * @see [相关类/方法]
+ */
 @Slf4j
 public class KmcHelper {
     private static volatile KmcHelper instance = null;

@@ -31,7 +31,10 @@ import {
   size,
   some,
   split,
-  trim
+  startsWith,
+  trim,
+  reject,
+  set
 } from 'lodash';
 import {
   CommonConsts,
@@ -51,6 +54,57 @@ import {
   URL_PERMISSION_HYPER_DETECT
 } from '../consts/permission.const';
 import { ApplicationType, RestoreFileType } from '../consts/protection.const';
+
+export const E6000SupportApplication = [
+  //数据库
+  ApplicationType.Oracle,
+  ApplicationType.SQLServer,
+  ApplicationType.MySQL,
+  ApplicationType.Dameng,
+  ApplicationType.GoldenDB,
+  ApplicationType.PostgreSQL,
+  ApplicationType.OceanBase,
+  ApplicationType.MongoDB,
+  ApplicationType.Informix,
+  ApplicationType.OpenGauss,
+  ApplicationType.AntDB,
+  // 虚拟化
+  ApplicationType.Vmware,
+  ApplicationType.FusionCompute,
+  ApplicationType.FusionOne,
+  // 文件系统
+  ApplicationType.Fileset,
+  ApplicationType.NASShare,
+  //云
+  ApplicationType.OpenStack,
+  ApplicationType.HCSCloudHost
+];
+
+export const E6000SupportAppValue = [
+  // 主机
+  DataMap.Resource_Type.UBackupAgent.value,
+  //数据库
+  DataMap.Resource_Type.oracleCluster.value,
+  DataMap.Resource_Type.SQLServerDatabase.value,
+  DataMap.Resource_Type.MySQLCluster.value,
+  DataMap.Resource_Type.Dameng_singleNode.value,
+  DataMap.Resource_Type.goldendbCluter.value,
+  DataMap.Resource_Type.PostgreSQLInstance.value,
+  DataMap.Resource_Type.OceanBaseCluster.value,
+  DataMap.Resource_Type.MongodbSingleInstance.value,
+  DataMap.Resource_Type.OpenGauss_instance.value,
+  DataMap.Resource_Type.AntDBInstance.value,
+  DataMap.Resource_Type.informixService.value,
+  // 虚拟化
+  DataMap.Resource_Type.FusionCompute.value,
+  DataMap.Resource_Type.fusionOne.value,
+  // 文件系统
+  DataMap.Resource_Type.fileset.value,
+  DataMap.Resource_Type.NASShare.value,
+  //云
+  DataMap.Resource_Type.openStackProject.value,
+  DataMap.Resource_Type.HCSCloudHost.value
+];
 
 export const hcsNoSupportApplication = [
   ApplicationType.LightCloudGaussDB,
@@ -77,7 +131,11 @@ export const distributedFilterUrl = [
   RouterUrl.ExploreLiveMountFileset,
   RouterUrl.ExploreLiveMountNasShared,
   RouterUrl.SystemSamlSsoConfig,
-  RouterUrl.ProtectionCommonShare
+  RouterUrl.ProtectionCommonShare,
+  RouterUrl.ProtectionActiveDirectory,
+  RouterUrl.ExploreCopyDataActiveDirectory,
+  RouterUrl.ProtectionHostAppExchange,
+  RouterUrl.ExploreCopyDataDatabaseExchange
 ];
 
 export const decoupleFilterUrl = [
@@ -430,7 +488,8 @@ export function filterBackupType(item, resourceType, i18n) {
           DataMap.Resource_Type.APSCloudServer.value,
           DataMap.Resource_Type.APSResourceSet.value,
           DataMap.Resource_Type.APSZone.value,
-          DataMap.Resource_Type.nutanixVm.value
+          DataMap.Resource_Type.nutanixVm.value,
+          DataMap.Resource_Type.hyperVVm.value
         ],
         resourceType
       )
@@ -805,7 +864,8 @@ export function filterGeneratedBy(item, resourceType) {
       intersection(
         [
           DataMap.Resource_Type.HiveBackupSet.value,
-          DataMap.Resource_Type.ElasticsearchBackupSet.value
+          DataMap.Resource_Type.ElasticsearchBackupSet.value,
+          DataMap.Resource_Type.AntDBInstance.value
         ],
         resourceType
       )
@@ -910,7 +970,8 @@ export function filterGeneratedBy(item, resourceType) {
           DataMap.Resource_Type.KingBaseInstance.value,
           DataMap.Resource_Type.KingBaseClusterInstance.value,
           DataMap.Resource_Type.kubernetesNamespaceCommon.value,
-          DataMap.Resource_Type.kubernetesDatasetCommon.value
+          DataMap.Resource_Type.kubernetesDatasetCommon.value,
+          DataMap.Resource_Type.hyperVVm.value
         ],
         resourceType
       )
@@ -958,18 +1019,37 @@ export function filterJobType(item, resourceType) {
   ) {
     return includes(
       [
-        DataMap.Job_type.resource_scan.value,
         DataMap.Job_type.resource_protection.value,
         DataMap.Job_type.resource_protection_modify.value,
         DataMap.Job_type.backup_job.value,
         DataMap.Job_type.restore_job.value,
         DataMap.Job_type.live_restore_job.value,
         DataMap.Job_type.live_mount_job.value,
+        DataMap.Job_type.unmout.value,
         DataMap.Job_type.copy_data_job.value,
         DataMap.Job_type.archive_job.value,
         DataMap.Job_type.migrate.value,
         DataMap.Job_type.delete_copy_job.value,
         DataMap.Job_type.copyExpired.value
+      ],
+      item.value
+    );
+  } else if (includes([DataMap.Resource_Type.cNwareVm.value], resourceType)) {
+    return includes(
+      [
+        DataMap.Job_type.resource_protection.value,
+        DataMap.Job_type.resource_protection_modify.value,
+        DataMap.Job_type.backup_job.value,
+        DataMap.Job_type.restore_job.value,
+        DataMap.Job_type.live_restore_job.value,
+        DataMap.Job_type.live_mount_job.value,
+        DataMap.Job_type.unmout.value,
+        DataMap.Job_type.copy_data_job.value,
+        DataMap.Job_type.archive_job.value,
+        DataMap.Job_type.migrate.value,
+        DataMap.Job_type.delete_copy_job.value,
+        DataMap.Job_type.copyExpired.value,
+        DataMap.Job_type.copies_verify_job.value
       ],
       item.value
     );
@@ -1020,7 +1100,8 @@ export function filterJobType(item, resourceType) {
       [
         DataMap.Resource_Type.NASFileSystem.value,
         DataMap.Resource_Type.NASShare.value,
-        DataMap.Resource_Type.ndmp.value
+        DataMap.Resource_Type.ndmp.value,
+        DataMap.Resource_Type.fileset.value
       ],
       resourceType
     )
@@ -1040,15 +1121,39 @@ export function filterJobType(item, resourceType) {
       ],
       item.value
     );
-  } else if (includes([DataMap.Resource_Type.MySQL.value], resourceType)) {
+  } else if (
+    includes([DataMap.Resource_Type.MySQLInstance.value], resourceType)
+  ) {
     return includes(
       [
-        DataMap.Job_type.resource_scan.value,
         DataMap.Job_type.resource_protection.value,
         DataMap.Job_type.resource_protection_modify.value,
         DataMap.Job_type.backup_job.value,
         DataMap.Job_type.restore_job.value,
         DataMap.Job_type.live_mount_job.value,
+        DataMap.Job_type.unmout.value,
+        DataMap.Job_type.copy_data_job.value,
+        DataMap.Job_type.archive_job.value,
+        DataMap.Job_type.delete_copy_job.value,
+        DataMap.Job_type.copyExpired.value
+      ],
+      item.value
+    );
+  } else if (
+    includes(
+      [
+        DataMap.Resource_Type.MySQLClusterInstance.value,
+        DataMap.Resource_Type.MySQLDatabase.value
+      ],
+      resourceType
+    )
+  ) {
+    return includes(
+      [
+        DataMap.Job_type.resource_protection.value,
+        DataMap.Job_type.resource_protection_modify.value,
+        DataMap.Job_type.backup_job.value,
+        DataMap.Job_type.restore_job.value,
         DataMap.Job_type.copy_data_job.value,
         DataMap.Job_type.archive_job.value,
         DataMap.Job_type.delete_copy_job.value,
@@ -1215,7 +1320,9 @@ export function isDatabaseApp(subType) {
       DataMap.Resource_Type.informixClusterInstance.value,
       DataMap.Resource_Type.tidbCluster.value,
       DataMap.Resource_Type.tidbDatabase.value,
-      DataMap.Resource_Type.saphanaDatabase.value
+      DataMap.Resource_Type.saphanaDatabase.value,
+      DataMap.Resource_Type.AntDBInstance.value,
+      DataMap.Resource_Type.AntDBClusterInstance.value
     ],
     subType
   );
@@ -1333,7 +1440,8 @@ export function isSlaResourceSubType(subType: string): boolean {
       DataMap.Resource_Type.OceanBaseTenant.value,
       DataMap.Resource_Type.tidbCluster.value,
       DataMap.Resource_Type.tidbDatabase.value,
-      DataMap.Resource_Type.tidbTable.value
+      DataMap.Resource_Type.tidbTable.value,
+      DataMap.Resource_Type.commonShare.value
     ],
     subType
   );
@@ -1470,12 +1578,20 @@ export function hiddenOracleFileLevelRestore(
     includes(
       [
         DataMap.CopyData_generatedType.liveMount.value,
-        DataMap.CopyData_generatedType.replicate.value,
         DataMap.CopyData_generatedType.tapeArchival.value,
-        DataMap.CopyData_generatedType.cloudArchival.value,
-        DataMap.CopyData_generatedType.cascadedReplication.value
+        DataMap.CopyData_generatedType.cloudArchival.value
       ],
       rowCopy.generated_by
+    )
+  ) {
+    return true;
+  }
+
+  // 按操作系统类型屏蔽
+  if (
+    includes(
+      [DataMap.Os_Type.aix.value],
+      resourceProperties.environment_os_type
     )
   ) {
     return true;
@@ -1563,6 +1679,26 @@ export function disableOracleRestoreNewLocation(
   );
 }
 
+export function isIncompleteOracleCopy(
+  data,
+  properties,
+  sub_type,
+  resourceProperties?
+): boolean {
+  if (
+    !includes(
+      [
+        DataMap.Resource_Type.oracle.value,
+        DataMap.Resource_Type.oracleCluster.value
+      ],
+      sub_type
+    )
+  ) {
+    return false;
+  }
+  return get(properties, 'canRestore', true) === false;
+}
+
 export function autoTableScroll(virtualScroll, height, dataTable?, cdr?) {
   window.addEventListener('resize', () => {
     virtualScroll.getScrollParam(
@@ -1578,6 +1714,7 @@ export function autoTableScroll(virtualScroll, height, dataTable?, cdr?) {
     }
   });
 }
+
 export function getMultiHostOps(resource, isAgentList?) {
   return filter(resource, item => {
     const val = isAgentList ? item : item.environment;
@@ -1660,26 +1797,50 @@ export function enableAllFunc(diskInfo) {
 // 屏蔽部分应用类型
 export function filterApplication(item, appUtilsService) {
   let applications = get(item, 'applications', []);
-  if (appUtilsService.isDistributed || appUtilsService.isDecouple) {
-    applications = applications.filter(
-      item => item.appValue !== 'NasFileSystem'
-    );
-  }
-  // 服务化屏蔽应用
-  if (appUtilsService?.isHcsUser) {
-    applications = applications.filter(item => {
-      const apps = item.appValue.split(',');
-      return (
-        !includes(
-          apps,
-          DataMap.Resource_Type.lightCloudGaussdbInstance.value
-        ) &&
-        !includes(apps, DataMap.Resource_Type.openStackCloudServer.value) &&
-        !includes(apps, DataMap.Resource_Type.kubernetesClusterCommon.value)
-      );
-    });
+  let excludeApp = [];
+  let includeApp = [];
+
+  if (appUtilsService.isDecouple) {
+    excludeApp.push(DataMap.Resource_Type.NASFileSystem.value);
   }
 
+  if (appUtilsService.isDistributed) {
+    includeApp = includeApp.concat(E6000SupportAppValue);
+    const hasOpenGauss = find(applications, { appDesc: 'CMDB/openGauss' });
+    set(hasOpenGauss, 'appDesc', 'CMDB');
+    const hasInformix = find(applications, { appDesc: 'Informix/Gbase 8s' });
+    set(hasInformix, 'appDesc', 'Gbase 8s');
+  }
+
+  // 服务化屏蔽应用
+  if (appUtilsService?.isHcsUser) {
+    excludeApp.push(
+      DataMap.Resource_Type.lightCloudGaussdbInstance.value,
+      DataMap.Resource_Type.openStackCloudServer.value,
+      DataMap.Resource_Type.kubernetesClusterCommon.value
+    );
+  }
+
+  const opElements = new Set<string>();
+  excludeApp.forEach(app => {
+    app.split(',').forEach(element => opElements.add(element));
+  });
+
+  includeApp.forEach(app => {
+    app.split(',').forEach(element => opElements.add(element));
+  });
+  applications = applications.filter(item => {
+    const apps = item.appValue.split(',');
+    if (size(excludeApp)) {
+      return !apps.some(element => opElements.has(element));
+    }
+
+    if (size(includeApp)) {
+      return apps.some(element => opElements.has(element));
+    }
+
+    return true;
+  });
   return applications;
 }
 
@@ -1756,6 +1917,7 @@ export function extendNodeParams(node, item) {
   item.isLeaf = item.type !== RestoreFileType.Directory;
   item.children = item.type === RestoreFileType.Directory ? [] : null;
   item.contentToggleIcon = getFileIcon(item);
+  item.hidden = item.type !== RestoreFileType.Directory;
   return item;
 }
 
@@ -1771,7 +1933,13 @@ export function hideSqlserverArchive(data) {
       ],
       data?.resource_sub_type
     ) &&
-    includes([DataMap.CopyData_Backup_Type.log.value], data?.source_copy_type)
+    includes(
+      [
+        DataMap.CopyData_Backup_Type.log.value,
+        DataMap.CopyData_Backup_Type.diff.value
+      ],
+      data?.source_copy_type
+    )
   );
 }
 
@@ -1813,4 +1981,242 @@ export function getAppTheme(i18n): any {
     return prefers?.matches ? ThemeEnum.dark : ThemeEnum.light;
   }
   return storageTheme || ThemeEnum.light;
+}
+
+// 副本状态过滤项
+export function getCopyStatusFilterOptions(
+  copyStatusOptions,
+  childResourceType
+) {
+  // 导入副本
+  if (
+    !!size(
+      intersection([DataMap.Resource_Type.ImportCopy.value], childResourceType)
+    )
+  ) {
+    return filter(copyStatusOptions, item =>
+      includes(
+        [
+          DataMap.copydata_validStatus.normal.value,
+          DataMap.copydata_validStatus.invalid.value,
+          DataMap.copydata_validStatus.deleting.value
+        ],
+        item.value
+      )
+    );
+  }
+
+  if (
+    !!size(
+      intersection(
+        [
+          DataMap.Resource_Type.HCSCloudHost.value,
+          DataMap.Resource_Type.openStackCloudServer.value,
+          DataMap.Resource_Type.dbTwoDatabase.value,
+          DataMap.Resource_Type.FusionCompute.value,
+          DataMap.Resource_Type.fusionOne.value,
+          DataMap.Resource_Type.KubernetesStatefulset.value,
+          DataMap.Resource_Type.APSCloudServer.value,
+          DataMap.Resource_Type.hyperVVm.value,
+          DataMap.Resource_Type.nutanixVm.value
+        ],
+        childResourceType
+      )
+    )
+  ) {
+    return filter(copyStatusOptions, item =>
+      includes(
+        [
+          DataMap.copydata_validStatus.normal.value,
+          DataMap.copydata_validStatus.invalid.value,
+          DataMap.copydata_validStatus.deleting.value,
+          DataMap.copydata_validStatus.verifying.value,
+          DataMap.copydata_validStatus.deleteFailed.value
+        ],
+        item.value
+      )
+    );
+  }
+
+  // 支持即时挂载和副本校验
+  if (
+    !!size(
+      intersection(childResourceType, [DataMap.Resource_Type.cNwareVm.value])
+    )
+  ) {
+    return filter(copyStatusOptions, item =>
+      includes(
+        [
+          DataMap.copydata_validStatus.normal.value,
+          DataMap.copydata_validStatus.invalid.value,
+          DataMap.copydata_validStatus.deleting.value,
+          DataMap.copydata_validStatus.verifying.value,
+          DataMap.copydata_validStatus.mounting.value,
+          DataMap.copydata_validStatus.unmounting.value,
+          DataMap.copydata_validStatus.mounted.value,
+          DataMap.copydata_validStatus.deleteFailed.value
+        ],
+        item.value
+      )
+    );
+  }
+
+  // 支持即时挂载
+  if (
+    !!size(
+      intersection(childResourceType, [
+        DataMap.Resource_Type.fileset.value,
+        DataMap.Resource_Type.NASShare.value,
+        DataMap.Resource_Type.NASFileSystem.value,
+        DataMap.Resource_Type.oracle.value,
+        DataMap.Resource_Type.MySQLDatabase.value,
+        DataMap.Resource_Type.tdsqlInstance.value,
+        DataMap.Resource_Type.virtualMachine.value,
+        DataMap.Resource_Type.volume.value
+      ])
+    )
+  ) {
+    return filter(copyStatusOptions, item =>
+      includes(
+        [
+          DataMap.copydata_validStatus.normal.value,
+          DataMap.copydata_validStatus.invalid.value,
+          DataMap.copydata_validStatus.deleting.value,
+          DataMap.copydata_validStatus.mounting.value,
+          DataMap.copydata_validStatus.unmounting.value,
+          DataMap.copydata_validStatus.mounted.value,
+          DataMap.copydata_validStatus.deleteFailed.value
+        ],
+        item.value
+      )
+    );
+  }
+
+  // 通用共享
+  if (
+    !!size(
+      intersection([DataMap.Resource_Type.commonShare.value], childResourceType)
+    )
+  ) {
+    return filter(copyStatusOptions, item =>
+      includes(
+        [
+          DataMap.copydata_validStatus.normal.value,
+          DataMap.copydata_validStatus.invalid.value,
+          DataMap.copydata_validStatus.deleting.value,
+          DataMap.copydata_validStatus.deleteFailed.value,
+          DataMap.copydata_validStatus.sharing.value,
+          DataMap.copydata_validStatus.downloading.value
+        ],
+        item.value
+      )
+    );
+  }
+
+  return filter(copyStatusOptions, item =>
+    includes(
+      [
+        DataMap.copydata_validStatus.normal.value,
+        DataMap.copydata_validStatus.invalid.value,
+        DataMap.copydata_validStatus.deleting.value,
+        DataMap.copydata_validStatus.deleteFailed.value
+      ],
+      item.value
+    )
+  );
+}
+
+// 文件集归档存储副本已索引后可以再继续索引
+export function isIndexedFilesetCLoudArchival(data) {
+  return (
+    includes([DataMap.CopyData_fileIndex.indexed.value], data.indexed) &&
+    includes([DataMap.Resource_Type.fileset.value], data.resource_sub_type) &&
+    includes(
+      [DataMap.CopyData_generatedType.cloudArchival.value],
+      data.generated_by
+    )
+  );
+}
+
+export function getCommonRestoreLabel(data, i18n) {
+  const restoreLabelBySubType = {
+    [DataMap.Resource_Type.HCSCloudHost.value]: 'common_restoring_disks_label',
+    [DataMap.Resource_Type.ActiveDirectory.value]:
+      'common_system_status_restore_label',
+    [DataMap.Resource_Type.oraclePDB.value]: 'common_pdb_set_restore_label'
+  };
+  return i18n.get(
+    get(restoreLabelBySubType, data.resource_sub_type, 'common_restore_label')
+  );
+}
+
+export function filterVersion(hostArray, verifyStatus, type?) {
+  if (type === 'openstack') {
+    return hostArray.filter(item => !startsWith(item?.version, '1.3'));
+  }
+  if (includes([DataMap.HCSCopyDataVerifyStatus.Invalid.value], verifyStatus)) {
+    return hostArray.filter(item => !startsWith(item?.version, '1.3'));
+  }
+  return hostArray;
+}
+
+// 判断worm相关的操作是否需要展示或调用
+export function isHideWorm(data, i18n) {
+  const notSupportWorm = includes(
+    [
+      DataMap.Deploy_Type.cloudbackup2.value,
+      DataMap.Deploy_Type.cloudbackup.value,
+      DataMap.Deploy_Type.hyperdetect.value,
+      DataMap.Deploy_Type.cyberengine.value,
+      DataMap.Deploy_Type.e6000.value
+    ],
+    i18n.get('deploy_type')
+  );
+  return (
+    notSupportWorm ||
+    (includes(
+      [DataMap.Resource_Type.ImportCopy.value],
+      data.resource_sub_type
+    ) &&
+      data.generated_by === DataMap.CopyData_generatedType.download.value) ||
+    includes(
+      [
+        DataMap.CopyData_generatedType.tapeArchival.value,
+        DataMap.CopyData_generatedType.cloudArchival.value
+      ],
+      data.generated_by
+    ) ||
+    includes([DataMap.Resource_Type.commonShare.value], data.resource_sub_type)
+  );
+}
+
+// 批量禁用不能选择超过100条
+export function disableDeactiveProtectionTips(datas: any[], i18n): string {
+  return datas.length > CommonConsts.DEACTIVE_PROTECTION_MAX
+    ? i18n.get('protection_max_deactivate_protection_label')
+    : '';
+}
+
+/**
+ *
+ * @param self
+ * @param currentBootType 当前boot方式
+ * @param rowCopyBootType 副本中的boot方式
+ * @param emptyKey type为空时的提示
+ * @param notSameKey type不相同时的提示
+ */
+export function getBootTypeWarnTipByType(
+  self,
+  currentBootType,
+  rowCopyBootType,
+  emptyKey = 'protection_vm_restore_boot_confirm_label',
+  notSameKey = 'protection_vm_restore_boot_label'
+) {
+  if (isEmpty(currentBootType) || isEmpty(rowCopyBootType)) {
+    self.bootOptionsWarnTip = self.i18n.get(emptyKey);
+  } else if (currentBootType !== rowCopyBootType) {
+    self.bootOptionsWarnTip = self.i18n.get(notSameKey);
+  } else {
+    self.bootOptionsWarnTip = '';
+  }
 }

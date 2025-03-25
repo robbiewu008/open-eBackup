@@ -74,8 +74,13 @@ public class InstallDeployTypeUpdateService implements CommandLineRunner {
                 ResourceSubTypeEnum.POSTGRE_CLUSTER.getType(), ResourceSubTypeEnum.POSTGRE_CLUSTER_INSTANCE.getType()));
         queryParams.setConditions(conditionMap);
         PageListResponse<ProtectedResource> pageListResponse = resourceService.query(queryParams);
-        if (pageListResponse.getTotalCount() > 0) {
+        int totalCount = pageListResponse.getTotalCount();
+        if (totalCount > 0) {
             List<ProtectedResource> result = pageListResponse.getRecords();
+            for (int page = 1; page <= (totalCount - 1) / queryParams.getSize(); page++) {
+                queryParams.setPage(page);
+                result.addAll(resourceService.query(queryParams).getRecords());
+            }
             for (ProtectedResource resource : result) {
                 Map<String, String> extendInfo = resourceExtendInfoService.queryExtendInfo(resource.getUuid(),
                     PostgreConstants.INSTALL_DEPLOY_TYPE);

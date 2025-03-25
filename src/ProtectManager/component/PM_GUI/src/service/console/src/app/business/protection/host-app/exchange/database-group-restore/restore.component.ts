@@ -10,6 +10,7 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -21,6 +22,7 @@ import {
 import {
   AbstractControl,
   FormBuilder,
+  FormControl,
   FormGroup,
   ValidatorFn
 } from '@angular/forms';
@@ -51,12 +53,15 @@ import {
   assign,
   each,
   find,
+  first,
   get,
   includes,
   isEmpty,
   isString,
   map,
   remove,
+  set,
+  sortedIndex,
   trim
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
@@ -66,12 +71,14 @@ import ListCopyCatalogsParams = CopyControllerService.ListCopyCatalogsParams;
   selector: 'aui-database-group-restore',
   templateUrl: './restore.component.html',
   styleUrls: ['./restore.component.less'],
+  providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RestoreComponent implements OnInit {
   @Input() rowCopy: any;
   @Input() childResType: string;
   @Input() restoreType: string;
+  _isEmpty = isEmpty;
   formGroup: FormGroup;
   isDrill;
   restoreLocationType = RestoreV2LocationType;
@@ -81,6 +88,12 @@ export class RestoreComponent implements OnInit {
   sourceData = [];
   sourceSelection = [];
   targetData = [];
+  logCopyTimeStamp = [];
+  isExchangeDatabase = false;
+  isSingleAndDag = false;
+  isLogCopy = false; // Exchange单机/DAG/数据库的日志副本从时间线点进来需要查询sqlite
+  isNeedSelectTimeStamp = false; // 接口正常返回时，才能手动选择时间
+  logCopyTimeStampCacheData = []; // 缓存接口返回的结果，单机和可用性组需要使用
   pageSizeS = CommonConsts.PAGE_SIZE;
   pageIndexS = CommonConsts.PAGE_START;
   pageSizeT = CommonConsts.PAGE_SIZE; // target pageSize
@@ -141,6 +154,7 @@ export class RestoreComponent implements OnInit {
     private modal: ModalRef,
     private fb: FormBuilder,
     private i18n: I18NService,
+    private datePipe: DatePipe,
     private appUtilsService: AppUtilsService,
     private restoreV2Service: RestoreApiV2Service,
     private protectedResourceApiService: ProtectedResourceApiService,
@@ -152,6 +166,9 @@ export class RestoreComponent implements OnInit {
     this.initConfig();
     this.initForm();
     this.getTargetHosts();
+    if (this.isLogCopy) {
+      this.getLogCopyRestoreTimeStamp();
+    }
   }
 
   updateDrillData() {
@@ -186,6 +203,18 @@ export class RestoreComponent implements OnInit {
     this.rowCopyProperties = isString(this.rowCopy.properties)
       ? JSON.parse(this.rowCopy.properties)
       : {};
+    if (
+      [DataMap.Resource_Type.ExchangeDataBase.value].includes(this.childResType)
+    ) {
+      this.isExchangeDatabase = true;
+    } else if (
+      [
+        DataMap.Resource_Type.ExchangeSingle.value,
+        DataMap.Resource_Type.ExchangeGroup.value
+      ].includes(this.childResType)
+    ) {
+      this.isSingleAndDag = true;
+    }
     this.hiddenDatabase =
       includes(
         [
@@ -195,7 +224,7 @@ export class RestoreComponent implements OnInit {
         this.rowCopy.generated_by
       ) ||
       this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value ||
-      DataMap.Resource_Type.ExchangeDataBase.value === this.childResType;
+      this.isExchangeDatabase;
     // restore.service里根据类型给不同宽度 这里进行限制
     this.limitWidth =
       get(this.modal, 'lvWidth', MODAL_COMMON.normalWidth) >
@@ -214,7 +243,7 @@ export class RestoreComponent implements OnInit {
     if (!this.hiddenDatabase) {
       this.getDatabases();
     }
-    if (this.childResType === DataMap.Resource_Type.ExchangeDataBase.value) {
+    if (this.isExchangeDatabase) {
       this.dbFilePathPlaceholder = this.i18n.get(
         'protection_exchange_restore_database_file_path_db_placeholder_label'
       );
@@ -229,6 +258,9 @@ export class RestoreComponent implements OnInit {
       this.childResType === DataMap.Resource_Type.ExchangeGroup.value ||
       this.rowCopyResourceProperties?.environment_sub_type ===
         DataMap.Resource_Type.ExchangeGroup.value;
+    this.isLogCopy =
+      this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value &&
+      !isEmpty(get(this.rowCopy, 'restoreTimeStamp', ''));
   }
 
   initForm() {
@@ -275,7 +307,7 @@ export class RestoreComponent implements OnInit {
       executeScript: ['', scriptValidator]
     });
     this.listenForm();
-    if (this.childResType === DataMap.Resource_Type.ExchangeDataBase.value) {
+    if (this.isExchangeDatabase) {
       this.formGroup
         .get('new_db_name')
         .setValidators([
@@ -510,6 +542,156 @@ export class RestoreComponent implements OnInit {
         ];
   }
 
+  getTimestampsByDatabaseName(data) {
+    return get(JSON.parse(get(data, 'extendInfo', '{}')), 'logtimes', []);
+  }
+
+  getLogCopyRestoreTimeStamp() {
+    const params = {
+      parentPath: `/logtime`, // 固定的请求名
+      copyId: this.rowCopy.uuid,
+      pageNo: CommonConsts.PAGE_START,
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
+      akDoException: false,
+      akOperationTips: false
+    };
+    this.appUtilsService.getResourceByRecursion(
+      params,
+      (param: ListCopyCatalogsParams) =>
+        this.copyControllerService.ListCopyCatalogs(param),
+      resource => {
+        this.logCopyTimeStampCacheData = resource;
+        if (isEmpty(resource)) {
+          this.isNeedSelectTimeStamp = false;
+          return;
+        }
+        this.isNeedSelectTimeStamp = true;
+        this.sourceData = map(resource, item => {
+          return {
+            key: item.path,
+            value: item.path,
+            label: item.path,
+            isLeaf: true
+          };
+        });
+        this.cdr.markForCheck();
+        this.addFormControlToLogCopy();
+      }
+    );
+  }
+
+  private addFormControlToLogCopy() {
+    // 单机/DAG/数据库的日志副本都需要选择日志文件时间
+    this.formGroup.addControl(
+      'log_copy_restore_time_stamp',
+      new FormControl('', {
+        validators: [this.baseUtilService.VALID.required()]
+      })
+    );
+    if (this.isExchangeDatabase) {
+      // 数据库恢复的是单库。所以是直接选择日志文件时间
+      const timestamps = this.getTimestampsByDatabaseName(
+        first(this.logCopyTimeStampCacheData)
+      );
+      this.findClosestTimestamps(
+        timestamps,
+        Number(get(this.rowCopy, 'restoreTimeStamp'))
+      );
+    } else if (this.isSingleAndDag) {
+      // 单机/DAG恢复的是多库，所以日志副本需要先指定数据库，才能选择日志文件时间
+      this.formGroup.addControl(
+        'log_copy_restore_database',
+        new FormControl('', {
+          validators: [this.baseUtilService.VALID.required()]
+        })
+      );
+      this.formGroup
+        .get('log_copy_restore_database')
+        .valueChanges.subscribe(res => {
+          this.formGroup.get('log_copy_restore_time_stamp').setValue('');
+          this.sourceSelection = [];
+          if (!isEmpty(res)) {
+            this.sourceSelection = [
+              {
+                name: res,
+                new_db_name: res
+              }
+            ];
+            const timestamps = this.getTimestampsByDatabaseName(
+              find(this.logCopyTimeStampCacheData, { path: res })
+            );
+            this.findClosestTimestamps(
+              timestamps,
+              Number(get(this.rowCopy, 'restoreTimeStamp'))
+            );
+          }
+        });
+    }
+  }
+
+  // 辅助函数，用于在数组中找到更接近给定时间戳的时间戳
+  findCloserTimestamp(
+    timestamps: number[],
+    givenTimestamp: number,
+    currentIndex: number
+  ): number {
+    let closerIndex = currentIndex;
+    let minDiff = Math.abs(timestamps[currentIndex] - givenTimestamp);
+
+    // 检查左右两边的时间戳
+    if (currentIndex > 0) {
+      const leftDiff = Math.abs(timestamps[currentIndex - 1] - givenTimestamp);
+      if (leftDiff < minDiff) {
+        minDiff = leftDiff;
+        closerIndex = currentIndex - 1;
+      }
+    }
+
+    if (currentIndex < timestamps.length - 1) {
+      const rightDiff = Math.abs(timestamps[currentIndex + 1] - givenTimestamp);
+      if (rightDiff < minDiff) {
+        minDiff = rightDiff;
+        closerIndex = currentIndex + 1;
+      }
+    }
+
+    return closerIndex;
+  }
+
+  // 右优先
+  // 输入2在[1,3]中会优先找到3
+  findClosestTimestamps(timestamps: number[], givenTimestamp: number) {
+    // 找到给定时间戳最接近的时间戳
+    let index = sortedIndex(timestamps, givenTimestamp);
+    let start: number;
+    let end: number;
+
+    if (index === 0) {
+      start = 0;
+      end = Math.min(index + 3, timestamps.length);
+    } else if (index === timestamps.length) {
+      start = Math.max(index - 3, 0);
+      end = timestamps.length;
+    } else {
+      // 检查目标时间戳是否与给定时间戳相同
+      if (timestamps[index] !== givenTimestamp) {
+        // 找到更接近给定时间戳的时间戳
+        index = this.findCloserTimestamp(timestamps, givenTimestamp, index);
+      }
+      start = Math.max(index - 2, 0);
+      end = Math.min(index + 3, timestamps.length);
+    }
+    // 返回结果
+    this.logCopyTimeStamp = timestamps.slice(start, end).map(time => {
+      return {
+        value: time,
+        key: time,
+        label: this.datePipe.transform(time * 1e3, 'yyyy-MM-dd HH:mm:ss'),
+        isLeaf: true
+      };
+    });
+  }
+
   getParams() {
     const {
       restoreLocation,
@@ -547,7 +729,7 @@ export class RestoreComponent implements OnInit {
         failPostScript: trim(this.formGroup.value.executeScript)
       }
     };
-    if (this.childResType === DataMap.Resource_Type.ExchangeDataBase.value) {
+    if (this.isExchangeDatabase) {
       assign(params, {
         targetObject:
           restoreLocation === RestoreV2LocationType.ORIGIN
@@ -557,15 +739,7 @@ export class RestoreComponent implements OnInit {
       assign(params.extendInfo, {
         new_db_name: trim(this.formGroup.value.new_db_name)
       });
-    } else if (
-      includes(
-        [
-          DataMap.Resource_Type.ExchangeSingle.value,
-          DataMap.Resource_Type.ExchangeGroup.value
-        ],
-        this.childResType
-      )
-    ) {
+    } else if (this.isSingleAndDag) {
       assign(params, {
         subObjects: map(this.sourceSelection, item =>
           JSON.stringify({
@@ -588,6 +762,13 @@ export class RestoreComponent implements OnInit {
       assign(params.extendInfo, {
         restoreTimestamp: timeStamp
       });
+      if (this.isLogCopy && this.isNeedSelectTimeStamp) {
+        set(
+          params,
+          'extendInfo.restoreTimestamp',
+          this.formGroup.get('log_copy_restore_time_stamp').value
+        );
+      }
     }
     return params;
   }

@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
   <lv-form-item>
     <lv-form-label>
       {{ 'common_type_label' | i18n }}
@@ -76,4 +76,17 @@
       <input lv-input type="text" formControlName="concurrency" placeholder="1-10"/>
     </lv-form-control>
   </lv-form-item>
+
+    <!-- 兼容模式 -->
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_exchange_register_compatibility_mode_label'|i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-switch formControlName="compatibility_mode"></lv-switch>
+        </lv-form-control>
+        <lv-alert lvType="info" lvClosable="false" *ngIf="formGroup.get('compatibility_mode').value">
+            {{'protection_exchange_register_compatibility_mode_tips_label'|i18n}}
+        </lv-alert>
+    </lv-form-item>
 </lv-form>

@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -19,7 +19,7 @@
   <meta name="DC.Type" content="topic">
   <meta name="DC.Title" content="恢复文件（适用于1.6.0及之后版本）">
   <meta name="product" content="">
-  <meta name="DC.Relation" scheme="URI" content="Open_Stack_00049_0.html">
+  <meta name="DC.Relation" scheme="URI" content="Open_Stack_00049.html">
   <meta name="prodname" content="">
   <meta name="version" content="">
   <meta name="brand" content="30-OceanProtect 备份一体机 1.5.0-1.6.0 帮助中心">
@@ -39,15 +39,12 @@
    <p>当需要恢复虚拟机中的某些文件时，可以通过文件级恢复功能实现。</p>
    <div class="section">
     <h4 class="sectiontitle">前提条件</h4>
-    <ul>
-     <li>当副本的索引状态为“已索引”时，才支持文件级恢复。</li>
-     <li>当副本对应的原位置资源存在时，才支持原位置恢复。</li>
-    </ul>
+    <p>当副本对应的原位置资源存在时，才支持原位置恢复。</p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
-     <li><span>选择<span class="uicontrol" id="Open_Stack_000531__open_stack_00048_0_zh-cn_topic_0000001839142377_uicontrol1717665184916">“<span id="Open_Stack_000531__open_stack_00048_0_zh-cn_topic_0000001839142377_text61762584912">数据利用</span> &gt; <span id="Open_Stack_000531__open_stack_00048_0_zh-cn_topic_0000001839142377_text101769504917">副本数据</span> &gt; <span id="Open_Stack_000531__open_stack_00048_0_zh-cn_topic_0000001839142377_text368193113219">云平台</span> &gt; OpenStack”</span>。</span></li>
+     <li><span>选择<span class="uicontrol" id="Open_Stack_000531__open_stack_00048_zh-cn_topic_0000001839142377_uicontrol1717665184916">“<span id="Open_Stack_000531__open_stack_00048_zh-cn_topic_0000001839142377_text61762584912">数据利用</span> &gt; <span id="Open_Stack_000531__open_stack_00048_zh-cn_topic_0000001839142377_text101769504917">副本数据</span> &gt; <span id="Open_Stack_000531__open_stack_00048_zh-cn_topic_0000001839142377_text368193113219">云平台</span> &gt; OpenStack”</span>。</span></li>
      <li><span>支持以资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p></p><p>在“资源”页签，根据虚拟机名称查找到需要恢复的虚拟机，并单击虚拟机名称。</p> <p></p></li>
      <li><span>在<span class="uicontrol">“<span>副本数据</span>”</span>页签，依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000001851607208.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
      <li><span>找到要恢复的副本，单击其<span class="uicontrol">“<span>副本时间</span>”</span>。</span></li>
@@ -55,16 +52,28 @@
       <div class="note">
        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p>链接文件不支持文件级恢复。</p>
+        <ul>
+         <li>链接文件不支持文件级恢复。</li>
+         <li>对于1.5.0版本，副本的索引状态必须为<span class="uicontrol">“<span>已索引</span>”</span>才支持文件级恢复。对于1.6.0及后续版本，索引状态为“<span>未索引</span>”的副本也支持文件级恢复。</li>
+        </ul>
        </div>
       </div> <p></p></li>
-     <li><span>选择需要恢复的文件后，进行恢复配置，文件级恢复支持恢复至原位置或新位置。</span><p></p>
-      <div class="note">
-       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
-       <div class="notebody">
-        <p>“<span>未索引</span>”的副本也支持文件级恢复。<span>当副本未建立索引，浏览文件数量超过200万的目录可能会超时失败，建议先手动创建索引。</span></p>
-       </div>
-      </div> <p>相关参数说明如<a href="#Open_Stack_000531__table1413423417495">表1</a>所示。</p> <p></p> <p></p>
+     <li><span>在弹出的界面中，选择<span class="wintitle">“<span>文件</span>”</span>页签。</span></li>
+     <li><span>选择待恢复的文件后，单击“恢复文件”。</span><p></p>
+      <ul id="Open_Stack_000531__vmware_gud_0060_ul1521452811317">
+       <li id="Open_Stack_000531__vmware_gud_0060_li8386311313">对于1.5.0版本，从目录树勾选待恢复的文件。</li>
+       <li id="Open_Stack_000531__vmware_gud_0060_li12142286316">对于1.6.0及后续版本，请先设置恢复文件的选择方式，再从目录树选择待恢复文件或手动输入待恢复文件的路径。
+        <div class="note" id="Open_Stack_000531__vmware_gud_0060_note1195634711290">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <ul id="Open_Stack_000531__vmware_gud_0060_ul14956124712297">
+           <li id="Open_Stack_000531__vmware_gud_0060_li1095674772911">如果副本中的文件数量较多，系统可能超时，无法从目录树上选择待恢复文件，建议手动输入恢复文件路径。</li>
+           <li id="Open_Stack_000531__vmware_gud_0060_li19956104762918">手动输入文件路径时，请输入文件完整路径，例如：/opt/abc/efg.txt或者C:\abc\efg.txt。当输入文件夹路径时，表示恢复该文件夹下的所有文件，例如：/opt/abc或者C:\abc。路径中的文件名区分大小写。</li>
+          </ul>
+         </div>
+        </div></li>
+      </ul> <p></p></li>
+     <li><span>选择需要恢复的文件后，进行恢复配置，文件级恢复支持恢复至原位置或新位置。</span><p></p><p>相关参数说明如<a href="#Open_Stack_000531__table1413423417495">表1</a>所示。</p> <p></p> <p></p>
       <div class="tablenoborder">
        <a name="Open_Stack_000531__table1413423417495"></a><a name="table1413423417495"></a>
        <table cellpadding="4" cellspacing="0" summary="" id="Open_Stack_000531__table1413423417495" frame="border" border="1" rules="all">
@@ -77,22 +86,22 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="29.9%" id="mcps1.3.3.2.6.2.5.2.3.1.1"><p>参数</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="70.1%" id="mcps1.3.3.2.6.2.5.2.3.1.2"><p>说明</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="29.9%" id="mcps1.3.3.2.8.2.4.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="70.1%" id="mcps1.3.3.2.8.2.4.2.3.1.2"><p>说明</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.6.2.5.2.3.1.1 "><p><span>恢复至</span></p></td>
-          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.6.2.5.2.3.1.2 "><p>可选择原位置或新位置。</p></td>
+          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.8.2.4.2.3.1.1 "><p><span>恢复至</span></p></td>
+          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.8.2.4.2.3.1.2 "><p>可选择原位置或新位置。</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.6.2.5.2.3.1.1 "><p><span>计算位置</span></p></td>
-          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.6.2.5.2.3.1.2 "><p>当恢复到原位置时，会显示原计算节点的位置。此参数不可配置。</p></td>
+          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.8.2.4.2.3.1.1 "><p><span>计算位置</span></p></td>
+          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.8.2.4.2.3.1.2 "><p>当恢复到原位置时，会显示原计算节点的位置。此参数不可配置。</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.6.2.5.2.3.1.1 "><p><span>目标位置</span></p></td>
-          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.6.2.5.2.3.1.2 "><p>文件恢复到的虚拟机位置。</p>
+          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.8.2.4.2.3.1.1 "><p><span>目标位置</span></p></td>
+          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.8.2.4.2.3.1.2 "><p>文件恢复到的虚拟机位置。</p>
            <div class="note">
             <span class="notetitle"> 说明： </span>
             <div class="notebody">
@@ -101,12 +110,12 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.6.2.5.2.3.1.1 "><p><span>云服务器IP地址</span></p></td>
-          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.6.2.5.2.3.1.2 "><p>选择目标虚拟机的IP地址。</p></td>
+          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.8.2.4.2.3.1.1 "><p><span>云服务器IP地址</span></p></td>
+          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.8.2.4.2.3.1.2 "><p>选择目标虚拟机的IP地址。对于1.6.0及之后版本，支持手动输入IP地址</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.6.2.5.2.3.1.1 "><p><span>云服务器用户名</span></p></td>
-          <td class="cellrowborder" rowspan="2" valign="top" width="70.1%" headers="mcps1.3.3.2.6.2.5.2.3.1.2 ">
+          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.8.2.4.2.3.1.1 "><p><span>云服务器用户名</span></p></td>
+          <td class="cellrowborder" rowspan="2" valign="top" width="70.1%" headers="mcps1.3.3.2.8.2.4.2.3.1.2 ">
            <div class="p">
             文件级恢复时，目标虚拟机需要验证<span style="color:#3C4458;">本产品</span>的登录凭据，输入目标虚拟机的登录用户名及密码。
             <ul>
@@ -125,15 +134,15 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.6.2.5.2.3.1.1 "><p><span>云服务器密码</span></p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.8.2.4.2.3.1.1 "><p><span>云服务器密码</span></p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.6.2.5.2.3.1.1 "><p><span>操作系统</span></p></td>
-          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.6.2.5.2.3.1.2 "><p>选择目标虚拟机的操作系统。可选“Linux”或“Windows”。</p></td>
+          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.8.2.4.2.3.1.1 "><p><span>操作系统</span></p></td>
+          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.8.2.4.2.3.1.2 "><p>选择目标虚拟机的操作系统。可选“Linux”或“Windows”。</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.6.2.5.2.3.1.1 "><p><span>覆盖规则</span></p></td>
-          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.6.2.5.2.3.1.2 "><p>当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。</p>
+          <td class="cellrowborder" valign="top" width="29.9%" headers="mcps1.3.3.2.8.2.4.2.3.1.1 "><p><span>覆盖规则</span></p></td>
+          <td class="cellrowborder" valign="top" width="70.1%" headers="mcps1.3.3.2.8.2.4.2.3.1.2 "><p>当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。</p>
            <ul>
             <li>直接替换已经存在的文件</li>
             <li>忽略已存在的文件</li>
@@ -157,7 +166,7 @@
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>父主题：</strong> <a href="Open_Stack_00049_0.html">恢复</a>
+     <strong>父主题：</strong> <a href="Open_Stack_00049.html">恢复</a>
     </div>
    </div>
   </div>

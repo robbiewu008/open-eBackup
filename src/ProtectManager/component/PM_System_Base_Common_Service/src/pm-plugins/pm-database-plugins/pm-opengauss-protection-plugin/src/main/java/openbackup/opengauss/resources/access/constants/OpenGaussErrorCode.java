@@ -28,4 +28,9 @@ public class OpenGaussErrorCode {
      * 场景：注册/修改应用集群操作，检测注册信息成功。
      */
     public static final long SUCCESS = 0L;
+
+    /**
+     * 场景：健康检查集群状态时，返回集群状态为Unavailable
+     */
+    public static final long ERR_DATABASE_STATUS = 1577210002L;
 }

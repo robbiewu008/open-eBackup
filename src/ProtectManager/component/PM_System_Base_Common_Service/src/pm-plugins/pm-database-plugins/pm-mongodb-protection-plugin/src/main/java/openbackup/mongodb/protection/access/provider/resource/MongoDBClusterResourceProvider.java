@@ -60,4 +60,10 @@ public class MongoDBClusterResourceProvider extends DefaultResourceProvider {
     public boolean applicable(ProtectedResource object) {
         return ResourceSubTypeEnum.MONGODB_CLUSTER.equalsSubType(object.getSubType());
     }
+
+    @Override
+    public boolean isSupportIndex() {
+        // MongoDB 支持索引
+        return true;
+    }
 }

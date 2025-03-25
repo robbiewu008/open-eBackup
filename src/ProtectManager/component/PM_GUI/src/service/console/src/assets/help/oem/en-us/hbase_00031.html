@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -127,7 +127,7 @@
              </div>
             </div>
            </div></td>
-          <td class="cellrowborder" valign="top" width="79.73%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="hbase_00031__en-us_topic_0000001839143213_p16600343183619">Select the local storage type. The value is always <strong id="hbase_00031__en-us_topic_0000001839143213_b2963810135616">OceanProtect</strong>.</p></td>
+          <td class="cellrowborder" valign="top" width="79.73%" headers="mcps1.3.3.2.4.2.3.2.3.1.2 "><p id="hbase_00031__en-us_topic_0000001839143213_p16600343183619">Select the local storage type.</p></td>
          </tr>
          <tr id="hbase_00031__en-us_topic_0000001839143213_row1097972085812">
           <td class="cellrowborder" valign="top" width="20.27%" headers="mcps1.3.3.2.4.2.3.2.3.1.1 "><p id="hbase_00031__en-us_topic_0000001839143213_p8979220165815"><span id="hbase_00031__en-us_topic_0000001839143213_text1965310576105"><strong>Specify Target Location</strong></span></p></td>
@@ -175,7 +175,7 @@
                 <ul id="hbase_00031__en-us_topic_0000001839143213_ul16634174815310">
                  <li id="hbase_00031__en-us_topic_0000001839143213_li9869521530">For applications that do not support forever incremental (synthetic full) backup, only full copies on a specified date can be replicated.</li>
                  <li id="hbase_00031__en-us_topic_0000001839143213_li1563410481331">If multiple options are selected, copies on any date specified by these options are replicated, and the obtained replication copies are retained for the longest period specified in these options.</li>
-                 <li id="hbase_00031__en-us_topic_0000001839143213_li658617537551">For 1.6.0 and later versions: If you choose to replicate the last full backup copy in a month, the job for replicating the to-be-replicated full backup copy in the current month will be executed in the next month.</li>
+                 <li id="hbase_00031__en-us_topic_0000001839143213_li658617537551">For 1.6.0 and later versions, if you choose to replicate the last full backup copy in a month, the job for replicating the to-be-replicated full backup copy in the current month will be executed in the next month.</li>
                 </ul>
                </div>
               </div></li>
@@ -221,7 +221,6 @@
              <div class="notebody">
               <ul id="hbase_00031__en-us_topic_0000001839143213_ul1096989193510">
                <li id="hbase_00031__en-us_topic_0000001839143213_li18970109163510">Ensure that target deduplication has been enabled for the backup policy. Otherwise, data deduplication does not take effect.</li>
-               <li id="hbase_00031__en-us_topic_0000001839143213_li768532112351">For 1.6.0 and later versions: This parameter is available only when <strong id="hbase_00031__en-us_topic_0000001839143213_b1158765918226">Local Storage Type</strong> is set to <strong id="hbase_00031__en-us_topic_0000001839143213_b1326513210236">OceanProtect</strong> or <strong id="hbase_00031__en-us_topic_0000001839143213_b1611725132314">OceanStor Pacific</strong>.</li>
               </ul>
              </div>
             </div>
@@ -271,9 +270,7 @@
           <ul id="hbase_00031__en-us_topic_0000001839143213_ul12729526113420">
            <li id="hbase_00031__en-us_topic_0000001839143213_li11502190184711">When executing a replication job, ensure that the used capacity of storage pools on the local and target clusters does not exceed <span class="uicontrol" id="hbase_00031__en-us_topic_0000001839143213_uicontrol134618370529"><b>Data Backup Capacity</b></span> specified in the license. Otherwise, the replication job fails. Perform the following steps to check whether the capacity is sufficient:
             <ol type="a" id="hbase_00031__en-us_topic_0000001839143213_ol14312567529">
-             <li id="hbase_00031__en-us_topic_0000001839143213_en-us_topic_0000001311295305_en-us_topic_0000001149078659_li929117916361">Choose <span class="uicontrol" id="hbase_00031__en-us_topic_0000001839143213_en-us_topic_0000001311295305_en-us_topic_0000001149078659_uicontrol1098185683619"><b><span id="hbase_00031__en-us_topic_0000001839143213_text157651936143415"><strong>System</strong></span> &gt; <span id="hbase_00031__en-us_topic_0000001839143213_text49601653123416"><strong>Infrastructure</strong></span> &gt; <span id="hbase_00031__en-us_topic_0000001839143213_text112401684352"><strong>Cluster Management</strong></span></b></span>.</li>
-             <li id="hbase_00031__en-us_topic_0000001839143213_li144732685217">In the <span class="uicontrol" id="hbase_00031__en-us_topic_0000001839143213_uicontrol1050641575312"><b><span id="hbase_00031__en-us_topic_0000001839143213_text133861121163513"><strong>Local Cluster Nodes</strong></span></b></span> area of the <span class="uicontrol" id="hbase_00031__en-us_topic_0000001839143213_uicontrol13691645105219"><b><span id="hbase_00031__en-us_topic_0000001839143213_text1763193125313"><strong>Backup Cluster</strong></span></b></span> tab page, click the node name.</li>
-             <li id="hbase_00031__en-us_topic_0000001839143213_en-us_topic_0000001311295305_en-us_topic_0000001149078659_li81908119372">In the <span class="uicontrol" id="hbase_00031__en-us_topic_0000001839143213_uicontrol1144724616332"><b><span id="hbase_00031__en-us_topic_0000001839143213_text51761646203516"><strong>Node detail</strong></span></b></span> dialog box that is displayed, click <span class="uicontrol" id="hbase_00031__en-us_topic_0000001839143213_uicontrol1544714611335"><b><span id="hbase_00031__en-us_topic_0000001839143213_text1624910583612"><strong>Open the device management platform</strong></span></b></span> to go to DeviceManager.</li>
+             <li id="hbase_00031__en-us_topic_0000001839143213_li118994632112">Log in to DeviceManager of the backup storage devices in the local and target clusters. For details, see <a href="en-us_topic_0000001913343113.html">Logging In to DeviceManager</a>.</li>
              <li id="hbase_00031__en-us_topic_0000001839143213_li0708930155417">Choose <span class="uicontrol" id="hbase_00031__en-us_topic_0000001839143213_uicontrol14133214551"><b>System &gt; Storage Pools</b></span> and view the used storage pool capacity.</li>
              <li id="hbase_00031__en-us_topic_0000001839143213_li13771152165511">Choose <span class="uicontrol" id="hbase_00031__en-us_topic_0000001839143213_uicontrol1379134385710"><b>Setting &gt; License Management</b></span> and check <span class="uicontrol" id="hbase_00031__en-us_topic_0000001839143213_uicontrol1740442155618"><b>Data Backup Capacity</b></span>.<p id="hbase_00031__en-us_topic_0000001839143213_p936183955611">The used storage pool capacity cannot exceed <span class="uicontrol" id="hbase_00031__en-us_topic_0000001839143213_uicontrol18711937192110"><b>Data Backup Capacity</b></span>.</p></li>
             </ol></li>

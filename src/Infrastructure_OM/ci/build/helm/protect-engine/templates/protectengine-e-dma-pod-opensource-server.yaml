@@ -117,6 +117,8 @@ spec:
               add: ["SYS_ADMIN"]
               drop: ["NET_RAW"]
           volumeMounts:
+            - mountPath: /opt/infrastructure-conf
+              name: infrastructure-conf
             - mountPath: /cache
               name: cache-volume
             - mountPath: /config
@@ -193,6 +195,10 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
       volumes:
+        - name: infrastructure-conf
+          configMap:
+            name: infrastructure-conf
+            defaultMode: 0640
         - name: var-run
           emptyDir: {}
         - name: cache-volume

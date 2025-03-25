@@ -293,6 +293,24 @@ public class AdapterUtils {
     }
 
     /**
+     * 获取job label中文
+     *
+     * @return list
+     */
+    public static List<URL> getLabelJobZh() {
+        return getI18nConfigFile(ALARM_CHINESE_I18N_CONFIG_FILE + "TaskCommonZn.json");
+    }
+
+    /**
+     * 获取job label英文
+     *
+     * @return list
+     */
+    public static List<URL> getLabelJobEn() {
+        return getI18nConfigFile(ALARM_CHINESE_I18N_CONFIG_FILE + "TaskCommonEn.json");
+    }
+
+    /**
      * 获取explore label英文
      *
      * @return list

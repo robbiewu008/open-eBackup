@@ -62,13 +62,23 @@ export class AdvancedParameterComponent implements OnInit {
   }
 
   getOsType() {
+    let resourceSubType: string;
     if (isArray(this.resourceData)) {
-      this.osType = this.resourceData[0].environment_os_type;
+      this.osType =
+        this.resourceData[0].environment_os_type ||
+        this.resourceData[0]?.environment?.osType;
+      resourceSubType = this.resourceData[0]?.subType;
     } else {
-      this.osType = this.resourceData.environment_os_type;
+      this.osType =
+        this.resourceData.environment_os_type ||
+        this.resourceData?.environment?.osType;
+      resourceSubType = this.resourceData?.subType;
     }
 
-    if (this.resourceType === ProtectResourceCategory.SQLServer) {
+    if (
+      this.resourceType === ProtectResourceCategory.SQLServer &&
+      !includes([DataMap.Resource_Type.goldendbInstance.value], resourceSubType)
+    ) {
       this.osType = DataMap.Os_Type.windows.value;
     }
 

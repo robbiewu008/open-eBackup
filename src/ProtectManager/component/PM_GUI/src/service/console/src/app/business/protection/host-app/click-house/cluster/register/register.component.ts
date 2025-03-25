@@ -158,9 +158,9 @@ export class RegisterComponent implements OnInit {
             subType: DataMap.Resource_Type.ClickHouse.value,
             name: item.name,
             environment: {
-              uuid: item.environment.uuid,
-              rootUuid: item.environment.rootUuid,
-              endpoint: item.environment.endpoint,
+              uuid: item.dependencies.agents[0].uuid,
+              rootUuid: item.dependencies.agents[0].rootUuid,
+              endpoint: item.dependencies.agents[0].endpoint,
               name: item.dependencies.agents[0].name,
               port: item.dependencies.agents[0].port
             },

@@ -38,7 +38,8 @@ export class ManualCopyComponent implements OnInit {
   replicationItem;
   externalSystems = [];
   qosNames = [];
-
+  isDistributed =
+    this.i18n.get('deploy_type') === DataMap.Deploy_Type.e6000.value;
   find = find;
   isDataBackup = includes(
     [

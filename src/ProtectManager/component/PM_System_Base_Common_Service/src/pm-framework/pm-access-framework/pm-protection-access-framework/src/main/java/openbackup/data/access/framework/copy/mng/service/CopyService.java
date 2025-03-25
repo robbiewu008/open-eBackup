@@ -13,8 +13,10 @@
 package openbackup.data.access.framework.copy.mng.service;
 
 import openbackup.data.access.client.sdk.api.framework.dme.AvailableTimeRanges;
+import openbackup.data.access.framework.copy.controller.req.CatalogQueryNoReq;
 import openbackup.data.access.framework.copy.controller.req.CatalogQueryReq;
 import openbackup.data.access.framework.core.model.CopySummaryResource;
+import openbackup.system.base.bean.CopiesEntity;
 import openbackup.system.base.common.model.PageListResponse;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.copy.model.Copy;
@@ -33,14 +35,10 @@ public interface CopyService {
      * 浏览副本文件和目录信息
      *
      * @param copyId     副本id
-     * @param parentPath 根路径
-     * @param pageSize   分页大小
-     * @param pageNo     起始页
-     * @param conditions  查询条件
+     * @param catalogQueryReq 查询参数
      * @return 副本文件和目录信息
      */
-    PageListResponse<FineGrainedRestore> listCopyCatalogs(
-            String copyId, String parentPath, Integer pageSize, Integer pageNo, String conditions);
+    PageListResponse<FineGrainedRestore> listCopyCatalogs(String copyId, CatalogQueryNoReq catalogQueryReq);
 
     /**
      * 查询指定时间范围可用于恢复的时间段
@@ -72,7 +70,7 @@ public interface CopyService {
      * @param catalogQueryReq 查询参数
      * @return 副本文件和目录信息
      */
-    PageListResponse<FineGrainedRestore> listCopyCatalogsName(String copyId, CatalogQueryReq catalogQueryReq);
+    PageListResponse<FineGrainedRestore> listCopyCatalogsByName(String copyId, CatalogQueryReq catalogQueryReq);
 
     /**
      * 查询副本的数量
@@ -115,6 +113,13 @@ public interface CopyService {
     StorageInfo getStorageInfo(String copyId);
 
     /**
+     * 开启副本guest system
+     *
+     * @param copyId copyId
+     */
+    void openCopyGuestSystem(String copyId);
+
+    /**
      * 关闭副本guest system
      *
      * @param copyId copyId
@@ -126,6 +131,15 @@ public interface CopyService {
      *
      * @param sourceId 资源ID
      * @param limit 上限
+     * @param excludeCopies 不删除的副本
      */
-    void deleteInvalidCopies(String sourceId, int limit);
+    void deleteInvalidCopies(String sourceId, int limit, List<String> excludeCopies);
+
+    /**
+     * 根据复制副本ID查询副本实体
+     *
+     * @param copyId 复制副本ID
+     * @return 返回查询到的副本实体
+     */
+    CopiesEntity queryOriginCopyIdById(String copyId);
 }

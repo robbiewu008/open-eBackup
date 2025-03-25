@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,12 +11,13 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="步骤6执行备份">
+  <meta name="DC.Title" content="步骤6：执行备份">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="DWS_00010.html">
   <meta name="prodname" content="">
@@ -30,13 +30,13 @@
   <meta name="DC.Identifier" content="DWS_00019">
   <meta name="DC.Language" content="zh-cn">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>步骤6执行备份</title>
+  <title>步骤6：执行备份</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="DWS_00019"></a><a name="DWS_00019"></a>
-  <h1 class="topictitle1">步骤6执行备份</h1>
+  <h1 class="topictitle1">步骤6：执行备份</h1>
   <div>
-   <p>执行备份前将需要保护的资源关联到指定SLA策略，系统将对这些资源按照SLA策略进行保护，并根据SLA策略周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+   <p>执行备份前将需要保护的资源关联到指定SLA，系统将对这些资源按照SLA进行保护，并根据SLA周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
    <div class="section">
     <h4 class="sectiontitle">注意事项</h4>
     <ul>
@@ -61,7 +61,7 @@
 /home/gds_user/bin/gds <strong>-d</strong> /home/gds_user/input_data_3/ <strong>-p</strong> 192.168.97.240:9003 -H 0/0 -l /home/gds_user/gds_log/gds_process3.log -D <strong>-t</strong> 2
 /home/gds_user/bin/gds <strong>-d</strong> /home/gds_user/input_data_4/ <strong>-p</strong> 192.168.97.240:9004 -H 0/0 -l /home/gds_user/gds_log/gds_process4.log -D <strong>-t</strong> 2</pre></li>
          <li>如果您在多个代理主机上启动了GDS，系统会使用GDS个数最多的代理主机进行备份。因此，建议您仅在一个代理主机上以一个用户启动多个GDS，为达到最高性能，对于双控系统，启动GDS的数量推荐为备份存储单元数量的四倍，对于四控系统，启动GDS的数量推荐为备份存储单元数量的八倍。</li>
-         <li>如果GaussDB(DWS)是沙箱部署场景，请在执行表集GDS备份前，参见<a href="DWS_00080.html">GDS运行在GaussDB(DWS)沙箱部署场景的注意事项</a>，将沙箱内的GDS配置目录映射至宿主机相应目录。</li>
+         <li>如果GaussDB(DWS)是沙箱部署场景，请在执行表集GDS备份前，将沙箱内的GDS配置目录映射至宿主机相应目录。</li>
         </ul>
        </div>
       </div> <p></p></li>
@@ -85,7 +85,7 @@
         </ul>
        </div>
       </div> <p></p></li>
-     <li><span>单击<span class="uicontrol" id="DWS_00019__zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p></p><p id="DWS_00019__zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于该SLA首次备份的开始时间，则关联备份SLA后可以选择在当前立即执行备份或者根据SLA中设置的备份策略等待下次调度。</p> <p></p></li>
+     <li><span>单击<span class="uicontrol" id="DWS_00019__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p></p><p id="DWS_00019__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p> <p></p></li>
      <li><strong>可选：</strong><span>执行手动备份。</span><p></p><p>当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
       <ol type="a">
        <li>在需要备份的集群、Schema集或表集所在行单击<span class="uicontrol">“更多 &gt; <span>手动备份</span>”</span>。</li>

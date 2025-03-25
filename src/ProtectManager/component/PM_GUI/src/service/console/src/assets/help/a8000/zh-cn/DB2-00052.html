@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -103,6 +103,18 @@
 <td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="DB2-00052__zh-cn_topic_0000001839143185_p1534321671">在资源所在行单击“更多 &gt; <span id="DB2-00052__zh-cn_topic_0000001839143185_text316874418335">手动复制</span>”。</p>
 </td>
 </tr>
+<tr id="DB2-00052__zh-cn_topic_0000001839143185_row102432183107"><td class="cellrowborder" valign="top" width="21.32%" headers="mcps1.3.3.1.3.2.4.1.1 "><div class="p" id="DB2-00052__zh-cn_topic_0000001839143185_p162441918181014">更改所属用户<div class="note" id="DB2-00052__zh-cn_topic_0000001839143185_note6966434109"><span class="notetitle"> 说明： </span><div class="notebody"><p id="DB2-00052__zh-cn_topic_0000001839143185_zh-cn_topic_0000001792344090_p1816719214566">仅1.6.0及后续版本支持此功能。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="47.339999999999996%" headers="mcps1.3.3.1.3.2.4.1.2 "><p id="DB2-00052__zh-cn_topic_0000001839143185_p0746184915106"><strong id="DB2-00052__zh-cn_topic_0000001839143185_b67462496106">操作背景</strong></p>
+<p id="DB2-00052__zh-cn_topic_0000001839143185_p187461749141013">当您需要对资源及其所有副本更改所属用户，并将副本原本占用的配额切换至新的所属用户，可以通过该操作实现。</p>
+<div class="p" id="DB2-00052__zh-cn_topic_0000001839143185_p3746164921019"><strong id="DB2-00052__zh-cn_topic_0000001839143185_b127465492103">注意事项</strong><ul id="DB2-00052__zh-cn_topic_0000001839143185_ul1839631171411"><li id="DB2-00052__zh-cn_topic_0000001839143185_li5396121118149">仅系统管理员有修改所属用户的权限。</li><li id="DB2-00052__zh-cn_topic_0000001839143185_li2895912181415">仅支持修改为数据保护管理员或自定义角色的用户。</li><li id="DB2-00052__zh-cn_topic_0000001839143185_li99441412172">更改所属用户后，该资源的所有信息均不在原所属用户下展示。</li></ul>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="31.34%" headers="mcps1.3.3.1.3.2.4.1.3 "><p id="DB2-00052__zh-cn_topic_0000001839143185_p9971641161418">在资源所在行单击“更多 &gt; 更改所属用户”。</p>
+</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -128,14 +140,14 @@
 <p>您可以设置为永久保留或保留xx天/周/月/年。</p>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.2.2.4.1.1 "><div class="p">手动归档<div class="note" id="DB2-00052__zh-cn_topic_0000001839143185_note1993101364115"><span class="notetitle"> 说明： </span><div class="notebody"><p id="DB2-00052__zh-cn_topic_0000001839143185_zh-cn_topic_0000001792344090_p1816719214566">仅1.6.0及后续版本支持此功能。</p>
+<tr><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.2.2.4.1.1 "><div class="p">手动归档<div class="note" id="DB2-00052__zh-cn_topic_0000001839143185_note1993101364115"><span class="notetitle"> 说明： </span><div class="notebody"><p id="DB2-00052__zh-cn_topic_0000001839143185_zh-cn_topic_0000001792344090_p1816719214566_1">仅1.6.0及后续版本支持此功能。</p>
 </div></div>
 </div>
 </td>
 <td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong id="DB2-00052__zh-cn_topic_0000001839143185_b31878104713">操作背景</strong></p>
 <p>当您需要手动将副本归档至归档存储时，可以通过该操作实现。</p>
 <p><strong id="DB2-00052__zh-cn_topic_0000001839143185_b123446343316">注意事项</strong></p>
-<p>仅全量备份副本及其对应的复制副本支持手动归档。</p>
+<p>仅全量备份副本及其对应的复制副本、级联复制副本支持手动归档。</p>
 </td>
 <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.2.2.4.1.3 "><p>在副本所在行单击<span class="uicontrol" id="DB2-00052__zh-cn_topic_0000001839143185_uicontrol1321712588619">“<span id="DB2-00052__zh-cn_topic_0000001839143185_text112171158066">更多</span> &gt; 手动归档”</span>。</p>
 </td>
@@ -147,10 +159,12 @@
 <p><strong>注意事项</strong></p>
 <ul><li>删除副本前，请确认不再使用该副本执行恢复操作。</li><li>副本状态为<span class="uicontrol">“无效”</span>或<span class="uicontrol">“<span>正常</span>”</span>时可以被删除，其他状态的副本不允许被删除。</li><li>当资源有多个副本时，最新的副本不允许被删除。</li><li>同一资源下存在多个副本时，仅存在一个全量复制副本时，不允许删除该全量复制副本。</li><li>不允许删除日志备份产生的副本。</li></ul>
 </td>
-<td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.2.2.4.1.3 "><p>在副本所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>删除</span>”</span>。</p>
+<td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.2.2.4.1.3 "><div class="p">在副本所在行单击“更多 &gt; <span id="DB2-00052__zh-cn_topic_0000001839143185_text1659218118342">删除</span>”，或勾选待删除副本后单击列表上方的“<span id="DB2-00052__zh-cn_topic_0000001839143185_text7770103919243">删除</span>”。<div class="note" id="DB2-00052__zh-cn_topic_0000001839143185_note172661250175414"><span class="notetitle"> 说明： </span><div class="notebody"><p id="DB2-00052__zh-cn_topic_0000001839143185_p15266165085416">对于1.6.0及后续版本，如果在副本删除失败后需强制删除数据库中的副本数据，请在弹出的对话框中勾选“删除失败后强制删除副本数据”。</p>
+</div></div>
+</div>
 </td>
 </tr>
-<tr><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.2.2.4.1.1 "><div class="p">WORM设置<div class="note" id="DB2-00052__zh-cn_topic_0000001839143185_note15696816958"><span class="notetitle"> 说明： </span><div class="notebody"><p id="DB2-00052__zh-cn_topic_0000001839143185_zh-cn_topic_0000001792344090_p1816719214566_1">仅1.6.0及后续版本支持此功能。</p>
+<tr><td class="cellrowborder" valign="top" width="21.3%" headers="mcps1.3.3.2.2.2.4.1.1 "><div class="p">WORM设置<div class="note" id="DB2-00052__zh-cn_topic_0000001839143185_note15696816958"><span class="notetitle"> 说明： </span><div class="notebody"><p id="DB2-00052__zh-cn_topic_0000001839143185_zh-cn_topic_0000001792344090_p1816719214566_2">仅1.6.0及后续版本支持此功能。</p>
 </div></div>
 </div>
 </td>
@@ -185,7 +199,7 @@
 <td class="cellrowborder" valign="top" width="47.3%" headers="mcps1.3.3.2.2.2.4.1.2 "><p><strong>操作背景</strong></p>
 <p>如果您希望将复制副本复制回源端以恢复源端数据，或者将复制副本复制至其他集群以进行异地容灾，可以通过本操作实现。</p>
 <p><strong>注意事项</strong></p>
-<p>执行反向复制前请先删除复制副本对应的源端备份副本，否则会导致复制失败。</p>
+<p>执行反向复制前请先从源端删除复制副本对应的备份副本，否则会导致复制失败。</p>
 </td>
 <td class="cellrowborder" valign="top" width="31.4%" headers="mcps1.3.3.2.2.2.4.1.3 "><div class="p">在复制副本所在行单击“更多 &gt; <span id="DB2-00052__zh-cn_topic_0000001839143185_text191285272345">复制</span>”。配置副本复制参数：<ol id="DB2-00052__zh-cn_topic_0000001839143185_ol15113142311175"><li id="DB2-00052__zh-cn_topic_0000001839143185_li0113202310179">选择<span class="uicontrol" id="DB2-00052__zh-cn_topic_0000001839143185_uicontrol1611634014176">“复制目标集群”</span>。<ul id="DB2-00052__zh-cn_topic_0000001839143185_ul2991182216"><li id="DB2-00052__zh-cn_topic_0000001839143185_li3998812219">当<span class="uicontrol" id="DB2-00052__zh-cn_topic_0000001839143185_uicontrol630794164212">“复制目标集群”</span>为源端集群时，即为反向复制。</li><li id="DB2-00052__zh-cn_topic_0000001839143185_li1419217379216">当<span class="uicontrol" id="DB2-00052__zh-cn_topic_0000001839143185_uicontrol118058437428">“复制目标集群”</span>为其他集群时，即为级联复制。</li></ul>
 </li><li id="DB2-00052__zh-cn_topic_0000001839143185_li8112182510382">对于1.6.0及后续版本，请选择“复制目标端用户”。</li><li id="DB2-00052__zh-cn_topic_0000001839143185_li83719248152">对于1.6.0及后续版本，请输入复制目标端用户的密码，并单击“认证”。</li><li id="DB2-00052__zh-cn_topic_0000001839143185_li222198163919">选择复制的“指定目标位置”。</li><li id="DB2-00052__zh-cn_topic_0000001839143185_li1564916443171">设置副本保留时长。</li><li id="DB2-00052__zh-cn_topic_0000001839143185_li6696135771714">开启/关闭重删、压缩开关。<p id="DB2-00052__zh-cn_topic_0000001839143185_p325810594214"><a name="DB2-00052__zh-cn_topic_0000001839143185_li6696135771714"></a><a name="zh-cn_topic_0000001839143185_li6696135771714"></a>建议开启，以提升复制效率。</p>

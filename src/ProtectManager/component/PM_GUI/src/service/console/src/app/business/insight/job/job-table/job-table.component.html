@@ -1,4 +1,3 @@
-<div class="aui-operation" *ngIf="activeIndex !== jobOriginType.HANDLED">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-operation" *ngIf="activeIndex !== jobOriginType.HANDLED">
   <lv-group>
     <ng-container *ngIf="!hideExeJobBtn()">
       <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData">
@@ -26,7 +26,7 @@
     <ng-container *ngIf="cookieService.role !== 5 && activeIndex === jobOriginType.HISTORIC && showRetry">
       <button lv-button [disabled]="!tableData?.total" (click)="batchRetry()" pmpermission pmOperation='ExportJob'
         class="mgl-16">
-        {{'common_batch_retry_label' | i18n}}
+        {{'common_retry_label' | i18n}}
       </button>
     </ng-container>
   </lv-group>
@@ -80,7 +80,9 @@
     </ng-template>
   </ng-container>
   <ng-template #elseTemplate>
-    <aui-status [value]="item.status" type="Job_status"></aui-status>
+    <div class="status-flex-box"><aui-status [value]="item.status" type="Job_status"></aui-status>
+      <span *ngIf="item.status === 'FAIL'">{{'('+item.progress+'%)'}}</span>
+    </div>
     <span *ngIf="item.additionalStatus && item.status === 'FAIL'">
       {{ item.additionalStatus | textMap: 'Additional_Status' }}
     </span>

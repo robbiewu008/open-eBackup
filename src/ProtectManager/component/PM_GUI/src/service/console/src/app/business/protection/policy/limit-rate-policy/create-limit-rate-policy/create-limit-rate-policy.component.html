@@ -1,4 +1,3 @@
-<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="qosFormGroup create-qos">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="qosFormGroup create-qos">
     <lv-form-item>
         <lv-form-label lvRequired>{{'common_name_label' | i18n}}</lv-form-label>
         <lv-form-control [lvErrorTip]="nameErrorTip">
@@ -30,7 +30,12 @@
             ></i>
         </lv-form-label>
         <lv-form-control [lvErrorTip]="bandwidthErrorTip">
-            <input class="qos-input" lv-input formControlName='speed_limit' />&nbsp;MB/s
+            <lv-input-group [lvSuffix]="limitUnitSuffixTpl">
+            <input class="qos-input" lv-input formControlName='speed_limit' />
+            </lv-input-group>
+            <ng-template #limitUnitSuffixTpl>
+                <span class="qos-input-unit">MB/s</span>
+            </ng-template>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item>

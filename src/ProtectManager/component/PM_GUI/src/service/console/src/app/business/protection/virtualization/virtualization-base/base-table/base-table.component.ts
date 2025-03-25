@@ -28,6 +28,7 @@ import {
   DataMap,
   DataMapService,
   DATE_PICKER_MODE,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getLabelList,
   getPermissionMenuItem,
@@ -39,6 +40,7 @@ import {
   hasRecoveryPermission,
   hasResourcePermission,
   I18NService,
+  isJson,
   MODAL_COMMON,
   OperateItems,
   ProtectedResourceApiService,
@@ -64,7 +66,6 @@ import { SlaService } from 'app/shared/services/sla.service';
 import { TakeManualBackupService } from 'app/shared/services/take-manual-backup.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
-  map as _map,
   assign,
   cloneDeep,
   each,
@@ -73,6 +74,7 @@ import {
   includes,
   isEmpty,
   isUndefined,
+  map as _map,
   mapValues,
   reject,
   remove,
@@ -83,8 +85,9 @@ import {
 } from 'lodash';
 import { combineLatest, Observable } from 'rxjs';
 import { SummaryComponent } from '../../cnware/summary/summary.component';
-import { CreateGroupComponent } from '../../virtualization-group/create-group/create-group.component';
 import { SummaryComponent as nutanixSummaryComponent } from '../../nutanix/summary/summary.component';
+import { CreateGroupComponent } from '../../virtualization-group/create-group/create-group.component';
+import { GetLabelOptionsService } from '../../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-vir-base-table',
@@ -124,6 +127,8 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
   resourceTagTpl: TemplateRef<any>;
   @ViewChild('nutanixStatusTpl', { static: true })
   nutanixStatusTpl: TemplateRef<any>;
+  @ViewChild('cnwareTagTpl', { static: true })
+  cnwareTagTpl: TemplateRef<any>;
 
   constructor(
     private i18n: I18NService,
@@ -139,7 +144,8 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
     private warningMessageService: WarningMessageService,
     private batchOperateService: BatchOperateService,
     private globalService: GlobalService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit() {
@@ -347,6 +353,20 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
           cols.operation
         ];
       case DataMap.Resource_Type.cNwareVm.value:
+        return [
+          cols.uuid,
+          cols.name,
+          cols.location,
+          cols.status,
+          cols.tag,
+          cols.mark,
+          cols.sla,
+          cols.slaCompliance,
+          cols.protectionStatus,
+          cols.resourceGroupName,
+          cols.labelList,
+          cols.operation
+        ];
       case DataMap.Resource_Type.nutanixVm.value:
         return [
           cols.uuid,
@@ -501,7 +521,7 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         return {
           cellRender: {
             type: 'status',
-            config: this.dataMapService.toArray('resource_LinkStatus_Special')
+            config: this.dataMapService.toArray('hypervHostStatus')
           },
           filter: {
             type: 'select',
@@ -552,6 +572,17 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
 
   initConfig() {
     // 虚拟机（云服务器）组： 组内有资源数量（resourceCount）才能进行保护、修改保护
+    const tdAlign = includes(
+      [
+        DataMap.Resource_Type.cNwareVm.value,
+        DataMap.Resource_Type.nutanixVm.value,
+        DataMap.Resource_Type.hyperVVm.value,
+        DataMap.Resource_Type.APSCloudServer.value
+      ],
+      this.subType
+    )
+      ? '0px'
+      : false;
     const opts: ProButton[] = [
       {
         id: 'create',
@@ -597,7 +628,8 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
                 data[0].status
               )) ||
             (this.subType === DataMap.Resource_Type.vmGroup.value &&
-              !data[0].resourceCount)
+              !data[0].resourceCount &&
+              data[0].groupType !== DataMap.vmGroupType.rule.value)
           );
         },
         disabledTipsCheck: data => {
@@ -633,7 +665,8 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
                 data[0].status
               )) ||
             (this.subType === DataMap.Resource_Type.vmGroup.value &&
-              !data[0].resourceCount)
+              !data[0].resourceCount &&
+              data[0].groupType !== DataMap.vmGroupType.rule.value)
           );
         },
         onClick: data => this.protect(data, ProtectResourceAction.Modify)
@@ -724,6 +757,7 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         disableCheck: data => {
           return (
             !size(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX ||
             size(
               filter(data, val => {
                 return (
@@ -744,6 +778,8 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
               ))
           );
         },
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n),
         onClick: data => {
           if (this.subType === DataMap.Resource_Type.vmGroup.value) {
             this.protectService
@@ -806,7 +842,8 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
                 data[0].status
               )) ||
             (this.subType === DataMap.Resource_Type.vmGroup.value &&
-              !data[0].resourceCount)
+              !data[0].resourceCount &&
+              data[0].groupType !== DataMap.vmGroupType.rule.value)
           );
         },
         onClick: data => this.manualBackup(data)
@@ -946,9 +983,22 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
           filterMode: 'contains'
         }
       },
+      tag: {
+        key: 'tags',
+        name: this.i18n.get('common_mark_label'),
+        filter: {
+          type: 'search',
+          filterMode: 'contains'
+        },
+        width: 180,
+        cellRender: this.cnwareTagTpl
+      },
       mark: {
         key: 'remark',
-        name: this.i18n.get('common_mark_label'),
+        name:
+          this.subType === DataMap.Resource_Type.cNwareVm.value
+            ? this.i18n.get('common_remarks_label')
+            : this.i18n.get('common_mark_label'),
         filter: {
           type: 'search',
           filterMode: 'contains'
@@ -1040,8 +1090,11 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -1050,6 +1103,7 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         width: 144,
         hidden: 'ignoring',
         name: this.i18n.get('common_operation_label'),
+        fixRight: tdAlign,
         cellRender: {
           type: 'operation',
           config: {
@@ -1076,7 +1130,8 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         colDisplayControl: this.isSummary
           ? false
           : {
-              ignoringColsType: 'hide'
+              ignoringColsType: 'hide',
+              tdAlign: tdAlign
             },
         fetchData: (filter: Filters, args: {}) => {
           this.getData(filter, args);
@@ -1211,31 +1266,65 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
     this.dataTable.setFilterMap(this.dataTable.filterMap);
   }
 
+  // cnware标签
+  getCnwareTag(tags: string[]) {
+    const allTags = tags.map(v => {
+      return {
+        value: v,
+        label: v
+      };
+    });
+    const showTagList = allTags.slice(0, 1);
+    let tagNumList = [];
+    if (size(allTags) > 1) {
+      const num = allTags.length - 1;
+      tagNumList.push({ value: '', label: `+${num}` });
+    }
+    return { allTags, showTagList, tagNumList };
+  }
+
   extendResult(item) {
     switch (this.subType) {
       case DataMap.Resource_Type.cNwareCluster.value:
       case DataMap.Resource_Type.cNwareHost.value:
-      case DataMap.Resource_Type.cNwareVm.value:
       case DataMap.Resource_Type.nutanixCluster.value:
-      case DataMap.Resource_Type.nutanixHost.value:
+      case DataMap.Resource_Type.nutanixHost.value: {
         assign(item, JSON.parse(item.extendInfo?.details));
         break;
-      case DataMap.Resource_Type.APSCloudServer.value:
+      }
+      case DataMap.Resource_Type.cNwareVm.value: {
+        assign(item, JSON.parse(item.extendInfo?.details));
+        const tags = isJson(item.extendInfo?.tags)
+          ? JSON.parse(item.extendInfo?.tags)
+          : [];
+        const { allTags, showTagList, tagNumList } = this.getCnwareTag(tags);
+        assign(item, {
+          allTags,
+          showTagList,
+          tagNumList
+        });
+        break;
+      }
+      case DataMap.Resource_Type.APSCloudServer.value: {
         assign(item, {
           status: item.extendInfo.status
         });
         break;
-      case DataMap.Resource_Type.hyperVHost.value:
+      }
+      case DataMap.Resource_Type.hyperVHost.value: {
         assign(item, {
-          status: item?.linkStatus ?? '0'
+          status: item.extendInfo?.status
         });
         break;
-      case DataMap.Resource_Type.nutanixVm.value:
+      }
+      case DataMap.Resource_Type.nutanixVm.value: {
         assign(item, JSON.parse(item.extendInfo?.details));
         assign(item, { remark: item.description });
         break;
-      default:
+      }
+      default: {
         break;
+      }
     }
   }
 
@@ -1290,9 +1379,10 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         delete conditionsTemp.status;
       }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
@@ -1346,10 +1436,10 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
     if (!!size(filters.sort)) {
       assign(params, { orders: filters.orders });
     }
-    const queryFunc: Observable<any> =
-      this.subType === DataMap.Resource_Type.vmGroup.value
-        ? this.protectedResourceApiService.ListResourceGroups(params)
-        : this.protectedResourceApiService.ListResources(params);
+    const isVmGroup = this.subType === DataMap.Resource_Type.vmGroup.value;
+    const queryFunc: Observable<any> = isVmGroup
+      ? this.protectedResourceApiService.ListResourceGroups(params)
+      : this.protectedResourceApiService.ListResources(params);
     queryFunc.subscribe(res => {
       each(res.records, (item: any) => {
         // 获取标签数据
@@ -1357,7 +1447,7 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
         extendSlaInfo(item);
         this.extendResult(item);
         assign(item, {
-          sub_type: item?.subType,
+          sub_type: isVmGroup ? item.sourceSubType : item?.subType,
           showLabelList: showList,
           hoverLabelList: hoverList
         });
@@ -1554,7 +1644,9 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
       ...{
         lvWidth: MODAL_COMMON.largeWidth + 200,
         lvOkDisabled: datas ? false : true,
-        lvHeader: this.i18n.get('common_create_label'),
+        lvHeader: datas
+          ? this.i18n.get('common_modify_label')
+          : this.i18n.get('common_create_label'),
         lvContent: CreateGroupComponent,
         lvComponentParams: {
           rowData: datas,
@@ -1570,7 +1662,21 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
           ]);
           combined.subscribe(latestValues => {
             const [formGroupStatus, valid] = latestValues;
-            modalIns.lvOkDisabled = !valid || formGroupStatus !== 'VALID';
+            // vmware按规则匹配必须选择一个条件
+            if (
+              content.isVmwareGroup &&
+              content.formGroup.value.vmGroupMode ===
+                DataMap.vmGroupType.rule.value
+            ) {
+              modalIns.lvOkDisabled =
+                (isEmpty(content.treeSelection2) &&
+                  !content.ruleFromGroup.value.enableFilter &&
+                  !content.ruleFromGroup.value.enableTagFilter) ||
+                !valid ||
+                formGroupStatus !== 'VALID';
+            } else {
+              modalIns.lvOkDisabled = !valid || formGroupStatus !== 'VALID';
+            }
           });
           content.formGroup.updateValueAndValidity();
         },
@@ -1578,14 +1684,14 @@ export class BaseTableComponent implements OnInit, OnChanges, AfterViewInit {
           const content = modal.getContentComponent() as CreateGroupComponent;
           // 调用创建、修改接口
           return new Promise(resolve => {
-            content.onOK().subscribe(
-              res => {
+            content.onOK().subscribe({
+              next: res => {
                 resolve(true);
                 // 刷新表格数据
                 this.dataTable.fetchData();
               },
-              err => resolve(false)
-            );
+              error: err => resolve(false)
+            });
           });
         }
       }

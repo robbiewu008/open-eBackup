@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.core.manager;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvider;
 import openbackup.system.base.common.exception.DataMoverCheckedException;
 
@@ -26,6 +27,7 @@ import java.util.Objects;
  * DataMover provider registry
  *
  */
+@Slf4j
 @Component
 public class ProviderManager {
     private final ApplicationContext context;
@@ -49,7 +51,8 @@ public class ProviderManager {
      * @return provider
      */
     public <E, T extends DataProtectionProvider<E>> T findProvider(Class<T> providerClazz, E identification) {
-        return findProvider(providerClazz, identification, new DataMoverCheckedException());
+        return findProvider(providerClazz, identification,
+                new DataMoverCheckedException(new String[]{"Find applicable provider."}));
     }
 
     /**
@@ -70,6 +73,7 @@ public class ProviderManager {
                 return bean;
             }
         }
+        log.debug("Cannot find applicable provider.");
         if (exception != null) {
             throw exception;
         }

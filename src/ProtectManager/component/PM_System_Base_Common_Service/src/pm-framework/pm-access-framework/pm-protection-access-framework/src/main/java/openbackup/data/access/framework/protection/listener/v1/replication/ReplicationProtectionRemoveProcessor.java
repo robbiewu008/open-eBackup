@@ -13,6 +13,7 @@
 package openbackup.data.access.framework.protection.listener.v1.replication;
 
 import openbackup.data.protection.access.provider.sdk.base.DataProtectionProvider;
+import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
 import openbackup.system.base.sdk.cluster.model.TargetClusterVo;
 import openbackup.system.base.sdk.repository.model.NasDistributionStorageDetail;
 import openbackup.system.base.sdk.resource.model.ResourceEntity;
@@ -29,6 +30,14 @@ public interface ReplicationProtectionRemoveProcessor extends DataProtectionProv
      * @param targetCluster targetCluster
      */
     void process(ResourceEntity resourceEntity, TargetClusterVo targetCluster);
+
+    /**
+     * process protection remove event
+     *
+     * @param resourceEntity resource entity
+     * @param storageUnitVo 备份存储单元
+     */
+    void process(ResourceEntity resourceEntity, StorageUnitVo storageUnitVo);
 
     /**
      * process protection remove event

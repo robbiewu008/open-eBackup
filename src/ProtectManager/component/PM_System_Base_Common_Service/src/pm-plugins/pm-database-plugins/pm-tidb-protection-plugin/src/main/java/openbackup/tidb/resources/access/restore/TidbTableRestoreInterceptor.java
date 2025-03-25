@@ -12,15 +12,20 @@
 */
 package openbackup.tidb.resources.access.restore;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.agent.DefaultProtectAgentSelector;
+import openbackup.data.protection.access.provider.sdk.base.Endpoint;
+import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.tidb.resources.access.provider.TidbAgentProvider;
 import openbackup.tidb.resources.access.service.TidbService;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -53,5 +58,16 @@ public class TidbTableRestoreInterceptor extends TidbDatabaseRestoreInterceptor 
     @Override
     public boolean applicable(String object) {
         return ResourceSubTypeEnum.TIDB_TABLE.getType().equals(object);
+    }
+
+    private TaskEnvironment convertToTaskEnvironment(Endpoint endpoint) {
+        ProtectedEnvironment protectedEnvironment = resourceService.getResourceById(endpoint.getId())
+            .filter(env -> env instanceof ProtectedEnvironment)
+            .map(env -> (ProtectedEnvironment) env)
+            .orElseThrow(
+                () -> new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR, "Protected resource is not exists!"));
+        TaskEnvironment taskEnvironment = new TaskEnvironment();
+        BeanUtils.copyProperties(protectedEnvironment, taskEnvironment);
+        return taskEnvironment;
     }
 }

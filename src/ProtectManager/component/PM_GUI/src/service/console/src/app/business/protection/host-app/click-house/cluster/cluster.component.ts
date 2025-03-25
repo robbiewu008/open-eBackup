@@ -74,6 +74,7 @@ import {
   some
 } from 'lodash';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
+import { GetLabelOptionsService } from 'app/shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-cluster',
@@ -110,7 +111,8 @@ export class ClusterComponent implements OnInit, AfterViewInit {
     private warningMessageService: WarningMessageService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngOnInit() {
@@ -275,8 +277,11 @@ export class ClusterComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -530,9 +535,10 @@ export class ClusterComponent implements OnInit, AfterViewInit {
         delete conditionsTemp.equipmentType;
       }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;

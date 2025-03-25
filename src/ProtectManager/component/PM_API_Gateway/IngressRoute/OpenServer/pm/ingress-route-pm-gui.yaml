@@ -1,0 +1,157 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+{{- if eq $deploytype "d10" }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-route-pm-gui
+  namespace: dpa
+spec:
+  entryPoints:
+    - gui
+    - gui6
+  routes:
+    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && Path(`/{js:.+\.js$}`,`/{css:.+\.css$}`,`/{json:.+\.json$}`,`/{png:.+\.png$}`,`/{ttf:.+\.ttf$}`,`/{gif:.+\.gif$}`,`/{eot:.+\.eot$}`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-average
+    - match: Method(`GET`,`POST`) && Path(`/console/rest/v1/host-agent/download`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`POST`) && Path(`/console/rest/v1/host-agent`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`POST`) && Path(`/console/rest/v1/alarms/action/export`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`POST`) && Path(`/console/rest/v1/events/action/export`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`POST`) && Path(`/console/rest/v1/alarms/dump/files/{fileId:[0-9a-zA-z]+}/action/upload`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`POST`) && Path(`/console/rest/v1/alarms/dump/files/{fileId:[0-9a-zA-z]+}`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`PUT`) && Path(`/console/rest/v1/cert/components/{componentId:[0-9a-zA-z]+}/action/import`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`POST`) && Path(`/console/rest/v1/cert/components/{componentId:[0-9a-zA-z]+}/crls/action/import`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`POST`) && Path(`/console/rest/v2/system/lld/action/upload`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`GET`) && Path(`/console/rest/v1/cert/components/{componentId:[0-9a-zA-z]+}/ca/action/download`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`POST`) && Path(`/console/rest/v1/jobs/action/export`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`GET`,`POST`) && Path(`/console/rest/v1/sysbackup/images`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`GET`) && Path(`/console/rest/v1/sysbackup/images/{imagesId:[0-9a-zA-z]+}/action/download`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`GET`) && Path(`/console/rest/v1/report/{reportId:[0-9a-zA-z]+}/action/download`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`GET`) && Path(`/console/rest/v1/captcha`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+    - match: Method(`POST`) && Path(`/console/rest/v1/certs/detail`)
+      kind: Rule
+      services:
+        - name: pm-gui
+          port: 30080
+          scheme: https
+      middlewares:
+        - name: middleware-pm-rate-limit-special
+  tls:
+    secretName: secret-pm-tls
+{{- end }}

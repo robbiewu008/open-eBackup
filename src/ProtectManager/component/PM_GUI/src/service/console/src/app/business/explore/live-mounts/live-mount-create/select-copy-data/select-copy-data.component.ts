@@ -27,26 +27,26 @@ import {
   DataMap,
   DataMapService,
   I18NService,
+  LANGUAGE,
   LiveMountPolicyApiService,
+  ResourceType,
   RetentionPolicy,
   SchedulePolicy,
-  LANGUAGE,
-  ResourceType,
-  SYSTEM_TIME
+  StorageUnitService
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   assign,
   difference,
   each,
   filter,
+  find,
   first,
   includes,
-  intersection,
   isEmpty,
   size,
   trim
 } from 'lodash';
-import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'aui-select-copy-data',
@@ -76,6 +76,8 @@ export class SelectCopyDataComponent implements OnInit {
   retentionPolicy = RetentionPolicy;
   schedulePolicy = SchedulePolicy;
   resourceType = ResourceType;
+  storageUnitOptions = [];
+
   @Input() activeIndex;
   @Input() componentData;
   @ViewChild('copyLocationPopover', { static: false }) copyLocationPopover;
@@ -103,6 +105,7 @@ export class SelectCopyDataComponent implements OnInit {
     private dataMapService: DataMapService,
     private copiesApiService: CopiesService,
     private messageboxService: MessageboxService,
+    private storageUnitService: StorageUnitService,
     private liveMountPolicyApiService: LiveMountPolicyApiService,
     public datePipe: DatePipe,
     public appUtilsService: AppUtilsService
@@ -111,6 +114,25 @@ export class SelectCopyDataComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.getColumns();
+  }
+
+  getStorageUnit() {
+    this.storageUnitService
+      .queryBackUnitGET({
+        pageNo: 0,
+        pageSize: 200
+      })
+      .subscribe(res => {
+        this.storageUnitOptions = res.records.map(item => {
+          return assign(item, {
+            deviceType:
+              item.deviceType === 'BasicDisk'
+                ? DataMap.poolStorageDeviceType.Server.value
+                : item.deviceType
+          });
+        });
+        this.getCopies();
+      });
   }
 
   initForm() {
@@ -207,6 +229,7 @@ export class SelectCopyDataComponent implements OnInit {
               return includes(
                 [
                   DataMap.CopyData_generatedType.backup.value,
+                  DataMap.CopyData_generatedType.replicate.value,
                   DataMap.CopyData_generatedType.liveMount.value
                 ],
                 v.value
@@ -268,7 +291,11 @@ export class SelectCopyDataComponent implements OnInit {
   }
 
   getTableData() {
-    this.getCopies();
+    if (this.appUtilsService.isDistributed) {
+      this.getStorageUnit();
+    } else {
+      this.getCopies();
+    }
     this.getPolicies();
   }
 
@@ -407,7 +434,10 @@ export class SelectCopyDataComponent implements OnInit {
 
       if (
         includes(
-          [DataMap.Resource_Type.NASShare.value],
+          [
+            DataMap.Resource_Type.NASShare.value,
+            DataMap.Resource_Type.fileset.value
+          ],
           first(this.componentData.childResourceType)
         )
       ) {
@@ -420,25 +450,26 @@ export class SelectCopyDataComponent implements OnInit {
         });
       }
 
-      if (
-        includes(
-          [DataMap.Resource_Type.fileset.value],
-          first(this.componentData.childResourceType)
-        )
-      ) {
+      // E6000本地盘不支持挂载
+      if (this.appUtilsService.isDistributed) {
         each(res.items, item => {
-          const properties = JSON.parse(item.properties);
-
-          assign(item, {
-            disabled:
-              properties.format === DataMap.copyFormat.aggregate.value ||
-              item.generated_by ===
-                DataMap.CopyData_generatedType.liveMount.value
-          });
+          this.validStorageUnit(item);
         });
       }
       this.copyTableData = res.items;
     });
+  }
+
+  private validStorageUnit(item: any) {
+    if (
+      find(this.storageUnitOptions, {
+        name: item.storage_unit_name
+      })?.deviceType === DataMap.poolStorageDeviceType.Server.value
+    ) {
+      assign(item, {
+        disabled: true
+      });
+    }
   }
 
   getVersion(item) {

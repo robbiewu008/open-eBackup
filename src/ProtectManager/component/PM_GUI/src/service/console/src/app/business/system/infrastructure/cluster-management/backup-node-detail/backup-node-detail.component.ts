@@ -12,7 +12,6 @@
 */
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { combineLatest } from 'rxjs';
 import {
   CapacityCalculateLabel,
   CommonConsts,
@@ -23,7 +22,6 @@ import {
   LocalStorageApiService,
   LANGUAGE,
   BaseUtilService,
-  MODAL_COMMON,
   StoragesApiService,
   CookieService,
   DataMap,
@@ -39,7 +37,6 @@ import {
   each,
   extend,
   isEmpty,
-  includes,
   filter,
   toString,
   isFunction

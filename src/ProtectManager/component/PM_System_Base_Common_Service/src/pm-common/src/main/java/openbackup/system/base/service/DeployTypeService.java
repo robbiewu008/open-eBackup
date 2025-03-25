@@ -35,14 +35,15 @@ public class DeployTypeService {
      * 备份软件白牌化涉及的产品型号
      */
     public static final ImmutableList<String> WHITE_BOX_DEPLOY_TYPES = ImmutableList.of(DeployTypeEnum.X9000.getValue(),
-            DeployTypeEnum.A8000.getValue(), DeployTypeEnum.X8000.getValue(), DeployTypeEnum.X6000.getValue(),
-            DeployTypeEnum.X3000.getValue());
+        DeployTypeEnum.A8000.getValue(), DeployTypeEnum.X8000.getValue(), DeployTypeEnum.X6000.getValue(),
+        DeployTypeEnum.X3000.getValue(), DeployTypeEnum.HYPER_DETECT.getValue(),
+        DeployTypeEnum.OPEN_SOURCE.getValue());
 
     /**
      * x系列存储的设备枚举值
      */
     public static final List<DeployTypeEnum> X_SERIES = Arrays.asList(DeployTypeEnum.X3000, DeployTypeEnum.X6000,
-            DeployTypeEnum.X8000, DeployTypeEnum.X9000);
+            DeployTypeEnum.X8000, DeployTypeEnum.X9000, DeployTypeEnum.OPEN_SOURCE);
 
     /**
      * E系列存储的设备枚举值
@@ -98,6 +99,18 @@ public class DeployTypeService {
     }
 
     /**
+     * 判断是否为X9000
+     *
+     * @return true-是，false-不是
+     */
+    public boolean isX9000() {
+        if (Objects.isNull(deployType)) {
+            getDeployType();
+        }
+        return DeployTypeEnum.X9000.equals(deployType);
+    }
+
+    /**
      * 判断是否为云备份类型
      *
      * @return true-是，false-不是
@@ -145,7 +158,6 @@ public class DeployTypeService {
         }
 
         return DeployTypeEnum.E1000.equals(deployType)
-            || DeployTypeEnum.OPEN_SOURCE.equals(deployType)
             || DeployTypeEnum.OPEN_SERVER.equals(deployType);
     }
 
@@ -173,7 +185,7 @@ public class DeployTypeService {
         return DeployTypeEnum.CLOUD_BACKUP.equals(deployType) || DeployTypeEnum.CLOUD_BACKUP_OLD.equals(deployType)
             || DeployTypeEnum.HYPER_DETECT.equals(deployType) || DeployTypeEnum.CYBER_ENGINE.equals(deployType)
             || DeployTypeEnum.E1000.equals(deployType) || DeployTypeEnum.E6000.equals(deployType)
-            || DeployTypeEnum.OPEN_SOURCE.equals(deployType) || DeployTypeEnum.OPEN_SERVER.equals(deployType);
+            || DeployTypeEnum.OPEN_SERVER.equals(deployType);
     }
 
     /**

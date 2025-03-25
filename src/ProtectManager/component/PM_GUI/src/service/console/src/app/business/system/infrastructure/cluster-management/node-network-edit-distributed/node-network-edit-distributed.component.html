@@ -1,4 +1,3 @@
-<lv-alert lvType="info" lvClosable="false">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,12 +11,17 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-alert lvType="info" lvClosable="false">
   {{'common_config_service_network_tip_label' | i18n}}
 </lv-alert>
 
 <lv-tabs [(lvActiveIndex)]="activeIndex">
   <lv-tab lvTitle="{{'common_backup_network_config_label' | i18n}}" lvId='backup'>
     <ng-container *ngTemplateOutlet="expandTableTpl; context: { $implicit: tableDataBackup }">
+    </ng-container>
+  </lv-tab>
+  <lv-tab lvTitle="{{'common_replication_network_label' | i18n}}" lvId='replication'>
+    <ng-container *ngTemplateOutlet="expandTableTpl; context: { $implicit: tableDataCopy }">
     </ng-container>
   </lv-tab>
   <lv-tab lvTitle="{{'common_archived_network_config_label' | i18n}}" lvId='archived'>

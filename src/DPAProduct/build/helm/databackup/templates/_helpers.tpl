@@ -56,7 +56,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 */}}
 {{- define "getDeployType" -}}
 {{- $deploytype:= .Values.global.deploy_type | default "" }}
-{{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d2") (eq $deploytype "d3") (eq $deploytype "d4") (eq $deploytype "d5")  (eq $deploytype "d6") (eq $deploytype "d7") (eq $deploytype "d8") (eq $deploytype "d10")}}
+{{- if or (eq $deploytype "d0") (eq $deploytype "d1") (eq $deploytype "d2") (eq $deploytype "d3") (eq $deploytype "d4") (eq $deploytype "d5")  (eq $deploytype "d6") (eq $deploytype "d7") (eq $deploytype "d8") (eq $deploytype "d9") (eq $deploytype "d10")}}
 {{- $deploytype }}
 {{- else if and (eq $deploytype "dataprotect") (has .Values.global.productModel .Values.global.support_board_type.x8000) }}
 {{- $true_deploy_type := "d0" }}

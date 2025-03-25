@@ -81,7 +81,6 @@ public class SqlServerCopyDeleteInterceptor extends AbstractDbCopyDeleteIntercep
 
     @Override
     protected void handleTask(DeleteCopyTask task, CopyInfoBo copy) {
-        task.setIsForceDeleted(true);
         if (!super.isResourceExists(task)) {
             return;
         }
@@ -142,7 +141,7 @@ public class SqlServerCopyDeleteInterceptor extends AbstractDbCopyDeleteIntercep
         List<Copy> copies = copyRestApi.queryCopiesByResourceId(thisCopy.getResourceId());
         return copies.stream()
             .anyMatch(copy -> copy.getBackupType() == BackupTypeConstants.FULL.getAbBackupType()
-                && copy.getGn() < thisCopy.getGn());
+                && copy.getGn() < thisCopy.getGn() && thisCopy.getGeneratedBy().equals(copy.getGeneratedBy()));
     }
 
     @Override

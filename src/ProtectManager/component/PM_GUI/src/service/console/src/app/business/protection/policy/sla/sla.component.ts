@@ -24,6 +24,7 @@ import {
   CookieService,
   DataMap,
   DataMapService,
+  E6000SupportApplication,
   getPermissionMenuItem,
   GlobalService,
   GROUP_COMMON,
@@ -32,10 +33,10 @@ import {
   OperateItems,
   PolicyAction,
   PolicyType,
-  SupportLicense,
+  RoleOperationAuth,
   RoleOperationMap,
-  WarningMessageService,
-  RoleOperationAuth
+  SupportLicense,
+  WarningMessageService
 } from 'app/shared';
 import { SlaApiService, UsersApiService } from 'app/shared/api/services';
 import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
@@ -72,6 +73,7 @@ import { map, takeUntil } from 'rxjs/operators';
 export class SlaComponent implements OnInit, OnDestroy {
   policyType = PolicyType;
   name;
+  userName;
   sortFilter;
   userList = [];
   slaData = [];
@@ -228,10 +230,8 @@ export class SlaComponent implements OnInit, OnDestroy {
     })
     .filter(item => {
       if (this.appUtilsService.isDistributed) {
-        return !includes(
-          [ApplicationType.NASFileSystem, ApplicationType.CommonShare],
-          item.value
-        );
+        E6000SupportApplication.push(ApplicationType.Common);
+        return includes(E6000SupportApplication, item.value);
       }
       if (this.appUtilsService.isDecouple) {
         return !includes(
@@ -362,6 +362,12 @@ export class SlaComponent implements OnInit, OnDestroy {
     }
     if (this.name) {
       assign(params, { name: trim(this.name) });
+    }
+
+    if (this.userName) {
+      assign(params, {
+        userName: this.userName
+      });
     }
 
     // 非分布式环境this.slaStatus都是空数组
@@ -498,13 +504,16 @@ export class SlaComponent implements OnInit, OnDestroy {
             ApplicationType.Hive,
             ApplicationType.HDFS,
             ApplicationType.KubernetesStatefulSet,
+            ApplicationType.KubernetesDatasetCommon,
             ApplicationType.Vmware,
             ApplicationType.HCSCloudHost,
             ApplicationType.FusionCompute,
             ApplicationType.FusionOne,
             ApplicationType.TDSQL,
             ApplicationType.ApsaraStack,
-            ApplicationType.HyperV
+            ApplicationType.HyperV,
+            ApplicationType.CNware,
+            ApplicationType.Nutanix
           ],
           item.application
         )
@@ -519,13 +528,16 @@ export class SlaComponent implements OnInit, OnDestroy {
             ApplicationType.Hive,
             ApplicationType.HDFS,
             ApplicationType.KubernetesStatefulSet,
+            ApplicationType.KubernetesDatasetCommon,
             ApplicationType.Vmware,
             ApplicationType.HCSCloudHost,
             ApplicationType.FusionCompute,
             ApplicationType.FusionOne,
             ApplicationType.TDSQL,
             ApplicationType.ApsaraStack,
-            ApplicationType.HyperV
+            ApplicationType.HyperV,
+            ApplicationType.CNware,
+            ApplicationType.Nutanix
           ],
           item.application
         )
@@ -643,6 +655,11 @@ export class SlaComponent implements OnInit, OnDestroy {
     this.getSlaList();
   }
 
+  searchByUserName(userName) {
+    this.userName = userName;
+    this.getSlaList();
+  }
+
   actionFilterChange = event => {
     this.actions = includes(event.value, PolicyAction.LOG)
       ? uniq(union(event.value, [PolicyAction.INCREMENT]))
@@ -719,13 +736,16 @@ export class SlaComponent implements OnInit, OnDestroy {
               ApplicationType.Hive,
               ApplicationType.HDFS,
               ApplicationType.KubernetesStatefulSet,
+              ApplicationType.KubernetesDatasetCommon,
               ApplicationType.Vmware,
               ApplicationType.HCSCloudHost,
               ApplicationType.FusionCompute,
               ApplicationType.FusionOne,
               ApplicationType.TDSQL,
               ApplicationType.ApsaraStack,
-              ApplicationType.HyperV
+              ApplicationType.HyperV,
+              ApplicationType.CNware,
+              ApplicationType.Nutanix
             ],
             item.application
           )

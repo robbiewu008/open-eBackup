@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup">
   <lv-form-item>
     <lv-form-label>{{
       'explore_volume_chosen_copy_label' | i18n
@@ -103,6 +103,9 @@
               </lv-radio>
               <lv-radio [lvValue]="restoreLocationType.NEW">
                 {{ 'common_restore_to_new_location_label' | i18n }}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{ 'explore_volume_copy_new_loc_tip_label' | i18n }}"
+                  lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint" lvColorState="true"
+                  style="margin-bottom:2px"></i>
               </lv-radio>
             </lv-group>
           </lv-radio-group>
@@ -136,6 +139,11 @@
         </lv-select>
       </lv-form-item>
       <ng-container *ngTemplateOutlet="targetTable"></ng-container>
+      <ng-container *ngIf="formGroup.get('enable_bare_metal_restore').value">
+        <div class="targetTable">
+          <lv-pro-table #dataTable [config]="diskTableConfig" [data]="diskTableData"></lv-pro-table>
+        </div>
+      </ng-container>
     </ng-container>
     <div class="advanced-container">
       <lv-collapse [lvType]="'simple'">
@@ -206,9 +214,14 @@
         <tr>
           <th>{{ 'explore_volume_restore_label' | i18n }}</th>
           <th style="width:100px">{{ 'common_size_label' | i18n }}</th>
-          <th>{{ 'protection_recovery_target_pvc_label' | i18n }}</th>
+          <th>{{ 'protection_recovery_target_pvc_label' | i18n }}<i *ngIf="isWindows" lv-icon="aui-icon-help" [lv-tooltip]="windowsTooltipTooltipTpl" lvTooltipPosition="rightCenter"
+                                                                    lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+          </th>
         </tr>
       </thead>
+      <ng-template #windowsTooltipTooltipTpl>
+        <div innerHTML="{{'protection_window_label'|i18n}}"></div>
+      </ng-template>
       <tbody>
         <tr *ngFor="let item of lvTargetTable.renderData">
           <td>
@@ -246,4 +259,14 @@
       item.size | capacityCalculateLabel: '1.1-3':unitconst.BYTE:true
       }}</span>
   </lv-group>
+</ng-template>
+
+<ng-template #selectDiskTpl let-item>
+  <lv-select [lvOptions]="item.diskOptions" lvValueKey="value" [(ngModel)]="item.targetDisk"
+    (ngModelChange)="targetDiskChange($event)" lvShowFilter lvFilterKey="label" lvFilterMode="contains"
+    [lvContentTemplate]="volumeTemplate" lvShowClear></lv-select>
+</ng-template>
+
+<ng-template #starTpl>
+  <span class="star-class">*</span>
 </ng-template>

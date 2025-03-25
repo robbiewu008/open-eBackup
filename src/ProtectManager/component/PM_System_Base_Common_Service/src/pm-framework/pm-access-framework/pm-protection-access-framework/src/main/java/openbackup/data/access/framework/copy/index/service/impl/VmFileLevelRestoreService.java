@@ -149,6 +149,7 @@ public class VmFileLevelRestoreService implements IvmFileLevelRestoreService {
         request.setSnapType(copy.getGeneratedBy());
         request.setSnapMetadata(snapMetaData);
         request.setResourceSubType(copy.getResourceSubType());
+        request.setIndexed(copy.getIndexed());
         // 下发DEE参数，适配软硬解耦
         Optional<StorageUnitVo> storageUnitVoOptional = storageUnitService.getStorageUnitById(copy.getStorageUnitId());
         if (storageUnitVoOptional.isPresent()) {
@@ -183,6 +184,8 @@ public class VmFileLevelRestoreService implements IvmFileLevelRestoreService {
         destInfo.setUsername(parameterMap.get("USER_NAME"));
         destInfo.setVmIp(parameterMap.get("VM_IP"));
         destInfo.setPassword(parameterMap.get("PASSWORD"));
+        destInfo.setPort(parameterMap.get("PORT"));
+        destInfo.setTargetPath(parameterMap.get("TARGET_PATH"));
         return destInfo;
     }
 

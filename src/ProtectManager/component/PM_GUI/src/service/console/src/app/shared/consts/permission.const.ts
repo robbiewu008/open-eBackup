@@ -52,6 +52,13 @@ export const DefaultRoles = {
   }
 };
 
+export const SpecialRoleIds = [
+  DefaultRoles.rdAdmin.roleId,
+  DefaultRoles.drAdmin.roleId,
+  DefaultRoles.audit.roleId,
+  DefaultRoles.sysAdmin.roleId
+];
+
 // 角色权限映射
 export const RoleOperationMap = {
   manageClient: 'manageClient', // 管理客户端
@@ -582,6 +589,7 @@ export enum RouterUrl {
   SftpService = '/system/settings/sftp-service',
   IbmcService = '/system/settings/ibmc',
   SystemSettingConfigNetwork = '/system/settings/config-network',
+  SystemSettingServiceOrientedNMS = '/system/settings/service-oriented-nms',
   hostTrustworthiness = '/system/security/hostTrustworthiness',
   GlobalSearch = '/search',
   SystemSecurityAdfs = '/system/security/adfsConfig'
@@ -859,7 +867,8 @@ export enum OperateItems {
   DeleteTag, // 删除标签名称
   AddTag, //添加标签
   RemoveTag, // 移除标签
-  WormSet // worm设置
+  WormSet, // worm设置
+  ClearAlarm //清除告警
 }
 
 /**
@@ -1091,10 +1100,12 @@ export const URL_PERMISSION = {
     RouterUrl.SystemSettingsSystemBackup,
     RouterUrl.SystemSettingsAlarmNotify,
     RouterUrl.SystemSettingsAlarmSettings,
+    RouterUrl.SystemSettingsAlarmNotifySettings,
     RouterUrl.SystemSettingsAlarmDump,
     RouterUrl.SystemSettingsSnmpTrap,
     RouterUrl.SystemDeviceTime,
     RouterUrl.SystemSettingConfigNetwork,
+    RouterUrl.SystemSettingServiceOrientedNMS,
     RouterUrl.SftpService,
     RouterUrl.GlobalSearch,
     RouterUrl.hostTrustworthiness,
@@ -1534,9 +1545,11 @@ export const URL_PERMISSION = {
     RouterUrl.SystemSettings,
     RouterUrl.SystemSettingsSystemBackup,
     RouterUrl.SystemSettingsAlarmNotify,
+    RouterUrl.SystemSettingsAlarmNotifySettings,
     RouterUrl.SystemSettingsAlarmSettings,
     RouterUrl.SystemSettingsAlarmDump,
     RouterUrl.SystemDeviceTime,
+    RouterUrl.SystemSettingServiceOrientedNMS,
     RouterUrl.SftpService,
     RouterUrl.GlobalSearch,
     RouterUrl.SystemSecurityAdfs
@@ -2126,7 +2139,8 @@ export const OPERATE_PERMISSION = {
     OperateItems.DeleteTag,
     OperateItems.AddTag,
     OperateItems.RemoveTag,
-    OperateItems.WormSet
+    OperateItems.WormSet,
+    OperateItems.ClearAlarm
   ],
   // 数据保护管理员
   [RoleType.DataProtectionAdmin]: [
@@ -2303,7 +2317,8 @@ export const OPERATE_PERMISSION = {
     OperateItems.DeleteTag,
     OperateItems.AddTag,
     OperateItems.RemoveTag,
-    OperateItems.WormSet
+    OperateItems.WormSet,
+    OperateItems.ClearAlarm
   ],
   // 审计员
   [RoleType.Auditor]: [

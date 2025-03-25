@@ -1,0 +1,76 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Configuring the DNS Service">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="object-0171">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Configuring the DNS Service</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="object-0171"></a><a name="object-0171"></a>
+  <h1 class="topictitle1">Configuring the DNS Service</h1>
+  <div>
+   <p id="object-0171__nas_s_0099_p184331146490">After connecting the <span id="object-0171__nas_s_0099_text103741358111512">product</span> to the DNS server, external domain names can be resolved and accessed.</p>
+   <div class="section" id="object-0171__nas_s_0099_section84408074710">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul id="object-0171__nas_s_0099_ul127106719472">
+     <li id="object-0171__nas_s_0099_li1591453144615">The DNS server has been configured and is running properly.</li>
+     <li id="object-0171__nas_s_0099_li1171018715475">TCP/UDP port 53 between the <span id="object-0171__nas_s_0099_text11398161191611">product</span> and DNS server is enabled.</li>
+    </ul>
+   </div>
+   <div class="section" id="object-0171__nas_s_0099_section14363102215470">
+    <h4 class="sectiontitle">Context</h4>
+    <ul id="object-0171__nas_s_0099_ul11598536467">
+     <li id="object-0171__nas_s_0099_li1059953174610">A DNS server is used to resolve and access external domain names.</li>
+     <li id="object-0171__nas_s_0099_li14591853134619">If you want to configure a standby DNS server, keep the domain names of the active and standby servers consistent.</li>
+    </ul>
+   </div>
+   <div class="section" id="object-0171__nas_s_0099_section177292329470">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="object-0171__nas_s_0099_ol69744384913">
+     <li id="object-0171__nas_s_0099_li75164286113"><span>Log in to DeviceManager.</span><p></p>
+      <ol type="a" id="object-0171__nas_s_0099_nas_s_0014_ol55051543162413">
+       <li id="object-0171__nas_s_0099_nas_s_0014_li7505843162418">The following method applies to some models:
+        <ol class="substepthirdol" id="object-0171__nas_s_0099_nas_s_0014_en-us_topic_0000001188062683_en-us_topic_0000001149078659_ol8463855369">
+         <li id="object-0171__nas_s_0099_nas_s_0014_li7787111161619">Choose <strong id="object-0171__nas_s_0099_nas_s_0014_b10128199342">System</strong> &gt; <strong id="object-0171__nas_s_0099_nas_s_0014_b41281913410">Infrastructure</strong> &gt; <strong id="object-0171__nas_s_0099_nas_s_0014_b13121719143414">Cluster Management</strong>.</li>
+         <li id="object-0171__nas_s_0099_nas_s_0014_li541671613166">On the <strong id="object-0171__nas_s_0099_nas_s_0014_b383014414340">Backup Clusters</strong> tab page, click a node name under the <strong id="object-0171__nas_s_0099_nas_s_0014_b18301641143415">Local Cluster Nodes</strong> area.</li>
+         <li id="object-0171__nas_s_0099_nas_s_0014_li15142820111618">On the displayed <strong id="object-0171__nas_s_0099_nas_s_0014_b15587849163415">Node Details</strong> page, click <strong id="object-0171__nas_s_0099_nas_s_0014_b15587149123416">Open the device management platform</strong> to go to DeviceManager.</li>
+        </ol></li>
+       <li id="object-0171__nas_s_0099_nas_s_0014_li5767154612411">For OceanProtect E1000, log in to DeviceManager by referring to <a href="nas_s_dm.html#nas_s_dm">Logging In to DeviceManager</a>.</li>
+      </ol> <p></p></li>
+     <li id="object-0171__nas_s_0099_li9544194974714"><span>Choose <strong id="object-0171__nas_s_0099_b8664115914915">Settings</strong> &gt; <strong id="object-0171__nas_s_0099_b1566525918493">Basic Information</strong> &gt; <strong id="object-0171__nas_s_0099_b466565913491">DNS Service</strong>.</span></li>
+     <li id="object-0171__nas_s_0099_li1154414984718"><span>Click <strong id="object-0171__nas_s_0099_b1680451297104927">Modify</strong> in the upper right corner of the <strong id="object-0171__nas_s_0099_b1421787493104927">Management DNS</strong> area to configure the DNS service for the management plane.</span></li>
+     <li id="object-0171__nas_s_0099_li1197583174919"><span>Set <strong id="object-0171__nas_s_0099_b252114027104927">Active DNS IP Address</strong>.</span><p></p>
+      <ol type="a" id="object-0171__nas_s_0099_ol097514364916">
+       <li id="object-0171__nas_s_0099_li1260165320466">(Optional) Set <strong id="object-0171__nas_s_0099_b1660165344615">Standby DNS IP Address 1</strong>.</li>
+       <li id="object-0171__nas_s_0099_li897518364913">(Optional) Set <strong id="object-0171__nas_s_0099_b159751632497">Standby DNS IP Address 2</strong>. Set <strong id="object-0171__nas_s_0099_b1698817341104927">Standby DNS IP Address 1</strong> first and then <strong id="object-0171__nas_s_0099_b1218119624104927">Standby DNS IP Address 2</strong>.</li>
+       <li id="object-0171__nas_s_0099_li196055344615">(Optional) Test the connectivity between the DNS server and the storage system.
+        <ul id="object-0171__nas_s_0099_ul11601253144617">
+         <li id="object-0171__nas_s_0099_li860185312461">You can click <strong id="object-0171__nas_s_0099_b444506045104927">Test</strong> next to a DNS IP address to test its availability.</li>
+         <li id="object-0171__nas_s_0099_li760253124620">You can click <strong id="object-0171__nas_s_0099_b98240482304">Test All</strong> to test the connectivity between the DNS server and storage system.</li>
+        </ul></li>
+       <li id="object-0171__nas_s_0099_li1460253164610">Click <strong id="object-0171__nas_s_0099_b161585913104927">Save</strong>.</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

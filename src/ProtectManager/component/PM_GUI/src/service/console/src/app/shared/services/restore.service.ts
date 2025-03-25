@@ -38,6 +38,8 @@ import { CopyRestoreComponent } from 'app/business/protection/cloud/openstack/re
 import { CopyRestoreModule } from 'app/business/protection/cloud/openstack/restore/copy-restore/copy-restore.module';
 import { RestoreComponent } from 'app/business/protection/cloud/openstack/restore/restore.component';
 import { RestoreModule as OpenStackRestoreModule } from 'app/business/protection/cloud/openstack/restore/restore.module';
+import { RestoreComponent as AntDBRestoreComponent } from 'app/business/protection/database/ant-db/restore/restore.component';
+import { RestoreModule as AntDBRestoreModule } from 'app/business/protection/database/ant-db/restore/restore.module';
 import { ClickHouseRestoreComponent } from 'app/business/protection/host-app/click-house/copy-data/click-house-restore/click-house-restore.component';
 import { ClickHouseRestoreModule } from 'app/business/protection/host-app/click-house/copy-data/click-house-restore/click-house-restore.module';
 import { DamengClusterRestoreComponent } from 'app/business/protection/host-app/dameng/copy-data/dameng-cluster-restore/dameng-cluster-restore.component';
@@ -58,10 +60,10 @@ import { ClusterRestoreComponent as DWSClusterRestoreComponent } from 'app/busin
 import { ClusterRestoreModule as DWSClusterRestoreModule } from 'app/business/protection/host-app/gaussdb-dws/restore-cluster/restore-cluster.module';
 import { DatabaseRestoreComponent as DWSDatabaseRestoreComponent } from 'app/business/protection/host-app/gaussdb-dws/restore-database/restore-database.component';
 import { DatabaseRestoreModule as DWSDatabaseRestoreModule } from 'app/business/protection/host-app/gaussdb-dws/restore-database/restore-database.module';
-import { ModalRestoreComponent } from 'app/business/protection/host-app/gaussdb-dws/restore-modal/restore-modal.component';
-import { ModalRestoreModule } from 'app/business/protection/host-app/gaussdb-dws/restore-modal/restore-modal.module';
 import { TableRestoreComponent as DWSTableRestoreComponent } from 'app/business/protection/host-app/gaussdb-dws/restore-table/restore-table.component';
 import { TableRestoreModule as DWSTableRestoreModule } from 'app/business/protection/host-app/gaussdb-dws/restore-table/restore-table.module';
+import { TableLevelDwsRestoreComponent } from 'app/business/protection/host-app/gaussdb-dws/table-level-dws-restore/table-level-dws-restore.component';
+import { TableLevelDwsRestoreModule } from 'app/business/protection/host-app/gaussdb-dws/table-level-dws-restore/table-level-dws-restore.module';
 import { GaussdbRestoreComponent } from 'app/business/protection/host-app/gaussdb-for-opengauss/gaussdb-for-openguss-restore/gaussdb-restore.component';
 import { GaussdbRestoreModule } from 'app/business/protection/host-app/gaussdb-for-opengauss/gaussdb-for-openguss-restore/gaussdb-restore.module';
 import { GaussDBTRestoreComponent } from 'app/business/protection/host-app/gaussdb-t/copy-data/gaussdb-t-restore/gauss-t-restore.component';
@@ -94,8 +96,6 @@ import { PdbSetRestoreComponent } from 'app/business/protection/host-app/oracle/
 import { PdbSetRestoreModule } from 'app/business/protection/host-app/oracle/pdb-set-list/pdb-set-restore/pdb-set-restore.module';
 import { PostgreSqlRestoreComponent } from 'app/business/protection/host-app/postgre-sql/instance-database/copy-data/postgre-sql-restore/postgre-sql-restore.component';
 import { PostgreSqlRestoreModule } from 'app/business/protection/host-app/postgre-sql/instance-database/copy-data/postgre-sql-restore/postgre-sql-restore.module';
-import { RestoreComponent as AntDBRestoreComponent } from 'app/business/protection/database/ant-db/restore/restore.component';
-import { RestoreModule as AntDBRestoreModule } from 'app/business/protection/database/ant-db/restore/restore.module';
 import { RedisRestoreComponent } from 'app/business/protection/host-app/redis/copy-data/redis-restore/redis-restore.component';
 import { RedisRestoreModule } from 'app/business/protection/host-app/redis/copy-data/redis-restore/redis-restore.module';
 import { SQLServerAlwaysOnComponent } from 'app/business/protection/host-app/sql-server/alwayson-restore/alwayson-restore.component';
@@ -153,6 +153,8 @@ import {
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { assign, defer, get, includes, isEmpty, isFunction } from 'lodash';
 import { combineLatest } from 'rxjs';
+import { SaponoracleRestoreComponent } from '../../business/protection/application/saponoracle/restore/saponoracle-restore.component';
+import { SaponoracleRestoreModule } from '../../business/protection/application/saponoracle/restore/saponoracle-restore.module';
 import { DoradoNasRestoreComponent } from '../components/dorado-nas-restore/dorado-nas-restore.component';
 import { DoradoNasRestoreModule } from '../components/dorado-nas-restore/dorado-nas-restore.module';
 import { FileExplorerLevelRestoreComponent } from '../components/file-explorer-level-restore/file-explorer-level-restore.component';
@@ -161,10 +163,9 @@ import { FileLevelRestoreComponent } from '../components/file-level-restore/file
 import { FileLevelRestoreModule } from '../components/file-level-restore/file-level-restore.module';
 import { VmFileLevelRestoreComponent } from '../components/vm-file-level-restore/vm-file-level-restore.component';
 import { VmFileLevelRestoreModule } from '../components/vm-file-level-restore/vm-file-level-restore.module';
-import { MESSAGE_BOX_ACTION, SYSTEM_TIME } from '../consts';
+import { MESSAGE_BOX_ACTION } from '../consts';
 import { DataMap } from './../consts/data-map.config';
-import { SaponoracleRestoreComponent } from '../../business/protection/application/saponoracle/restore/saponoracle-restore.component';
-import { SaponoracleRestoreModule } from '../../business/protection/application/saponoracle/restore/saponoracle-restore.module';
+import { AppUtilsService } from './app-utils.service';
 
 export interface RestoreParams {
   childResType: any; // 资源类型的字资源的分类，比如VM副本的恢复分为VM、disk、file
@@ -183,6 +184,7 @@ export class RestoreService {
   private browserActionComponent = BrowserActionComponent;
   private beforeIntoRestoreTipsComponent = BeforeIntoRestoreTipsComponent;
   constructor(
+    public appUtilsService: AppUtilsService,
     private drawModalService: DrawModalService,
     private i18n: I18NService,
     private cookieService: CookieService,
@@ -299,6 +301,8 @@ export class RestoreService {
         [
           DataMap.Resource_Type.PostgreSQLInstance.value,
           DataMap.Resource_Type.PostgreSQLClusterInstance.value,
+          DataMap.Resource_Type.AntDBInstance.value,
+          DataMap.Resource_Type.AntDBClusterInstance.value,
           DataMap.Resource_Type.KingBaseInstance.value,
           DataMap.Resource_Type.KingBaseClusterInstance.value,
           DataMap.Resource_Type.MongodbSingleInstance.value,
@@ -1148,6 +1152,7 @@ export class RestoreService {
                 break;
               case DataMap.Resource_Type.cNwareVm.value:
               case DataMap.Resource_Type.nutanixVm.value:
+              case DataMap.Resource_Type.lightCloudGaussdbInstance.value:
                 content.valid$?.subscribe(res => {
                   modalIns.lvOkDisabled = !res;
                 });
@@ -1174,6 +1179,7 @@ export class RestoreService {
               case DataMap.Resource_Type.oracle.value:
               case DataMap.Resource_Type.oracleCluster.value:
               case DataMap.Resource_Type.oraclePDB.value:
+              case DataMap.Resource_Type.ActiveDirectory.value:
                 if (option.restoreType === RestoreType.FileRestore) {
                   content.valid$.subscribe(res => {
                     modalIns.lvOkDisabled = res;
@@ -1676,6 +1682,12 @@ export class RestoreService {
           ? VmFileLevelRestoreComponent
           : option.childResType === DataMap.Resource_Type.ObjectSet.value
           ? FileExplorerLevelRestoreComponent
+          : [
+              DataMap.Resource_Type.DWS_Cluster.value,
+              DataMap.Resource_Type.DWS_Schema.value,
+              DataMap.Resource_Type.DWS_Table.value
+            ].includes(option.childResType)
+          ? TableLevelDwsRestoreComponent
           : FileLevelRestoreComponent,
         lvOkDisabled: true,
         lvComponentParams: {
@@ -1741,46 +1753,6 @@ export class RestoreService {
                 }
               });
             } else if (
-              content.targetParams?.restoreLocation ===
-                RestoreV2LocationType.NEW &&
-              includes(
-                [
-                  DataMap.Resource_Type.DWS_Cluster.value,
-                  DataMap.Resource_Type.DWS_Schema.value
-                ],
-                option.childResType
-              )
-            ) {
-              this.drawModalService.create({
-                lvHeader: this.i18n.get('explore_confirm_restore_label'),
-                lvContent: ModalRestoreComponent,
-                lvWidth: MODAL_COMMON.normalWidth,
-                lvComponentParams: {
-                  data: content.targetParams,
-                  path: content.originalSelection
-                },
-                lvOk: modal => {
-                  const content = modal.getContentComponent() as ModalRestoreComponent;
-                  content.onOK().subscribe({
-                    next: () => {
-                      resolve(true);
-                      if (isFunction(option.onOk)) {
-                        option.onOk();
-                      }
-                    },
-                    error: () => resolve(false)
-                  });
-                },
-                lvCancel: () => resolve(false),
-                lvAfterClose: result => {
-                  if (result && result.trigger === MESSAGE_BOX_ACTION.close) {
-                    resolve(false);
-                  }
-                }
-              });
-            } else if (
-              content.targetParams?.restoreLocation ===
-                RestoreV2LocationType.ORIGIN &&
               includes(
                 [
                   DataMap.Resource_Type.DWS_Cluster.value,
@@ -1791,9 +1763,10 @@ export class RestoreService {
               )
             ) {
               let tips = this.i18n.get(
-                isDatabaseApp(option.childResType)
+                option.childResType === DataMap.Resource_Type.DWS_Table.value ||
+                  !content.isRestoreNew
                   ? 'protection_database_filelevel_restore_tip_label'
-                  : 'protection_filelevel_restore_tip_label',
+                  : 'protection_dws_filelevel_restore_tip_label',
                 [content.getTargetPath().tips]
               );
               let targetPath;
@@ -1801,7 +1774,12 @@ export class RestoreService {
               this.messageBox.danger({
                 lvHeader: this.i18n.get('common_restore_tips_label'),
                 lvContent: this.browserActionComponent,
-                lvWidth: MODAL_COMMON.smallWidth + 50,
+                lvWidth:
+                  option.childResType ===
+                    DataMap.Resource_Type.DWS_Table.value ||
+                  !content.isRestoreNew
+                    ? MODAL_COMMON.smallWidth + 50
+                    : MODAL_COMMON.smallWidth + 100,
                 lvCancelType: 'default',
                 lvOkType: 'primary',
                 lvComponentParams: {
@@ -1951,7 +1929,6 @@ export class RestoreService {
     FusionComputeFileRestoreModule,
     FusionComputeDiskRestoreModule,
     KingBaseRestoreModule,
-    ModalRestoreModule,
     HCSRestoreModule,
     ClickHouseRestoreModule,
     MongoDBRestoreModule,
@@ -1988,7 +1965,8 @@ export class RestoreService {
     FileExplorerLevelRestoreModule,
     OracleSingleFileRestoreModule,
     OracleTableLevelRestoreModule,
-    PdbSetRestoreModule
+    PdbSetRestoreModule,
+    TableLevelDwsRestoreModule
   ],
   providers: [RestoreService]
 })
@@ -2038,7 +2016,11 @@ export class BrowserActionComponent {
   // ndmp提示
   isNdmp = false;
   ndmpWarn = this.i18n.get('protection_ndmp_file_restore_warn_label');
-  constructor(private i18n: I18NService, private datePipe: DatePipe) {}
+  constructor(
+    private i18n: I18NService,
+    private datePipe: DatePipe,
+    public appUtilsService: AppUtilsService
+  ) {}
   ngOnInit(): void {
     // NDMP新位置提示
     this.isNdmp =
@@ -2228,6 +2210,23 @@ export class BrowserActionComponent {
           : 'common_restore_to_location_tip_label',
         restoreTips
       );
+      if (
+        this.appUtilsService.isDistributed &&
+        (isDatabaseApp(this.data?.childResType) ||
+          [
+            DataMap.Resource_Type.OceanBaseCluster.value,
+            DataMap.Resource_Type.OceanBaseTenant.value,
+            DataMap.Resource_Type.goldendbInstance.value
+          ].includes(this.data?.chilidResType)) &&
+        this.data?.copyData.generated_by ===
+          DataMap.CopyData_generatedType.replicate.value
+      ) {
+        this.tips =
+          this.tips +
+          `<br>${this.i18n.get(
+            'explore_distributed_restore_database_tip_label'
+          )}`;
+      }
     }
   }
 

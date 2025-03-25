@@ -55,4 +55,10 @@ public class TidbClusterResourceProvider extends DefaultResourceProvider {
     public boolean applicable(ProtectedResource object) {
         return ResourceSubTypeEnum.TIDB_CLUSTER.equalsSubType(object.getSubType());
     }
+
+    @Override
+    public boolean isSupportIndex() {
+        // Tidb数据库 支持索引
+        return true;
+    }
 }

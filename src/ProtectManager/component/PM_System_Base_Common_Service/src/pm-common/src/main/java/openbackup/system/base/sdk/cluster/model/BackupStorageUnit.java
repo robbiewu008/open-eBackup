@@ -16,8 +16,11 @@ import lombok.Getter;
 import lombok.Setter;
 import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
 import openbackup.system.base.sdk.repository.model.BackupClusterVo;
+import openbackup.system.base.sdk.repository.model.JobDispatchClusterVo;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * 备份存储单元信息
@@ -101,6 +104,39 @@ public class BackupStorageUnit {
             vo.setIp(this.getClusterIp().substring(0, this.getClusterIp().indexOf(",")));
         } else {
             vo.setIp(this.getClusterIp());
+        }
+        return vo;
+    }
+
+
+    /**
+     * 转换为 JobDispatchClusterVo
+     *
+     * @return BackupClusterVo
+     */
+    public JobDispatchClusterVo toJobDispatchClusterVo() {
+        JobDispatchClusterVo vo = new JobDispatchClusterVo();
+        vo.setClusterId(this.getClusterId());
+        vo.setClusterName(this.getClusterName());
+        vo.setStatus(this.getStatus());
+        vo.setClusterIp(this.getClusterIp());
+        vo.setPort(this.getClusterPort());
+        vo.setStorageEsn(this.getRemoteEsn());
+        vo.setUsername(this.getUsername());
+        vo.setRole(this.getRole());
+        vo.setGeneratedType(this.getGeneratedType());
+        vo.setCapacity(this.getCapacity());
+        vo.setUsedCapacity(this.getUsedCapacity());
+        vo.setDeployType(this.getDeployType());
+        vo.setControllerCount(this.getControllerCount());
+        vo.setPmPort(this.getPmPort());
+        vo.setPmStatus(this.pmStatus);
+        vo.setClusterType(ClusterEnum.TypeEnum.REMOTE.getType());
+        vo.setAvailableZoneId(this.getAvailableZoneId());
+        if (this.getClusterIp().contains(",")) {
+            vo.setIp(Arrays.asList(this.getClusterIp().split(",")));
+        } else {
+            vo.setIp(Collections.singletonList(this.getClusterIp()));
         }
         return vo;
     }

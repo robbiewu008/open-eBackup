@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -40,7 +40,7 @@
    <div class="section">
     <h4 class="sectiontitle">背景信息</h4>
     <ul id="nas_s_0062__nas_s_0060_ul1684123102616">
-     <li id="nas_s_0062__nas_s_0060_li15684153110268"><span id="nas_s_0062__nas_s_0060_text19278102815148">本产品</span>支持使用备份副本、对象存储归档的副本、磁带库归档的副本进行文件级恢复。</li>
+     <li id="nas_s_0062__nas_s_0060_li15684153110268"><span id="nas_s_0062__nas_s_0060_text19278102815148">本产品</span>支持使用备份副本、对象存储归档的副本进行文件级恢复。</li>
     </ul>
    </div>
    <div class="section">
@@ -50,6 +50,7 @@
    <div class="section">
     <h4 class="sectiontitle">前提条件</h4>
     <ul>
+     <li>对于1.5.0版本，副本的索引状态必须为<span class="uicontrol" id="nas_s_0062__vmware_gud_0060_uicontrol483213401802">“<span id="nas_s_0062__vmware_gud_0060_text1711017353520">已索引</span>”</span>才支持文件级恢复。对于1.6.0及后续版本，索引状态为“<span id="nas_s_0062__vmware_gud_0060_text413155718286">未索引</span>”的副本也支持文件级恢复。</li>
      <li>如果将NAS共享恢复到新位置，需要先将新位置的NAS共享，或者NAS共享所在的存储设备注册到<span id="nas_s_0062__nas_s_0061_text5542395141">本产品</span>。支持的存储设备类型如下所示。
       <ul id="nas_s_0062__ul571916508480">
        <li id="nas_s_0062__nas_s_0061_nas_s_0059_nas_s_0013_li3415133617174">OceanStor Dorado V7</li>
@@ -73,14 +74,20 @@
       </div> <p></p></li>
      <li><span>支持以NAS共享资源维度或以副本维度查找副本，本节以NAS共享资源维度为例进行说明。</span><p></p><p id="nas_s_0062__nas_s_0061_p142551140161511">在“<span id="nas_s_0062__nas_s_0061_text6827103218214">资源</span>”页签，根据NAS共享名称查找到需要恢复的NAS共享，并单击NAS共享名称。</p> <p></p></li>
      <li><span>在<span class="uicontrol" id="nas_s_0062__nas_s_0059_uicontrol1812414562220">“<span id="nas_s_0062__nas_s_0059_text18993182162710">副本数据</span>”</span>页面，依次选择年、月、天找到副本。</span><p></p><p id="nas_s_0062__nas_s_0059_p9918150182310">当时间上显示<span><img id="nas_s_0062__nas_s_0059_image886000161711" src="zh-cn_image_0000001792520510.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
-     <li><span>找到要恢复的副本，单击副本所在行右侧的<span class="uicontrol" id="nas_s_0062__nas_s_0060_uicontrol144673212457">“<span id="nas_s_0062__nas_s_0060_text16241181213589">更多</span> &gt; <span id="nas_s_0062__nas_s_0060_text6433142318586">文件级恢复</span>”</span>。</span></li>
-     <li><span>对于1.6.0及后续版本，设置恢复文件的选择方式。</span><p></p>
-      <div class="note" id="nas_s_0062__vmware_gud_0060_note4858522104619">
-       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
-       <div class="notebody">
-        <p id="nas_s_0062__vmware_gud_0060_p2858142274615">如果文件数量较多，系统可能会超时，建议选择“手动输入文件路径”。</p>
-       </div>
-      </div> <p></p></li>
+     <li><span>找到要恢复的副本，单击副本所在行右侧的<span class="uicontrol" id="nas_s_0062__nas_s_0060_uicontrol144673212457">“<span id="nas_s_0062__nas_s_0060_text16241181213589">更多</span> &gt; <span id="nas_s_0062__nas_s_0060_text6433142318586">文件级恢复</span>”</span>。</span><p></p>
+      <ul id="nas_s_0062__nas_s_0060_ul31458297552">
+       <li id="nas_s_0062__nas_s_0060_li1714532925520">对于1.5.0版本，从目录树勾选待恢复的文件。</li>
+       <li id="nas_s_0062__nas_s_0060_li1475353185516">对于1.6.0及后续版本，请先设置恢复文件的选择方式，再从目录树选择待恢复文件或手动输入待恢复文件的路径。
+        <div class="note" id="nas_s_0062__nas_s_0060_vmware_gud_0060_note1195634711290">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <ul id="nas_s_0062__nas_s_0060_vmware_gud_0060_ul14956124712297">
+           <li id="nas_s_0062__nas_s_0060_vmware_gud_0060_li1095674772911">如果副本中的文件数量较多，系统可能超时，无法从目录树上选择待恢复文件，建议手动输入恢复文件路径。</li>
+           <li id="nas_s_0062__nas_s_0060_vmware_gud_0060_li19956104762918">手动输入文件路径时，请输入文件完整路径，例如：/opt/abc/efg.txt或者C:\abc\efg.txt。当输入文件夹路径时，表示恢复该文件夹下的所有文件，例如：/opt/abc或者C:\abc。路径中的文件名区分大小写。</li>
+          </ul>
+         </div>
+        </div></li>
+      </ul> <p></p></li>
      <li><span>选择待恢复的目标对象，及恢复目标位置。</span><p></p><p>恢复目标位置包含：<span>原位置</span>、<span>新位置</span>、<span>本机位置</span>。</p>
       <ul>
        <li><span>原位置</span>：恢复到原文件系统</li>
@@ -99,18 +106,18 @@
         </colgroup>
         <thead align="left">
          <tr id="nas_s_0062__nas_s_0060_row6585115119414">
-          <th align="left" class="cellrowborder" valign="top" width="10.54%" id="mcps1.3.5.2.6.2.4.2.3.1.1"><p id="nas_s_0062__nas_s_0060_p1658575112415">参数</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="89.46%" id="mcps1.3.5.2.6.2.4.2.3.1.2"><p id="nas_s_0062__nas_s_0060_p175851451349">说明</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="10.54%" id="mcps1.3.5.2.5.2.4.2.3.1.1"><p id="nas_s_0062__nas_s_0060_p1658575112415">参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="89.46%" id="mcps1.3.5.2.5.2.4.2.3.1.2"><p id="nas_s_0062__nas_s_0060_p175851451349">说明</p></th>
          </tr>
         </thead>
         <tbody>
          <tr id="nas_s_0062__nas_s_0060_row1158517518417">
-          <td class="cellrowborder" valign="top" width="10.54%" headers="mcps1.3.5.2.6.2.4.2.3.1.1 "><p id="nas_s_0062__nas_s_0060_p158517511048"><span id="nas_s_0062__nas_s_0060_text191084227520">文件系统</span></p></td>
-          <td class="cellrowborder" valign="top" width="89.46%" headers="mcps1.3.5.2.6.2.4.2.3.1.2 "><p id="nas_s_0062__nas_s_0060_p15851451646">选择恢复到本机的文件系统。首次恢复到本机位置时，可单击<span class="uicontrol" id="nas_s_0062__nas_s_0060_uicontrol124218413611">“<span id="nas_s_0062__nas_s_0060_text128775231364">创建</span>”</span>新建文件系统。创建文件系统的详细操作，请参见<a href="nas_s_0100.html">创建文件系统</a>。</p></td>
+          <td class="cellrowborder" valign="top" width="10.54%" headers="mcps1.3.5.2.5.2.4.2.3.1.1 "><p id="nas_s_0062__nas_s_0060_p158517511048"><span id="nas_s_0062__nas_s_0060_text191084227520">文件系统</span></p></td>
+          <td class="cellrowborder" valign="top" width="89.46%" headers="mcps1.3.5.2.5.2.4.2.3.1.2 "><p id="nas_s_0062__nas_s_0060_p15851451646">选择恢复到本机的文件系统。首次恢复到本机位置时，可单击<span class="uicontrol" id="nas_s_0062__nas_s_0060_uicontrol124218413611">“<span id="nas_s_0062__nas_s_0060_text128775231364">创建</span>”</span>新建文件系统。创建文件系统的详细操作，请参见<a href="nas_s_0100.html">创建文件系统</a>。</p></td>
          </tr>
          <tr id="nas_s_0062__nas_s_0060_row1358516511642">
-          <td class="cellrowborder" valign="top" width="10.54%" headers="mcps1.3.5.2.6.2.4.2.3.1.1 "><p id="nas_s_0062__nas_s_0060_p1725084223716"><span id="nas_s_0062__nas_s_0060_text132479819312">覆盖规则</span></p></td>
-          <td class="cellrowborder" valign="top" width="89.46%" headers="mcps1.3.5.2.6.2.4.2.3.1.2 "><p id="nas_s_0062__nas_s_0060_p172501042153719">当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。</p>
+          <td class="cellrowborder" valign="top" width="10.54%" headers="mcps1.3.5.2.5.2.4.2.3.1.1 "><p id="nas_s_0062__nas_s_0060_p1725084223716"><span id="nas_s_0062__nas_s_0060_text132479819312">覆盖规则</span></p></td>
+          <td class="cellrowborder" valign="top" width="89.46%" headers="mcps1.3.5.2.5.2.4.2.3.1.2 "><p id="nas_s_0062__nas_s_0060_p172501042153719">当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。</p>
            <ul id="nas_s_0062__nas_s_0060_ul15250642173717">
             <li id="nas_s_0062__nas_s_0060_li52501642173711"><span id="nas_s_0062__nas_s_0060_text14250042193711">直接替换已经存在的文件</span></li>
             <li id="nas_s_0062__nas_s_0060_li15250154283711"><span id="nas_s_0062__nas_s_0060_text52507424377">忽略已存在的文件</span></li>

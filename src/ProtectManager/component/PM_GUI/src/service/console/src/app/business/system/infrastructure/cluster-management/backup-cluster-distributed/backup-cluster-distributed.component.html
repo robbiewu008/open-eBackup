@@ -1,4 +1,3 @@
-<div class="overview-tag">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,12 +11,12 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="overview-tag">
     <lv-group lvGutter="24px">
         <img src="assets/img/distributed_backup_storage.png" class="overview-img">
         <lv-group lvGutter="8px" lvDirection="vertical">
             <h1 class="vertical-up-text"> {{ clusterName }} </h1>
             <lv-group lvGutter="4px" lvDirection="vertical" *ngIf="!isDecouple; else decoupleStatus">
-                <span class="aui-text-label desc-font"> {{ deployType }} </span>
                 <span class="aui-link desc-font" (click)="clusterDetail()"> {{ 'system_view_cluster_details_label' | i18n}} </span>
             </lv-group>
         </lv-group>

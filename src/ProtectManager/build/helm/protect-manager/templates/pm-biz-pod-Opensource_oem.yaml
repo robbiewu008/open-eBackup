@@ -121,6 +121,11 @@ spec:
             - mountPath: /kmc_conf
               name: kmc-conf
               readOnly: true
+            - mountPath: /opt/cluster_config
+              name: cluster-volume
+              readOnly: true
+            - mountPath: /etc/localtime
+              name: date-config-localtime
       containers:
         - name: pm-gui
           image: pm-gui:{{ .Values.global.version }}
@@ -177,6 +182,8 @@ spec:
               name: nas-path
             - mountPath: /opt/ProtectManager/
               name: pm-path
+            - mountPath: /etc/localtime
+              name: date-config-localtime
             - mountPath: /opt/config
               name: common-volume
               readOnly: true
@@ -215,7 +222,7 @@ spec:
               command:
                 - sh
                 - check_health.sh
-            initialDelaySeconds: 200
+            initialDelaySeconds: 300
             periodSeconds: 35
             timeoutSeconds: 30
           securityContext:

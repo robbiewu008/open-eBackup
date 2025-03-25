@@ -194,22 +194,20 @@ export class CloudStackAdvancedParameterComponent implements OnInit {
     }
 
     // 修改索引
-    if (this.resourceType !== DataMap.Resource_Type.Project.value) {
-      each(
-        [
-          'backup_res_auto_index',
-          'archive_res_auto_index',
-          'enable_security_archive'
-        ],
-        key => {
-          if (this.formGroup.get(key)) {
-            assign(ext_parameters, {
-              [key]: this.formGroup.get(key).value
-            });
-          }
+    each(
+      [
+        'backup_res_auto_index',
+        'archive_res_auto_index',
+        'enable_security_archive'
+      ],
+      key => {
+        if (this.formGroup.get(key)) {
+          assign(ext_parameters, {
+            [key]: this.formGroup.get(key).value
+          });
         }
-      );
-    }
+      }
+    );
 
     return {
       ext_parameters

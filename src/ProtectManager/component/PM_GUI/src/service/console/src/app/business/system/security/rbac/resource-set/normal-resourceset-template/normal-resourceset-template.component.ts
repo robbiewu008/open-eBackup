@@ -279,11 +279,11 @@ export class NormalResourcesetTemplateComponent
           type: 'select',
           isMultiple: true,
           showCheckAll: true,
-          options: this.dataMapService.toArray('resource_LinkStatus_Special')
+          options: this.getLinkStatusOption()
         },
         cellRender: {
           type: 'status',
-          config: this.dataMapService.toArray('resource_LinkStatus_Special')
+          config: this.getLinkStatusOption()
         }
       },
       status: {
@@ -369,6 +369,48 @@ export class NormalResourcesetTemplateComponent
       address: {
         key: 'address',
         name: this.i18n.get('common_address_label')
+      },
+      isPdb: {
+        key: 'isPdb',
+        name: this.i18n.get('protection_is_pdb_label'),
+        cellRender: {
+          type: 'status',
+          config: this.dataMapService.toArray('pdbSetType')
+        }
+      },
+      sapsid: {
+        key: 'sapsid',
+        name: this.i18n.get('protection_sap_instance_id_label'),
+        hidden: true,
+        filter: {
+          type: 'search',
+          filterMode: 'contains'
+        }
+      },
+      oraclesid: {
+        key: 'oraclesid',
+        name: this.i18n.get('protection_oracle_instance_id_label'),
+        hidden: true,
+        filter: {
+          type: 'search',
+          filterMode: 'contains'
+        }
+      },
+      oracle_version: {
+        key: 'oracle_version',
+        name: this.i18n.get('protection_oracle_version_label'),
+        filter: {
+          type: 'search',
+          filterMode: 'contains'
+        }
+      },
+      brtools_version: {
+        key: 'brtools_version',
+        name: this.i18n.get('protection_brtools_version_label'),
+        filter: {
+          type: 'search',
+          filterMode: 'contains'
+        }
       },
       // 类型
       mysqlClusterType: {
@@ -657,6 +699,14 @@ export class NormalResourcesetTemplateComponent
         key: 'esn',
         name: this.i18n.get('common_serial_number_label')
       },
+      region: {
+        key: 'region',
+        name: this.i18n.get('Region'),
+        filter: {
+          type: 'search',
+          filterMode: 'contains'
+        }
+      },
       // sla三剑客
       sla: {
         key: 'sla_name',
@@ -816,7 +866,7 @@ export class NormalResourcesetTemplateComponent
         this.resourceType
       )
     ) {
-      return this.i18n.get('protection_host_name_label');
+      return this.i18n.get('protection_client_name_label');
     } else if (
       includes(
         [
@@ -848,6 +898,17 @@ export class NormalResourcesetTemplateComponent
     } else if (this.appType === ResourceSetType.GaussDB_T) {
       return this.dataMapService.toArray('gaussDBT_Resource_LinkStatus');
     }
+  }
+
+  getLinkStatusOption() {
+    if (
+      this.resourceType ===
+      DataMap.Resource_Type.gaussdbForOpengaussInstance.value
+    ) {
+      return this.dataMapService.toArray('gaussDBInstance');
+    }
+
+    return this.dataMapService.toArray('resource_LinkStatus_Special');
   }
 
   getEnvironmentEndpointName() {
@@ -883,6 +944,8 @@ export class NormalResourcesetTemplateComponent
         return this.dataMapService.toArray('Dameng_Type');
       case DataMap.Resource_Type.GaussDB_T.value:
         return this.dataMapService.toArray('gaussDBTClusterType');
+      case DataMap.Resource_Type.AntDB.value:
+        return this.dataMapService.toArray('AntDB_Instance_Type');
       case DataMap.Resource_Type.NASFileSystem.value:
         if (this.appType === ResourceSetType.StorageEquipment) {
           return this.dataMapService
@@ -914,6 +977,37 @@ export class NormalResourcesetTemplateComponent
           cols.osType,
           cols.version,
           cols.verify_status,
+          ...slaCols
+        ];
+      case resType.oraclePDB.value:
+        return [
+          ...nameCols,
+          cols.linkStatus,
+          cols.parentName,
+          cols.environmentEndpoint,
+          cols.osType,
+          cols.isPdb,
+          cols.version,
+          ...slaCols
+        ];
+      case resType.AntDB.value:
+        return [
+          ...nameCols,
+          cols.linkStatus,
+          cols.subType,
+          cols.version,
+          ...slaCols
+        ];
+      case resType.saponoracleDatabase.value:
+        return [
+          ...nameCols,
+          cols.linkStatus,
+          cols.sapsid,
+          cols.oraclesid,
+          cols.oracle_version,
+          cols.brtools_version,
+          cols.osType,
+          cols.environmentEndpoint,
           ...slaCols
         ];
       case resType.MySQLCluster.value:
@@ -1189,6 +1283,17 @@ export class NormalResourcesetTemplateComponent
         return [cols.name, cols.path, cols.linkStatus, cols.authType];
       case resType.Hive.value:
         return [cols.name, cols.linkStatus, cols.path, cols.authType];
+      case resType.gaussdbForOpengaussProject.value:
+        return [...nameCols, cols.linkStatus];
+      case resType.gaussdbForOpengaussInstance.value:
+        return [
+          ...nameCols,
+          cols.linkStatus,
+          cols.parentName,
+          cols.region,
+          cols.version,
+          ...slaCols
+        ];
       default:
         return nameCols;
     }
@@ -1205,6 +1310,14 @@ export class NormalResourcesetTemplateComponent
               DataMap.Os_Type.linux.value,
               DataMap.Os_Type.aix.value
             ],
+            item.value
+          );
+        });
+      case DataMap.Resource_Type.oraclePDB.value:
+      case DataMap.Resource_Type.saponoracleDatabase.value:
+        return this.dataMapService.toArray('Os_Type').filter(item => {
+          return includes(
+            [DataMap.Os_Type.windows.value, DataMap.Os_Type.linux.value],
             item.value
           );
         });
@@ -1259,6 +1372,7 @@ export class NormalResourcesetTemplateComponent
         // 所属数据库
         return this.i18n.get('protection_host_database_name_label');
       case DataMap.Resource_Type.lightCloudGaussdbInstance.value:
+      case DataMap.Resource_Type.gaussdbForOpengaussInstance.value:
         // 所属项目
         return this.i18n.get('commom_owned_project_label');
       case DataMap.Resource_Type.SQLServerGroup.value:
@@ -1303,6 +1417,24 @@ export class NormalResourcesetTemplateComponent
           conditionsTemp.isAllowRestore[0] = ['!='];
           conditionsTemp.isAllowRestore[1] = 'true';
         }
+      }
+      if (conditionsTemp.auth_status) {
+        assign(conditionsTemp, {
+          linkStatus: conditionsTemp.auth_status
+        });
+        delete conditionsTemp.auth_status;
+      }
+      if (
+        conditionsTemp.linkStatus &&
+        includes(
+          [DataMap.Resource_Type.gaussdbForOpengaussInstance.value],
+          this.resourceType
+        )
+      ) {
+        assign(conditionsTemp, {
+          status: conditionsTemp.linkStatus
+        });
+        delete conditionsTemp.linkStatus;
       }
       if (
         conditionsTemp.osType &&
@@ -1392,7 +1524,8 @@ export class NormalResourcesetTemplateComponent
               ResourceSetType.PostgreSQL,
               ResourceSetType.Informix,
               ResourceSetType.KingBase,
-              ResourceSetType.MySQL
+              ResourceSetType.MySQL,
+              ResourceSetType.DB2
             ],
             this.appType
           ) &&
@@ -1507,7 +1640,39 @@ export class NormalResourcesetTemplateComponent
       this.dataTable.setSelections(cloneDeep(this.selectionData));
       this.allSelectChange.emit();
       this.parentSelectChild();
+      if (
+        includes([DataMap.Resource_Type.dbTwoInstance.value], this.resourceType)
+      ) {
+        this.removeChildInstance();
+      }
     });
+  }
+
+  removeChildInstance() {
+    // 用于移除不在界面上存在的资源
+    const extParams = {
+      conditions: JSON.stringify({
+        ...this.getDefaultConditions(),
+        isTopInstance: InstanceType.NotTopinstance
+      })
+    };
+    if (this.appType === ResourceSetType.DB2) {
+      this.appUtilsService.getResourceByRecursion(
+        extParams,
+        params => this.protectedResourceApiService.ListResources(params),
+        resource => {
+          this.allSelectionMap[this.appType].data = this.allSelectionMap[
+            this.appType
+          ].data.filter(item => !find(resource, { uuid: item.uuid }));
+          this.selectionData = cloneDeep(
+            this.allSelectionMap[this.appType].data
+          );
+          this.dataTable.setSelections(cloneDeep(this.selectionData));
+          this.allSelectChange.emit();
+          this.parentSelectChild();
+        }
+      );
+    }
   }
 
   getDefaultConditions() {
@@ -1615,6 +1780,14 @@ export class NormalResourcesetTemplateComponent
               ? 'Database'
               : 'TableSet'
         };
+      case resType.AntDB.value:
+        return {
+          subType: [
+            resType.AntDBClusterInstance.value,
+            resType.AntDBInstance.value
+          ],
+          isTopInstance: InstanceType.TopInstance
+        };
       case resType.Exchange.value:
         return {
           subType: [resType.ExchangeGroup.value, resType.ExchangeSingle.value]
@@ -1665,6 +1838,12 @@ export class NormalResourcesetTemplateComponent
     // 名字太长了简化一下，搞一个resType
     const resType = DataMap.Resource_Type;
     switch (this.resourceType) {
+      case resType.gaussdbForOpengaussInstance.value:
+        assign(item, {
+          linkStatus: item.extendInfo?.status,
+          region: item.extendInfo.region
+        });
+        break;
       case DataMap.Resource_Type.saphanaInstance.value:
         assign(item, {
           enableLogBackup: item?.extendInfo?.enableLogBackup
@@ -1946,13 +2125,41 @@ export class NormalResourcesetTemplateComponent
           status: item.extendInfo?.status,
           region: item.extendInfo?.region,
           pmAddress: item.extendInfo?.pmAddress,
-          isAllowRestore: get(item, 'extendInfo.isAllowRestore', 'false'),
+          isAllowRestore: get(item, 'extendInfo.isAllowRestore', 'true'),
           instanceStatus: get(item, 'extendInfo.instanceStatus', '1')
         });
         break;
       case resType.ExchangeEmail.value:
         assign(item, {
           address: item.extendInfo?.PrimarySmtpAddress
+        });
+        break;
+      case DataMap.Resource_Type.oraclePDB.value:
+        assign(item, {
+          environmentEndpoint: item.environment.endpoint,
+          linkStatus: item.environment.linkStatus,
+          parentName: item.parentName,
+          isPdb: item.extendInfo?.isPdb,
+          osType: item.environment.osType,
+          version: item.version
+        });
+        break;
+      case DataMap.Resource_Type.AntDB.value:
+        assign(item, {
+          linkStatus: item.extendInfo?.linkStatus,
+          parentName: item.environment?.name,
+          version: item.extendInfo?.antdb_version
+        });
+        break;
+      case DataMap.Resource_Type.saponoracleDatabase.value:
+        assign(item, {
+          linkStatus: item.extendInfo?.linkStatus,
+          environmentEndpoint: item.environment?.endpoint,
+          oracle_version: item.extendInfo?.oracle_version,
+          brtools_version: item.extendInfo?.brtools_version,
+          sapsid: item.extendInfo?.sapsid,
+          oraclesid: item.extendInfo?.oraclesid,
+          osType: item.environment.osType
         });
         break;
       default:

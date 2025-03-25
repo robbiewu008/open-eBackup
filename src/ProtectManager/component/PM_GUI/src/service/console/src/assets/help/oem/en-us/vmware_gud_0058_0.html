@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -52,7 +52,7 @@
     <ol>
      <li id="vmware_gud_0058_0__li0198134611381"><span>Choose <span class="uicontrol" id="vmware_gud_0058_0__en-us_topic_0000001839142377_uicontrol1812933174613"><b><span id="vmware_gud_0058_0__en-us_topic_0000001839142377_text0129103112462"><strong>Explore</strong></span> &gt; <span id="vmware_gud_0058_0__en-us_topic_0000001839142377_text81291431134613"><strong>Copy Data</strong></span> &gt; <span id="vmware_gud_0058_0__en-us_topic_0000001839142377_text860175510430"><strong>Virtualization</strong></span> &gt; <span id="vmware_gud_0058_0__en-us_topic_0000001839142377_text8319371528"><strong>VMware</strong></span></b></span>.</span></li>
      <li><span>You can search for a copy by VM or copy. This section uses a VM as an example.</span><p></p><p>Click <strong>Resources</strong> to switch to the corresponding page, search for the VM to be restored by name, and click the VM name.</p> <p></p></li>
-     <li><span>Click <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> and select the year, month, and day in sequence to find the copy.</span><p></p><p>If <span><img src="en-us_image_0000001792388072.png"></span> is displayed under a month or date, copies exist in the month or on the date.</p> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Copy Data</strong></span></b></span> and select the year, month, and day in sequence to find the copy.</span><p></p><p>If <span><img src="en-us_image_0000001792388072.png"></span> is displayed below a month or date, copies exist in the month or on the date.</p> <p></p></li>
      <li><span>In the row that contains the target copy, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; Restore</b></span>.</span></li>
      <li><span>Restore a VM to the original location or a new location.</span><p></p>
       <ul>
@@ -75,8 +75,8 @@
             <li id="vmware_gud_0058_0__li1365234645115">After this function is disabled, the SAN mode is used for restoration using backup copies.</li>
            </ul>
           </div></li>
-         <li id="vmware_gud_0058_0__li1992593514010">For 1.6.0 and later versions: Choose whether to enable <strong id="vmware_gud_0058_0__b877015150377">Snapshot Generation</strong>, which is enabled by default.<p id="vmware_gud_0058_0__p188232028217">If this function is enabled, operations on VMs during restoration will not affect the restoration result. If this function is disabled, the restoration speed will be improved.</p></li>
-         <li id="vmware_gud_0058_0__li181973512199">For 1.6.0 and later versions: You can specify an agent host for executing restoration jobs. If no agent host is specified, the system automatically allocates an agent host.</li>
+         <li id="vmware_gud_0058_0__li1992593514010">For 1.6.0 and later versions, choose whether to enable <strong id="vmware_gud_0058_0__b877015150377">Snapshot Generation</strong>, which is enabled by default.<p id="vmware_gud_0058_0__p188232028217">If this function is enabled, operations on VMs during restoration will not affect the restoration result. If this function is disabled, the restoration speed will be improved.</p></li>
+         <li id="vmware_gud_0058_0__li181973512199">For 1.6.0 and later versions, you can specify an agent host for executing restoration jobs. If no agent host is specified, the system automatically allocates an agent host.</li>
          <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
         </ol></li>
        <li>Restore the VM to a new location.
@@ -108,7 +108,7 @@
                 <div class="notebody">
                  <ul>
                   <li>The VMware version of the target ESXi host cannot be earlier than that of the source ESXi host.</li>
-                  <li>For 1.6.0 and later versions: If the disk types in the copy information contain RDM, select a VMware host system for <strong>Compute Location</strong>. Otherwise, the disk type of <strong>VM Disk Files</strong> can only be <strong>Common disk</strong>.</li>
+                  <li>For 1.6.0 and later versions, if the disks in the copy contain RDM disks, select a VMware host system for <strong>Compute Location</strong>. Otherwise, the disk type of <strong>VM Disk Files</strong> can only be <strong>Common disk</strong>.</li>
                  </ul>
                 </div>
                </div></td>
@@ -152,8 +152,8 @@
             <li id="vmware_gud_0058_0__vmware_gud_0058_0_li1365234645115">After this function is disabled, the SAN mode is used for restoration using backup copies.</li>
            </ul>
           </div></li>
-         <li>For 1.6.0 and later versions: Choose whether to enable <strong id="vmware_gud_0058_0__vmware_gud_0058_0_b877015150377">Snapshot Generation</strong>, which is enabled by default.<p id="vmware_gud_0058_0__vmware_gud_0058_0_p188232028217">If this function is enabled, operations on VMs during restoration will not affect the restoration result. If this function is disabled, the restoration speed will be improved.</p></li>
-         <li>For 1.6.0 and later versions: You can specify an agent host for executing restoration jobs. If no agent host is specified, the system automatically allocates an agent host.</li>
+         <li>For 1.6.0 and later versions, choose whether to enable <strong id="vmware_gud_0058_0__vmware_gud_0058_0_b877015150377">Snapshot Generation</strong>, which is enabled by default.<p id="vmware_gud_0058_0__vmware_gud_0058_0_p188232028217">If this function is enabled, operations on VMs during restoration will not affect the restoration result. If this function is disabled, the restoration speed will be improved.</p></li>
+         <li>For 1.6.0 and later versions, you can specify an agent host for executing restoration jobs. If no agent host is specified, the system automatically allocates an agent host.</li>
         </ol></li>
       </ul> <p></p></li>
      <li id="vmware_gud_0058_0__li1168243513296"><span>Click <span class="uicontrol" id="vmware_gud_0058_0__uicontrol183011741155012"><b>OK</b></span>.</span></li>
@@ -161,7 +161,7 @@
    </div>
    <div class="section" id="vmware_gud_0058_0__section169631211145617">
     <h4 class="sectiontitle">Follow-up Procedure</h4>
-    <p id="vmware_gud_0058_0__p171491160561">For 1.6.0 and later versions: If a restoration job fails, perform the job again by referring to <a href="vmware_gud_0099_2.html">How Do I Retry a Failed VMware Restoration Job? (Applicable to 1.6.0 and Later Versions)</a>.</p>
+    <p id="vmware_gud_0058_0__p171491160561">For 1.6.0 and later versions, if a restoration job fails, execute the job again by referring to <a href="vmware_gud_0099_2.html">How Do I Retry a Failed VMware Restoration Job? (Applicable to 1.6.0 and Later Versions)</a>.</p>
    </div>
   </div>
   <div>

@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -36,7 +36,7 @@
   <a name="hcs_gud_0019"></a><a name="hcs_gud_0019"></a>
   <h1 class="topictitle1">步骤7：执行备份</h1>
   <div>
-   <p>执行备份前将需要保护的资源关联到指定SLA策略，系统将对这些资源按照SLA策略进行保护，并根据SLA策略周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+   <p>执行备份前将需要保护的资源关联到指定SLA，系统将对这些资源按照SLA进行保护，并根据SLA周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
    <div class="section">
     <h4 class="sectiontitle">注意事项</h4>
     <ul>
@@ -55,17 +55,21 @@
     <h4 class="sectiontitle">操作步骤</h4>
     <ol>
      <li><span>选择<span class="uicontrol" id="hcs_gud_0019__zh-cn_topic_0000001839142377_uicontrol23517341412">“<span id="hcs_gud_0019__zh-cn_topic_0000001839142377_text635183444114">保护</span> &gt; 云平台 &gt; 华为云Stack”</span>。</span></li>
-     <li><span>选择“<span>项目/资源集</span>”或“<span>云服务器</span>”页签，选择需要保护的弹性云服务器，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p></p>
+     <li><span>在左侧导航树选择已注册的华为云Stack环境。</span></li>
+     <li><span>在“项目/资源集”或“云服务器”页签，选择需要保护的弹性云服务器，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p></p>
+      <ul>
+       <li>在“项目/资源集”页签选择项目/资源集时，系统将对该项目/资源集下的所有弹性云服务器进行保护。</li>
+       <li>在“云服务器”页签选择云服务器时，系统将对该云服务器进行保护。</li>
+      </ul>
       <div class="note">
        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
        <div class="notebody">
         <ul>
-         <li>当在“<span>项目/资源集</span>”页签选择项目/资源集时，系统将对该项目/资源集下的所有弹性云服务器进行保护。</li>
          <li>如果系统未显示需要保护的项目/资源集或弹性云服务器，请先单击界面左侧区域的<span class="uicontrol">“<span>更多</span> &gt; <span>资源扫描</span>”</span>，更新资源信息。</li>
         </ul>
        </div>
       </div> <p></p></li>
-     <li><span>当时选择“<span>云服务器</span>”进行保护时，请选择是否开启自动保护云硬盘。否则，请跳过本步骤。</span><p></p><p>系统默认开启“<span>自动保护云硬盘</span>”，系统将保护云服务器下的所有存储类型为FusionStorage、OceanStor Dorado、OceanStor的云硬盘（含新发现的云硬盘）。</p> <p>您可以关闭“<span>自动保护云硬盘</span>”，单击“<span>请选择</span>”手动选择部分云硬盘备份。</p>
+     <li><span>当选择“<span>云服务器</span>”进行保护时，请选择是否开启自动保护云硬盘。否则，请跳过本步骤。</span><p></p><p>系统默认开启“<span>自动保护云硬盘</span>”，系统将保护云服务器下的所有存储类型为FusionStorage、OceanStor Dorado、OceanStor的云硬盘（含新发现的云硬盘）。</p> <p>您可以关闭“<span>自动保护云硬盘</span>”，单击“<span>请选择</span>”手动选择部分云硬盘备份。</p>
       <div class="note">
        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
        <div class="notebody">
@@ -98,20 +102,24 @@
         </colgroup>
         <thead align="left">
          <tr>
-          <th align="left" class="cellrowborder" valign="top" width="20.48%" id="mcps1.3.3.2.5.2.1.2.3.1.1"><p>参数</p></th>
-          <th align="left" class="cellrowborder" valign="top" width="79.52%" id="mcps1.3.3.2.5.2.1.2.3.1.2"><p>说明</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="20.48%" id="mcps1.3.3.2.6.2.1.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="79.52%" id="mcps1.3.3.2.6.2.1.2.3.1.2"><p>说明</p></th>
          </tr>
         </thead>
         <tbody>
          <tr>
-          <td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span>代理主机</span></p></td>
-          <td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>选择用于执行备份的代理主机。如果不选择，系统将随机选择一个代理主机执行备份任务。</p>
+          <td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p><span>代理主机</span></p></td>
+          <td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 ">
+           <ul>
+            <li>对于本产品部分型号，请选择用于执行备份的代理主机。如果不选择，系统将随机选择一个代理主机执行备份任务。</li>
+            <li>对于本产品部分型号，请选择用于执行备份的外置代理主机。</li>
+           </ul>
            <div class="note">
             <span class="notetitle"> 说明： </span>
             <div class="notebody">
              <ul>
               <li>对于1.5.0.SPC9之前版本，如果选择了外置代理，且租户对应资源的保护权限已授权给指定的数据保护管理员，则请在<span class="uicontrol">“<span id="hcs_gud_0019__zh-cn_topic_0000001666345505_text22651956143811">保护</span> &gt; 客户端”</span>界面该外置代理所在行，单击<span class="uicontrol">“<span>更多</span> &gt; <span>资源授权</span>”</span>，将外置代理也授权给租户对应资源授权的数据保护管理员。否则，将导致备份失败。</li>
-              <li>对于1.6.0及后续版本，请在“系统 &gt; 安全 &gt; RBAC”界面，在已授权用户所关联的资源集中添加外置代理。具体操作可参考<span>《OceanProtect <span id="hcs_gud_0019__zh-cn_topic_0000001792502994_ph14959193919202">备份一体机 1.5.0-1.6.0</span> 管理员指南》</span>中的“修改资源集”章节。</li>
+              <li>对于1.6.0及后续版本，请在“系统 &gt; 安全 &gt; RBAC”界面，在已授权用户所关联的资源集中添加外置代理。具体操作可参考<span>《管理员指南》</span>中的“修改资源集”章节。</li>
               <li>对于其他版本，如果选择了外置代理，且租户对应资源的保护权限已授权给指定的数据保护管理员，则请在<span class="uicontrol">“<span id="hcs_gud_0019__zh-cn_topic_0000001666345505_text22651956143811_1">保护</span> &gt; 客户端”</span>界面该外置代理所在行，查看是否已开启“共享”。
                <ul>
                 <li>如果已开启共享，则无需执行其他操作。</li>
@@ -122,7 +130,7 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 ">
+          <td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 ">
            <div class="p">
             备份副本自动索引
             <div class="note" id="hcs_gud_0019__vmware_gud_0028_note17447255201">
@@ -132,11 +140,11 @@
              </div>
             </div>
            </div></td>
-          <td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 "><p>当选择“<span>云服务器</span>”进行保护，且备份的磁盘包含了系统盘时，开启后，系统会对备份副本自动创建索引。使用该副本进行恢复时，支持选择副本中的单个或多个文件进行恢复，支持搜索副本中的文件、目录或链接。</p></td>
+          <td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 "><p>当选择“<span>云服务器</span>”进行保护，且备份的磁盘包含了系统盘时，开启后，系统会对备份副本自动创建索引。使用该副本进行恢复时，支持选择副本中的单个或多个文件进行恢复，支持搜索副本中的文件、目录或链接。</p></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span>SLA覆盖策略</span></p></td>
-          <td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 ">
+          <td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p><span>SLA覆盖策略</span></p></td>
+          <td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 ">
            <div class="p">
             当选择项目/资源集进行保护时，支持选择是否用项目/资源集的SLA覆盖云服务器已有的SLA。
             <div class="note">
@@ -148,8 +156,8 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p><span>SLA应用策略</span></p></td>
-          <td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 ">
+          <td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p><span>SLA应用策略</span></p></td>
+          <td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 ">
            <div class="p">
             当选择项目/资源集进行保护时，支持选择SLA策略的应用范围：
             <ul>
@@ -159,8 +167,8 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 "><p>云服务器过滤</p></td>
-          <td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 ">
+          <td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 "><p>云服务器过滤</p></td>
+          <td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 ">
            <div class="p">
             当选择项目/资源集进行保护时，如需指定保护计划中要排除或包含的云服务器，请打开开关，并执行以下操作：
             <ol type="a">
@@ -174,7 +182,7 @@
            </div></td>
          </tr>
          <tr>
-          <td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.5.2.1.2.3.1.1 ">
+          <td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.3.2.6.2.1.2.3.1.1 ">
            <div class="p">
             安全归档
             <div class="note" id="hcs_gud_0019__fc_gud_0019_note2052965314120">
@@ -184,13 +192,13 @@
              </div>
             </div>
            </div></td>
-          <td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.5.2.1.2.3.1.2 ">
+          <td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.3.2.6.2.1.2.3.1.2 ">
            <div class="p">
             当选择的SLA包含归档策略时，显示该参数。勾选后仅归档防勒索检测未感染的备份副本。
             <div class="note" id="hcs_gud_0019__fc_gud_0019_note1550211211513">
              <span class="notetitle"> 说明： </span>
              <div class="notebody">
-              <p id="hcs_gud_0019__fc_gud_0019_p10502162125111"><span style="color:#1A1A1A;">如果SLA归档策略中“归档时间”未选择“备份成功后立即执行归档”或“归档策略”未选择“仅归档最新的副本”，以及并未设置防勒索策略时，</span>请单击“前往配置”为待保护资源设置防勒索策略。具体操作请参考<span id="hcs_gud_0019__fc_gud_0019_cite15733201398">《OceanProtect <span id="hcs_gud_0019__fc_gud_0019_zh-cn_topic_0000001792502994_ph662613174472">备份一体机 1.5.0-1.6.0</span> 数据备份特性指南(副本防勒索)》</span>中的“创建防勒索&amp;WORM策略”章节。</p>
+              <p id="hcs_gud_0019__fc_gud_0019_p10502162125111"><span style="color:#1A1A1A;">如果SLA归档策略中“归档时间”未选择“备份成功后立即执行归档”或“归档策略”未选择“仅归档最新的副本”，以及并未设置防勒索策略时，</span>请单击“前往配置”为待保护资源设置防勒索策略。具体操作请参考<span id="hcs_gud_0019__fc_gud_0019_cite191322555252">《数据备份特性指南(副本防勒索)》</span>中的“创建防勒索&amp;WORM策略”章节。</p>
              </div>
             </div>
            </div></td>
@@ -198,7 +206,7 @@
         </tbody>
        </table>
       </div> <p></p></li>
-     <li><span>单击<span class="uicontrol" id="hcs_gud_0019__zh-cn_topic_0000001792503842_uicontrol471113581111">“确定”</span>。</span><p></p><p id="hcs_gud_0019__zh-cn_topic_0000001792503842_p25041111535">如果当前系统时间已晚于该SLA首次备份的开始时间，则关联备份SLA后可以选择在当前立即执行备份或者根据SLA中设置的备份策略等待下次调度。</p> <p></p></li>
+     <li><span>单击<span class="uicontrol" id="hcs_gud_0019__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p></p><p id="hcs_gud_0019__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p> <p></p></li>
      <li><strong>可选：</strong><span>执行手动备份。</span><p></p>
       <div class="p" id="hcs_gud_0019__zh-cn_topic_0000001964713008_p11899115114511">
        当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。

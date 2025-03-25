@@ -30,6 +30,9 @@ public class Endpoint {
     // 数据保护代理IP地址
     private String ip;
 
+    // 数据保护代理IP地址列表
+    private String ipList;
+
     // 数据保护代理端口
     private int port;
 
@@ -105,6 +108,14 @@ public class Endpoint {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public String getIpList() {
+        return ipList;
+    }
+
+    public void setIpList(String ipList) {
+        this.ipList = ipList;
     }
 
     public void setAgentOS(String agentOS) {

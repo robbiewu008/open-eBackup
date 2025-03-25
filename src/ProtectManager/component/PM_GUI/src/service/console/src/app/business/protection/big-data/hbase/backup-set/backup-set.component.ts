@@ -42,7 +42,8 @@ import {
   hasBackupPermission,
   hasResourcePermission,
   getLabelList,
-  SetTagType
+  SetTagType,
+  disableDeactiveProtectionTips
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
 import {
@@ -52,6 +53,7 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { ProtectService } from 'app/shared/services/protect.service';
 import { ResourceDetailService } from 'app/shared/services/resource-detail.service';
@@ -82,6 +84,7 @@ import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { CreateBackupsetComponent as CreateHiveBackupSetComponent } from '../../hive/create-backupset/create-backupset.component';
 import { CreateBackupsetComponent as CreateElasticSearchBackupSetComponent } from '../../elasticSearch/create-backupset/create-backupset.component';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
+import { GetLabelOptionsService } from '../../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-backup-set',
@@ -97,7 +100,7 @@ export class BackupSetComponent implements OnInit, AfterViewInit {
   optsConfig;
   optItems = [];
   selectionData = [];
-
+  currentDetailUuid = '';
   groupCommon = GROUP_COMMON;
 
   @Input() data: any;
@@ -121,7 +124,9 @@ export class BackupSetComponent implements OnInit, AfterViewInit {
     private batchOperateService: BatchOperateService,
     private takeManualBackupService: TakeManualBackupService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService,
+    private appUtilsService: AppUtilsService
   ) {}
 
   ngAfterViewInit() {
@@ -227,15 +232,6 @@ export class BackupSetComponent implements OnInit, AfterViewInit {
               this.selectionData = [];
               this.dataTable.setSelections([]);
               this.dataTable.fetchData();
-              if (
-                includes(
-                  mapValues(this.drawModalService.modals, 'key'),
-                  'detail-modal'
-                ) &&
-                size(data) === 1
-              ) {
-                this.getResourceDetail(data);
-              }
             });
         },
         disableCheck: data => {
@@ -262,15 +258,6 @@ export class BackupSetComponent implements OnInit, AfterViewInit {
               this.selectionData = [];
               this.dataTable.setSelections([]);
               this.dataTable.fetchData();
-              if (
-                includes(
-                  mapValues(this.drawModalService.modals, 'key'),
-                  'detail-modal'
-                ) &&
-                size(data) === 1
-              ) {
-                this.getResourceDetail(data);
-              }
             });
         },
         disableCheck: data => {
@@ -281,9 +268,12 @@ export class BackupSetComponent implements OnInit, AfterViewInit {
                 data,
                 d => !(d.sla_id && d.sla_status && hasProtectPermission(d))
               )
-            )
+            ) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX
           );
-        }
+        },
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n)
       },
       {
         id: 'recovery',
@@ -482,8 +472,11 @@ export class BackupSetComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -592,8 +585,9 @@ export class BackupSetComponent implements OnInit, AfterViewInit {
         delete conditions_v2.cluster_name;
       }
       if (conditions_v2.labelList) {
+        conditions_v2.labelList.shift();
         conditions_v2['labelCondition'] = {
-          labelName: conditions_v2.labelList[1]
+          labelList: conditions_v2.labelList
         };
 
         delete conditions_v2.labelList;
@@ -653,6 +647,13 @@ export class BackupSetComponent implements OnInit, AfterViewInit {
         })
       )
       .subscribe(res => {
+        this.appUtilsService.openDetailModalAfterQueryData(
+          {
+            autoPolling: args?.isAutoPolling,
+            records: res.records
+          },
+          this
+        );
         this.tableData = {
           total: res.totalCount,
           data: res.records
@@ -662,6 +663,7 @@ export class BackupSetComponent implements OnInit, AfterViewInit {
   }
 
   getResourceDetail(params) {
+    this.currentDetailUuid = params.uuid;
     this.protectedResourceApiService
       .ListResources({
         pageNo: CommonConsts.PAGE_START,
@@ -715,7 +717,8 @@ export class BackupSetComponent implements OnInit, AfterViewInit {
                   return getTableOptsItems(cloneDeep(this.optItems), v, this);
                 }
               }
-            )
+            ),
+            lvHeader: item?.name
           }
         );
       });
@@ -916,8 +919,7 @@ export class BackupSetComponent implements OnInit, AfterViewInit {
           this.selectionData = [];
           this.dataTable.setSelections([]);
           this.dataTable.fetchData();
-        },
-        restoreWidth: params => this.getResourceDetail(params)
+        }
       }
     );
   }

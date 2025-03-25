@@ -34,8 +34,7 @@ import {
   find,
   isEmpty,
   isNumber,
-  isString,
-  set
+  isString
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -51,7 +50,7 @@ export class SaphanaRestoreComponent implements OnInit {
   formGroup: FormGroup;
   restoreLocationType = RestoreV2LocationType;
   fileReplaceStrategy = VmFileReplaceStrategy;
-
+  isLogCopy = false;
   @Input() rowCopy;
   @Input() childResType;
   @Input() restoreType;
@@ -66,11 +65,17 @@ export class SaphanaRestoreComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initData();
+    this.initForm();
+    this.getInstanceOptions();
+  }
+
+  initData() {
     this.resourceData = isString(this.rowCopy.resource_properties)
       ? JSON.parse(this.rowCopy.resource_properties)
       : {};
-    this.initForm();
-    this.getInstanceOptions();
+    this.isLogCopy =
+      this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value;
   }
 
   initForm() {
@@ -91,7 +96,8 @@ export class SaphanaRestoreComponent implements OnInit {
         {
           validators: this.baseUtilService.VALID.required()
         }
-      )
+      ),
+      usingDelta: new FormControl(false)
     });
 
     this.listenForm();
@@ -240,10 +246,11 @@ export class SaphanaRestoreComponent implements OnInit {
           : this.formGroup.value.database
     };
 
-    if (this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value) {
+    if (this.isLogCopy) {
       assign(params, {
         extendInfo: {
-          restoreTimestamp: this.rowCopy.restoreTimeStamp
+          restoreTimestamp: this.rowCopy.restoreTimeStamp,
+          usingDelta: this.formGroup.get('usingDelta').value
         }
       });
     }

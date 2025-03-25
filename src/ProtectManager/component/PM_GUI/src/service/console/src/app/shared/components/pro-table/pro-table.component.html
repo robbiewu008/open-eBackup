@@ -1,4 +1,3 @@
-<!-- 过滤条件展示区 -->
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!-- 过滤条件展示区 -->
 <div *ngIf="initConfig.filterTags" class="lv-pro-table-filter">
   <lv-tag
     [ngModel]="filterTags"
@@ -56,6 +56,7 @@
       [lvFake]="initConfig.table.fake"
       (lvSelectionChange)="_selectionChange($event)"
       (lvStateChange)="_stateChange($event)"
+      (lvScrollEnd)="_scrollEnd()"
     >
       <thead>
         <tr>
@@ -106,6 +107,8 @@
               [lvShowSort]="col.sort"
               [lvCustomSort]="col.sort && col.sort.customSort"
               [lvShowCheckbox]="false"
+              [lvFilterVirtualScroll]="col.filter && col.key==='labelList'"
+              (lvFilterSearchChange)="filterVirtualSearchChange($event)"
             >
               <ng-container *ngIf="typeUtils.isRealString(col.name)"
                 ><div lv-overflow>
@@ -136,7 +139,7 @@
           </ng-container>
           <ng-container *ngIf="initConfig.table.colDisplayControl">
             <!-- 列显示/隐藏控制 -->
-            <th width="16px" style="padding: 0;" lvResizable="false">
+            <th width="16px" style="padding: 0;" lvResizable="false" [lvRight]="initConfig.table.colDisplayControl?.tdAlign">
               <lv-pro-cols-display
                 [(value)]="displayCols"
                 [data]="displayControlCols"
@@ -305,7 +308,7 @@
               </td>
             </ng-container>
             <ng-container *ngIf="initConfig.table.colDisplayControl">
-              <td (click)="_toggleSelect(item)"></td>
+              <td (click)="_toggleSelect(item)" [lvRight]="initConfig.table.colDisplayControl?.tdAlign"></td>
             </ng-container>
           </tr>
           <!-- 展开行内容 -->

@@ -189,6 +189,9 @@ public class PostgreClusterInstanceProvider implements ResourceProvider {
                 childNode.getExtendInfo().put(DatabaseConstants.SERVICE_IP, nodeInfo.getEndpoint());
                 childNode.getExtendInfo()
                     .put(DatabaseConstants.INSTANCE_PORT, MapUtils.getString(extendInfo, DatabaseConstants.PORT));
+                childNode.getExtendInfo()
+                    .put(PostgreConstants.ARCHIVE_DIR,
+                        MapUtils.getString(resource.getExtendInfo(), PostgreConstants.ARCHIVE_DIR));
                 canFind = true;
                 break;
             }

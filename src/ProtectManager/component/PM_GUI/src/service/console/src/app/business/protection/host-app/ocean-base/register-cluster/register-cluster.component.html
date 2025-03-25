@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup">
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'common_name_label' | i18n }}
@@ -137,7 +137,7 @@
       <thead>
         <tr>
           <th>
-            {{ 'protection_proxy_host_label' | i18n }}
+            {{ 'protection_client_label' | i18n }}
           </th>
           <th style="width: 200px">{{ 'common_dataplane_ip_label' | i18n }}</th>
           <th style="width: 200px">{{ 'common_port_label' | i18n }}</th>
@@ -224,6 +224,9 @@
 
 <ng-template #contentTpl let-item>
   <lv-group lvGutter="4px">
+      <i
+          lv-icon="{{ item.linkStatus === dataMap.resource_LinkStatus_Special.normal.value ? 'aui-host-online' : 'aui-host-offline'}}"
+      ></i>
     <span lv-overflow>{{ item.label }}</span>
     <span class="guide-recommend-label" *ngIf="showGuideNew(item)">
       {{ 'protection_guide_new_resource_label' | i18n }}

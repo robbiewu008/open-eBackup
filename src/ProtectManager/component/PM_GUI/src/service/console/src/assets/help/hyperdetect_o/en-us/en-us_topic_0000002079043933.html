@@ -1,0 +1,107 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Creating an SLA">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002079043893.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="Online Help for Ransomware Protection-Dorado V700R001C00">
+<meta name="DC.Publisher" content="20241226">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002079043933">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Creating an SLA</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002079043933"></a><a name="EN-US_TOPIC_0000002079043933"></a>
+
+<h1 class="topictitle1">Creating an SLA</h1>
+<div><p>This section describes how to create an SLA and create a ransomware detection snapshot for a file system.</p>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><ul><li>Ransomware detection snapshots cannot be created for file systems whose names start with <strong>pvc_</strong> created through HyperDetect.</li><li>Ransomware detection snapshots cannot be created for clone file systems.</li><li>After HyperMetro brain-split occurs, ransomware detection snapshots cannot be created for the end that fails arbitration.</li><li>You are advised to create the same SLA at the primary and secondary ends of HyperMetro. The SLA configured at the secondary end does not take effect immediately. It takes effect after a primary/secondary switchover.</li><li>Set <strong>Snapshot Directory Visibility</strong> to <strong>Visible</strong> for file systems.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="menucascade"><b><span class="uicontrol"><span><strong>Protect</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Protection Policies</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>SLAs</strong></span></span></b></span>.</span></li><li><span>Click <span class="uicontrol"><b><span>Create</span></b></span>.</span></li><li><span>Customize an SLA name.</span></li><li><span>Click the <strong>Applications</strong> icon, select the resource to be protected (<strong>Local File System</strong>), and click <strong>OK</strong>.</span></li><li><span>Click the <span class="uicontrol"><b><span>Ransomware Detection Snapshot Backup Policy</span></b></span> icon.</span></li><li><span>Set basic parameters on the <span class="uicontrol"><b>Ransomware Detection Snapshot Backup Policy</b></span> page.</span><p><p>Periodic backup and backup at a specified time are supported.</p>
+<p><a href="#EN-US_TOPIC_0000002079043933__table1591417351806">Table 1</a> describes the related parameters.</p>
+<div class="p">Set the ransomware detection snapshot backup interval, backup time window, and snapshot retention period based on service requirements. Suggestions are as follows:<ul><li>If the object to be protected is the secondary end of a remote replication pair, it is recommended that the backup time window of the system be different from the replication time window of the remote replication pair. Otherwise, the backup job may fail.</li><li>The intelligent ransomware detection rate is about 50,000 files per minute. Evaluate the backup interval based on the number of the objects to be protected. It is recommended that the backup interval be longer than the time required for intelligent ransomware detection to reduce detection job stacking.</li><li>It is recommended that the execution time of the initial backup be the same as the start time of the backup time window.</li><li>The copy retention period must be longer than an interval between two backups.</li></ul>
+</div>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002079043933__table1591417351806"></a><a name="table1591417351806"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002079043933__table1591417351806" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Basic parameters of a ransomware detection snapshot backup policy</caption><colgroup><col style="width:10.83%"><col style="width:13.889999999999999%"><col style="width:75.28%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.6.2.4.2.4.1.1"><p>Scenario</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.6.2.4.2.4.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.6.2.4.2.4.1.1 "><p>-</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.6.2.4.2.4.1.2 "><div class="p">Configure the first execution time, backup interval, copy retention period, and backup time window for ransomware detection snapshot backup.<ul><li>Configure the backup interval and copy retention period for ransomware detection snapshot backup.<ul><li><span><strong>By Year</strong></span><p>Configure the job to be executed once every year on <em>xx</em> (month) <em>xx</em> (day). Configure copies to be retained for <em>xx</em> days, weeks, months, years, or permanently.</p>
+<p>If the date does not exist in the year, no copy is generated.</p>
+</li><li><span><strong>By Month</strong></span><p>Configure the job to be executed on the <em>xx</em>th day (you can select multiple days) or the last day of each month. Configure copies to be retained for <em>xx</em> days, weeks, months, years, or permanently.</p>
+<p>If backup is set to be executed on the <em>xx</em>th day of each month and the date does not exist in a month, no copy is generated.</p>
+</li><li><span><strong>By Week</strong></span><p>Configure the job to be executed once every Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, or Sunday (you can select multiple days). Configure copies to be retained for <em>xx</em> days, weeks, months, years, or permanently.</p>
+</li><li><span><strong>By Day</strong></span><p>Configure the job to be executed every <em>xx</em> days starting from <em>xxxx</em> (year)-<em>xx</em> (month)-<em>xx</em> (day). Configure copies to be retained for <em>xx</em> days, weeks, months, years, or permanently.</p>
+</li><li><span><strong>By Hour</strong></span><p>Configure the job to be executed every <em>xx</em> hours starting from <em>xxxx</em> (year)-<em>xx</em> (month)-<em>xx</em> (day). Configure copies to be retained for <em>xx</em> days, weeks, months, years, or permanently.</p>
+</li><li><span><strong>By Minute</strong></span><p>Configure the job to be executed every <em>xx</em> minutes starting from <em>xxxx</em> (year)-<em>xx</em> (month)-<em>xx</em> (day). Configure copies to be retained for <em>xx</em> days, weeks, months, years, or permanently.</p>
+</li></ul>
+</li><li>Configure the time period during which ransomware detection snapshot backup can be performed. Ransomware detection snapshot backup jobs will not be scheduled beyond this time period.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>If the end time is earlier than or the same as the start time, the actual end time is on the next day.</li><li>If a backup job is not completed within the specified time window, the system will not stop the backup job, but report an event.</li><li>If <strong>Delete Obsolete Read-Only Snapshot</strong> is enabled for a file system, when space used by the file system reaches the capacity alarm threshold and space used by snapshots is larger than that reserved for snapshots (source file system capacity × reserved snapshot space ratio), the system automatically deletes the oldest non-secure read-only snapshots. After a snapshot is deleted, using the snapshot for restoration on ProtectManager will fail. If no uninfected snapshot exists on ProtectManager, the snapshot detection accuracy decreases. Therefore, you need to properly configure the reserved space for file system snapshots and ransomware protection SLA policies.</li><li>Once the retention period expires, the system automatically deletes the expired copies.</li><li>You are advised to set the interval of ransomware detection snapshot backup to once a day.</li></ul>
+</div></div>
+</li></ul>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Set advanced parameters of the ransomware detection snapshot backup policy.</span><p><div class="p"><a href="#EN-US_TOPIC_0000002079043933__table79151351804">Table 2</a> describes the related parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002079043933__table79151351804"></a><a name="table79151351804"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002079043933__table79151351804" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Advanced parameters of a ransomware detection snapshot backup policy</caption><colgroup><col style="width:30.06%"><col style="width:69.94%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="30.06%" id="mcps1.3.3.2.7.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="69.94%" id="mcps1.3.3.2.7.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.7.2.1.2.2.3.1.1 "><p><span>Uninfected Snapshot Lock</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.7.2.1.2.2.3.1.2 "><p>Indicates whether to lock the snapshots where no ransomware is detected. This function is disabled by default. After this function is enabled, uninfected snapshots will be converted to secure snapshots. The expiration time of copies will be delayed and the copies cannot be modified or deleted before they expire.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.3.2.7.2.1.2.2.3.1.1 "><p><span>Automatic Retry</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.3.2.7.2.1.2.2.3.1.2 "><p>This function is enabled by default. If a ransomware detection snapshot backup job fails, the system automatically retries the job.</p>
+<div class="p">The number of retries ranges from 1 to 5, and the wait time ranges from 1 minute to 30 minutes. For example, if the number of retries is set to 3 and the wait time is set to 5 minutes, the system retries for three times at an interval of 5 minutes.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>During automatic retry, the system creates a ransomware detection snapshot backup job. The backup job is executed only when it is within the preset time window.</p>
+</div></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span> to return to the SLA creation page.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>. The SLA is created.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002079043893.html">Creating a Ransomware Detection Snapshot</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

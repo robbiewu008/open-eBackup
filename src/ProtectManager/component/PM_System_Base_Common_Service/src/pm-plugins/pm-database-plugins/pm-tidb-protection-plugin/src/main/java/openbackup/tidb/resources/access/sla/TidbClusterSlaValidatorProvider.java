@@ -102,7 +102,9 @@ public class TidbClusterSlaValidatorProvider implements SlaValidateProvider {
             .setLimit(PolicyLimitConfig.of(PolicyAction.CUMULATIVE_INCREMENT, 0))
             .setLimit(PolicyLimitConfig.of(PolicyAction.LOG, SlaConstants.LOG_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
             .setLimit(PolicyLimitConfig.of(PolicyAction.ARCHIVING, SlaConstants.ARCHIVE_POLICY_COUNT_LIMIT))
-            .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION, SlaConstants.REPLICATION_POLICY_COUNT_LIMIT));
+            .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION, SlaConstants.REPLICATION_POLICY_COUNT_LIMIT))
+            .setLimit(
+                PolicyLimitConfig.of(PolicyAction.REPLICATION_LOG, SlaConstants.REPLICATION_LOG_POLICY_COUNT_LIMIT));
         log.info("end getConfig in TidbClusterSlaValidatorProvider");
         return sla;
     }

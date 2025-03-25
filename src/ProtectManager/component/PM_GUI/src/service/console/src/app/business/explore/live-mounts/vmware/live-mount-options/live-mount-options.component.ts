@@ -1170,6 +1170,51 @@ export class LiveMountOptionsComponent implements OnInit {
       if (isEmpty(trim(String(v)))) {
         return;
       }
+      // 带宽
+      if (
+        includes(['min_bandwidth', 'max_bandwidth'], k) &&
+        !this.formGroup.value.bindWidthStatus
+      ) {
+        return;
+      }
+      // 带宽burst
+      if (
+        k === 'burst_bandwidth' &&
+        !(
+          this.formGroup.value.bindWidthStatus &&
+          this.formGroup.value.max_bandwidth
+        )
+      ) {
+        return;
+      }
+      if (
+        includes(['min_iops', 'max_iops'], k) &&
+        !this.formGroup.value.iopsStatus
+      ) {
+        return;
+      }
+      if (
+        k === 'burst_iops' &&
+        !(this.formGroup.value.iopsStatus && this.formGroup.value.max_iops)
+      ) {
+        return;
+      }
+      if (
+        k === 'burst_time' &&
+        !(
+          (this.formGroup.value.bindWidthStatus &&
+            this.formGroup.value.max_bandwidth &&
+            this.formGroup.value.burst_bandwidth) ||
+          (this.formGroup.value.iopsStatus &&
+            this.formGroup.value.max_iops &&
+            this.formGroup.value.burst_iops)
+        )
+      ) {
+        return;
+      }
+      if (k === 'latency' && !this.formGroup.value.latencyStatus) {
+        return;
+      }
       performance[k] = v;
     });
     assign(parameters, { performance });

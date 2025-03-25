@@ -71,6 +71,7 @@ CpFile()
         return 1
     fi
     cp "$1" "$2"
+    echo "copy file $1 to $2"
 }
 
 cd ${BASE_PATH}/
@@ -99,8 +100,9 @@ if [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
 
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/NasPlugin.tar.xz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/FilePlugin.tar.xz ${BASE_PATH}/Plugins
-    # CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/GeneralDBPlugin.tar.xz ${BASE_PATH}/Plugins
-    # CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/VirtualizationPlugin.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/GeneralDBPlugin.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/Block_Service.tar.xz ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/VirtualizationPlugin.tar.xz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/FusionComputePlugin.tar.xz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Linux/ObsPlugin.tar.xz ${BASE_PATH}/Plugins
 
@@ -109,6 +111,7 @@ if [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
 
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/FilePlugin.zip ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/VirtualizationPlugin.zip ${BASE_PATH}/Plugins
+    CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/Windows/GeneralDBPlugin.zip ${BASE_PATH}/Plugins
 
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/FilePlugin_ppc_64.tar.xz ${BASE_PATH}/Plugins
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/AIX/cppframework-AIX_ppc_64.tar.xz ${BASE_PATH}/Plugins
@@ -124,11 +127,9 @@ fi
 
 # download fileclient
 echo "start download fileclient"
-if [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "aarch64" ]; then
+if [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
     MakeDir ${BASE_PATH}/FileClient
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/fileClient_aarch64.tar.gz ${BASE_PATH}/FileClient/
-elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" = "x86_64" ]; then
-    MakeDir ${BASE_PATH}/FileClient
     CpFile ${OPENSOURCE_REPOSITORY_DIR}/Plugins/fileClient_x86_64.tar.gz ${BASE_PATH}/FileClient/
 elif [ "$BUILD_PKG_TYPE" = "OpenSource" ] && [ "$BUILD_OS_TYPE" != "aix" ] && [ "$BUILD_OS_TYPE" != "solaris" ]; then
     MakeDir ${BASE_PATH}/FileClient
@@ -150,6 +151,7 @@ if [ "$BUILD_PKG_TYPE" = "OceanCyber" ]; then
 elif [ "$BUILD_PKG_TYPE" = "OpenSource" ]; then
     cp -rf ${BASE_PATH}/Plugins/*.tar.gz ${BASE_PATH}/final_pkg/Plugins
     cp -rf ${BASE_PATH}/Plugins/*.tar.xz ${BASE_PATH}/final_pkg/Plugins
+    cp -rf ${BASE_PATH}/Plugins/*.zip ${BASE_PATH}/final_pkg/Plugins
 else
     cp -rf ${BASE_PATH}/Plugins/*.tar.gz ${BASE_PATH}/final_pkg/Plugins
     cp -rf ${BASE_PATH}/Plugins/*.tar.xz ${BASE_PATH}/final_pkg/Plugins
@@ -161,9 +163,11 @@ cd tmp_zip
 find ${BASE_PATH}/Agent/bin/install/ -maxdepth 1 \( -name "*sh" -o -name "*txt*" \)  -exec cp -f "{}" "." \;
 zip -r ${BASE_PATH}/final_pkg/PackageScript/package-like-unix.zip .
 rm -rf ${BASE_PATH}/tmp_zip/*
+
 find ${BASE_PATH}/Agent/bin/install/ -maxdepth 1 \( -name "*bat" -o -name "*txt*" \)  -exec cp -f "{}" "." \;
 zip -r ${BASE_PATH}/final_pkg/PackageScript/package-windows.zip .
 rm -rf ${BASE_PATH}/tmp_zip/*
+
 cp ${BASE_PATH}/Agent/bin/bat/push_install_check.bat ${BASE_PATH}/final_pkg/PackageScript/windows
 cp ${BASE_PATH}/Agent/bin/shell/push_install_check.sh ${BASE_PATH}/final_pkg/PackageScript/like-unix
 cd ${BASE_PATH}/

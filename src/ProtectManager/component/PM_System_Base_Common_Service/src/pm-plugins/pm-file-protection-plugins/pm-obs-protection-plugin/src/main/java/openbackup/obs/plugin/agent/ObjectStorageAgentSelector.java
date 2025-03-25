@@ -12,6 +12,8 @@
 */
 package openbackup.obs.plugin.agent;
 
+import static openbackup.system.base.common.constants.Constants.INTERNAL_AGENT_KEY;
+
 import com.huawei.oceanprotect.repository.tapelibrary.common.util.JsonUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -49,9 +51,6 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class ObjectStorageAgentSelector implements ProtectAgentSelector {
-    // 内置agent的key
-    private static final String INTERNAL_AGENT_KEY = "scenario";
-
     private final AgentBusinessService agentBusinessService;
 
     private final ResourceService resourceService;

@@ -12,6 +12,8 @@
 */
 package openbackup.data.access.framework.protection.service.quota;
 
+import static openbackup.data.access.framework.copy.mng.constant.CopyPropertiesKeyConstant.SIZE;
+
 import com.huawei.oceanprotect.base.cluster.sdk.service.MultiClusterSummaryService;
 import com.huawei.oceanprotect.system.base.quota.enums.QuotaTaskTypeEnum;
 import com.huawei.oceanprotect.system.base.quota.enums.UpdateQuotaType;
@@ -19,7 +21,6 @@ import com.huawei.oceanprotect.system.base.quota.service.UserQuotaService;
 import com.huawei.oceanprotect.system.base.user.service.UserInternalService;
 
 import lombok.extern.slf4j.Slf4j;
-import openbackup.data.access.framework.copy.mng.constant.CopyPropertiesKeyConstant;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.system.base.common.utils.JSONObject;
@@ -29,7 +30,6 @@ import openbackup.system.base.sdk.copy.model.CopyInfo;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -79,14 +79,14 @@ public class UserQuotaManager {
     }
 
     /**
-     * SAML用户执行复制任务时 进行配额校验
+     * 用户执行复制任务时 进行配额校验(校验备份配额)
      * 校验目标端该用户的备份额度是否充足
      * 充足则允许执行复制任务，否则报错
      *
      * @param clusterId 目标端集群id
      * @param userId userId
      */
-    public void checkSamlUserBackupQuotaInTargetWhenReplication(Integer clusterId, String userId) {
+    public void checkUserBackupQuotaInTargetWhenReplication(Integer clusterId, String userId) {
         multiClusterSummaryService.checkTargetQuota(clusterId, userId, Strings.EMPTY,
             QuotaTaskTypeEnum.TASK_BACKUP.value());
         log.info("User: {} has enough quota in Target cluster:{} to replication.", userId, clusterId);
@@ -118,23 +118,11 @@ public class UserQuotaManager {
             return;
         }
         JSONObject properties = JSONObject.fromObject(copy.getProperties());
-        String quota = properties.getString(CopyPropertiesKeyConstant.SIZE, DATA_SIZE_DEFAULT_VALUE);
-        String copyId = copy.getUuid();
-        String associatedUserId = copy.getUserId();
-        List<String> userIdList = userInternalService.getUserIdListByResourceObjectId(copyId);
-        if (VerifyUtil.isEmpty(userIdList)) {
-            log.warn("Fail to find user list by copyId:{}, will only increase associated user:{}", copyId,
-                associatedUserId);
-            // 通用场景，资源ID需传null
-            userQuotaService.updateUserUsedQuota(associatedUserId, null, copy.getGeneratedBy(),
-                UpdateQuotaType.INCREASE, quota);
-            log.info("Unified increase user: {} quota: {} success, job: {}.", copy.getUserId(), quota, jobId);
-            return;
-        }
-        for (String userId : userIdList) {
-            userQuotaService.updateUserUsedQuota(userId, null, copy.getGeneratedBy(), UpdateQuotaType.INCREASE, quota);
-        }
-        log.info("Unified increase user by list: {} quota: {} success, job: {}.", userIdList, quota, jobId);
+        String quota = properties.getString(SIZE, DATA_SIZE_DEFAULT_VALUE);
+        // 通用场景，资源ID需传null
+        userQuotaService.updateUserUsedQuota(copy.getUserId(), null, copy.getGeneratedBy(), UpdateQuotaType.INCREASE,
+            quota);
+        log.info("Unified increase user: {} quota: {} success, job: {}.", copy.getUserId(), quota, jobId);
     }
 
     /**
@@ -149,23 +137,11 @@ public class UserQuotaManager {
             return;
         }
         JSONObject properties = JSONObject.fromObject(copy.getProperties());
-        String quota = properties.getString(CopyPropertiesKeyConstant.SIZE, DATA_SIZE_DEFAULT_VALUE);
-        String copyId = copy.getUuid();
-        String associatedUserId = copy.getUserId();
-        List<String> userIdList = userInternalService.getUserIdListByResourceObjectId(copyId);
-        if (VerifyUtil.isEmpty(userIdList)) {
-            log.warn("Fail to find user list by copyId:{}, will only reduce associated user:{}", copyId,
-                associatedUserId);
-            // 通用场景，资源ID需传null
-            userQuotaService.updateUserUsedQuota(associatedUserId, null, copy.getGeneratedBy(), UpdateQuotaType.REDUCE,
-                quota);
-            log.info("Unified reduce user: {} quota: {} success, job: {}.", copy.getUserId(), quota, jobId);
-            return;
-        }
-        for (String userId : userIdList) {
-            userQuotaService.updateUserUsedQuota(userId, null, copy.getGeneratedBy(), UpdateQuotaType.REDUCE, quota);
-        }
-        log.info("Unified reduce user by list: {} quota: {} success, job: {}.", userIdList, quota, jobId);
+        String quota = properties.getString(SIZE, DATA_SIZE_DEFAULT_VALUE);
+        // 通用场景，资源ID需传null
+        userQuotaService.updateUserUsedQuota(copy.getUserId(), null, copy.getGeneratedBy(), UpdateQuotaType.REDUCE,
+            quota);
+        log.info("Unified reduce user: {} quota: {} success, job: {}.", copy.getUserId(), quota, jobId);
     }
 
     /**

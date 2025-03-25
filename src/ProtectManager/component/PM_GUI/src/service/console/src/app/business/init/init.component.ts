@@ -418,27 +418,22 @@ export class InitComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     if (this.isModify) {
-      this.warningMessageService.create({
-        content: this.i18n.get('common_network_config_warning_tip_label'),
-        onOK: () => {
-          this.systemApiService
-            .createInitConfigUsingPOST({
-              initNetworkBody: this.componentData,
-              memberEsn: this.activeNode || ''
-            })
-            .subscribe({
-              next: () => {
-                this.appUtilsService.setCacheValue(
-                  'networkModify',
-                  DataMap.networkModifyingStatus.modifying.value
-                );
-                this.activeIndex = 3;
-                this.initConfigProcessComponent.getStatus();
-              },
-              error: error => {}
-            });
-        }
-      });
+      this.systemApiService
+        .createInitConfigUsingPOST({
+          initNetworkBody: this.componentData,
+          memberEsn: this.activeNode || ''
+        })
+        .subscribe({
+          next: () => {
+            this.appUtilsService.setCacheValue(
+              'networkModify',
+              DataMap.networkModifyingStatus.modifying.value
+            );
+            this.activeIndex = 3;
+            this.initConfigProcessComponent.getStatus();
+          },
+          error: error => {}
+        });
     } else {
       this.systemApiService
         .createInitConfigUsingPOST({

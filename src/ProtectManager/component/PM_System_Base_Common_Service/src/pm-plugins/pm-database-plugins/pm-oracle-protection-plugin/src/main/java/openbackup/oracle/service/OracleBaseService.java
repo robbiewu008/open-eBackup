@@ -529,6 +529,7 @@ public class OracleBaseService {
      */
     public void checkPdbInstanceActiveStandby(ProtectedResource resource, ProtectedEnvironment environment) {
         // 调用Agent接口，获取集群状态信息
+        log.info("checkPdbInstanceActiveStandby ip: {}", environment.getEndpoint());
         AppEnvResponse appEnvResponse = agentUnifiedService.getClusterInfo(resource, environment);
         if (VerifyUtil.isEmpty(appEnvResponse) || VerifyUtil.isEmpty(appEnvResponse.getExtendInfo())) {
             throw new DataProtectionAccessException(CommonErrorCode.WRONG_GET_DATABASE_INFORMATION,
@@ -554,5 +555,6 @@ public class OracleBaseService {
         Map<String, String> resExtendInfo = resource.getExtendInfo();
         resExtendInfo.put(OracleConstants.VERIFY_STATUS, "true");
         resource.setVersion(envExtendInfo.get(DatabaseConstants.VERSION));
+        resource.setParentName(envExtendInfo.get(DatabaseConstants.INST_NAME));
     }
 }

@@ -52,7 +52,6 @@ public class SQLDistributeLockAspect {
         Object result = new Object();
         // 增加功能，如果当前任务必须是由主节点执行
         if (sqlDistributeLock.masterOnly() && !BackupClusterConfigUtil.isMasterCluster()) {
-            log.info("current cluster is not primary cluster node");
             return result;
         }
         String lockName = sqlDistributeLock.lockName();
@@ -64,15 +63,13 @@ public class SQLDistributeLockAspect {
         try {
             canAcquireLock = lock.tryLock(tryLockTime, timeUnit);
             if (!canAcquireLock) {
-                log.info("sql distributed lock : {} is occupied by others.", lockName);
+                log.debug("sql distributed lock : {} is occupied by others.", lockName);
                 if (errorCode > 0L) {
                     throw new LegoCheckedException(errorCode);
                 }
                 return result;
             }
-            log.info("acquire sql distributed lock : {} success.", lockName);
             result = joinPoint.proceed(joinPoint.getArgs());
-            log.info("exec task end, lock : {}.", lockName);
         } finally {
             if (canAcquireLock) {
                 lock.unlock();

@@ -89,6 +89,12 @@ public class OpenGaussRestoreInterceptorProvider extends AbstractDbRestoreInterc
 
         // 通过副本中的resourceType下发恢复到agent插件
         task.getTargetObject().setSubType(copy.getResourceSubType());
+
+        // 设置实例恢复支持写
+        log.info("Opengauss db set restore need writable is True");
+        Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElse(new HashMap<>());
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        task.setAdvanceParams(advanceParams);
         return task;
     }
 

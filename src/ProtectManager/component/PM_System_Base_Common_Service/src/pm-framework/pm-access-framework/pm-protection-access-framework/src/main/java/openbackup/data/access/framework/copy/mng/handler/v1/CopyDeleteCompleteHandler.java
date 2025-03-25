@@ -12,6 +12,8 @@
 */
 package openbackup.data.access.framework.copy.mng.handler.v1;
 
+import com.huawei.oceanprotect.system.base.label.service.LabelService;
+
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
@@ -35,6 +37,7 @@ import openbackup.system.base.sdk.job.model.request.JobStopParam;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 import openbackup.system.base.security.exterattack.ExterAttack;
 
+import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
@@ -42,6 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -71,6 +75,9 @@ public class CopyDeleteCompleteHandler implements TaskCompleteHandler {
     @Autowired
     private UserQuotaManager userQuotaManager;
 
+    @Autowired
+    private LabelService labelService;
+
     /**
      * detect object applicable
      *
@@ -90,6 +97,10 @@ public class CopyDeleteCompleteHandler implements TaskCompleteHandler {
     @ExterAttack
     @Override
     public void onTaskCompleteSuccess(TaskCompleteMessageBo taskCompleteMessage) {
+        taskCommonPostProcess(taskCompleteMessage, true);
+    }
+
+    private void taskCommonPostProcess(TaskCompleteMessageBo taskCompleteMessage, boolean isSuccess) {
         updateTaskCanStop(taskCompleteMessage);
         String requestId = taskCompleteMessage.getJobRequestId();
         RMap<String, String> context = redissonClient.getMap(requestId, StringCodec.INSTANCE);
@@ -99,8 +110,8 @@ public class CopyDeleteCompleteHandler implements TaskCompleteHandler {
             extendsInfo = JSONObject.toBean(JSONObject.fromObject(extInfo), ExtendsInfo.class);
         }
         int status = taskCompleteMessage.getJobStatus();
-        boolean isCopyDamaged = DmeJobStatusEnum.SUCCESS.equals(DmeJobStatusEnum.fromStatus(status))
-                || (extendsInfo != null && extendsInfo.isCopyDamaged()); // false 副本未删除成功，可用 true 表示副本不可用
+        boolean isCopyDamaged = DmeJobStatusEnum.SUCCESS.equals(DmeJobStatusEnum.fromStatus(status)) || (
+            extendsInfo != null && extendsInfo.isCopyDamaged()); // false 副本未删除成功，可用 true 表示副本不可用
         context.put(COPY_DAMAGED, String.valueOf(isCopyDamaged));
 
         String copyId = context.get(ContextConstants.COPY_ID);
@@ -110,8 +121,12 @@ public class CopyDeleteCompleteHandler implements TaskCompleteHandler {
                 providerManager.findProvider(DeleteIndexProvider.class, copy.getResourceSubType())
                     .deleteIndex(requestId, copyId);
             }
-            // 副本删除成功，减少用户已使用配额
-            userQuotaManager.decreaseUsedQuota(requestId, copy);
+            if (isSuccess) {
+                // 副本删除成功，减少用户已使用配额
+                userQuotaManager.decreaseUsedQuota(requestId, copy);
+                // 删除标签关联关系 (一样的逻辑抽象出来比较好)
+                labelService.deleteByResourceObjectIdsAndLabelIds(Collections.singletonList(copyId), StringUtils.EMPTY);
+            }
         } catch (LegoCheckedException exception) {
             log.error("Delete copy index failed.", ExceptionUtil.getErrorMessage(exception));
         }
@@ -130,7 +145,7 @@ public class CopyDeleteCompleteHandler implements TaskCompleteHandler {
     @Override
     public void onTaskCompleteFailed(TaskCompleteMessageBo taskCompleteMessage) {
         // 失败的逻辑在副本模块已做处理，本次仅先做接口适配
-        onTaskCompleteSuccess(taskCompleteMessage);
+        taskCommonPostProcess(taskCompleteMessage, false);
     }
 
     private void updateTaskCanStop(TaskCompleteMessageBo taskCompleteMessage) {

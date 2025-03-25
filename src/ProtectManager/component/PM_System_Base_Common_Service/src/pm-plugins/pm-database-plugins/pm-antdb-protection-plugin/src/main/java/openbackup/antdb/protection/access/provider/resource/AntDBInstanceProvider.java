@@ -13,6 +13,7 @@
 package openbackup.antdb.protection.access.provider.resource;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.antdb.protection.access.common.AntDBConstants;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
@@ -111,7 +112,9 @@ public class AntDBInstanceProvider implements ResourceProvider {
 
     private void setAntDBInstance(ProtectedResource resource, String checkResult) {
         Map<String, String> messageMap = JSONObject.fromObject(checkResult).toMap(String.class);
-        resource.setVersion(messageMap.get(DatabaseConstants.VERSION));
+        resource.setVersion(messageMap.getOrDefault(AntDBConstants.PG_VERSION, ""));
+        resource.setExtendInfoByKey(AntDBConstants.ANTDB_VERSION,
+            messageMap.getOrDefault(AntDBConstants.ANTDB_VERSION, ""));
         resource.setExtendInfoByKey(DatabaseConstants.DATA_DIRECTORY, messageMap.get(DatabaseConstants.DATA_DIRECTORY));
     }
 

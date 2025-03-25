@@ -66,8 +66,6 @@ public class TpopsGaussDbJobQueueProvider implements JobQueueProvider {
 
     @Override
     public boolean applicable(Job object) {
-        log.info("TpopsGaussDbJobQueueProvider get getSourceSubType: {}", object.getSourceSubType());
-        log.info("TpopsGaussDbJobQueueProvider get getType: {}", object.getType());
         return ResourceSubTypeEnum.TPOPS_GAUSSDB_INSTANCE.equalsSubType(object.getSourceSubType())
             && ALLOWED_JOB_TYPE.contains(object.getType());
     }

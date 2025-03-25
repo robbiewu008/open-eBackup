@@ -1,4 +1,3 @@
-<lv-collapse [lvMultiExpansion]="false" lvType="simple">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,11 +11,12 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-collapse [lvMultiExpansion]="false" lvType="simple">
     <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
         <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
             <lv-form-item>
                 <lv-form-label>
-                    {{'protection_proxy_host_label' | i18n}}
+                    {{'protection_clients_label' | i18n}}
                 </lv-form-label>
                 <lv-form-control>
                     <lv-select [lvOptions]="hostOptions" formControlName="proxyHost" lvValueKey='value' lvShowFilter
@@ -34,10 +34,10 @@
                 </lv-form-control>
             </lv-form-item>
             <!-- 修改索引设置 -->
-            <ng-container *ngIf="resourceType === dataMap.Resource_Type.APSCloudServer.value">
-                <aui-update-index [formGroup]="formGroup" [extParams]="extParams"></aui-update-index>
-            </ng-container>
-            <ng-container *ngIf="resourceType !== dataMap.Resource_Type.APSCloudServer.value">
+            <aui-update-index [formGroup]="formGroup" [extParams]="extParams"
+                [noNeedMgt]="!includes([dataMap.Resource_Type.APSCloudServer.value, dataMap.Resource_Type.vmGroup.value],resourceType)"></aui-update-index>
+            <ng-container
+                *ngIf="!includes([dataMap.Resource_Type.APSCloudServer.value, dataMap.Resource_Type.vmGroup.value],resourceType)">
                 <lv-form-item>
                     <lv-form-label>
                         {{'protection_overwrite_policy_label' | i18n}}

@@ -39,12 +39,14 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceExtendInfoService;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.data.protection.access.provider.sdk.resource.model.AgentTypeEnum;
 import openbackup.data.protection.access.provider.sdk.resource.model.ResourceScanDto;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.constants.FaultEnum;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.constants.LegoInternalAlarm;
+import openbackup.system.base.common.constants.ResExtendConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.model.job.JobBo;
@@ -134,8 +136,6 @@ public class ProtectedEnvironmentListener implements InitializingBean {
     private static final String JOB_STATUS_FAIL_LABEL = "job_status_fail_label";
     private static final String JOB_STATUS_SUCCESS_LABEL = "job_status_success_label";
     private static final String JOB_STATUS_PARTIAL_SUCCESS_LABEL = "job_status_partial_success_label";
-
-    private static final int SLEEP_WAIT_LOCK_SHUT_DOWN = 2 * 60 * 1000;
 
     /**
      * 健康状态异常告警码
@@ -447,7 +447,7 @@ public class ProtectedEnvironmentListener implements InitializingBean {
                 DateFormatUtil.format(Constants.SIMPLE_DATE_FORMAT, new Date()),
                 Duration.ofSeconds(UPDATE_RESOURCE_STATUS_REDIS_EXPIRED_TIME));
         if (!isSuccess) {
-            log.info("Other Node executed.");
+            log.debug("Other Node executed.");
             releaseAbnormalRedisLock();
             return;
         }
@@ -465,11 +465,8 @@ public class ProtectedEnvironmentListener implements InitializingBean {
     }
 
     private void triggerEnvironmentHealthCheck() {
-        log.info("resource thread num:{}, queue num:{}",
-            ResourceThreadPoolTool.getThreadNum(),
-            ResourceThreadPoolTool.getQueueSzie());
         if (ResourceThreadPoolTool.isBusy()) {
-            log.info("ResourceThreadPool is too busy, do not trigger environment health check this time!");
+            log.debug("ResourceThreadPool is too busy, do not trigger environment health check this time!");
             return;
         }
 
@@ -485,7 +482,6 @@ public class ProtectedEnvironmentListener implements InitializingBean {
                     null);
             BasePage<String> page = protectedResourceRepository.queryResourceUuids(pagination);
             items = page.getItems();
-            log.info("trigger environment check, size:{}", items.size());
             for (String item : items) {
                 messageTemplate.send(ENVIRONMENT_HEALTH_CHECK, new JSONObject().set(ENV_ID, item));
             }
@@ -515,7 +511,6 @@ public class ProtectedEnvironmentListener implements InitializingBean {
             providerManager.findProvider(EnvironmentProvider.class, environment.getSubType(), null);
         String linkStatus = EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(environment);
         if (StringUtils.isBlank(linkStatus) || !NEED_TO_HEALTH_CHECK_TYPES.contains(Integer.valueOf(linkStatus))) {
-            log.info("Environment({}) status({}) can not health check.", envId, linkStatus);
             return;
         }
         if (provider == null) {
@@ -526,15 +521,15 @@ public class ProtectedEnvironmentListener implements InitializingBean {
         try {
             LinkStatusEnum currentNodeLinkStatus = getEnvironmentLinkStatus(environment, provider);
             handleHealthCheckResult(environment, currentNodeLinkStatus, currentClusterEsn);
-            triggerHealthCheckAlarm(envId, currentNodeLinkStatus);
+            triggerHealthCheckAlarm(envId, currentNodeLinkStatus, currentClusterEsn);
         } catch (DataProtectionAccessException e) {
             log.error("check environment({}) health failed", envId, ExceptionUtil.getErrorMessage(e));
             handleHealthCheckResult(environment, LinkStatusEnum.OFFLINE, currentClusterEsn);
-            triggerHealthCheckAlarm(envId, LinkStatusEnum.OFFLINE);
+            triggerHealthCheckAlarm(envId, LinkStatusEnum.OFFLINE, currentClusterEsn);
         } catch (Throwable e) {
             log.error("check environment({}) health occur an unknown error.", envId, ExceptionUtil.getErrorMessage(e));
             handleHealthCheckResult(environment, LinkStatusEnum.OFFLINE, currentClusterEsn);
-            triggerHealthCheckAlarm(envId, LinkStatusEnum.OFFLINE);
+            triggerHealthCheckAlarm(envId, LinkStatusEnum.OFFLINE, currentClusterEsn);
         }
     }
 
@@ -561,7 +556,7 @@ public class ProtectedEnvironmentListener implements InitializingBean {
             statusSet.add(status.getStatus());
             summaryAndUpdateLinkStatus(environment, statusSet);
         }
-        log.info("Update connect status success. envId:{}, status:{}, result:{}.",
+        log.debug("Update connect status success. envId:{}, status:{}, result:{}.",
                 envId, status.name(), connectionResult);
     }
 
@@ -630,7 +625,6 @@ public class ProtectedEnvironmentListener implements InitializingBean {
         List<LinkStatusEnum> linkStatusOrderList = provider.getLinkStatusOrderList();
         for (LinkStatusEnum linkStatus : linkStatusOrderList) {
             if (agentStatusSet.contains(linkStatus.getStatus())) {
-                log.info("update env link status, envId: {}, status :{}", envId, linkStatus);
                 updateEnvironmentLinkStatus(envId, linkStatus);
                 return;
             }
@@ -653,18 +647,71 @@ public class ProtectedEnvironmentListener implements InitializingBean {
         return VerifyUtil.isEmpty(resultMap) ? new HashMap<>() : resultMap;
     }
 
-    private void triggerHealthCheckAlarm(String envId, LinkStatusEnum currentNodeLinkStatus) {
+    private void triggerHealthCheckAlarm(String envId, LinkStatusEnum currentNodeLinkStatus, String currentClusterEsn) {
         ProtectedEnvironment environment = protectedEnvironmentService.getEnvironmentById(envId);
         // 主机资源健康检查时，每个节点需要上报与主机连通性的告警/恢复, 根据当前节点的连通状态
         // 其他应用资源，判断是否上报告警时，根据汇总结果（当前环境状态）上报
         LinkStatusEnum linkStatus = ResourceTypeEnum.HOST.equalsType(environment.getType()) ? currentNodeLinkStatus
             : LinkStatusEnum.getByStatus(Integer.parseInt(environment.getLinkStatus()));
         // 根据连通状态上报告警/恢复
+        if (shouldUpdateAgentStatusByNode(environment, currentClusterEsn)) {
+            log.warn(
+                "current agent :{} is not a built-in agent for node esn:{}, "
+                    + "will set to online and not send alarm in current node!",
+                environment.getUuid(), currentClusterEsn);
+            linkStatus = LinkStatusEnum.ONLINE;
+        }
         if (LinkStatusEnum.ONLINE.equals(linkStatus)) {
             clearHealthCheckAlarm(environment);
         } else {
             generateHealthCheckAlarm(environment);
         }
+    }
+
+    private boolean shouldUpdateAgentStatusByNode(ProtectedEnvironment environment, String currentClusterEsn) {
+        log.info("start to check update agent status, uuid:{}", environment.getUuid());
+        // 如果当前不是host类型 则不是agent 不能改变
+        if (!ResourceTypeEnum.HOST.equalsType(environment.getType())) {
+            log.info("current type is not host, current type: {}, uuid: {}", environment.getType(),
+                environment.getUuid());
+            return false;
+        }
+        // 不是内置代理 不做处理
+        if (VerifyUtil.isEmpty(environment.getExtendInfoByKey(ResExtendConstant.INTERNAL_AGENT_KEY))) {
+            log.warn("Fail to get internal key for agent :{}, will not change link status", environment.getUuid());
+            return false;
+        }
+        if (!AgentTypeEnum.INTERNAL_AGENT.getValue()
+            .equals(environment.getExtendInfoByKey(ResExtendConstant.INTERNAL_AGENT_KEY))) {
+            log.warn("Current agent :{} is not internal agent, will not change link status", environment.getUuid());
+            return false;
+        }
+        String esn = environment.getExtendInfoByKey(ResExtendConstant.INTERNAL_AGENT_ESN);
+        // 找不到esn 不做处理
+        if (VerifyUtil.isEmpty(esn)) {
+            log.warn("Fail to get esn for agent :{}, will not change link status", environment.getUuid());
+            return false;
+        }
+        // 传入的esn已经做过处理 找不到为空字符串 此处不再额外检查
+        log.debug("Current env esn: {} node esn: {}", currentClusterEsn, esn);
+        // 如果当前agent的esn和当前节点一致 则应该正常上报 不能改变 返回false
+        if (currentClusterEsn.equals(esn)) {
+            return false;
+        }
+        MemberClusterBo memberCluster = memberClusterService.getAllMemberClusters()
+            .stream()
+            .filter(memberClusterBo -> esn.equals(memberClusterBo.getRemoteEsn()))
+            .findFirst()
+            .orElse(null);
+        if (VerifyUtil.isEmpty(memberCluster)) {
+            log.info("current environment:{} belongs to a deleted cluster number (esn: {}), will treat as online.",
+                environment.getUuid(), esn);
+            return true;
+        }
+        log.info("status of the member Cluster:{}, esn:{}, status:{}", memberCluster.getClusterId(), esn,
+            memberCluster.getStatus());
+        // 最后检查内置agent所属集群状态是否是删除中 如果是删除中 则不需要进行离线告警 应该强制改为在线状态清除告警
+        return ClusterEnum.StatusEnum.DELETING.getStatus() == memberCluster.getStatus();
     }
 
     private LinkStatusEnum getEnvironmentLinkStatus(ProtectedEnvironment environment,
@@ -682,8 +729,6 @@ public class ProtectedEnvironmentListener implements InitializingBean {
 
     private void generateHealthCheckAlarm(ProtectedEnvironment environment) {
         if (!canSendHealthAlarm(environment)) {
-            log.info("Current node won't send alarm to DM. Env id : {}, env type: {}, current node role: {}",
-                environment.getUuid(), environment.getType(), memberClusterService.getCurrentClusterRole());
             return;
         }
         commonAlarmService.generateAlarm(genHealthAlarm(environment));
@@ -733,6 +778,8 @@ public class ProtectedEnvironmentListener implements InitializingBean {
 
     private void updateEnvironmentLinkStatus(String envId, String status) {
         ProtectedEnvironment resource = new ProtectedEnvironment();
+        // DO NOT overwrite scanInterval with default value
+        resource.setScanInterval(null);
         resource.setUuid(envId);
         resource.setLinkStatus(status);
         // 直接将环境的状态同步到数据库，不走update的重接口，避免两次检查连通性而导致同步数据库失败
@@ -813,8 +860,15 @@ public class ProtectedEnvironmentListener implements InitializingBean {
         if (VerifyUtil.isEmpty(jobBos)) {
             return;
         }
-        // 睡眠等待保证锁被清理
-        Thread.sleep(SLEEP_WAIT_LOCK_SHUT_DOWN);
+        // 初始化释放当前节点资源扫描任务的资源锁，同时将任务置为失败
+        List<String> resourceLockKeys = jobBos.stream()
+                        .map(job -> ResourceConstant.RESOURCE_LOCK_KEY + job.getSourceId())
+                        .collect(Collectors.toList());
+        log.info("Start unlock resource locks which owner hostname not exist, then update scan job failed, keys: {}",
+                resourceLockKeys);
+        lockService.batchUnlockSqlLock(resourceLockKeys);
+        jobBos.forEach(this::updateJobFail);
+
         Lock allLock = lockService.createSQLDistributeLock(
                 ResourceConstant.RESOURCE_LOCK_KEY + "afterPropertiesSetScan");
         allLock.tryLockAndRun(5, TimeUnit.SECONDS, this::updateManualScanJobWhenStart);

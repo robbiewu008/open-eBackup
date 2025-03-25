@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -39,7 +39,7 @@
    <p>This section describes how to restore damaged or lost files in an Oracle database to the Oracle host.</p>
    <div class="section">
     <h4 class="sectiontitle">Context</h4>
-    <p>GUIs may vary with versions.</p>
+    <p>The GUI may vary with versions.</p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Prerequisites</h4>
@@ -51,10 +51,16 @@
     <ol>
      <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002028898929__en-us_topic_0000001839142377_uicontrol1186171611461"><b><span id="EN-US_TOPIC_0000002028898929__en-us_topic_0000001839142377_text6186101615464"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002028898929__en-us_topic_0000001839142377_text74373665812"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002028898929__en-us_topic_0000001839142377_text12413710445"><strong>Databases</strong></span> &gt; <span id="EN-US_TOPIC_0000002028898929__en-us_topic_0000001839142377_text151861216124615"><strong>Oracle</strong></span></b></span>.</span></li>
      <li><span>You can search for copies by database resource or copy. This section uses database resources as an example.</span><p></p><p>On the <span class="wintitle"><b><span><strong>Resources</strong></span></b></span> tab page, locate the database to be restored by database name and then click the database name.</p> <p></p></li>
-     <li><span>Specify a copy for restoration. Database files do not support point-in-time restoration.</span><p></p>
+     <li><span>Specify a copy for restoration.</span><p></p>
       <ol type="a">
        <li>On the <span><strong>By Date</strong></span> tab page, select a year, month, and day in sequence to search for copies.<p>If <span><img src="en-us_image_0000001992371382.png"></span> is displayed under a month or date, copies exist in the month or on the date.</p></li>
-       <li>Specify a copy for restoration. Click <span><img src="en-us_image_0000002023178572.png"></span> on the right, locate the row that contains the target copy, and choose <span class="uicontrol"><b>More &gt; Database File Restoration</b></span>.</li>
+       <li>Specify a copy for restoration. Click <span><img src="en-us_image_0000002023178572.png"></span> on the right, locate the row that contains the target copy, and choose <span class="uicontrol"><b>More &gt; Database File Restoration</b></span>.
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>Database files do not support point-in-time restoration.</p>
+         </div>
+        </div></li>
        <li>Restore the Oracle database to the original location.<p>Select one or more files to be restored under <span class="uicontrol"><b>Data Files</b></span>, <span class="uicontrol"><b>Log Files</b></span>, <span class="uicontrol"><b>Control Files</b></span>, or <span class="uicontrol"><b>Parameter Files</b></span>. Only one type of database files can be selected for restoration.</p>
         <div class="note">
          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>

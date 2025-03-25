@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -47,15 +47,21 @@
       <ol type="a" id="opengauss-0115__en-us_topic_0000001839143189_ol71011061385">
        <li id="opengauss-0115__en-us_topic_0000001839143189_li874192611325">Click <span class="uicontrol" id="opengauss-0115__en-us_topic_0000001839143189_uicontrol1117412318280"><b><span id="opengauss-0115__en-us_topic_0000001839143189_text131741534281"><strong>Applications</strong></span></b></span> and select the application for the SLA to be created.
         <ul id="opengauss-0115__en-us_topic_0000001839143189_ul157501053341">
-         <li id="opengauss-0115__en-us_topic_0000001839143189_li3750135143412"><span id="opengauss-0115__en-us_topic_0000001839143189_text10801323154310"><strong>General SLA</strong></span><p id="opengauss-0115__en-us_topic_0000001839143189_p144377559348">A general SLA can be applied to resources except filesets, SQL Server, PostgreSQL, Kingbase, Redis, ClickHouse, MongoDB, NAS shares, NAS file systems, Huawei Cloud Stack GaussDB, TDSQL, Kubernetes CSI, TiDB, volumes, common shares, Active Directory, GaussDB T single-node systems, object storage, GaussDB (1.6.0 and later versions), and SAP HANA (as an application) (1.6.0 and later versions).</p></li>
+         <li id="opengauss-0115__en-us_topic_0000001839143189_li3750135143412"><span id="opengauss-0115__en-us_topic_0000001839143189_text10801323154310"><strong>General SLA</strong></span><p id="opengauss-0115__en-us_topic_0000001839143189_p144377559348">A general SLA can be applied to resources except filesets, SQL Server, PostgreSQL, Kingbase, Redis, ClickHouse, MongoDB, NAS shares, NAS file systems, Huawei Cloud Stack GaussDB, TDSQL, Kubernetes CSI, TiDB, volumes, common shares, Active Directory, GaussDB T single-node systems, object storage, GaussDB (1.6.0 and later versions), and SAP HANA (as an application in 1.6.0 and later versions).</p></li>
          <li id="opengauss-0115__en-us_topic_0000001839143189_li1512516103413"><span id="opengauss-0115__en-us_topic_0000001839143189_text1431211194314"><strong>Specific to application</strong></span><p id="opengauss-0115__en-us_topic_0000001839143189_p1889316245358">Select an application type for the SLA to be created. This section uses <span id="opengauss-0115__en-us_topic_0000001839143189_text52802054182812"><strong>Specific to application</strong></span> as an example.</p></li>
-        </ul></li>
+        </ul>
+        <div class="note" id="opengauss-0115__en-us_topic_0000001839143189_note1521871141414">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p id="opengauss-0115__en-us_topic_0000001839143189_p3218512141">Some models of this product support NAS file systems. For details, see the product documentation released on the technical support website or consult the product provider.</p>
+         </div>
+        </div></li>
        <li id="opengauss-0115__en-us_topic_0000001839143189_li7586156123316">Click <span class="uicontrol" id="opengauss-0115__en-us_topic_0000001839143189_uicontrol145664914545"><b>OK</b></span>.</li>
       </ol> <p></p></li>
      <li><span>Configure a backup policy.</span><p></p>
       <ol type="a">
        <li>Click the <span class="uicontrol"><b><span>Backup Policy</span></b></span> icon.</li>
-       <li>Set basic parameters for the backup policy.<p><a href="#opengauss-0115__table2663151516335">Table 1</a> describes related parameters.</p>
+       <li>Set basic parameters for the backup policy.<p><a href="#opengauss-0115__table2663151516335">Table 1</a> describes the related parameters.</p>
         <div class="p">
          Set the backup interval, copy retention period, and backup time window based on service requirements. The recommended settings are as follows:
          <ul id="opengauss-0115__en-us_topic_0000001839143189_ul188491594283">
@@ -144,7 +150,7 @@
                <li id="opengauss-0115__en-us_topic_0000001839143189_li1079119781413">Configure the backup interval and copy retention period for incremental backup.
                 <ul id="opengauss-0115__en-us_topic_0000001839143189_ul1679113751412">
                  <li id="opengauss-0115__en-us_topic_0000001839143189_li177910751413"><span id="opengauss-0115__en-us_topic_0000001839143189_text9791187121410"><strong>By Year</strong></span><p id="opengauss-0115__en-us_topic_0000001839143189_p7791117131413">Configure the job to be executed once every year on <em id="opengauss-0115__en-us_topic_0000001839143189_i17543191313474">xx</em> (month) <em id="opengauss-0115__en-us_topic_0000001839143189_i15543191324714">xx</em> (day). Configure copies to be retained for <em id="opengauss-0115__en-us_topic_0000001839143189_i2054391324718">xx</em> days, weeks, months, years, or permanently.</p> <p id="opengauss-0115__en-us_topic_0000001839143189_p62586191379">If the date does not exist in the year, no copy is generated.</p></li>
-                 <li id="opengauss-0115__en-us_topic_0000001839143189_li1279112715144"><span id="opengauss-0115__en-us_topic_0000001839143189_text979110717147"><strong>By Month</strong></span><p id="opengauss-0115__en-us_topic_0000001839143189_p179113721413">Configure the job to be executed on <em id="opengauss-0115__en-us_topic_0000001839143189_i971008892">xx</em> (day) (multiple days can be selected) or the last day of each month. Configure copies to be retained for <em id="opengauss-0115__en-us_topic_0000001839143189_i1355544486">xx</em> days, weeks, months, years, or permanently.</p> <p id="opengauss-0115__en-us_topic_0000001839143189_p125877114419">If the backup job is set to be performed on the <em id="opengauss-0115__en-us_topic_0000001839143189_i18258105512473">xx</em>th day of each month, no copy is generated when the date does not exist in the current month.</p></li>
+                 <li id="opengauss-0115__en-us_topic_0000001839143189_li1279112715144"><span id="opengauss-0115__en-us_topic_0000001839143189_text979110717147"><strong>By Month</strong></span><p id="opengauss-0115__en-us_topic_0000001839143189_p179113721413">Configure the job to be executed on <em id="opengauss-0115__en-us_topic_0000001839143189_i137808035">xx</em> (day) (multiple days can be selected) or the last day of each month. Configure copies to be retained for <em id="opengauss-0115__en-us_topic_0000001839143189_i119969764">xx</em> days, weeks, months, years, or permanently.</p> <p id="opengauss-0115__en-us_topic_0000001839143189_p125877114419">If the backup job is set to be performed on the <em id="opengauss-0115__en-us_topic_0000001839143189_i18258105512473">xx</em>th day of each month, no copy is generated when the date does not exist in the current month.</p></li>
                  <li id="opengauss-0115__en-us_topic_0000001839143189_li879112716144"><span id="opengauss-0115__en-us_topic_0000001839143189_text27913720144"><strong>By Week</strong></span><p id="opengauss-0115__en-us_topic_0000001839143189_p1079111741416">Configure the job to be executed every Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, or Sunday (you can select multiple options). Configure copies to be retained for <em id="opengauss-0115__en-us_topic_0000001839143189_i5259123154812">xx</em> days, weeks, months, years, or permanently.</p></li>
                  <li id="opengauss-0115__en-us_topic_0000001839143189_li251355615915"><span id="opengauss-0115__en-us_topic_0000001839143189_text0935195916812"><strong>By Day</strong></span><p id="opengauss-0115__en-us_topic_0000001839143189_p175137561491">Configure the job to be executed every <em id="opengauss-0115__en-us_topic_0000001839143189_i1716654814490">xx</em> days starting from <em id="opengauss-0115__en-us_topic_0000001839143189_i19166114815493">xx</em> (year) <em id="opengauss-0115__en-us_topic_0000001839143189_i416610485494">xx</em> (month) <em id="opengauss-0115__en-us_topic_0000001839143189_i1316764824912">xx</em> (day). Configure copies to be retained for <em id="opengauss-0115__en-us_topic_0000001839143189_i1116704854913">xx</em> days, weeks, months, years, or permanently.</p></li>
                  <li id="opengauss-0115__en-us_topic_0000001839143189_li17513125616918"><span id="opengauss-0115__en-us_topic_0000001839143189_text11653155316339"><strong>By Hour</strong></span><p id="opengauss-0115__en-us_topic_0000001839143189_p451312561795">Configure the job to be executed every <em id="opengauss-0115__en-us_topic_0000001839143189_i13179161374716">xx</em> hours starting from <em id="opengauss-0115__en-us_topic_0000001839143189_i18179151310474">xx</em> (year) <em id="opengauss-0115__en-us_topic_0000001839143189_i8179113154714">xx</em> (month) <em id="opengauss-0115__en-us_topic_0000001839143189_i1417918132471">xx</em> (day). Configure copies to be retained for <em id="opengauss-0115__en-us_topic_0000001839143189_i117911316470">xx</em> days, weeks, months, years, or permanently.</p></li>
@@ -164,49 +170,10 @@
               </ul>
              </div></td>
            </tr>
-           <tr>
-            <td class="cellrowborder" rowspan="2" valign="top" width="11.899999999999999%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span><strong>Log Backup</strong></span></p> <p></p></td>
-            <td class="cellrowborder" valign="top" width="15.25%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span><strong>Name</strong></span></p></td>
-            <td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.2 "><p>Set the backup policy name.</p>
-             <div class="note">
-              <span class="notetitle"> NOTE: </span>
-              <div class="notebody">
-               <p>Only CMDB supports log backup.</p>
-              </div>
-             </div></td>
-           </tr>
-           <tr>
-            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p>-</p></td>
-            <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p>Back up the archive logs of a CMDB database. Configure the initial backup time, backup interval, and copy retention period for log backup.</p>
-             <ul>
-              <li><span id="opengauss-0115__en-us_topic_0000001839143189_text10232154917911"><strong>By Day</strong></span><p id="opengauss-0115__en-us_topic_0000001839143189_p185142219203">Configure the job to be executed every <em id="opengauss-0115__en-us_topic_0000001839143189_i9923111505">xx</em> days starting from <em id="opengauss-0115__en-us_topic_0000001839143189_i3929117508">xx</em> (year) <em id="opengauss-0115__en-us_topic_0000001839143189_i39281145014">xx</em> (month) <em id="opengauss-0115__en-us_topic_0000001839143189_i17925115504">xx</em> (day). Configure copies to be retained for <em id="opengauss-0115__en-us_topic_0000001839143189_i19210125013">xx</em> days, weeks, months, years, or permanently.</p></li>
-             </ul>
-             <ul>
-              <li><span id="opengauss-0115__en-us_topic_0000001839143189_text9177753173410"><strong>By Hour</strong></span><p id="opengauss-0115__en-us_topic_0000001839143189_p18514722206">Configure the job to be executed every <em id="opengauss-0115__en-us_topic_0000001839143189_i201851113124716">xx</em> hours starting from <em id="opengauss-0115__en-us_topic_0000001839143189_i318581364714">xx</em> (year) <em id="opengauss-0115__en-us_topic_0000001839143189_i1218513134472">xx</em> (month) <em id="opengauss-0115__en-us_topic_0000001839143189_i161851213154716">xx</em> (day). Configure copies to be retained for <em id="opengauss-0115__en-us_topic_0000001839143189_i12185201384715">xx</em> days, weeks, months, years, or permanently.</p></li>
-             </ul>
-             <ul>
-              <li><span id="opengauss-0115__en-us_topic_0000001839143189_text1930617408347"><strong>By Minute</strong></span><p id="opengauss-0115__en-us_topic_0000001839143189_p20514424208">Configure the job to be executed every <em id="opengauss-0115__en-us_topic_0000001839143189_i2016392712501">xx</em> minutes starting from <em id="opengauss-0115__en-us_topic_0000001839143189_i10163327115010">xx</em> (year) <em id="opengauss-0115__en-us_topic_0000001839143189_i6163112775015">xx</em> (month) <em id="opengauss-0115__en-us_topic_0000001839143189_i1163727175013">xx</em> (day). Configure copies to be retained for <em id="opengauss-0115__en-us_topic_0000001839143189_i616312277507">xx</em> days, weeks, months, years, or permanently.</p></li>
-             </ul>
-             <div class="note">
-              <span class="notetitle"> NOTE: </span>
-              <div class="notebody">
-               <ul>
-                <li>The log backup interval must be less than the data backup interval.</li>
-                <li>After a database is restored, the next log backup will back up all logs generated after the restoration time point.</li>
-                <li>If a resource is associated with an SLA configured with log backup and then associated with another SLA that is not configured with log backup, the archive logs that have been backed up are deleted according to the previously defined archive log retention policy.</li>
-                <li>You can specify a time point only after backing up archive logs.</li>
-                <li>If restoration has been performed, ensure that a new full copy has been generated after the last restoration before the next log backup. You are advised to manually perform a full backup. Otherwise, the log backup will fail.</li>
-                <li>Log backup policies cannot be configured separately.</li>
-                <li>If log copies need to be continuous in time, ensure that archive logs generated between the two log backups are not cleaned.</li>
-                <li>Before backing up logs, ensure that a full backup copy exists.</li>
-               </ul>
-              </div>
-             </div></td>
-           </tr>
           </tbody>
          </table>
         </div></li>
-       <li>For 1.6.0 and later versions: To generate a WORM copy, enable WORM and set the WORM validity period. Otherwise, skip this step.
+       <li>For 1.6.0 and later versions, to generate a WORM copy, enable WORM and set a WORM validity period. Otherwise, skip this step.
         <div class="p" id="opengauss-0115__en-us_topic_0000001839143189_p19339194114493">
          For <strong id="opengauss-0115__en-us_topic_0000001839143189_b15358729184918">WORM Validity Period</strong>, you can select <strong id="opengauss-0115__en-us_topic_0000001839143189_b469832194914">Same as the copy retention period</strong> or <strong id="opengauss-0115__en-us_topic_0000001839143189_b4820353104917">Custom validity period</strong>.
          <div class="note" id="opengauss-0115__en-us_topic_0000001839143189_note8945151620502">
@@ -224,7 +191,7 @@
       <ol type="a" start="4">
        <li>Set advanced parameters for the backup policy.
         <div class="p">
-         <a href="#opengauss-0115__en-us_topic_0000001337708186_table1970194542811">Table 2</a> describes related parameters. 
+         <a href="#opengauss-0115__en-us_topic_0000001337708186_table1970194542811">Table 2</a> describes the related parameters. 
          <div class="tablenoborder">
           <a name="opengauss-0115__en-us_topic_0000001337708186_table1970194542811"></a><a name="en-us_topic_0000001337708186_table1970194542811"></a>
           <table cellpadding="4" cellspacing="0" summary="" id="opengauss-0115__en-us_topic_0000001337708186_table1970194542811" frame="border" border="1" rules="all">
@@ -243,22 +210,13 @@
            </thead>
            <tbody>
             <tr>
-             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.1.1.2.2.3.1.1 ">
-              <div class="p">
-               <strong id="opengauss-0115__en-us_topic_0000001839143189_b203081655125718">Specify Target Location</strong>
-               <div class="note" id="opengauss-0115__en-us_topic_0000001839143189_note81807159571">
-                <span class="notetitle"> NOTE: </span>
-                <div class="notebody">
-                 <p id="opengauss-0115__en-us_topic_0000001839143189_p5180415155714">Some models of this product do not support this parameter. For details, see the product documentation released on the technical support website or consult the product provider.</p>
-                </div>
-               </div>
-              </div></td>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.1.1.2.2.3.1.1 "><p><strong id="opengauss-0115__en-us_topic_0000001839143189_b203081655125718">Specify Target Location</strong></p></td>
              <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.1.1.2.2.3.1.2 ">
               <div class="p">
                Specify the target storage location of backup copies.
                <ul id="opengauss-0115__en-us_topic_0000001839143189_ul3832679403">
-                <li id="opengauss-0115__en-us_topic_0000001839143189_li178323718400">Backup storage unit: corresponds to a backup cluster node. After a backup storage unit is selected, copies are stored to the storage unit. If the capacity of the storage unit is insufficient, the backup job will fail.</li>
-                <li id="opengauss-0115__en-us_topic_0000001839143189_li31700914016">Backup storage unit group: is a collection of backup storage units. After a backup storage unit group is selected, the system automatically selects a target backup storage unit based on the storage policy of the storage unit group.</li>
+                <li id="opengauss-0115__en-us_topic_0000001839143189_li299019528162"><span class="parmvalue" id="opengauss-0115__en-us_topic_0000001839143189_parmvalue20580546155113"><b>Backup Storage Units</b></span>: A backup storage unit corresponds to a backup cluster node. After a backup storage unit is selected, copies are stored to the storage unit. If the capacity of the storage unit is insufficient, the backup job will fail.<p id="opengauss-0115__en-us_topic_0000001839143189_p36749546164">For details about how to create a backup storage unit, see "Managing Backup Storage Units" in the <em id="opengauss-0115__en-us_topic_0000001839143189_i142601350162015">Cluster HA Feature Guide</em>.</p></li>
+                <li id="opengauss-0115__en-us_topic_0000001839143189_li168151656101610"><span class="parmvalue" id="opengauss-0115__en-us_topic_0000001839143189_parmvalue142224995111"><b>Backup Storage Unit Groups</b></span>: A backup storage unit group is a collection of backup storage units. After a backup storage unit group is selected, the system automatically selects a target backup storage unit based on the storage policy of the storage unit group.<p id="opengauss-0115__en-us_topic_0000001839143189_p15126135815168">For details about how to create a backup storage unit group, see "(Optional) Creating Backup Storage Unit Groups" in the <em id="opengauss-0115__en-us_topic_0000001839143189_i168179237215">Cluster HA Feature Guide</em>.</p></li>
                </ul>
                <div class="note" id="opengauss-0115__en-us_topic_0000001839143189_note06533915171">
                 <span class="notetitle"> NOTE: </span>
@@ -276,19 +234,6 @@
              <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.1.1.2.2.3.1.2 "><p>Average maximum amount of data that can be transmitted per second in a backup job.</p> <p>Choose a rate limiting policy created in <a href="opengauss-0113.html">Step 3: Creating a Rate Limiting Policy</a>.</p></td>
             </tr>
             <tr>
-             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.1.1.2.2.3.1.1 ">
-              <div class="p">
-               <span id="opengauss-0115__vmware_gud_0027_0_text18795153411614"><strong>Automatic Indexing</strong></span>
-               <div class="note" id="opengauss-0115__vmware_gud_0027_0_note138981907167">
-                <span class="notetitle"> NOTE: </span>
-                <div class="notebody">
-                 <p id="opengauss-0115__vmware_gud_0027_0_p1090020011618">This parameter is available only in 1.5.0.</p>
-                </div>
-               </div>
-              </div></td>
-             <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.1.1.2.2.3.1.2 "><p>If the disks to be backed up contain system disks and this function is enabled, you can select one or more files in the copy for restoration and search for files, directories, or links in the copy.</p></td>
-            </tr>
-            <tr>
              <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.1.1.2.2.3.1.1 "><p><span><strong>Concurrent Jobs</strong></span></p></td>
              <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.1.1.2.2.3.1.2 "><p>Number of backup jobs that can be executed simultaneously.</p></td>
             </tr>
@@ -297,11 +242,14 @@
              <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.1.1.2.2.3.1.2 "><p>After this function is enabled, the standby node is preferentially used for backup.</p></td>
             </tr>
             <tr>
-             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.1.1.2.2.3.1.1 "><p><span><strong>Source Deduplication</strong></span></p>
-              <div class="note">
-               <span class="notetitle"> NOTE: </span>
-               <div class="notebody">
-                <p id="opengauss-0115__en-us_topic_0000001839143189_en-us_topic_0000001839143189_p5180415155714">Some models of this product do not support this parameter. For details, see the product documentation released on the technical support website or consult the product provider.</p>
+             <td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.1.1.2.2.3.1.1 ">
+              <div class="p">
+               <span id="opengauss-0115__en-us_topic_0000001839143189_text1535624514432"><strong>Source Deduplication</strong></span>
+               <div class="note" id="opengauss-0115__en-us_topic_0000001839143189_note1141182723518">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p id="opengauss-0115__en-us_topic_0000001839143189_p164111271351"></p>
+                </div>
                </div>
               </div></td>
              <td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.1.1.2.2.3.1.2 ">
@@ -313,8 +261,8 @@
                  <ul id="opengauss-0115__en-us_topic_0000001839143189_ul5885426132914">
                   <li id="opengauss-0115__en-us_topic_0000001839143189_li10885172616299">An agent host can only be linked with one storage unit. To enable source deduplication, select <span class="parmvalue" id="opengauss-0115__en-us_topic_0000001839143189_parmvalue13417617181719"><b>Backup Storage Unit</b></span> for <span class="parmname" id="opengauss-0115__en-us_topic_0000001839143189_parmname164341313131719"><b>Specify Target Location</b></span>. Otherwise, a storage unit that is not linked with the agent host may be selected through intelligent balancing. As a result, source deduplication fails to be enabled. If different protected objects are associated with different SLAs, where different backup storage units are specified, select different agent hosts for the protected objects. Otherwise, source deduplication of some backup jobs will fail to be enabled.</li>
                   <li id="opengauss-0115__en-us_topic_0000001839143189_li9885182662911">If an agent host has been linked with a storage unit but is not performing a backup job with source deduplication, you can run the <strong id="opengauss-0115__en-us_topic_0000001839143189_b1734071915190">dataturbo delete storage_object storage_name=</strong><em id="opengauss-0115__en-us_topic_0000001839143189_i18291255102216">?</em> command on the agent host to delete the source deduplication link with the storage unit. The value of <strong id="opengauss-0115__en-us_topic_0000001839143189_b9927131312572">storage_name</strong> in the command can be queried by running the <strong id="opengauss-0115__en-us_topic_0000001839143189_b11782052162315">dataturbo show storage_object</strong> command. This way, when the agent host performs a backup job with source deduplication, the link between the agent host and a new storage unit can be established.</li>
-                  <li id="opengauss-0115__en-us_topic_0000001839143189_li11885142615297">Check whether the host OS supports source deduplication by referring to <a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect Compatibility Query</a>. If the host OS does not support source deduplication, source deduplication does not take effect after being configured.</li>
-                  <li id="opengauss-0115__en-us_topic_0000001839143189_li7883549153219">If a built-in agent (that is, ProtectAgent is co-deployed on the <span id="opengauss-0115__en-us_topic_0000001839143189_text13835155817114">product</span>) is used for backup, source deduplication does not take effect after being configured.</li>
+                  <li id="opengauss-0115__en-us_topic_0000001839143189_li11885142615297">View the product compatibility to check whether source deduplication is supported by the host OS. If not supported, source deduplication will not take effect after being configured.</li>
+                  <li id="opengauss-0115__en-us_topic_0000001839143189_li7883549153219">If a built-in agent (that is, ProtectAgent is co-deployed with the <span id="opengauss-0115__en-us_topic_0000001839143189_text13835155817114">product</span>) is used for backup, source deduplication does not take effect after being configured.</li>
                  </ul>
                 </div>
                </div>
@@ -356,6 +304,21 @@
         </div></li>
        <li>Click <span class="uicontrol"><b>OK</b></span>.</li>
       </ol> <p></p></li>
+     <li><span>(Optional) Configure an archive policy.</span><p></p><p>The built-in storage space of the <span>product</span> is limited. You are advised to archive copy data to external storage for long-term retention.</p> <p>You can configure an archive policy by clicking the <span class="uicontrol"><b><span><strong>Archive Policy</strong></span></b></span> icon or by modifying the SLA.</p> <p>For details about how to configure an archive policy, see <a href="opengauss-0133.html">Archiving</a>.</p> <p></p></li>
+     <li><span>(Optional) Configure a replication policy.</span><p></p><p>The <span>product</span> allows you to replicate local data to a remote data center. When a disaster occurs, data copies in the remote data center can be used to restore production data and services can be taken over.</p> <p>You can configure the replication policy by clicking <span class="uicontrol"><b><span><strong>Replication Policy</strong></span></b></span> or by modifying the SLA.</p> <p>For details about how to configure a replication policy, see <a href="opengauss-0119.html">Replication</a>.</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="opengauss-0115__en-us_topic_0000001839143189_p187474161610">For 1.6.0 and later versions:</p>
+        <ul id="opengauss-0115__en-us_topic_0000001839143189_ul1078182475012">
+         <li id="opengauss-0115__en-us_topic_0000001839143189_li83901215999">The WORM validity period of the backup policy in the SLA must be shorter than the copy retention period in the replication policy.</li>
+         <li id="opengauss-0115__en-us_topic_0000001839143189_li878324105017">If WORM is not configured at the local end but configured at the target end, the WORM validity period is the same as the replication copy retention period.</li>
+         <li id="opengauss-0115__en-us_topic_0000001839143189_li07815248507">If WORM is configured at the local end but not at the target end, the WORM validity period of replication copies is the same as that of WORM copies at the local end. The retention period of replication copies is greater than or equal to the WORM validity period of backup copies at the local end.</li>
+         <li id="opengauss-0115__en-us_topic_0000001839143189_li1278624195020">If WORM is configured at both the local and target ends and WORM is configured by resource in the WORM configuration of <strong id="opengauss-0115__en-us_topic_0000001839143189_b78231650163717">Data Security</strong> at the target end, all replication copies will have WORM enabled, and the WORM validity period is the same as the replication copy retention period.</li>
+         <li id="opengauss-0115__en-us_topic_0000001839143189_li127819245503">At the local end, if you configure local backup copies to be retained permanently and set <strong id="opengauss-0115__en-us_topic_0000001839143189_b20511104361110">WORM Validity Period</strong> to <strong id="opengauss-0115__en-us_topic_0000001839143189_b851224341112">Same as the copy retention period</strong>, the WORM validity period is permanent. After a backup copy is generated, if you modify the SLA policy (by adding a replication policy and setting <strong id="opengauss-0115__en-us_topic_0000001839143189_b115122018172413">Replication and Retention Rules</strong> to <strong id="opengauss-0115__en-us_topic_0000001839143189_b9172163882417">Replicate all copies</strong>), the WORM validity period at the target end is the same as the retention period of replication copies.</li>
+        </ul>
+       </div>
+      </div> <p></p></li>
      <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
     </ol>
    </div>
@@ -363,7 +326,7 @@
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>Parent topic:</strong> <a href="opengauss-0111.html">Backing Up openGauss/CMDB</a>
+     <strong>Parent topic:</strong> <a href="opengauss-0111.html">Backing Up openGauss</a>
     </div>
    </div>
   </div>

@@ -16,6 +16,7 @@ import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableList;
 
 import openbackup.access.framework.resource.service.ProtectedResourceEvent;
 import openbackup.access.framework.resource.service.ProtectedResourceMonitorService;
@@ -33,6 +34,7 @@ import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
+import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.CreateJobRequest;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
@@ -41,6 +43,7 @@ import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -52,6 +55,13 @@ public abstract class AbstractVmFileLevelRestoreProvider {
     private static final int MAX_TARGET_NAME_LENGTH = 80;
 
     private static final int MIN_TARGET_NAME_LENGTH = 1;
+
+    private static final List<String> SUPPORTED_GENERATE_TYPE = ImmutableList.of(
+            CopyGeneratedByEnum.BY_BACKUP.value(),
+            CopyGeneratedByEnum.BY_REPLICATED.value(),
+            CopyGeneratedByEnum.BY_CASCADED_REPLICATION.value(),
+            CopyGeneratedByEnum.BY_REVERSE_REPLICATION.value()
+    );
 
     private final CopyRestApi copyRestApi;
 
@@ -83,12 +93,18 @@ public abstract class AbstractVmFileLevelRestoreProvider {
     }
 
     /**
-     * 检查是否支持停止任务
+     * 检查是否是支持生成方式
      *
-     * @param copy 副本信息
+     * @param restoreObject 副本信息
      * @return true/false
      */
-    protected abstract boolean checkIfEnableStop(Copy copy);
+    protected boolean checkGeneratedType(RestoreObject restoreObject) {
+        if (restoreObject == null) {
+            return false;
+        }
+        String generatedBy = restoreObject.getCopyGeneratedBy();
+        return SUPPORTED_GENERATE_TYPE.contains(generatedBy);
+    }
 
     /**
      * 生成快照元数据信息
@@ -176,7 +192,6 @@ public abstract class AbstractVmFileLevelRestoreProvider {
         job.setSourceSubType(restoreRequest.getObjectType());
         job.setSourceLocation(restoreRequest.getSource().getSourceLocation());
         job.setType(JobTypeEnum.RESTORE.name());
-        job.setEnableStop(checkIfEnableStop(copy));
         Map<String, String> parameters = Optional.ofNullable(restoreRequest.getParameters())
             .orElseGet(Collections::emptyMap);
         job.setTargetName(parameters.get("vm_name"));

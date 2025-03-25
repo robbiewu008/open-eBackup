@@ -184,11 +184,11 @@ export class ProtectService {
             )
           );
           break;
-        case DataMap.Resource_Type.openStackCloudServer.value:
+        case DataMap.Application_Type.FusionOne.value:
           protectionConfig.push(
             last(
               PROTECTION_CONFIG[
-                DataMap.Resource_Type.openStackCloudServer.value
+                DataMap.Resource_Type.fusionComputeVirtualMachine.value
               ].steps
             )
           );
@@ -197,6 +197,13 @@ export class ProtectService {
           protectionConfig.push(
             last(PROTECTION_CONFIG[DataMap.Resource_Type.CloudHost.value].steps)
           );
+          break;
+        case DataMap.Resource_Type.cNwareVm.value:
+        case DataMap.Resource_Type.nutanixVm.value:
+        case DataMap.Resource_Type.hyperVVm.value:
+        case DataMap.Resource_Type.openStackCloudServer.value:
+        case DataMap.Resource_Type.APSCloudServer.value:
+          protectionConfig.push(last(PROTECTION_CONFIG[unitType].steps));
           break;
       }
     }
@@ -864,6 +871,7 @@ export class ProtectService {
       case DataMap.Resource_Type.OceanBaseTenant.value:
       case DataMap.Resource_Type.tidbCluster.value:
       case DataMap.Resource_Type.tidbDatabase.value:
+      case DataMap.Resource_Type.tidbTable.value:
       case DataMap.Resource_Type.volume.value:
       case DataMap.Resource_Type.ActiveDirectory.value:
       case DataMap.Resource_Type.ObjectSet.value:
@@ -872,6 +880,7 @@ export class ProtectService {
       case DataMap.Resource_Type.ExchangeEmail.value:
       case DataMap.Resource_Type.tdsqlInstance.value:
       case DataMap.Resource_Type.tdsqlDistributedInstance.value:
+      case DataMap.Resource_Type.lightCloudGaussdbInstance.value:
         return this.protectDatabases(params, option);
       case DataMap.Resource_Type.CloudHost.value:
       case DataMap.Resource_Type.Project.value:
@@ -965,6 +974,7 @@ export class ProtectService {
       case DataMap.Resource_Type.OceanBaseTenant.value:
       case DataMap.Resource_Type.tidbCluster.value:
       case DataMap.Resource_Type.tidbDatabase.value:
+      case DataMap.Resource_Type.tidbTable.value:
       case DataMap.Resource_Type.volume.value:
       case DataMap.Resource_Type.ActiveDirectory.value:
       case DataMap.Resource_Type.ObjectSet.value:
@@ -973,6 +983,7 @@ export class ProtectService {
       case DataMap.Resource_Type.ExchangeEmail.value:
       case DataMap.Resource_Type.tdsqlInstance.value:
       case DataMap.Resource_Type.tdsqlDistributedInstance.value:
+      case DataMap.Resource_Type.lightCloudGaussdbInstance.value:
         return this.modifyDatabaseProtect(params, option);
       case DataMap.Resource_Type.CloudHost.value:
       case DataMap.Resource_Type.Project.value:
@@ -1682,6 +1693,20 @@ export class ProtectService {
           });
         }
 
+        if (
+          includes(
+            [
+              DataMap.Resource_Type.APSZone.value,
+              DataMap.Resource_Type.APSResourceSet.value
+            ],
+            params.subType
+          )
+        ) {
+          assign(obj.ext_parameters, {
+            all_disk: true
+          });
+        }
+
         // 是否执行一次备份
         if (params.post_action) {
           assign(obj, { post_action: params.post_action });
@@ -1741,6 +1766,20 @@ export class ProtectService {
               ? params.diskInfo
               : [],
           all_disk: params.enableSelectAll ?? true
+        });
+      }
+
+      if (
+        includes(
+          [
+            DataMap.Resource_Type.APSZone.value,
+            DataMap.Resource_Type.APSResourceSet.value
+          ],
+          params.subType
+        )
+      ) {
+        assign(body.ext_parameters, {
+          all_disk: true
         });
       }
 

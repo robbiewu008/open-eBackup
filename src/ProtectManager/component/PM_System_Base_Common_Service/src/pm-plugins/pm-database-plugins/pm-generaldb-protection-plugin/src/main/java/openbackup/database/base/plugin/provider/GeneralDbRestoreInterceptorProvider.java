@@ -220,6 +220,7 @@ public class GeneralDbRestoreInterceptorProvider extends AbstractDbRestoreInterc
         boolean isMultiPostJob = appConf.map(AppConf::getRestore).map(AppConf.Restore::getIsMultiPostJob).orElse(false);
         Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElse(Maps.newHashMap());
         advanceParams.put(DatabaseConstants.MULTI_POST_JOB, String.valueOf(isMultiPostJob));
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
         task.setAdvanceParams(advanceParams);
     }
 

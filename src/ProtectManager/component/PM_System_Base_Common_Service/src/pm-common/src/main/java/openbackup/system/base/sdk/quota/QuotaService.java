@@ -12,6 +12,10 @@
 */
 package openbackup.system.base.sdk.quota;
 
+import openbackup.system.base.sdk.copy.model.Copy;
+
+import java.util.List;
+
 /**
  * 删除用户的配额信息
  *
@@ -31,4 +35,26 @@ public interface QuotaService {
      * @param userId 用户id
      */
     void initHcsUserQuota(String userId);
+
+    /**
+     * 校验当前用户对所提供的副本List是否有足够的配额
+     *
+     * @param userId 用户id
+     * @param copyList 副本列表
+     * @param quotaTaskTypeEnum 配额类型
+     * @return 配额是否充足
+     */
+    boolean checkIsUserHasEnoughQuota(String userId, List<Copy> copyList, String quotaTaskTypeEnum);
+
+    /**
+     * 增加用户已使用配额
+     *
+     * @param userId 用户id
+     * @param resourceId 资源Id
+     * @param copyGeneratedBy 副本生成方式
+     * @param updateType 增加或减少枚举类
+     * @param dataBeforeReduction 缩减前数据量
+     */
+    void updateUserUsedQuota(String userId, String resourceId, String copyGeneratedBy, String updateType,
+        String dataBeforeReduction);
 }

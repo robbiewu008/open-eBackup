@@ -12,6 +12,7 @@
 */
 package openbackup.system.base.common.utils.files;
 
+import io.jsonwebtoken.lang.Strings;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.security.exterattack.ExterAttack;
@@ -34,7 +35,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Excel文件管理类
@@ -47,6 +51,8 @@ public class ExcelFileUtil extends AbstractFileUtil {
     private static final int NUM_2 = 2;
 
     private static final int COLUMNWIDTH = 8000;
+
+    private static final int MAX_EXCEL_CELL_LENGTH = 32767;
 
     private static final Logger LOG = LoggerFactory.getLogger(ExcelFileUtil.class);
 
@@ -96,12 +102,23 @@ public class ExcelFileUtil extends AbstractFileUtil {
     }
 
     /**
-     * 写文件 <br>
+     * 写文件
      *
      * @param dataLst 需要写入文件的数据
      */
     @Override
     protected void writeToFile(List<List<String>> dataLst) {
+        this.writeToFile(dataLst, new HashSet<>());
+    }
+
+    /**
+     * 写文件
+     *
+     * @param dataLst 需要写入文件的数据
+     * @param keepIndexSet 截取后需要保留的列号集合
+     */
+    @Override
+    protected void writeToFile(List<List<String>> dataLst, Set<Integer> keepIndexSet) {
         if (this.getWriteFileName() == null) {
             return;
         }
@@ -156,10 +173,48 @@ public class ExcelFileUtil extends AbstractFileUtil {
         int rowNumOfSheet = rowNum;
         for (List<String> lstStr : dataLst) {
             // 在索引rowNumOfSheet的位置创建行
-            HSSFRow row = sheet.createRow(rowNumOfSheet);
-            processCell(lstStr, row, sheet);
-            rowNumOfSheet++;
+            List<List<String>> rowLists = processRow(lstStr, keepIndexSet);
+            for (List<String> rowStr : rowLists) {
+                HSSFRow row = sheet.createRow(rowNumOfSheet);
+                processCell(rowStr, row, sheet);
+                rowNumOfSheet++;
+            }
         }
+    }
+
+    /**
+     * 每个cell最多只能容纳32767个字符，超过则需要拆分为多行
+     *
+     * @param lstStr 需要处理的行
+     * @param keepIndexSet 截取后需要保留的列号集合
+     * @return res
+     */
+    private List<List<String>> processRow(List<String> lstStr, Set<Integer> keepIndexSet) {
+        List<List<String>> res = new ArrayList<>();
+        boolean cellSplited;
+        do {
+            List<String> canInsertToExcelRow = new ArrayList<>();
+            cellSplited = isCellSplit(lstStr, canInsertToExcelRow, keepIndexSet);
+            res.add(canInsertToExcelRow);
+        } while (cellSplited);
+        return res;
+    }
+
+    private boolean isCellSplit(List<String> lstStr, List<String> canInsertToExcelRow, Set<Integer> keepIndexSet) {
+        boolean cellSplited = false;
+        for (int cellNumOfRow = 0; cellNumOfRow < lstStr.size(); cellNumOfRow++) {
+            if (lstStr.get(cellNumOfRow) != null && lstStr.get(cellNumOfRow).length() > MAX_EXCEL_CELL_LENGTH) {
+                canInsertToExcelRow.add(lstStr.get(cellNumOfRow).substring(0, MAX_EXCEL_CELL_LENGTH));
+                lstStr.set(cellNumOfRow, lstStr.get(cellNumOfRow).substring(MAX_EXCEL_CELL_LENGTH));
+                cellSplited = true;
+            } else {
+                canInsertToExcelRow.add(lstStr.get(cellNumOfRow));
+                if (!keepIndexSet.contains(cellNumOfRow)) {
+                    lstStr.set(cellNumOfRow, Strings.EMPTY);
+                }
+            }
+        }
+        return cellSplited;
     }
 
     @Override

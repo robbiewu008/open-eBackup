@@ -170,8 +170,9 @@ export class CreateVolumeComponent implements OnInit {
       } else {
         this.formGroup.get('backupType').disable();
       }
-      this.removeAll();
       this.volumesData = [];
+      this.selectionVolumes = [];
+      this.selectedVolumes = [];
       this.getVolumes();
     });
 
@@ -337,7 +338,11 @@ export class CreateVolumeComponent implements OnInit {
           this.selectionChange();
           this.originalPaths = [];
         }
-        if (this.rowData) {
+        if (
+          this.rowData ||
+          (this.formGroup.get('osBackup').value && !this.isWindows) ||
+          (!!this.formGroup.get('backupType').value && this.isWindows)
+        ) {
           this.selectionChange();
         }
       }

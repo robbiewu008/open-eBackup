@@ -114,6 +114,11 @@ public class DeleteValidatorTest {
                 return false;
             }
 
+            @Override
+            public boolean isEnableCustomRole() {
+                return false;
+            }
+
             {
 
         }},expression,standardEvaluationContext);
@@ -165,6 +170,11 @@ public class DeleteValidatorTest {
 
             @Override
             public boolean enableCheckAuth() {
+                return false;
+            }
+
+            @Override
+            public boolean isEnableCustomRole() {
                 return false;
             }
 

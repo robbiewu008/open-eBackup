@@ -65,19 +65,6 @@ public class InformixCopyDeleteProviderTest {
         Assert.assertTrue(isApplicable);
     }
 
-    /**
-     * 用例场景：检查informix单实例是否满足条件
-     * 前置条件：无
-     * 检查点：informix单实例满足条件
-     */
-    @Test
-    public void getCopiesCopyTypeIsCumulativeIncrement() {
-        List<Copy> copyList = generateBackupCopies();
-        List<String> deleteList =
-                copyDeleteInterceptor.getCopiesCopyTypeIsCumulativeIncrement(copyList, copyList.get(1), null);
-        Assert.assertEquals(deleteList.size(), 3);
-    }
-
     private List<Copy> generateBackupCopies() {
         // 副本顺序：全差增日日全
         Copy fullCopy1 = generateResourceCopy();

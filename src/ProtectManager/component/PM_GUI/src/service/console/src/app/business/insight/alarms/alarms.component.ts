@@ -29,10 +29,11 @@ import {
 } from '@iux/live';
 import {
   AlarmAndEventApiService,
+  AntiRansomwarePolicyApiService,
   ApiMultiClustersService,
   CookieService,
   GlobalService,
-  getAppTheme
+  WarningMessageService
 } from 'app/shared';
 import { AlarmVO } from 'app/shared/api/models';
 import {
@@ -44,8 +45,7 @@ import {
   DataMap,
   LANGUAGE,
   MODAL_COMMON,
-  SYSTEM_TIME,
-  ThemeEnum
+  SYSTEM_TIME
 } from 'app/shared/consts';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
@@ -65,10 +65,12 @@ import {
   first,
   get,
   includes,
+  isArray,
   isEmpty,
   isNil,
   isNumber,
   isString,
+  isUndefined,
   map,
   now,
   reject,
@@ -202,7 +204,9 @@ export class AlarmsComponent implements OnInit, OnDestroy {
     private messageService: MessageService,
     private cookieService: CookieService,
     private multiClustersServiceApi: ApiMultiClustersService,
-    public appUtilsService: AppUtilsService
+    public appUtilsService: AppUtilsService,
+    private warningMessageService: WarningMessageService,
+    private antiRansomwarePolicyApiService: AntiRansomwarePolicyApiService
   ) {}
 
   id = this.i18n.get('insight_alarm_id_label');
@@ -435,6 +439,42 @@ export class AlarmsComponent implements OnInit, OnDestroy {
     return this.objTypes.find(item => item.value === val)?.label || val;
   }
 
+  filterEventSourceType(sourceTypes) {
+    if (this.cookieService.isCloudBackup) {
+      return reject(sourceTypes, item => {
+        return includes(
+          [
+            'Cluster',
+            'LiveMount',
+            'antiRansomwarePolicy',
+            'Kerberos',
+            'archive',
+            'externalSystem',
+            'resourceset',
+            'role',
+            'agentManager',
+            'vmware'
+          ],
+          item.key
+        );
+      });
+    }
+    if (this.isX3000) {
+      return reject(sourceTypes, item => {
+        return includes(
+          ['anonymization', 'detection', 'antiRansomwarePolicy', 'archive'],
+          item.key
+        );
+      });
+    }
+    if (this.appUtilsService.isDistributed) {
+      return reject(sourceTypes, item => {
+        return includes(['Replication'], item.key);
+      });
+    }
+    return sourceTypes;
+  }
+
   getSourceTypes() {
     if (this.isV1AlarmQuery && !this.useStaticSourceType) {
       return this.objTypes;
@@ -584,33 +624,34 @@ export class AlarmsComponent implements OnInit, OnDestroy {
         key: 'backupStorageUnitGroup',
         value: 'backup_storage_unit_group',
         label: this.i18n.get('operation_target_backup_storage_unit_group_label')
+      },
+      {
+        key: 'externalSystem',
+        value: 'externalsystem',
+        label: this.i18n.get('operation_target_externalsystem_label')
+      },
+      {
+        key: 'resourceset',
+        value: 'resourceset',
+        label: this.i18n.get('operation_target_resourceset_label')
+      },
+      {
+        key: 'role',
+        value: 'role',
+        label: this.i18n.get('operation_target_role_label')
+      },
+      {
+        key: 'agentManager',
+        value: 'agent_manager',
+        label: this.i18n.get('operation_target_agent_manager_label')
+      },
+      {
+        key: 'vmware',
+        value: 'vmware',
+        label: this.i18n.get('operation_target_vmware_label')
       }
     ];
-    return this.cookieService.isCloudBackup
-      ? reject(sourceTypes, item => {
-          return includes(
-            [
-              'Cluster',
-              'LiveMount',
-              'antiRansomwarePolicy',
-              'Kerberos',
-              'archive'
-            ],
-            item.key
-          );
-        })
-      : this.isX3000
-      ? reject(sourceTypes, item => {
-          return includes(
-            ['anonymization', 'detection', 'antiRansomwarePolicy', 'archive'],
-            item.key
-          );
-        })
-      : this.appUtilsService.isDistributed
-      ? reject(sourceTypes, item => {
-          return includes(['Replication'], item.key);
-        })
-      : sourceTypes;
+    return this.filterEventSourceType(sourceTypes);
   }
 
   initCols() {
@@ -709,7 +750,7 @@ export class AlarmsComponent implements OnInit, OnDestroy {
       },
       {
         label: this.occurred,
-        key: 'alarmTimeStr',
+        key: 'firstTimeStr',
         isShow: true
       },
       {
@@ -1093,15 +1134,15 @@ export class AlarmsComponent implements OnInit, OnDestroy {
       !this.isV1AlarmQuery && this._updateFiltersTag('alarmTimeStr', e);
       this.refreshAlarms();
     } else {
-      let tmpFilter = find(this.eventFilters, { key: 'alarmTimeStr' });
+      let tmpFilter = find(this.eventFilters, { key: 'firstTimeStr' });
       if (tmpFilter) {
         assign(tmpFilter, {
-          key: 'alarmTimeStr',
+          key: 'firstTimeStr',
           value: e
         });
       } else {
         this.eventFilters.push({
-          key: 'alarmTimeStr',
+          key: 'firstTimeStr',
           value: e
         });
       }
@@ -1109,7 +1150,9 @@ export class AlarmsComponent implements OnInit, OnDestroy {
       this.eventStartPage = CommonConsts.PAGE_START;
       this.refreshEvent();
     }
-    this.datePopover.hide();
+    if (!isUndefined(this.datePopover)) {
+      this.datePopover.hide();
+    }
   }
 
   cancelDate(e) {
@@ -1298,6 +1341,27 @@ export class AlarmsComponent implements OnInit, OnDestroy {
     );
   }
 
+  exportCurrentAlarms() {
+    this.alarmApiService
+      .exportAlarmsUsingPOST({
+        entityIds: { entityIdSet: [] },
+        lang: this.i18n.language,
+        akOperationTips: false
+      })
+      .subscribe(blob => {
+        const file = new File([blob], `CurrentAlarms_${now()}.xls`, {
+          type: 'application/vnd.ms.excel'
+        });
+        this.appUtilsService.downloadFile(
+          this.activeNodeName
+            ? `HistoryAlarms_${now()}_Node_${this.activeNodeName}.xls`
+            : `HistoryAlarms_${now()}.xls`,
+          file
+        );
+        this.cdr.detectChanges();
+      });
+  }
+
   exportHistoryAlarms() {
     const alarmIdSet = [];
     const options = this.eventsTable.getSelection();
@@ -1322,6 +1386,32 @@ export class AlarmsComponent implements OnInit, OnDestroy {
         );
         this.cdr.detectChanges();
       });
+  }
+
+  // 防勒索告警误处理
+  errorHandle(alarm, modal) {
+    if (
+      !isArray(alarm.params) ||
+      isEmpty(alarm.params[0]) ||
+      isEmpty(alarm.params[1])
+    ) {
+      modal.close();
+    }
+    this.warningMessageService.create({
+      content: this.i18n.get('explore_alarm_error_handle_label'),
+      onOK: () => {
+        this.antiRansomwarePolicyApiService
+          .HandleRealtimeAlarm({
+            vStoreName: alarm.params[0],
+            filesystem: alarm.params[1],
+            alarmEntityId: alarm.entity
+          })
+          .subscribe(() => {
+            modal.close();
+            this.refreshAlarms();
+          });
+      }
+    });
   }
 
   openDetailModal(item) {
@@ -1380,12 +1470,25 @@ export class AlarmsComponent implements OnInit, OnDestroy {
             data: this.setRowDeviceName(isAlarm ? first(data?.records) : data),
             isAlarm
           },
-          lvFooter: [
-            {
-              label: this.i18n.get('common_close_label'),
-              onClick: modal => modal.close()
-            }
-          ]
+          lvFooter:
+            this.isHyperDetect && isAlarm && item.alarmId === '0x5F025D0004'
+              ? [
+                  {
+                    label: this.i18n.get('explore_error_feedbac_label'),
+                    onClick: modal =>
+                      this.errorHandle(first(data?.records), modal)
+                  },
+                  {
+                    label: this.i18n.get('common_close_label'),
+                    onClick: modal => modal.close()
+                  }
+                ]
+              : [
+                  {
+                    label: this.i18n.get('common_close_label'),
+                    onClick: modal => modal.close()
+                  }
+                ]
         })
       );
     });
@@ -1643,16 +1746,9 @@ export class AlarmsComponent implements OnInit, OnDestroy {
   }
 
   selectionAlarmChange(source) {
-    const array = this.alarmsTable.getSelection();
-    if (!!array.length) {
-      this.exportAlarmTipLabel = this.i18n.get('common_export_selected_label', [
-        this.alarm
-      ]);
-    } else {
-      this.exportAlarmTipLabel = this.i18n.get('common_export_all_label', [
-        this.alarm
-      ]);
-    }
+    this.exportAlarmTipLabel = this.i18n.get('common_export_all_label', [
+      this.alarm
+    ]);
   }
 
   selectionEventChange(source) {
@@ -1671,8 +1767,4 @@ export class AlarmsComponent implements OnInit, OnDestroy {
   trackById = (_, item) => {
     return item.sequence;
   };
-
-  isThemeLight(): boolean {
-    return getAppTheme(this.i18n) === ThemeEnum.light;
-  }
 }

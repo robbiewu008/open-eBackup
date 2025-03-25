@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -40,7 +40,7 @@
    <div class="section" id="nas_s_0060__section14342462311">
     <h4 class="sectiontitle">Context</h4>
     <ul id="nas_s_0060__ul1684123102616">
-     <li id="nas_s_0060__li15684153110268">The <span id="nas_s_0060__text19278102815148">product</span> supports file-level restoration using backup copies, and copies archived to object storage or tape libraries.</li>
+     <li id="nas_s_0060__li15684153110268">The <span id="nas_s_0060__text19278102815148">product</span> supports file-level restoration using backup copies, and copies archived to object storage.</li>
     </ul>
    </div>
    <div class="section" id="nas_s_0060__section867133810186">
@@ -50,7 +50,8 @@
    <div class="section">
     <h4 class="sectiontitle">Prerequisites</h4>
     <ul>
-     <li>For 1.5.0, only copies with the index status of <span class="uicontrol" id="nas_s_0060__vmware_gud_0060_0_uicontrol483213401802"><b><span id="nas_s_0060__vmware_gud_0060_0_text1711017353520"><strong>Indexed</strong></span></b></span> support file-level restoration. For 1.6.0 and later versions, copies of the <span id="nas_s_0060__vmware_gud_0060_0_text413155718286"><strong>Not indexed</strong></span> state also support file-level restoration. <span id="nas_s_0060__vmware_gud_0060_0_ph1285012501144">If no index is created for a copy, browsing a directory with more than 2 million files may fail due to timeout. You are advised to manually create an index first.</span></li>
+     <li>For 1.5.0, the index status of the copy used for file-level restoration must be <span class="uicontrol" id="nas_s_0060__vmware_gud_0060_0_uicontrol483213401802"><b><span id="nas_s_0060__vmware_gud_0060_0_text1711017353520"><strong>Indexed</strong></span></b></span>. For 1.6.0 and later versions, copies whose index status is <span id="nas_s_0060__vmware_gud_0060_0_text413155718286"><strong>Not indexed</strong></span> can also be used for file-level restoration.</li>
+     <li>For 1.5.0, if automatic indexing has been enabled for the SLA associated with the VM corresponding to the copy, the index status of the copy is <span class="uicontrol" id="nas_s_0060__vmware_gud_0060_0_uicontrol2988201618593"><b><span id="nas_s_0060__vmware_gud_0060_0_text198816168595"><strong>Indexed</strong></span></b></span>, and file-level restoration can be directly performed. If automatic indexing is disabled, click <span class="uicontrol" id="nas_s_0060__vmware_gud_0060_0_uicontrol1036516011116"><b><span id="nas_s_0060__vmware_gud_0060_0_text31091220421"><strong>Manually Create Index</strong></span></b></span> and then perform file-level restoration.</li>
      <li>To restore a NAS file system to a new location, a storage device residing at the new location needs to be added to the <span id="nas_s_0060__nas_s_0059_text1511818204144">product</span>. For details about how to add a storage device, see <a href="nas_s_0013.html">Step 2: Adding a Storage Device</a>. The following lists the supported storage device types.
       <ul id="nas_s_0060__nas_s_0059_ul1094984711471">
        <li id="nas_s_0060__nas_s_0059_nas_s_0013_li3415133617174">OceanStor Dorado V7</li>
@@ -75,7 +76,20 @@
       </div> <p></p></li>
      <li><span>Copies can be searched by NAS file system resource or copy. This section uses the NAS file system resource as an example.</span><p></p><p id="nas_s_0060__nas_s_0059_p142551140161511">On the <span id="nas_s_0060__nas_s_0059_text6827103218214"><strong>Resources</strong></span> tab page, locate the NAS file system to be recovered by file system name and click the name.</p> <p></p></li>
      <li><span>On the <span class="uicontrol" id="nas_s_0060__nas_s_0059_uicontrol1812414562220"><b><span id="nas_s_0060__nas_s_0059_text18993182162710"><strong>Copy Data</strong></span></b></span> page, select the year, month, and day in sequence to locate the copy.</span><p></p><p id="nas_s_0060__nas_s_0059_p9918150182310">If <span><img id="nas_s_0060__nas_s_0059_image886000161711" src="en-us_image_0000001792520510.png"></span> is displayed below a month or date, a copy exists in the month or on the day.</p> <p></p></li>
-     <li id="nas_s_0060__li7995952193812"><span>Locate the copy for restoration and click <span class="uicontrol" id="nas_s_0060__uicontrol144673212457"><b><span id="nas_s_0060__text16241181213589"><strong>More</strong></span> &gt; <span id="nas_s_0060__text6433142318586"><strong>File-level Restoration</strong></span></b></span> on the right of the row where the copy is located.</span></li>
+     <li id="nas_s_0060__li7995952193812"><span>Locate the copy for restoration and click <span class="uicontrol" id="nas_s_0060__uicontrol144673212457"><b><span id="nas_s_0060__text16241181213589"><strong>More</strong></span> &gt; <span id="nas_s_0060__text6433142318586"><strong>File-level Restoration</strong></span></b></span> on the right of the row where the copy is located.</span><p></p>
+      <ul id="nas_s_0060__ul31458297552">
+       <li id="nas_s_0060__li1714532925520">For 1.5.0, select the files to be restored from the directory tree.</li>
+       <li id="nas_s_0060__li1475353185516">For 1.6.0 and later versions, set <strong id="nas_s_0060__vmware_gud_0060_0_b175942210539">File Obtaining Mode</strong>, which can be <strong id="nas_s_0060__vmware_gud_0060_0_b29462035125211">Select file paths from the directory tree</strong> or <strong id="nas_s_0060__vmware_gud_0060_0_b1211515508528">Enter file paths</strong>.
+        <div class="note" id="nas_s_0060__vmware_gud_0060_0_note1195634711290">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <ul id="nas_s_0060__vmware_gud_0060_0_ul14956124712297">
+           <li id="nas_s_0060__vmware_gud_0060_0_li1095674772911">If the copy contains too many files, the system may time out, preventing you from selecting files to be restored from the directory tree. Therefore, you are advised to enter the paths of files to be restored.</li>
+           <li id="nas_s_0060__vmware_gud_0060_0_li19956104762918">When entering a file path, enter a complete file path, for example, <strong id="nas_s_0060__vmware_gud_0060_0_b745510458333">/opt/abc/efg.txt</strong> or <strong id="nas_s_0060__vmware_gud_0060_0_b186591048123315">C:\abc\efg.txt</strong>. If you enter a folder path, for example, <strong id="nas_s_0060__vmware_gud_0060_0_b15108423133414">/opt/abc</strong> or <strong id="nas_s_0060__vmware_gud_0060_0_b13283162543410">C:\abc</strong>, all files in the folder are restored. The file name in the path is case sensitive.</li>
+          </ul>
+         </div>
+        </div></li>
+      </ul> <p></p></li>
      <li><span>Select the object to be restored and the restoration target location.</span><p></p><p>The restoration target location can be <span><strong>Original location</strong></span>, <span><strong>New location</strong></span>, or <span><strong>Local Host Location</strong></span>.</p>
       <ul>
        <li><span><strong>Original location</strong></span>: Restores data to the original file system.</li>

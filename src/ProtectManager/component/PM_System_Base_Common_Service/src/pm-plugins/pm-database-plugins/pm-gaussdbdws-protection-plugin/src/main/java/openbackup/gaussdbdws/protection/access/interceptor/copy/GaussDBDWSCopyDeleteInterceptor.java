@@ -181,7 +181,6 @@ public class GaussDBDWSCopyDeleteInterceptor extends AbstractDbCopyDeleteInterce
         protectEnv.getExtendInfo().put(DatabaseConstants.DEPLOY_TYPE, DatabaseDeployTypeEnum.SINGLE.getType());
         task.setProtectEnv(protectEnv);
         task.getProtectEnv().setNodes(gaussDBBaseService.supplyNodes(resource.getRootUuid()));
-        task.setIsForceDeleted(true);
     }
 
     @Override

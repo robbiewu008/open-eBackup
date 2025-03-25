@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -33,7 +33,7 @@
    <p>In addition, to meet enterprises' different data protection requirements for various environments, the <span>product</span> allows users to customize SLAs.</p>
    <div class="section">
     <h4 class="sectiontitle">Preset SLAs</h4>
-    <p>The system provides three preset SLAs: Gold, Silver, and Bronze. An SLA defines the backup frequency, copy retention period, and backup time window of a backup job.</p>
+    <p>The system provides three preset SLAs: Gold, Silver, and Bronze. An SLA defines the backup interval, copy retention period, and backup time window of a backup job.</p>
     <p><a href="#vmware_gud_0081__en-us_topic_0000001170622238_table179754488191">Table 1</a> describes the preset SLAs.</p>
     <ul>
      <li><span><strong>Backup Frequency</strong></span>: indicates the first backup time and the interval at which the backup is performed.</li>
@@ -93,7 +93,7 @@
            <ul id="vmware_gud_0081__en-us_topic_0000001839223149_en-us_topic_0000001337708186_en-us_topic_0000001089449281_ul204671046183020">
             <li id="vmware_gud_0081__en-us_topic_0000001839223149_en-us_topic_0000001337708186_li13272171464619"><span id="vmware_gud_0081__en-us_topic_0000001839223149_text52371313121110"><span id="vmware_gud_0081__en-us_topic_0000001839223149_text13237513201117"><strong id="vmware_gud_0081__en-us_topic_0000001839223149_b2078594914214">Backup Interval</strong></span></span>: once every day from April 20, 2021</li>
             <li id="vmware_gud_0081__en-us_topic_0000001839223149_en-us_topic_0000001337708186_li564919593455"><span id="vmware_gud_0081__en-us_topic_0000001839223149_en-us_topic_0000001337708186_text1631534445013"><strong>Copy Retention</strong></span>: one month</li>
-            <li id="vmware_gud_0081__en-us_topic_0000001839223149_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li64671546123014"><span id="vmware_gud_0081__en-us_topic_0000001839223149_text1677815725"><span id="vmware_gud_0081__en-us_topic_0000001839223149_text1574507773"><strong id="vmware_gud_0081__en-us_topic_0000001839223149_b2012219042220">Backup Time Window</strong></span></span>: 01:00:00 to 01:00:00 on the next day</li>
+            <li id="vmware_gud_0081__en-us_topic_0000001839223149_en-us_topic_0000001337708186_en-us_topic_0000001089449281_li64671546123014"><span id="vmware_gud_0081__en-us_topic_0000001839223149_text1190342071"><span id="vmware_gud_0081__en-us_topic_0000001839223149_text392771717"><strong id="vmware_gud_0081__en-us_topic_0000001839223149_b2012219042220">Backup Time Window</strong></span></span>: 01:00:00 to 01:00:00 on the next day</li>
            </ul></li>
           <li id="vmware_gud_0081__en-us_topic_0000001839223149_li2537205323317"><strong id="vmware_gud_0081__en-us_topic_0000001839223149_en-us_topic_0000001839223149_b1090654871915">Specify Target Location</strong> (This parameter is available only in 1.6.0 and later versions.)<p id="vmware_gud_0081__en-us_topic_0000001839223149_en-us_topic_0000001839223149_p11670168103016">The system automatically selects a target storage unit or storage unit group for backup through intelligent balancing.</p></li>
           <li id="vmware_gud_0081__en-us_topic_0000001839223149_en-us_topic_0000001337708186_li14252019152814"><strong id="vmware_gud_0081__en-us_topic_0000001839223149_en-us_topic_0000001839223149_b01427492115">Job Timeout Alarm</strong> (This parameter is available only in 1.6.0 and later versions.)<p id="vmware_gud_0081__en-us_topic_0000001839223149_en-us_topic_0000001839223149_p05091431163012">Disabled</p></li>
@@ -150,11 +150,11 @@
       <tbody>
        <tr>
         <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.4.2.3.1.1 "><p>Backup SLA</p></td>
-        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p>Users can define the execution frequency, retention period of backup copies, and first execution time of a backup job.</p></td>
+        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p>Users can customize the backup job execution interval, retention period of backup copies, and first execution time of a backup job.</p></td>
        </tr>
        <tr>
         <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.4.2.3.1.1 "><p>Replication SLA</p></td>
-        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p>Users can specify the target <span>product</span> cluster to which the backup copy is replicated, and customize the execution frequency, retention period of the replication copy, and first execution time of a replication job.</p></td>
+        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p>Users can specify the target <span>product</span> cluster to which the backup copy is replicated, and customize the replication job execution interval, retention period of the replication copy, and first execution time of a replication job.</p></td>
        </tr>
       </tbody>
      </table>

@@ -1,0 +1,33 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<i lvColorState lv-icon="lv-icon-filter" [ngClass]="{ active: !!nameFilterValue.length || nameFilterPanelVisible }"
+   #nameFilter="lvPopover" lv-popover [lvPopoverContent]="nameFilterTpl" lvPopoverTheme="light"
+   lvPopoverPosition="bottomRight" lvPopoverShowArrow="false" lvPopoverTrigger="customize"
+   [(lvPopoverVisible)]="nameFilterPanelVisible"
+   (click)="openNameFilterPanel()"></i>
+
+<ng-template #nameFilterTpl>
+  <lv-loading [lvLoading]="labelLoading">
+    <lv-select [lvOptions]="data" [(ngModel)]="nameFilterValue"  lvInline lvShowFilter lvMode="multiple" lvVirtualScroll lvCompareWith="id" lvFilterKey="label" lvFilterMode="contains">
+    </lv-select>
+</lv-loading>
+  <div class="name-filter-operation">
+    <button lv-button (click)="reset()">
+      {{'common_reset_label' | i18n}}
+    </button>
+    <button #primaryButton lv-button lvType="primary" (click)="filterByName(nameFilterValue)">
+      {{'common_ok_label' | i18n}}
+    </button>
+  </div>
+</ng-template>

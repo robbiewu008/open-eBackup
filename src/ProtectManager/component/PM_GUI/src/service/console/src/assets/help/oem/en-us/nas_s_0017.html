@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -62,23 +62,23 @@
       <div class="note">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p id="nas_s_0017__en-us_topic_0000001964713008_p125947145711"><span id="nas_s_0017__en-us_topic_0000001964713008_ph1413818422327">If a WORM policy has been configured for the resource to be protected, select an SLA without a WORM policy to create protection to avoid WORM policy conflicts.</span></p>
+        <p id="nas_s_0017__en-us_topic_0000001964713008_p125947145711"><span id="nas_s_0017__en-us_topic_0000001964713008_ph1413818422327">If a WORM policy has been configured for the resources to be protected, select an SLA without a WORM policy to avoid WORM policy conflicts.</span></p>
        </div>
       </div> <p></p></li>
      <li><span>Set the share protocol.</span><p></p><p>Specify the share protocol used for backing up a file system. Ensure that the share protocol selected during restoration is the same as that specified during backup. Otherwise, the metadata and permission information of the file system may be lost during restoration.</p>
       <div class="note">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <p>If a share protocol is set as the CIFS protocol, ensure that a NAS file system to be protected on the production storage is in the NTFS security mode. Otherwise, backup fails.</p>
+        <p>If no share protocol is available, create a share for the NAS file system at the production end. If the share protocol is set to CIFS, ensure that the NAS file system to be protected at the production end uses the NTFS security style. Otherwise, backup will fail.</p>
        </div>
       </div> <p></p></li>
      <li><span>Select the agent host for executing the backup job.</span><p></p><p>By default, the built-in agent host is selected by the system. NAS file systems support only the built-in agent.</p> <p></p></li>
-     <li><span>Set the automatic indexing function for backup copies.</span><p></p><p>This function is disabled by default. If a VM or VM group is selected for protection and the disks to be backed up contain system disks, the system automatically creates an index for the backup copy after this function is enabled. When using the copy for restoration, you can select one or more files in the copy for restoration and search for files, directories, or links in the copy.</p>
-      <div class="note">
+     <li><span>Set the automatic indexing function for backup copies.</span><p></p><p>This function is disabled by default. If a VM or VM group is selected for protection and the disks to be backed up contain system disks, the system automatically creates indexes for backup copies after this function is enabled. When using such a copy for restoration, you can select one or more files in the copy for restoration and search for files, directories, or links in the copy.</p>
+      <div class="note" id="nas_s_0017__note231414303259">
        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
        <div class="notebody">
-        <ul>
-         <li>Only 1.6.0 and later versions support this parameter.</li>
+        <ul id="nas_s_0017__ul023110513259">
+         <li id="nas_s_0017__li132316517255">Only 1.6.0 and later versions support this parameter.</li>
         </ul>
        </div>
       </div> <p></p></li>
@@ -90,12 +90,21 @@
         <div class="notebody">
          <ul>
           <li>Only 1.6.0 and later versions support this function.</li>
-          <li>You need to click <strong>Configure</strong> to set the ransomware protection policy for the resource to be protected if the following conditions are met: <strong>Archive Time</strong> is not set to <strong>Immediately after successful backup</strong> or <strong>Archive Policy</strong> is not set to <strong>Only the latest copy</strong> in the SLA archive policy, and the ransomware protection policy is not set. For details, see "Creating Ransomware Protection and WORM Policies" in the <i><cite>OceanProtect <span id="nas_s_0017__en-us_topic_0000001792502994_ph662613174472">Appliance 1.5.0-1.6.0</span> Data Backup Feature Guide (Ransomware Protection for Copies)</cite></i>.</li>
+          <li>You need to click <strong>Configure</strong> to set the ransomware protection policy for the resource to be protected if the following conditions are met: <strong>Archive Time</strong> is not set to <strong>Immediately after successful backup</strong> or <strong>Archive Policy</strong> is not set to <strong>Only the latest copy</strong> in the SLA archive policy, and the ransomware protection policy is not set. For details, see "Creating Ransomware Protection and WORM Policies" in the <i><cite>Data Backup Feature Guide (Ransomware Protection for Copies)</cite></i>.</li>
          </ul>
         </div>
        </div>
       </div> <p></p></li>
-     <li><span>Click <span class="uicontrol" id="nas_s_0017__en-us_topic_0000001792503842_uicontrol196538515235"><b>OK</b></span>. </span><p></p><p id="nas_s_0017__en-us_topic_0000001792503842_p25041111535">If the current system time is later than the first backup start time of the SLA, you can select to perform backup immediately after the backup SLA is associated or wait for the next scheduling based on the backup policy set in the SLA.</p> <p></p></li>
+     <li><span>Set the <strong>Automatic Indexing of Object Storage Archive Copies</strong> function.</span><p></p><p>This function is disabled by default. This parameter is displayed when <strong>Archive Storage Type</strong> is set to <span class="parmvalue"><b>Object Storage</b></span>. This function cannot be disabled after it is enabled. After this function is enabled, the system automatically creates file indexes for copies. After indexes are created, one or more files can be restored. You can also manually create indexes for copies.</p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul id="nas_s_0017__nas_s_0017_ul023110513259">
+         <li id="nas_s_0017__nas_s_0017_li132316517255">Only 1.6.0 and later versions support this parameter.</li>
+        </ul>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol" id="nas_s_0017__en-us_topic_0000001964713008_uicontrol23691650677"><b>OK</b></span>.</span><p></p><p id="nas_s_0017__en-us_topic_0000001964713008_en-us_topic_0000001656691397_p25041111535">If the current system time is later than the start time of the first backup specified in the SLA, you can select <strong id="nas_s_0017__en-us_topic_0000001964713008_b9624185216713">Execute manual backup now</strong> in the dialog box that is displayed or choose to perform automatic backup periodically based on the backup policy set in the SLA.</p> <p></p></li>
      <li><strong>Optional: </strong><span>Perform manual backup.</span><p></p>
       <div class="p">
        If you want to execute a backup job immediately, perform manual backup through the following operations. Otherwise, skip this step.
@@ -108,7 +117,14 @@
           </div>
          </div></li>
         <li>Set the name of the copy generated during manual backup.<p id="nas_s_0017__en-us_topic_0000001964713008_p444210492470">If this parameter is left unspecified, the system sets the copy name to <strong id="nas_s_0017__en-us_topic_0000001964713008_b17709174711816">backup_</strong><em id="nas_s_0017__en-us_topic_0000001964713008_i1371044717814">Timestamp</em> by default.</p></li>
-        <li>Click <span class="uicontrol" id="nas_s_0017__en-us_topic_0000001964713008_uicontrol1662615410817"><b><span id="nas_s_0017__en-us_topic_0000001964713008_text13625854687"><strong>OK</strong></span></b></span>.</li>
+        <li>Select the <span><strong>Forever Incremental (Synthetic Full) Backup</strong></span> protection policy.
+         <div class="note">
+          <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+          <div class="notebody">
+           <p id="nas_s_0017__en-us_topic_0000001964713008_p13522118194919"><span id="nas_s_0017__en-us_topic_0000001964713008_ph19374310343">For 1.6.0 and later versions, if the selected protection policy is different from that configured in the associated SLA, the WORM configuration does not take effect.</span></p>
+          </div>
+         </div></li>
+        <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</li>
        </ol>
       </div> <p></p></li>
     </ol>

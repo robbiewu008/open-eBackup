@@ -42,7 +42,7 @@
             <according>Y</according>
             <copies>
                 <copy>
-                    <source>dorado/${AGENT_BRANCH}/mspkg/linux/DataProtect_${PMClientVersion}_client.zip</source>
+                    <source>dorado/${AGENT_BRANCH}/mspkg/${BUILD_PKG_TYPE}/linux/DataProtect_${PMClientVersion}_client.zip</source>
                     <dest>.</dest>
                 </copy>
             </copies>

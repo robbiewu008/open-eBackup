@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -11,6 +10,7 @@
   EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
+
 
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -37,7 +37,7 @@
 
 <h1 class="topictitle1">配置LDAP服务</h1>
 <div><p id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_p8060118"><span id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_text5812258201217">OceanProtect</span>支持以LDAP（Lightweight Directory Access Protocol）服务器认证方式登录，以达到用户信息的统一管理。</p>
-<div class="section" id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_section944932203517"><h4 class="sectiontitle">前提条件</h4><ul id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_ul453211633912"><li id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_li17532116113914">LDAP服务器安装部署完成。</li><li id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_li8682141703911">如果使用LDAPS协议，请到第三方证书机构进行申请与该域认证服务器<strong id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_b257513347397">“证书”</strong>配套的CA证书，并导入该CA证书。导入CA证书的操作请参见<span id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_cite169031012145615">《OceanProtect <span id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001792502994_ph2613737162018">备份一体机 1.5.0-1.6.0</span> 安全配置指南》</span>中的<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_uicontrol1259399145514">“导入证书”</span>章节。</li></ul>
+<div class="section" id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_section944932203517"><h4 class="sectiontitle">前提条件</h4><ul id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_ul453211633912"><li id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_li17532116113914">LDAP服务器安装部署完成。</li><li id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_li8682141703911">如果使用LDAPS协议，请到第三方证书机构进行申请与该域认证服务器<strong id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_b257513347397">“证书”</strong>配套的CA证书，并导入该CA证书。导入CA证书的操作请参见<span id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_cite169031012145615">《OceanProtect DataBackup 1.5.0-1.6.0 安全配置指南》</span>中的<span class="uicontrol" id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_uicontrol1259399145514">“导入证书”</span>章节。</li></ul>
 </div>
 <div class="section" id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_section36341118113516"><h4 class="sectiontitle">背景信息</h4><p class="MsoNormal" id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_p33648747">LDAP是轻型目录访问协议，是基于TCP/IP的网络协议，允许对目录系统代理的访问，是X.500目录访问协议的简化形式。</p>
 <p class="MsoNormal" id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_p34403269">随着网络应用日益丰富，网络管理特别是用户管理变得越来越复杂。对于提供单一服务的系统来说，基本上都是采用“用户名-密码”的认证方式。网络中的各种应用对每个用户具有不同的权限，因此每个应用都需要设定不同的用户名和密码。对于多个应用系统，用户需要输入不同的用户名和密码，不仅繁琐，而且不易管理。LDAP提供的目录服务能够有效解决此类问题。</p>
@@ -99,7 +99,7 @@
 <tr id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_row1469861914256"><td class="cellrowborder" valign="top" width="21.57%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p106191046181718">IP地址</p>
 </td>
 <td class="cellrowborder" valign="top" width="78.43%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_p1619164615173">设置需要添加到LDAP服务器的IPv4或IPv6地址，并单击<span><img id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_image99810256817" src="zh-cn_image_0000001839145097.png"></span>。</p>
-<div class="note" id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_note134372544"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_ul13632182913014"><li id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li18632142913303">单击列表中IP地址右边的<span><img id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_image3341184119813" src="zh-cn_image_0000001839225041.png"></span>将可以移除IP地址。</li><li id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li260214715434">最多支持输入4个IP地址。</li><li id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li126326299305">该参数仅在“地址类型”为“IP地址”时显示。</li></ul>
+<div class="note" id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_note134372544"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_ul13632182913014"><li id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li18632142913303">单击列表中IP地址右边的<span><img id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_image3341184119813" src="zh-cn_image_0000001839225041.png"></span>将可以删除IP地址。</li><li id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li260214715434">最多支持输入4个IP地址。</li><li id="ZH-CN_TOPIC_0000001839144385__zh-cn_topic_0000001839224797_zh-cn_topic_0000001175120797_zh-cn_topic_0000001160283107_li126326299305">该参数仅在“地址类型”为“IP地址”时显示。</li></ul>
 </div></div>
 </td>
 </tr>

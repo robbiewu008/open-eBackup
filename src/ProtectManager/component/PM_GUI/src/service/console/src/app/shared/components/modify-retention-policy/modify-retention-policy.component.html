@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup sla-policy" [lvLabelColon]="false">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup sla-policy" [lvLabelColon]="false">
     <lv-form-item>
         <lv-form-label>{{'common_retention_policy_label' | i18n}}</lv-form-label>
         <lv-form-control>
@@ -31,7 +31,7 @@
         <lv-form-label lvRequired>
             {{'common_retention_label' | i18n}}
             <i *ngIf="!isCyberEngine" lv-icon="aui-icon-help" lv-tooltip="{{'protection_retention_policy_desc_label' | i18n}}
-{{helpTipsLabel}}" lvTooltipTheme="light" class="configform-constraint" lvColorState='true'>
+{{helpTipsLabel}}{{retainedTipLabel}}" lvTooltipTheme="light" class="configform-constraint" lvColorState='true'>
             </i>
         </lv-form-label>
         <lv-form-control [lvErrorTip]="retentionDurationErrorTip">

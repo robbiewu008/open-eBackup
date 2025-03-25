@@ -15,9 +15,13 @@ package openbackup.tidb.resources.access.restore;
 import openbackup.data.access.framework.agent.DefaultProtectAgentSelector;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
+import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
@@ -28,9 +32,11 @@ import openbackup.tidb.resources.access.service.TidbService;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 数据库恢复
@@ -81,6 +87,22 @@ public class TidbDatabaseRestoreInterceptor extends TidbClusterRestoreIntercepto
         ProtectedResource clusterResource = tidbService.getResourceByCondition(task.getTargetObject().getUuid());
         task.setAgents(endpointList);
         setClusterInfo(task, clusterResource);
+        task.setAgents(endpointList);
+        List<TaskEnvironment> nodes = endpointList.stream()
+            .map(endpoint -> convertToTaskEnvironment(endpoint))
+            .collect(Collectors.toList());
+        task.getTargetEnv().setNodes(nodes);
+    }
+
+    private TaskEnvironment convertToTaskEnvironment(Endpoint endpoint) {
+        ProtectedEnvironment protectedEnvironment = resourceService.getResourceById(endpoint.getId())
+            .filter(env -> env instanceof ProtectedEnvironment)
+            .map(env -> (ProtectedEnvironment) env)
+            .orElseThrow(
+                () -> new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR, "Protected resource is not exists!"));
+        TaskEnvironment taskEnvironment = new TaskEnvironment();
+        BeanUtils.copyProperties(protectedEnvironment, taskEnvironment);
+        return taskEnvironment;
     }
 
     /**

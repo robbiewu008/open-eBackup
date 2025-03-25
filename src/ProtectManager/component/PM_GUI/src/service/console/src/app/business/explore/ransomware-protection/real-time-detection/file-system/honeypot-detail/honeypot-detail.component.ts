@@ -14,7 +14,8 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {
   CommonConsts,
   I18NService,
-  IODETECTFILESYSTEMService
+  IODETECTFILESYSTEMService,
+  SYSTEM_TIME
 } from 'app/shared';
 import {
   TableCols,
@@ -32,9 +33,12 @@ export class HoneypotDetailComponent implements OnInit {
   rowData;
   tableConfig: TableConfig;
   tableData: TableData;
+  timeZone = SYSTEM_TIME.timeZone;
 
   @ViewChild('nameTpl', { static: true })
   nameTpl: TemplateRef<any>;
+  @ViewChild('updateTimeTpl', { static: true })
+  updateTimeTpl: TemplateRef<any>;
 
   constructor(
     public i18n: I18NService,
@@ -59,8 +63,14 @@ export class HoneypotDetailComponent implements OnInit {
       {
         key: 'name',
         name: this.i18n.get('explore_honeypot_file_name_label'),
-        width: '40%',
+        width: '30%',
         cellRender: this.nameTpl
+      },
+      {
+        key: 'updateTime',
+        name: this.i18n.get('explore_honeypot_last_update_time_label'),
+        width: 164,
+        cellRender: this.updateTimeTpl
       }
     ];
 
@@ -83,21 +93,23 @@ export class HoneypotDetailComponent implements OnInit {
   getHoneypotInfo() {
     this.ioDetectFilesystemService
       .getHoneypotInfoByFsId({ fsId: this.rowData?.id })
-      .subscribe(res => {
-        let result;
-        if (res.records?.honeypotFileList) {
-          result = JSON.parse(res.records?.honeypotFileList);
-        }
+      .subscribe((res: any) => {
         const displayData = [];
-        each(result, item => {
-          if (!isEmpty(item.filenames)) {
+        each(res.records, item => {
+          let result = JSON.parse(item?.honeypotFileList);
+          if (!isEmpty(result.filenames)) {
             displayData.push(
-              ...this.parseData(item.path, item.filenames.split(','))
+              ...this.parseData(
+                result.path,
+                result.filenames.split(','),
+                item?.createTime
+              )
             );
           } else {
             displayData.push({
               path: item.path,
-              num: 0
+              num: 0,
+              updateTime: item.createTime * 1e3
             });
           }
         });
@@ -108,7 +120,7 @@ export class HoneypotDetailComponent implements OnInit {
       });
   }
 
-  parseData(root, fileList: string[]) {
+  parseData(root, fileList: string[], createTime) {
     const fileObj = {};
     each(fileList, item => {
       if (isString(item)) {
@@ -126,7 +138,8 @@ export class HoneypotDetailComponent implements OnInit {
       return {
         path: path === root ? path : `${root}${path}`,
         name: fileObj[path],
-        num: size(fileObj[path])
+        num: size(fileObj[path]),
+        updateTime: createTime * 1e3
       };
     });
   }

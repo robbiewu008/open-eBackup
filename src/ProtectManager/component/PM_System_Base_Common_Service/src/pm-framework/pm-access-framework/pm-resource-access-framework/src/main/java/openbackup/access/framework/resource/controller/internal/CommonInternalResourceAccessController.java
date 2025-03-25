@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.dto.InternalResourceQueryParam;
 import openbackup.access.framework.resource.service.ProtectedResourceEvent;
 import openbackup.access.framework.resource.service.ProtectedResourceMonitorService;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AsyncListResourceV2Req;
+import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.resource.CyberEngineResourceService;
 import openbackup.data.protection.access.provider.sdk.resource.FileSystemInfo;
@@ -31,10 +33,13 @@ import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.security.exterattack.ExterAttack;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,6 +63,9 @@ public class CommonInternalResourceAccessController {
     private final ProtectedResourceMonitorService protectedResourceMonitorService;
 
     private final CyberEngineResourceService cyberEngineResourceService;
+
+    @Autowired
+    private AgentUnifiedService agentUnifiedService;
 
     /**
      * constructor
@@ -206,5 +214,18 @@ public class CommonInternalResourceAccessController {
     @GetMapping("{resourceId}/next-backup-type-and-cause")
     public NextBackupParams queryNextBackupTypeAndCause(@PathVariable("resourceId") String resourceId) {
         return resourceService.queryNextBackupTypeAndCause(resourceId);
+    }
+
+    /**
+     * 更新资源扫描任务结果
+     *
+     * @param jobId 任务ID
+     * @param request 扫描出的资源
+     */
+    @ExterAttack
+    @PostMapping("/{jobId}/action/update")
+    public void reportScanResources(@PathVariable String jobId, @RequestBody AsyncListResourceV2Req request) {
+        log.info("[Scan] jobId: {}, async report scan resource job, code: {}", jobId, request.getCode());
+        agentUnifiedService.transScanResources(request);
     }
 }

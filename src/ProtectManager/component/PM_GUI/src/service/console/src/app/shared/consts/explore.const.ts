@@ -89,10 +89,6 @@ export const DETECT_UPPER_BOUND_POINTER = [
   {
     value: 2,
     label: 'common_level_medium_label',
-    pointStyle: {
-      'border-color': '#779bfa',
-      'background-color': '#779bfa'
-    },
     textStyle: {
       'margin-left': '5px'
     }

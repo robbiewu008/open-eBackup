@@ -1,4 +1,3 @@
-
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
@@ -20,33 +20,42 @@
    
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="DC.Type" content="topic">
-<meta name="DC.Title" content="Step 9: (Optional) Logging In to the iSCSI Initiator">
+<meta name="DC.Title" content="Step 9: Logging In to the iSCSI Initiator">
 <meta name="product" content="">
 <meta name="DC.Relation" scheme="URI" content="vmware_gud_0015_0.html">
 <meta name="prodname" content="">
 <meta name="version" content="">
 <meta name="brand" content="30-OceanProtect Appliance 1.5.0-1.6.0 Help Center">
-<meta name="DC.Publisher" content="20241030">
+<meta name="DC.Publisher" content="20241029">
 <meta name="prodname" content="csbs">
 <meta name="documenttype" content="usermanual">
 <meta name="DC.Format" content="XHTML">
 <meta name="DC.Identifier" content="vmware_gud_iscsi">
 <meta name="DC.Language" content="en-us">
 <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-<title>Step 9: (Optional) Logging In to the iSCSI Initiator</title>
+<title>Step 9: Logging In to the iSCSI Initiator</title>
 </head>
 <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="vmware_gud_iscsi"></a><a name="vmware_gud_iscsi"></a>
 
-<h1 class="topictitle1">Step 9: (Optional) Logging In to the iSCSI Initiator</h1>
+<h1 class="topictitle1">Step 9: Logging In to the iSCSI Initiator</h1>
 <div><p>In Ethernet networking scenarios, you need to log in to the iSCSI initiator on the agent host by referring to this section if you want to use the SAN transmission mode or use the storage-layer backup mode for VM disks of datastores created based on OceanStor Dorado LUNs.</p>
-<div class="section"><h4 class="sectiontitle">Prerequisites</h4><p>The iSCSI initiator (iscsi-initiator-utils) has been installed on the agent host. For details, see "Installing iSCSI Initiators" in the <i><cite>OceanProtect <span id="vmware_gud_iscsi__en-us_topic_0000001792502994_ph19170214112011">Appliance 1.5.0-1.6.0</span> ProtectAgent Installation Guide</cite></i>.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><p>The iSCSI initiator (iscsi-initiator-utils) has been installed on the agent host. For details, see "<span>Installing iSCSI Initiators (Applicable to VMware)</span>" in the <em><i><cite>OceanProtect DataBackup 1.5.0-1.6.0 ProtectAgent Installation Guide</cite></i></em>.</p>
 </div>
-<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="vmware_gud_iscsi__li768819316116"><a name="vmware_gud_iscsi__li768819316116"></a><a name="li768819316116"></a><span>Log in to the production storage device corresponding to the ESXi datastore and query the iSCSI logical port to obtain the IP address of the logical port.</span><p><ol type="a"><li>Log in to DeviceManager.</li><li>Choose <strong>Services</strong> &gt; <strong>Network</strong> &gt; <strong>Logical Ports</strong>.</li><li>On the displayed page, query the logical port with <span class="uicontrol"><b>Data Protocol</b></span> being <strong>iSCSI</strong> and record the IP address of the logical port.</li></ol>
-</p></li><li><span>On the agent host, run the following commands in sequence to log in to the iSCSI initiator (<em>IP</em> indicates the IP address of the logical port obtained in <a href="#vmware_gud_iscsi__li768819316116">1</a>):</span><p><pre class="screen">iscsiadm -m discovery -t st -p <em>IP</em>
-iscsiadm -m node -l -p <em>IP</em></pre>
-<p><span><img src="en-us_image_0000001839267077.png"></span></p>
-</p></li><li id="vmware_gud_iscsi__li88571715310"><a name="vmware_gud_iscsi__li88571715310"></a><a name="li88571715310"></a><span>On the agent host, run the <strong>iscsiadm -m session</strong> command to view the session information and obtain the IQN.</span><p><p><span><img src="en-us_image_0000001839187137.png"></span></p>
-</p></li><li><span>Check whether the IQN is online on the production storage device corresponding to the ESXi datastore.</span><p><ol type="a"><li>Log in to DeviceManager.</li><li>Choose <strong>Services</strong> &gt; <strong>Block Service</strong> &gt; <strong>Host Groups</strong> &gt; <strong>Initiators</strong> &gt; <strong>iSCSI</strong>.</li><li>Switch to the <span class="uicontrol"><b>iSCSI</b></span> tab page and query the IQN obtained in <a href="#vmware_gud_iscsi__li88571715310">3</a>. If <strong>Status</strong> of the IQN is <strong>Online</strong>, the IQN status is normal.</li></ol>
+<div class="section" id="vmware_gud_iscsi__section495264112597"><h4 class="sectiontitle">Procedure</h4><p id="vmware_gud_iscsi__p125071013014">The following operations assume that OceanStor Dorado is used as the production storage device.</p>
+<ol id="vmware_gud_iscsi__ol166880319118"><li id="vmware_gud_iscsi__li768819316116"><a name="vmware_gud_iscsi__li768819316116"></a><a name="li768819316116"></a><span>Log in to the production storage device corresponding to the ESXi datastore and query the iSCSI logical port to obtain the IP address of the logical port.</span><p><ol type="a" id="vmware_gud_iscsi__ol7935174819810"><li id="vmware_gud_iscsi__li59351948085">Log in to DeviceManager.</li><li id="vmware_gud_iscsi__li1051415181795">Choose <strong id="vmware_gud_iscsi__b193198258185">Services</strong> &gt; <strong id="vmware_gud_iscsi__b4688152781819">Network</strong> &gt; <strong id="vmware_gud_iscsi__b247018298182">Logical Ports</strong>.</li><li id="vmware_gud_iscsi__li785518500912">On the displayed page, query the logical port with <span class="uicontrol" id="vmware_gud_iscsi__uicontrol1119815346109"><b>Data Protocol</b></span> being <strong id="vmware_gud_iscsi__b187772478364">iSCSI</strong> and record the IP address of the logical port.</li></ol>
+</p></li><li id="vmware_gud_iscsi__li249019343218"><span>On the agent host, run the following commands in sequence to log in to the iSCSI initiator:</span><p><pre class="screen" id="vmware_gud_iscsi__screen1594352115">iscsiadm -m discovery -t st -p <em id="vmware_gud_iscsi__i135193711122">IP address</em></pre>
+<pre class="screen" id="vmware_gud_iscsi__screen426175515418">iscsiadm -m node -l -p <em id="vmware_gud_iscsi__i118665577419">IP address</em></pre>
+<div class="note" id="vmware_gud_iscsi__note14972085814"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="vmware_gud_iscsi__p89721781284">Replace <em id="vmware_gud_iscsi__i1264917214815">IP address</em> in the commands with the actual logical port IP address obtained in <a href="#vmware_gud_iscsi__li768819316116">1</a>.</p>
+</div></div>
+<p id="vmware_gud_iscsi__p1508137853">The command output similar to the following is displayed:</p>
+<p id="vmware_gud_iscsi__p628692817115"><span><img id="vmware_gud_iscsi__image7487830152113" src="en-us_image_0000001839267077.png"></span></p>
+</p></li><li id="vmware_gud_iscsi__li88571715310"><span>On the agent host, run the following command to view the session information and ensure that the IQN of the production storage device is online:</span><p><pre class="screen" id="vmware_gud_iscsi__screen661813118212">iscsiadm -m session</pre>
+<p id="vmware_gud_iscsi__p18474332824">If the command output contains logical port information, the IQN is online.</p>
+<p id="vmware_gud_iscsi__p64391540131719"><span><img id="vmware_gud_iscsi__image117131934181514" src="en-us_image_0000002132525593.png"></span></p>
+</p></li><li id="vmware_gud_iscsi__li1140194514210"><a name="vmware_gud_iscsi__li1140194514210"></a><a name="li1140194514210"></a><span>On the agent host, run the following command to obtain the IQN of the agent host:</span><p><pre class="screen" id="vmware_gud_iscsi__screen1161016556219">cat /etc/iscsi/initiatorname.iscsi </pre>
+<p id="vmware_gud_iscsi__p1074682119416">The command output similar to the following is displayed:</p>
+<p id="vmware_gud_iscsi__p2078715245612"><span><img id="vmware_gud_iscsi__image320122515616" src="en-us_image_0000002096956652.png"></span></p>
+</p></li><li id="vmware_gud_iscsi__li1868713566315"><span>On the production storage device corresponding to the ESXi datastore, check and ensure that the IQN of the agent host is online.</span><p><ol type="a" id="vmware_gud_iscsi__ol6119242222"><li id="vmware_gud_iscsi__li15113246221">Log in to DeviceManager.</li><li id="vmware_gud_iscsi__li94481632162213">Choose <strong id="vmware_gud_iscsi__b721843519193">Services</strong> &gt; <strong id="vmware_gud_iscsi__b62181035171911">Block Service</strong> &gt; <strong id="vmware_gud_iscsi__b11218163518191">Host Groups</strong> &gt; <strong id="vmware_gud_iscsi__b102181035121914">Initiators</strong> &gt; <strong id="vmware_gud_iscsi__b9535141518206">iSCSI</strong>.</li><li id="vmware_gud_iscsi__li119268344233">On the <span class="uicontrol" id="vmware_gud_iscsi__uicontrol13515191112248"><b>iSCSI</b></span> tab page, query the IQN obtained in <a href="#vmware_gud_iscsi__li1140194514210">4</a>, and check and ensure that the IQN is online.</li></ol>
 </p></li></ol>
 </div>
 </div>

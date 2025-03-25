@@ -21,6 +21,7 @@ import {
   CommonConsts,
   DataMap,
   DataMapService,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getPermissionMenuItem,
   I18NService,
@@ -189,13 +190,17 @@ export class FusionHostSummaryComponent implements OnInit, AfterViewInit {
               filter(data, val => {
                 return !isEmpty(val.sla_id) && val.sla_status;
               })
-            ) !== size(data) || !size(data)
+            ) !== size(data) ||
+            !size(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX
           );
         },
         permission: OperateItems.DeactivateProtection,
         disabledTips: this.i18n.get(
           'protection_partial_resources_deactive_label'
         ),
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n),
         label: this.i18n.get('protection_deactive_protection_label'),
         onClick: data => {
           this.protectService

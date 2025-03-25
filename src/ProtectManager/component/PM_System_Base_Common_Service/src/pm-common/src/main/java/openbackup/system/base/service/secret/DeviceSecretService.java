@@ -15,11 +15,16 @@ package openbackup.system.base.service.secret;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.bean.DeviceUser;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.constants.DistributeLockConstant;
+import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
+import openbackup.system.base.pack.lock.Lock;
+import openbackup.system.base.pack.lock.LockService;
 import openbackup.system.base.sdk.infrastructure.InfrastructureRestApi;
 import openbackup.system.base.sdk.infrastructure.model.InfraConfigMapRequest;
 import openbackup.system.base.sdk.infrastructure.model.InfraResponseWithError;
@@ -49,6 +54,9 @@ public class DeviceSecretService {
 
     @Autowired
     private InfrastructureRestApi infrastructureRestApi;
+
+    @Autowired
+    private LockService lockService;
 
     /**
      * 查询所有设备secret
@@ -141,6 +149,26 @@ public class DeviceSecretService {
         }
     }
 
+
+    /**
+     * secret有效状态修改
+     *
+     * @param deviceId 机器ESN号
+     * @param username 用户名
+     * @param isAuthValid 是否认证失败
+     */
+    public void changeUseful(String deviceId, String username, boolean isAuthValid) {
+        List<DeviceUser> deviceUsers = querySecret(deviceId);
+        Optional<DeviceUser> deviceUser = deviceUsers.stream()
+            .filter(user -> user.getUsername().equals(username))
+            .findFirst();
+        if (deviceUser.isPresent()) {
+            log.debug("Change user={},useful={}", username, isAuthValid);
+            deviceUser.get().setUseful(isAuthValid);
+            updateSecret(deviceId, deviceUsers);
+        }
+    }
+
     /**
      * 只删除secret的key
      *
@@ -187,14 +215,24 @@ public class DeviceSecretService {
     public boolean upsertSecret(String deviceId, List<DeviceUser> deviceUsers) {
         List<DeviceUser> existDeviceUsers = querySecret(deviceId);
         String userStr = JSONArray.fromObject(deviceUsers).toString();
-
-        InfraResponseWithError<String> resp;
-        if (VerifyUtil.isEmpty(existDeviceUsers)) {
-            resp = infrastructureRestApi.createSecret(NAMESPACE, DEVICE_SECRET, deviceId, userStr);
-        } else {
-            resp = infrastructureRestApi.updateSecret(
-                new InfraConfigMapRequest(NAMESPACE, DEVICE_SECRET, deviceId, userStr));
+        Lock distributeLock = lockService.createDistributeLock(
+            DistributeLockConstant.UPDATE_DEVICE_SECRET_LOCK_PREFIX + deviceId);
+        if (!distributeLock.tryLock(DistributeLockConstant.UPDATE_DEVICE_SECRET_LOCK_WAIT_TIME,
+            DistributeLockConstant.UPDATE_DEVICE_SECRET_LOCK_WAIT_TIME_UNIT)) {
+            log.error("Get upsert lock for device: {} failed.", deviceId);
+            throw new LegoCheckedException(CommonErrorCode.OPERATION_FAILED, "Lock is occupied.");
         }
-        return SUCCESS.equals(resp.getData());
+        try {
+            InfraResponseWithError<String> resp;
+            if (VerifyUtil.isEmpty(existDeviceUsers)) {
+                resp = infrastructureRestApi.createSecret(NAMESPACE, DEVICE_SECRET, deviceId, userStr);
+            } else {
+                resp = infrastructureRestApi.updateSecret(
+                    new InfraConfigMapRequest(NAMESPACE, DEVICE_SECRET, deviceId, userStr));
+            }
+            return SUCCESS.equals(resp.getData());
+        } finally {
+            distributeLock.unlock();
+        }
     }
 }

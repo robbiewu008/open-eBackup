@@ -233,6 +233,12 @@ paths:
           required: true
           type: string
           description: 备份存储单元id
+        - name: isForceDelete
+          in: query
+          required: true
+          description: 是否是强制删除
+          type: boolean
+          default: false
       responses:
         '200':
           description: ''

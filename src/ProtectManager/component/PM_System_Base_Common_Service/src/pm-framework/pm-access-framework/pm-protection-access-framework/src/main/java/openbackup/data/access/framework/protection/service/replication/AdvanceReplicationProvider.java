@@ -14,9 +14,11 @@ package openbackup.data.access.framework.protection.service.replication;
 
 import static com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants.EXTERNAL_SYSTEM_ID;
 import static com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants.REPLICATION_TARGET_MODE;
+import static com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants.SPECIFIED_SCOPE;
 import static com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants.STORAGE_ID;
 import static com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants.STORAGE_INFO;
 import static com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants.STORAGE_TYPE;
+import static com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants.TIME_ZONE;
 import static com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants.USERNAME;
 import static com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants.USER_INFO;
 
@@ -40,8 +42,10 @@ import com.huawei.oceanprotect.sla.sdk.dto.RetentionDto;
 import com.huawei.oceanprotect.sla.sdk.dto.SlaDto;
 import com.huawei.oceanprotect.sla.sdk.dto.UpdateSlaCommand;
 import com.huawei.oceanprotect.sla.sdk.enums.BackupStorageTypeEnum;
+import com.huawei.oceanprotect.sla.sdk.enums.PolicyAction;
 import com.huawei.oceanprotect.sla.sdk.enums.PolicyType;
 import com.huawei.oceanprotect.sla.sdk.enums.ReplicationMode;
+import com.huawei.oceanprotect.sla.sdk.enums.ReplicationType;
 import com.huawei.oceanprotect.sla.sdk.enums.RetentionType;
 import com.huawei.oceanprotect.system.base.sdk.devicemanager.osac.service.StorageEntityRestApiService;
 import com.huawei.oceanprotect.system.sdk.enums.SwitchNameEnum;
@@ -50,6 +54,7 @@ import com.huawei.oceanprotect.system.sdk.service.SystemSwitchInternalService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.config.achive.DmeResponse;
@@ -143,6 +148,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -163,6 +169,8 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
     private static final String REPLICATION_TARGET_TYPE = "replication_target_type";
 
     private static final String ALL_COPY = "1";
+
+    private static final String NULL = "null";
 
     Set<String> dirResources = new HashSet<>(
         Arrays.asList(ResourceSubTypeEnum.SQL_SERVER.getType(), ResourceSubTypeEnum.OPENGAUSS.getType(),
@@ -263,8 +271,7 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
         ResourceEntity resource = context.getResourceEntity();
         try {
             String resourceId = ResourceSubTypeEnum.IMPORT_COPY.getType().equals(resource.getSubType())
-                ? resource.getName()
-                : resource.getUuid();
+                ? resource.getName() : resource.getUuid();
             request.setResourceId(resourceId);
             PolicyBo policy = context.getPolicy();
             setReplicateTime(request, policy);
@@ -272,13 +279,14 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
             BackupObject backupObject = context.getBackupObject();
             request.setJobRequestId(backupObject.getRequestId());
             request.setTaskId(backupObject.getTaskId());
-            checkReplicationSlaUser(policy, backupObject.getTaskId());
+            checkReplicationSlaUser(context, backupObject.getTaskId());
             // 初始化本地设备
             initLocalDevice(context, request, resourceId);
             initRemoteDevice(context, request, resourceId);
             initQos(context, request);
             // 初始化metadata
             initMetadata(context, request);
+            initRepType(policy, request);
             String jobId = context.getContext().get("job_id");
             updateJob(jobId);
             request.setEnableCompress(
@@ -289,14 +297,13 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
             request.setEnableEncryption(getSwitchByName(SwitchNameEnum.REPLICATION_LINK_ENCRYPTION));
             request.setSameChainCopies(context.getSameChainCopies());
             initCopyFormat(request, context);
-
-            executeReplica(request, context);
-            log.info("AdvanceReplication job send to dme success, job_id:{}, start time: {}", jobId,
-                request.getStartReplicateTime());
             UpdateJobRequest deliverReq = JobUpdateUtil.getDeliverReq();
             // 在extendStr中加入复制目标位置,hcs跨云复制跳过
             updateReplicationDestination(context, deliverReq);
             jobCenterRestApi.updateJob(jobId, deliverReq);
+            executeReplica(request, context);
+            log.info("AdvanceReplication job send to dme success, job_id:{}, start time: {}", jobId,
+                request.getStartReplicateTime());
         } finally {
             // 清理密码
             if (request.getLocalDevices() != null) {
@@ -311,14 +318,19 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
         }
     }
 
+    private void initRepType(PolicyBo policy, DmeReplicateRequest request) {
+        if (PolicyAction.REPLICATION.getAction().equals(policy.getAction())) {
+            request.setRepType(ReplicationType.DATA.getValue());
+        } else {
+            request.setRepType(ReplicationType.LOG.getValue());
+        }
+    }
+
     private void updateReplicationDestination(ReplicateContext context, UpdateJobRequest deliverReq) {
         PolicyBo policy = context.getPolicy();
         JsonNode extParameters = policy.getExtParameters();
         int replicationMode = policy.getIntegerFormExtParameters(REPLICATION_TARGET_MODE,
                 ReplicationMode.EXTRA.getValue());
-        if (ReplicationMode.HCS.getValue() == replicationMode) {
-            return;
-        }
         if (ReplicationMode.INTRA.getValue() == replicationMode) {
             initReplicationDestinationWithIntra(extParameters, deliverReq);
         } else {
@@ -386,8 +398,7 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
 
     private void executeReplica(DmeReplicateRequest request, ReplicateContext context) {
         DmeResponse<String> result;
-        PolicyBo policy = context.getPolicy();
-        String localStorageType = getStringFromJsonNode(policy.getExtParameters(), "local_storage_type");
+        String localStorageType = request.getLocalDevices().get(0).getLocalStorageType();
         if (StringUtils.equals(StorageUnitTypeEnum.BASIC_DISK.getType(), localStorageType)) {
             String unitId = context.getContext().get("unit");
             Optional<StorageUnitVo> storageUnit = storageUnitService.getStorageUnitById(unitId);
@@ -424,9 +435,13 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
     private void initLocalDevice(ReplicateContext context, DmeReplicateRequest request, String resourceId) {
         BackupObject backupObject = context.getBackupObject();
         List<DmeLocalDevice> dmeLocalDevices = buildLocalDevices(backupObject, resourceId, context);
-        PolicyBo policy = context.getPolicy();
+        String unitId = context.getContext().get("unit");
+        Optional<StorageUnitVo> storageUnit = storageUnitService.getStorageUnitById(unitId);
+        if (!storageUnit.isPresent()) {
+            throw new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Local storage not exist.");
+        }
         dmeLocalDevices.forEach(dmeLocalDevice -> dmeLocalDevice
-                .setLocalStorageType(getStringFromJsonNode(policy.getExtParameters(), "local_storage_type")));
+                .setLocalStorageType(storageUnit.get().getDeviceType()));
         request.setLocalDevices(dmeLocalDevices);
         String copyId = context.getContext().get("copy_id");
         if (StringUtils.isNotBlank(copyId)) {
@@ -492,6 +507,18 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
         }
         TargetClusterVo cluster = context.getTargetCluster();
         String username = VerifyUtil.isEmpty(dpUserName) ? cluster.getUsername() : dpUserName;
+
+        if (extParameters != null && extParameters.has(SPECIFIED_SCOPE)) {
+            log.info("put time zone message to from the end.");
+            ObjectNode extParams = null;
+            if (extParameters instanceof ObjectNode) {
+                extParams = (ObjectNode) extParameters;
+            }
+            if (extParams != null) {
+                extParams.put(TIME_ZONE, TimeZone.getDefault().getID());
+                policy.setExtParameters(extParams);
+            }
+        }
         metadata.setUsername(username);
         metadata.setReplicationPolicy(policy);
         request.setMetadata(JSONObject.fromObject(metadata).toString());
@@ -574,21 +601,22 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
         PolicyBo policy = context.getPolicy();
         List<DmeRemoteDevice> dmeRemoteDeviceList;
         if (SlaConstants.EXTRA_REPLICATION_MODE.contains(replicationMode)) { // 跨域复制
-            dmeRemoteDeviceList = fillDmeRemoteDeviceWhenExtra(cluster, policy);
+            dmeRemoteDeviceList = fillDmeRemoteDeviceWhenExtra(cluster, policy, context);
         } else {
             request.setIntra(true);
             JsonNode storageInfo = policy.getExtParameters().get(ExtParamsConstants.STORAGE_INFO);
             dmeRemoteDeviceList = generateIntraDeviceList(storageInfo, resourceId);
         }
         String remoteStorageType = getStringFromJsonNode(policy.getExtParameters(), "remote_storage_type");
-        dmeRemoteDeviceList.stream().filter(device -> remoteStorageType.equals(device.getDeployType()))
-                .forEach(device -> device.setRemoteStorageType(remoteStorageType));
+        log.info("Replication remote device size:{}", dmeRemoteDeviceList.size());
+        dmeRemoteDeviceList.forEach(device -> device.setRemoteStorageType(remoteStorageType));
         request.setRemoteDevice(dmeRemoteDeviceList);
     }
 
-    private List<DmeRemoteDevice> fillDmeRemoteDeviceWhenExtra(TargetClusterVo cluster, PolicyBo policy) {
+    private List<DmeRemoteDevice> fillDmeRemoteDeviceWhenExtra(TargetClusterVo cluster, PolicyBo policy,
+                                                               ReplicateContext context) {
         if (deployTypeService.isE1000()) {
-            return fillDmeRemoteDeviceWhenExtraForD8(cluster, policy);
+            return fillDmeRemoteDeviceWhenExtraForD8(cluster, policy, context);
         }
         PowerAssert.notEmpty(cluster.getClusterDetailInfo().getAllMemberClustersDetail(),
             () -> new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, "No remote device found"));
@@ -597,9 +625,9 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
         return dmeRemoteDevices;
     }
 
-    private List<DmeRemoteDevice> fillDmeRemoteDeviceWhenExtraForD8(TargetClusterVo cluster, PolicyBo policy) {
-        if (!policy.getExtParameters().has(STORAGE_INFO)
-                || !policy.getExtParameters().get(STORAGE_INFO).has(STORAGE_ID)) {
+    private List<DmeRemoteDevice> fillDmeRemoteDeviceWhenExtraForD8(TargetClusterVo cluster, PolicyBo policy,
+                                                                    ReplicateContext context) {
+        if (isStorageInfoValid(policy)) {
             // 适配跨云复制
             List<DmeRemoteDevice> result = new ArrayList<>();
             List<StorageUnitVo> records = repCommonService.getRemoteStorageUnit(Collections.emptyMap(),
@@ -610,8 +638,9 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
         JsonNode storageInfo = policy.getExtParameters().get(ExtParamsConstants.STORAGE_INFO);
         String storageType = storageInfo.get(ExtParamsConstants.STORAGE_TYPE).asText();
         String storageId = storageInfo.get(ExtParamsConstants.STORAGE_ID).asText();
+        String unitId = context.getContext().get("unit");
         if (BackupStorageTypeEnum.BACKUP_STORAGE_UNIT_GROUP.getValue().equals(storageType)) {
-            return getDmeRemoteDevicesByStorageGroup(cluster, storageId);
+            return getDmeRemoteDevicesByStorageGroup(cluster, storageId, unitId);
         } else {
             return getDmeRemoteDevicesByStorageUnit(cluster, storageId);
         }
@@ -644,24 +673,46 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
         return Collections.singletonList(device);
     }
 
-    private List<DmeRemoteDevice> getDmeRemoteDevicesByStorageGroup(TargetClusterVo cluster, String storageId) {
-        NasDistributionStorageDetail detail = backupStorageApi.getDetail(storageId);
-        return detail.getUnitList().stream().map(backupUnitVo -> {
-            DmeRemoteDevice device = new DmeRemoteDevice();
-            String deviceEsn = backupUnitVo.getDeviceId();
-            device.setEsn(deviceEsn);
-            device.setPort(DEFAULT_STORAGE_PORT);
-            device.setPortPm(backupUnitVo.getBackupClusterVo().getPmPort());
-            device.setDeployType(backupUnitVo.getBackupClusterVo().getDeployType());
-            device.setMgrIpList(Arrays.asList(backupUnitVo.getBackupClusterVo().getClusterIp().split(",")));
-            device.setNetworkInfo((JSONObject
-                    .fromObject(cluster.getClusterDetailInfo().getStorageSystem().getDeviceNetworkInfo()).toString()));
-            device.setUserNamePm("sysadmin");
-            String token = authNativeApi.generateClusterAdminToken(-1);
-            device.setTokenPM(token);
-            device.setPoolId(backupUnitVo.getPoolId());
-            return device;
-        }).collect(Collectors.toList());
+    private List<DmeRemoteDevice> getDmeRemoteDevicesByStorageGroup(TargetClusterVo cluster, String storageId,
+                                                                    String unitId) {
+        Optional<StorageUnitVo> storageUnit = storageUnitService.getStorageUnitById(unitId);
+        if (!storageUnit.isPresent()) {
+            throw new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Local storage not exist.");
+        }
+        TargetCluster targetCluster = clusterQueryService.getTargetClusterById(Integer.valueOf(cluster.getClusterId()));
+        NasDistributionStorageDetail storageUnitGroup = arrayTargetClusterService
+                .getTargetDistribution(targetCluster, storageId).orElse(null);
+        if (VerifyUtil.isEmpty(storageUnitGroup)) {
+            throw new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Local storage not exist.");
+        }
+        return storageUnitGroup.getUnitList().stream()
+                .filter(unitVo -> !unitVo.getDeviceId().equals(storageUnit.get().getDeviceId()))
+                .map(backupUnitVo -> {
+                    DmeRemoteDevice device = new DmeRemoteDevice();
+                    String deviceEsn = backupUnitVo.getDeviceId();
+                    device.setEsn(deviceEsn);
+                    List<ClusterDetailInfo> allMemberClustersDetail =
+                            cluster.getClusterDetailInfo().getAllMemberClustersDetail();
+                    ClusterDetailInfo storage = allMemberClustersDetail.stream()
+                            .filter(clusterDetailInfo -> StringUtils.equals(deviceEsn,
+                                    clusterDetailInfo.getStorageSystem().getStorageEsn()))
+                            .findFirst()
+                            .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Storage not " +
+                                    "exist."));
+                    device.setBackupSoftwareEsn(cluster.getEsn());
+                    device.setPort(DEFAULT_STORAGE_PORT);
+                    device.setPortPm(cluster.getPort());
+                    device.setDeployType(storage.getSourceClusters().getDeployType());
+                    device.setNetworkInfo(JSONObject
+                            .fromObject(cluster.getClusterDetailInfo()
+                                    .getStorageSystem().getDeviceNetworkInfo()).toString());
+                    device.setMgrIpList(cluster.getMgrIpList());
+                    device.setUserNamePm(cluster.getUsername());
+                    device.setPasswordPm(cluster.getPassword());
+                    device.setTokenPM(StringUtils.EMPTY);
+                    device.setPoolId(backupUnitVo.getPoolId());
+                    return device;
+                }).collect(Collectors.toList());
     }
 
     private List<DmeRemoteDevice> generateIntraDeviceList(JsonNode extParam, String resourceId) {
@@ -908,7 +959,8 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
         return remoteStorageUnits.get(0).getPoolId();
     }
 
-    private void checkReplicationSlaUser(PolicyBo policy, String jobId) {
+    private void checkReplicationSlaUser(ReplicateContext context, String jobId) {
+        PolicyBo policy = context.getPolicy();
         JsonNode extParameters = policy.getExtParameters();
         JsonNode clusterId = extParameters.get(EXTERNAL_SYSTEM_ID);
         if (!extParameters.has(USER_INFO)) { // 1.5升级场景不校验
@@ -924,7 +976,7 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
                 "User name or password error."));
         try {
             if (!clusterService.verifyUsernameAndPassword(Integer.valueOf(clusterId.asText()),
-                    slaUser.getUsername(), slaUser.getPassword())) {
+                    slaUser.getUsername(), slaUser.getPassword(), slaUser.getUserType())) {
                 // 记录恢复任务错误信息
                 jobLogRecorder.recordJobStepWithError(jobId, ReplicationJobLabelConstant.CHECK_REPLICATION_USER_FAILED,
                         CommonErrorCode.REPLICATION_CLUSTER_AUTH_FAILED, null);
@@ -933,7 +985,8 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
             }
         } finally {
             StringUtil.clean(slaUser.getPassword());
-            if (slaUser.getUuid().startsWith(TEMP_USER_INFO)) {
+            boolean isDeleteTempUser = Boolean.parseBoolean(context.getContext().get("is_delete_temp_user"));
+            if (slaUser.getUuid().startsWith(TEMP_USER_INFO) && isDeleteTempUser) {
                 log.warn("Manual replication user info will be delete now. Job id: {}", jobId);
                 replicationSlaUserService.deleteReplicationSlaUserById(slaUser.getUuid());
             }
@@ -967,8 +1020,7 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
     }
 
     private List<StorageUnitVo> getAllRemoteUnitByPolicy(TargetClusterVo cluster, PolicyBo policy) {
-        if (!policy.getExtParameters().has(STORAGE_INFO)
-            || !policy.getExtParameters().get(STORAGE_INFO).has(STORAGE_ID)) {
+        if (isStorageInfoValid(policy)) {
             log.info("Remote unit or group not specified. All units available.");
             return repCommonService.getRemoteStorageUnit(Collections.emptyMap(),
                 Integer.parseInt(cluster.getClusterId())).getRecords();
@@ -990,6 +1042,14 @@ public class AdvanceReplicationProvider implements ReplicationProvider {
             queryParams.put("id", storageId);
             return repCommonService.getStorageUnitVos(cluster, queryParams);
         }
+    }
+
+    private boolean isStorageInfoValid(PolicyBo policy) {
+        return !policy.getExtParameters().has(STORAGE_INFO) || !policy.getExtParameters()
+            .get(STORAGE_INFO)
+            .has(STORAGE_ID) || VerifyUtil.isEmpty(
+            policy.getExtParameters().get(STORAGE_INFO).get(STORAGE_ID).asText()) || NULL.equals(
+            policy.getExtParameters().get(STORAGE_INFO).get(STORAGE_ID).asText());
     }
 
     /**

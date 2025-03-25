@@ -1,4 +1,3 @@
-<ng-container *ngIf="!cookieService.isCloudBackup && !isHyperdetect; else elseBasicTemplate">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<ng-container *ngIf="!cookieService.isCloudBackup && !isHyperdetect; else elseBasicTemplate">
     <lv-group lvGutter='2px' class="aui-gutter-column-sm">
         <h2>{{'protection_backup_setting_label' | i18n}}</h2>
         <i lv-icon="aui-icon-help" [lv-tooltip]="backupTipTpl" lvTooltipTheme="light"></i>
@@ -38,13 +38,10 @@
         (lvTabRemove)="removeBackupTeam($event)">
         <lv-tab *ngFor="let item of formGroup.get('backupTeams')?.controls; let teamIndex = index"
             [formGroupName]="teamIndex" [lvTitle]="!isHyperdetect? title
-				: item.get('name').value" [lvId]="item.get('name').value + teamIndex">
+				: i18n.get('common_production_snapshot_label')" [lvId]="item.get('name').value + teamIndex">
             <ng-template #title>
                 <div lvOverflow>
                     {{ item.get('name').value + '(' + i18n.get(slaBackupName[item.get('action').value]) + ')' }}
-                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_sla_sqlserver_log_tip_label' | i18n}}"
-                        lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint" lvColorState='true'
-                        *ngIf="item.get('action').value === policyAction.LOG && [appType.SQLServer].includes(applicationType)"></i>
                 </div>
             </ng-template>
             <ng-container
@@ -186,19 +183,30 @@
                                     <ng-container *ngIf="!i18n.isEn">
                                         {{'protection_execute_once_label' | i18n}}
                                     </ng-container>
-                                    {{[appType.HBase,appType.SQLServer].includes(applicationType) && item.get('action').value === policyAction.LOG
-                                    ?
-                                    '' : 'common_comma_label' | i18n}}
+                                    {{'common_comma_label' | i18n}}
                                 </lv-form-label>
                             </lv-group>
                             <lv-group lvGutter="3px">
-                                <ng-container
-                                    *ngIf="![appType.HBase,appType.SQLServer].includes(applicationType) || item.get('action').value !== policyAction.LOG">
+                                <ng-container>
                                     <ng-container *ngIf="i18n.isEn">
-                                        <lv-form-label>{{'common_english_retained_label' | i18n}}</lv-form-label>
+                                        <lv-form-label>
+                                            {{'common_english_retained_label' | i18n}}
+                                            <i *ngIf="item.get('action').value === policyAction.LOG"
+                                                lv-icon="aui-icon-help"
+                                                lv-tooltip="{{ 'protection_sla_log_retained_tip_label' | i18n }}"
+                                                lvTooltipTheme="light" lvTooltipPosition="top"
+                                                class="configform-constraint" lvColorState="true"></i>
+                                        </lv-form-label>
                                     </ng-container>
                                     <ng-container *ngIf="!i18n.isEn">
-                                        <lv-form-label>{{'protection_copies_retention_label' | i18n}}</lv-form-label>
+                                        <lv-form-label>
+                                            {{'protection_copies_retention_label' | i18n}}
+                                            <i *ngIf="item.get('action').value === policyAction.LOG"
+                                                lv-icon="aui-icon-help"
+                                                lv-tooltip="{{ 'protection_sla_log_retained_tip_label' | i18n }}"
+                                                lvTooltipTheme="light" lvTooltipPosition="top"
+                                                class="configform-constraint" lvColorState="true"></i>
+                                        </lv-form-label>
                                     </ng-container>
                                     <lv-form-control [lvErrorTip]="item.value.retention_duration_error_tip"
                                         class="groupInControl">
@@ -469,58 +477,69 @@
                     </lv-form-item>
                 </div>
             </ng-container>
-          <ng-container *ngIf="!isCyber&&applicationType!==appType.CommonShare">
-            <lv-form-item>
-              <lv-form-label style="font-size: 14px;font-weight: 700;">{{'WORM' | i18n}} <i lv-icon="aui-icon-help" [lv-tooltip]="wormTipTpl" lvTooltipTheme="light"></i>
-              </lv-form-label>
-              <lv-form-control>
-                <lv-switch  formControlName="worm_switch"  [lvDisabled]=isWormData||isBasicDisk></lv-switch>
-                <lv-alert lvType="info" *ngIf="isWormData"><h2 class="lv-alert-title">{{'common_security_worm_alarm_label'|i18n}}</h2></lv-alert>
-                <ng-container *ngIf="item.get('worm_switch').value">
-                  <lv-form-label>{{'common_worm_validity_label' | i18n}}</lv-form-label>
-                  <lv-form-control  class="groupInControl">
-                    <lv-group lvGutter='8px' class="lv-group-flex-start">
-                      <div>
-                        <lv-radio-group  [lvGroupName]="'wormTypeGroup'" formControlName="worm_validity_type">
-                          <lv-group [lvGutter]="'24px'">
-                            <lv-radio [lvValue]="1"  [lvDisabled]="[appType.HBase,appType.SQLServer].includes(applicationType) && item.get('action').value === policyAction.LOG">
-                              {{'common_worm_same_validity_label' | i18n}}
-                            </lv-radio>
-                            <lv-radio [lvValue]="2" >
-                              {{'common_worm_custom_validity_label' | i18n}}
-                            </lv-radio>
-                          </lv-group>
-                        </lv-radio-group>
-                        <ng-container *ngIf="item.get('worm_validity_type').value===2">
-                          <lv-form-control [lvErrorTip]="item.value.special_retention_duration_error_tip"
-                                           class="groupInControl">
-                            <ng-container>{{'common_valid_worm_label' | i18n}}</ng-container>
-                            <lv-input-group [lvAddAfter]="unitTpl" class="input-group-select-right">
-                              <input lv-input formControlName="worm_specified_retention_duration"
-                                     placeholder="{{dataMap.unitPlaceHolderMap[item.get('worm_specified_duration_unit').value]}}" />
-                            </lv-input-group>
-                            <ng-template #unitTpl>
-                              <lv-select [lvOptions]="wormDurationUnitOptions"
-                                         formControlName="worm_specified_duration_unit" class="unit-inner-select"
-                                         lvValueKey="value"
-                                         (ngModelChange)="changeUnit(item, item.get('worm_specified_duration_unit').value, 'worm_specified_retention_duration')"></lv-select>
-                            </ng-template>
-                          </lv-form-control>
-                        </ng-container>
-                      </div>
+            <ng-container *ngIf="!isCyber&&!isDistributed&&applicationType!==appType.CommonShare">
+                <lv-form-item>
+                    <lv-form-label style="font-size: 14px;font-weight: 700;">{{'WORM' | i18n}} <i
+                            lv-icon="aui-icon-help" [lv-tooltip]="wormTipTpl" lvTooltipTheme="light"
+                            style="margin-left:4px"></i>
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="worm_switch" [lvDisabled]="isWormData||isBasicDisk"></lv-switch>
+                        <lv-alert lvType="info" *ngIf="isWormData" class="worm-alert-mgt">
+                            <h2 class="lv-alert-title">{{'common_security_worm_alarm_label'|i18n}}</h2>
+                        </lv-alert>
+                        <ng-container *ngIf="item.get('worm_switch').value">
+                            <lv-form-label>{{'common_worm_validity_label' | i18n}}</lv-form-label>
+                            <lv-form-control class="groupInControl">
+                                <lv-group lvGutter='8px' class="lv-group-flex-start">
+                                    <div>
+                                        <lv-radio-group [lvGroupName]="'wormTypeGroup'"
+                                            formControlName="worm_validity_type">
+                                            <lv-group [lvGutter]="'24px'">
+                                                <lv-radio [lvValue]="1">
+                                                    {{'common_worm_same_validity_label' | i18n}}
+                                                    <i lv-icon="aui-icon-help"
+                                                        lv-tooltip="{{ 'common_worm_same_validity_tip_label' | i18n }}"
+                                                        lvTooltipTheme="light" lvTooltipPosition="top"
+                                                        class="configform-constraint" lvColorState="true"
+                                                        style="margin-bottom:3px"></i>
+                                                </lv-radio>
+                                                <lv-radio [lvValue]="2">
+                                                    {{'common_worm_custom_validity_label' | i18n}}
+                                                </lv-radio>
+                                            </lv-group>
+                                        </lv-radio-group>
+                                        <ng-container *ngIf="item.get('worm_validity_type').value===2">
+                                            <lv-form-control
+                                                [lvErrorTip]="item.value.special_retention_duration_error_tip"
+                                                class="groupInControl">
+                                                <ng-container>{{'common_valid_worm_label' | i18n}}</ng-container>
+                                                <lv-input-group [lvAddAfter]="unitTpl" class="input-group-select-right">
+                                                    <input lv-input formControlName="worm_specified_retention_duration"
+                                                        placeholder="{{dataMap.unitPlaceHolderMap[item.get('worm_specified_duration_unit').value]}}" />
+                                                </lv-input-group>
+                                                <ng-template #unitTpl>
+                                                    <lv-select [lvOptions]="wormDurationUnitOptions"
+                                                        formControlName="worm_specified_duration_unit"
+                                                        class="unit-inner-select" lvValueKey="value"
+                                                        (ngModelChange)="changeUnit(item, item.get('worm_specified_duration_unit').value, 'worm_specified_retention_duration')"></lv-select>
+                                                </ng-template>
+                                            </lv-form-control>
+                                        </ng-container>
+                                    </div>
 
-                    </lv-group>
-                  </lv-form-control>
-                </ng-container>
-              </lv-form-control>
-            </lv-form-item>
-          </ng-container>
+                                </lv-group>
+                            </lv-form-control>
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
         </lv-tab>
     </lv-tabs>
 </lv-form>
 
 <ng-template #wormTipTpl>
-  <span innerHTML="{{'common_open_worm_tips_label' | i18n}}"></span>
+    <span innerHTML="{{'common_open_worm_tips_label' | i18n}}"></span>
 </ng-template>
 
 <ng-template #extraTpl>

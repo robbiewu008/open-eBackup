@@ -295,13 +295,13 @@ export class LiveMountOptionsComponent implements OnInit {
       this.initConfig();
     }
     this.isManual = !isEmpty(this.componentData?.selectionCopy);
-    this.initForm();
     this.getHosts();
     if (this.componentData) {
       this.isWindows =
         this.componentData.selectionResource.environment_os_type ===
         DataMap.Os_Type.windows.value;
     }
+    this.initForm();
   }
 
   updateIopsItems(value, type: 'min' | 'max' | 'burst') {
@@ -451,12 +451,7 @@ export class LiveMountOptionsComponent implements OnInit {
           this.formGroup.get('burst_bandwidth').clearValidators();
         }
         if (
-          !(
-            (this.formGroup.value.iopsStatus &&
-              this.formGroup.value.burst_iops) ||
-            (this.formGroup.value.bindWidthStatus &&
-              this.formGroup.value.burst_bandwidth)
-          )
+          !(this.formGroup.value.iopsStatus && this.formGroup.value.burst_iops)
         ) {
           this.formGroup.get('burst_time').clearValidators();
         }
@@ -517,10 +512,8 @@ export class LiveMountOptionsComponent implements OnInit {
         }
         if (
           !(
-            (this.formGroup.value.iopsStatus &&
-              this.formGroup.value.burst_iops) ||
-            (this.formGroup.value.bindWidthStatus &&
-              this.formGroup.value.burst_bandwidth)
+            this.formGroup.value.bindWidthStatus &&
+            this.formGroup.value.burst_bandwidth
           )
         ) {
           this.formGroup.get('burst_time').clearValidators();
@@ -581,41 +574,7 @@ export class LiveMountOptionsComponent implements OnInit {
       }
       this.formGroup.get('latency').updateValueAndValidity();
     });
-    // 服务化场景需要用户填写名称、密码
-    if (this.isHcsUser && this.isFileset && this.isWindows) {
-      this.userTypeOptions = filter(this.userTypeOptions, item =>
-        includes([DataMap.Cifs_Domain_Client_Type.windows.value], item.value)
-      );
-      this.formGroup.addControl(
-        'customUserName',
-        new FormControl('', {
-          validators: [
-            this.baseUtilService.VALID.required(),
-            this.baseUtilService.VALID.minLength(3),
-            this.baseUtilService.VALID.maxLength(20),
-            this.nameFormatValidator()
-          ]
-        })
-      );
-      this.formGroup.addControl(
-        'customUserPwd',
-        new FormControl('', {
-          validators: [
-            this.baseUtilService.VALID.required(),
-            this.baseUtilService.VALID.minLength(8),
-            this.baseUtilService.VALID.maxLength(32),
-            this.passwordFormatValidator()
-          ]
-        })
-      );
-      this.formGroup
-        .get('customUserName')
-        .valueChanges.subscribe(() =>
-          defer(() =>
-            this.formGroup.get('customUserPwd').updateValueAndValidity()
-          )
-        );
-    }
+    this.addHcsWindowsUser();
     this.formGroup.get('userType').valueChanges.subscribe(res => {
       if (res === '' || (this.isHcsUser && this.isFileset)) {
         return;
@@ -887,6 +846,44 @@ export class LiveMountOptionsComponent implements OnInit {
         this.filePathData = [selectHost];
       }
     });
+  }
+
+  addHcsWindowsUser() {
+    // 服务化场景需要用户填写名称、密码
+    if (this.isHcsUser && this.isFileset && this.isWindows) {
+      this.userTypeOptions = filter(this.userTypeOptions, item =>
+        includes([DataMap.Cifs_Domain_Client_Type.windows.value], item.value)
+      );
+      this.formGroup.addControl(
+        'customUserName',
+        new FormControl('', {
+          validators: [
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.minLength(3),
+            this.baseUtilService.VALID.maxLength(20),
+            this.nameFormatValidator()
+          ]
+        })
+      );
+      this.formGroup.addControl(
+        'customUserPwd',
+        new FormControl('', {
+          validators: [
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.minLength(8),
+            this.baseUtilService.VALID.maxLength(32),
+            this.passwordFormatValidator()
+          ]
+        })
+      );
+      this.formGroup
+        .get('customUserName')
+        .valueChanges.subscribe(() =>
+          defer(() =>
+            this.formGroup.get('customUserPwd').updateValueAndValidity()
+          )
+        );
+    }
   }
 
   setValidForm() {
@@ -1458,15 +1455,16 @@ export class LiveMountOptionsComponent implements OnInit {
   }
 
   getComponentData() {
-    const winMountInfo = {};
     if (this.isWindows) {
       assign(this.componentData, {
         share_name: this.formGroup.get('name').value,
         type: this.formGroup.value.userType,
-        userName: this.formGroup.value.userName
+        userName:
+          this.isHcsUser && this.isFileset
+            ? [this.formGroup.value.customUserName]
+            : this.formGroup.value.userName
       });
     }
-    const mountTargetHost = {};
     const targetHostList = [];
     const target_resource_uuid_list = [];
 
@@ -1554,7 +1552,7 @@ export class LiveMountOptionsComponent implements OnInit {
       });
     }
     let summary = this.formGroup.value;
-    const advanceParameters = omit(this.formGroup.value, [
+    let advanceParameters = omit(this.formGroup.value, [
       'targetPos',
       'bindWidthStatus',
       'iopsStatus',
@@ -1567,6 +1565,22 @@ export class LiveMountOptionsComponent implements OnInit {
       'customUserName',
       'customUserPwd'
     ]);
+
+    if (!this.formGroup.value.bindWidthStatus) {
+      advanceParameters = omit(advanceParameters, [
+        'min_bandwidth',
+        'max_bandwidth',
+        'burst_bandwidth'
+      ]);
+    }
+
+    if (!this.formGroup.value.iopsStatus) {
+      advanceParameters = omit(advanceParameters, [
+        'min_iops',
+        'max_iops',
+        'burst_iops'
+      ]);
+    }
 
     each(advanceParameters, (v, k) => {
       if (isEmpty(trim(String(v)))) {

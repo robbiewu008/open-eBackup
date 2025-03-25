@@ -12,7 +12,6 @@
 */
 package openbackup.system.base.common.system;
 
-import openbackup.system.base.common.system.JobScheduleControlRegistrar;
 import openbackup.system.base.sdk.job.api.JobCenterNativeApi;
 import openbackup.system.base.sdk.job.model.request.JobScheduleRule;
 import org.junit.Test;
@@ -29,7 +28,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JobScheduleControlRegistrarTest {
     private final ConfigurableEnvironment environment = Mockito.mock(ConfigurableEnvironment.class);
     private final JobCenterNativeApi jobCenterNativeApi = Mockito.mock(JobCenterNativeApi.class);
-    private final JobScheduleControlRegistrar registrar = new JobScheduleControlRegistrar(environment, jobCenterNativeApi);
+    private final SystemConfigMapManager systemConfigMapManager = Mockito.mock(SystemConfigMapManager.class);
+    private final JobScheduleControlRegistrar registrar = new JobScheduleControlRegistrar(environment, jobCenterNativeApi,
+        systemConfigMapManager);
 
     /**
      * 用例名称：如果任务排队限流配置项没有globalJobLimit，则返回为空。<br/>

@@ -101,15 +101,15 @@ public class AntDBClusterInstanceProvider implements ResourceProvider {
         environment.setDependencies(ImmutableMap.of(DatabaseConstants.AGENTS, agents));
         resource.setEnvironment(environment);
         // 校验集群实例
+        // 检查连通性获取版本信息
+        AgentBaseDto checkResult = instanceResourceService.checkClusterInstance(resource);
+        if (Long.parseLong(checkResult.getErrorCode()) != DatabaseConstants.SUCCESS_CODE) {
+            JSONObject jsonObject = JSONObject.fromObject(checkResult.getErrorMessage());
+            throw new LegoCheckedException(Long.parseLong(jsonObject.getString("bodyErr")),
+                jsonObject.getString("message"));
+        }
+        setAntDBClusterInstanceVersion(resource, checkResult);
         try {
-            // 检查连通性获取版本信息
-            AgentBaseDto checkResult = instanceResourceService.checkClusterInstance(resource);
-            if (Long.parseLong(checkResult.getErrorCode()) != DatabaseConstants.SUCCESS_CODE) {
-                JSONObject jsonObject = JSONObject.fromObject(checkResult.getErrorMessage());
-                throw new LegoCheckedException(Long.parseLong(jsonObject.getString("bodyErr")),
-                    jsonObject.getString("message"));
-            }
-            setAntDBClusterInstanceVersion(resource, checkResult);
             // 查询集群详情
             AppEnvResponse clusterInstanceInfo = instanceResourceService.queryClusterInstanceNodeRoleByAgent(resource);
             Map<String, List<NodeInfo>> appEnvMap = clusterInstanceInfo.getNodes()
@@ -162,7 +162,9 @@ public class AntDBClusterInstanceProvider implements ResourceProvider {
 
     private void setAntDBClusterInstanceVersion(ProtectedResource resource, AgentBaseDto checkResult) {
         Map<String, String> messageMap = JSONObject.fromObject(checkResult.getErrorMessage()).toMap(String.class);
-        resource.setVersion(messageMap.get(DatabaseConstants.VERSION));
+        resource.setVersion(messageMap.getOrDefault(AntDBConstants.PG_VERSION, ""));
+        resource.setExtendInfoByKey(AntDBConstants.ANTDB_VERSION,
+            messageMap.getOrDefault(AntDBConstants.ANTDB_VERSION, ""));
     }
 
     @Override
@@ -171,6 +173,44 @@ public class AntDBClusterInstanceProvider implements ResourceProvider {
         checkCluster(resource);
         resource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY, LinkStatusEnum.ONLINE.getStatus().toString());
         log.info("End update antdb cluster instance check. resource name: {}", resource.getName());
+    }
+
+    @Override
+    public void healthCheck(ProtectedResource resource) {
+        log.info("Start AntDB cluster instance healthCheck");
+        ProtectedResource updatedResource = resourceService.getResourceById(resource.getUuid())
+            .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "not exist"));
+        for (ProtectedResource child : updatedResource.getDependencies().get(DatabaseConstants.CHILDREN)) {
+            ProtectedEnvironment environment = protectedEnvironmentService.getEnvironmentById(
+                child.getDependencies().get(DatabaseConstants.AGENTS).get(0).getUuid());
+            child.setEnvironment(environment);
+            child.setName(updatedResource.getName());
+            instanceResourceService.healthCheckSingleInstance(child);
+        }
+        log.info("Finish AntDB cluster single instance healthCheck");
+        for (ProtectedResource child : updatedResource.getDependencies().get(DatabaseConstants.CHILDREN)) {
+            if (LinkStatusEnum.OFFLINE.getStatus()
+                .toString()
+                .equals(child.getExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY))) {
+                updatedResource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY,
+                    LinkStatusEnum.OFFLINE.getStatus().toString());
+                updateResourceStatus(updatedResource);
+                log.info("Finish AntDB cluster instance healthCheck with offline");
+                return;
+            }
+        }
+        updatedResource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY,
+            LinkStatusEnum.ONLINE.getStatus().toString());
+        updateResourceStatus(updatedResource);
+        log.info("Finish AntDB cluster instance healthCheck with online");
+    }
+
+    private void updateResourceStatus(ProtectedResource resource) {
+        ProtectedResource updateResource = new ProtectedResource();
+        updateResource.setUuid(resource.getUuid());
+        updateResource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY,
+            resource.getExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY));
+        resourceService.updateSourceDirectly(Collections.singletonList(updateResource));
     }
 
     @Override

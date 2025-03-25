@@ -1,5 +1,5 @@
 {{- $deploytype:= include "getDeployType" . | default "" }}
-{{- if eq $deploytype "d10" }}
+{{- if eq $deploytype "d9"}}
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -163,16 +163,6 @@ spec:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
     - match: Method(`PUT`) && Path(`/v1/host-agent/{agentId:\w{8}(-\w{4}){3}-\w{12}}/log/configuration`)
-      kind: Rule
-      services:
-        - name: pm-nginx
-          port: 30093
-          scheme: https
-          serversTransport: serverstransport-traefik-backend
-      middlewares:
-        - name: middleware-pm-replace-path-regex
-        - name: middleware-pm-jwt-token-auth
-    - match: Method(`PUT`) && Path(`/v1/host-agent/{agentId:\w{8}(-\w{4}){3}-\w{12}_sanclient}/log/configuration`)
       kind: Rule
       services:
         - name: pm-nginx

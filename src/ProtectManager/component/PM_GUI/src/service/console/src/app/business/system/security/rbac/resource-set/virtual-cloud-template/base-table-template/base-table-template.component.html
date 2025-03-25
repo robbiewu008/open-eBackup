@@ -1,4 +1,3 @@
-<div class="list-container" [ngClass]="{'width-limit': !isDetail}">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="list-container" [ngClass]="{'width-limit': !isDetail}">
     <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
 </div>
 
@@ -29,6 +29,10 @@
 
 <ng-template #hypervStatusTpl let-item>
   <aui-status [value]="item.extendInfo?.State" type="hypervStatus"></aui-status>
+</ng-template>
+
+<ng-template #nutanixStatusTpl let-item>
+  <aui-status [value]="item.extendInfo?.status" [type]="subType === resType.nutanixHost.value ? 'nutanixHostStatus' : 'nutanixVmStatus'"></aui-status>
 </ng-template>
 
 <ng-template #rhvVersionTpl let-item>

@@ -1,4 +1,3 @@
-<div>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,13 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-  <lv-alert
-    lvType="info"
-    lvClosable="false"
-    *ngIf="appUtilsService.isDistributed"
-  >
-    {{ 'common_config_service_network_tip_label' | i18n }}
-  </lv-alert>
+<div>
   <lv-alert
     lvType="info"
     lvClosable="false"
@@ -68,7 +61,7 @@
                 *ngIf="
                   (item.port === 0 && serviceType === 'backup') ||
                   (appUtilsService.isDistributed &&
-                    serviceType === 'archived' &&
+                  includes(['replication','archived'],serviceType) &&
                     !isEverySelect &&
                     item.port === 0)
                 "

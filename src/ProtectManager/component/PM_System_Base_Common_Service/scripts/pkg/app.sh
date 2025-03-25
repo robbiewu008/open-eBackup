@@ -20,7 +20,8 @@ PROTECT_MANAGER_ALARM_PATH="${PM_PRIVATE_PATH}/alarm"
 PROTECT_MANAGER_KMC_PATH="${PROTECT_MANAGER_PATH}/kmc"
 PROTECT_MANAGER_AGENT_PATH="${PM_PRIVATE_PATH}/agent"
 PROTECT_MANAGER_EXPORT_PATH="/opt/ProtectManager/export"
-PROTECT_MANAGER_DUMP_PATH="/opt/ProtectManager/dump/System_Base"
+PROTECT_MANAGER_DUMP_PATH="/opt/ProtectManager/dump/System_Base/${NODE_NAME}"
+PROTECT_MANAGER_DUMP_LOG_PATH="${PROTECT_MANAGER_DUMP_PATH}/heapdump.hprof"
 PROTECT_MANAGER_AGENT_LOG_PATH="/opt/ProtectManagerAgentLog"
 PROTECT_MANAGER_REPORT_PATH="/opt/ProtectManager/report"
 OCEAN_PROTECT_STORAGE_CONFIG_EXPORT_PATH="/opt/OceanProtect/storage_config_export"
@@ -344,6 +345,14 @@ RUN=1
 while [ $RUN -eq 1 ]; do
   if [ ! -f "${APP_JAR}" ]; then
     exit 1
+  fi
+  sudo /script/change_dns.sh ${DME_DNS_SRV_SERVICE_HOST}
+  # 判断 heapdump.hprof 文件是否存在
+  if [ -f "${PROTECT_MANAGER_DUMP_LOG_PATH}" ]; then
+    # 如果存在 heapdump.hprof 文件，压缩到目标目录（覆盖压缩）
+    zip -rj "${PROTECT_MANAGER_PM_LOG_NODE_PATH}/PM_System_Base/dump_files.zip" "${PROTECT_MANAGER_DUMP_LOG_PATH}"
+    # 清空 heapdump.hprof 文件
+    rm -f "${PROTECT_MANAGER_DUMP_LOG_PATH}"
   fi
   "${JAVA_HOME}"/bin/java -Xms2500M -Xmx2500M -Xmn1300M -Xss512K -XX:MaxMetaspaceSize=356M -XX:MaxDirectMemorySize=512M -XX:ReservedCodeCacheSize=512M -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="${PROTECT_MANAGER_DUMP_PATH}"/heapdump.hprof -Dserver.address=$ip -Djdk.tls.ephemeralDHKeySize=3072 ${JAVA_OPTS} -jar "${APP_JAR}" &
   wait

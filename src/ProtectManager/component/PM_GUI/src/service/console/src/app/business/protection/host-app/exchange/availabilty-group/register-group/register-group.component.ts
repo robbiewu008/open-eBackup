@@ -14,9 +14,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
   BaseUtilService,
-  ClientManagerApiService,
   DataMap,
-  DataMapService,
   I18NService,
   ProtectedEnvironmentApiService,
   ProtectedResourceApiService,
@@ -50,25 +48,6 @@ export class RegisterGroupComponent implements OnInit {
   dataMap = DataMap;
   singleAgentsOptions = [];
   groupAgentOptions = [];
-
-  constructor(
-    private fb: FormBuilder,
-    private i18n: I18NService,
-    private dataMapService: DataMapService,
-    private appUtilsService: AppUtilsService,
-    private clientManagerApiService: ClientManagerApiService,
-    public baseUtilService: BaseUtilService,
-    private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
-    private protectedResourceApiService: ProtectedResourceApiService
-  ) {}
-
-  ngOnInit(): void {
-    this.isModify = !!this.rowData;
-    this.initForm();
-    this.getProxyOptions();
-    this.updateData();
-  }
-
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip,
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64])
@@ -88,6 +67,21 @@ export class RegisterGroupComponent implements OnInit {
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 10])
   };
 
+  constructor(
+    private fb: FormBuilder,
+    private i18n: I18NService,
+    private appUtilsService: AppUtilsService,
+    public baseUtilService: BaseUtilService,
+    private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
+    private protectedResourceApiService: ProtectedResourceApiService
+  ) {}
+
+  ngOnInit(): void {
+    this.isModify = !!this.rowData;
+    this.initForm();
+    this.getProxyOptions();
+    this.updateData();
+  }
   getProxyOptions() {
     const extParams = {
       conditions: JSON.stringify({
@@ -158,7 +152,9 @@ export class RegisterGroupComponent implements OnInit {
       userName: get(this.rowData, 'auth.authKey', ''),
       concurrency: Number(
         get(this.rowData, 'extendInfo.maxConcurrentJobNumber', '1')
-      )
+      ),
+      compatibility_mode:
+        this.rowData?.extendInfo?.compatibility_mode === 'true'
     };
     if (this.rowData.subType === DataMap.Resource_Type.ExchangeSingle.value) {
       assign(data, {
@@ -201,7 +197,8 @@ export class RegisterGroupComponent implements OnInit {
           this.baseUtilService.VALID.integer(),
           this.baseUtilService.VALID.rangeValue(1, 10)
         ]
-      })
+      }),
+      compatibility_mode: new FormControl(false)
     });
 
     this.formGroup.get('type').valueChanges.subscribe(res => {
@@ -251,7 +248,10 @@ export class RegisterGroupComponent implements OnInit {
           DataMap.Resource_Type.ExchangeSingle.value
             ? '0'
             : '1',
-        maxConcurrentJobNumber: String(this.formGroup.value.concurrency)
+        maxConcurrentJobNumber: String(this.formGroup.value.concurrency),
+        compatibility_mode: String(
+          this.formGroup.get('compatibility_mode').value
+        )
       },
       auth: {
         authType: 2,

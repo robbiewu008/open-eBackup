@@ -54,6 +54,7 @@ public class CnwareMockUtil {
         extendInfo.put("certSize", "1.3KB");
         extendInfo.put("crlName", "");
         extendInfo.put("crlSize", "");
+        extendInfo.put("rescanIntervalInSec", "3600");
         environment.setExtendInfo(extendInfo);
         environment.setEndpoint("8.40.162.56");
         environment.setPort(443);

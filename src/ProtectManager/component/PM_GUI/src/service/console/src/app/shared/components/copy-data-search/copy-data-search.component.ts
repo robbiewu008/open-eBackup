@@ -217,12 +217,8 @@ export class CopyDataSearchComponent implements OnInit {
       pageSize: this.pageSize
     };
 
-    if (!!this.orderBy) {
-      extend(params, { orderBy: this.orderBy });
-    }
-
-    if (!!this.orderType) {
-      extend(params, { orderType: this.orderType });
+    if (!!this.orderBy && !!this.orderType) {
+      extend(params, { sort: { [this.orderBy]: this.orderType } });
     }
 
     this.filterParams = {

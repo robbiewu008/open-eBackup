@@ -1,4 +1,3 @@
-<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,13 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div *ngIf="!i18n.isEn && !isHidden">
+    <lv-alert lvType="warning" lvClosable="false">
+        {{'common_cnware_restore_or_livemount_tip_label' | i18n }}
+    </lv-alert>
+</div>
+
+<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
     <lv-form-item>
         <lv-form-label lvRequired>{{'protection_mount_to_label' | i18n}}</lv-form-label>
         <lv-form-control>
@@ -144,7 +150,7 @@
     </ng-container>
     <lv-form-item>
         <lv-form-label>
-            {{'protection_proxy_host_label' | i18n}}
+            {{'protection_clients_label' | i18n}}
         </lv-form-label>
         <lv-form-control>
             <lv-select [lvOptions]="proxyOptions" formControlName="proxyHost" lvValueKey='value' lvShowCheckAll

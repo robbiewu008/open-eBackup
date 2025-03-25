@@ -359,6 +359,9 @@ public class BackupServiceImpl implements IBackupService {
             log.debug("Backup interceptor for {} is provided, and the interceptor will be used!", subType);
             interceptor.initialize(task);
         }
+        if (deployTypeService.isPacific()) {
+            task.getAdvanceParams().put(BackupConstant.FORBID_WORM_FILE_SYSTEM, Boolean.TRUE.toString());
+        }
         paramCorrection(task);
     }
 

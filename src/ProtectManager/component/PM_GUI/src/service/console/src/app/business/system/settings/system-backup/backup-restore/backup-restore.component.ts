@@ -65,7 +65,13 @@ export class BackupRestoreComponent implements OnInit {
           this.isCyberengine
             ? 'system_cyber_backup_restore_warn_label'
             : 'system_backup_restore_warn_label',
-          [this.datePipe.transform(this.data.backupTime, 'yyyy-MM-dd HH:mm:ss')]
+          [
+            this.datePipe.transform(
+              this.data.backupTime,
+              'yyyy-MM-dd HH:mm:ss',
+              SYSTEM_TIME.timeZone
+            )
+          ]
         ),
         onOK: () => {
           if (this.formGroup.invalid) {
@@ -77,16 +83,16 @@ export class BackupRestoreComponent implements OnInit {
             },
             imagesId: this.data.id
           };
-          this.sysbackupApiService.recoveryUsingPOST(params).subscribe(
-            () => {
+          this.sysbackupApiService.recoveryUsingPOST(params).subscribe({
+            next: () => {
               observer.next();
               observer.complete();
             },
-            error => {
+            error: error => {
               observer.error(error);
               observer.complete();
             }
-          );
+          });
         },
         onCancel: () => {
           observer.error(null);

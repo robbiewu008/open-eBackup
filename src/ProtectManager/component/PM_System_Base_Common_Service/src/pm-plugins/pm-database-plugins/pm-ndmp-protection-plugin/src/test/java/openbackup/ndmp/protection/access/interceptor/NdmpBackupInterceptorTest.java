@@ -28,6 +28,7 @@ import openbackup.ndmp.protection.access.service.impl.NdmpServiceImpl;
 import com.huawei.oceanprotect.repository.service.LocalStorageService;
 import openbackup.system.base.common.constants.LocalStorageInfoRes;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -55,6 +56,7 @@ public class NdmpBackupInterceptorTest {
     private NdmpBackupInterceptor ndmpBackupInterceptor;
 
     private LocalStorageService localStorageService;
+    private DeployTypeService deployTypeService;
 
     @Mock
     private NdmpServiceImpl ndmpService;
@@ -62,7 +64,8 @@ public class NdmpBackupInterceptorTest {
     @Before
     public void init() throws IllegalAccessException {
         localStorageService = Mockito.mock(LocalStorageService.class);
-        ndmpBackupInterceptor = new NdmpBackupInterceptor(localStorageService, ndmpService);
+        deployTypeService = Mockito.mock(DeployTypeService.class);
+        ndmpBackupInterceptor = new NdmpBackupInterceptor(localStorageService, ndmpService, deployTypeService);
         MemberModifier.field(NdmpBackupInterceptor.class, "ndmpService").set(ndmpBackupInterceptor, ndmpService);
         LocalStorageInfoRes localStorageInfoRes = new LocalStorageInfoRes();
         localStorageInfoRes.setEsn("xxxxxxxxxxxxxxxxx");
@@ -105,6 +108,10 @@ public class NdmpBackupInterceptorTest {
         PowerMockito.when(ndmpService.getEnvironmentById(any())).thenReturn(resource);
         TaskResource protectObject = new TaskResource();
         protectObject.setParentUuid("parentUuid");
+        protectObject.setRootUuid("parentUuid");
+        Map<String, String> map = new HashMap<>();
+        map.put(NdmpConstant.IS_FILE_SYSTEM, NdmpConstant.DIR);
+        protectObject.setExtendInfo(map);
         backupTask.setProtectObject(protectObject);
         backupTask.setAdvanceParams(ImmutableMap.of("agents", "agents"));
         Endpoint endpoint = new Endpoint();

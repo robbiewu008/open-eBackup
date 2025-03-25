@@ -21,7 +21,8 @@
       "dom"
     ],
     "paths": {
-      "@backup-policy/*": ["app/business/protection/policy/sla/sla-create/specified-backup-policy/*"]
+      "@backup-policy/*": ["app/business/protection/policy/sla/sla-create/specified-backup-policy/*"],
+      "@iux/*":["../node_modules/@databackup/*"]
     }
   }
 }

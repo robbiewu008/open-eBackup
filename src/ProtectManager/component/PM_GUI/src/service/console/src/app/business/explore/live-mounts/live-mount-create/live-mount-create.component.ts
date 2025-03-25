@@ -24,6 +24,7 @@ import {
   MODAL_COMMON,
   WarningMessageService
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { assign, filter, first, intersection, size } from 'lodash';
 import { LiveMountOptionsComponent as CnwareLiveMountOptionsComponent } from '../cnware/live-mount-options/live-mount-options.component';
 import { LiveMountSummaryComponent as CnwareLiveMountSummaryComponent } from '../cnware/live-mount-summary/live-mount-summary.component';
@@ -87,8 +88,9 @@ export class LiveMountCreateComponent implements OnInit {
   constructor(
     public modal: ModalRef,
     public baseUtilService: BaseUtilService,
+    public appUtilsService: AppUtilsService,
     private fb: FormBuilder,
-    private i18n: I18NService,
+    public i18n: I18NService,
     private datePipe: DatePipe,
     private globalService: GlobalService,
     private messageBox: MessageboxService,
@@ -253,6 +255,7 @@ export class LiveMountCreateComponent implements OnInit {
           JSON.parse(
             this.componentData?.selectionCopy?.resource_properties || '{}'
           )['environment_os_type'] === DataMap.Os_Type.windows.value;
+        this.filesetLiveMountOptionsComponent.addHcsWindowsUser();
         this.filesetLiveMountOptionsComponent.setValidForm();
         this.filesetLiveMountOptionsComponent.hostOptions = filter(
           this.filesetLiveMountOptionsComponent.hostOptionsCache,
@@ -442,23 +445,7 @@ export class LiveMountCreateComponent implements OnInit {
         lvWidth: MODAL_COMMON.normalWidth,
         lvContent: this.confirmTpl,
         lvOk: () => {
-          this.liveMountApiService
-            .createLiveMountUsingPOST({
-              liveMountObject: this.componentData.requestParams
-            })
-            .subscribe(
-              res => {
-                this.modal.close();
-                this.isLoading = false;
-                this.globalService.emitStore({
-                  action: LiveMountAction.Create,
-                  state: ''
-                });
-              },
-              err => {
-                this.isLoading = false;
-              }
-            );
+          this.executeLiveMount();
         },
         lvCancel: () => {
           this.isLoading = false;
@@ -471,6 +458,39 @@ export class LiveMountCreateComponent implements OnInit {
       return;
     }
 
+    if (
+      this.appUtilsService.isDistributed &&
+      this.componentData?.selectionCopy?.generated_by ===
+        DataMap.CopyData_generatedType.replicate.value &&
+      !!size(
+        intersection(this.componentData.childResourceType, [
+          DataMap.Resource_Type.oracle.value,
+          DataMap.Resource_Type.MySQLInstance.value,
+          DataMap.Resource_Type.tdsqlInstance.value,
+          DataMap.Resource_Type.virtualMachine.value
+        ])
+      )
+    ) {
+      this.warningMessageService.create({
+        header: this.i18n.get('explore_distributed_live_mount_header_label'),
+        width: MODAL_COMMON.normalWidth,
+        content: this.i18n.get('explore_distributed_live_mount_tip_label'),
+        onOK: () => {
+          this.executeLiveMount();
+        },
+        onCancel: () => {
+          this.isLoading = false;
+        },
+        lvAfterClose: () => {
+          this.isLoading = false;
+        }
+      });
+    } else {
+      this.executeLiveMount();
+    }
+  }
+
+  private executeLiveMount() {
     this.liveMountApiService
       .createLiveMountUsingPOST({
         liveMountObject: this.componentData.requestParams

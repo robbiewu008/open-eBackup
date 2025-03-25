@@ -35,7 +35,7 @@
               "src/favicon.ico",
               {
                 "glob": "*",
-                "input": "node_modules/@iux/live/assets/webp",
+                "input": "node_modules/@databackup/live/assets/webp",
                 "output": "assets/webp"
               }
             ],

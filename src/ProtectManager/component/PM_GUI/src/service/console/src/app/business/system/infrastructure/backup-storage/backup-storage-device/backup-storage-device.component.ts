@@ -295,7 +295,7 @@ export class BackupStorageDeviceComponent implements OnInit {
                       OperateItems.ModifyBackupStorageUnit
                     ]
                   ) {
-                    return includes([1, 2], data[0].generatedType);
+                    return includes([1], data[0].generatedType);
                   }
                   return false;
                 },

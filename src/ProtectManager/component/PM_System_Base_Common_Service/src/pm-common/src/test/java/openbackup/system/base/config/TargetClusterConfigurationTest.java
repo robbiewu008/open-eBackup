@@ -15,8 +15,6 @@ package openbackup.system.base.config;
 import static org.mockito.ArgumentMatchers.any;
 
 import openbackup.system.base.common.rest.FeignBuilder;
-import openbackup.system.base.config.DmaProxyProperties;
-import openbackup.system.base.config.TargetClusterConfiguration;
 import openbackup.system.base.sdk.cluster.TargetClusterRestApi;
 import openbackup.system.base.util.RequestUriUtil;
 

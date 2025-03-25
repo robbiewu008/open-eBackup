@@ -59,7 +59,7 @@ public class SecretControllerTest {
      */
     @Test
     public void get_encrypt_redis_pwd_success() throws Exception {
-        PowerMockito.when(configMapService.getValueFromSecretByKey(anyString())).thenReturn(REDIS_AUTH_PWD);
+        PowerMockito.when(configMapService.getValueFromSecretByKey(anyString(), true)).thenReturn(REDIS_AUTH_PWD);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(URL);
         MockHttpServletResponse mockResponse = mockMvc.perform(requestBuilder)
             .andExpect(status().isOk())

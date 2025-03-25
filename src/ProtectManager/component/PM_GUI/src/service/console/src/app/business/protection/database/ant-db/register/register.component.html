@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup lv-form-label-required">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup lv-form-label-required">
     <lv-form-item>
         <lv-form-label>
             {{'common_type_label' | i18n}}
@@ -79,6 +79,8 @@
         <lv-form-item>
             <lv-form-label>
                 {{'common_dataplane_ip_label' | i18n}}
+              <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_antdb_pgsql_ip_help_label' | i18n}}"
+                 lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
             </lv-form-label>
             <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
                 <input lv-input type="text" formControlName="business_ip" />
@@ -159,17 +161,70 @@
     </ng-container>
 </lv-form>
 <ng-container *ngIf="formGroup.value.type === dataMap.Instance_Type.cluster.value">
-    <lv-form class="form-position">
+    <lv-form class="form-position lv-form-label-required" [formGroup]="formGroup">
         <lv-form-item>
             <lv-form-label>
                 {{'system_servers_label' | i18n}}
             </lv-form-label>
         </lv-form-item>
+    <lv-datatable [lvData]="clusterNodesData" formArrayName="nodes" [lvFake]="true" #lvTable lvResize
+                  [lvScroll]="{x:'100%'}" lvResizeMode="expand">
+        <thead>
+          <tr>
+              <th style="width: 400px"><lv-form-label>{{'common_host_label'|i18n}}</lv-form-label></th>
+              <th><lv-form-label>{{'common_database_client_path_label'|i18n}}</lv-form-label></th>
+              <th><lv-form-label>{{'common_config_file_full_path_label'|i18n}}</lv-form-label></th>
+              <th style="width: 150px"><lv-form-label>{{'common_dataplane_ip_label'|i18n}}</lv-form-label></th>
+              <th style="width: 100px"><lv-form-label>{{'common_database_port_label'|i18n}}</lv-form-label></th>
+              <th style="width: 70px">{{'common_operation_label'|i18n}}</th>
+          </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let item of lvTable.renderData; let i = index">
+                <tr [formGroupName]="i">
+                    <td>
+                        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                            <aui-agent-select
+                                    [lvOptions]="hostOptions"
+                                    formControlName="host"
+                                    lvValueKey="value"
+                                    [isSimple]="true"
+                                    lvShowClear
+                            ></aui-agent-select>
+                        </lv-form-control>
+                    </td>
+                    <td>
+                        <lv-form-control [lvErrorTip]='pathErrorTip'>
+                            <input lv-input type="text" formControlName="client"/>
+                        </lv-form-control>
+                    </td>
+                    <td>
+                        <lv-form-control [lvErrorTip]='pathErrorTip'>
+                            <input lv-input type="text" formControlName="pgPath"/>
+                        </lv-form-control>
+                    </td>
+                    <td>
+                        <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
+                            <input lv-input type="text" formControlName="business_ip" />
+                        </lv-form-control>
+                    </td>
+                    <td>
+                        <lv-form-control [lvErrorTip]="portErrorTip">
+                            <input lv-input type="text" formControlName="port" placeholder='1~65535' />
+                        </lv-form-control>
+                    </td>
+                    <td class="lv-table-operation-list">
+                        <a (click)="removeControlFromDataTable(i)">{{'common_delete_label'|i18n}}</a>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </lv-datatable>
+        <div (click)="checkValidAndAddControl()" class="add-node-btn">
+            <button lv-button lvType="link">
+                <i lv-icon="lv-icon-create"></i>
+                {{ 'common_add_label'|i18n }}
+            </button>
+        </div>
     </lv-form>
-    <div class="aui-operation">
-        <lv-pro-button-group [config]="optItems"></lv-pro-button-group>
-    </div>
-    <div class="algin-table">
-        <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
-    </div>
 </ng-container>

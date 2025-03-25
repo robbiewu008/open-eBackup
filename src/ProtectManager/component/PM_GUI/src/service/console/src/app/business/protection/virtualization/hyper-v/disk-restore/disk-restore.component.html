@@ -1,4 +1,3 @@
-<div class="tip-container">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,35 +11,37 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="tip-container">
     <span>{{'protection_disk_level_restore_tip_label' | i18n}}</span>
 </div>
-<div class="restore-tree openstack-restore-table restore-lv-paginator-simple">
+<div>
+    <lv-form class="aui-gutter-column-md formGroup">
+        <lv-form-item>
+            <lv-form-label>{{'protection_selected_copy_label'|i18n}}</lv-form-label>
+            <lv-form-control>
+                <span>{{rowCopy.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
+            <lv-form-label lvRequired>{{'protection_restore_target_label'|i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-group lvGutter='8px' [lvColumns]='["365px", "110px"]'>
+                    <input [ngModel]="targerLocationInput" lv-input class="restore-target-input" readOnly
+                           placeholder="{{'protection_select_hcs_cloud_server_target_label' | i18n}}" />
+                    <button (click)="selectRecoveryTarget()" lv-button>{{'common_restore_select_label' | i18n}}</button>
+                </lv-group>
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form>
+    <lv-alert lvType="warning" lvClosable="false" *ngIf="!isOriginPosition && !_isEmpty(bootOptionsWarnTip)">
+        <span>{{bootOptionsWarnTip}}</span>
+    </lv-alert>
     <lv-group lvGutter='24px' class="virtualization-restore-group">
         <div class="file-level-restore-tree">
-            <lv-group lvGutter='20px' class="title-group">
-                <span class="aui-text-label">{{'protection_selected_copy_label' | i18n}}</span>
-                <span>{{rowCopy.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
-            </lv-group>
             <ng-container *ngTemplateOutlet="restoreData">
             </ng-container>
         </div>
         <div class="file-level-restore-tree">
-            <ng-container *ngIf="i18n.language === language.CN">
-                <lv-group lvGutter='10px' class="title-group" [lvColumns]='["auto", "280px", "auto"]'>
-                    <span class="aui-text-label">{{'protection_restore_target_label' | i18n}}</span>
-                    <input [ngModel]="targerLocationInput" lv-input class="restore-target-input" readOnly
-                        placeholder="{{'protection_select_hcs_cloud_server_target_label' | i18n}}" />
-                    <button (click)="selectRecoveryTarget()" lv-button>{{'common_restore_select_label' | i18n}}</button>
-                </lv-group>
-            </ng-container>
-            <ng-container *ngIf="i18n.language !== language.CN">
-                <lv-group lvGutter='10px' class="title-group" [lvColumns]='["180px", "auto", "110px"]'>
-                    <span class="aui-text-label">{{'protection_restore_target_label' | i18n}}</span>
-                    <input [ngModel]="targerLocationInput" lv-input class="restore-target-input" readOnly
-                        placeholder="{{'protection_select_hcs_cloud_server_target_label' | i18n}}" />
-                    <button (click)="selectRecoveryTarget()" lv-button>{{'common_restore_select_label' | i18n}}</button>
-                </lv-group>
-            </ng-container>
             <ng-container *ngTemplateOutlet="targetData">
             </ng-container>
         </div>
@@ -68,11 +69,5 @@
 <ng-template #sizeTpl let-item>
     <span lv-overflow>
         {{item.extendInfo?.Capacity | capacityCalculateLabel:'1.0-0':unitconst.BYTE:false}}
-    </span>
-</ng-template>
-
-<ng-template #rhvSizeTpl let-item>
-    <span lv-overflow>
-        {{item.provisionedSize | capacityCalculateLabel:'1.0-0':unitconst.BYTE:false}}
     </span>
 </ng-template>

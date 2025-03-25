@@ -105,6 +105,7 @@ export class MountUpdatePolicyComponent implements OnInit {
   );
 
   roleOperationMap = RoleOperationMap;
+  timeZone = SYSTEM_TIME.timeZone;
 
   constructor(
     private i18n: I18NService,

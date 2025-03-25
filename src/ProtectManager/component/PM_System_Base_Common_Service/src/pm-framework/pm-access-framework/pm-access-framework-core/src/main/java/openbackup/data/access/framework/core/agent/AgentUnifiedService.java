@@ -18,6 +18,8 @@ import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentDetailDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentIqnValidateRequest;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentWwpnInfo;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AsyncListResourceReq;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AsyncListResourceV2Req;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CheckAppReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CleanAgentLogReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CollectAgentLogRsp;
@@ -36,7 +38,9 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.system.base.common.annotation.Routing;
 import openbackup.system.base.common.model.host.ManagementIp;
 import openbackup.system.base.sdk.agent.model.AgentSupportCompressedPackageType;
+import openbackup.system.base.sdk.agent.model.AgentUpdateRequest;
 import openbackup.system.base.sdk.agent.model.AgentUpdateResponse;
+import openbackup.system.base.sdk.agent.model.AgentUpdateResultResponse;
 import openbackup.system.base.sdk.cert.request.PushUpdateCertToAgentReq;
 
 import java.util.List;
@@ -73,7 +77,33 @@ public interface AgentUnifiedService {
      * @return 按条件查询出的详细信息 分页对象
      */
     PageListResponse<ProtectedResource> getDetailPageList(String appType, String endpoint, Integer port,
-        ListResourceV2Req listResourceV2Req, boolean isUseLongTimeApi);
+            ListResourceV2Req listResourceV2Req, boolean isUseLongTimeApi);
+
+    /**
+     * Agent异步资源扫描分页查询 详细信息
+     *
+     * @param endpoint 应用类型
+     * @param port 请求ip
+     * @param request 查询app list的参数
+     * @return PageListResponse<ProtectedResource>
+     */
+    @Routing(destinationIp = "#{endpoint}", port = "#{port}")
+    default PageListResponse<ProtectedResource> getAsyncDetailPageList(String endpoint, Integer port,
+            AsyncListResourceReq request) {
+        return getAsyncDetailPageList(endpoint, port, request, false);
+    }
+
+    /**
+     * Agent异步资源扫描分页查询 详细信息
+     *
+     * @param endpoint 应用类型
+     * @param port 请求ip
+     * @param request 查询app list的参数
+     * @param isUseLongTimeApi 是否使用超时时间较长的agentApi
+     * @return PageListResponse<ProtectedResource>
+     */
+    PageListResponse<ProtectedResource> getAsyncDetailPageList(String endpoint, Integer port,
+            AsyncListResourceReq request, boolean isUseLongTimeApi);
 
     /**
      * Agent分页查询 详细信息
@@ -363,6 +393,25 @@ public interface AgentUnifiedService {
     AgentSupportCompressedPackageType getCompressedPackageTypeByAgent(String endpoint, Integer port);
 
     /**
+     * 查询客户端升级状态
+     *
+     * @param endpoint ip
+     * @param port port
+     * @return 返回查看的状态结果
+     */
+    AgentUpdateResultResponse queryAgentUpdateResult(String endpoint, Integer port);
+
+    /**
+     * 升级agent
+     *
+     * @param endpoint ip
+     * @param port port
+     * @param agentUpdateRequest agent更新请求体
+     * @return 返回查看的状态结果
+     */
+    AgentUpdateResponse updateAgent(String endpoint, Integer port, AgentUpdateRequest agentUpdateRequest);
+
+    /**
      * 通过agent 查出绑定的集群esn
      *
      * @param endpoint agent的Ip
@@ -453,4 +502,11 @@ public interface AgentUnifiedService {
      * @return AgentBaseDto
      */
     AgentBaseDto finalizeClear(ProtectedEnvironment agent, String appType, FinalizeClearReq finalizeClearReq);
+
+    /**
+     * 将agent上报的资源扫描结果转换成资源格式
+     *
+     * @param request request
+     */
+    void transScanResources(AsyncListResourceV2Req request);
 }

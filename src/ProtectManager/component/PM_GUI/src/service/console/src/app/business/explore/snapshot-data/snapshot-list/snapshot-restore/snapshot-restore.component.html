@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,10 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-alert lvType="warning" lvClosable="false">
+    <span innerHTML="{{'explore_snapshot_restore_tips_label' | i18n}}" class="snapshot-restore-tooltip"></span>
+  </lv-alert>
   <ng-container *ngIf="isResource">
     <lv-form-item>
       <lv-form-label>
@@ -186,4 +189,24 @@
 
 <ng-template #clientHostTipTpl>
   <span [innerHTML]="clientHostTipLabel"></span>
+</ng-template>
+
+<ng-template #headerTpl>
+  <div class="lv-modal-title">
+    <div class="aui-custom-modal-title">
+      {{'common_restore_label' | i18n}}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #statusTpl let-item>
+  <ng-container
+    *ngIf="!_includes([copyStatus.normal.value,copyStatus.invalid.value,copyStatus.verifying.value],item.status); else elseTemplate">
+    <aui-status [value]="item.status" type="snapshotCopyStatus">
+    </aui-status>
+  </ng-container>
+  <ng-template #elseTemplate>
+    <aui-status [value]="item.anti_status" type="detectionSnapshotStatus">
+    </aui-status>
+  </ng-template>
 </ng-template>

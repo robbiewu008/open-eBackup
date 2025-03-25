@@ -53,7 +53,9 @@ import {
   isEmpty,
   isUndefined,
   map as _map,
+  padEnd,
   split,
+  toNumber,
   union,
   values
 } from 'lodash';
@@ -280,7 +282,8 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     }
     if (
       this.job.type === DataMap.Job_type.live_mount_job.value &&
-      this.isOceanProtect
+      this.isOceanProtect &&
+      !this.job?.exerciseId
     ) {
       this.updateMountName();
     }
@@ -500,20 +503,6 @@ export class JobDetailComponent implements OnInit, OnDestroy {
       case 'backupType':
         value = this.i18n.get(SLA_BACKUP_NAME[backupType]);
         if (
-          [
-            DataMap.Resource_Type.FusionCompute.value,
-            DataMap.Resource_Type.fusionOne.value,
-            DataMap.Resource_Type.HCSCloudHost.value,
-            DataMap.Resource_Type.openStackCloudServer.value,
-            DataMap.Resource_Type.tdsqlInstance.value,
-            DataMap.Resource_Type.hyperVVm.value
-          ].includes(this.sourceSubType)
-        ) {
-          if (backupType === 'difference_increment') {
-            value = this.i18n.get('protection_incremental_forever_full_label');
-          }
-        }
-        if (
           includes(
             [
               DataMap.Resource_Type.virtualMachine.value,
@@ -521,7 +510,19 @@ export class JobDetailComponent implements OnInit, OnDestroy {
               DataMap.Resource_Type.hostSystem.value,
               DataMap.Resource_Type.APSCloudServer.value,
               DataMap.Resource_Type.APSResourceSet.value,
-              DataMap.Resource_Type.APSZone.value
+              DataMap.Resource_Type.APSZone.value,
+              DataMap.Resource_Type.FusionCompute.value,
+              DataMap.Resource_Type.fusionOne.value,
+              DataMap.Resource_Type.HCSCloudHost.value,
+              DataMap.Resource_Type.openStackCloudServer.value,
+              DataMap.Resource_Type.tdsqlInstance.value,
+              DataMap.Resource_Type.hyperVVm.value,
+              DataMap.Resource_Type.cNwareVm.value,
+              DataMap.Resource_Type.nutanixVm.value,
+              DataMap.Resource_Type.KubernetesStatefulset.value,
+              DataMap.Resource_Type.KubernetesNamespace.value,
+              DataMap.Resource_Type.kubernetesNamespaceCommon.value,
+              DataMap.Resource_Type.kubernetesDatasetCommon.value
             ],
             this.sourceSubType
           ) &&
@@ -615,7 +616,12 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         value = this.triggerPolicy.interval;
         break;
       case 'copyType':
-        value = this.extendObject?.backupType;
+        // 老版本为backupType
+        value =
+          this.extendObject?.sourceCopyType ?? this.extendObject.backupType;
+        break;
+      case 'restoreTimestamp':
+        value = this.job.restoreTimestamp;
         break;
       default:
         break;
@@ -721,7 +727,9 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         break;
       case DataMap.Job_type.live_mount_job.value:
         right =
-          this.isOceanProtect && !isEmpty(this.extendObject)
+          this.isOceanProtect &&
+          !isEmpty(this.extendObject) &&
+          !this.job?.exerciseId
             ? [
                 'targetLocation',
                 'mountName',
@@ -736,6 +744,7 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         break;
       case DataMap.Job_type.restore_job.value:
         right = ['targetLocation', 'speed'];
+        this.getRestoreTimestamp(right); // 日志恢复选中的时间点
         break;
       case DataMap.Job_type.copy_data_job.value:
         right = [
@@ -763,6 +772,10 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         break;
       default:
         break;
+    }
+
+    if (this.job?.exerciseId) {
+      right = [...right, ...['exerciseName', 'exercisePeriod']];
     }
 
     if (
@@ -932,5 +945,26 @@ export class JobDetailComponent implements OnInit, OnDestroy {
   getExerciseDetail() {
     this.appUtilsService.setCacheValue('jobToExercise', this.job?.exerciseId);
     this.router.navigateByUrl(RouterUrl.ExploreRecoveryDrill);
+  }
+
+  getRestoreTimestamp(rightCols: string[]) {
+    if (
+      !isEmpty(this.extendObject) &&
+      !isEmpty(this.extendObject?.jobConfig?.restoreTimestamp)
+    ) {
+      let restoreTimestampStr: string = this.extendObject?.jobConfig
+        .restoreTimestamp;
+      const length = restoreTimestampStr.length;
+      if (length > 13) {
+        restoreTimestampStr = restoreTimestampStr.slice(0, 13);
+      } else if (length < 13) {
+        restoreTimestampStr = padEnd(restoreTimestampStr, 13, '0');
+      }
+      const restoreTimestamp: number = toNumber(restoreTimestampStr);
+      if (!isNaN(restoreTimestamp)) {
+        rightCols.push('restoreTimestamp');
+        this.job.restoreTimestamp = restoreTimestamp;
+      }
+    }
   }
 }

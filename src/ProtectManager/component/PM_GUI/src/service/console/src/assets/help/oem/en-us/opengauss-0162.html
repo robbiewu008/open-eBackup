@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,12 +11,13 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="Managing openGauss/CMDB Clusters">
+  <meta name="DC.Title" content="Managing openGauss Clusters">
   <meta name="product" content="">
   <meta name="DC.Relation" scheme="URI" content="opengauss-0159.html">
   <meta name="prodname" content="">
@@ -30,14 +30,14 @@
   <meta name="DC.Identifier" content="opengauss-0162">
   <meta name="DC.Language" content="en-us">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>Managing openGauss/CMDB Clusters</title>
+  <title>Managing openGauss Clusters</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="opengauss-0162"></a><a name="opengauss-0162"></a>
-  <h1 class="topictitle1">Managing openGauss/CMDB Clusters</h1>
+  <h1 class="topictitle1">Managing openGauss Clusters</h1>
   <div>
    <p>The <span>product</span> allows you to delete, authorize, or reclaim clusters.</p>
-   <p>You need to log in to the management page, choose <span class="uicontrol"><b><span id="opengauss-0162__en-us_topic_0000001839142377_text94091435113619"><strong>Protection</strong></span> &gt; Databases &gt; openGauss</b></span>, click the <span class="uicontrol"><b>Cluster</b></span> tab, and find the target cluster.</p>
+   <p>You need to log in to the management page, choose <span class="uicontrol"><b><span id="opengauss-0162__en-us_topic_0000001839142377_text197344403116"><strong>Protection</strong></span> &gt; Databases &gt; openGauss</b></span>, click the <span class="uicontrol"><b>Cluster</b></span> tab, and find the target cluster.</p>
    <p><a href="#opengauss-0162__en-us_topic_0000001263933970_table24934294919">Table 1</a> describes related operations.</p>
    <div class="tablenoborder">
     <a name="opengauss-0162__en-us_topic_0000001263933970_table24934294919"></a><a name="en-us_topic_0000001263933970_table24934294919"></a>
@@ -66,7 +66,7 @@
       <tr>
        <td class="cellrowborder" valign="top" width="14.370000000000003%" headers="mcps1.3.4.2.4.1.1 "><p>Deleting</p></td>
        <td class="cellrowborder" valign="top" width="57.900000000000006%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>You can delete a host or cluster if its databases no longer require protection. After the host or cluster is deleted, its information disappears from the WebUI.</p> <p><strong>Note</strong></p> <p>A protected database or instance in a cluster cannot be deleted.</p></td>
-       <td class="cellrowborder" valign="top" width="27.730000000000004%" headers="mcps1.3.4.2.4.1.3 "><p>In the row where the target host or cluster resides, choose <span class="uicontrol"><b>More &gt; Delete</b></span>.</p></td>
+       <td class="cellrowborder" valign="top" width="27.730000000000004%" headers="mcps1.3.4.2.4.1.3 "><p>In the row of the target host or cluster, choose <span class="uicontrol"><b>More &gt; Delete</b></span>.</p></td>
       </tr>
       <tr>
        <td class="cellrowborder" valign="top" width="14.370000000000003%" headers="mcps1.3.4.2.4.1.1 "><p>Authorizing resources</p></td>
@@ -108,7 +108,7 @@
          <li>Permissions on resources that have been associated with SLAs cannot be granted. Remove protection before authorization.</li>
          <li>The permission on a single resource can be granted to only one data protection administrator.</li>
         </ul></td>
-       <td class="cellrowborder" valign="top" width="27.730000000000004%" headers="mcps1.3.4.2.4.1.3 "><p>In the row of the target host or cluster, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Authorize Resource</strong></span></b></span>, and select a data protection administrator to grant resource permissions.</p></td>
+       <td class="cellrowborder" valign="top" width="27.730000000000004%" headers="mcps1.3.4.2.4.1.3 "><p>In the row of the target host or cluster, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Authorize Resource</strong></span></b></span>, and select a data protection administrator for resource authorization.</p></td>
       </tr>
       <tr>
        <td class="cellrowborder" valign="top" width="14.370000000000003%" headers="mcps1.3.4.2.4.1.1 ">
@@ -121,7 +121,7 @@
           </div>
          </div>
         </div></td>
-       <td class="cellrowborder" valign="top" width="57.900000000000006%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to reclaim resources authorized to a data protection administrator. The data protection administration is not permitted to protect the resources that have been reclaimed.</p> <p><strong>Note</strong></p> <p>Resources that have been associated with SLAs cannot be reclaimed. You need to remove the protection for resources before reclaiming them.</p></td>
+       <td class="cellrowborder" valign="top" width="57.900000000000006%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p> <p>This operation enables you to reclaim resources authorized to a data protection administrator. The data protection administration is not permitted to protect the resources that have been reclaimed.</p> <p><strong>Note</strong></p> <p>Resources that have been associated with SLAs cannot be reclaimed. You need to remove the protection for the resources before reclaiming them.</p></td>
        <td class="cellrowborder" valign="top" width="27.730000000000004%" headers="mcps1.3.4.2.4.1.3 "><p>In the row of the target host or cluster, choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Reclaim Resource</strong></span></b></span>.</p></td>
       </tr>
       <tr>
@@ -171,7 +171,7 @@
   <div>
    <div class="familylinks">
     <div class="parentlink">
-     <strong>Parent topic:</strong> <a href="opengauss-0159.html">openGauss/CMDB Database Environments</a>
+     <strong>Parent topic:</strong> <a href="opengauss-0159.html">openGauss Database Environments</a>
     </div>
    </div>
   </div>

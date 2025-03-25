@@ -1,4 +1,3 @@
-<lv-tabs>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-tabs>
     <lv-tab lvTitle="{{'common_basic_info_label' | i18n}}">
         <lv-group [lvColumns]='["100px", "auto"]' class="aui-gutter-column-xl">
             <div>
@@ -39,7 +39,7 @@
                 </lv-form-column>
             </lv-form>
         </lv-group>
-        <h3 class="aui-gutter-column-md">{{'protection_proxy_host_label' | i18n}}</h3>
+        <h3 class="aui-gutter-column-md">{{'protection_clients_label' | i18n}}</h3>
         <lv-pro-table #clusterNode [config]="nodeTableConfig" [data]="nodeTableData"></lv-pro-table>
     </lv-tab>
 </lv-tabs>

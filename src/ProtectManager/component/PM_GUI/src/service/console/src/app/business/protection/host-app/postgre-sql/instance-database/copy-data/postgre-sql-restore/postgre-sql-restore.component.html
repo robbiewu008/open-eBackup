@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,10 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-alert lvType="info" lvClosable="false" *ngIf="rowCopy.source_copy_type === dataMap.CopyData_Backup_Type.log.value && childResType === dataMap.Resource_Type.PostgreSQLClusterInstance.value">
+    {{'protection_restore_postgresql_instance_log_copy_tips_label'|i18n}}
+</lv-alert>
+<lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
     <lv-form-item *ngIf="!isDrill">
         <lv-form-label>
             {{ 'protection_restore_to_label' | i18n }}
@@ -19,10 +22,10 @@
         <lv-form-control>
             <lv-radio-group formControlName="restoreTo" [lvGroupName]="'restoreToGroup'">
                 <lv-group [lvGutter]="'20px'">
-                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="disabledOrigin" [lv-tooltip]="!resourceIsExist ? 
-                        ('protection_cloud_origin_restore_disabled_label' | i18n) : 
-                        restoreToNewLocationOnly ? 
-                        ('protection_origin_restore_disabled_label'| i18n) : 
+                    <lv-radio [lvValue]="restoreLocationType.ORIGIN" [lvDisabled]="disabledOrigin" [lv-tooltip]="!resourceIsExist ?
+                        ('protection_cloud_origin_restore_disabled_label' | i18n) :
+                        restoreToNewLocationOnly ?
+                        ('protection_origin_restore_disabled_label'| i18n) :
                         ''">
                         {{ 'common_restore_to_origin_location_label' | i18n }}
                     </lv-radio>
@@ -47,7 +50,7 @@
         <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'cluster'" [isAgentTag]="true"></aui-select-tag>
         <lv-form-item>
             <lv-form-label lvRequired>
-                {{ 'common_target_host_label' | i18n }}
+             {{targetLabel}}
             </lv-form-label>
             <lv-form-control>
                 <lv-select formControlName="cluster" [lvOptions]="clusterOptions" lvValueKey="key" lvShowFilter

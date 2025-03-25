@@ -31,7 +31,8 @@ import {
   ProtectedResourceApiService,
   RestoreApiV2Service,
   RestoreV2LocationType,
-  SYSTEM_TIME
+  SYSTEM_TIME,
+  ResourceDetailType
 } from 'app/shared';
 import {
   ProTableComponent,
@@ -496,78 +497,17 @@ export class ApsDiskRestoreComponent implements OnInit {
   }
 
   getResourceDetail(server?) {
-    this.protectedResourceApiService
-      .ListResources({
-        pageNo: CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE,
-        queryDependency: true,
-        conditions: JSON.stringify({
-          uuid: !server
-            ? this.resourceProperties.rootUuid ||
-              this.resourceProperties.root_uuid
-            : server[0].rootUuid
-        })
-      })
-      .subscribe((res: any) => {
-        if (first(res.records)) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          if (!server) {
-            this.getDisk(agentsId, res.records[0]);
-          } else {
-            this.getDisk(agentsId, res.records[0], server);
-          }
-        }
-      });
-  }
-
-  getDisk(
-    agentsId,
-    resourceInfo,
-    server?,
-    recordsTemp?: any[],
-    startPage?: number
-  ) {
-    const params = {
-      agentId: agentsId,
-      envId: !server
-        ? this.resourceProperties.rootUuid || this.resourceProperties.root_uuid
-        : server[0].rootUuid,
-      resourceIds: [
-        !server
-          ? this.resourceProperties.uuid || this.resourceProperties.root_uuid
-          : server[0].rootUuid
-      ],
-      pageNo: startPage || 1,
-      pageSize: 200,
-      conditions: JSON.stringify({
-        resourceType: 'APS-disk',
-        uuid: !server ? this.resourceProperties.uuid : server[0].uuid,
-        regionId: !server
-          ? this.resourceProperties.extendInfo.regionId
-          : server[0].extendInfo.regionId
-      })
-    };
-
-    this.appService.ListResourcesDetails(params).subscribe(res => {
-      if (!recordsTemp) {
-        recordsTemp = [];
-      }
-      if (!isNumber(startPage)) {
-        startPage = 1;
-      }
-      recordsTemp = [...recordsTemp, ...res.records];
-      if (
-        startPage === Math.ceil(res.totalCount / 200) ||
-        res.totalCount === 0
-      ) {
+    const targetServer = !isEmpty(server)
+      ? first(server)
+      : this.resourceProperties;
+    this.appUtilsService
+      .getResourcesDetails(
+        targetServer,
+        ResourceDetailType.apsDisk,
+        {},
+        { regionId: targetServer.extendInfo?.regionId }
+      )
+      .subscribe(recordsTemp => {
         each(recordsTemp, item => {
           assign(item, {
             size: item.extendInfo?.size,
@@ -580,15 +520,7 @@ export class ApsDiskRestoreComponent implements OnInit {
         this.hasTargetSystem = !!this.targetSystemDisk;
         this.targetDisksOptions = recordsTemp;
         this.getTargetDisk();
-        return;
-      }
-      startPage++;
-      if (!server) {
-        this.getDisk(agentsId, resourceInfo, null, recordsTemp, startPage);
-      } else {
-        this.getDisk(agentsId, resourceInfo, server, recordsTemp, startPage);
-      }
-    });
+      });
   }
 
   getOptions(subType, params, node?) {

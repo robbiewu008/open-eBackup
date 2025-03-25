@@ -13,6 +13,7 @@
 package openbackup.data.access.framework.core.security.permission;
 
 import static openbackup.system.base.common.aspect.OperationLogAspect.TOKEN_BO;
+import static openbackup.system.base.common.constants.Constants.Builtin.DEFAULT_BUILT_IN_ROLES_LIST;
 
 import com.huawei.oceanprotect.system.base.user.service.UserInternalService;
 
@@ -158,7 +159,7 @@ public class PermissionAspect {
         for (UserTokenValidateService userTokenValidateService : userTokenValidateServices) {
             userTokenValidateService.validate(joinPoint, tokenBo);
         }
-        checkRoles(userBo, permission.roles(), isForceSkipAuditor(joinPoint));
+        checkRoles(userBo, permission.roles(), isForceSkipAuditor(joinPoint), permission.isEnableCustomRole());
         checkResources(joinPoint, userBo, permission.resources());
     }
 
@@ -172,7 +173,8 @@ public class PermissionAspect {
         throw new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "point get signature failed");
     }
 
-    private void checkRoles(TokenBo.UserBo userBo, String[] roles, boolean isForceSkipAuditor) {
+    private void checkRoles(TokenBo.UserBo userBo, String[] roles, boolean isForceSkipAuditor,
+        boolean isEnableCustomRole) {
         if (roles.length == 0) {
             return;
         }
@@ -187,6 +189,10 @@ public class PermissionAspect {
             }
         }
         if (Arrays.stream(roles).noneMatch(item -> Objects.equals(item, role))) {
+            if (isEnableCustomRole && !DEFAULT_BUILT_IN_ROLES_LIST.contains(role)) {
+                log.info("User-defined roles are not verified.");
+                return;
+            }
             throw new LegoCheckedException(CommonErrorCode.ACCESS_DENIED);
         }
     }

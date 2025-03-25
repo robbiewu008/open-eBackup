@@ -32,6 +32,7 @@ import {
   TableCols,
   TableConfig
 } from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   assign,
   cloneDeep,
@@ -82,7 +83,8 @@ export class AddDiskComponent implements OnInit {
     private appService: AppService,
     public i18n: I18NService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private appUtilsService: AppUtilsService
   ) {}
 
   ngOnInit() {
@@ -197,107 +199,45 @@ export class AddDiskComponent implements OnInit {
   }
 
   initData() {
-    const params = {
-      pageNo: CommonConsts.PAGE_START,
-      pageSize: CommonConsts.PAGE_SIZE,
-      queryDependency: true,
-      conditions: JSON.stringify({
-        subType:
-          this.data?.subType || DataMap.Resource_Type.FusionCompute.value,
-        uuid: this.data.environment.uuid
-      })
-    };
-    this.protectedResourceApiService
-      .ListResources(params)
-      .subscribe((res: any) => {
-        if (res.records?.length) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            this.totalTableData = {
-              data: [],
-              total: 0
-            };
-            this.disableOkBtn();
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getShowData(agentsId).subscribe(response => {
-            const totalData = [];
-            for (const item of response) {
-              totalData.push(...item.records);
-            }
-            each(totalData, (item: any) => {
-              assign(item, {
-                slot: `${item?.extendInfo.pciType}(${item?.extendInfo.sequenceNum})`,
-                datastore: item?.extendInfo?.datastoreName,
-                capacity: item?.extendInfo?.quantityGB
-              });
-            });
-            this.totalTableData = {
-              data: totalData,
-              total: size(totalData)
-            };
-
-            const selectData = !isEmpty(this.data.diskInfo)
-              ? filter(this.totalTableData.data, item => {
-                  return find(
-                    this.data.diskInfo.map(curData =>
-                      isString(curData) ? JSON.parse(curData) : curData
-                    ),
-                    { id: item.uuid }
-                  );
-                })
-              : [];
-
-            if (selectData.length) {
-              this.selectData = selectData;
-              this.totalDataTable.setSelections(selectData);
-              this.cdr.detectChanges();
-            }
-
-            this.selectionData = {
-              data: selectData,
-              total: size(selectData)
-            };
-            this.disableOkBtn();
+    this.appUtilsService
+      .getResourcesDetails(this.data, '', {}, {}, false)
+      .subscribe(res => {
+        const totalData = [...res];
+        each(totalData, (item: any) => {
+          assign(item, {
+            slot: `${item?.extendInfo.pciType}(${item?.extendInfo.sequenceNum})`,
+            datastore: item?.extendInfo?.datastoreName,
+            capacity: item?.extendInfo?.quantityGB
           });
-        }
-      });
-  }
+        });
+        this.totalTableData = {
+          data: totalData,
+          total: size(totalData)
+        };
 
-  getShowData(agentsId): Observable<any> {
-    const params = {
-      agentId: agentsId,
-      envId: this.data.environment.uuid,
-      pageNo: 1,
-      pageSize: CommonConsts.PAGE_SIZE,
-      resourceIds: [this.data.uuid]
-    };
-    let curData = [];
-    return this.appService.ListResourcesDetails(params).pipe(
-      mergeMap((response: any) => {
-        curData = [of(response)];
-
-        const totalCount = response.totalCount;
-        const pageCount = Math.ceil(totalCount / CommonConsts.PAGE_SIZE);
-        for (let i = 2; i <= pageCount; i++) {
-          curData.push(
-            this.appService.ListResourcesDetails({
-              agentId: agentsId,
-              envId: this.data.environment.uuid,
-              pageNo: i,
-              pageSize: CommonConsts.PAGE_SIZE,
-              resourceIds: [this.data.uuid]
+        const selectData = !isEmpty(this.data.diskInfo)
+          ? filter(this.totalTableData.data, item => {
+              return find(
+                this.data.diskInfo.map(curData =>
+                  isString(curData) ? JSON.parse(curData) : curData
+                ),
+                { id: item.uuid }
+              );
             })
-          );
+          : [];
+
+        if (selectData.length) {
+          this.selectData = selectData;
+          this.totalDataTable.setSelections(selectData);
+          this.cdr.detectChanges();
         }
-        return forkJoin(curData);
-      })
-    );
+
+        this.selectionData = {
+          data: selectData,
+          total: size(selectData)
+        };
+        this.disableOkBtn();
+      });
   }
 
   clearSelected() {

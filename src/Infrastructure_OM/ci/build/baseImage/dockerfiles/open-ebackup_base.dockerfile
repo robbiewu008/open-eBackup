@@ -8,7 +8,7 @@ ENV COMMON_INIT_VERSION product_version
 
 WORKDIR /usr/local
 
-#COPY openeuler.repo /etc/yum.repos.d/
+# COPY openeuler.repo /etc/yum.repos.d/
 COPY kmcv3.h /usr/include/
 COPY sudoers /etc/
 COPY --chown=99:99 kmcdecrypt /usr/bin/
@@ -16,7 +16,6 @@ COPY --chown=root:root restclient /usr/bin/
 COPY --chown=99:99 get.sh /usr/bin/
 COPY --chown=root:root init_logic_ports.py /usr/bin/
 COPY --chown=root:root $JDK_VERSION /usr/local/$JDK_VERSION
-#COPY --chown=99:99 libSecurityStarter.so /usr/lib64/
 COPY --chown=99:99 FileClient /opt/FileClient
 RUN cp /opt/FileClient/lib/libkmcv3.so /usr/lib64/  \
     && chmod 755 /usr/lib64/libkmcv3.so \
@@ -29,7 +28,7 @@ RUN cp /opt/FileClient/lib/libkmcv3.so /usr/lib64/  \
 ADD common-init-${COMMON_INIT_VERSION}.tar.gz /usr/local/
 
 RUN sed -i '/update/,$d' /etc/yum.repos.d/openEuler.repo
-RUN dnf install -y python3-pip python39 openssl libatomic net-tools libuser shadow-utils openssh expect sudo iptables vim kmod libatomic dnsmasq nfs-utils\
+RUN dnf install -y python3-pip python39 openssl libatomic net-tools libuser shadow-utils openssh expect sudo iptables vim kmod libatomic dnsmasq nfs-utils iputils iproute\
     && chown -R root:root /usr/local/common-init \
     && dnf clean all \
     && chmod -R 555 "/usr/bin/restclient" \

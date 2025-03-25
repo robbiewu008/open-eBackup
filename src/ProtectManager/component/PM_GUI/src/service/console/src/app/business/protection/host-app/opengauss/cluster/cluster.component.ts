@@ -64,6 +64,7 @@ import {
 } from 'lodash';
 import { DetailComponent } from './detail/detail.component';
 import { RegisterClusterComponent } from './register-cluster/register-cluster.component';
+import { GetLabelOptionsService } from 'app/shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-openGauss-cluster',
@@ -100,7 +101,8 @@ export class ClusterComponent implements OnInit, AfterViewInit {
     private warningMessageService: WarningMessageService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit(): void {
@@ -310,8 +312,11 @@ export class ClusterComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -412,9 +417,10 @@ export class ClusterComponent implements OnInit, AfterViewInit {
         delete conditionsTemp.equipmentType;
       }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
@@ -529,7 +535,7 @@ export class ClusterComponent implements OnInit, AfterViewInit {
       ...MODAL_COMMON.generateDrawerOptions(),
       lvHeader: data.name,
       lvModalKey: 'openGauss_cluster_detail',
-      lvWidth: MODAL_COMMON.normalWidth + 70,
+      lvWidth: MODAL_COMMON.normalWidth + 100,
       lvContent: DetailComponent,
       lvComponentParams: {
         data

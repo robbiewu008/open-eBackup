@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.annotation.JobScheduleControl;
 import openbackup.system.base.common.annotation.JobScheduleControls;
 import openbackup.system.base.common.constants.IsmNumberConstant;
+import openbackup.system.base.common.system.event.SystemConfigChangeEvent;
 import openbackup.system.base.common.utils.CommonUtil;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.JSONArray;
@@ -30,9 +31,9 @@ import openbackup.system.base.sdk.job.model.request.JobScheduleRule;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ApplicationListener;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -59,7 +60,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 @Component
 @Slf4j
-public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLineRunner {
+public class JobScheduleControlRegistrar
+    implements BeanPostProcessor, CommandLineRunner, ApplicationListener<SystemConfigChangeEvent> {
     /**
      * 原先在data_protection中配置排队策略的任务类型，由data_protection迁移至system_base配置
      */
@@ -68,17 +70,19 @@ public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLi
             JobTypeEnum.COPY_REPLICATION, JobTypeEnum.ARCHIVE);
 
     private final ConcurrentLinkedQueue<JobScheduleConfig> jobScheduleConfigs = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Class<?>> jobScheduleClasses = new ConcurrentLinkedQueue<>();
 
     private final ConfigurableEnvironment environment;
 
     private final JobCenterNativeApi jobCenterNativeApi;
 
-    @Value("${RUNNING_JOB_LIMIT_COUNT_ONE_NODE:20}")
-    private int singleNodeJobMaximumConcurrency;
+    private final SystemConfigMapManager systemConfigMapManager;
 
-    public JobScheduleControlRegistrar(ConfigurableEnvironment environment, JobCenterNativeApi jobCenterNativeApi) {
+    public JobScheduleControlRegistrar(ConfigurableEnvironment environment, JobCenterNativeApi jobCenterNativeApi,
+        SystemConfigMapManager systemConfigMapManager) {
         this.environment = environment;
         this.jobCenterNativeApi = jobCenterNativeApi;
+        this.systemConfigMapManager = systemConfigMapManager;
     }
 
     /**
@@ -135,7 +139,8 @@ public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLi
         }
         buildGlobalJobLimit(rule, control.globalJobLimit());
         if (control.scopeJobLimit() == IsmNumberConstant.ABNORMAL_SCOPE_JOB_LIMIT) {
-            rule.setScopeJobLimit(singleNodeJobMaximumConcurrency);
+            rule.setScopeJobLimit(Integer.parseInt(
+                systemConfigMapManager.getSystemConfig(SystemConfigConstant.RUNNING_JOB_LIMIT_COUNT_ONE_NODE)));
         } else {
             rule.setScopeJobLimit(control.scopeJobLimit());
         }
@@ -187,7 +192,10 @@ public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLi
             if (StringUtils.isNumeric(value.toString())) {
                 configValue = Integer.valueOf(value.toString());
             } else {
-                String property = environment.getProperty(value.toString());
+                String property = systemConfigMapManager.getSystemConfig(value.toString());
+                if (VerifyUtil.isEmpty(property)) {
+                    property = environment.getProperty(value.toString());
+                }
                 if (!StringUtils.isNumeric(property)) {
                     log.info("Config: {} property: {} not an integer.", key.toString(), property);
                     return;
@@ -200,7 +208,7 @@ public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLi
     }
 
     private JobScheduleConfig getOrNewJobScheduleConfig(Map<String, JobScheduleConfig> jobScheduleConfigMap,
-            JobScheduleControl control) {
+                                                        JobScheduleControl control) {
         String jobType = control.jobType().getValue();
         return Optional.ofNullable(jobScheduleConfigMap.get(jobType)).orElseGet(() -> {
             JobScheduleConfig scheduleConfig = new JobScheduleConfig();
@@ -214,6 +222,9 @@ public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLi
     private void resolveJobScheduleControlConfigs(Map<String, JobScheduleConfig> jobScheduleConfigMap, Class<?> clazz) {
         Set<JobScheduleControl> controls = AnnotatedElementUtils.findMergedRepeatableAnnotations(clazz,
                 JobScheduleControl.class, JobScheduleControls.class);
+        if (!VerifyUtil.isEmpty(controls)) {
+            jobScheduleClasses.add(clazz);
+        }
         for (JobScheduleControl control : controls) {
             JobScheduleRule rule = parseJobScheduleRule(control, null);
             getOrNewJobScheduleConfig(jobScheduleConfigMap, control).getRules().add(rule);
@@ -272,5 +283,20 @@ public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLi
     @Override
     public void run(String... args) throws Exception {
         jobScheduleConfigs.forEach(this::updateJobSchedulePolicy);
+    }
+
+    @Override
+    public void onApplicationEvent(SystemConfigChangeEvent event) {
+        if (!event.getChangedConfigMap().containsKey(SystemConfigConstant.RUNNING_JOB_LIMIT_COUNT_ONE_NODE)) {
+            return;
+        }
+        Collection<JobScheduleConfig> collection = new ArrayList<>();
+        jobScheduleClasses.forEach(clazz -> collection.addAll(getJobScheduleControlConfig(clazz)));
+        if (!collection.isEmpty()) {
+            log.info("Async job config changes to redis");
+            jobScheduleConfigs.clear();
+            jobScheduleConfigs.addAll(collection);
+            jobScheduleConfigs.forEach(this::updateJobSchedulePolicy);
+        }
     }
 }

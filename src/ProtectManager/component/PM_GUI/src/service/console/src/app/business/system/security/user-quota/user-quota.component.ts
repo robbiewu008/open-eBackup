@@ -307,26 +307,30 @@ export class UserQuotaComponent implements OnInit, AfterViewInit {
             const content = modal.getContentComponent() as SetQuotaComponent;
             const item = first(data);
             const backupTotalQuota = content.formGroup.value.backupQuota
-              ? content.formGroup.value.backupCapacity *
-                toNumber(
-                  get(
-                    DataMap.Capacity_Unit,
-                    `${toLower(
-                      content.formGroup.value.backupCapacityUnit
-                    )}.convertByte`
-                  )
-                )
+              ? BigInt(
+                  content.formGroup.value.backupCapacity *
+                    toNumber(
+                      get(
+                        DataMap.Capacity_Unit,
+                        `${toLower(
+                          content.formGroup.value.backupCapacityUnit
+                        )}.convertByte`
+                      )
+                    )
+                ).toString()
               : -1;
             const cloudArchiveTotalQuota = content.formGroup.value.archiveQuota
-              ? content.formGroup.value.archiveCapacity *
-                toNumber(
-                  get(
-                    DataMap.Capacity_Unit,
-                    `${toLower(
-                      content.formGroup.value.archiveCapacityUnit
-                    )}.convertByte`
-                  )
-                )
+              ? BigInt(
+                  content.formGroup.value.archiveCapacity *
+                    toNumber(
+                      get(
+                        DataMap.Capacity_Unit,
+                        `${toLower(
+                          content.formGroup.value.archiveCapacityUnit
+                        )}.convertByte`
+                      )
+                    )
+                ).toString()
               : -1;
             const params = {
               userId: get(item, 'userId'),
@@ -344,13 +348,13 @@ export class UserQuotaComponent implements OnInit, AfterViewInit {
 
             this.userQuotaService
               .setUserQuotaUsingPost({ userQuota: params as any })
-              .subscribe(
-                res => {
+              .subscribe({
+                next: res => {
                   this.dataTable.fetchData();
                   resolve(true);
                 },
-                error => resolve(false)
-              );
+                error: error => resolve(false)
+              });
           });
         }
       })

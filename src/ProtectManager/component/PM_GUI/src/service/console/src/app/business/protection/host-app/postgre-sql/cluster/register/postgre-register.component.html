@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup">
     <lv-form-item>
         <lv-form-label lvRequired>
             {{'common_name_label' | i18n}}
@@ -37,24 +37,14 @@
             <input lv-input type="text" formControlName="virtual_ip" />
         </lv-form-control>
     </lv-form-item>
-    <lv-form-item *ngIf="formGroup.get('installDeployType').value === dataMap.PostgreSqlDeployType.CLup.value">
-      <lv-form-label lvRequired>
-        {{'protection_clup_server_node_label'|i18n}}
-      </lv-form-label>
-      <lv-form-control [lvErrorTip]="agentsErrorTip">
-        <lv-select [lvOptions]='proxyOptions' formControlName='clupServerNode' lvValueKey='value' lvMode='multiple'
-                   lvShowFilter lvShowCheckAll lvFilterKey='label' lvFilterMode='contains'>
-        </lv-select>
-      </lv-form-control>
-    </lv-form-item>
     <lv-form-item>
         <lv-form-label lvRequired>
             {{nodeLabel | i18n}}
         </lv-form-label>
         <lv-form-control [lvErrorTip]="agentsErrorTip">
             <lv-select [lvOptions]='proxyOptions' formControlName='agents' lvValueKey='value' lvMode='multiple'
-                lvShowFilter lvShowCheckAll lvFilterKey='label' lvFilterMode='contains'
-                [lvContentTemplate]="contentTpl">
+                       lvShowFilter lvShowCheckAll lvFilterKey='label' lvFilterMode='contains'
+                       [lvContentTemplate]="contentTpl">
             </lv-select>
             <ng-template #contentTpl let-item>
                 <lv-group lvGutter="4px">
@@ -73,9 +63,19 @@
             </lv-form-label>
             <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
                 <lv-select formControlName="installDeployType" [lvOptions]='deployTypeOptions' lvValueKey='value'
-                    [lvDisabled]='data'>
+                           [lvDisabled]='data'>
                 </lv-select>
             </lv-form-control>
         </lv-form-item>
     </ng-container>
+    <lv-form-item *ngIf="formGroup.get('installDeployType').value === dataMap.PostgreSqlDeployType.CLup.value">
+        <lv-form-label lvRequired>
+            {{'protection_clup_server_node_label'|i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="agentsErrorTip">
+            <lv-select [lvOptions]='proxyOptions' formControlName='clupServerNode' lvValueKey='value' lvMode='multiple'
+                       lvShowFilter lvShowCheckAll lvFilterKey='label' lvFilterMode='contains'>
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
 </lv-form>

@@ -1,4 +1,3 @@
-<lv-form [lvLabelColon]="false" class="resource-summary">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [lvLabelColon]="false" class="resource-summary">
   <lv-form-column style="height:160px" *ngFor="let column of formItems; index as i" [ngClass]="{
       'sunmary-container-time': i === 2 && ![resourceType.tidbDatabase.value,resourceType.vmGroup.value].includes(sourceType),
       'sunmary-container-time-tidb': i === 2 && isTidbDatabase,
@@ -101,7 +101,8 @@
               resourceType.generalDatabase.value,
               resourceType.tidbDatabase.value,
               resourceType.ExchangeDataBase.value,
-              resourceType.ExchangeDataBase.value
+              resourceType.ExchangeDataBase.value,
+              resourceType.saphanaDatabase.value
             ].includes(sourceType)
           "></i>
         <i lv-icon="aui-icon-tableset" *ngIf="
@@ -290,7 +291,8 @@
                   resourceType.ExchangeSingle.value,
                   resourceType.ExchangeGroup.value,
                   resourceType.saphanaDatabase.value,
-                  resourceType.saponoracleDatabase.value
+                  resourceType.saponoracleDatabase.value,
+                  resourceType.oraclePDB.value
                 ].includes(sourceType)">
                 <aui-status [value]="item.content" type="resource_LinkStatus_Special"></aui-status>
               </ng-container>
@@ -316,6 +318,10 @@
               <ng-container *ngIf="resourceType.openStackCloudServer.value === sourceType">
                 <aui-status [value]="item.content" type="HCS_Host_LinkStatus"></aui-status>
               </ng-container>
+              <ng-container *ngIf="resourceType.nutanixVm.value === sourceType">
+                <aui-status [value]="item.content" type="nutanixVmStatus">
+                </aui-status>
+              </ng-container>
               <ng-container *ngIf="
                   ![
                     resourceType.lightCloudGaussdbInstance.value,
@@ -324,6 +330,7 @@
                     resourceType.lightCloudGaussdbInstance.value,
                     resourceType.tdsqlInstance.value,
                     resourceType.oracle.value,
+                    resourceType.oraclePDB.value,
                     resourceType.MySQLInstance.value,
                     resourceType.MySQLClusterInstance.value,
                     resourceType.generalDatabase.value,

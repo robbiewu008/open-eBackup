@@ -49,6 +49,7 @@ import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -88,6 +89,9 @@ public class OceanBaseServiceImpl implements OceanBaseService {
 
     @Autowired
     private ClusterQueryService clusterQueryService;
+
+    @Autowired
+    private DeployTypeService deployTypeService;
 
     /**
      * 应用基本的Service有参构造方法
@@ -394,23 +398,25 @@ public class OceanBaseServiceImpl implements OceanBaseService {
 
     private void checkSupportNFSV41(String deviceId, String username) {
         log.info("CheckSupportNFSV4.1, deviceId:{}", deviceId);
+        long errorCode = CommonErrorCode.NFS_V41_SERVICE_NOT_OPEN;
+        if (deployTypeService.isPacific()) {
+            errorCode = CommonErrorCode.PACIFIC_NFS_V41_SERVICE_NOT_OPEN;
+        }
         Object response = nfsServiceApi.getNfsServiceConfig(deviceId, username);
         JSONObject responseObject = JSONObject.fromObject(response);
         if (responseObject.isEmpty()) {
             log.error("Check NFSV4.1 service error.");
-            throw new LegoCheckedException(CommonErrorCode.NFS_V41_SERVICE_NOT_OPEN, "Check NFSV4.1 service error.");
+            throw new LegoCheckedException(errorCode, "Check NFSV4.1 service error.");
         } else {
             JSONObject data = responseObject.getJSONObject("data");
             if (data.containsKey(SUPPORTV41)) {
                 if (!data.getBoolean(SUPPORTV41)) {
                     log.error("The config of NFSV4.1 service is false.");
-                    throw new LegoCheckedException(CommonErrorCode.NFS_V41_SERVICE_NOT_OPEN,
-                        "The config of NFSV4.1 service is false.");
+                    throw new LegoCheckedException(errorCode, "The config of NFSV4.1 service is false.");
                 }
             } else {
                 log.error("Check NFSV4.1 service error.");
-                throw new LegoCheckedException(CommonErrorCode.NFS_V41_SERVICE_NOT_OPEN,
-                    "Check NFSV4.1 service error.");
+                throw new LegoCheckedException(errorCode, "Check NFSV4.1 service error.");
             }
         }
     }

@@ -17,10 +17,7 @@ import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.NodeInfo;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
-import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
-import openbackup.data.protection.access.provider.sdk.resource.CheckReport;
-import openbackup.data.protection.access.provider.sdk.resource.CheckResult;
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.*;
 import openbackup.opengauss.resources.access.constants.OpenGaussConstants;
 import openbackup.opengauss.resources.access.service.OpenGaussAgentService;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -46,8 +43,9 @@ public class OpenGaussResourceConnectionCheckerTest {
     private final ProtectedEnvironmentRetrievalsService environmentRetrievalsService = PowerMockito.mock(ProtectedEnvironmentRetrievalsService.class);
     private final AgentUnifiedService agentUnifiedService = PowerMockito.mock(AgentUnifiedService.class);
     private final OpenGaussAgentService openGaussAgentService = PowerMockito.mock(OpenGaussAgentService.class);
+    private final ResourceService resourceService = PowerMockito.mock(ResourceService.class);
     private final OpenGaussResourceConnectionChecker openGaussResourceConnectionChecker
-        = new OpenGaussResourceConnectionChecker(environmentRetrievalsService, agentUnifiedService, openGaussAgentService);
+        = new OpenGaussResourceConnectionChecker(environmentRetrievalsService, agentUnifiedService, openGaussAgentService, resourceService);
 
     /**
      * 用例场景：OpenGauss资源检查checker

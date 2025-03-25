@@ -1,4 +1,3 @@
-<div class="aui-operation">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<div class="aui-operation">
   <lv-group>
     <lv-pro-button-group
       [config]="optsConfig"
@@ -72,6 +72,9 @@
   <span lv-overflow> {{item.sapHanaDbDeployType | textMap:'saphanaDatabaseDeployType'}}</span>
 </ng-template>
 
+<ng-template #tpopsVersionTpl let-item>
+  <span lv-overflow> {{item.extendInfo?.tpopsVersion | nil}}</span>
+</ng-template>
 
 <ng-template #directoryTpl let-item>
   <span lv-overflow> {{item.extendInfo?.directory | nil}}</span>
@@ -84,6 +87,14 @@
       <lv-tag [ngModel]="item?.hoverLabelList"></lv-tag>
     </ng-template>
   </ng-container>
+</ng-template>
+
+<ng-template #specialVersionTpl let-item>
+ <span lv-overflow>
+     {{item?.mysql_version | nil}}
+     <i *ngIf="!!item?.incompatibleVersion" lv-icon="aui-icon-help" lv-tooltip="{{'protection_tdsql_mysql_version_incompatible_version_label' | i18n}}"
+        lvTooltipTheme="light" class="configform-constraint lv-operation-menu-text-icon" lvColorState='true'></i>
+ </span>
 </ng-template>
 
 <ng-template #emptyTpl>

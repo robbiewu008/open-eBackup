@@ -258,8 +258,6 @@ public class FileZip implements FileCheckInterface {
             long entrySize = len;
             calTotalSize = totalSize;
             while (len != LegoNumberConstant.NEGATIVE_ONE) {
-                bos.write(buf, 0, len);
-                len = zIn.read(buf);
                 entrySize += len;
                 calTotalSize += len;
                 if (entrySize >= GB_BYTE_NUM * 2L) {
@@ -270,6 +268,8 @@ public class FileZip implements FileCheckInterface {
                     logger.error("unzip fail, total size is too big, name: {}, size: {}", entry.getName(), totalSize);
                     throw new LegoCheckedException("zip file total size is too big.");
                 }
+                bos.write(buf, 0, len);
+                len = zIn.read(buf);
             }
         }
         return calTotalSize;

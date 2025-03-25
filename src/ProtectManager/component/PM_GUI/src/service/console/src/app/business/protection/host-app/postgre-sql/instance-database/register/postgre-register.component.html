@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" class="formGroup aui-gutter-column-xxl">
     <lv-form-item>
         <lv-form-label lvRequired>
             {{'common_type_label' | i18n}}
@@ -76,8 +76,18 @@
             </lv-form-control>
         </lv-form-item>
         <lv-form-item>
+            <lv-form-label>
+                {{'common_database_archive_path_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]='pathErrorTip'>
+                <input lv-input type="text" formControlName="archive_path"/>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item>
             <lv-form-label lvRequired>
                 {{'common_dataplane_ip_label' | i18n}}
+              <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_antdb_pgsql_ip_help_label' | i18n}}"
+                 lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
             </lv-form-label>
             <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
                 <input lv-input type="text" formControlName="business_ip" />
@@ -137,6 +147,14 @@
             </lv-form-label>
             <lv-form-control [lvErrorTip]="usernameErrorTip">
                 <input lv-input type="text" formControlName="userName" autocomplete="new-password" />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="isCLup">
+            <lv-form-label>
+                {{'common_database_archive_path_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]='pathErrorTip'>
+                <input lv-input type="text" formControlName="archive_path" />
             </lv-form-control>
         </lv-form-item>
         <lv-form-item *ngIf="isPgpool">

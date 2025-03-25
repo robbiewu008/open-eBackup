@@ -1,4 +1,3 @@
-<lv-form [formGroup]="formGroup" [lvLabelColon]="false">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-form [formGroup]="formGroup" [lvLabelColon]="false">
   <ng-container *ngIf="false">
     <lv-form-item>
       <lv-form-label [lvRequired]="action === protectResourceAction.Create">
@@ -73,6 +73,7 @@
       <img class="application-circled-container" [src]="getlinkCircledImg(application.value !== '')" />
       <div class="application-text-container">
         <lv-group class="sla-required-container">
+          <i *ngIf="application.value !== ''" lv-icon="sla-icon-completed" class="icon-gutter-row-sm"></i>
           <span class="lv-form-label-required application-required">
             <div class="lv-form-label-box"></div>
           </span>
@@ -130,10 +131,10 @@
               )
             }" [lv-tooltip]="backupPolicy.tooltip ? configTipTemplate : null" lvTooltipClassName="sla-create"
             lvTooltipPosition="top" />
-          <img *ngIf="![applicationType.Common].includes(application.value)" class="backupPolicy-circled-container"
-            [src]="getlinkCircledImg(backupPolicy.newData !== '')" />
+          <img class="backupPolicy-circled-container" [src]="getlinkCircledImg(backupPolicy.newData !== '')" />
           <div class="backup-text-container">
             <lv-group class="sla-required-container">
+              <i *ngIf="!_isEmpty(backupPolicy.newData)" lv-icon="sla-icon-completed" class="icon-gutter-row-sm"></i>
               <span class="lv-form-label-required application-required">
                 <div class="lv-form-label-box"></div>
               </span>
@@ -151,7 +152,8 @@
             <ng-container *ngFor="let item of backupPolicy.policyList; last as isLast">
               <p class="aui-link" (click)="selectSpecifiedBackupPolicy(item)">
                 {{
-                item.name + '(' + i18n.get(slaBackupName[item.action]) + ')'
+                isHyperdetect ? i18n.get('common_production_snapshot_label') : item.name + '(' +
+                i18n.get(slaBackupName[item.action]) + ')'
                 }}
               </p>
             </ng-container>
@@ -190,22 +192,24 @@
       ) > 0 &&
         archival.policyList.length > 0))" />
       <img [src]="
-          isDisabled || isHcsUser
+          isDisabled || isHcsUser || isBasicDisk
             ? 'assets/img/archival_disabled.svg'
             : getArchivalImg()
         " [ngStyle]="{
           cursor:
-            (backupPolicy.newData !== '' && archival.policyList.length < 4) ||
+            ((backupPolicy.newData !== '' && archival.policyList.length < 4) ||
             ([applicationType.ImportCopy, applicationType.Replica].includes(
               application.value
             ) &&
-              archival.policyList.length < 4)
+              archival.policyList.length < 4)) && !isBasicDisk
               ? 'pointer'
               : 'default'
         }" (click)="selectSpecifiedArchivalPolicy()" [lv-tooltip]="
-          isDisabled ? ('protection_unsupport_archival_label' | i18n) : isHcsUser ? ('protection_unsupport_hcs_archival_label' | i18n) : archival.tooltip ? archivalTipTemplate : null
-        " lvTooltipClassName="sla-create" lvTooltipPosition="top" ngClass="archival-policy-container" />
-      <div ngClass="archival-text-container">
+          isDisabled ? ('protection_unsupport_archival_label' | i18n) :isBasicDisk ?('protection_sla_archival_basic_disk_tooltip_label' | i18n): isHcsUser ? ('protection_unsupport_hcs_archival_label' | i18n) : archival.tooltip ? archivalTipTemplate : null
+        " lvTooltipClassName="sla-create" lvTooltipPosition="top" class="archival-policy-container" />
+      <div class="archival-text-container">
+        <i *ngIf="backupPolicy.newData !== '' && archival.policyList.length > 0" lv-icon="sla-icon-completed"
+          class="icon-gutter-row-sm"></i>
         <span class="stepFont" *ngIf="!isHcsUser"> {{'protection_sla_optional_tooltip_step_label'|i18n}}</span>
         {{ 'protection_archival_policy_label' | i18n }}
       </div>
@@ -239,17 +243,20 @@
         replication.policyList.length > 0))" />
     <img [src]="getReplicationImg()" (click)="selectSpecifiedReplicationPolicy()" [ngStyle]="{
             cursor:
-              (backupPolicy.newData !== '' && replication.policyList.length < 4) ||
+              ((backupPolicy.newData !== '' && replication.policyList.length < 4) ||
               ([applicationType.ImportCopy, applicationType.Replica].includes(
                 application.value
               ) > 0 &&
-                replication.policyList.length < 4)
+                replication.policyList.length < 4)) && !this.isDisableRep
                 ? 'pointer'
                 : 'default'
-          }" [lv-tooltip]="replication.tooltip ? replicationTipTemplate : null" lvTooltipClassName="sla-create"
-      lvTooltipPosition="top"
+          }"
+      [lv-tooltip]="this.isDisableRep?('protection_sla_rep_basic_disk_tooltip_label' | i18n) : replication.tooltip ? replicationTipTemplate : null"
+      lvTooltipClassName="sla-create" lvTooltipPosition="top"
       [ngClass]="{'no-archival-replication-policy-container': isHcsUser, 'replication-policy-container': !isHcsUser}" />
     <div [ngClass]="{'no-archival-replication-text-container': isHcsUser, 'replication-text-container': !isHcsUser}">
+      <i *ngIf="backupPolicy.newData !== '' && replication.policyList.length > 0" lv-icon="sla-icon-completed"
+        class="icon-gutter-row-sm"></i>
       <span class="stepFont"> {{'protection_sla_optional_tooltip_step_label'|i18n}}</span>
       {{ 'common_replication_policy_label' | i18n }}
     </div>

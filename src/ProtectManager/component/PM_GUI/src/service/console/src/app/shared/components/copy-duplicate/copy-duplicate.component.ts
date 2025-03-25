@@ -83,6 +83,8 @@ export class CopyDuplicateComponent implements OnInit {
     ],
     this.i18n.get('deploy_type')
   );
+  isDistributed =
+    this.i18n.get('deploy_type') === DataMap.Deploy_Type.e6000.value;
   repUnitMap = {
     d: 25550,
     w: 3650,
@@ -167,6 +169,7 @@ export class CopyDuplicateComponent implements OnInit {
           ? [this.baseUtilService.VALID.required()]
           : null
       }),
+      userType: new FormControl(''),
       replication_storage_type: new FormControl('', {
         validators: this.isHcsUser
           ? null
@@ -207,6 +210,14 @@ export class CopyDuplicateComponent implements OnInit {
       this.getSpecifyUser(res);
     });
 
+    this.formGroup.get('specifyUser').valueChanges.subscribe(res => {
+      const tmpUserType = find(
+        this.specifyUserOptionsMap[this.formGroup.value.external_system_id],
+        { value: res }
+      )?.userType;
+      this.formGroup.get('userType').setValue(tmpUserType);
+    });
+
     if (!this.isHcsUser || this.isHcsCrossCloud) {
       this.formGroup
         .get('replication_storage_type')
@@ -240,8 +251,10 @@ export class CopyDuplicateComponent implements OnInit {
         res.userList = filter(
           res.userList,
           item =>
-            item.userType === DataMap.loginUserType.local.value &&
-            isEmpty(item.dynamicCodeEmail)
+            [
+              DataMap.loginUserType.local.value,
+              DataMap.loginUserType.ldap.value
+            ].includes(item.userType) && isEmpty(item.dynamicCodeEmail)
         );
         if (isEmpty(this.specifyUserOptionsMap[external_system_id])) {
           assign(this.specifyUserOptionsMap, {
@@ -266,10 +279,15 @@ export class CopyDuplicateComponent implements OnInit {
           { value: this.formGroup.value.specifyUser }
         )?.userName
       );
+    const tmpUserType = find(
+      this.specifyUserOptionsMap[this.formGroup.value.external_system_id],
+      { userName: this.formGroup.value.userName }
+    )?.userType;
     const params = {
       username: this.formGroup.value.userName,
       password: this.formGroup.value.authPassword,
-      clusterId: this.formGroup.value.external_system_id
+      clusterId: this.formGroup.value.external_system_id,
+      userType: tmpUserType
     };
     this.clusterApiService
       .verifyUsernamePasswordAndGetClusterInfoUsingPost({
@@ -503,6 +521,7 @@ export class CopyDuplicateComponent implements OnInit {
         alarm_after_failure: this.formGroup.value.alarm_after_failure,
         user_id: this.formGroup.value.specifyUser,
         username: this.formGroup.value.userName,
+        userType: this.formGroup.value.userType,
         password: this.formGroup.value.authPassword,
         storage_id:
           this.formGroup.value.replication_storage_type ===
@@ -528,8 +547,11 @@ export class CopyDuplicateComponent implements OnInit {
         // 服务化跨域不需要下发这几个参数否则会报错
         delete params.user_id;
         delete params.username;
+        delete params.userType;
         delete params.storage_id;
         delete params.password;
+      } else if (this.isDistributed) {
+        delete params.link_deduplication; // E6000不支持重删
       }
       this.drawModalService.create({
         ...MODAL_COMMON.generateDrawerOptions(),

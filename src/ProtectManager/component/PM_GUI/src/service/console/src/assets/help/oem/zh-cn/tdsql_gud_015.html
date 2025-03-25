@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -55,7 +55,7 @@
      <li>TDSQL数据库安装目录为<span class="filepath">“/data/tdsql_run”</span>。</li>
      <li><span>集群已开启NTP服务且时钟源配置相同。</span></li>
      <li>已在赤兔管理平台“实例管理”中选择实例，进入“备份&amp;恢复 &gt; 备份设置”界面，将待备份实例的<span class="parmname">“binlog和冷备的保存天数”</span>设置为最大值。</li>
-     <li><span id="tdsql_gud_015__ph1111737722">由于数据库厂商不支持备份容灾模式为1主0备的分布式实例、或没有冷备节点的分布式实例，因此备份前请确保待备份的TDSQL分布式实例已选取冷备节点。</span>具体操作请参考<a href="zh-cn_topic_0000002061122832.html">配置冷备节点</a>章节。</li>
+     <li><span id="tdsql_gud_015__ph1111737722">由于数据库厂商不支持备份容灾模式为1主0备的分布式实例、或没有冷备节点的分布式实例，因此备份前请确保待备份的TDSQL分布式实例已选取冷备节点。</span>具体操作请参考<a href="tdsql_gud_108.html">如何配置冷备节点</a>章节。</li>
     </ul>
    </div>
    <div class="section">
@@ -68,7 +68,7 @@
        <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
        <div class="notebody">
         <ul>
-         <li>TDSQL分布式实例不支持<span>永久增量（合成全量）备份</span>，无法选择保护策略包含“<span>永久增量（合成全量）备份</span>”的SLA进行保护。</li>
+         <li>TDSQL分布式实例不支持永久增量（合成全量）备份，无法选择保护策略包含“<span>永久增量（合成全量）备份</span>”的SLA进行保护。</li>
          <li><span>如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></li>
         </ul>
        </div>
@@ -131,7 +131,7 @@
             <div class="note" id="tdsql_gud_015__fc_gud_0019_note1550211211513">
              <span class="notetitle"> 说明： </span>
              <div class="notebody">
-              <p id="tdsql_gud_015__fc_gud_0019_p10502162125111"><span style="color:#1A1A1A;">如果SLA归档策略中“归档时间”未选择“备份成功后立即执行归档”或“归档策略”未选择“仅归档最新的副本”，以及并未设置防勒索策略时，</span>请单击“前往配置”为待保护资源设置防勒索策略。具体操作请参考<span id="tdsql_gud_015__fc_gud_0019_cite15733201398">《OceanProtect <span id="tdsql_gud_015__fc_gud_0019_zh-cn_topic_0000001792502994_ph662613174472">备份一体机 1.5.0-1.6.0</span> 数据备份特性指南(副本防勒索)》</span>中的“创建防勒索&amp;WORM策略”章节。</p>
+              <p id="tdsql_gud_015__fc_gud_0019_p10502162125111"><span style="color:#1A1A1A;">如果SLA归档策略中“归档时间”未选择“备份成功后立即执行归档”或“归档策略”未选择“仅归档最新的副本”，以及并未设置防勒索策略时，</span>请单击“前往配置”为待保护资源设置防勒索策略。具体操作请参考<span id="tdsql_gud_015__fc_gud_0019_cite191322555252">《数据备份特性指南(副本防勒索)》</span>中的“创建防勒索&amp;WORM策略”章节。</p>
              </div>
             </div>
            </div></td>
@@ -139,7 +139,7 @@
         </tbody>
        </table>
       </div> <p></p></li>
-     <li><span>单击<span class="uicontrol" id="tdsql_gud_015__zh-cn_topic_0000001792503842_uicontrol471113581111">“确定”</span>。</span><p></p><p id="tdsql_gud_015__zh-cn_topic_0000001792503842_p25041111535">如果当前系统时间已晚于该SLA首次备份的开始时间，则关联备份SLA后可以选择在当前立即执行备份或者根据SLA中设置的备份策略等待下次调度。</p> <p></p></li>
+     <li><span>单击<span class="uicontrol" id="tdsql_gud_015__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p></p><p id="tdsql_gud_015__zh-cn_topic_0000001964713008_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p> <p></p></li>
      <li><strong>可选：</strong><span>执行手动备份。</span><p></p>
       <div class="p">
        当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。
@@ -157,7 +157,7 @@
           <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
           <div class="notebody">
            <ul>
-            <li>TDSQL分布式实例不支持<span>永久增量（合成全量）备份</span>。</li>
+            <li>TDSQL分布式实例不支持永久增量（合成全量）备份。</li>
             <li><span>对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></li>
            </ul>
           </div>

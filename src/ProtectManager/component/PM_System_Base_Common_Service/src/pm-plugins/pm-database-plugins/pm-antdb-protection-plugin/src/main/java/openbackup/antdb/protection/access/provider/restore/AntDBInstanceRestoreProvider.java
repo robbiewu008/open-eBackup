@@ -26,6 +26,7 @@ import openbackup.data.protection.access.provider.sdk.lock.LockType;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
 import openbackup.data.protection.access.provider.sdk.util.TaskUtil;
 import openbackup.database.base.plugin.common.DatabaseConstants;
@@ -65,6 +66,8 @@ import java.util.stream.Collectors;
 public class AntDBInstanceRestoreProvider extends AbstractDbRestoreInterceptorProvider {
     private final AntDBInstanceService antDBInstanceService;
 
+    private final ResourceService resourceService;
+
     private final ProtectedEnvironmentService protectedEnvironmentService;
 
     private final CopyRestApi copyRestApi;
@@ -75,12 +78,15 @@ public class AntDBInstanceRestoreProvider extends AbstractDbRestoreInterceptorPr
      * @param antDBInstanceService antdb实例业务类
      * @param protectedEnvironmentService protected environment service
      * @param copyRestApi copy REST API
+     * @param resourceService 资源服务
      */
     public AntDBInstanceRestoreProvider(AntDBInstanceService antDBInstanceService,
-        ProtectedEnvironmentService protectedEnvironmentService, CopyRestApi copyRestApi) {
+        ProtectedEnvironmentService protectedEnvironmentService, CopyRestApi copyRestApi,
+        ResourceService resourceService) {
         this.antDBInstanceService = antDBInstanceService;
         this.protectedEnvironmentService = protectedEnvironmentService;
         this.copyRestApi = copyRestApi;
+        this.resourceService = resourceService;
     }
 
     /**
@@ -238,17 +244,24 @@ public class AntDBInstanceRestoreProvider extends AbstractDbRestoreInterceptorPr
      */
     private void setRestoreTaskAgents(RestoreTask task) {
         List<Endpoint> agents = new ArrayList<>();
-        ProtectedEnvironment environment = protectedEnvironmentService.getEnvironmentById(
-            task.getTargetEnv().getUuid());
         if (ResourceSubTypeEnum.ANT_DB_INSTANCE.equalsSubType(task.getTargetObject().getSubType())) {
+            ProtectedEnvironment environment = protectedEnvironmentService.getEnvironmentById(
+                task.getTargetEnv().getUuid());
             agents.add(new Endpoint(environment.getUuid(), environment.getEndpoint(), environment.getPort()));
         } else {
-            Map<String, List<ProtectedResource>> dependencies = environment.getDependencies();
-            agents.addAll(dependencies.get(DatabaseConstants.AGENTS)
-                .stream()
-                .flatMap(StreamUtil.match(ProtectedEnvironment.class))
-                .map(env -> new Endpoint(env.getUuid(), env.getEndpoint(), env.getPort()))
-                .collect(Collectors.toList()));
+            ProtectedResource targetResource = resourceService.getResourceById(task.getTargetObject().getUuid())
+                .orElseThrow(
+                    () -> new LegoCheckedException(AntDBErrorCode.SERVICE_IP_IS_INVALID, "Virtual IP is error."));
+            List<ProtectedResource> protectedResources = targetResource.getDependencies()
+                .get(DatabaseConstants.CHILDREN);
+            for (ProtectedResource protectedResource : protectedResources) {
+                agents.addAll(protectedResource.getDependencies()
+                    .get(DatabaseConstants.AGENTS)
+                    .stream()
+                    .flatMap(StreamUtil.match(ProtectedEnvironment.class))
+                    .map(env -> new Endpoint(env.getUuid(), env.getEndpoint(), env.getPort()))
+                    .collect(Collectors.toList()));
+            }
         }
         task.setAgents(agents);
     }
@@ -257,12 +270,19 @@ public class AntDBInstanceRestoreProvider extends AbstractDbRestoreInterceptorPr
         return JsonUtil.read(JsonUtil.json(protectedResource), TaskEnvironment.class);
     }
 
-    private List<TaskEnvironment> getClusterNodes(RestoreTask task, ProtectedEnvironment environment) {
-        Map<String, List<ProtectedResource>> dependencies = environment.getDependencies();
-        List<ProtectedEnvironment> environments = dependencies.get(DatabaseConstants.AGENTS)
-            .stream()
-            .flatMap(StreamUtil.match(ProtectedEnvironment.class))
-            .collect(Collectors.toList());
+    private List<TaskEnvironment> getClusterNodes(RestoreTask task) {
+        ProtectedResource targetResource = resourceService.getResourceById(task.getTargetObject().getUuid())
+            .orElseThrow(() -> new LegoCheckedException(AntDBErrorCode.SERVICE_IP_IS_INVALID, "Virtual IP is error."));
+        List<ProtectedResource> protectedResources = targetResource.getDependencies().get(DatabaseConstants.CHILDREN);
+        List<ProtectedEnvironment> environments = new ArrayList<>();
+        for (ProtectedResource protectedResource : protectedResources) {
+            environments.addAll(protectedResource.getDependencies()
+                .get(DatabaseConstants.AGENTS)
+                .stream()
+                .flatMap(StreamUtil.match(ProtectedEnvironment.class))
+                .collect(Collectors.toList()));
+        }
+
         ProtectedResource clusterInstResource = antDBInstanceService.getResourceById(task.getTargetObject().getUuid());
         List<TaskResource> subTaskResources = clusterInstResource.getDependencies()
             .get(DatabaseConstants.CHILDREN)
@@ -290,7 +310,7 @@ public class AntDBInstanceRestoreProvider extends AbstractDbRestoreInterceptorPr
         if (ResourceSubTypeEnum.ANT_DB_INSTANCE.equalsSubType(task.getTargetObject().getSubType())) {
             nodes.add(toTaskEnvironment(environment));
         } else {
-            nodes = getClusterNodes(task, environment);
+            nodes = getClusterNodes(task);
         }
         task.getTargetEnv().setNodes(nodes);
     }

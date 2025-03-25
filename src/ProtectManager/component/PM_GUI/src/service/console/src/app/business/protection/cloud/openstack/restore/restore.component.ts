@@ -25,7 +25,8 @@ import {
   ResourceType,
   RestoreApiV2Service,
   RestoreV2LocationType,
-  SYSTEM_TIME
+  SYSTEM_TIME,
+  filterVersion
 } from 'app/shared';
 import {
   ProTableComponent,
@@ -235,8 +236,15 @@ export class RestoreComponent implements OnInit {
       this.rowCopy?.resource_properties || '{}'
     );
     this.restoreToNewLocationOnly =
-      this.rowCopy?.generated_by ===
-        DataMap.CopyData_generatedType.cascadedReplication.value ||
+      includes(
+        [
+          DataMap.CopyData_generatedType.replicate.value,
+          DataMap.CopyData_generatedType.reverseReplication.value,
+          DataMap.CopyData_generatedType.cascadedReplication.value
+        ],
+        this.rowCopy?.generated_by
+      ) ||
+      this.rowCopy.is_replicated ||
       this.rowCopy?.resource_status === DataMap.Resource_Status.notExist.value;
     const properties = JSON.parse(this.rowCopy.properties);
     this.verifyStatus = properties?.verifyStatus;

@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,21 +11,22 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en-us" xml:lang="en-us">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="DC.Type" content="topic">
-  <meta name="DC.Title" content="Uninstalling ProtectAgent (Applicable to the Linux OS)">
+  <meta name="DC.Title" content="Uninstalling ProtectAgent (Applicable to the Linux OS/AIX OS)">
   <meta name="DC.Format" content="XHTML">
   <meta name="DC.Identifier" content="EN-US_TOPIC_0000001792549964">
   <meta name="DC.Language" content="en-us">
   <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
-  <title>Uninstalling ProtectAgent (Applicable to the Linux OS)</title>
+  <title>Uninstalling ProtectAgent (Applicable to the Linux OS/AIX OS)</title>
  </head>
  <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
   <a name="EN-US_TOPIC_0000001792549964"></a><a name="EN-US_TOPIC_0000001792549964"></a>
-  <h1 class="topictitle1">Uninstalling ProtectAgent (Applicable to the Linux OS)</h1>
+  <h1 class="topictitle1">Uninstalling ProtectAgent (Applicable to the Linux OS/AIX OS)</h1>
   <div>
    <p>After ProtectAgent is uninstalled, the <span>product</span> does not back up or restore resources.</p>
    <div class="section">
@@ -35,20 +35,20 @@
    </div>
    <div class="section" id="EN-US_TOPIC_0000001792549964__section95618329544">
     <h4 class="sectiontitle">Prerequisites</h4>
-    <p id="EN-US_TOPIC_0000001792549964__p11178191432914">If you have set aliases for <strong id="EN-US_TOPIC_0000001792549964__b1217817142295">rm</strong>, <strong id="EN-US_TOPIC_0000001792549964__b1479094817301">cp</strong>, <strong id="EN-US_TOPIC_0000001792549964__b1646412133117">mv</strong>, and other commands that need to be input in interactive mode on the agent host (for example, the alias is <strong id="EN-US_TOPIC_0000001792549964__b2900716123516">mv=mv -i</strong>, and the <strong id="EN-US_TOPIC_0000001792549964__b5246558114412">mv</strong> is executed with <strong id="EN-US_TOPIC_0000001792549964__b92462058164413">-i</strong> by default), cancel the alias setting first. Otherwise, the agent host will fail to be unloaded.</p>
+    <p id="EN-US_TOPIC_0000001792549964__p11178191432914">If you have set aliases for <strong id="EN-US_TOPIC_0000001792549964__b1217817142295">rm</strong>, <strong id="EN-US_TOPIC_0000001792549964__b1479094817301">cp</strong>, <strong id="EN-US_TOPIC_0000001792549964__b1646412133117">mv</strong>, and other commands that need to be input in interactive mode on the agent host (for example, alias setting <strong id="EN-US_TOPIC_0000001792549964__b2900716123516">mv=mv -i</strong>, indicating that the <strong id="EN-US_TOPIC_0000001792549964__b5246558114412">mv</strong> command is executed with the <strong id="EN-US_TOPIC_0000001792549964__b92462058164413">-i</strong> parameter by default), cancel the alias setting first. Otherwise, the uninstallation will fail.</p>
    </div>
    <div class="section">
     <h4 class="sectiontitle">Procedure</h4>
     <ol>
      <li><span>Use PuTTY to log in to the host where ProtectAgent needs to be uninstalled as a system administrator.</span></li>
-     <li><span>Run the following command to go to the ProtectAgent installation directory:</span><p></p><p><strong>cd</strong> <em>/opt</em><strong>/DataBackup/ProtectClient</strong></p> <p></p></li>
-     <li><span>Run the following command to uninstall ProtectAgent:</span><p></p><p><strong>sh uninstall.sh</strong></p> <p></p></li>
+     <li><span>Run the following command to go to the ProtectAgent installation directory:</span><p></p><pre class="screen">cd <em>/opt</em>/DataBackup/ProtectClient</pre> <p></p></li>
+     <li><span>Run the following command to uninstall ProtectAgent:</span><p></p><pre class="screen">sh uninstall.sh</pre> <p>If information similar to the following is displayed, enter <strong>y</strong>.</p> <pre class="screen">Are you sure you want to uninstall DataBackup ProtectAgent? y/n:</pre> <p>If message "DataBackup ProtectAgent has been uninstalled successfully." is displayed, the uninstallation is successful.</p> <p></p></li>
     </ol>
     <ol start="4">
-     <li><span>If the host is used to protect Oracle databases and ProtectAgent will be installed on it again to protect VMware VMs in the future, or if the host is used to protect VMware VMs and ProtectAgent will be installed on it again to protect Oracle databases in the future, run the following command to delete the <span class="uicontrol"><b>/etc/HostSN/HostSN</b></span> file from the host. Otherwise, skip this step.</span><p></p><p><strong>rm -rf /etc/HostSN/HostSN</strong></p> <p></p></li>
+     <li><span>If ProtectAgent needs to be installed on the host subsequently, delete the <span class="uicontrol"><b>/etc/HostSN/HostSN</b></span> file from the host. Otherwise, skip this step.</span><p></p><pre class="screen">rm -rf /etc/HostSN/HostSN</pre> <p></p></li>
     </ol>
     <ol start="5">
-     <li id="EN-US_TOPIC_0000001792549964__en-us_topic_0000001166835234_li1849451112587"><a name="EN-US_TOPIC_0000001792549964__en-us_topic_0000001166835234_li1849451112587"></a><a name="en-us_topic_0000001166835234_li1849451112587"></a><span>If ProtectAgent will be installed on the host again and the OS has been reinstalled on the host or the <span class="filepath"><b>/etc/HostSN/HostSN</b></span> file has been deleted from the host before ProtectAgent is installed, perform the following operations to delete the host on the management page. Skip this step in other scenarios.</span><p></p>
+     <li id="EN-US_TOPIC_0000001792549964__en-us_topic_0000001166835234_li1849451112587"><a name="EN-US_TOPIC_0000001792549964__en-us_topic_0000001166835234_li1849451112587"></a><a name="en-us_topic_0000001166835234_li1849451112587"></a><span>If ProtectAgent needs to be installed on the host subsequently and the OS has been reinstalled on the host or the <span class="filepath"><b>/etc/HostSN/HostSN</b></span> file has been deleted from the host before ProtectAgent is installed, perform the following operations to delete the host on the management page. Otherwise, skip this step.</span><p></p>
       <ol type="a">
        <li>Choose <span class="uicontrol" id="EN-US_TOPIC_0000001792549964__en-us_topic_0000001839142377_uicontrol08941439165212"><b><span id="EN-US_TOPIC_0000001792549964__en-us_topic_0000001839142377_text22651956143811"><strong>Protection</strong></span> &gt; Clients &gt; Clients</b></span>.</li>
        <li>Search for the host from which ProtectAgent has been uninstalled based on the IP address and choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Delete Host</strong></span></b></span>.<p>Before deleting the host, ensure that the host is not associated with any SLA.</p></li>

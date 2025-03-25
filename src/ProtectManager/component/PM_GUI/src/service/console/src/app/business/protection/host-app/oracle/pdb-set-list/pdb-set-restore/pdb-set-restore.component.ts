@@ -12,20 +12,17 @@
 */
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ModalRef } from '@iux/live';
 import {
   BaseUtilService,
   CommonConsts,
   DataMap,
   I18NService,
-  MODAL_COMMON,
   ProtectedResourceApiService,
   RestoreApiV2Service,
   RestoreV2LocationType,
   SYSTEM_TIME
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { each, find, includes, isEmpty, map } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -40,6 +37,9 @@ export class PdbSetRestoreComponent implements OnInit {
   rowCopy;
   oldVersion;
   restoreToNewLocationOnly;
+  restoreToNewLocationOnlyTips = this.i18n.get(
+    'protection_origin_restore_disabled_label'
+  );
   resourceProperties;
   disableNewLocation = false; // oracle有些场景不支持新位置恢复
   restoreType;
@@ -66,6 +66,7 @@ export class PdbSetRestoreComponent implements OnInit {
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [8192])
   };
   destinationPathErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
     invalidPath: this.baseUtilService.invalidPathLabel,
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [256])
   };
@@ -80,10 +81,8 @@ export class PdbSetRestoreComponent implements OnInit {
   constructor(
     public i18n: I18NService,
     private fb: FormBuilder,
-    private modal: ModalRef,
     private baseUtilService: BaseUtilService,
     private restoreV2Service: RestoreApiV2Service,
-    private drawModalService: DrawModalService,
     private appUtilsService: AppUtilsService,
     private protectedResourceApiService: ProtectedResourceApiService
   ) {}
@@ -120,9 +119,15 @@ export class PdbSetRestoreComponent implements OnInit {
           DataMap.CopyData_generatedType.cascadedReplication.value
         ],
         this.rowCopy.generated_by
-      ) ||
-      this.rowCopy.is_replicated ||
-      this.rowCopy?.resource_status === DataMap.Resource_Status.notExist.value;
+      ) || this.rowCopy.is_replicated;
+    if (
+      this.rowCopy?.resource_status === DataMap.Resource_Status.notExist.value
+    ) {
+      this.restoreToNewLocationOnly = true;
+      this.restoreToNewLocationOnlyTips = this.i18n.get(
+        'protection_unsupport_restore_to_online_database_label'
+      );
+    }
   }
 
   initForm() {
@@ -144,6 +149,7 @@ export class PdbSetRestoreComponent implements OnInit {
       ),
       destinationPath: new FormControl('', {
         validators: [
+          this.baseUtilService.VALID.required(),
           this.baseUtilService.VALID.maxLength(256),
           this.baseUtilService.VALID.path(this.rowCopy.environment_os_type)
         ]
@@ -151,6 +157,7 @@ export class PdbSetRestoreComponent implements OnInit {
       isOverwrite: new FormControl(false),
       bctStatus: new FormControl(false),
       power_on: new FormControl(false),
+      open_pdb: new FormControl(true),
       numberOfChannelOpen: new FormControl(false),
       dbConfig: this.fb.array([]),
       numberOfChannels: new FormControl('', {
@@ -165,7 +172,6 @@ export class PdbSetRestoreComponent implements OnInit {
       failedProcessing: new FormControl('')
     });
     this.listenForm();
-    this.modal.getInstance().lvOkDisabled = false;
     if (this.restoreToNewLocationOnly) {
       this.formGroup.get('restoreTo').setValue(RestoreV2LocationType.NEW);
     }
@@ -303,7 +309,8 @@ export class PdbSetRestoreComponent implements OnInit {
           ? ''
           : JSON.stringify(restoreTargetHost),
         isOverwrite: this.formGroup.get('isOverwrite').value,
-        RESTORE_PATH: isOrigin ? '' : this.formGroup.value.destinationPath,
+        isOpenPdb: this.formGroup.get('open_pdb').value,
+        RESTORE_PATH: this.formGroup.value.destinationPath,
         instances: '[]'
       },
       scripts: {

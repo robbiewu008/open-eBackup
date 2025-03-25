@@ -115,12 +115,27 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
     each(this.formGroup.value.replicationTeams, item => {
       if (item?.external_system_id) {
         replicationCluster.push({
-          external_system_id: item.external_system_id
+          external_system_id: item.external_system_id,
+          action: item.action
         });
       }
     });
-    const clusterItems = uniqBy(replicationCluster, 'external_system_id');
-    if (size(clusterItems) !== size(replicationCluster)) {
+    const dataClusterItems = uniqBy(
+      replicationCluster.filter(
+        item => item.action === DataMap.replicationAction.data.value
+      ),
+      'external_system_id'
+    );
+    const logClusterItems = uniqBy(
+      replicationCluster.filter(
+        item => item.action === DataMap.replicationAction.log.value
+      ),
+      'external_system_id'
+    );
+    if (
+      size(dataClusterItems) + size(logClusterItems) !==
+      size(replicationCluster)
+    ) {
       this.messageService.error(
         this.i18n.get('protection_external_system_same_repeats_label'),
         {
@@ -183,11 +198,7 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
       !isEmpty(hasLinkDeduplication)
     ) {
       this.messageService.error(
-        this.i18n.get(
-          this.appUtilsService.isDataBackup
-            ? 'protection_link_redelete_tips_label'
-            : 'protection_redelete_tips_label'
-        ),
+        this.i18n.get('protection_link_redelete_error_tip_label'),
         {
           lvMessageKey: 'lvMsg_key_link_deduplication_error_label',
           lvShowCloseButton: true
@@ -212,7 +223,7 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
     const params = {
       uuid: item.uuid,
       name: item.name,
-      action: PolicyType.REPLICATION,
+      action: item.action,
       type: PolicyType.REPLICATION,
       ext_parameters: {
         specified_scope: [],
@@ -313,7 +324,9 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
         'ext_parameters.replication_target_mode',
         item.replicationMode
       );
-
+      if (this.appUtilsService.isDistributed) {
+        delete params.ext_parameters.link_deduplication;
+      }
       if (
         item.replicationMode === this.replicationModeType.CROSS_DOMAIN &&
         (item.external_storage_id || item.replication_storage_id) &&
@@ -334,7 +347,8 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
         set(params, 'ext_parameters.user_info', {
           user_id: item.specifyUser,
           username: item.userName,
-          password: item.authPassword || undefined
+          password: item.authPassword || undefined,
+          userType: item.userType
         });
       }
 

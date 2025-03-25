@@ -121,6 +121,16 @@ public class DefaultRoleHelper {
     }
 
     /**
+     * 用于校验只包含数据保护管理员，和自定义用户的（排除方式）
+     *
+     * @return 角色列表
+     */
+    public static List<String> getExcludeRoleList() {
+        return Arrays.asList(Constants.Builtin.ROLE_RD_ADMIN, Constants.Builtin.ROLE_DR_ADMIN,
+            Constants.Builtin.ROLE_DEVICE_MANAGER, Constants.Builtin.ROLE_AUDITOR, Constants.Builtin.ROLE_SYS_ADMIN);
+    }
+
+    /**
      * 是否为内置角色角色
      *
      * @param roleId 角色id

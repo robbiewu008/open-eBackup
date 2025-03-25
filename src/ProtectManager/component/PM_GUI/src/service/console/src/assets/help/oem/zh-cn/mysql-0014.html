@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <!--
   This file is a part of the open-eBackup project.
   This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
@@ -12,6 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-cn" xml:lang="zh-cn">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -47,11 +47,7 @@
        <li>如果无运行状态回显，
         <ul>
          <li>MySQL：请确保MySQL服务能够正常登录。</li>
-         <li>MariaDB/GreatSQL：如果无运行状态回显（不同的版本回显可能有差异，例如回显为active(dead)），则表示MariaDB/GreatSQL需要注册为系统服务。
-          <ol type="a">
-           <li>在MariaDB/GreatSQL的安装目录下找到mysql.server。</li>
-           <li>执行<strong>cp </strong><em>安装目录</em><strong>/mysql.server</strong><strong><em> </em>/etc/init.d/mysql</strong>命令，注册系统服务。</li>
-          </ol></li>
+         <li>MariaDB/GreatSQL：请执行<strong>cp </strong><em>安装目录</em><strong>/mysql.server</strong><strong><em> </em>/etc/init.d/mysql</strong>命令，注册为系统服务，安装目录为MariaDB/GreatSQL的安装目录。</li>
         </ul></li>
       </ul> <p></p></li>
      <li><span>依次执行以下命令设置软连接。</span><p></p><pre class="screen">ln -sf <em>安装目录</em>/bin/mysqlbinlog /usr/bin/

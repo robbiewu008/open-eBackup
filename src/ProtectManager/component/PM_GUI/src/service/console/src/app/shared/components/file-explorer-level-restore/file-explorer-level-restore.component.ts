@@ -89,6 +89,13 @@ export class FileExplorerLevelRestoreComponent implements OnInit {
   incrementFileEmptyTips = false; // 增量副本备份前后数据没有变化时，界面会展示无数据
   timeZone = SYSTEM_TIME.timeZone;
 
+  modeMap = {
+    fromTree: '1',
+    fromTag: '2'
+  };
+  pathMode = this.modeMap.fromTree;
+  manualInputPath = [];
+
   @ViewChild(ObjectRestoreComponent, { static: false })
   objectRestoreComponent: ObjectRestoreComponent;
 
@@ -620,8 +627,14 @@ export class FileExplorerLevelRestoreComponent implements OnInit {
 
   disableBtn() {
     this.modal.getInstance().lvOkDisabled =
-      (!this.selectionData.length && !this.isSearchRestore) ||
+      (this.getPathInvalid() && !this.isSearchRestore) ||
       this.objectRestoreComponent?.formGroup.invalid;
+  }
+
+  getPathInvalid(): boolean {
+    return this.pathMode === this.modeMap.fromTag
+      ? !size(this.manualInputPath)
+      : !this.selectionData.length;
   }
 
   getfileLevelRestoreTips() {
@@ -668,13 +681,29 @@ export class FileExplorerLevelRestoreComponent implements OnInit {
     );
   }
 
+  inputPathChange(path) {
+    this.manualInputPath = [...path];
+    this.disableBtn();
+  }
+
+  pathModeChange() {
+    this.manualInputPath = [];
+    this.disableBtn();
+  }
+
+  getRestorePath() {
+    return this.pathMode === this.modeMap.fromTag
+      ? this.manualInputPath
+      : this.getPath(cloneDeep(this.selectionData));
+  }
+
   getParams() {
     let params =
       this.objectRestoreComponent?.getTargetParams()?.requestParams || {};
     assign(params, {
       subObjects: this.isSearchRestore
         ? [this.rowCopy.searchRestorePath]
-        : this.getPath(cloneDeep(this.selectionData))
+        : this.getRestorePath()
     });
     return params;
   }
