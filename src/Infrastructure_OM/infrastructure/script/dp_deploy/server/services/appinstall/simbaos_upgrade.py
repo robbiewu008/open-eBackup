@@ -71,11 +71,17 @@ def upgrade_simbaos_precheck(cert_type='pacific'):
 
 
 def upgrade_simbaos_backup(cert_type='pacific'):
-    exec_cmd(
-        'smartkube upgrade backup '
-        f'--folder={SIMBAOS_BACKUP_PACKAGE_PATH} '
-        f'--certType={cert_type}'
-    )
+    if cert_type == "pacific":
+        exec_cmd(
+            'smartkube upgrade backup '
+            f'--folder={SIMBAOS_BACKUP_PACKAGE_PATH} '
+            f'--certType={cert_type}'
+        )
+    else:
+        exec_cmd(
+            'smartkube upgrade backup '
+            f'--folder={SIMBAOS_BACKUP_PACKAGE_PATH} '
+        )
 
 
 def upgrade_simbaos_getbatch() -> [[str]]:
@@ -97,7 +103,10 @@ def cycle_detect_status(detect_fun, check_interval_secs=10, **kwargs):
 
 
 def check_upgrade_status(nodes, cert_type):
-    r = exec_cmd(f'smartkube upgrade status --certType={cert_type}')
+    if cert_type == "pacific":
+        r = exec_cmd(f'smartkube upgrade status --certType={cert_type}')
+    else:
+        r = exec_cmd(f'smartkube upgrade status')
     if not r:
         return COMMAND_SUCCESS
     node_status = json.loads(r)['nodes']
@@ -141,7 +150,10 @@ def upgrade_precheck(cert_type):
 
 
 def check_simbaos_status(cert_type):
-    r = exec_cmd_without_check_return(f'smartkube upgrade postcheck --certType={cert_type} --format-print')
+    if cert_type == "pacific":
+        r = exec_cmd_without_check_return(f'smartkube upgrade postcheck --certType={cert_type} --format-print')
+    else:
+        r = exec_cmd_without_check_return(f'smartkube upgrade postcheck --format-print')
     if r == "upgrade postcheck ok":
         return COMMAND_COMPLETE
     else:
@@ -158,7 +170,7 @@ def upgrade_simbaos_plugin():
 
 
 def upgrade_simbaos_postupgrade():
-    exec_cmd('smartkube upgrade postupgrade')
+    exec_cmd('smartkube upgrade postupgrade --format-print')
 
 
 def do_process_with_rollback(fun, roll_back_cert_type="pacific", **kwargs):
@@ -233,8 +245,13 @@ def pre_upgrade(upgrade_package_name, node_ip, cert_type):
     source_path = os.path.join(SIMBAOS_UPGRADE_PACKAGE_PATH, "action", "smartkube")
     copy_file_with_overwrite(source_path, "/usr/bin/smartkube")
 
-    exec_cmd(f'smartkube preinstall agent --nodeIP={node_ip} '
-             f'--deployType=1 --certType={cert_type} --packagePath={SIMBAOS_UPGRADE_PACKAGE_PATH}')
+    if cert_type == "pacific":
+        exec_cmd(f'smartkube preinstall agent --nodeIP={node_ip} '
+                f'--deployType=1 --certType={cert_type} --packagePath={SIMBAOS_UPGRADE_PACKAGE_PATH}')
+    else:
+        exec_cmd(f'smartkube preinstall agent --nodeIP={node_ip} '
+                f' --packagePath={SIMBAOS_UPGRADE_PACKAGE_PATH}')
+
 
     # 权限更新
     os.makedirs(SIMBAOS_BACKUP_PACKAGE_PATH, exist_ok=True)

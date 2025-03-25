@@ -12,11 +12,40 @@ Commands:
     reset"
 }
 
+function install_packages() {
+  if [ "$1" != "E6000" ]; then
+    echo "install type is $1, skip install packages"
+    return
+  fi
+
+  cd packages
+  packages_to_install=''
+
+  for rpm_pkg in *.rpm; do
+    rpm_pkg_name="${rpm_pkg%.rpm}"
+    if ! rpm -qa | grep -w "${rpm_pkg_name}"; then
+      packages_to_install="$packages_to_install $rpm_pkg"
+    fi
+  done
+
+  if [ ! -z "$packages_to_install" ]; then
+    rpm -i $packages_to_install
+    if [ $? -ne 0 ]; then
+      echo "Failed to install rpm packages ${rpm_pkg}."
+      exit 1
+    fi
+  fi
+
+  cd ..
+}
+
 function install_dpserver() {
     echo "start install dataprotect deployment server"
 
     ADDRESS=$1
     TYPE=$2
+
+    install_packages $TYPE
 
     # create dpserver user and user group,
     if id dpserver >& /dev/null; then
@@ -57,7 +86,14 @@ EOF
     systemctl daemon-reload
     systemctl restart dpserver
 
-    echo "Install dataprotect deployment server succeed"
+    sleep 5
+    check_status_result=$(status_ok)
+    if [ "$check_status_result" -eq 0 ]; then
+      echo "Install dataprotect deployment server succeed"
+    else
+      echo "Faied to install dataprotect deployment server, please check the journalctl log"
+    fi
+
 }
 
 function reset_dpserver() {
@@ -86,11 +122,6 @@ function status_ok(){
       return
     fi
 
-    # 判断25088端口是否被监听
-    if ! netstat -tuln | grep ":25088" >& /dev/null; then
-      echo 1
-      return
-    fi
     echo 0
 }
 
@@ -139,7 +170,7 @@ function upgrade_dpserver() {
     echo "start upgrade dataprotect deployment server"
     UpgradePackageName=$1
     echo PackageName is "$UpgradePackageName"
-    version=$(get_version /opt/DataBackup/packages/"$UpgradePackageName"/manifest.yml)
+    version=$(get_version /opt/DataBackup/packages/"$UpgradePackageName"/dpserver/manifest.yml)
     echo version is "$version"
     # 升级前检查包版本是否大于当前包版本
     precheck_version_right $version
@@ -156,7 +187,7 @@ function upgrade_dpserver() {
       sleep 5s
       systemctl stop dpserver
       # 2. 替换新的dpserver包
-      replace_dpserver_from /opt/DataBackup/packages/"$UpgradePackageName"
+      replace_dpserver_from /opt/DataBackup/packages/"$UpgradePackageName"/dpserver
 
       # 3. 重启dpserver服务
       systemctl restart dpserver
@@ -201,6 +232,16 @@ function roll_back_dpserver(){
     systemctl restart dpserver
 }
 
+function configurate_host() {
+    TYPE="$1"
+
+    # E6000 Pacific底座IMA服务依赖selinux，同时simbaos和selinux冲突
+    # preinstall simbaos的时候，会自动设置selinux=disable，会导致重启操作系统IMA模块报错
+    # 所以需要设置selinux=permissive，避免上述问题
+    if [[ "$TYPE" == "E6000" && -f "/etc/selinux/config" ]]; then
+        sed -i 's/^SELINUX=.*/SELINUX=permissive/g' /etc/selinux/config
+    fi
+}
 
 main() {
     set -e
@@ -210,7 +251,7 @@ main() {
     CMD=$1
 
     if [ "$CMD" == "install" ]; then
-        if [ $# -lt 5 ]; then
+        if [ $# -ne 5 ] || [ $2 != "--address" ] || [ $4 != "--type" ]; then
             usage; exit 1
         fi
         install_dpserver $3 $5
@@ -220,7 +261,10 @@ main() {
         upgrade_dpserver $2
     else
         echo "unknow command $CMD"
+        exit 1
     fi
+
+    configurate_host $5
 }
 
 main $@

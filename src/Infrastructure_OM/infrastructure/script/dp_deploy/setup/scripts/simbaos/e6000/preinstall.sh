@@ -22,4 +22,4 @@ smartkube preinstall get_crt
 echo "preinstall simbaos succeed"
 
 # wait for smartkube agent to start
-sleep 10
+sleep 30

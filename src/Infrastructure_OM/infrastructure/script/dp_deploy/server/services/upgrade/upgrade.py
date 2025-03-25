@@ -28,7 +28,7 @@ def upgrade_dpserver(req: RequestUpgradeDpserver):
 
     upgrade_package_basename = get_basename(req.upgrade_package_name)
     logger.info(f"upgrade package basename is {upgrade_package_basename}")
-    script_path = os.path.join(PACKAGE_PATH, upgrade_package_basename, "dp_install.sh")
+    script_path = os.path.join(PACKAGE_PATH, upgrade_package_basename, "dpserver", "dp_install.sh")
     logger.info(f"script path is {script_path}")
     # dpserver升级脚本特殊性：1. 本身位于共享nfs里，2. 需要root权限执行
     # 针对上述特殊性：需要防止admin用户被窃后，更换升级脚本，并用root执行，高权限破坏系统。

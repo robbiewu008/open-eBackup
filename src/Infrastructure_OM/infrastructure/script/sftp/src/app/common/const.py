@@ -34,6 +34,7 @@ class CustomErrorCode(object):
     delete_nonexistent_user = "400141"
     umount_failed = "400151"
     ssh_process_not_exist = "400161"
+    password_policy_modify_failed = "400171"
 
 
 class SftpConst:

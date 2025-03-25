@@ -158,6 +158,7 @@ class UpgradeSimbaOSRequest(BaseModel):
 class SimbaOSNodeRole(BaseModel):
     name: str
     role: str
+    internal_ip: str
 
 
 class GetSimbaosStatusResponse(BaseModel):
@@ -167,6 +168,7 @@ class GetSimbaosStatusResponse(BaseModel):
 
 
 class PreinstallDataProtectRequest(BaseModel):
+    deploy_type: str
     image_package_name: str
 
 
@@ -187,6 +189,7 @@ class UpgradeDataProtectRequest(BaseModel):
     chart_package_name: str
     master_replicas: int
     worker_replicas: int
+    device_type: str
 
 
 class InstallDataBackupRequest(BaseModel):
@@ -210,6 +213,8 @@ class DataBackupExpandDataBackupRequest(BaseModel):
     node1: str
     node2: str
     node3: str
+    float_ip: str
+    gateway_ip: str
 
 
 class GetDataProtectStatusResponse(BaseModel):
@@ -228,3 +233,10 @@ class RequestUpgradeDpserver(BaseModel):
 class GetVersion(BaseModel):
     version: str
 
+class UpgradeStateCheck(BaseModel):
+    ip: str
+    user_name: str
+    password: str
+
+class UpgradeDatabackup(UpgradeStateCheck):
+    pass

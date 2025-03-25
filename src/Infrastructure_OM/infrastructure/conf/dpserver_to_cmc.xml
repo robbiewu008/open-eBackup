@@ -11,7 +11,7 @@
         <isClear>N</isClear>
         <copies>
             <copy>
-                <source>*.tar.gz</source>
+                <source>*.zip</source>
                 <dest>/${CODE_BRANCH}</dest>
             </copy>
         </copies>
@@ -28,7 +28,7 @@
             <copies>
                 <copy>
                     <source>/${CODE_BRANCH}</source>
-                    <dest>*.tar.gz</dest>
+                    <dest>*.zip</dest>
                 </copy>
             </copies>
         </dependency>

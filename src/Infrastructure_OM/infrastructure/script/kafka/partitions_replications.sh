@@ -43,7 +43,7 @@ for TOPIC in $TOPICS; do
   echo "Modify topic replication factor $TOPIC to $NEW_REPLICATION_FACTOR"
 
   # Make up topics-to-move.json
-  cat << EOF > $TOPIC_JSON
+  cat <<EOF >$TOPIC_JSON
   {
     "topics": [
       {
@@ -55,7 +55,7 @@ for TOPIC in $TOPICS; do
 EOF
 
   # Set up reassignment.json
-  cat << EOF > $REPLICATION_PLAN_JSON
+  cat <<EOF >$REPLICATION_PLAN_JSON
   {
     "version": 1,
     "partitions": [

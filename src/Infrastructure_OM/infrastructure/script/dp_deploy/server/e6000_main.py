@@ -236,11 +236,23 @@ def worker_dpserver_loop(address):
 
 def dpserver_main(address):
     while True:
-        if is_master():
-            manager_dpserver_loop(address)
-        else:
-            worker_dpserver_loop(address)
+        address = get_om_ip_from_network_config()
+        if address:
+            if is_master():
+                manager_dpserver_loop(address)
+            else:
+                worker_dpserver_loop(address)
         time.sleep(consts.SLEEP_TIME)
+
+
+def get_om_ip_from_network_config():
+    if not os.path.isfile(consts.PACIFIC_NETWORK_CONFIG):
+        return None
+    with open(consts.PACIFIC_NETWORK_CONFIG, 'r') as networkd_conf:
+        for line in networkd_conf:
+            if line.startswith('om_ip'):
+                return line.split('=')[1].strip()
+    return None
 
 
 def e6000_main(args):

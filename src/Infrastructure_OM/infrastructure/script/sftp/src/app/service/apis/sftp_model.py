@@ -105,8 +105,10 @@ def run_api_server():
             log.error("host ip is None")
             os._exit(1)
         pod_port = K8sConst.PORT
-        res = subprocess.run(shlex.split("iptables -L -n --line-number"), capture_output=True, text=True)
-        if str(pod_port) not in res.stdout:
+        # 执行 iptables -C 检查规则是否已存在
+        check_command = f"iptables -C INPUT -p tcp --dport {pod_port} -j ACCEPT"
+        command_res = subprocess.run(shlex.split(check_command), capture_output=True, text=True)
+        if command_res.returncode != 0:
             res = subprocess.run(shlex.split("iptables -A INPUT -p tcp --dport %s -j ACCEPT" % pod_port),
                                  capture_output=True, text=True)
             if str(res.returncode) != '0':

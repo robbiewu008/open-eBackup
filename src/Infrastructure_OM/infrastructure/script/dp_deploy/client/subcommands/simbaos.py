@@ -6,8 +6,9 @@ from jinja2 import Template
 
 from dataprotect_deployment.client_manager import ClientManager
 from config import Config, SimbaOSConfigGenerator, PacificNode, SimbaOSNode
-from config import SimbaOSRole
+from config import SimbaOSRole, DataBackupConfig
 from concurrent.futures import ThreadPoolExecutor
+from client_exception import TooManyNodesToExpandException
 
 
 def get_status(client_mgr: ClientManager):
@@ -18,7 +19,7 @@ def get_status(client_mgr: ClientManager):
 def install(
         config: Config,
         client_mgr: ClientManager,
-        nodes: [PacificNode]
+        nodes: List[PacificNode]
 ):
     master_cli = client_mgr.get_primary_fsm_client()
     pcli = client_mgr.pacific_client
@@ -164,7 +165,7 @@ def get_expected_simbaos_master_cnt(servers: List[PacificNode]) -> int:
     elif server_cnt <= 32:
         expected_simbaos_master_cnt = 5
     else:
-        raise Exception('Too much nodes, at most 32 nodes is supported')
+        raise TooManyNodesToExpandException
     return expected_simbaos_master_cnt
 
 
@@ -191,8 +192,8 @@ def select_new_simabos_masters(
 
 def expand(
         client_mgr: ClientManager,
-        added_servers: [PacificNode],
-        current_servers: [PacificNode],
+        added_servers: List[PacificNode],
+        current_servers: List[PacificNode],
         simbaos_package_name: str
 ):
     """
@@ -266,7 +267,7 @@ def get_base64_encoded_config(template, **kwargs):
 
 
 class SimbaosManager:
-    def __init__(self, config, template_dict, **kwargs):
+    def __init__(self, config: DataBackupConfig, template_dict, **kwargs):
         self.config = config
         self.template_dict = template_dict
         self.priliminary_client = self.config.preliminary_node.dpclient
@@ -327,3 +328,22 @@ class SimbaosManager:
     def get_status(self):
         status = self.priliminary_client.simbaos_get_status()
         return status
+
+    def get_dataprotect_status(self):
+        status = self.priliminary_client.dataprotect_status()
+        return status
+    
+    def simbaos_pre_upgrade(self, cert_type: str):
+        log.info(f"Start to upgrade simbaos")
+        self.priliminary_client.simbaos_preupgrade(self.config.simbaos_package_path, self.config.preliminary_node.ip, cert_type)
+        log.info(f"Successfully upgrade simbaos")
+    
+    def simbaos_upgrade(self, cert_type: str):
+        log.info(f"Start to upgrade simbaos")
+        self.priliminary_client.simbaos_upgrade(cert_type)
+        log.info(f"Successfully upgrade simbaos")
+
+    def simbaos_post_upgrade(self):
+        log.info(f"Start to upgrade simbaos")
+        self.priliminary_client.simbaos_postupgrade(self.config.simbaos_package_path, self.config.preliminary_node.ip)
+        log.info(f"Successfully upgrade simbaos")

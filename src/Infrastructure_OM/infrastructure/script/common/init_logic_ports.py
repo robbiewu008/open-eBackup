@@ -277,10 +277,16 @@ class DMClient:
             'PORTTYPE': port_type,
             'PORTID': port_id
         }
-        res_create_vlan = self.send_request(url, 'POST', body=body)[0]
-        if not res_create_vlan:
-            logger.error(f'Failed to create the vlan for port id: {port_id}')
-            return res_create_vlan
+        # 检查指定的 portId 是否已经存在，并创建相应的 VLAN
+        found_vlan = next((vlan for vlan in self.query_vlan_port() if vlan.get("PORTID") == str(port_id)), None)
+        if found_vlan:
+            logger.info(f'VLAN with TAG {tag} already exists for port id: {found_vlan.get("PORTID")}')
+            return found_vlan
+        else:
+            res_create_vlan = self.send_request(url, 'POST', body=body)[0]
+            if not res_create_vlan:
+                logger.error(f'Failed to create the vlan for port id: {port_id}')
+                return res_create_vlan
         if mtu:
             # 底座未提供创建的时候带入mtu最大传输单元参数，需要修改来适配
             url_update = f'/vlan/{res_create_vlan.get("ID")}'
@@ -436,7 +442,8 @@ class DMClient:
             'NAME': lif_info.name,
             'HOMEPORTID': selected_eth_port,
             'ROLE': 11,
-            'HOMEPORTTYPE': int(lif_info.home_port_type)
+            'HOMEPORTTYPE': int(lif_info.home_port_type),
+            'enableRouteSrc': '1'
         }
         if lif_info.address_family == LOGIC_PORT_FAMILY_IPV4:
             body['ADDRESSFAMILY'] = int(LOGIC_PORT_FAMILY_IPV4)
@@ -597,6 +604,8 @@ class DMClient:
                         eth_port_list = [int(port_id) for port_id in json.loads(eth_port_list_str)]
                         for eth_port_id in eth_port_list:
                             eth_port = self.query_eth_port_id(eth_port_id)
+                            if eth_port == None:
+                                continue
                             if eth_port.get('HEALTHSTATUS') == ETH_HEALTH_STATUS and \
                                eth_port.get('RUNNINGSTATUS') == ETH_CONNECTED_STATUS and \
                                eth_port.get('OWNINGCONTROLLER') == cur_controller:
@@ -609,6 +618,8 @@ class DMClient:
                         eth_port_list = [int(port_id) for port_id in json.loads(eth_port_list_str)]
                         for eth_port_id in eth_port_list:
                             eth_port = self.query_eth_port_id(eth_port_id)
+                            if eth_port == None:
+                                continue
                             if eth_port.get('HEALTHSTATUS') == ETH_HEALTH_STATUS and \
                                eth_port.get('RUNNINGSTATUS') == ETH_CONNECTED_STATUS and \
                                eth_port.get('OWNINGCONTROLLER') == cur_controller:

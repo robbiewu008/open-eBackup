@@ -8,25 +8,25 @@ KEY_STORE_DIR=/opt/OceanProtect/protectmanager/kmc
 DECRYP_TOOL=/usr/bin/restclient
 
 # cp internal.crt.pem
-if [ -f "${DATA_PATH}/internal.crt.pem" ];then
-    rm ${DATA_PATH}/internal.crt.pem
+if [ -f "${DATA_PATH}/internal.crt.pem" ]; then
+  rm ${DATA_PATH}/internal.crt.pem
 fi
 cp ${INTER_CERT_PATH}/internal.crt.pem ${DATA_PATH}
 check_result "$?" "${LINENO} cp internal.crt.pem"
 
 # cp internal.pem
-if [ -f "${DATA_PATH}/internal.pem" ];then
-    rm ${DATA_PATH}/internal.pem
+if [ -f "${DATA_PATH}/internal.pem" ]; then
+  rm ${DATA_PATH}/internal.pem
 fi
 cp ${INTER_CERT_PATH}/internal.pem ${DATA_PATH}
 check_result "$?" "${LINENO} cp internal.pem"
 
 # 删除密文文件和加密因子，适配证书替换
-if [ -f "${DATA_PATH}/server.key.cipher" ];then
-    rm ${DATA_PATH}/server.key.cipher
+if [ -f "${DATA_PATH}/server.key.cipher" ]; then
+  rm ${DATA_PATH}/server.key.cipher
 fi
-if [ -f "${DATA_PATH}/server.key.rand" ];then
-    rm ${DATA_PATH}/server.key.rand
+if [ -f "${DATA_PATH}/server.key.rand" ]; then
+  rm ${DATA_PATH}/server.key.rand
 fi
 
 # 修改属主和权限
@@ -41,8 +41,8 @@ check_result "$?" "${LINENO} chmod 600 internal.pem"
 
 # 修改pg_hba.conf
 result=$(cat /usr/local/gaussdb/data/pg_hba.conf | grep "^hostssl")
-if [ -z "${result}" ];then
-    sed -i "s/^host/hostssl/g" /usr/local/gaussdb/data/pg_hba.conf
+if [ -z "${result}" ]; then
+  sed -i "s/^host/hostssl/g" /usr/local/gaussdb/data/pg_hba.conf
 fi
 
 log_info "Starting configure the certificate."

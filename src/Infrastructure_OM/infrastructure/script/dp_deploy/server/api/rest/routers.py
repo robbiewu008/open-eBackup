@@ -23,3 +23,4 @@ def databackup_register(api):
     api.include_router(prepare_rest_handler.databackup_router, prefix=EXTERNAL_PREFIX)
     api.include_router(package_rest_handler.databackup_router, prefix=EXTERNAL_PREFIX)
     api.include_router(application_rest_handler.databackup_router, prefix=EXTERNAL_PREFIX)
+    api.include_router(upgrade_rest_handler.external_router, prefix=EXTERNAL_PREFIX)

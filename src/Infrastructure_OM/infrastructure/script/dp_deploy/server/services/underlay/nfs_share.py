@@ -13,6 +13,7 @@ from server.schemas.request import AuthBase, CreateNamespaceRequest, CreateNFSSh
     GetNFSClientResponse, DeleteNFSShareRequest, DeleteNFSClientRequest, DeleteNamespaceRequest
 from server.common.exter import exter_attack
 from server.common import mount, consts
+from server.common.get_auth_token import get_auth_token
 from fastapi import Header, HTTPException
 
 
@@ -23,10 +24,16 @@ def get_service_float_ip() -> str:
                 return line.split('=')[1].strip()
 
 
-def verify_token(x_auth_token: str = Header(default=None)):
-    if x_auth_token is None:
-        raise HTTPException(status_code=400)
+def verify_token(x_auth_token: str = Header(default=None), ip: str = Header(default=None),
+                 op_admin_user: str = Header(default=None), op_admin_pwd: str = Header(default=None)):
+    logger.info("Begin to verify token in E6000 dpserver")
     service_float_ip = get_service_float_ip()
+    if x_auth_token is None:
+        re, x_auth_token = get_auth_token(service_float_ip, op_admin_user, op_admin_pwd)
+        if re:
+            logger.info(f"Login through sysadmin user, {op_admin_user}")
+            return
+        raise HTTPException(status_code=400)
     url = f"https://{service_float_ip}:8088/api/v2/aa/current_session"
     headers = {
         "X-Auth-Token": x_auth_token
@@ -293,20 +300,20 @@ def get_secondary_float_ip(token):
 
 @exter_attack
 def get_hostname():
-    return platform.node()
+    with open('/etc/hostname') as f:
+        return f.read().strip()
 
 
 @exter_attack
-def get_interface_from_ip(ip):
-    cmd1 = f"ifconfig"
-    cmd2 = f"grep -B1 {ip}"
-    cmd3 = f"grep -o \"^\\w*\""
-    has_error, out = exec_cmds_with_pipe(cmd1, cmd2, cmd3)
-    if has_error:
-        logger.error(f"Failed to get ip {ip} correspond network interface card.")
-    logger.info(F"Successfully get ip {ip} correspond network interface card.")
-    return has_error, out
-
+def get_interface_from_ip(ip:str):
+    cmd = f"ifconfig | grep -B1 {ip}"
+    try:
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
+    except subprocess.CalledProcessError as e:
+        logger.info(F"Successfully get ip {ip} correspond network interface card.")
+        return 1, e
+    ip_name = result.stdout.split(":", 1)[0]
+    return 0, ip_name
 
 @exter_attack
 def umount():

@@ -1,9 +1,11 @@
+from genericpath import isdir
 import os
 import re
 import time
 import pexpect
 import sys
 import paramiko
+import glob
 
 from server.common.exec_cmd import exec_cmd, exec_cmds_with_pipe, KUBECT_TIMEOUIT, ssh_exec_cmd
 from server.common.consts import *
@@ -16,6 +18,7 @@ from server.common.anonymity import Anonymity
 from server.common.exter import exter_attack
 from server.services.appinstall import simbaos_upgrade
 
+EXECUTION_TIME = 2100
 
 @exter_attack
 def simbaos_preinstall(req: InstallSmartkubeRequest, script_path):
@@ -87,9 +90,16 @@ def get_simbaos_status():
         )
         role_list = ['master' if 'master' in role else 'worker' for role in roles.split("\n")]
 
+        _, internal_ips= exec_cmds_with_pipe(
+            'kubectl get nodes -owide',
+            "awk {'if (NR>1) print $6'}",
+            timeout=KUBECT_TIMEOUIT
+        )
+        internal_ip_list: list[str] = internal_ips.split("\n")
+
         node_role_list = [
-            {"name": name, "role": role}
-            for name, role in zip(name_list, role_list)
+            {"name": name, "role": role, "internal_ip": internal_ip}
+            for name, role, internal_ip in zip(name_list, role_list, internal_ip_list)
         ]
         return COMMAND_SUCCESS, version, node_role_list
     logger.info(f"Simbaos does not exist.")
@@ -141,8 +151,19 @@ def syn_cert(req: SynchronizeCertRequest):
     src = MICRO_SERVER_CERT_TAR_PATH
     des = MICRO_SERVER_CERT_TAR_PATH
 
-    cmd = (f"tar zcvf {MICRO_SERVER_CERT_TAR_PATH} -C {LOCAL_PV_BASE_PATH} "
-           f"comm-data/infrastructure comm-data/protectmanager")
+    cert_dirs = [
+        "comm-data/infrastructure",
+        "comm-data/protectmanager",
+    ]
+    optional_cert_dirs = [
+        "pm_nas/agent/keyfile",
+        "pm_nas2/agent/keyfile",
+    ]
+    for d in optional_cert_dirs:
+        if os.path.isdir(os.path.join(LOCAL_PV_BASE_PATH, d)):
+            cert_dirs.append(d)
+
+    cmd = (f"tar zcvf {MICRO_SERVER_CERT_TAR_PATH} -C {LOCAL_PV_BASE_PATH} " + ' '.join(cert_dirs))
     exec_cmd(cmd)
 
     client = paramiko.SSHClient()
@@ -157,6 +178,10 @@ def syn_cert(req: SynchronizeCertRequest):
         ssh_exec_cmd(client, cmd1)
         ssh_exec_cmd(client, cmd2)
         ssh_exec_cmd(client, cmd3)
+        if os.path.isdir(f"{LOCAL_PV_BASE_PATH}/pm_nas/agent/keyfile"):
+            ssh_exec_cmd(client, f"chown -R 99:99 {LOCAL_PV_BASE_PATH}/pm_nas")
+        if os.path.isdir(f"{LOCAL_PV_BASE_PATH}/pm_nas2/agent/keyfile"):
+            ssh_exec_cmd(client, f"chown -R 99:99 {LOCAL_PV_BASE_PATH}/pm_nas2")
         logger.info(f"Successfully syn cert")
     except Exception as e:
         logger.error(f"Failed to syn cert, error: {Anonymity.process(str(e))}")
@@ -171,7 +196,7 @@ def syn_cert(req: SynchronizeCertRequest):
 @exter_attack
 def dataprotect_preinstall(req: PreinstallDataProtectRequest):
     script_path = os.path.join(SCRIPTS_PATH, "dataprotect", "preinstall.sh")
-    command = f'sh {script_path} {req.image_package_name}'
+    command = f'sh {script_path} {req.image_package_name} {req.deploy_type}'
     has_issue, stdout, stderr = exec_cmd(command, timeout=DATAPROTECT_INSTALL_WAIT_TIMEOUT)
     if has_issue:
         logger.error(
@@ -241,7 +266,8 @@ def expand_dataprotect(req: ExpandDataBackupRequest, script_path):
 
 @exter_attack
 def databackup_expand_dataprotect(req: DataBackupExpandDataBackupRequest, script_path):
-    command = f'sh {script_path} {req.chart_package_name} {req.replicas} {req.node1} {req.node2} {req.node3}'
+    command = (f'sh {script_path} {req.chart_package_name} {req.replicas} {req.node1} {req.node2} {req.node3} '
+               f'{req.float_ip} {req.gateway_ip}')
     has_issue, stdout, stderr = exec_cmd(command, timeout=DATAPROTECT_INSTALL_WAIT_TIMEOUT)
     if has_issue:
         return COMMAND_FAILED, f"Expand dataprotect failed, stdout is {stdout}, stderr is {stderr}."
@@ -250,9 +276,27 @@ def databackup_expand_dataprotect(req: DataBackupExpandDataBackupRequest, script
 
 @exter_attack
 def upgrade_dataprotect(req: UpgradeDataProtectRequest):
-    cmd = (f"sudo helm upgrade dataprotect {req.chart_package_name} --set global.master_replicas={req.master_replicas} "
-           f"--set global.worker_replicas={req.worker_replicas} --set global.deploy_type=d7")
-    has_issue, stdout, stderr = exec_cmd(cmd)
+    if req.chart_package_name.endswith(".tgz"):
+        req.chart_package_name = req.chart_package_name[:-4]
+    base_path = os.path.join("/opt/DataBackup/packages/", req.chart_package_name)
+
+    file = glob.glob(os.path.join(base_path, "databackup*.tgz"))
+    logger.info(f"Begin to upgrade the dataprotect, upgrade path is {file}")
+    if req.device_type == "e6000":
+        cmd = (
+            f"sudo helm upgrade --timeout 30m --atomic dataprotect {file[0]} "
+            f"--set global.master_replicas={req.master_replicas} "
+            f"--set global.worker_replicas={req.worker_replicas} --set global.deploy_type=d7"
+            )
+    else:
+        cmd = (
+            f"sudo helm upgrade --timeout 30m --atomic dataprotect {file[0]} "
+            f"--set global.replicas={req.worker_replicas} --set global.deploy_type=d8"
+            )
+        if req.worker_replicas != 1:
+            cmd += f" --set global.cluster_enable=true "
+    logger.info(f"Begin to execute the cmd: {cmd}")
+    has_issue, stdout, stderr = exec_cmd(cmd, EXECUTION_TIME)
     if has_issue:
         return COMMAND_FAILED, f"Upgrade dataprotect failed, stdout is {stdout}, stderr is {stderr}."
     return COMMAND_SUCCESS, f"Upgrade dataprotect successfully."

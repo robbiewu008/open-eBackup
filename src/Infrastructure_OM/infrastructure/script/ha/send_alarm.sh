@@ -38,17 +38,16 @@ declare peer_ha_name=$9
 # 脚本的入参个数
 declare -i PARAM_NUM=9
 
-declare script_name=`basename $0`
+declare script_name=$(basename $0)
 
 #####################################################################
 ## @Usage log
 ## @Return 0
 ## @Description 记录到日志
 #####################################################################
-log()
-{
-    local log_level="$1" && shift
-    echo `date` "${log_level}:" "$*($$)"
+log() {
+  local log_level="$1" && shift
+  echo $(date) "${log_level}:" "$*($$)"
 }
 
 #####################################################################
@@ -56,13 +55,12 @@ log()
 ## @Return 0
 ## @Description 检查参数是否合法
 #####################################################################
-function check_param()
-{
-    if [ $# -ne $PARAM_NUM ]; then
-        log "ERROR" "param num is not corrent"
-        return 1
-    fi
-    return 0
+function check_param() {
+  if [ $# -ne $PARAM_NUM ]; then
+    log "ERROR" "param num is not corrent"
+    return 1
+  fi
+  return 0
 }
 
 #####################################################################
@@ -70,74 +68,74 @@ function check_param()
 ## @Return 0
 ## @Description 根据事件ID，处理相应的事件
 #####################################################################
-function process_event()
-{
-    case $event_id in
-        0)
-            # 处理心跳中断告警
-            if [ $event_type == 0 ];then
-            log "$WARN" "${FUNCNAME[0]}" "$LINENO" "create EVENT_HA_HEARTBEAT_LOST alarm"
-            process_ha_alarm "create" "EVENT_HA_HEARTBEAT_LOST" $G_RESOURCE_NAME
-            else
-            log "$WARN" "${FUNCNAME[0]}" "$LINENO" "recover EVENT_HA_HEARTBEAT_LOST alarm"
-            process_ha_alarm "recover" "EVENT_HA_HEARTBEAT_LOST" $G_RESOURCE_NAME
-            fi
-            exit 0
-            ;;
-        1)
-            # 处理数据同步失败告警
-            if [ $event_type == 0 ];then
-            log "$WARN" "${FUNCNAME[0]}" "$LINENO" "create EVENT_HA_FILE_SYNC_FAILED alarm"
-            process_ha_alarm "create" "EVENT_HA_FILE_SYNC_FAILED" $G_RESOURCE_NAME
-            else
-            log "$WARN" "${FUNCNAME[0]}" "$LINENO" "recover EVENT_HA_FILE_SYNC_FAILED alarm"
-            process_ha_alarm "recover" "EVENT_HA_FILE_SYNC_FAILED" $G_RESOURCE_NAME
-            fi
-            exit 0
-            ;;
-        2)
-            # 处理主备倒换事件
-            log "$WARN" "${FUNCNAME[0]}" "$LINENO" "create EVENT_HA_SWITCH event"
-            process_ha_alarm "event" "EVENT_HA_SWITCH" $G_RESOURCE_NAME
-            exit 0
-            ;;
-        3)
-            # 处理单机重启事件
-            exit 0
-            ;;
-        4)
-            # 处理链路中断告警
-            exit 0
-            ;;
-        5)
-            # 处理网络中断事件
-            exit 0
-            ;;
-		    6)
-            # 处理网关不通告警
-            if [ $event_type == 0 ];then
-            log "$WARN" "${FUNCNAME[0]}" "$LINENO" "create EVENT_HA_GATEWAY_CANNOT_REACH alarm"
-            process_ha_alarm "create" "EVENT_HA_GATEWAY_CANNOT_REACH" $G_RESOURCE_NAME
-            else
-            log "$WARN" "${FUNCNAME[0]}" "$LINENO" "recover EVENT_HA_GATEWAY_CANNOT_REACH alarm"
-            process_ha_alarm "recover" "EVENT_HA_GATEWAY_CANNOT_REACH" $G_RESOURCE_NAME
-            fi
-            exit 0
-            ;;
-        *)
-            exit 1
-            ;;
-    esac
+function process_event() {
+  case $event_id in
+  0)
+    # 处理心跳中断告警
+    if [ $event_type == 0 ]; then
+      log "$WARN" "${FUNCNAME[0]}" "$LINENO" "create EVENT_HA_HEARTBEAT_LOST alarm"
+      process_ha_alarm "create" "EVENT_HA_HEARTBEAT_LOST" $G_RESOURCE_NAME
+    else
+      log "$WARN" "${FUNCNAME[0]}" "$LINENO" "recover EVENT_HA_HEARTBEAT_LOST alarm"
+      process_ha_alarm "recover" "EVENT_HA_HEARTBEAT_LOST" $G_RESOURCE_NAME
+    fi
+    exit 0
+    ;;
+  1)
+    # 处理数据同步失败告警
+    if [ $event_type == 0 ]; then
+      log "$WARN" "${FUNCNAME[0]}" "$LINENO" "create EVENT_HA_FILE_SYNC_FAILED alarm"
+      process_ha_alarm "create" "EVENT_HA_FILE_SYNC_FAILED" $G_RESOURCE_NAME
+    else
+      log "$WARN" "${FUNCNAME[0]}" "$LINENO" "recover EVENT_HA_FILE_SYNC_FAILED alarm"
+      process_ha_alarm "recover" "EVENT_HA_FILE_SYNC_FAILED" $G_RESOURCE_NAME
+    fi
+    exit 0
+    ;;
+  2)
+    # 处理主备倒换事件
+    log "$WARN" "${FUNCNAME[0]}" "$LINENO" "create EVENT_HA_SWITCH event"
+    process_ha_alarm "event" "EVENT_HA_SWITCH" $G_RESOURCE_NAME
+    exit 0
+    ;;
+  3)
+    # 处理单机重启事件
+    exit 0
+    ;;
+  4)
+    # 处理链路中断告警
+    exit 0
+    ;;
+  5)
+    # 处理网络中断事件
+    exit 0
+    ;;
+  6)
+    # 处理网关不通告警
+    if [ $event_type == 0 ]; then
+      log "$WARN" "${FUNCNAME[0]}" "$LINENO" "create EVENT_HA_GATEWAY_CANNOT_REACH alarm"
+      process_ha_alarm "create" "EVENT_HA_GATEWAY_CANNOT_REACH" $G_RESOURCE_NAME
+    else
+      log "$WARN" "${FUNCNAME[0]}" "$LINENO" "recover EVENT_HA_GATEWAY_CANNOT_REACH alarm"
+      process_ha_alarm "recover" "EVENT_HA_GATEWAY_CANNOT_REACH" $G_RESOURCE_NAME
+    fi
+    exit 0
+    ;;
+  *)
+    exit 1
+    ;;
+  esac
 }
 
-function main()
-{
-    check_param "$@" || { exit 1; }
-    process_event "$@"; ret=$?
-    return $ret
+function main() {
+  check_param "$@" || { exit 1; }
+  process_event "$@"
+  ret=$?
+  return $ret
 }
 
 log "begin execute $script_name"
-main "$@";ret=$?
+main "$@"
+ret=$?
 log "finish execute $script_name, result is $ret"
 exit $ret

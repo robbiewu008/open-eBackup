@@ -1,4 +1,5 @@
 import subprocess as sp
+import shlex
 import os
 import socket
 import time
@@ -14,7 +15,8 @@ CMD_TIMEOUT = 10
 
 def check_mount(*paths):
     for path in paths:
-        cmd = sp.run(f'mountpoint -q {path}', timeout=CMD_TIMEOUT, shell=True)
+        args = shlex.split(f'mountpoint -q {path}')
+        cmd = sp.run(args, timeout=CMD_TIMEOUT)
         if cmd.returncode != 0:
             return False
     return True
@@ -22,15 +24,16 @@ def check_mount(*paths):
 
 def umount(*paths):
     for path in paths:
-        sp.run(f'umount -l {path}', timeout=CMD_TIMEOUT, shell=True)
+        args = shlex.split(f'umount -l {path}')
+        sp.run(args, timeout=CMD_TIMEOUT)
 
 
 def mount(path, namespace):
     umount(path)
+    args = shlex.split(f'mount -t nfs -o nosuid,nodev,noexec,nolock,soft 127.0.0.1:/{namespace} {path}')
     r = sp.run(
-        f'mount -t nfs -o nosuid,nodev,noexec,nolock,soft 127.0.0.1:/{namespace} {path}',
-        timeout=CMD_TIMEOUT,
-        shell=True
+        args,
+        timeout=CMD_TIMEOUT
     )
     r.check_returncode()
 
