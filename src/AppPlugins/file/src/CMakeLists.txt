@@ -144,3 +144,5 @@ if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
         boost_log
         boost_date_time
     )
+
+endif()
