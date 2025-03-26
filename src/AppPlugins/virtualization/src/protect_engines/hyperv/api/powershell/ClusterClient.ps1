@@ -70,8 +70,8 @@ function get_host_list_from_cluster() {
         ConvertTo-Csv | ConvertFrom-Csv
     )
     $ipInfo = Get-ClusterNetworkInterface | Select-Object Node,Address
-    $domainName = ([ADSI]'').Name
-    $domain = $domainName.ToString() + ".com"
+    $domainName = (Get-WmiObject Win32_ComputerSystem).Domain
+    $domain = $domainName.ToString()
     foreach ($node in $result) {
         $nodeName = $node.Name + "." + $domain
         $node | Add-Member -MemberType NoteProperty -Name 'NodeName' -Value $nodeName
@@ -106,7 +106,12 @@ function add_cluster {
 
 function get_cluster_shared_volume {
     param ([string]$action, [string]$uuid)
-    $result = Get-ClusterSharedVolume | Select-Object -ExpandProperty SharedVolumeInfo | Select-Object FriendlyVolumeName
+    try {
+        $result = Get-ClusterSharedVolume | Select-Object -ExpandProperty SharedVolumeInfo | Select-Object FriendlyVolumeName
+    } catch {
+        ERRLOG("Run get_cluster_shared_volume failed")
+        $result = {}
+    }
     $result = format_result $result
     $write_result = write_result_file $uuid $result
     return $write_result

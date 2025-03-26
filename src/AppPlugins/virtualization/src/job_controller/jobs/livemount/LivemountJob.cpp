@@ -211,26 +211,30 @@ void LivemountJob::SubJobStateInit()
         std::bind(&LivemountJob::ExecuteSubJobPreHook, this);
     m_stateHandles[static_cast<int>(VirtPlugin::State::STATE_EXECJOB_INITIALIZE)] =
         std::bind(&LivemountJob::SubTaskInitialize, this);
+    m_stateHandles[static_cast<int>(VirtPlugin::State::STATE_EXECJOB_CHECK_BEFORE_MOUNT)] =
+        std::bind(&LivemountJob::CheckBeforeMount, this);
     m_stateHandles[static_cast<int>(VirtPlugin::State::STATE_EXECJOB_RESTORE_VOLUME)] =
         std::bind(&LivemountJob::SubTaskExecute, this);
     m_stateHandles[static_cast<int>(VirtPlugin::State::STATE_EXECJOB_POWERON_MACHINE)] =
         std::bind(&LivemountJob::SubJobPowerOnMachine, this);
+    m_stateHandles[static_cast<int>(VirtPlugin::State::STATE_EXECJOB_RENAME_MACHINE)] =
+        std::bind(&LivemountJob::SubJobRenameMachine, this);
     m_stateHandles[static_cast<int>(VirtPlugin::State::STATE_EXECJOB_POSTHOOK)] =
         std::bind(&LivemountJob::ExecuteSubJobPostHook, this);
 }
 
 int LivemountJob::SubTaskInitialize()
 {
-    m_nextState = static_cast<int>(VirtPlugin::State::STATE_EXECJOB_RESTORE_VOLUME);
+    m_nextState = static_cast<int>(VirtPlugin::State::STATE_EXECJOB_CHECK_BEFORE_MOUNT);
     DBGLOG("extendInfo %s extendInfo, copy %s copy", m_liveMountPara->extendInfo.c_str(),
         m_liveMountPara->copy.extendInfo.c_str());
+    m_protectEngine->SetLiveMountType(LivemountType::MOUNT);
     Json::Value advancePara;
     if (!Module::JsonHelper::JsonStringToJsonValue(m_liveMountPara->extendInfo, advancePara)) {
         ERRLOG("Convert %s failed, %s", m_liveMountPara->jobParam.advanceParams.c_str(),
             m_taskInfo.c_str());
         return FAILED;
     }
-
     if (!LoadMetaData()) {
         ERRLOG("Load meta data failed, %s", m_taskInfo.c_str());
         return FAILED;
@@ -250,15 +254,29 @@ int LivemountJob::SubTaskInitialize()
     return FAILED;
 }
 
+int LivemountJob::CheckBeforeMount()
+{
+    INFOLOG("Enter");
+    m_nextState = static_cast<int>(VirtPlugin::State::STATE_EXECJOB_RESTORE_VOLUME);
+    if (m_protectEngine->CheckBeforeMount() != SUCCESS) {
+        ERRLOG("Check before recover failed, %s", m_taskInfo.c_str());
+        ReportJobDetailWithErrorParams();
+        return FAILED;
+    }
+    std::string whiteListIpStr;
+    if (m_protectEngine->GetWhiteListForLivemount(whiteListIpStr) != SUCCESS) {
+        ERRLOG("GetWhiteListForLivemount, %s", m_taskInfo.c_str());
+        ReportJobDetailWithErrorParams();
+        return FAILED;
+    }
+    return AddWhiteList(whiteListIpStr) ? SUCCESS : FAILED;
+}
+
 int LivemountJob::SubTaskExecute()
 {
     m_nextState = static_cast<int>(VirtPlugin::State::STATE_EXECJOB_POWERON_MACHINE);
     if (m_protectEngine == nullptr) {
         ERRLOG("ProtectEngine ptr null failed, %s", m_taskInfo.c_str());
-        return FAILED;
-    }
-    if (CheckBeforeMount() != SUCCESS) {
-        ERRLOG("CheckBeforeMount failed, %s", m_taskInfo.c_str());
         return FAILED;
     }
     int iRet = 0;
@@ -285,23 +303,6 @@ int LivemountJob::SubTaskExecute()
         iRet = m_protectEngine->MigrateLiveVolume(newVm);
     }
     return iRet;
-}
-
-int LivemountJob::CheckBeforeMount()
-{
-    INFOLOG("Enter");
-    if (m_protectEngine->CheckBeforeMount() != SUCCESS) {
-        ERRLOG("Check before recover failed, %s", m_taskInfo.c_str());
-        ReportJobDetailWithErrorParams();
-        return FAILED;
-    }
-    std::string whiteListIpStr;
-    if (m_protectEngine->GetWhiteListForLivemount(whiteListIpStr) != SUCCESS) {
-        ERRLOG("GetWhiteListForLivemount, %s", m_taskInfo.c_str());
-        ReportJobDetailWithErrorParams();
-        return FAILED;
-    }
-    return AddWhiteList(whiteListIpStr) ? SUCCESS : FAILED;
 }
 
 int LivemountJob::ReportCopy()
@@ -414,10 +415,29 @@ int LivemountJob::PowerOnMachine()
 int LivemountJob::SubJobPowerOnMachine()
 {
     INFOLOG("Enter");
-    m_nextState = static_cast<int>(VirtPlugin::State::STATE_EXECJOB_POSTHOOK);
+    m_nextState = static_cast<int>(VirtPlugin::State::STATE_EXECJOB_RENAME_MACHINE);
     int iRet = PowerOnMachine();
     ReportTaskLabel();
     return iRet;
+}
+
+int LivemountJob::SubJobRenameMachine()
+{
+    m_nextState = static_cast<int>(VirtPlugin::State::STATE_EXECJOB_POSTHOOK);
+    if (m_protectEngine == nullptr || m_liveMountPara == nullptr) {
+        ERRLOG("SubJobRenameMachine m_protectEngine nullptr, %s", m_taskInfo.c_str());
+        return FAILED;
+    }
+    Json::Value jobAdvancePara;
+    if (!Module::JsonHelper::JsonStringToJsonValue(m_liveMountPara->extendInfo, jobAdvancePara)) {
+        ERRLOG("Convert m_liveMountPara extendInfo failed, %s", m_jobId.c_str());
+        return FAILED;
+    }
+    // 即时恢复时该字段为vmName
+    std::string newName = jobAdvancePara.isMember("name") ? jobAdvancePara["name"].asString() : "";
+    m_protectEngine->RenameMachine(m_newVm, newName);
+    ReportTaskLabel();
+    return SUCCESS;
 }
 
 // --------------------------------------- Generate sub task-----------------------------------------------------------

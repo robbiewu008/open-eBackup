@@ -83,6 +83,7 @@ DISK_DEVICE_RETURN_CODE DiskDeviceFile::Open(const std::string &fileName, int ow
     m_diskSizeInBytes = volumeSize;
     m_diskDevicePath = realPath;
     m_readOnly = (owMode != O_WRONLY);
+    m_rereadTryTimes = Module::ConfigReader::getInt(Module::MS_CFG_BACKUPNODE_SECTION, "rereadTryTimes");
     DBGLOG("Vol path:%s, ReadOnly:%d", m_diskDevicePath.c_str(), m_readOnly);
     return DISK_DEVICE_OK;
 }
@@ -219,14 +220,14 @@ DISK_DEVICE_RETURN_CODE DiskDeviceFile::Read(uint64_t offsetInBytes, uint64_t &b
         WARNLOG("Read end of the file, offsetInBytes: %lld, m_diskSizeInBytes: %lld", offsetInBytes, m_diskSizeInBytes);
         return DISK_DEVICE_OVER_FLOW;
     }
-    int rereadTryTimes = Module::ConfigReader::getInt(Module::MS_CFG_BACKUPNODE_SECTION, "rereadTryTimes");
-    while (rereadTryTimes-- > 0) {
+    int32_t retryTimes = m_rereadTryTimes;
+    while (retryTimes-- > 0) {
         if (DoRead(offsetInBytes, bufferSizeInBytes, buffer) == DISK_DEVICE_OK) {
             return DISK_DEVICE_OK;
-        } else if (rereadTryTimes > 0) {
+        } else if (retryTimes > 0) {
             int backupRereadInteval =
                 Module::ConfigReader::getInt(Module::MS_CFG_BACKUPNODE_SECTION, "backupRereadInteval");
-            DBGLOG("get retry sleep timeout = %d", backupRereadInteval);
+            WARNLOG("get retry sleep timeout = %d", backupRereadInteval);
             std::this_thread::sleep_for(std::chrono::seconds(backupRereadInteval));
         } else {
             break;

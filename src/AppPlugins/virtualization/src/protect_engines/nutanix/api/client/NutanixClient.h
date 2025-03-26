@@ -43,6 +43,7 @@
 #include "model/DetachDiskRequest.h"
 #include "model/GetContainerResponse.h"
 #include "model/GetNetworkResponse.h"
+#include "model/DeleteVmRequest.h"
 
 using VirtPlugin::RestClient;
 using VirtPlugin::RequestInfo;
@@ -117,6 +118,7 @@ public:
     }
     int32_t Init(const ApplicationEnvironment& appEnv);
     NutanixErrorMsg GetErrorCode(void);
+    int32_t CheckAuth(GetClusterListRequest &req, int64_t &errorCode, std::string &errorDes);
 
 private:
     Authentication m_auth;

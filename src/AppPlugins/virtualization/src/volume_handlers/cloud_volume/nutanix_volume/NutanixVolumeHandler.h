@@ -92,6 +92,7 @@ private:
     bool FindAttachedDiskByNdfsPath(const NutanixVMInfo &agentVmiAfterAttach);
     bool FindAttachedDiskByTargetBusIndex(const NutanixVMInfo &agentVmiAfterAttach);
     bool SaveTmpVolumeInfoToFile();
+    int32_t GetAgentIp(std::string &strAgentIp);
 
 private:
     std::shared_ptr<NutanixClient> m_nutanixClient = nullptr;

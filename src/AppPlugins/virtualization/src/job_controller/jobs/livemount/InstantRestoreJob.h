@@ -28,6 +28,8 @@ public:
     EXTER_ATTACK virtual int ExecuteSubJob() override;
     EXTER_ATTACK virtual int PostJob() override;
 
+    bool InitHandlers() override;
+
 private:
     int PreInstantJobInner();
     void PreInitInstantStateHandles();
@@ -53,6 +55,8 @@ private:
     int PostJobPostHook();
     int SubJobPowerOnMachine();
     int PowerOnMachine();
+    int SubJobRenameMachine();
+    void WaitTimeForSystemReady();
 
 private:
     VMInfo m_newVm;

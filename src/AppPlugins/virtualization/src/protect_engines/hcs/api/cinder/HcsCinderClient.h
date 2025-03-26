@@ -33,9 +33,12 @@ public:
     std::string m_lunID;    // 快照 lunID
     std::string m_sn;       // 快照 sn
 
+    std::string m_snapName;    // 分布式快照名称
+
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_lunID, lun_id)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_sn, sn)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_snapName, snap_name)
     END_SERIAL_MEMEBER
 };
 

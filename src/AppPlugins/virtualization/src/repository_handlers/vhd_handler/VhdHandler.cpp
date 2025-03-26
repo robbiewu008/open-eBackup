@@ -76,6 +76,7 @@ int32_t VhdHandler::Open(const std::string &fileName, const std::string &mode)
 
 int32_t VhdHandler::Truncate(const uint64_t &size)
 {
+    ERRLOG("not realized, do not use this mothod");
     return SUCCESS;
 }
 
@@ -115,6 +116,7 @@ size_t VhdHandler::Read(std::shared_ptr<uint8_t[]> buf, size_t count)
 
 size_t VhdHandler::Read(std::string &buf, size_t count)
 {
+    ERRLOG("not realized, do not use this mothod");
     return SUCCESS;
 }
 
@@ -147,16 +149,19 @@ size_t VhdHandler::Write(const std::shared_ptr<uint8_t[]> &buf, size_t count)
 
 size_t VhdHandler::Write(const std::string &str)
 {
+    ERRLOG("not realized, do not use this mothod");
     return SUCCESS;
 }
 
 size_t VhdHandler::Append(std::shared_ptr<uint8_t[]> buf, size_t count)
 {
+    ERRLOG("not realized, do not use this mothod");
     return SUCCESS;
 }
 
 int64_t VhdHandler::Tell()
 {
+    ERRLOG("not realized, do not use this mothod");
     return SUCCESS;
 }
 
@@ -168,56 +173,67 @@ int64_t VhdHandler::Seek(size_t offset, int origin)
 
 size_t VhdHandler::FileSize(const std::string &fileName)
 {
+    ERRLOG("not realized, do not use this mothod");
     return SUCCESS;
 }
 
 bool VhdHandler::Flush(bool sync)
 {
+    ERRLOG("not realized, do not use this mothod");
     return true;
 }
 
 bool VhdHandler::Exists(const std::string &fileName)
 {
+    ERRLOG("not realized, do not use this mothod");
     return true;
 }
 
 bool VhdHandler::Rename(const std::string &oldName, const std::string &newName)
 {
+    ERRLOG("not realized, do not use this mothod");
     return true;
 }
 
 bool VhdHandler::CopyFile(const std::string &srcName, const std::string &destName)
 {
+    ERRLOG("not realized, do not use this mothod");
     return true;
 }
 
 bool VhdHandler::IsDirectory(const std::string& path)
 {
+    ERRLOG("not realized, do not use this mothod");
     return true;
 }
 
 bool VhdHandler::IsRegularFile(const std::string& path)
 {
+    ERRLOG("not realized, do not use this mothod");
     return true;
 }
 
 bool VhdHandler::Remove(const std::string &fileName)
 {
+    ERRLOG("not realized, do not use this mothod");
     return true;
 }
 
 bool VhdHandler::RemoveAll(const std::string &dirName)
 {
+    ERRLOG("not realized, do not use this mothod");
     return true;
 }
 
 bool VhdHandler::CreateDirectory(const std::string &dirName)
 {
+    ERRLOG("not realized, do not use this mothod");
     return true;
 }
 
 void VhdHandler::GetFiles(std::string pathName, std::vector <std::string> &files)
 {
+    ERRLOG("not realized, do not use this mothod");
     return;
 }
 }

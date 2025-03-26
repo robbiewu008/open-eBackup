@@ -39,7 +39,8 @@ const int32_t MILSECOND = 1000;
 namespace VirtPlugin {
 namespace Utils {
 const std::string INTERNAL_BACKUP_SCENCE = "1";
- 
+const int WSTR_LENTH = 2;
+
 int SaveToFile(const std::shared_ptr<RepositoryHandler> &repoHandler,
     const std::string &filename, const std::string &content)
 {
@@ -89,7 +90,7 @@ int ReadFile(const std::shared_ptr<RepositoryHandler> &repoHandler,
 {
     if (!repoHandler->Exists(filename)) {
         ERRLOG("Not exist file, filename[%s]", filename.c_str());
-        return SUCCESS;
+        return FAILED;
     }
     if (repoHandler->Open(filename, "r") != SUCCESS) {
         ERRLOG("Open file filed. File: %s", filename.c_str());
@@ -223,10 +224,10 @@ std::string GetInnerAgentLocalIp()
     return localIp;
 }
  
-void InnerAgentAppointNetDevice(Module::HttpRequest& request)
+void InnerAgentAppointNetDevice(Module::HttpRequest& request, bool isOpService)
 {
 #ifndef WIN32
-    if (HcsOpServiceUtils::GetInstance()->GetIsOpServiceEnv()) {
+    if (isOpService) {
         return;
     }
 #endif
@@ -317,7 +318,7 @@ std::string DoGetProxyHostId(bool isOpenstack)
         Module::CmdParam(Module::SCRIPT_CMD_NAME, agentHomedir + SUDO_DISK_TOOL_PATH),
         functionName
     };
-    if (Module::RunCommand("sudo", cmdParam, cmdOut) != 0) {
+    if (CallAgentExecCmd(cmdParam, cmdOut) != 0) {
         ERRLOG("Get uuid of proxy host failed.");
         return "";
     }
@@ -350,13 +351,30 @@ void SaveStringToVirtConfig(const std::string &str, const std::string &item)
         Module::CmdParam(Module::COMMON_PARAM, cmd),
         Module::CmdParam(Module::PATH_PARAM, configFilePath)
     };
-    int ret = Module::RunCommand("sudo", cmdParam, cmdOut, pathWhiteList);
+    int32_t result = CallAgentExecCmd(cmdParam, cmdOut);
     // 关闭文件时，数据落盘
     tmpRepoHandler->Close();
     // 从配置文件中刷新值
     Module::ConfigReaderImpl::instance()->refresh();
-    INFOLOG("Save %s to %s, ret = %d", str.c_str(), item.c_str(), ret);
+    INFOLOG("Save %s to %s, ret = %d", str.c_str(), item.c_str(), result);
     return;
+}
+
+void TransCmdParamsToCmdStr(const std::vector<Module::CmdParam> &cmdParams, std::string &cmdStr)
+{
+    for (const auto &param : cmdParams) {
+        cmdStr += param.Value() + " ";
+    }
+}
+
+int32_t CallAgentExecCmd(const std::vector<Module::CmdParam> &cmdParams, std::vector<std::string> &cmdOut)
+{
+    std::string cmdStr;
+    CmdResult returnValue;
+    TransCmdParamsToCmdStr(cmdParams, cmdStr);
+    SecurityService::RunCommand(returnValue, cmdStr);
+    cmdOut = std::move(returnValue.output);
+    return returnValue.result;
 }
 #endif
 
@@ -650,5 +668,66 @@ int32_t GetUtf8CharNumber(const std::string &str)
     }
     return cnt;
 }
+
+std::vector<int> ParseVersion(const std::string& version)
+{
+    std::vector<int> parsedVersion;
+    std::vector<std::string> tokens;
+
+    // 使用boost::split按 '.' 分割版本号
+    boost::split(tokens, version, boost::is_any_of("."));
+
+    // 将字符串部分转换为整数
+    for (const auto& token : tokens) {
+        parsedVersion.push_back(Module::SafeStoi(token, -1));
+    }
+
+    return parsedVersion;
+}
+
+bool CompareVersion(const std::string &version1, const std::string &version2)
+{
+    std::vector<int> v1 = ParseVersion(version1);
+    std::vector<int> v2 = ParseVersion(version2);
+
+    size_t maxLength = (std::max)(v1.size(), v2.size());
+
+    // 填充较短的版本号，使其与较长的版本号对齐
+    while (v1.size() < maxLength) v1.push_back(0);
+    while (v2.size() < maxLength) v2.push_back(0);
+
+    // 比较两个版本号
+    for (size_t i = 0; i < maxLength; ++i) {
+        if (v1[i] < v2[i]) {
+            return false;  // version1 < version2
+        } else if (v1[i] > v2[i]) {
+            return true;   // version1 > version2
+        }
+    }
+
+    return true; // version1 == version2
+}
+
+std::string UrlEncode(const std::string& str)
+{
+    std::ostringstream escaped;
+    escaped.fill('0');
+    escaped << std::hex;
+
+    for (auto c : str) {
+        // Keep alphanumeric and other safe characters intact
+        if (std::isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
+            escaped << c;
+        } else {
+            // Any other characters are percent-encoded
+            escaped << std::uppercase;
+            escaped << '%' << std::setw(WSTR_LENTH) << int((unsigned char) c);
+            escaped << std::nouppercase;
+        }
+    }
+
+    return escaped.str();
+}
+
 } // end namespace Utils
 } // end namespace VirtPlugin

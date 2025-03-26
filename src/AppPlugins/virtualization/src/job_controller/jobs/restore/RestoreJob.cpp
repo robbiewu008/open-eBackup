@@ -304,13 +304,12 @@ int RestoreJob::PowerOnMachine()
         if (m_protectEngine->PowerOnMachine(poweronVm) != SUCCESS) {
             ERRLOG("Power on vm(%s, %s)  failed, %s", poweronVm.m_name.c_str(),
                 poweronVm.m_uuid.c_str(), m_taskInfo.c_str());
-            return FAILED;
         }
         return SUCCESS;
     }
     if (m_protectEngine->PowerOnMachine(m_restoreVm) != SUCCESS) {
         ERRLOG("Power on vm(%s) failed, %s", m_restoreVm.m_uuid.c_str(), m_taskInfo.c_str());
-        return FAILED;
+        return SUCCESS;
     }
     ReportTaskLabel();
     INFOLOG("Power on machine success, %s", m_taskInfo.c_str());

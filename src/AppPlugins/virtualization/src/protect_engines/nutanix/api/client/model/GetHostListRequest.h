@@ -41,6 +41,10 @@ namespace NutanixPlugin {
         std::string state;
         std::string cpuModel;
         std::string clusterUuid;
+        int32_t numCpuCores;
+        int32_t numCpuThreads;
+        int32_t numCpuSockets;
+        uint64_t memorySize;
 
         BEGIN_SERIAL_MEMEBER
         SERIAL_MEMBER_TO_SPECIFIED_NAME(name, name)
@@ -50,6 +54,10 @@ namespace NutanixPlugin {
         SERIAL_MEMBER_TO_SPECIFIED_NAME(state, state)
         SERIAL_MEMBER_TO_SPECIFIED_NAME(cpuModel, cpu_model)
         SERIAL_MEMBER_TO_SPECIFIED_NAME(clusterUuid, cluster_uuid)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(numCpuCores, num_cpu_cores)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(numCpuThreads, num_cpu_threads)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(numCpuSockets, num_cpu_sockets)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(memorySize, memory_capacity_in_bytes)
         END_SERIAL_MEMEBER
     };
 

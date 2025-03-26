@@ -19,11 +19,10 @@ using namespace VirtPlugin;
 
 namespace {
 const std::string MODULE_NAME = "HttpClient";
-const int32_t SEND_HTTP_MAX_RETRY_TIMES = 3;
-const uint32_t HTTP_TIME_OUT = 30; // s
-const uint32_t SEND_HTTP_DELAY_TIME = 3;  // s
-const uint32_t SLEEP_TWENTY_SECONDS = 20;
-const int32_t REQUEST_TIMEOUT_ERRCODE = 28;
+const int32_t SEND_HTTP_MAX_RETRY_TIMES = 3; // times
+const uint32_t SEND_HTTP_DELAY_TIME = 3;  // unit - seconds
+const uint32_t SLEEP_TWENTY_SECONDS = 20; // unit - seconds
+const int32_t REQUEST_TIMEOUT_ERRCODE = 28; // errorcode
 }
 
 VIRT_PLUGIN_NAMESPACE_BEGIN
@@ -39,7 +38,7 @@ int32_t HttpClient::Send(const Module::HttpRequest &request, std::shared_ptr<Res
     int32_t result = FAILED;
     std::shared_ptr<Module::IHttpResponse> httpRespone = nullptr;
     while (retryTimes > 0) {
-        httpRespone = httpClient->SendRequest(request, HTTP_TIME_OUT);
+        httpRespone = httpClient->SendRequest(request, m_connTimeOut, m_timeOut);
         if (httpRespone.get() == nullptr) {
             ERRLOG("HttpRespone is null, retry num=%d", retryTimes);
             retryTimes--;
@@ -77,6 +76,12 @@ int32_t HttpClient::Send(const Module::HttpRequest &request, std::shared_ptr<Res
     }
     Module::IHttpClient::ReleaseInstance(httpClient);
     return result;
+}
+
+void HttpClient::SetTimeOut(const uint32_t connTimeOut, const uint32_t timeOut)
+{
+    m_connTimeOut = connTimeOut;
+    m_timeOut = timeOut;
 }
 
 bool HttpClient::IsNetworkError(const uint32_t &statusCode)

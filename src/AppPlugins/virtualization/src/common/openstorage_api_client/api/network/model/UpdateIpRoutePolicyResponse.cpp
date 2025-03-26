@@ -24,7 +24,7 @@ bool UpdateIpRoutePolicyResponse::Serial()
     if (m_body.empty()) {
         return false;
     }
-    DBGLOG("Get ip rule policy response: %s", WIPE_SENSITIVE(m_body.c_str()));
+    DBGLOG("Get ip rule policy response: %s", WIPE_SENSITIVE(m_body).c_str());
     if (!Module::JsonHelper::JsonStringToStruct(m_body, m_rspMsg)) {
         ERRLOG("Convert %s failed.", WIPE_SENSITIVE(m_body).c_str());
         return false;

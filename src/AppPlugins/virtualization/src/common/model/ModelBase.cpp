@@ -159,4 +159,25 @@ std::string ModelBase::GetDomainId() const
 {
     return m_domainId;
 }
+
+void ModelBase::SetToken(const std::string &value)
+{
+    m_token = value;
+    m_tokenIsSet = true;
+}
+
+std::string ModelBase::GetToken() const
+{
+    return m_token;
+}
+
+void ModelBase::SetExtendInfo(const std::string &value)
+{
+    m_extendInfo = value;
+}
+
+std::string ModelBase::GetExtendInfo() const
+{
+    return m_extendInfo;
+}
 }

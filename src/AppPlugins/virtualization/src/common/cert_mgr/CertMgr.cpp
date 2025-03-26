@@ -24,6 +24,8 @@ namespace {
     const std::string TEMP_CERT_DIR = VIRT_PLUGIN_PATH + "/tmp/cert";
     const std::string CINDER_CERT_FILE = "cinder.pem";
     static std::mutex certMutex;
+    const std::string INTERNAL_BACKUP_SCENCE = "1";
+    const std::string INTERNAL_CERT_PATH = "/home/exrdadmin";
 }
 
 VIRT_PLUGIN_NAMESPACE_BEGIN
@@ -32,7 +34,7 @@ CertManger::~CertManger(void) {}
 
 std::string CertManger::GetSpecifyCerPath(const std::string &markId)
 {
-    std::string agentHomedir = Module::EnvVarManager::GetInstance()->GetAgentHomePath();
+    std::string agentHomedir = GetCertRootPath();
     std::string path = agentHomedir + TEMP_CERT_DIR + "/" + markId + ".pem";
     if (!m_fHandler->Exists(path)) {
         ERRLOG("File(%s) does not exist.", path.c_str());
@@ -43,7 +45,7 @@ std::string CertManger::GetSpecifyCerPath(const std::string &markId)
 
 std::string CertManger::GetSpecifyRclPath(const std::string &markId)
 {
-    std::string agentHomedir = Module::EnvVarManager::GetInstance()->GetAgentHomePath();
+    std::string agentHomedir = GetCertRootPath();
     std::string path = agentHomedir + TEMP_CERT_DIR + "/" + markId + ".crl";
     if (!m_fHandler->Exists(path)) {
         DBGLOG("File(%s) does not exist.", path.c_str());
@@ -59,7 +61,7 @@ Create By    : shengkun 30034564
 ------------------------------------------------------------- */
 std::string CertManger::GetCPSCertPath()
 {
-    std::string agentHomedir = Module::EnvVarManager::GetInstance()->GetAgentHomePath();
+    std::string agentHomedir = GetCertRootPath();
     std::string cpsCertPath = agentHomedir + CINDER_CERT_DIR + CINDER_CERT_FILE;
     if (!m_enableCert) {
         DBGLOG("Cert is disabled.");
@@ -110,7 +112,7 @@ bool CertManger::SaveCertToFile(const std::string& fileName)
         ERRLOG("Get file handler fail.");
         return false;
     }
-    std::string tmpCertDir = Module::EnvVarManager::GetInstance()->GetAgentHomePath() + TEMP_CERT_DIR;
+    std::string tmpCertDir = GetCertRootPath() + TEMP_CERT_DIR;
     if (m_fHandler->IsDirectory(tmpCertDir)) {
         DBGLOG("dir(%s) already exist.", tmpCertDir.c_str());
     } else {
@@ -125,13 +127,17 @@ bool CertManger::SaveCertToFile(const std::string& fileName)
         ERRLOG("Invalid file name.");
         return false;
     }
+    return SaveCertAndCrlFile(tmpCertDir, fileName);
+}
 
-    std::string content;
+bool CertManger::SaveCertAndCrlFile(const std::string &tmpCertDir, const std::string &fileName)
+{
+    std::string content = "";
     int ret;
     if (!m_certification.empty()) {
         m_certPath = tmpCertDir + "/" + fileName + ".pem";
         ret = Utils::ReadFile(m_fHandler, m_certPath, content);
-        if (ret == SUCCESS && content != m_certification) {
+        if (content != m_certification) {
             if (!SaveDataToTempFile(m_certPath, m_certification)) {
                 ERRLOG("Save cert data to file(%s) fail.", m_certPath.c_str());
                 return false;
@@ -142,7 +148,7 @@ bool CertManger::SaveCertToFile(const std::string& fileName)
         m_crlPath = tmpCertDir + "/" + fileName + ".crl";
         content = "";
         ret = Utils::ReadFile(m_fHandler, m_crlPath, content);
-        if (ret == SUCCESS && content != m_revocationList) {
+        if (content != m_revocationList) {
             if (!SaveDataToTempFile(m_crlPath, m_revocationList)) {
                 ERRLOG("Save crl data to file(%s) fail.", m_crlPath.c_str());
                 return false;
@@ -154,6 +160,17 @@ bool CertManger::SaveCertToFile(const std::string& fileName)
         RemoveCrlFile(fileName);
     }
     return true;
+}
+
+std::string CertManger::GetCertRootPath()
+{
+    std::string deployScence = "";
+    Utils::GetAgentDeployScence(deployScence);
+    if (deployScence == INTERNAL_BACKUP_SCENCE) {
+        DBGLOG("Internal agent, set cert root path to /home/exrdadmin.");
+        return INTERNAL_CERT_PATH;
+    }
+    return Module::EnvVarManager::GetInstance()->GetAgentHomePath();
 }
 
 void CertManger::ClearResource()
@@ -217,7 +234,7 @@ void CertManger::RemoveCrtFile(const std::string& markId)
         ERRLOG("Invalid file name.");
         return;
     }
-    std::string agentHomedir = Module::EnvVarManager::GetInstance()->GetAgentHomePath();
+    std::string agentHomedir = GetCertRootPath();
     std::string path = agentHomedir + TEMP_CERT_DIR + "/" + markId + ".pem";
     if (m_fHandler->Exists(path)) {
         m_fHandler->Remove(path);
@@ -230,7 +247,7 @@ void CertManger::RemoveCrlFile(const std::string& markId)
         ERRLOG("Invalid file name.");
         return;
     }
-    std::string agentHomedir = Module::EnvVarManager::GetInstance()->GetAgentHomePath();
+    std::string agentHomedir = GetCertRootPath();
     std::string path = agentHomedir + TEMP_CERT_DIR + "/" + markId + ".crl";
     if (m_fHandler->Exists(path)) {
         m_fHandler->Remove(path);

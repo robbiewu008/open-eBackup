@@ -39,7 +39,7 @@ public:
     }
 
     ~CNwareProtectEngine() {};
-    bool Init();
+    bool Init(const bool &idFlag = true);
     int PreHook(const ExecHookParam &para) override;
     int PostHook(const ExecHookParam &para) override;
 
@@ -111,6 +111,7 @@ public:
     bool IfDeleteLatestSnapShot() override;
 
     bool InitClient(int64_t& errorCode, std::string &errorDes);
+    bool AppInitClient(int64_t& errorCode, std::string &errorDes);
     int32_t FindSourceVol(const std::string &id, VolInfo &volInfo);
     int32_t FindTargetVol(const std::string &id, const VMInfo &vmInfo, VolInfo &targetVol);
     int32_t RestoreVolMetadata(VolMatchPairInfo &volPairs, const VMInfo &vmInfo) override;
@@ -118,7 +119,8 @@ public:
 protected:
     void SetAppEnv(const ApplicationEnvironment &appEnv);
     void SetCommonInfo(CNwareRequest &req);
-    bool CheckTaskStatus(const std::string &taskId);
+    bool CheckTaskStatus(const std::string &taskId, const bool cache = false);
+    int32_t PrepareStorage(std::string &storeId, std::string &storageId);
     int32_t PrepareStorageDevice(std::string &storeId);
     int32_t PrepareStoragePool(const std::string &storeId, std::string &resourceId,
         std::string &storageId, std::string &liveStorageName);
@@ -136,6 +138,8 @@ protected:
     int32_t GetDiskFromVMInfo(const std::string &volName, VolInfo &newVol);
     bool ParseVolume(const DomainDiskDevicesResp &items, VolInfo &newVol, const std::string &volName);
     bool ParseStorage(const Json::Value &targetVolume, DatastoreInfo &storage, StoragePool &pool);
+    void FinishLastTaskCache();
+    bool FinishLastMigrate();
 
     // common
     template<typename T>
@@ -147,11 +151,13 @@ protected:
         }
         if (response->GetStatusCode() != static_cast<uint32_t>(Module::SC_OK)) {
             ERRLOG("Response is not ok. http status code: %d, body : %s, %s", response->GetStatusCode(),
-                (response->GetBody()).c_str(), m_taskId.c_str());
+                (WIPE_SENSITIVE(response->GetBody())).c_str(), m_taskId.c_str());
             return true;
         }
     }
     bool CheckCNwareVersion();
+    int32_t GetCNwareVersion(std::string &version);
+    void SetOsVersion(AddDomainRequest &domainInfo);
     int32_t ConnectToEnv(const AppProtect::ApplicationEnvironment &env);
     int32_t CheckStorageConnectionBackup(const VolInfo &volInfo, int32_t &erroCode);
     void CheckCertIsExist(int32_t &errorCode);
@@ -179,7 +185,10 @@ protected:
     bool ListDev(std::vector<std::string> &devList);
     bool CheckDetachDevList(const std::vector<std::string> &beforeDevList);
     bool GetNewAttachDev(const std::vector<std::string> &beforeDevList);
+    std::string GetAppHostId();
+    std::string GetAppHostName();
     std::string GetHostName();
+    int32_t GetStorageDriverType(const int32_t &poolType, const int32_t &originType);
     std::string GetStoragePreallocation(const int32_t &poolType,
         const std::string &originAlloc, const std::string &diskName = "");
     void ConfigDomainInfo(const CNwareVMInfo &cwVmInfo, AddDomainRequest &domainInfo);
@@ -211,11 +220,17 @@ protected:
     bool FormLiveVolumeMap(const VMInfo &liveVm, const std::string &storageId,
         const std::string &storageName);
     int32_t FormatLiveInterface(AddDomainRequest &domainInfo);
-    int32_t CreateStoragePool(const std::string &name,
+    int32_t CreateStoragePool(std::string &name,
+        const std::string &hostId, const std::string &resourceId, std::string &storageId);
+    int32_t DoCreateStoragePool(const std::string &name,
         const std::string &hostId, const std::string &resourceId);
     int32_t ScanNfsStorage(const std::string &storeId);
-    int32_t GetStorageId(const std::string &hostId, const std::string &name, std::string &storageId);
+    int32_t GetStorageId(const std::string &hostId, const std::string &resourceId,
+        const std::string &name, const NameType &nameType, std::string &storageId);
+    int32_t GetResStoragePool(const std::string &hostId, const std::string &resourceId, const std::string &name,
+        const NameType &nameType, StoragePool &storagePool);
     int32_t GetResourceId(const std::string &name, const std::string &storeId, std::string &resourceId);
+    int32_t GetResourceIdRetry(const std::string &storeId, std::string &resourceId);
     int32_t AddNfs(const std::string &name, const std::string &hostId, const std::string &nfsIp);
     int32_t RefreshStoragePool(const std::string &storageId);
 
@@ -230,8 +245,12 @@ protected:
     bool AddLiveVolMigReq(const DomainDiskInfoResponse &liveVols,
         const ApplicationResource &sub, MigrationRequest &migReq);
     int32_t DoMigrateLiveVolume(const VMInfo &liveVm);
+    int32_t PutInMigrateParams(MigrationRequest &migReq, const std::string &domainId,
+        std::shared_ptr<GetVMDiskInfoResponse> &diskResponse);
     bool GetStorageName(const std::string &poolId, std::string &poolName);
     bool GetHostName(const std::string &hostId, std::string &hostName);
+    bool CheckPoolExists(std::string &liveStorageName, const std::string &hostId,
+        const std::string &resourceId, std::string &storageId);
 
     // machine
     bool GetVMInfoById(const std::string &domainId, CNwareVMInfo &cnVmInfo);
@@ -248,7 +267,11 @@ protected:
 
     int32_t PostProcessCreateMachine(VMInfo &vmInfo);
     int32_t FormatLiveMachineParam(const VMInfo &vmInfo, AddDomainRequest &domainInfo);
-    int32_t BuildLiveVm(const VMInfo &liveVm, VMInfo &newVm, const std::string &hostId,
+    int32_t BuildLiveVm(const VMInfo &liveVm, VMInfo &newVm,
+        const std::string &storageId, const std::string &storageName);
+    int32_t PostOperationLiveMount(const VMInfo &liveVm, VMInfo &newVm,
+        const DomainListResponse &dInfo);
+    int32_t DoBuildLiveVm(const VMInfo &liveVm, VMInfo &newVm,
         const std::string &storageId, const std::string &storageName);
     int32_t GetTargetDomainId(std::string &domainId);
     int32_t FormatCreateMachineParam(VMInfo &vmInfo, AddDomainRequest &domainInfo);
@@ -325,8 +348,8 @@ protected:
     std::string m_metaRepoPath;
     std::string m_cacheRepoPath;
     std::string m_livemountRepoPath;
+    std::string m_livemountStoreName;
     RestoreLevel m_restoreLevel = RestoreLevel::RESTORE_TYPE_UNKNOW;
-    LivemountType m_livemountType = LivemountType::UNKNOWN;
     std::map<std::string, std::string> m_volNameToId;
     VMInfo m_newVm;
     std::string m_targetLocation; // original / new
@@ -337,7 +360,10 @@ protected:
     int32_t m_targetVMCpuCurrent {0};
     int32_t m_restoreAttachVol2TargetVMCnt {0};
     std::string m_serverName; // agent vm name in cnware
+    std::string m_tempLiveName;
+    bool m_machineNeedRename {false};
     bool m_isCeph {false};
+    int64_t m_checkErrorCode = -1;
 
 private:
     // common

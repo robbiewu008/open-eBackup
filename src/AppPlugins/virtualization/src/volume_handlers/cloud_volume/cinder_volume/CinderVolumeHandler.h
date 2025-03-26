@@ -84,6 +84,7 @@ private:
     bool GetVolumeDetail(const std::string &volId, Volume &volDetail);
     bool UpdateNewVolumeInfoToFile(Volume &newCreateVolume);
     bool FormCreateVolmeInfo(const VolSnapInfo &snapshot, std::string &body);
+    bool CheckCreateFullCloneVolum();
 
 private:
     OpenStackPlugin::NovaClient m_novaClient;

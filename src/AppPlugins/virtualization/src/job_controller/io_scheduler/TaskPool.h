@@ -35,6 +35,11 @@ public:
     {
         return &m_inq;
     }
+
+    size_t GetThreadNum()
+    {
+        return m_workers;
+    };
 public:
     TaskInq m_inq;
 private:

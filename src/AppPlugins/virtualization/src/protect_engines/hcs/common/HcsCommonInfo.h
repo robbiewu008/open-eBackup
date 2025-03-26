@@ -60,6 +60,28 @@ public:
     END_SERIAL_MEMEBER
 };
 
+struct HcsProtectExtendInfo {
+    std::string m_projectId;
+    std::string m_isWorkSpace;
+    std::string m_status;
+    std::string m_host;
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_projectId, cloud_server_project_id)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_isWorkSpace, isWorkspace)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_status, status)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_host, host)
+    END_SERIAL_MEMEBER
+};
+
+struct HcsGetToken {
+    std::string m_token;
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_token, tokenStr)
+    END_SERIAL_MEMEBER
+};
+
 HCS_PLUGIN_NAMESPACE_END
 
 #endif

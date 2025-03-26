@@ -24,6 +24,7 @@
 #include "thrift_interface/ApplicationProtectFramework_types.h"
 #include "protect_engines/cnware/common/StorageStruct.h"
 #include "protect_engines/cnware/common/ErrorCode.h"
+#include "protect_engines/cnware/common/CNwareConstants.h"
 #include "protect_engines/cnware/api/client/CNwareSession.h"
 #include "model/CreateSnapshotRequest.h"
 #include "model/CreateSnapshotResponse.h"
@@ -94,6 +95,7 @@
 #include "model/compute/AddNetworkCardRequest.h"
 #include "model/compute/GetHostResourceStatResponse.h"
 #include "model/notify/QueryVMTaskResponse.h"
+#include "model/tag/AssociateResponse.h"
 
 using VirtPlugin::RestClient;
 using VirtPlugin::RequestInfo;
@@ -134,6 +136,7 @@ struct ResponseErrorMsg {
     END_SERIAL_MEMEBER
 };
 
+extern std::mutex g_mutexSession;
 class CNwareClient : public RestClient {
 public:
 
@@ -141,13 +144,20 @@ public:
     {};
     ~CNwareClient()
     {
+        if (m_cnwareSessionCache != nullptr) {
+            DBGLOG("CNwareclient m_cnwareSessionCache have ptr!");
+            m_cnwareSessionCache->DecreaseRegistreCnt();
+        }
         this->Loginout();
     };
 
     bool CheckParams(ModelBase &model) override;
     int32_t InitCNwareClient(const ApplicationEnvironment& appEnv);
-    int32_t GetSessionAndlogin(CNwareRequest &req, int64_t &errorCode, std::string &errorDes);
+    int32_t CheckAuth(CNwareRequest &req, int64_t &errorCode, std::string &errorDes);
+    int32_t GetSessionAndlogin(CNwareRequest &req, RequestInfo &requestInfo,
+        int64_t &errorCode, std::string &errorDes, const bool &checkFlag = false);
     int32_t Loginout();
+    void ForceLogOut(const CNwareRequest &request);
     int32_t GetVersionInfo(CNwareRequest& req, ApplicationEnvironment& returnEnv);
     std::shared_ptr<ResponseModel> GetVersionInfo(CNwareRequest &req);
     int32_t GetResource(CNwareRequest &req, std::shared_ptr<ResponseModel> response, const QueryByPage &pageInfo,
@@ -178,9 +188,10 @@ public:
     std::shared_ptr<QueryVMTaskResponse> QueryVMTasks(CNwareRequest &req, const std::string &domainId,
         const std::string &status, const int32_t &start = 1, const int32_t &size = 500);
     std::shared_ptr<DeleteDiskOnStorageResponse> DeleteDiskOnStorage(DelDiskOnStorageRequest &req);
-    std::shared_ptr<StoragePoolResponse> GetStoragePoolInfo(CNwareRequest &req,
-        const std::string &hostId, const std::string &poolId = "", const int32_t &start = 1,
-        const int32_t &size = 500);
+    std::shared_ptr<StoragePoolResponse> GetStoragePoolInfo(CNwareRequest &req, const std::string &hostId,
+        const std::string &poolId = "", const NameType &nameType = NameType::UnSet, const int32_t &start = 1);
+    std::shared_ptr<StoragePoolResponse> SearchStoragePool(CNwareRequest &req,
+        const std::string &hostId, const std::string &nameLike, const NameType &nameType);
     std::shared_ptr<PortGroupResponse> GetPortGroupInfo(CNwareRequest &req,
         const std::string &hostId);
     std::shared_ptr<CNwareResponse> DeleteVM(DeleteVMRequest &req);
@@ -209,16 +220,26 @@ public:
     std::shared_ptr<CNwareResponse> AddNetworkCard(AddNetworkCardRequest &req);
     std::shared_ptr<GetHostResourceStatResponse> GetHostResourceStat(CNwareRequest &req, const std::string &hostId);
     std::shared_ptr<ResponseModel> DelCephSnapshots(CNwareRequest &req, const std::string &snapId);
+    std::shared_ptr<AssociateResponse> PostVMTagsInfo(CNwareRequest &req, const QueryByPage &pageInfo);
+    std::shared_ptr<CNwareResponse> ModifyBaseInfo(CNwareRequest &req,
+        const std::string &newName, const std::string &domainId);
+    void SetPageSize(const int32_t &pageSize);
     CNwareError GetErrorCode();
 
 protected:
     int32_t Login(CNwareRequest& req, int64_t& errorCode, std::string &errorDes);
+    int32_t DoLogin(CNwareRequest &req, int64_t &errorCode, std::string &errorDes,
+        std::shared_ptr<ResponseModel> response);
     int32_t ParseResonse(const std::shared_ptr<ResponseModel>& response, int64_t& errorCode, std::string &errorDes,
         const CNwareRequest& req);
     bool ParseResonseBody(const std::shared_ptr<ResponseModel> &response, int64_t &errorCode,
         std::string &errorDes, const CNwareRequest &req);
-    bool CheckSessionValidity(const std::tuple<std::string, std::string>& cnwareInfo);
+    int32_t DoCheckSessionValidity(CNwareRequest &req, std::shared_ptr<CNwareSession> cnwareSessionPtr);
+    bool CheckSessionValidity(const std::tuple<std::string, std::string>& cnwareInfo, CNwareRequest &req,
+        const bool &checkFlag);
     int32_t RefreshSession(const std::shared_ptr<ResponseModel>& response, CNwareRequest& req);
+    std::shared_ptr<CNwareSession> GetResponseSession(const std::shared_ptr<ResponseModel> &response,
+        CNwareRequest &req);
     bool LoginoutCNware();
     bool SetVersionInfoResonse(const std::shared_ptr<ResponseModel>& response, ApplicationEnvironment& returnEnv);
     bool SetSession(const CNwareRequest &request, RequestInfo &requestInfo);
@@ -239,12 +260,14 @@ protected:
     std::string m_taskId;
     int32_t m_retryIntervalTime = 15;
     int32_t m_retryTimes = 3;
-    std::mutex m_mutexSession {};
     std::mutex m_mutexCache {};
     std::shared_ptr<CNwareSession> m_cnwareSessionPtr;
     std::shared_ptr<CNwareSessionCache> m_cnwareSessionCache;
     ResponseErrorMsg m_rspErrMsg;
     CNwareError m_error;
+    int32_t m_pageStart = 1;
+    int32_t m_pageSize = 500;
+    bool m_isPaginate {false};
 
 private:
     // common

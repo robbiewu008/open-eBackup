@@ -29,6 +29,16 @@ public:
     // 设置api类型
     virtual ApiType GetApiType() = 0;
 
+    void SetApiType(ApiType type)
+    {
+        m_apiType = type;
+    };
+
+    void SetScope(const Scope type)
+    {
+        m_scope = type;
+    };
+
     // 平台ip,用户生成管理token的key
     void SetEnvAddress(const std::string &value);
     std::string GetEnvAddress() const;
@@ -73,6 +83,12 @@ public:
 
     void SetDomainId(const std::string &value);
     std::string GetDomainId() const;
+
+    void SetToken(const std::string &value);
+    std::string GetToken() const;
+
+    void SetExtendInfo(const std::string &value);
+    std::string GetExtendInfo() const;
     
 protected:
     std::string m_envAddress;
@@ -100,7 +116,16 @@ protected:
 
     std::string m_domainId;
 
+    std::string m_token = "";
+    bool m_tokenIsSet = false;
+
     bool m_needNewToken = false;
+
+    ApiType m_apiType;
+
+    Scope m_scope;
+
+    std::string m_extendInfo = "";
 };
 }
 

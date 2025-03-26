@@ -34,6 +34,14 @@ public:
 
     void RemoveFinishJob(const std::string &jobId);
 
+    void InitReportThread();
+
+    int32_t GetJobSize()
+    {
+        // 按理不会为空，以防万一，加上判断，防止返回0后，外部做除0操作
+        return m_vecJobPtr.empty() ? 1 : m_vecJobPtr.size();
+    };
+
 private:
     VirtualizationJobFactory();
     ~VirtualizationJobFactory();
@@ -42,12 +50,25 @@ private:
     std::shared_ptr<BasicJob> CreateFactoryJob(std::shared_ptr<JobCommonInfo> jobInfo);
     void ReportJobStatus();
     void ReportLog2Agent(const std::string &parentId, const std::string &subJobId,
-        const uint64_t &completedDataSize = 0);
+        const uint64_t &completedDataSize = 0, const uint64_t &totalSize = 0);
+    void AddJobReportRequest(const JobReportRequest& request);
+    JobReportRequest GetJobReportRequest();
+    void CheckThreadReport();
 
     using JobFunc = std::function<std::shared_ptr<BasicJob>(std::shared_ptr<JobCommonInfo>)>;
     std::map<uint64_t, JobFunc> m_commonJobMap {};
     std::vector<std::shared_ptr<BasicJob>> m_vecJobPtr;
     std::mutex m_mutex; // 用于m_vecJobPtr互斥
+
+    std::atomic<bool> m_exitFlag {false};
+    uint32_t m_workerNum = 10;
+    std::vector<std::shared_ptr<std::thread>> m_workers {};
+
+    std::condition_variable m_consumerCond;
+    std::condition_variable m_producerCond;
+    uint32_t m_queueSize = 30;
+    std::deque<JobReportRequest> m_requestQueue;
+    std::mutex m_requestMtx; // 用于m_requestQueue互斥
 };
 }
 #endif // __VIRTUALIZATION_JOB_FACTORY_H__

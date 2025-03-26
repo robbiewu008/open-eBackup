@@ -25,7 +25,7 @@ Scope CreateSnapshotRequest::GetScopeType() const
 
 ApiType CreateSnapshotRequest::GetApiType()
 {
-    return ApiType::CINDER;
+    return m_apiType;
 }
 
 CreateSnapshotRequestBodyMsg CreateSnapshotRequest::GetBody() const

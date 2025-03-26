@@ -256,6 +256,11 @@ public:
         m_addDomainRequest = addDomainRequest;
     }
 
+    void SetMachineName(const std::string &name)
+    {
+        m_addDomainRequest.mName = name;
+    }
+
     AddDomainRequest GetDomainInfo()
     {
         return m_addDomainRequest;

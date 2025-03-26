@@ -45,6 +45,7 @@ struct StoragePool {
     std::string m_storageSanName;
     int32_t m_storageType = 0;
     std::string m_storageResourceName;
+    std::string m_storageResourceId;
     int32_t m_useType = 0;
     int32_t m_type = 0;
     int32_t m_status = 0;
@@ -61,6 +62,7 @@ struct StoragePool {
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_storageSanName, storageSanName)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_storageType, storageType)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_storageResourceName, storageResourceName)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_storageResourceId, storageResourceId)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_useType, useType)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_type, type)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_status, status)
@@ -258,13 +260,43 @@ struct MigrationVol {
     END_SERIAL_MEMEBER
 };
 
+struct MigrationDownTime {
+    int32_t m_max { 10000 };
+    int32_t m_min { 300 };
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_max, max)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_min, min)
+    END_SERIAL_MEMEBER
+};
+
 struct MigrationVolReq {
     std::vector<MigrationVol> m_migrateVols;
     std::string m_destHostId;
+    bool m_keepNuma { false };
+    MigrationDownTime m_downtime;
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_migrateVols, migrateVols)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_destHostId, destHostId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_keepNuma, keepNuma)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_downtime, downtime)
+    END_SERIAL_MEMEBER
+};
+
+struct V2MigrationVolReq {
+    std::vector<MigrationVol> m_migrateVols;
+    std::string m_destHostId;
+    bool m_keepNuma { false };
+    MigrationDownTime m_downtime;
+    bool m_diskSynchronousWrites { false };
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_migrateVols, migrateVols)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_destHostId, destHostId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_keepNuma, keepNuma)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_downtime, downtime)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_diskSynchronousWrites, diskSynchronousWrites)
     END_SERIAL_MEMEBER
 };
 

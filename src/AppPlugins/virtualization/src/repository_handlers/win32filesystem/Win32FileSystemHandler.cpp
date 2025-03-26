@@ -136,6 +136,7 @@ size_t Win32FileSystemHandler::Write(const std::shared_ptr<uint8_t[]> &buf, size
 
 size_t Win32FileSystemHandler::Append(std::shared_ptr<uint8_t[]> buf, size_t count)
 {
+    ERRLOG("not realized, do not use this mothod");
     return SUCCESS;
 }
 
@@ -261,7 +262,7 @@ bool Win32FileSystemHandler::Remove(const std::string &fileName)
         return true;
     }
 
-    if (std::filesystem::remove(std::filesystem::u8path(fileName)) != 0) {
+    if (!(std::filesystem::remove(std::filesystem::u8path(fileName)))) {
         ERRLOG("Remove failed: errno[%d]:[%s]", errno, strerror(errno));
         return false;
     }
@@ -299,6 +300,20 @@ bool Win32FileSystemHandler::CreateDirectory(const std::string &dirName)
 
 void Win32FileSystemHandler::GetFiles(std::string pathName, std::vector <std::string> &files)
 {
+    if (pathName.empty()) {
+        ERRLOG("pathName empty!.");
+        return;
+    }
+    if (!Exists(pathName)) {
+        ERRLOG("pathName (%s) not exist!.", pathName.c_str());
+        return;
+    }
+    std::filesystem::path path = pathName;
+    for (const auto& entry : std::filesystem::directory_iterator(path)) {
+        if (entry.is_regular_file()) { // 检查是否为普通文件
+            files.push_back(entry.path().filename().string());
+        }
+    }
     return;
 }
 }

@@ -23,7 +23,7 @@ namespace NutanixPlugin {
 
 class GetContainerRequest : public NutanixRequest {
 public:
-    explicit GetContainerRequest(int32_t offset, int32_t length) : m_offset(offset), m_length(length)
+    explicit GetContainerRequest(int32_t offset, int32_t count) : m_offset(offset), m_count(count)
     {
         url = "PrismGateway/services/rest/v1/containers";
     }
@@ -34,13 +34,13 @@ public:
         requestInfo.m_method = "GET";
         requestInfo.m_body = "";
         requestInfo.m_queryParams["offset"] = std::to_string(m_offset);
-        requestInfo.m_queryParams["length"] = std::to_string(m_length);
+        requestInfo.m_queryParams["count"] = std::to_string(m_count);
     }
 
 private:
     std::string m_filter;             // Filter criteria - semicolon for AND, comma for OR
     int64_t m_offset;                 // offset - Default 0
-    int64_t m_length;                 // Number of VMs to retrieve
+    int64_t m_count;                 // Number of VMs to retrieve
 };
 
 struct ContainerInfo {
@@ -49,6 +49,7 @@ struct ContainerInfo {
         std::string storagePoolId;
         uint64_t maxCapacity;
         ContainerUserStats usageStats;
+        bool isNutanixManaged = false;
 
         BEGIN_SERIAL_MEMEBER
         SERIAL_MEMEBER(containerUuid)
@@ -56,6 +57,7 @@ struct ContainerInfo {
         SERIAL_MEMEBER(storagePoolId)
         SERIAL_MEMEBER(maxCapacity)
         SERIAL_MEMEBER(usageStats)
+        SERIAL_MEMEBER(isNutanixManaged)
         END_SERIAL_MEMEBER
 };
 

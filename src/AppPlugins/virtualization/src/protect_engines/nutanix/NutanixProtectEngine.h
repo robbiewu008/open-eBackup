@@ -160,6 +160,8 @@ protected:
         const VolInfo &volObj);
     bool AttachVol2TargetVmWithCloneMode(const NewVolumeInfo &tmpVolInfo, const VolInfo &volObj);
     bool GetTargetVmId(std::string &vmId);
+    int32_t DoDeleteMachine(const VMInfo &vmInfo);
+    bool DeleteResidueVm();
 
 protected:
     std::shared_ptr<NutanixClient> m_nutanixClient = nullptr;
@@ -214,9 +216,10 @@ private:
     int32_t FormatCreateMachineParam(VMInfo &vmInfo, struct NutanixVMInfo &domainInfo,
         std::vector<struct NewVMNicStruct> &newVMNics);
     int32_t FormatDomainInterface(struct NutanixVMInfo &domainInfo, std::vector<struct NewVMNicStruct> &newVMNics);
-    bool GetStorageUserFreeBytes(const Json::Value &usageStats, uint64_t &freeBytes);
     bool GetTargetNic(const std::string &originNicId, const std::vector<VmNic> &vmNics, NewVMNicStruct &newNic);
     bool CheckVolPreSnapshotValidity(const VmDiskInfo &currVol, const VolSnapInfo &snapshotVol);
+    bool CheckCpuandMemoryLimit(NutanixVMInfo &domainInfo);
+    bool GetNewCreatedVmId(const std::string &taskId, std::string &newVmId);
 };
 }
 #endif // APPPLUGINS_VIRTUALIZATION_NUTANIXPROTECTENGINE_H

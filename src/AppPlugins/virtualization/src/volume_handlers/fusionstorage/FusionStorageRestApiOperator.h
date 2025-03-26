@@ -71,6 +71,10 @@ public:
      * @return 返回初始化结果
      */
     int32_t InitRestApiOperator();
+    void SetOpService(bool isOpService)
+    {
+        m_isOpService = isOpService;
+    }
 
     /**
      * @brief 查询查询当前session，避免多次获取token导致问题
@@ -227,7 +231,7 @@ protected:
      * @param  TargetIp来源于任务信息
      * @return 返回result：0成功，1多错误码description，2单错误码errCode
      */
-    int32_t CheckAndLoginIscsiTarget(const std::string &hostName, std::string &errorDes);
+    int32_t CheckIscsiTarget(const std::string &hostName, std::string &errorDes, bool &needLogin);
 
     /**
      * @brief 执行登录目标器
@@ -361,7 +365,7 @@ protected:
 
     // 检查target是否已经在已登录的IP中
     int32_t CheckLoginedTarget(const std::string &aimTarget);
-    int32_t CheckContain(const std::string &strTarget, std::vector<std::string> &loginIP);
+    int32_t CheckContain(const std::string &strTarget, std::vector<IscsiSessionStatus> &loginedSessions);
     int32_t MapIscsiToHost(const std::string &portName, const std::string &hostName,
         std::string &errorDes);
     int32_t QueryHostIscsiMapped(const std::string &portName, std::vector<std::string> &mappedHosts,
@@ -409,6 +413,8 @@ private:
     AppProtect::ApplicationEnvironment m_appEnv;
     std::shared_ptr<FusionStorageRestClient> m_restClient;
     ControlDeviceInfo m_controlDeviceInfo;
+    bool m_isOpService {false};
+    std::string m_iscsiIqnName = "";
 };
 
 VIRT_PLUGIN_NAMESPACE_END

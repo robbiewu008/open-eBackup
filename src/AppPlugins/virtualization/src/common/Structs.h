@@ -90,6 +90,10 @@ public:
     std::vector<AppProtect::StorageRepository> GetStorageRepos() const;
     AppProtect::BackupJobType GetBackupType() const;
     std::string GetTaskId() const;
+    template <class T>
+    AppProtect::ApplicationEnvironment GetProtectAppEnv() const;
+    template <class T>
+    AppProtect::ApplicationEnvironment GetTargetAppEnv() const;
 
 protected:
     JobType m_jobType = JobType::UNDEFINED_JOB_TYPE;
@@ -348,6 +352,7 @@ public:
     std::string m_volumeType;   // volume type
     std::string m_location;    // 卷所属位置，如项目、区域、可用区
     std::string m_provisionType;    // 置备类型
+    std::string m_format;      // 卷格式
     bool m_supportBackup {true};
     bool operator==(const VolInfo &vol)
     {
@@ -410,6 +415,7 @@ public:
     std::string m_location;          // 虚拟机所属，可以是集群或主机的moref
     std::string m_locationName;      // 虚拟机所属，可以是集群或主机的名称
     std::string m_metadata;          // 虚拟机元数据
+    std::string m_bootType;          // 虚拟机引导类型，如：bios，uefi
     std::vector<VolInfo> m_volList;  // 卷列表
     std::vector<BridgeInterfaceInfo> m_interfaceList;  // 网卡列表
     /* extend info */
@@ -422,6 +428,7 @@ public:
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_location, targetFolderLocation)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_locationName, targetFolderLocationName)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_metadata, metaData)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_bootType, bootType)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_volList, volList)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_interfaceList, interfaceList)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_extendInfo, extendInfo)
@@ -437,6 +444,14 @@ public:
     uint64_t dataSize { 0 };
     int64_t errCode { 0 };
     std::string extendInfo = "";
+};
+
+class JobReportRequest {
+public:
+    std::string parentId;
+    std::string subJobId;
+    uint64_t completedDataSize;
+    uint64_t totalSize;
 };
 
 class ApplicationLabelType {
@@ -670,6 +685,24 @@ struct Livemount {
     END_SERIAL_MEMEBER
 };
 
+/*
+    @param targetIp 目标IP
+    @param localIqn 本端启动器IQN
+    @param sessionStatus 会话状态
+    "targetIp": "10.10.10.10",
+    "localIqn": "iqn.2012-01.com.euleros:node_test",
+    "sessionStatus": "LOGGED IN"
+*/
+struct IscsiSessionStatus {
+    IscsiSessionStatus() {}
+    IscsiSessionStatus(std::string targetIp, std::string localIqn, std::string sessionStatus)
+        : m_targetIp(targetIp), m_localIqn(localIqn), m_sessionStatus(sessionStatus) {}
+
+    std::string m_targetIp = "";
+    std::string m_localIqn = "";
+    std::string m_sessionStatus = "";
+};
+
 /* Virtual plugin repo layout:
 /*
  * Virtual plugin repo layout:
@@ -729,6 +762,8 @@ const std::string VIRT_PLUGIN_RESTORE_TARGET_VM_INFO = VIRT_PLUGIN_CACHE_RESTORE
 const std::string VIRT_PLUGIN_GEN_MAIN_TASK_STATUS_INFO = VIRT_PLUGIN_CACHE_ROOT + "/main_task_status.info";
 const std::string VIRT_PLUGIN_PRE_VOLUMES_INFO = VIRT_PLUGIN_CACHE_ROOT + "/volumes/";
 const std::string VIRT_PLUGIN_LIVE_MOUNT_INFO = VIRT_PLUGIN_CACHE_ROOT + "/live.tobedeleted";
+const std::string VIRT_PLUGIN_LAST_TASK_INFO = VIRT_PLUGIN_CACHE_ROOT + "/last_task.info";
+const std::string VIRT_PLUGIN_LAST_MIGRATE_INFO = VIRT_PLUGIN_CACHE_ROOT + "/last_migrate.info";
 const std::string VIRT_PLUGIN_NEW_VOLUME_INFO = VIRT_PLUGIN_CACHE_RESTOREJOB_ROOT + "new_volume_info/";
 
 /* metadata saved in meta repository */

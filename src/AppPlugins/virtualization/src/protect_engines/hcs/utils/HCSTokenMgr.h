@@ -31,7 +31,7 @@ public:
     bool ReacquireToken(ModelBase &model, std::string &tokenValue) override;
 
 protected:
-    void ReplaceProjectId(const std::string apiType, const std::string &newId, std::string &url);
+    void ReplaceProjectId(const std::string apiType, const std::string &newId, std::string &url, bool isOpService = false);
     std::string GetTokenKey(ModelBase &model) override;
     bool ParseEndpoint(ModelBase &model, const TokenInfo &tokenInfo, std::string &endPoint) override;
     void InitGetTokenRequest(GetTokenRequest &getTokenRequeset, ModelBase &model);

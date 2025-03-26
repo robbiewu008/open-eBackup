@@ -31,8 +31,6 @@ public:
         const std::string &volName, const std::string &volWwn, std::string &diskDevicePath, bool isInternalScence);
     // 通过wwn查找到路径
     std::string GetDiskPathForWWN(const std::string &volWwn);
-    // 登出Target
-    int32_t DoLogOut(const std::string &targetIp);
     // 查看已登录
     int32_t GetLoginedTargetIP(std::vector<std::string> &loginedIps);
     // 在登出前删除不用路径
