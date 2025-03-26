@@ -27,5 +27,5 @@ target_include_directories(job_mgr_obj
 target_link_libraries(job_mgr_obj
     PUBLIC
     basic_job
-    mgr_obj
+    lib_mgr_obj
 )
