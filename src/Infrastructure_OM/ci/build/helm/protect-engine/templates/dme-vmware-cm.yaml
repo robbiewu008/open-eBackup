@@ -1,3 +1,6 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d9" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -5,3 +8,9 @@ metadata:
   namespace: dpa
 data:
   PromiseWaitTimeout: "1800000"
+  VMwareBackupAndRestoreMaxThreadNum: "30"
+  TaskReportMinInterval: "30"
+  MaxAgentWorkLoad: "30"
+  MaxWorkloadForBackupAndRestore: "100"
+  MaxWorkloadForOtherJobs: "60"
+{{- end }}

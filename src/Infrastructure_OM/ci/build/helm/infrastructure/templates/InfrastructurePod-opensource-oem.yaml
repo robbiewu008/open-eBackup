@@ -54,6 +54,9 @@ spec:
         fsGroup: 99
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      dnsConfig:
+        options:
+          - name: single-request-reopen
       containers:
         - name: elasticsearch
           image: elasticsearch:{{ .Values.global.version }}
@@ -480,6 +483,8 @@ spec:
               name: network-conf
             - mountPath: /opt/common-conf
               name: common-conf
+            - mountPath: /opt/vmware-conf
+              name: vmware-conf
       initContainers:
         - name: init-gaussdb
           image: om:{{ .Values.global.version }}
@@ -564,6 +569,9 @@ spec:
         - name: common-conf
           configMap:
             name: common-conf
+        - name: vmware-conf
+          configMap:
+            name: vmware-conf
         {{- if eq $environment "Dorado" }}
         - name: data-nas
           persistentVolumeClaim:
