@@ -13,6 +13,10 @@ target_include_directories(basic_job
     PUBLIC
     ${INC_PATH}/job
     ${INC_PATH}/common
+    ${INC_PATH}/lib_mgr
+    ${INC_PATH}/rpc
+    ${INC_PATH}/rpc/certificateservice
+    ${INC_PATH}/client
     ${MODULE_PATH}
 )
 

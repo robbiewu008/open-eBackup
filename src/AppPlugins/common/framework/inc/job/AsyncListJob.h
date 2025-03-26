@@ -28,7 +28,7 @@ public:
         m_request(request) {}
     virtual ~AsyncListJob() = default;
 
-    virtual int ExecuteAsyncJob() override;
+    virtual int ExecuteAsyncJob();
 
 protected:
     ListResourceRequest m_request;
