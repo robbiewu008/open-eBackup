@@ -15,6 +15,9 @@ typedef ApplicationProtectBaseDataType.StorageRepository StorageRepository
 typedef ApplicationProtectBaseDataType.BackupJobType BackupJobType
 typedef ApplicationProtectBaseDataType.QueryByPage QueryByPage
 typedef ApplicationProtectBaseDataType.JobPermission JobPermission
+typedef ApplicationProtectBaseDataType.RepositoryPath RepositoryPath
+typedef ApplicationProtectBaseDataType.ScanRepositories ScanRepositories
+typedef ApplicationProtectBaseDataType.ResourceResultByPage ResourceResultByPage
 
 exception AppProtectPluginException {
     1:required i32 code;
@@ -300,20 +303,6 @@ enum JobResult {
     ABORTED = 2
 }
 
-/** list resource result with page */
-struct ResourceResultByPage {
-    /** resource elements list */
-    1:required list<ApplicationResource> items,
-    /** current page no */
-    2:required i32 pageNo,
-    /** maximum number of elements in one page */
-    3:required i32 pageSize,
-    /** total page number */
-    4:required i32 pages,
-    /** total elements number */
-    5:required i32 total
-}
-
 /** list resource by page request */
 struct ListResourceRequest {
     /** environment for list resource */
@@ -322,6 +311,8 @@ struct ListResourceRequest {
     2:optional list<Application> applications,
     /** condition for list resource */
     3:required QueryByPage condition
+    /** condition for list resource */
+    4:optional string id
 }
 
 /** list resource by page request */
@@ -421,7 +412,18 @@ service ProtectService extends PluginServiceBase {
     */
     ActionResult AllowBackupSubJobInLocalNode(1:BackupJob job, 2:SubJob subJob);
 
-    /** 
+    /**
+        Function description
+            Query the repositories needed to be scanned
+        Parameters
+            job : backup job information
+            ScanRepositories : return the repositories needed to be scanned.
+        Return value
+            return the repositories needed to be scanned.
+        */
+    ScanRepositories QueryScanRepositories(1:BackupJob job);
+
+    /**
         Function description
             query job permission, synchronization function
         Parameters
@@ -783,6 +785,16 @@ service ApplicationService extends PluginServiceBase {
             successful if the ActionResult.code is 0, failed otherwise
     */
     ActionResult CheckApplication(1:ApplicationEnvironment appEnv, 2:Application application);
+
+    /** 
+        Function description
+            Async list appliation resource.
+        Parameters
+            ListResourceRequest : Request of list resource.
+        Return value
+            successful if the ActionResult.code is 0, failed otherwise
+    */
+    ActionResult AsyncListApplicationResource(1:ListResourceRequest request) throws(1:AppProtectPluginException e);
 
     /** 
         Function description
