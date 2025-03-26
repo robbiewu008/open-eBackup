@@ -2,6 +2,9 @@ add_subdirectory(copy)
 add_subdirectory(delete)
 add_subdirectory(dir)
 add_subdirectory(hardlink)
+if(NAS)
+    add_subdirectory(antiransomware)
+endif()
 
 set(BACKUP_SRC_PATH "${CMAKE_CURRENT_SOURCE_DIR}/..")
 set(THIRD_OPEN_SRC_PATH "${MODULE_ROOT_PATH}/third_open_src")
@@ -9,10 +12,18 @@ set(MODULE_PATH "${MODULE_ROOT_PATH}")
 
 MESSAGE("${MODULE_ROOT_PATH}/platform/SecureCLib_rel/include")
 
-add_library(service_obj
-    OBJECT
-    BackupMgr.cpp
-)
+if(NAS)
+    add_library(service_obj
+        OBJECT
+        BackupMgr.cpp
+        com_huawei_emeistor_dee_anti_ransomware_service_worm_so_BackUp.cpp
+    )
+else()
+    add_library(service_obj
+        OBJECT
+        BackupMgr.cpp
+    )
+endif()
 
 target_include_directories(service_obj
     PRIVATE
@@ -31,6 +42,7 @@ target_include_directories(service_obj
     ${BACKUP_SRC_PATH}/engines/libnfs
     ${BACKUP_SRC_PATH}/engines/libnfs/requests
     ${BACKUP_SRC_PATH}/engines/libnfs/interface
+    ${BACKUP_SRC_PATH}/engines/nfs_anti_ransomware
     ${BACKUP_SRC_PATH}/engines/archive_client
     ${BACKUP_SRC_PATH}/engines/hostcommon
     ${MODULE_PATH}/src/libobs_ctx

@@ -451,7 +451,7 @@ int HostIndex::UnzipMetafileToCurPathAndRemove(const string& path) const
     if (ret != 0) {
         ERRLOG("unzip failed! %d", ret);
         for (auto msg : errOutput) {
-            ERRLOG("errmsg : %s", msg.c_str());
+            WARNLOG("errmsg : %s", msg.c_str());
         }
         return FAILED;
     }
@@ -490,7 +490,7 @@ void HostIndex::UnzipMetafileToCurPathAndRemoveAsync(const string& path, promise
     if (ret != 0) {
         ERRLOG("unzip failed! %d", ret);
         for (auto msg : errOutput) {
-            ERRLOG("errmsg : %s", msg.c_str());
+            WARNLOG("errmsg : %s", msg.c_str());
         }
         m_isPreparing = false;
         promiseObj.set_value(FAILED);
@@ -652,8 +652,8 @@ void HostIndex::PrepareForGenrateRfi(string preMetaFilePath, string curMetafilep
     // unzip curMetafilepath to workDir/latest/
     string workDir = m_cacheRepo->path[0] + dir_sep + META + LATEST;
     string rfiDir = m_cacheRepo->path[0] + dir_sep + RFI;
-    PluginUtils::CreateDirectory(workDir);
-    PluginUtils::CreateDirectory(rfiDir);
+    PluginUtils::SafeCreateDirectory(workDir, m_cacheRepo->path[0]);
+    PluginUtils::SafeCreateDirectory(rfiDir, m_cacheRepo->path[0]);
     string curMetaFileZipFileName = m_metaRepo->path[0] + dir_sep + METAFILE_PARENT_DIR + dir_sep + METAFILE_ZIP_NAME;
     string win7z = Module::EnvVarManager::GetInstance()->GetAgentWin7zPath();
     string cmd = win7z + " -y x " + curMetaFileZipFileName + " -o" + workDir;
@@ -671,7 +671,7 @@ void HostIndex::PrepareForGenrateRfi(string preMetaFilePath, string curMetafilep
     }
     // unzip preMetaFilePath to workDir/previous/
     workDir = m_cacheRepo->path[0] + dir_sep + META + PREVIOUS;
-    PluginUtils::CreateDirectory(workDir);
+    PluginUtils::SafeCreateDirectory(workDir, m_cacheRepo->path[0]);
     string preMetaFileZipFileName = m_preMetaRepo->path[0] + dir_sep + METAFILE_PARENT_DIR +
         dir_sep + METAFILE_ZIP_NAME;
     win7z = Module::EnvVarManager::GetInstance()->GetAgentWin7zPath();
@@ -696,8 +696,8 @@ void HostIndex::PrepareForGenrateRfi(string preMetaFilePath, string curMetafilep
     // unzip curMetafilepath to workDir/latest/
     string workDir = m_cacheRepo->path[0] + dir_sep + META + LATEST;
     string rfiDir = m_cacheRepo->path[0] + dir_sep + RFI;
-    PluginUtils::CreateDirectory(workDir);
-    PluginUtils::CreateDirectory(rfiDir);
+    PluginUtils::SafeCreateDirectory(workDir, m_cacheRepo->path[0]);
+    PluginUtils::SafeCreateDirectory(rfiDir, m_cacheRepo->path[0]);
     string curMetaFileZipFileName = m_metaRepo->path[0] + dir_sep + METAFILE_PARENT_DIR +
         dir_sep + METAFILE_ZIP_NAME;
     
@@ -720,7 +720,7 @@ void HostIndex::PrepareForGenrateRfi(string preMetaFilePath, string curMetafilep
     }
     // unzip preMetaFilePath to workDir/previous/
     workDir = m_cacheRepo->path[0] + dir_sep + META + PREVIOUS;
-    PluginUtils::CreateDirectory(workDir);
+    PluginUtils::SafeCreateDirectory(workDir, m_cacheRepo->path[0]);
     string preMetaFileZipFileName = m_preMetaRepo->path[0] + dir_sep + METAFILE_PARENT_DIR +
         dir_sep + METAFILE_ZIP_NAME;
 #if defined(_AIX) || defined(SOLARIS)

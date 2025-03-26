@@ -101,12 +101,13 @@ public:
 
     static void ReleaseInstance(IHttpClient* pClient);
 
-    virtual std::shared_ptr<IHttpResponse> SendMemCertRequest(const HttpRequest& req, const uint32_t timeOut = 90)
+    virtual std::shared_ptr<IHttpResponse> SendMemCertRequest(const HttpRequest& req, const uint32_t connTimeOut = 90, const uint32_t timeOut = 0)
     {
         return nullptr;
     }
 
-    virtual std::shared_ptr<IHttpResponse> SendRequest(const HttpRequest& req, const uint32_t timeOut = 90) = 0;
+    virtual std::shared_ptr<IHttpResponse> SendRequest(const HttpRequest& req, const uint32_t connTimeOut = 90,
+        const uint32_t timeOut = 0) = 0;
 
     virtual std::shared_ptr<IHttpResponse> DownloadAttchment(const HttpRequest& req, const uint32_t timeOut = 90) = 0;
 

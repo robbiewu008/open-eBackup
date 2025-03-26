@@ -18,6 +18,28 @@
 #include "HostCancelLivemount.h"
 #include "HostArchiveRestore.h"
 #include "HostIndex.h"
+#ifdef __linux__
+#include "VolumeCommonService.h"
+#include "VolumeBackup.h"
+#include "LinuxVolumeBackup.h"
+#include "LinuxVolumeRestore.h"
+#include "VolumeIndex.h"
+#include "VolumeLivemount.h"
+#include "VolumeCancelLivemount.h"
+#include "VolumeFileGranularRestore.h"
+#include "LinuxVolumeLivemount.h"
+#include "LinuxVolumeCancelLivemount.h"
+#include "LinuxVolumeIndex.h"
+#include "LinuxVolumeFileGranularRestore.h"
+#endif
+#ifdef WIN32
+#include "WinVolumeBackup.h"
+#include "WinVolumeRestore.h"
+#include "WinVolumeLivemount.h"
+#include "WinVolumeCancelLivemount.h"
+#include "volume_index/WinVolumeIndex.h"
+#include "volume_restore/WinVolumeFileGranularRestore.h"
+#endif
 
 namespace FilePlugin {
 namespace {
@@ -30,9 +52,12 @@ enum class AppType {
     APPTYPE_NONE = 0,
     APPTYPE_FILESET,
     APPTYPE_ARCHIVE_RESTORE,
+    APPTYPE_VOLUME,
+    APPTYPE_VOLUME_GRANULAR_RESTORE
 };
 
 const std::string FILESET_STR = "Fileset";
+const std::string VOLUME_STR = "Volume";
 }  // namespace
 
 CommonJobFactory::CommonJobFactory()
@@ -49,6 +74,37 @@ CommonJobFactory::CommonJobFactory()
         JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<HostIndex>, this, std::placeholders::_1));
     m_commonJobMap[GetJobType(static_cast<int>(AppType::APPTYPE_ARCHIVE_RESTORE), JobType::RESTORE)] =
         JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<HostArchiveRestore>, this, std::placeholders::_1));
+#ifdef __linux__
+    m_commonJobMap[GetJobType(static_cast<int>(AppType::APPTYPE_VOLUME), JobType::BACKUP)] =
+        JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<LinuxVolumeBackup>, this, std::placeholders::_1));
+    m_commonJobMap[GetJobType(static_cast<int>(AppType::APPTYPE_VOLUME), JobType::RESTORE)] =
+        JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<LinuxVolumeRestore>, this, std::placeholders::_1));
+    m_commonJobMap[GetJobType(static_cast<int>(AppType::APPTYPE_VOLUME_GRANULAR_RESTORE), JobType::RESTORE)] =
+        JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<LinuxVolumeFileGranularRestore>,
+        this, std::placeholders::_1));
+    m_commonJobMap[GetJobType(static_cast<int>(AppType::APPTYPE_VOLUME), JobType::LIVEMOUNT)] =
+        JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<LinuxVolumeLivemount>, this, std::placeholders::_1));
+    m_commonJobMap[GetJobType(static_cast<int>(AppType::APPTYPE_VOLUME), JobType::CANCELLIVEMOUNT)] =
+        JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<LinuxVolumeCancelLivemount>,
+            this, std::placeholders::_1));
+    m_commonJobMap[GetJobType(static_cast<int>(AppType::APPTYPE_VOLUME), JobType::INDEX)] =
+        JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<LinuxVolumeIndex>, this, std::placeholders::_1));
+#endif
+#ifdef WIN32
+    m_commonJobMap[GetJobType(static_cast<int>(AppType::APPTYPE_VOLUME), JobType::BACKUP)] =
+        JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<WinVolumeBackup>, this, std::placeholders::_1));
+    m_commonJobMap[GetJobType(static_cast<int>(AppType::APPTYPE_VOLUME), JobType::RESTORE)] =
+        JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<WinVolumeRestore>, this, std::placeholders::_1));
+    m_commonJobMap[GetJobType(static_cast<int>(AppType::APPTYPE_VOLUME), JobType::LIVEMOUNT)] =
+        JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<WinVolumeLivemount>, this, std::placeholders::_1));
+    m_commonJobMap[GetJobType(static_cast<int>(AppType::APPTYPE_VOLUME), JobType::CANCELLIVEMOUNT)] =
+        JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<WinVolumeCancelLivemount>, this, std::placeholders::_1));
+    m_commonJobMap[GetJobType(static_cast<int>(AppType::APPTYPE_VOLUME), JobType::INDEX)] =
+        JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<WinVolumeIndex>, this, std::placeholders::_1));
+    m_commonJobMap[GetJobType(static_cast<int>(AppType::APPTYPE_VOLUME_GRANULAR_RESTORE), JobType::RESTORE)] =
+        JobFunc(std::bind(&CommonJobFactory::CreateFactoryJob<WinVolumeFileGranularRestore>,
+            this, std::placeholders::_1));
+#endif
 }
 
 CommonJobFactory::~CommonJobFactory()
@@ -96,6 +152,8 @@ uint64_t CommonJobFactory::GetBackupAppType(const std::shared_ptr<JobCommonInfo>
     std::string appTypeString = jobInfo->protectObject.subType;
     if (appTypeString == FILESET_STR) {
         return static_cast<uint64_t>(AppType::APPTYPE_FILESET);
+    } else if (appTypeString == VOLUME_STR) {
+        return static_cast<uint64_t>(AppType::APPTYPE_VOLUME);
     }
     HCP_Log(ERR, MODULE) << "subJobType is wrong ,the appTypeString is: " << appTypeString << HCPENDLOG;
     return static_cast<uint64_t>(AppType::APPTYPE_NONE);
@@ -125,6 +183,10 @@ uint64_t CommonJobFactory::GetRestoreAppType(const std::shared_ptr<JobCommonInfo
     bool isFineGrained = jobInfo->jobParam.restoreType == AppProtect::RestoreJobType::type::FINE_GRAINED_RESTORE;
     if (appTypeString == FILESET_STR) {
         return static_cast<uint64_t>(AppType::APPTYPE_FILESET);
+    } else if (appTypeString == VOLUME_STR && isFineGrained) {
+        return static_cast<uint64_t>(AppType::APPTYPE_VOLUME_GRANULAR_RESTORE);
+    } else if (appTypeString == VOLUME_STR) {
+        return static_cast<uint64_t>(AppType::APPTYPE_VOLUME);
     }
 
     HCP_Log(ERR, MODULE) << "subJobType is wrong ,the appTypeString is: " << appTypeString << HCPENDLOG;
@@ -143,6 +205,8 @@ uint64_t CommonJobFactory::GetLivemountAppType(const std::shared_ptr<JobCommonIn
     std::string appTypeString = jobInfo->targetObject.subType;
     if (appTypeString == FILESET_STR) {
         return static_cast<uint64_t>(AppType::APPTYPE_FILESET);
+    } else if (appTypeString == VOLUME_STR) {
+        return static_cast<uint64_t>(AppType::APPTYPE_VOLUME);
     }
     HCP_Log(ERR, MODULE) << "subJobType is wrong ,the appTypeString is: " << appTypeString << HCPENDLOG;
     return static_cast<uint64_t>(AppType::APPTYPE_NONE);
@@ -161,6 +225,8 @@ uint64_t CommonJobFactory::GetCancelLivemountAppType(const std::shared_ptr<JobCo
     std::string appTypeString = jobInfo->targetObject.subType;
     if (appTypeString == FILESET_STR) {
         return static_cast<uint64_t>(AppType::APPTYPE_FILESET);
+    } else if (appTypeString == VOLUME_STR) {
+        return static_cast<uint64_t>(AppType::APPTYPE_VOLUME);
     }
     HCP_Log(ERR, MODULE) << "subJobType is wrong ,the appTypeString is: " << appTypeString << HCPENDLOG;
     return static_cast<uint64_t>(AppType::APPTYPE_NONE);
@@ -178,6 +244,8 @@ uint64_t CommonJobFactory::GetIndexAppType(const std::shared_ptr<JobCommonInfo> 
     std::string appTypeString = jobInfo->indexProtectObject.subType;
     if (appTypeString == FILESET_STR) {
         return static_cast<uint64_t>(AppType::APPTYPE_FILESET);
+    } else if (appTypeString == VOLUME_STR) {
+        return static_cast<uint64_t>(AppType::APPTYPE_VOLUME);
     }
     HCP_Log(ERR, MODULE) << "subJobType is wrong ,the appTypeString is: " << appTypeString << HCPENDLOG;
     return static_cast<uint64_t>(AppType::APPTYPE_NONE);

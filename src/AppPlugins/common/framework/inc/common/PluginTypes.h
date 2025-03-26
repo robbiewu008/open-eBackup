@@ -30,6 +30,7 @@ enum class JobType {
     CANCELLIVEMOUNT,
     DELCOPY,
     CHECK_COPY,
+    RES_DISCOVER, // 异步扫描任务类型
     UNDEFINED_JOB_TYPE = 65536
 };
 
@@ -38,7 +39,9 @@ enum class OperType {
     PRE = 1,
     GENERATE,
     EXECUTE,
-    POST
+    POST,
+    // 非通用框架调用
+    RESOURCE // 异步资源扫描任务类型
 };
 
 #define NAS_PLUGIN_LOG(logLevel, ...) printf(__VA_ARGS__)

@@ -327,7 +327,7 @@ std::shared_ptr<LvmSnapshot> VssSnapshotProvider::CreateSnapshotByVolume(const s
         append(volumeName).append("\\").append(driverLetter);
     HCP_Log(DEBUG, MODULE) << "mountPoint:" << mountPoint << HCPENDLOG;
     if (!std::filesystem::create_directories(mountPoint)) {
-        HCP_Log(ERROR, MODULE) << "create mountPoint Directory failed" << HCPENDLOG;
+        HCP_Log(WARN, MODULE) << "create mountPoint Directory failed" << HCPENDLOG;
     }
     std::string snapVolumeName = Utf16ToUtf8(client.GetSnapshotProperty(volumeId)
         .value().SnapshotDeviceObjectW()).append("\\");

@@ -17,6 +17,7 @@ target_include_directories(${EXEC_FILE_NAME}
     PUBLIC
     ${INC_PATH}/startup
     ${INC_PATH}/rpc
+    ${INC_PATH}/rpc_server
     ${INC_PATH}/common
     ${INC_PATH}/rpc/certificateservice
     ${INC_PATH}/rpc/thriftservice
@@ -45,6 +46,7 @@ target_link_libraries(${EXEC_FILE_NAME}
     pluginsdk
     job_mgr_obj
     rpc
+    rpc_server
     ssl
     crypto
     param_checker

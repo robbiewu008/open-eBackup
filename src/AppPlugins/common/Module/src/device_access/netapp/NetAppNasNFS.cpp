@@ -209,7 +209,7 @@ namespace Module {
         int errorCode = NUMB_ZERO;
         int iRet = QueryVolume(m_resourceName, errorCode);
         if (iRet != SUCCESS && errorCode == NUMB_ZERO) {
-            HCP_Log(ERR, NETAPP_MODULE) << "No volume to delete "
+            HCP_Log(WARN, NETAPP_MODULE) << "No volume to delete "
                 << m_resourceName << HCPENDLOG;
             return SUCCESS;
         } else if (errorCode == -NUMB_ONE) {
@@ -233,7 +233,7 @@ namespace Module {
             iRet = QueryParentVolumeDetails(m_resourceName, parentVolumeName, parentVolumeUuid,
                                             parentSnapshot);
             if (iRet == FAILED) {
-                HCP_Log(ERR, NETAPP_MODULE) << "Query parent Info not success" << HCPENDLOG;
+                HCP_Log(WARN, NETAPP_MODULE) << "Query parent Info not success" << HCPENDLOG;
             }
 
             iRet = DeleteVolume(m_resourceName, false);
@@ -243,7 +243,8 @@ namespace Module {
             // Delete Parent Snapshot only after deleting current current volume
             iRet = DeleteParentSnapshot(parentVolumeName, parentVolumeUuid, parentSnapshot);
             if (iRet == FAILED) {
-                HCP_Log(ERR, NETAPP_MODULE) << "Could not Delete Parent Snapshot" << HCPENDLOG;
+                HCP_Log(WARN, NETAPP_MODULE) << "Could not Delete Parent Snapshot" << HCPENDLOG;
+                return FAILED;
             }
         }
         HCP_Log(INFO, NETAPP_MODULE) << "Delete nfs share and volume success!" << HCPENDLOG;
@@ -302,5 +303,47 @@ namespace Module {
     int NetAppNasNFS::DeleteNFSShareClient(std::string shareClientId)
     {
         return SUCCESS;
+    }
+
+    int NetAppNasNFS::DeleteSnapshot(std::string SnapshotName)
+    {
+        if (QueryVolUuidByVolNameAndSvmName(m_vserverName, m_resourceName) != SUCCESS) {
+            HCP_Log(ERR, NETAPP_MODULE) << "Query SvmUuid By SvmName Failed" << HCPENDLOG;
+            return FAILED;
+        }
+        return NetAppNas::DeleteSnapshot(SnapshotName);
+    }
+
+    int NetAppNasNFS::QueryVolUuidByVolNameAndSvmName(const std::string &svmName, const std::string &volName)
+    {
+        if (CheckSvmDetails() != SUCCESS) {
+            HCP_Log(ERR, NETAPP_MODULE) << "No SVM found to query volume" << HCPENDLOG;
+            return FAILED;
+        }
+
+        HttpRequest req;
+        req.method = "GET";
+        req.url = "/api/storage/volumes?fields=uuid,name,svm&name=" + volName + "&svm=" + svmName;
+        std::string errorDes;
+        int errorCode = NUMB_ZERO;
+        Json::Value data;
+        int iRet = SendRequest(req, data, errorDes, errorCode);
+        if (iRet == SUCCESS) {
+            if (data.size() > 0 && data.isMember("records") &&
+                (data["records"].isArray() && !data["records"].empty())) {
+                return ValidateQueryVolumeResponse(data, volName);
+            } else {
+                if (data["records"].isArray() && data["records"].empty() &&
+                    data["num_records"].asInt() == 0) {
+                    HCP_Log(ERR, NETAPP_MODULE)<<"Given Volume Doesn't exist" << HCPENDLOG;
+                }
+                HCP_Log(ERR, NETAPP_MODULE) << "No data" << HCPENDLOG;
+                return FAILED;
+            }
+        } else {
+            HCP_Log(ERR, NETAPP_MODULE) << "HTTP FAILED" << HCPENDLOG;
+            return FAILED;
+        }
+        return FAILED;
     }
 }

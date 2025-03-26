@@ -28,6 +28,7 @@ namespace {
     const int32_t INDEX_META_FILE_NAME = 0;
     const int32_t INDEX_META_FILE_OFFSET = 1;
     const int32_t INDEX_AGGR_FILE_SIZE = 2;
+    const int NUM_10 = 10;
     const int SUCCESS = 0;
     const int FAILED = 1;
     const int MAX_RETRY = 0;
@@ -57,7 +58,9 @@ int SQLBusyCallback(void* ptr, int retryNum)
         return 0;
     }
     /* retrun 1 after random sleep to sqlite, so it will try attempt the OP again */
-    WARNLOG("SQLITE_BUSY, retryNum=%d", retryNum);
+    if (retryNum % NUM_10 == 0) {
+        WARNLOG("SQLITE_BUSY, retryNum=%d", retryNum);
+    }
     SleepForRandomMsec(SQL_SLEEP_TIME_MIN, SQL_SLEEP_TIME_MAX);
     return 1;
 }
@@ -266,7 +269,7 @@ int32_t SQLiteCoreInfo::SqlQuery(sqlite3_stmt* stmt, DBReader& readBuff, int32_t
             if (temp != nullptr) {
                 text = temp;
             } else {
-                ERRLOG("sqlite3_column_text null, col=%d.", i);
+                WARNLOG("sqlite3_column_text null, col=%d.", i);
             }
             readBuff << text;
         }
@@ -352,7 +355,7 @@ int32_t SQLiteCoreInfo::Disconnect()
         DBGLOG("Closing dbFile: %s", m_dbFile.c_str());
         int32_t ret = sqlite3_close(m_pDB);
         if (ret != SQLITE_OK) {
-            ERRLOG("sqlite3_close failed.errno: %d, %s, dbFile: %s", ret, sqlite3_errmsg(m_pDB), m_dbFile.c_str());
+            WARNLOG("sqlite3_close failed.errno: %d, %s, dbFile: %s", ret, sqlite3_errmsg(m_pDB), m_dbFile.c_str());
         }
         m_pDB = nullptr;
     }
@@ -750,7 +753,7 @@ int32_t IndexDetails::InsertIndexInfo(std::shared_ptr<SQLiteDB> sqliteDB, sqlite
 #endif
     int32_t ret = sqliteDB->BindStepSql(sqlStmt, dps, sqlInfoPtr);
     if (ret != SUCCESS) {
-        ERRLOG("db.BindStepSql failed, ret = %d.", ret);
+        WARNLOG("db.BindStepSql failed, ret = %d.", ret);
     }
 
     return ret;

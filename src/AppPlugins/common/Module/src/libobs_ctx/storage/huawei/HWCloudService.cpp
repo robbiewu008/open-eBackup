@@ -46,6 +46,7 @@ void HWCloudService::InitBasicOptions(obs_options& option)
     option.request_options.max_connected_time = DEFAULT_CONNECTTIMEOUT_S;
     option.request_options.bbr_switch = OBS_BBR_CLOSE;
     option.request_options.auth_switch = m_authSwitch;
+    option.temp_auth = NULL;
 
     if (m_verifyInfo.useProxy) {
         option.request_options.proxy_host = String2CharPtr(m_verifyInfo.proxyHostName);
@@ -267,6 +268,7 @@ OBSResult HWCloudService::ListObjects(
     obs_options option;
     InitBasicOptions(option);
     option.bucket_options.bucket_name = String2CharPtr(request->bucketName);
+    option.request_options.encodingType = request->encodeEnable ? 1 : 0;
 
     const char* prefix = String2CharPtr(request->prefix);
     const char* marker = String2CharPtr(request->marker);
@@ -323,12 +325,12 @@ OBSResult HWCloudService::GetObjectMetaData(
         return result;
     }
 
-    HCP_Log(DEBUG, MODULE_NAME) << "GetObjectMetaData request: " << HCPENDLOG;
-    HCP_Log(DEBUG, MODULE_NAME) << "bucketName - " << request->bucketName << HCPENDLOG;
-    HCP_Log(DEBUG, MODULE_NAME) << "key - " << request->key << HCPENDLOG;
+    HCP_Log(DEBUG, MODULE_NAME) << "GetObjectMetaData request: " << "bucketName - " << request->bucketName
+        << "key - " << request->key << HCPENDLOG;
 
     obs_options option;
     InitBasicOptions(option);
+    option.request_options.encodingType = request->encodeEnable ? 1 : 0;
     option.bucket_options.bucket_name = String2CharPtr(request->bucketName);
 
     obs_object_info objectinfo;
@@ -385,6 +387,7 @@ OBSResult HWCloudService::GetObjectACL(
     }
     obs_options option;
     InitBasicOptions(option);
+    option.request_options.encodingType = request->encodeEnable ? 1 : 0;
     option.bucket_options.bucket_name = String2CharPtr(request->bucketName);
 
     obs_response_handler responseHandler = {nullptr, &ResponseCompleteCallback};
@@ -461,6 +464,7 @@ OBSResult HWCloudService::GetObject(
 
     obs_options option;
     InitBasicOptions(option);
+    option.request_options.encodingType = request->encodeEnable ? 1 : 0;
     option.bucket_options.bucket_name = String2CharPtr(request->bucketName);
 
     obs_object_info objectinfo;
@@ -512,8 +516,7 @@ OBSResult HWCloudService::GetObject(
     return result;
 }
 
-OBSResult HWCloudService::MultiPartDownloadObject(
-    const std::unique_ptr<MultiPartDownloadObjectRequest>& request,
+OBSResult HWCloudService::MultiPartDownloadObject(const std::unique_ptr<MultiPartDownloadObjectRequest>& request,
     std::unique_ptr<MultiPartDownloadObjectResponse>& resp)
 {
     OBSResult result;
@@ -531,6 +534,7 @@ OBSResult HWCloudService::MultiPartDownloadObject(
     obs_options option;
     InitBasicOptions(option);
     option.bucket_options.bucket_name = String2CharPtr(request->bucketName);
+    option.request_options.encodingType = request->encodeEnable ? 1 : 0;
 
     char* key = String2CharPtr(request->key);
     char* versionId = String2CharPtr(request->versionId);
@@ -566,8 +570,7 @@ OBSResult HWCloudService::MultiPartDownloadObject(
                 break;
             }
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "multipart download object failed"
-                << " error - " << obs_get_status_name(data.retStatus)
+            HCP_Log(ERR, MODULE_NAME) << "MultiPartDownloadObject error - " << obs_get_status_name(data.retStatus)
                 << " bucket - " << request->bucketName << " key - " << request->key << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, retStatus, result));
@@ -821,9 +824,8 @@ OBSResult HWCloudService::MultiPartUploadObject(const std::unique_ptr<MultiPartU
 
     obs_options option;
     InitBasicOptions(option);
+    option.request_options.encodingType = request->encodeEnable ? 1 : 0;
     option.bucket_options.bucket_name = String2CharPtr(request->bucketName);
-
-    char* key = String2CharPtr(request->key);
 
     obs_upload_file_configuration uploadFileConfig;
     memset_s(&uploadFileConfig, sizeof(obs_upload_file_configuration), 0, sizeof(obs_upload_file_configuration));
@@ -845,7 +847,7 @@ OBSResult HWCloudService::MultiPartUploadObject(const std::unique_ptr<MultiPartU
         data.partSize = request->partSize;
         data.callBackData = request->callBackData;
 
-        upload_file(&option, key, nullptr, &uploadFileConfig, &handler, &data);
+        upload_file(&option, String2CharPtr(request->key), nullptr, &uploadFileConfig, &handler, &data);
 
         retStatus = data.retStatus;
         if (OBS_STATUS_OK == data.retStatus) {
@@ -882,6 +884,7 @@ OBSResult HWCloudService::SetObjectACL(const std::unique_ptr<SetObjectACLRequest
     obs_options option;
     obs_status retStatus;
     InitBasicOptions(option);
+    option.request_options.encodingType = request->encodeEnable ? 1 : 0;
     option.bucket_options.bucket_name = String2CharPtr(request->bucketName);
 
     obs_response_handler responseHandler = {nullptr, &ResponseCompleteCallback};
@@ -1012,6 +1015,7 @@ OBSResult HWCloudService::SetObjectMetaData(const std::unique_ptr<SetObjectMetaD
     obs_options option;
     obs_status retStatus;
     InitBasicOptions(option);
+    option.request_options.encodingType = request->encodeEnable ? 1 : 0;
     option.bucket_options.bucket_name = String2CharPtr(request->bucketName);
 
     obs_object_info objectinfo;
@@ -1093,11 +1097,11 @@ OBSResult HWCloudService::GetUploadId(
     obs_options option;
     InitBasicOptions(option);
     option.bucket_options.bucket_name = String2CharPtr(request->bucketName);
+    option.request_options.encodingType = request->encodeEnable ? 1 : 0;
 
     char* key = String2CharPtr(request->key);
     char uploadId[NUM256] = {0};
     GetUploadIdCallData data;
-
     obs_put_properties putProperties;
     putProperties.meta_data = NULL;
     init_put_properties(&putProperties);
@@ -1120,11 +1124,8 @@ OBSResult HWCloudService::GetUploadId(
                 result.result = ResultType::FAILED;
             }
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "get upload id failed."
-                << " error - " << obs_get_status_name(data.retStatus)
-                << " bucket - " << request->bucketName
-                << " key - " << request->key
-                << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "get upload id failed." << " error - " << obs_get_status_name(data.retStatus)
+                << " bucket - " << request->bucketName << " key - " << request->key << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, retStatus, result));
     if (putProperties.meta_data != NULL) {
@@ -1152,6 +1153,7 @@ OBSResult HWCloudService::PutObjectPart(
     obs_options option;
     InitBasicOptions(option);
     option.bucket_options.bucket_name = String2CharPtr(request->bucketName);
+    option.request_options.encodingType = request->encodeEnable ? 1 : 0;
 
     char* key = String2CharPtr(request->key);
 
@@ -1196,8 +1198,7 @@ OBSResult HWCloudService::PutObjectPart(
     return result;
 }
 
-OBSResult HWCloudService::CompletePutObjectPart(
-    const std::unique_ptr<CompletePutObjectPartRequest>& request)
+OBSResult HWCloudService::CompletePutObjectPart(const std::unique_ptr<CompletePutObjectPartRequest>& request)
 {
     OBSResult result;
 
@@ -1214,8 +1215,8 @@ OBSResult HWCloudService::CompletePutObjectPart(
     obs_options option;
     InitBasicOptions(option);
     option.bucket_options.bucket_name = String2CharPtr(request->bucketName);
+    option.request_options.encodingType = request->encodeEnable ? 1 : 0;
 
-    char* key = String2CharPtr(request->key);
     char* uploadId = String2CharPtr(request->uploadId);
     int tmpNum = request->uploadInfo.size();
 
@@ -1239,8 +1240,8 @@ OBSResult HWCloudService::CompletePutObjectPart(
     int retryCount = 0;
     obs_status retStatus = OBS_STATUS_BUTT;
     do {
-        complete_multi_part_upload(
-            &option, key, uploadId, tmpNum, uploadInfoPtr.get(), &putProperties, &handler, &retStatus);
+        complete_multi_part_upload(&option, String2CharPtr(request->key), uploadId, tmpNum, uploadInfoPtr.get(),
+            &putProperties, &handler, &retStatus);
 
         if (retStatus == OBS_STATUS_OK) {
             HCP_Log(DEBUG, MODULE_NAME) << "complete put object successfully. " << request->bucketName << " "
@@ -1350,6 +1351,7 @@ OBSResult HWCloudService::DeleteObject(const std::unique_ptr<DeleteObjectRequest
     obs_options option;
     InitBasicOptions(option);
     option.bucket_options.bucket_name = String2CharPtr(request->bucketName);
+    option.request_options.encodingType = request->encodeEnable ? 1 : 0;
 
     obs_object_info objectinfo;
     memset_s(&objectinfo, sizeof(obs_object_info), 0, sizeof(obs_object_info));
@@ -1390,6 +1392,7 @@ OBSResult HWCloudService::PutObject(
     obs_options option;
     InitBasicOptions(option);
     option.bucket_options.bucket_name = String2CharPtr(request->bucketName);
+    option.request_options.encodingType = request->encodeEnable ? 1 : 0;
 
     char* key = String2CharPtr(request->key);
 

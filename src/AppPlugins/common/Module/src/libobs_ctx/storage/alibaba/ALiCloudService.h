@@ -60,7 +60,7 @@ namespace Module {
         OBSResult PutObject(
             const std::unique_ptr<PutObjectPartRequest>& request,
             std::unique_ptr<PutObjectPartResponse>& resp) override;
-    
+
     private:
         std::unique_ptr<AlibabaCloud::OSS::OssClient> InitBasicOptions(AlibabaCloud::OSS::ClientConfiguration &option);
         void PrintInitOptions(AlibabaCloud::OSS::ClientConfiguration &option);
@@ -76,6 +76,8 @@ namespace Module {
             const AlibabaCloud::OSS::ObjectSummaryList& objectList, std::vector<ListObjectsContent>& contents);
         void SaveObjectMetaData(
             const AlibabaCloud::OSS::ObjectMetaData &metaData, std::unique_ptr<GetObjectResponse>& resp);
+        int64_t ReadFromBuffer(
+            const AlibabaCloud::OSS::GetObjectOutcome &outcome, const std::unique_ptr<GetObjectRequest> &request);
     };
 }
 

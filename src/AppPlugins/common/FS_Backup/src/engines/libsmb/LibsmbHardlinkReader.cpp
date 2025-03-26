@@ -146,7 +146,7 @@ bool LibsmbHardlinkReader::IsComplete()
             m_controlInfo->m_noOfFilesToBackup.load(), m_controlInfo->m_noOfDirToBackup.load(), m_readQueue->Empty());
     }
     if ((m_controlInfo->m_controlReaderPhaseComplete) &&
-        m_readQueue->Empty() &&
+        m_readQueue->Empty() && m_partialReadQueue->Empty() &&
         (m_timer.GetCount() == 0) &&
         (m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) == 0)) {
         INFOLOG("controlReaderComplete %d (pending packet counts %d) "
@@ -176,7 +176,7 @@ int LibsmbHardlinkReader::ServerCheck()
     if (m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::NO_ACCESS_ERR) >= DEFAULT_MAX_NOACCESS) {
         ERRLOG("Threshold reached for DEFAULT_MAX_NOACCESS");
         m_failReason = BackupPhaseStatus::FAILED_NOACCESS;
-        m_failed = true;
+        m_controlInfo->m_failed = true;
         return FAILED;
     }
     /* Nas Server Check for Source side */
@@ -186,7 +186,7 @@ int LibsmbHardlinkReader::ServerCheck()
         if (ret != SUCCESS) {
             ERRLOG("Stop and Abort read phase due to server inaccessible");
             FSBackupUtils::SetServerNotReachableErrorCode(m_backupParams.backupType, m_failReason);
-            m_failed = true;
+            m_controlInfo->m_failed = true;
             return FAILED;
         } else {
             INFOLOG("Server reachable");
@@ -273,12 +273,12 @@ void LibsmbHardlinkReader::ThreadFunc()
 
 int LibsmbHardlinkReader::ProcessConnectionException()
 {
-    ERRLOG("src connection exception");
+    WARNLOG("src connection exception");
     int ret = HandleConnectionException(m_asyncContext, m_params.srcSmbContextArgs, RECONNECT_CONTEXT_RETRY_TIMES);
     if (ret != SUCCESS) {
         ERRLOG("Stop and Abort read phase due to server inaccessible");
         FSBackupUtils::SetServerNotReachableErrorCode(m_backupParams.backupType, m_failReason);
-        m_failed = true;
+        m_controlInfo->m_failed = true;
         return FAILED;
     }
     INFOLOG("Server reachable");

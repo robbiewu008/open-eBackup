@@ -41,6 +41,7 @@ namespace {
     // used for resource access
     const std::string RESOURCE_NATIVE_FILE_TYPE  = "native";
     const std::string RESOURCE_VOLUME_TYPE       = "volume";
+    const std::string RESOURCE_FILE_DISK_TYPE    = "disk";
 
     // default value for hcpconf.ini
     const std::string EXCLUDE_FILESYSTEM_LIST_DEFAULT = "";
@@ -66,6 +67,7 @@ namespace {
 
     constexpr int EXECUTE_SUBTASK_MONITOR_DUR_IN_SEC = 10;
     constexpr int GENERATE_SUBTASK_MONITOR_DUR_IN_SEC = 10;
+    constexpr int ABORT_TIME_IN_SEC = 5;
     constexpr int SUBTASK_WAIT_FOR_SCANNER_READY_IN_SEC = 1;
 
     constexpr uint32_t SUBJOB_TYPE_SETUP_PHASE = 1;
@@ -170,5 +172,8 @@ namespace {
     constexpr uint32_t SEND_ADDNEWJOB_RETRY_INTERVAL = 10; // 10s delay
     const std::string PLUGIN_ATT_JSON = "plugin_attribute_1.0.0.json";
     const std::string ZFS_SNAPSHOT_DIR = "/.zfs/snapshot";
+    const std::string EFI_SYSTEM_PARTITION = "EFI System Partition";
+    const std::string RECOVERY = "Recovery";
+    constexpr uint64_t EFI_SYSTEM_PARTITION_SIZE = 99 * 1024 * 1024;
 }
 #endif // APPPLUGIN_NAS_PLUGINCONSTANTS_H

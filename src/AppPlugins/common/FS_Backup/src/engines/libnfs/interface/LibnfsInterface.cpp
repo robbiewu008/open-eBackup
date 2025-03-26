@@ -545,8 +545,9 @@ void HandleSendWriterNfsRequestFailure(FileHandle &fileHandle, NfsCommonData &co
     if (IS_INCREMENT_FAIL_COUNT(fileHandle)) {
         FSBackupUtils::RecordFailureDetail(commonData.failureRecorder, fileHandle.m_file->m_fileName, EINVAL);
         commonData.controlInfo->m_noOfFilesFailed += fileHandle.m_file->m_originalFileCount;
-        ERRLOG("write file failed. %s, totalFailed: %llu", fileHandle.m_file->m_fileName.c_str(),
-            commonData.controlInfo->m_noOfFilesFailed.load());
+        ERRLOG("write file failed. %s, metaIndex: %u, metaOffset: %llu, totalFailed: %llu",
+            fileHandle.m_file->m_fileName.c_str(), fileHandle.m_file->m_metaFileIndex,
+            fileHandle.m_file->m_metaFileOffset, commonData.controlInfo->m_noOfFilesFailed.load());
     }
 
     if (!commonData.skipFailure) {

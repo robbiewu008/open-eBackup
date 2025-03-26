@@ -102,7 +102,9 @@ int SmbMkdirRecursive(FileHandle fileHandle, SmbWriterCommonData *mkdirParams)
         } else {
             ++mkdirParams->controlInfo->m_noOfFilesFailed;
         }
-        ERRLOG("mkdir failed: %s, retryCnt: %d, totalFailed: %llu, %llu", mkdirParams->path.c_str(), retryCnt,
+        ERRLOG("mkdir failed: %s, retryCnt: %d, metaInfo: %u, %llu, totalFailed: %llu, %llu",
+            mkdirParams->path.c_str(), retryCnt,
+            fileHandle.m_file->m_metaFileIndex, fileHandle.m_file->m_metaFileOffset,
             mkdirParams->controlInfo->m_noOfDirFailed.load(), mkdirParams->controlInfo->m_noOfFilesFailed.load());
         /*
          * if fileHandle refers to a file, and it's parent dir failed to create,

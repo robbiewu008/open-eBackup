@@ -19,6 +19,7 @@ target_include_directories(host_archive_restore_obj
     ${PLUGIN_SRC_PATH}
     ${PLUGIN_SRC_PATH}/utils/
     ${PLUGIN_SRC_PATH}/common
+    ${PLUGIN_SRC_PATH}/file_service/host_restore
     ${PLUGIN_SRC_PATH}/common/host
     ${PLUGIN_SRC_PATH}/component
     ${PLUGIN_BACKUP_PATH}/src

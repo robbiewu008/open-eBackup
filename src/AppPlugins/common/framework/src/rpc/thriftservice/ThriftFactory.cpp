@@ -87,11 +87,9 @@ std::shared_ptr<IThriftClient> ThriftFactory::GetClient(const std::string& host,
     return GetClientImpl(socket);
 }
 
-std::shared_ptr<IThriftClient> ThriftFactory::GetSslClient(const std::string& host, int32_t port,
+std::shared_ptr<IThriftClient> ThriftFactory::GetSslClient(const std::string& /* host */, int32_t port,
     std::shared_ptr<ICertificateHandler> certificateHandler)
 {
-    host;
-    port;
     std::string hostName;
     certificateHandler->GetCertificateConfig(CertificateConfig::HOST_NAME, hostName);
     std::shared_ptr<TTransport> socket = CreateSslSocket(hostName, port, certificateHandler);

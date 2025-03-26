@@ -29,8 +29,9 @@
 
 namespace {
     constexpr auto DATE_BUF_MAX = 50;
+    const std::size_t RECORDER_FILE_NUMBER_LIMIT = 100;
     const std::string RECORDER_FILE_SUFFIX = "_failure.csv";
-
+    const std::string FAILED_FILE_SET = "recordFailedFileSet";
 #ifdef WIN32
     const std::string PATH_SEPARATOR = "\\";
 #else
@@ -46,6 +47,8 @@ namespace fs = boost::filesystem;
 
 namespace Module {
 
+    size_t BackupFailureRecorder::m_failureRecordsFileMax = 10 * 1024 * 1024; /* 10M */
+
 BackupFailureRecorder::BackupFailureRecorder(
     const std::string& outputDirRootPath,
     const std::string& jobID,
@@ -54,9 +57,7 @@ BackupFailureRecorder::BackupFailureRecorder(
     uint64_t recordMax)
     : m_outputDirRootPath(outputDirRootPath),
     m_jobID(jobID),
-    m_subTaskID(subTaskID),
-    m_bufferMax(bufferMax),
-    m_recordMax(recordMax)
+    m_subTaskID(subTaskID)
 {
     m_filepath = GetJobRecordRootPath() + PATH_SEPARATOR + m_subTaskID + "_failure.csv";
     INFOLOG("backup failure recorder csv path: %s", m_filepath.c_str());
@@ -239,35 +240,146 @@ std::vector<std::string> BackupFailureRecorder::GetFileListInDirectory(const std
     return result;
 }
 
+void BackupFailureRecorder::DeleteExcessFiles(const std::string& directoryPath)
+{
+    try {
+        if (!fs::exists(directoryPath) || !fs::is_directory(directoryPath)) {
+            ERRLOG("The directoryPath %s have error",
+                directoryPath.c_str());
+            return;
+        }
+    } catch (const std::exception& e) {
+        ERRLOG("the directoryPath： %s caught exception: %s", directoryPath.c_str(), e.what());
+        return;
+    }
+    uint32_t fileCountInDirectory = CountFiles(directoryPath);
+    if (fileCountInDirectory >= RECORDER_FILE_NUMBER_LIMIT) {
+        INFOLOG("The number file : %d of files up to the limit: %d",
+            fileCountInDirectory, RECORDER_FILE_NUMBER_LIMIT);
+        DeleteExcessFilesInner(directoryPath);
+    }
+    return;
+}
+
+void BackupFailureRecorder::DeleteExcessFilesInner(const std::string& directoryPath)
+{
+    try {
+        std::vector<FileInfo> files;
+        for (const auto& entry : fs::directory_iterator(directoryPath)) {
+            if (fs::is_regular_file(entry.status())) {
+                FileInfo file;
+                file.filePath = entry.path().string();
+#ifdef WIN32
+                auto file_time = std::filesystem::last_write_time(directoryPath);
+                auto sys_epoch = std::chrono::system_clock::now() - std::chrono::system_clock::from_time_t(0);
+                auto file_time_since_epoch = file_time - std::filesystem::file_time_type::clock::now();
+                auto file_time_in_system_clock = std::chrono::system_clock::from_time_t(0) + file_time_since_epoch;
+                file.creationTime = std::chrono::system_clock::to_time_t(file_time_in_system_clock);
+#else
+                file.creationTime = fs::last_write_time(entry.path());
+#endif
+                files.push_back(file);
+            }
+        }
+
+        if (files.empty()) {
+            INFOLOG("The directoryPath %s have no files",
+                directoryPath.c_str());
+            return;
+        }
+        std::sort(files.begin(), files.end(), [](const FileInfo& a, const FileInfo& b) {
+            return a.creationTime < b.creationTime;
+        });
+
+        const auto& fileToDelete = files.front().filePath;
+        if (fs::remove(fileToDelete)) {
+            INFOLOG("Successfully deleted the earliest created file: %s", fileToDelete);
+        } else {
+            ERRLOG("Failed to delete the file!");
+        }
+    } catch (const std::exception& e) {
+        ERRLOG("Delete subtask failure record in directory %s, caught exception %s",
+            directoryPath.c_str(), e.what());
+    }
+}
+uint32_t BackupFailureRecorder::CountFiles(const std::string& directoryPath)
+{
+    std::size_t fileCount = 0;
+    try {
+        for (const auto& entry : fs::directory_iterator(directoryPath)) {
+            if (fs::is_regular_file(entry.status())) {
+                 ++fileCount;
+            }
+        }
+        INFOLOG("The number of files is %d", fileCount);
+    } catch (const std::exception& e) {
+        ERRLOG("Count subtask failure record in directory %s, caught exception %s",
+            directoryPath.c_str(), e.what());
+    }
+    return fileCount;
+}
 
 bool BackupFailureRecorder::Merge(
-    const std::string& outputDirRootPath, const std::string& jobID)
+    const std::string& finaloutputDirRootPath, const std::string& jobID, const std::string& srcoutputDirRootPath)
 {
-    std::string jobRecordRootPath = outputDirRootPath + PATH_SEPARATOR + jobID;
+    std::string jobRecordRootPath = srcoutputDirRootPath + PATH_SEPARATOR + jobID;
+    INFOLOG("jobRecordRootPath: %s, finaloutputDirRootPath : %s",
+        jobRecordRootPath.c_str(), finaloutputDirRootPath.c_str());
     std::vector<std::string> fileList = GetFileListInDirectory(jobRecordRootPath);
     if (fileList.empty()) {
         INFOLOG("no failure csv file found to be merged, job record root path: %s",
             jobRecordRootPath.c_str());
         return true;
     }
-    std::string outBundleFilePath = jobRecordRootPath + PATH_SEPARATOR + jobID + "_bundle.csv";
+    if (!MergeInner(finaloutputDirRootPath, jobID, jobRecordRootPath, fileList)) {
+        return false;
+    }
+    // 清除子目录后面剩下的空目录
     try {
+        fs::remove_all(jobRecordRootPath);
+    } catch (const std::exception& e) {
+        ERRLOG("remove jobRecordRootPath： %s caught exception: %s", jobRecordRootPath.c_str(), e.what());
+    }
+    return true;
+}
+
+bool BackupFailureRecorder::MergeInner(const std::string& outputDirRootPath, const std::string& jobID,
+    const std::string& jobRecordRootPath, const std::vector<std::string>& fileList)
+{
+    std::string recordFailedFilePath =  outputDirRootPath + PATH_SEPARATOR + FAILED_FILE_SET;
+    try {
+        if (fs::exists(recordFailedFilePath)) {
+            DeleteExcessFiles(recordFailedFilePath);
+        } else {
+            fs::create_directories(recordFailedFilePath);
+        }
+        std::string outBundleFilePath = recordFailedFilePath + PATH_SEPARATOR + jobID + "_bundle.csv";
         std::ofstream outFile(outBundleFilePath, std::ios::app);
         if (!outFile.is_open()) {
             ERRLOG("Create main job failure recorde file failed, file name: %s", outBundleFilePath.c_str());
             ClearSubTaskRecordFile(jobRecordRootPath);
             return false;
         }
+        size_t totalFileSize = GetFileSize(outFile);
+        size_t fileSize = 0;
         for (const std::string& subFile : fileList) {
             std::ifstream inFile(subFile, std::ios::in);
             if (!inFile.is_open()) {
                 ERRLOG("Open subjob failure recorde file failed, file: %s", subFile.c_str());
                 continue;
             }
+            fileSize = GetFileSize(inFile);
+            INFOLOG("totalFileSize: %d , fileSize: %d, m_failureRecordsFileMax: %d", totalFileSize, fileSize, m_failureRecordsFileMax);
+            if (fileSize + totalFileSize > m_failureRecordsFileMax)  {
+                inFile.close();
+                fs::remove(subFile);
+                continue;
+            }
             outFile << inFile.rdbuf();
+            totalFileSize += fileSize;
             inFile.close();
             /* remove in time to prevent merge failing due to insufficient disk space */
-            DBGLOG("%s merged, remove now", subFile.c_str());
+            INFOLOG("%s merged, remove now", subFile.c_str());
             fs::remove(subFile);
         }
         outFile.close();
@@ -277,8 +389,22 @@ bool BackupFailureRecorder::Merge(
         ClearSubTaskRecordFile(jobRecordRootPath);
         return false;
     }
-    ClearSubTaskRecordFile(jobRecordRootPath);
     return true;
+}
+
+uint64_t BackupFailureRecorder::GetFileSize(std::ifstream& infile)
+{
+    infile.seekg(0, infile.end);
+    uint64_t length = infile.tellg();
+    infile.seekg(0, std::ios::beg);
+    return length;
+}
+
+uint64_t BackupFailureRecorder::GetFileSize(std::ofstream& outfile)
+{
+    outfile.seekp(0, outfile.end);
+    uint64_t length = outfile.tellp();
+    return length;
 }
 
 bool BackupFailureRecorder::ClearSubTaskRecordFile(const std::string& jobRecordRootPath)
@@ -304,6 +430,5 @@ bool BackupFailureRecorder::ClearSubTaskRecordFile(const std::string& jobRecordR
     }
     return true;
 }
-
 
 }

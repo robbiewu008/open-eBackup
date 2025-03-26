@@ -19,6 +19,10 @@ using namespace std;
 using namespace Module;
 using namespace FS_Backup;
 
+namespace {
+    const int RETRY_TIME_MILLISENCOND = 1000;
+}
+
 PosixHardlinkReader::PosixHardlinkReader(
     const ReaderParams &hardlinkReaderParams,
     std::shared_ptr<Module::BackupFailureRecorder> failureRecorder)
@@ -51,9 +55,10 @@ int PosixHardlinkReader::ReadEmptyData(FileHandle& fileHandle)
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_readTaskProduce;
@@ -75,9 +80,10 @@ int PosixHardlinkReader::ReadSymlinkData(FileHandle& fileHandle)
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto taskPtr = make_shared<OsPlatformServiceTask>(
         HostEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(taskPtr) == false) {
+    if (m_jsPtr->Put(taskPtr, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_readTaskProduce;
@@ -95,9 +101,10 @@ int PosixHardlinkReader::ReadNormalData(FileHandle& fileHandle)
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto readTask = make_shared<OsPlatformServiceTask>(
         HostEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(readTask) == false) {
+    if (m_jsPtr->Put(readTask, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_readTaskProduce;

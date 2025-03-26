@@ -378,6 +378,7 @@ namespace Module {
             iRet = DeleteParentSnapshot(parentVolumeName, parentVolumeUuid, parentSnapshot);
             if (iRet == FAILED) {
                 HCP_Log(ERR, NETAPP_MODULE) << "Could not Delete Parent Snapshot" << HCPENDLOG;
+                return FAILED;
             }
         }
         HCP_Log(INFO, NETAPP_MODULE) <<"Delete cifs share and volume success!" << HCPENDLOG;

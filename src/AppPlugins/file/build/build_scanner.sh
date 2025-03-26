@@ -31,7 +31,7 @@ build_scanner()
         echo "ERR: Unsupported system architecture"
     fi
     mkdir -p ${SCANNER_DIR}/lib
-    tar xzf ${OBLIGATION_ROOT}/FS_SCANNER/Linux/${arch_type_dir}/scanner_file.tar.gz -C ${SCANNER_DIR}
+    tar xzf ${OBLIGATION_ROOT}/FS_SCANNER/Linux/${arch_type_dir}/scanner.tar.gz -C ${SCANNER_DIR}
 }
 
 build_scanner

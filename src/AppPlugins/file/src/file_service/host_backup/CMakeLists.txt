@@ -20,6 +20,7 @@ target_include_directories(host_backup_obj
     ${PLUGIN_SRC_PATH}
     ${PLUGIN_SRC_PATH}/common
     ${PLUGIN_SRC_PATH}/file_service/snapshot_provider
+    ${PLUGIN_SRC_PATH}/file_service/host_restore
     ${PLUGIN_SRC_PATH}/file_service/
     ${PLUGIN_SRC_PATH}/utils
     ${PLUGIN_SRC_PATH}/common/constant

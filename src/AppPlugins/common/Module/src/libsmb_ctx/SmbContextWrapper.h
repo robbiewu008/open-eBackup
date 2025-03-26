@@ -115,10 +115,13 @@ public:
     int SmbGetInfo(const char *path, struct SMB2_ALL_INFO *allInfo);
     int SmbRename(const char *oldPath, const char *newPath);
     int SmbGetInfoAsync(const char *path, struct SMB2_ALL_INFO *allInfo, smb2_command_cb cb, void *privateData);
-
+    int SmbGetDataRange(const char *path, uint64_t fileSize, struct smb2_data_range_node **allInfo);
+    int SmbSetSparseFlag(const char *path, struct smb2fh *fh);
+    int SmbGetDataRangeAsync(const char *path, uint64_t fileSize, struct smb2_data_range_node **allInfo, smb2_command_cb cb, void *privateData);
     int SmbFsync(struct smb2fh *fh);
     int SmbFsyncAsync(struct smb2fh *fh, smb2_command_cb cb, void *privateData);
 
+    int SmbfruncateAsync(struct smb2fh *fh, uint64_t length, smb2_command_cb cb, void *privateData);
     void SmbSetKrbEnvironment();
     int Poll(int expireTime);
     static uint64_t GetCurTimeSecond();
@@ -128,6 +131,9 @@ private:
     bool SmbValidateArgsKrbInfo();
     bool SmbValidateArgs();
     void SmbConfigure();
+    void AddBracketsForIpv6(std::string &ip);
+    bool IsIpv6Addr(const std::string &ip);
+    bool IsExistBrackets(const std::string &ip);
 
 private:
     struct smb2_context *m_smbContext = nullptr;

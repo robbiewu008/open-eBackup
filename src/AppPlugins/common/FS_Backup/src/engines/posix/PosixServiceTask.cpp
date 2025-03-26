@@ -691,6 +691,10 @@ bool PosixServiceTask::RemoveFile(const std::string &filePath)
 void PosixServiceTask::HandleCreateDir()
 {
     std::string dstDir = PathConcat(m_params.dstRootPath, m_fileHandle.m_file->m_fileName, m_params.dstTrimPrefix);
+    // 如果是根目录，直接返回不创建
+    if (dstDir == m_params.dstRootPath) {
+        return;
+    }
     if (!CreateDirectory(dstDir)) {
         m_result = FAILED;
         return;
@@ -698,7 +702,7 @@ void PosixServiceTask::HandleCreateDir()
     DBGLOG("create dir %s success!", dstDir.c_str());
     if (m_params.backupType == BackupType::RESTORE || m_params.backupType == BackupType::FILE_LEVEL_RESTORE) {
         if (!SetAcl(dstDir) || !SetXattr(dstDir)) {
-            ERRLOG("set acl or xattr failed for %s", dstDir.c_str());
+            WARNLOG("set acl or xattr failed for %s", dstDir.c_str());
         }
     }
     m_result = SUCCESS;
@@ -867,6 +871,7 @@ bool PosixServiceTask::SetXattr(const string &dstPath)
 #elif defined(SOLARIS)
     DBGLOG("Setxattr function is missing on SunOS platform!");
 #else
+    DBGLOG("m_params.writeExtendAttribute is: %s", m_params.writeExtendAttribute ? "true": "false");
     if (m_params.writeExtendAttribute && !m_fileHandle.m_file->m_xattr.empty()) {
         for (auto &xattr : m_fileHandle.m_file->m_xattr) {
             char *value = (char *)malloc(xattr.second.size());
@@ -889,22 +894,36 @@ bool PosixServiceTask::SetXattr(const string &dstPath)
                 m_errDetails = {dstPath, errno};
                 ERRLOG("set xattr key %s value %s failed %s errno %d",
                     xattr.first.c_str(), xattr.second.c_str(), dstPath.c_str(), m_errDetails.second);
-                free(value);
-                return false;
+                if (!DealSpecialErrnoForOsRestore(m_errDetails)) {
+                    free(value);
+                    return false;
+                }
             }
             ret = lsetxattr(dstPath.c_str(), xattr.first.c_str(), value, xattr.second.size(), XATTR_REPLACE);
             if (ret != 0) {
                 m_errDetails = {dstPath, errno};
                 ERRLOG("set xattr key %s value %s failed %s errno %d",
                     xattr.first.c_str(), xattr.second.c_str(), dstPath.c_str(), m_errDetails.second);
-                free(value);
-                return false;
+                if (!DealSpecialErrnoForOsRestore(m_errDetails)) {
+                    free(value);
+                    return false;
+                }
             }
             free(value);
         }
     }
 #endif
     return true;
+}
+
+bool PosixServiceTask::DealSpecialErrnoForOsRestore(std::pair<std::string, uint64_t>& m_errDetails)
+{
+    // 操作系统恢复时，对部分文件不支持设置selinux属性，需要特殊处理
+    if (m_errDetails.second == EINVAL || m_errDetails.second == EOPNOTSUPP) {
+        DBGLOG("specical process if error EINVAL22/EOPNOTSUPP95 when osrestore");
+        return true;
+    }
+    return false;
 }
 
 bool PosixServiceTask::ShouldWriteMode()

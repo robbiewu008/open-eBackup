@@ -522,6 +522,11 @@ void Libnfscommonmethods::RequestFailHandleAndCleanLinkMap(FileHandle &fileHandl
         ERRLOG("commonData is nullptr");
         return;
     }
+    ERRLOG("Hit RequestFailHandle. fileName: %s, metaIndex: %u, metaOffset: %llu, "
+        "direction: %s, failIncOrgCount: %d, removeHardlinkMapEntry: %d",
+        fileHandle.m_file->m_fileName.c_str(), fileHandle.m_file->m_metaFileIndex,
+        fileHandle.m_file->m_metaFileOffset, direction.c_str(),
+        failIncOrgCount, removeHardlinkMapEntry);
 
     if (IS_INCREMENT_FAIL_COUNT(fileHandle)) {
         if (!failIncOrgCount) {

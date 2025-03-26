@@ -81,7 +81,18 @@ public:
             return false;
         }
     };
-
+    class FileCacheComparator {
+    public:
+        int operator()(const FileCacheRecord& p1, const FileCacheRecord& p2)
+        {
+            if (memcmp(p1.fcache.m_filePathHash.sha1,
+                    p2.fcache.m_filePathHash.sha1,
+                    SHA_DIGEST_LENGTH * sizeof(unsigned char)) > 0) {
+                return true;
+            }
+            return false;
+        }
+    };
     class ComparatorV20 {
     public:
         int operator() (const FileCache p1, const FileCache p2)
@@ -133,6 +144,9 @@ public:
         */
     CTRL_FILE_RETCODE ReadFileCacheEntries(std::queue<FileCache> &fcQueue,
         uint64_t offset, uint32_t totalCount, uint16_t metaFileIndex);
+
+    CTRL_FILE_RETCODE ReadFileCacheEntries(std::queue<FileCache> &fcQueue,
+        uint64_t offset, uint32_t totalCount, uint16_t metaFileIndex, uint64_t& nextOffset);
     
     /**
         * Get all fcache entries

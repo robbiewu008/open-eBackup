@@ -71,6 +71,17 @@ namespace FilePlugin {
         END_SERIAL_MEMEBER
     };
 
+    struct FileDiskResourceInfo {
+        std::string diskId;
+        std::string diskName;
+        uint64_t diskSize;
+        BEGIN_SERIAL_MEMEBER
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(diskId, diskId)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(diskName, diskName)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(diskSize, diskSize)
+        END_SERIAL_MEMEBER
+    };
+
 #ifdef WIN32
     
     struct WinVolumeInfo {
@@ -147,6 +158,7 @@ namespace FilePlugin {
         std::vector<StringVolumeInfo> volumeResourceDetailVec;
 #endif
         std::vector<NasShareResourceInfo> resourceDetailVec;
+        std::vector<FileDiskResourceInfo> diskResourceDetailVec;
     };
 
     struct NasShareAuthInfo {

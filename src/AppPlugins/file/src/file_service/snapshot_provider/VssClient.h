@@ -125,6 +125,7 @@ public:
         const std::string& snapshotPercent);
     std::optional<SnapshotSetResult> CreateSnapshotsW(const std::vector<std::wstring>& wVolumePathList,
         const std::string& snapshotPercent);
+    bool isVolumeFull;
     bool DeleteSnapshotW(const std::wstring& wSnapshotID);
     bool DeleteSnapshot(const std::string& snapshotID);
     bool DeleteSnapshotSetW(const std::wstring& wSnapshotSetID);

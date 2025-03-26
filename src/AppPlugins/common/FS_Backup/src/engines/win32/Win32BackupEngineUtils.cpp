@@ -62,8 +62,14 @@ std::string Win32BackupEngineUtils::PathConcat(
          */
         if (ctrlEntryPath.find(trimPrefixPath) == 0) {
             trailPath = ctrlEntryPath.substr(trimPrefixPath.length());
+        } else if (trimPrefixPath.find(ctrlEntryPath) == 0) {
+            // 用于裁剪保护路径
+            trailPath = "";
         } else {
-            ERRLOG("%s is not the prefix of %s", trimPrefixPath.c_str(), ctrlEntryPath.c_str());
+            WARNLOG("%s is not the prefix of %s", trimPrefixPath.c_str(), ctrlEntryPath.c_str());
+        }
+        if (trailPath.empty()) {
+            return forwardPath;
         }
     }
     std::string concatedWin32Path = RemoveExtraSlash(forwardPath + trailPath);
@@ -74,6 +80,7 @@ std::string Win32BackupEngineUtils::PathConcat(
     // 是windows格式的路径， 就直接把分隔符换一下
     if (concatedWin32Path[0] != '/' && concatedWin32Path[1] == ':') {
         std::replace(concatedWin32Path.begin(), concatedWin32Path.end(), SLASH[0], BACKSLASH[0]);
+        concatedWin32Path = RemoveExtraBackSlash(concatedWin32Path);
         DBGLOG("after PathConcat:%s", concatedWin32Path.c_str());
         return concatedWin32Path;
     }
@@ -244,6 +251,19 @@ std::string Win32BackupEngineUtils::RemoveExtraSlash(const std::string& path)
     string temp = path;
     for (auto it = temp.begin(); it + 1 != temp.end();) {
         if (*it == '/' && *(it + 1) == '/') {
+            temp.erase(it + 1);
+        } else {
+            ++it;
+        }
+    }
+    return temp;
+}
+
+std::string Win32BackupEngineUtils::RemoveExtraBackSlash(const std::string& path)
+{
+    string temp = path;
+    for (auto it = temp.begin(); it + 1 != temp.end();) {
+        if (*it == '\\' && *(it + 1) == '\\') {
             temp.erase(it + 1);
         } else {
             ++it;

@@ -30,6 +30,7 @@ namespace {
     constexpr int MILLION = 1000000;
     constexpr auto FILESYSTEMFILTERHEADER = "/source_policy_";
     constexpr auto FILESYSTEMFILTERTAIL = "_Context";
+    constexpr auto FILESYSTEMFILTERTAILFORE6000 = "Context";
     const std::string POSIX_PATH_SEPARATOR = "/";
 }
 
@@ -144,7 +145,7 @@ CTRL_FILE_RETCODE RfiCtrlParser::WriteDirMeta(const DirCache& dirCache, const Di
     }
     string rfiLine;
     if (!JsonHelper::StructToJsonString(document, rfiLine)) {
-        ERRLOG("json struct to string failed");
+        WARNLOG("json struct to string failed");
     }
     m_writeBuffer << rfiLine << "\n";
     m_entries++;
@@ -299,7 +300,7 @@ void RfiCtrlParser::WriteStatisticInfo()
 {
     string statisticStr;
     if (!JsonHelper::StructToJsonString(m_statistic, statisticStr)) {
-        ERRLOG("convert statistic struct fail!");
+        WARNLOG("convert statistic struct fail!");
     }
     m_writeBuffer << statisticStr;
     return;
@@ -322,14 +323,26 @@ string RfiCtrlParser::GetRfiZipFileName()
 bool RfiCtrlParser::CheckMultiSystemRootDirExist(string& fileName)
 {
     string fileSystemRootPath = FILESYSTEMFILTERHEADER + m_filterKey + FILESYSTEMFILTERTAIL;
+    string fileSystemRootPathForE6000 =
+        FILESYSTEMFILTERHEADER + m_filterKey + POSIX_PATH_SEPARATOR + FILESYSTEMFILTERTAILFORE6000;
+    string fileSystemRootPathForE6000Snapshot = POSIX_PATH_SEPARATOR + FILESYSTEMFILTERTAILFORE6000;
     // 如果匹配
-    if (fileName.substr(0, fileSystemRootPath.size()) == fileSystemRootPath) {
+    if (fileName.substr(0, fileSystemRootPath.size()) == fileSystemRootPath ||
+        fileName.substr(0, fileSystemRootPathForE6000.size()) == fileSystemRootPathForE6000) {
         fileName.erase(fileName.begin(), fileName.begin() + fileSystemRootPath.size());
         if (*fileName.begin() != '/') {
             // 跳过统计
             return false;
         }
         // 说明是多文件系统目标路径下的文件， 记入rfi
+        return true;
+    }
+    if (fileName.substr(0, fileSystemRootPathForE6000Snapshot.size()) == fileSystemRootPathForE6000Snapshot) {
+        fileName.erase(fileName.begin(), fileName.begin() + fileSystemRootPathForE6000Snapshot.size());
+        if (*fileName.begin() != '/') {
+            // 跳过统计
+            return false;
+        }
         return true;
     }
     // 跳过统计

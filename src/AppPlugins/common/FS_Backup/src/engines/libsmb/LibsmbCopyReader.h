@@ -74,7 +74,6 @@ private:
     std::shared_ptr<Module::SmbContextWrapper> m_asyncContext;
     std::shared_ptr<SmbReaderCommonData> m_readerCommonData;
 
-    bool m_failed { false };
     bool m_threadDone { false };
     BackupPhaseStatus m_failReason = BackupPhaseStatus::FAILED;
 

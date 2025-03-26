@@ -84,6 +84,8 @@ public:
     /** Plugin clear alarm */
     static void ClearAlarm(ActionResult& returnValue, const AppProtect::AlarmDetails& alarm);
     static void AddIpWhiteList(ActionResult& returnValue, const std::string &jobId, const std::string &ipListStr);
+    static void ReportAsyncJobDetails(ActionResult& returnValue, const std::string &jobId,
+        const int &code, const ResourceResultByPage& results);
 };
 
 class RegisterPluginService {
@@ -94,7 +96,11 @@ public:
     static void UnRegisterPlugin(ActionResult& returnValue, const ApplicationPlugin& plugin);
 };
 
+#ifdef WIN32
+class AGENT_API SecurityService {
+#else
 class SecurityService {
+#endif
 public:
     /** when plugin need check Certificate thumbprint info validity call the interface **/
     static void CheckCertThumbPrint(ActionResult& returnValue, const std::string& ip,

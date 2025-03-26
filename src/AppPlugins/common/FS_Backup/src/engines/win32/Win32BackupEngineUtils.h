@@ -48,6 +48,7 @@ namespace Win32BackupEngineUtils {
     std::string GetJunctionPointTargetPath(const FileHandle& fileHandle);
 
     std::string RemoveExtraSlash(const std::string& path);
+    std::string RemoveExtraBackSlash(const std::string& path);
 
     bool RemovePath(const std::string& path);
     

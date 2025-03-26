@@ -38,9 +38,7 @@ public:
         m_failureRecorder = std::make_shared<Module::BackupFailureRecorder>(
             backupParams.commonParams.failureRecordRootPath,
             backupParams.commonParams.jobId,
-            backupParams.commonParams.subJobId,
-            DEFAULT_MAX_FAILURE_RECORDS_BUFFER_SIZE,
-            backupParams.commonParams.maxFailureRecordsNum
+            backupParams.commonParams.subJobId
         );
 
         CreateBackupStatistic();
@@ -81,15 +79,19 @@ public:
     {
         INFOLOG("BACKUP PHASE START");
         if (m_controlFileReader->Start() != BackupRetCode::SUCCESS) {
+            m_controlInfo->m_failed = true;
             return BackupRetCode::FAILED;
         }
         if (m_reader->Start() != BackupRetCode::SUCCESS) {
+            m_controlInfo->m_failed = true;
             return BackupRetCode::FAILED;
         }
         if (m_aggregator->Start() != BackupRetCode::SUCCESS) {
+            m_controlInfo->m_failed = true;
             return BackupRetCode::FAILED;
         }
         if (m_writer->Start() != BackupRetCode::SUCCESS) {
+            m_controlInfo->m_failed = true;
             return BackupRetCode::FAILED;
         }
         return BackupRetCode::SUCCESS;
@@ -193,9 +195,23 @@ public:
 
         /* all writer/reader/aggreator completed or failed */
         if (IsFailedOrCompleted(controlFileReaderStatus, readerStatus, aggregatorStatus, writerStatus)) {
+            if (m_controlInfo->m_noOfDirFailed + m_controlInfo->m_skipDirCnt +
+                m_controlInfo->m_noOfDirCopied < m_controlInfo->m_noOfDirToBackup ||
+                m_controlInfo->m_noOfFilesCopied + m_controlInfo->m_noOfFilesFailed +
+                m_controlInfo->m_noOfFilesWriteSkip < m_controlInfo->m_noOfFilesToBackup
+                ) {
+                WARNLOG("set to failed. dir: %llu, %llu, %llu, %llu; files, %llu, %llu, %llu, %llu",
+                    m_controlInfo->m_noOfDirFailed.load(), m_controlInfo->m_skipDirCnt.load(),
+                    m_controlInfo->m_noOfDirCopied.load(), m_controlInfo->m_noOfDirToBackup.load(),
+                    m_controlInfo->m_noOfFilesCopied.load(), m_controlInfo->m_noOfFilesFailed.load(),
+                    m_controlInfo->m_noOfFilesWriteSkip.load(), m_controlInfo->m_noOfFilesToBackup.load());
+                    m_controlInfo->m_noOfDirFailed = m_controlInfo->m_noOfDirToBackup -
+                    m_controlInfo->m_skipDirCnt - m_controlInfo->m_noOfDirCopied;
+                    m_controlInfo->m_noOfFilesFailed = m_controlInfo->m_noOfFilesToBackup -
+                    m_controlInfo->m_noOfFilesCopied - m_controlInfo->m_noOfFilesWriteSkip;
+            }
             return FSBackupUtils::GetFailureStatus(readerStatus, writerStatus);
         }
-
         return BackupPhaseStatus::INPROGRESS;
     }
 

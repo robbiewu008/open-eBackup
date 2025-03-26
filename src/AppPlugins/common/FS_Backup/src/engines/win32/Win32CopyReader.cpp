@@ -64,14 +64,28 @@ int Win32CopyReader::ReadEmptyData(FileHandle& fileHandle)
 int Win32CopyReader::ReadMeta(FileHandle& fileHandle)
 {
     DBGLOG("Enter ReadMeta: %s", fileHandle.m_file->m_fileName.c_str());
+    if (m_backupParams.commonParams.adsProcessType != AdsProcessType::ADS_PROCESS_TYPE_FROM_BACKUP) {
+        if (fileHandle.m_file->GetSrcState() == FileDescState::AGGREGATED) {
+            m_aggregateQueue->Push(fileHandle);
+            ++m_controlInfo->m_readProduce;
+            return SUCCESS;
+        }
+        fileHandle.m_file->SetSrcState(FileDescState::META_READED);
+        if (fileHandle.IsDir()) {
+            return SUCCESS;
+        }
+        m_readQueue->Push(fileHandle);
+        return SUCCESS;
+    }
     Win32TaskExtendContext extendContext {};
     extendContext.readQueuePtr = m_readQueue;
     extendContext.aggregateQueuePtr = m_aggregateQueue;
     extendContext.controlInfo = m_controlInfo;
     auto task = make_shared<Win32ServiceTask>(
         HostEvent::READ_META, m_blockBufferMap, fileHandle, m_params, extendContext);
-    if ((m_jsPtr->Put(task) == false)) {
+    if ((m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false)) {
         ERRLOG("put read meta task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_readTaskProduce;
@@ -85,10 +99,10 @@ bool Win32CopyReader::HandleAdsFile(FileHandle& fileHandle)
         return true;
     }
     // is ADS file
-    if (m_controlInfo->m_streamHostFilePendingMap->IsHostWriteFailed(fileHandle.m_file->m_fileName)) {
+    if (m_controlInfo->m_streamHostFilePendingMap->IsHostFailed(fileHandle.m_file->m_fileName)) {
         ERRLOG("ADS file %s set to failed due to host failed", fileHandle.m_file->m_fileName.c_str());
-        m_controlInfo->m_noOfSubStreamCopied++;
-        m_controlInfo->m_noOfSubStreamRead++;
+        ++m_controlInfo->m_noOfSubStreamCopied;
+        ++m_controlInfo->m_noOfSubStreamRead;
         return false;
     }
     if (!m_controlInfo->m_streamHostFilePendingMap->IsHostWriteComplete(fileHandle.m_file->m_fileName)) {
@@ -168,9 +182,6 @@ void Win32CopyReader::HandleSuccessEvent(shared_ptr<Win32ServiceTask> taskPtr)
     DBGLOG("Win32 copy reader success %s event %d state %d",
         fileHandle.m_file->m_fileName.c_str(), static_cast<int>(event), static_cast<int>(state));
     // 小文件readdata后已经close了， 直接push给aggregator
-    if (fileHandle.m_file->IsFlagSet(READ_FAILED_DISCARD)) {
-        FSBackupUtils::RecordFailureDetail(m_failureRecorder, taskPtr->m_errDetails);
-    }
     // prevent these case from increasing m_noOfFilesRead : 1. is dir 2. empty file (not symlink) 3. READ_META event
     if (fileHandle.m_file->IsFlagSet(IS_DIR) ||
         // ReadEmptyData won't create task but symlink data (0 size) will create READ_DATA
@@ -215,6 +226,94 @@ void Win32CopyReader::HandleSuccessEvent(shared_ptr<Win32ServiceTask> taskPtr)
         return;
     }
     return;
+}
+
+void Win32CopyReader::PostFileFailCopiedOperation(const FileHandle& fileHandle)
+{
+    DBGLOG("Reader PostFileFailCopiedOperation, fileName: %s, mode: %u IsAdsFile : %d, HasAds: %d",
+        fileHandle.m_file->m_fileName.c_str(), fileHandle.m_file->m_mode,
+        fileHandle.IsAdsFile(), fileHandle.HasAdsFile());
+    // dir with ADS won't enter this branch
+    if (fileHandle.HasAdsFile()) {
+        m_controlInfo->m_streamHostFilePendingMap->MarkHostFailed(fileHandle.m_file->m_fileName);
+    }
+    if (fileHandle.IsAdsFile()) {
+        ++m_controlInfo->m_noOfSubStreamCopied;
+        ++m_controlInfo->m_noOfSubStreamRead;
+        m_controlInfo->m_streamHostFilePendingMap->DecStreamPending(fileHandle.m_file->m_fileName);
+    }
+}
+
+void Win32CopyReader::HandleFailedEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr)
+{
+    FileHandle fileHandle = taskPtr->m_fileHandle;
+    HostEvent event = taskPtr->m_event;
+    ++fileHandle.m_retryCnt;
+    DBGLOG("%s copy reader failed %s, %u, event %d retry cnt %d",
+        OS_PLATFORM_NAME.c_str(), fileHandle.m_file->m_fileName.c_str(), fileHandle.m_block.m_size,
+        static_cast<int>(event), fileHandle.m_retryCnt);
+    FileDescState state = fileHandle.m_file->GetSrcState();
+
+    if (FSBackupUtils::IsStuck(m_controlInfo)) {
+        ERRLOG("set backup to failed due to stucked!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+        return;
+    }
+
+    if (m_params.discardReadError && (taskPtr->m_errDetails.second == ERROR_FILE_NOT_FOUND ||
+        taskPtr->m_errDetails.second == ERROR_PATH_NOT_FOUND)) {
+        // 如果设置了忽略读失败，对于文件不存在的情况，认为该文件备份成功，设置为跳过文件
+        WARNLOG("File %s not exist, discardReadError is true, ignore it", fileHandle.m_file->m_fileName.c_str());
+        ++m_controlInfo->m_noOfFilesWriteSkip;
+        m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
+        return;
+    }
+    if (state != FileDescState::READ_FAILED &&  /* If state is READ_FAILED, needn't retry */
+        fileHandle.m_retryCnt < DEFAULT_ERROR_SINGLE_FILE_CNT && !taskPtr->IsCriticalError()) {
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
+        return;
+    }
+    if (state != FileDescState::READ_FAILED) {
+        FSBackupUtils::RecordFailureDetail(m_failureRecorder, taskPtr->m_errDetails);
+        // 通过设置公共锁，防止read和write同时失败设置FAILED时导致两边都不计数的问题
+        fileHandle.m_file->LockCommonMutex();
+        fileHandle.m_file->SetSrcState(FileDescState::READ_FAILED);
+        PostFileFailCopiedOperation(fileHandle);  // 处理ADS流文件或者ADS的宿主文件
+        if (!fileHandle.m_file->IsFlagSet(IS_DIR)) {
+            // skipping to the failed cnt inc for zip files in restore which are not used in writetask
+            if (!fileHandle.m_file->IsFlagSet(AGGREGATE_GEN_FILE) &&
+                fileHandle.m_file->GetDstState() != FileDescState::WRITE_FAILED) {
+                // 若write的状态为WRITE_FAILED时，说明该文件已经被writer记为失败
+                ++m_controlInfo->m_noOfFilesFailed;
+                fileHandle.m_errNum = taskPtr->m_errDetails.second;
+                m_failedList.emplace_back(fileHandle);
+            }
+        } else {
+            ++m_controlInfo->m_noOfDirFailed;
+        }
+        fileHandle.m_file->UnlockCommonMutex();
+        ++m_controlInfo->m_noOfFilesReadFailed;
+    }
+    PostOfHandleFailedEvent(fileHandle, taskPtr);
+}
+
+void Win32CopyReader::PostOfHandleFailedEvent(FileHandle& fileHandle, std::shared_ptr<OsPlatformServiceTask> taskPtr)
+{
+    m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
+    if (!m_backupParams.commonParams.skipFailure || taskPtr->IsCriticalError()) {
+        ERRLOG("set backup to failed!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+    }
+    // NATIVE format doesn't need push to aggregator.
+    if (m_backupParams.commonParams.backupDataFormat == BackupDataFormat::AGGREGATE) {
+        PushToAggregator(fileHandle); // file handle so aggregate can handle failurs of reading file
+    }
+    ERRLOG("copy read failed for file %s, %llu, metaInfo: %u, %llu, totalFailed: %llu, %llu",
+        fileHandle.m_file->m_fileName.c_str(), m_controlInfo->m_noOfFilesReadFailed.load(),
+        fileHandle.m_file->m_metaFileIndex, fileHandle.m_file->m_metaFileOffset,
+        m_controlInfo->m_noOfDirFailed.load(), m_controlInfo->m_noOfFilesFailed.load());
 }
 
 bool Win32CopyReader::IsComplete()

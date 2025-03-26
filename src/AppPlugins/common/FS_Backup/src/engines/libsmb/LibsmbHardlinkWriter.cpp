@@ -301,17 +301,17 @@ int LibsmbHardlinkWriter::ServerCheck()
             ERRLOG("Threshold reached for DEFAULT_MAX_NOACCESS");
             m_failReason = BackupPhaseStatus::FAILED_NOACCESS;
         }
-        m_failed = true;
+        m_controlInfo->m_failed = true;
         return FAILED;
     }
     /* Nas Server Check for Destination side */
     if (m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::RETRIABLE_ERR) >= m_dstAdvParams->serverCheckMaxCount) {
-        ERRLOG("Threshold reached calling dst servercheck");
+        WARNLOG("Threshold reached calling dst servercheck");
         m_suspend = true;
         int ret = HandleConnectionException(m_asyncContext, m_params.dstSmbContextArgs, RECONNECT_CONTEXT_RETRY_TIMES);
         if (ret != SUCCESS) {
             ERRLOG("Stop and Abort read phase due to server inaccessible");
-            m_failed = true;
+            m_controlInfo->m_failed = true;
             m_suspend = false;
             FSBackupUtils::SetServerNotReachableErrorCode(m_backupParams.backupType, m_failReason, false);
             return FAILED;
@@ -335,6 +335,9 @@ int64_t LibsmbHardlinkWriter::ProcessTimers()
         delay = POLL_MAX_TIMEOUT;
     }
     for (FileHandle& fh : fileHandles) {
+        if (IsAbort()) {
+            return 0;
+        }
         if (IsWriterRequestReachThreshold()) {
             m_timer.Insert(fh, PENDING_PACKET_REACH_THRESHOLD_TIMER_MILLISECOND);
             continue;
@@ -431,11 +434,11 @@ void LibsmbHardlinkWriter::ThreadFunc()
 
 int LibsmbHardlinkWriter::ProcessConnectionException()
 {
-    ERRLOG("dst connection exception");
+    WARNLOG("dst connection exception");
     int ret = HandleConnectionException(m_asyncContext, m_params.dstSmbContextArgs, RECONNECT_CONTEXT_RETRY_TIMES);
     if (ret != SUCCESS) {
         ERRLOG("Stop and Abort read phase due to server inaccessible");
-        m_failed = true;
+        m_controlInfo->m_failed = true;
         FSBackupUtils::SetServerNotReachableErrorCode(m_backupParams.backupType, m_failReason, false);
         return FAILED;
     }
@@ -508,6 +511,8 @@ void LibsmbHardlinkWriter::ProcessFileDescState(FileHandle fileHandle)
     if (IsFileReadOrWriteFailed(fileHandle)) {
         // 读或写失败: 对于备份，删除这个文件；对于恢复，则不删除用户的文件
         IsBackupTask(m_params.backupType) ? DeleteFile(fileHandle) : CloseFile(fileHandle);
+        m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
+        return;
     }
     bool stateCheck = (state == FileDescState::DST_OPENED) || (state == FileDescState::PARTIAL_WRITED);
     if (stateCheck) {
@@ -655,6 +660,9 @@ void LibsmbHardlinkWriter::ClearWriteCache()
             state == FileDescState::WRITE_SKIP || state == FileDescState::WRITED) {
             // ignore或者replace_older，存在不需要写的文件，需要把这些文件清掉
             DBGLOG("erase from cache %s", it->second[0].m_file->m_fileName.c_str());
+            for (auto& fileHandle : it->second) {
+                m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
+            }
             it = m_writeCache.erase(it);
         } else {
             it++;

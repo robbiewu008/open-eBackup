@@ -94,7 +94,7 @@ void WriterCallBack(struct smb2_context *smb2, int status, void *data, void *pri
             cbData = nullptr;
             ERRLOG("WriterCallBack failed: fileHandle.m_file or cbData->pktStats is nullptr, status:%d", status);
         } else {
-            ERRLOG("WriterCallBack failed: cbData is nullptr, status:%d", status);
+            WARNLOG("WriterCallBack failed: cbData is nullptr, status:%d", status);
         }
         return;
     }
@@ -176,12 +176,13 @@ int SendOpenDstRequest(FileHandle &fileHandle, SmbWriterCommonData *cbData)
     } else {
         flag |= O_TRUNC;
     }
-    DBGLOG("Send OpenDst Request: %s, openFlag: %d", smbPath.c_str(), flag);
+    DBGLOG("Send OpenDst Request: %s, openFlag: %d, fileAttr: %d", smbPath.c_str(), flag, fileHandle.m_file->m_fileAttr);
     int ret = cbData->writeSmbContext->SmbOpenAsync(smbPath.c_str(), flag, WriterCallBack, cbData);
     if (ret != SUCCESS) {
         ERRLOG("Send Open Request Failed: %s", fileHandle.m_file->m_fileName.c_str());
         return FAILED;
     }
+
     return SUCCESS;
 }
 
@@ -218,19 +219,17 @@ void HandleSmbOpenDstCbError(struct smb2_context *smb2, int status, SmbWriterCom
         }
     }
     if (status == -EISDIR) {
-        DBGLOG("SmbOpenDstCb dir need to be replaced to file, dir : %s", cbData->fileHandle.m_file->m_fileName.c_str());
-        cbData->fileHandle.m_file->SetDstState(FileDescState::REPLACE_DIR);
-        cbData->dirQueue->Push(cbData->fileHandle);
-        delete cbData;
-        cbData = nullptr;
-        return;
+        ERRLOG("Already dir present with same name as %s, metafile index: %u, metafile offset: %llu",
+            cbData->fileHandle.m_file->m_fileName.c_str(), cbData->fileHandle.m_file->m_metaFileIndex,
+            cbData->fileHandle.m_file->m_metaFileOffset);
     }
     cbData->fileHandle.m_file->SetDstState(FileDescState::WRITE_FAILED);
     ++cbData->controlInfo->m_noOfFilesFailed;
     cbData->blockBufferMap->Delete(cbData->fileHandle.m_file->m_fileName, cbData->fileHandle);
-    ERRLOG("SmbOpenDstCb failed: %s, status: %d, errno: %s, totalFailed: %llu",
+    ERRLOG("SmbOpenDstCb failed: %s, status: %d, errno: %s, totalFailed: %llu, metaInfo: %u, %llu",
         cbData->fileHandle.m_file->m_fileName.c_str(), status, smb2_get_error(smb2),
-        cbData->controlInfo->m_noOfFilesFailed.load());
+        cbData->controlInfo->m_noOfFilesFailed.load(), cbData->fileHandle.m_file->m_metaFileIndex,
+        cbData->fileHandle.m_file->m_metaFileOffset);
     delete cbData;
     cbData = nullptr;
     return;
@@ -247,16 +246,33 @@ bool CheckAttrNotReseted(SmbWriterCommonData *cbData)
     return false;
 }
 
+void SmbFruncateDstCb(struct smb2_context *smb2, int status, void *data, void *pRData)
+{
+    SmbWriterCommonData *cbData = static_cast<SmbWriterCommonData *>(pRData);
+    if (cbData == nullptr || cbData->fileHandle.m_file == nullptr || cbData->pktStats == nullptr) {
+        WARNLOG("WriterCallBack failed: cbData is nullptr, status:%d", status);
+        return;
+    }
+    if (status < SUCCESS) {
+        HandleSmbOpenDstCbError(smb2, status, cbData);
+        return;
+    }
+
+    cbData->fileHandle.m_file->SetDstState(FileDescState::WRITED);
+    cbData->writeQueue->Push(cbData->fileHandle);
+    delete cbData;
+    cbData = nullptr;
+}
+
 void SmbOpenDstCb(struct smb2_context *smb2, int status, void *data, SmbWriterCommonData *cbData)
 {
-    data = data;
-
     if (status < SUCCESS) {
         HandleSmbOpenDstCbError(smb2, status, cbData);
         return;
     }
 
     cbData->fileHandle.m_file->dstIOHandle.smbFh = static_cast<struct smb2fh*>(data);
+
     // 大小为0直接close
     if (cbData->fileHandle.m_file->m_size == 0) {
         cbData->fileHandle.m_file->SetDstState(FileDescState::WRITED);
@@ -264,6 +280,23 @@ void SmbOpenDstCb(struct smb2_context *smb2, int status, void *data, SmbWriterCo
         delete cbData;
         cbData = nullptr;
         return;
+    }
+    // 针对空文件的稀疏文件，设置稀疏文件标识和逻辑大小
+    if (cbData->fileHandle.m_file->m_fileAttr & 0x00000200 && cbData->fileHandle.m_file->m_sparse.empty()) {
+        INFOLOG("The sparse file %s data range is empty", cbData->fileHandle.m_file->m_fileName.c_str());
+        string smbPath = RemoveFirstSeparator(cbData->fileHandle.m_file->m_fileName);
+        cbData->writeSmbContext->SmbSetSparseFlag(smbPath.c_str(), cbData->fileHandle.m_file->dstIOHandle.smbFh);
+        cbData->writeSmbContext->SmbfruncateAsync(
+            cbData->fileHandle.m_file->dstIOHandle.smbFh, cbData->fileHandle.m_file->m_size, SmbFruncateDstCb, cbData);
+        return;
+    }
+    string smbPath = RemoveFirstSeparator(cbData->fileHandle.m_file->m_fileName);
+    int ret = SUCCESS;
+    if (cbData->fileHandle.m_file->m_fileAttr & 0x00000200) { // SPARSE_FILE
+        ret = cbData->writeSmbContext->SmbSetSparseFlag(smbPath.c_str(), cbData->fileHandle.m_file->dstIOHandle.smbFh);
+    }
+    if (ret != SUCCESS) {
+        WARNLOG("Send set sparse Request Failed: %s", cbData->fileHandle.m_file->m_fileName.c_str());
     }
 
     cbData->fileHandle.m_file->SetDstState(FileDescState::DST_OPENED);
@@ -299,7 +332,10 @@ int ProcessRestorePolicy(SmbWriterCommonData *cbData)
     cbData->fileHandle.m_file->SetDstState(FileDescState::WRITE_FAILED);
     ++cbData->controlInfo->m_noOfFilesFailed;
     cbData->blockBufferMap->Delete(cbData->fileHandle.m_file->m_fileName, cbData->fileHandle);
-    ERRLOG("invalid restore policy %d, totalFailed: %llu", static_cast<int>(cbData->params.restoreReplacePolicy),
+    ERRLOG("invalid restore policy %d, fileName: %s, metaInfo: %u, %llu, totalFailed: %llu",
+        static_cast<int>(cbData->params.restoreReplacePolicy),
+        cbData->fileHandle.m_file->m_fileName.c_str(),
+        cbData->fileHandle.m_file->m_metaFileIndex, cbData->fileHandle.m_file->m_metaFileOffset,
         cbData->controlInfo->m_noOfFilesFailed.load());
     delete cbData;
     cbData = nullptr;
@@ -391,7 +427,9 @@ void HandleSmbWriteStatusFailed(struct smb2_context *smb2, void *data, int statu
         smb2_get_error(smb2), status);
     if (!IsFileReadOrWriteFailed(cbData->fileHandle)) {
         ++cbData->controlInfo->m_noOfFilesFailed;
-        ERRLOG("write file failed: %s, totalFailed: %llu", cbData->fileHandle.m_file->m_fileName.c_str(),
+        ERRLOG("write file failed: %s, metaInfo: %u, %llu, totalFailed: %llu",
+            cbData->fileHandle.m_file->m_fileName.c_str(),
+            cbData->fileHandle.m_file->m_metaFileIndex, cbData->fileHandle.m_file->m_metaFileOffset,
             cbData->controlInfo->m_noOfFilesFailed.load());
     }
     cbData->blockBufferMap->Delete(cbData->fileHandle.m_file->m_fileName, cbData->fileHandle);
@@ -488,9 +526,11 @@ void SmbCloseDstCb(struct smb2_context *smb2, int status, void *data, SmbWriterC
             cbData = nullptr;
             return;
         }
+        cbData->fileHandle.m_file->SetDstState(FileDescState::WRITE_FAILED);
         ++cbData->controlInfo->m_noOfFilesFailed;
-        ERRLOG("SmbCloseDstCb failed file:%s, status:%s, errno:%d, totalFailed: %llu",
+        ERRLOG("SmbCloseDstCb failed file:%s, status:%s, errno:%d, metaInfo: %u, %llu, totalFailed: %llu",
             cbData->fileHandle.m_file->m_fileName.c_str(), smb2_get_error(smb2), status,
+            cbData->fileHandle.m_file->m_metaFileIndex, cbData->fileHandle.m_file->m_metaFileOffset,
             cbData->controlInfo->m_noOfFilesFailed.load());
         delete cbData;
         cbData = nullptr;
@@ -513,6 +553,17 @@ int SendSetSdRequest(FileHandle &fileHandle, SmbWriterCommonData *cbData)
     wstring wsInput {};
     if (fileHandle.m_file->m_aclText.empty()) {
         DBGLOG("acl text file :%s is empty, pass it.", fileHandle.m_file->m_fileName.c_str());
+        cbData->pktStats->Increment(LibsmbEventToPKT_TYPE(cbData->event), PKT_COUNTER::RECVD);
+        if (!fileHandle.m_file->m_securityDescriptor.empty()) {
+            SendWriterRequest(cbData->fileHandle, cbData, LibsmbEvent::SET_BASIC_INFO);
+        } else if (fileHandle.m_file->m_fileName.compare("/") != 0) {
+            if (cbData->fileHandle.m_file->IsFlagSet(IS_DIR)) {
+                ++cbData->controlInfo->m_noOfDirCopied;
+            } else {
+                ++cbData->controlInfo->m_noOfFilesCopied;
+                cbData->controlInfo->m_noOfBytesCopied += cbData->fileHandle.m_file->m_size;
+            }
+        }
         return SUCCESS;
     }
 
@@ -552,7 +603,10 @@ void SmbSetSdCb(struct smb2_context *smb2, int status, void *data, SmbWriterComm
         } else {
             ++cbData->controlInfo->m_noOfFilesFailed;
         }
-        ERRLOG("write file failed: %s, totalFailed: %llu, %llu", cbData->fileHandle.m_file->m_fileName.c_str(),
+        cbData->fileHandle.m_file->SetDstState(FileDescState::WRITE_FAILED);
+        ERRLOG("write file failed: %s, metaInfo: %u, %llu, totalFailed: %llu, %llu",
+            cbData->fileHandle.m_file->m_fileName.c_str(),
+            cbData->fileHandle.m_file->m_metaFileIndex, cbData->fileHandle.m_file->m_metaFileOffset,
             cbData->controlInfo->m_noOfDirFailed.load(), cbData->controlInfo->m_noOfFilesFailed.load());
         delete cbData;
         cbData = nullptr;
@@ -606,7 +660,9 @@ void SmbSetBasicInfoCb(struct smb2_context *smb2, int status, void *data, SmbWri
             return;
         }
         ++cbData->controlInfo->m_noOfFilesFailed;
-        ERRLOG("write file failed: %s, totalFailed: %llu", cbData->fileHandle.m_file->m_fileName.c_str(),
+        ERRLOG("write file failed: %s, metaInfo: %u, %llu, totalFailed: %llu",
+            cbData->fileHandle.m_file->m_fileName.c_str(),
+            cbData->fileHandle.m_file->m_metaFileIndex, cbData->fileHandle.m_file->m_metaFileOffset,
             cbData->controlInfo->m_noOfFilesFailed.load());
         delete cbData;
         cbData = nullptr;
@@ -617,10 +673,12 @@ void SmbSetBasicInfoCb(struct smb2_context *smb2, int status, void *data, SmbWri
         DBGLOG("Block ADS Open flag set as false:%s", cbData->fileHandle.m_file->m_fileName.c_str());
         *(cbData->isBlockAdsOpen) = false;
     }
+
     ++cbData->controlInfo->m_noOfFilesCopied;
     if (!cbData->fileHandle.IsOnlyMetaModified()) {
         cbData->controlInfo->m_noOfBytesCopied += cbData->fileHandle.m_file->m_size;
     }
+
     delete cbData;
     cbData = nullptr;
 }
@@ -717,8 +775,8 @@ int SendHardlinkRequest(FileHandle &fileHandle, SmbWriterCommonData *cbData)
     DBGLOG("Send Hardlink source: %s, target: %s", smbPath.c_str(), smbTargetPath.c_str());
     if (cbData->writeSmbContext->SmbHardLinkAsync(smbTargetPath.c_str(),
         smbPath.c_str(), WriterCallBack, cbData) != SUCCESS) {
-        ERRLOG("Failed to send hardlink req: %s err: %s", cbData->fileHandle.m_file->m_fileName,
-               cbData->writeSmbContext->SmbGetError());
+        ERRLOG("Failed to send hardlink req: %s err: %s", cbData->fileHandle.m_file->m_fileName.c_str(),
+               cbData->writeSmbContext->SmbGetError().c_str());
         return FAILED;
     }
     return SUCCESS;
@@ -738,7 +796,7 @@ void SmbHardLinkCb(struct smb2_context *smb2, int status, void *data, SmbWriterC
             return;
         }
         if (status == -ENOTDIR || status == -ENOENT || status == -ESTALE) {
-            DBGLOG("parent path not exist:  %s", cbData->fileHandle.m_file->m_fileName);
+            DBGLOG("parent path not exist:  %s", cbData->fileHandle.m_file->m_fileName.c_str());
             cbData->dirQueue->Push(cbData->fileHandle);
             delete cbData;
             cbData = nullptr;
@@ -754,7 +812,9 @@ void SmbHardLinkCb(struct smb2_context *smb2, int status, void *data, SmbWriterC
             return;
         }
         ++cbData->controlInfo->m_noOfFilesFailed;
-        ERRLOG("write file failed: %s, totalFailed: %llu", cbData->fileHandle.m_file->m_fileName.c_str(),
+        ERRLOG("write file failed: %s, metaInfo: %u, %llu, totalFailed: %llu",
+            cbData->fileHandle.m_file->m_fileName.c_str(),
+            cbData->fileHandle.m_file->m_metaFileIndex, cbData->fileHandle.m_file->m_metaFileOffset,
             cbData->controlInfo->m_noOfFilesFailed.load());
         delete cbData;
         cbData = nullptr;
@@ -773,8 +833,8 @@ int SendUnlinkRequest(FileHandle &fileHandle, SmbWriterCommonData *cbData)
     ConcatRootPath(smbPath, cbData->params.dstRootPath);
     DBGLOG("Send Unlink: %s", smbPath.c_str());
     if (cbData->writeSmbContext->SmbUnlinkAsync(smbPath.c_str(), WriterCallBack, cbData) != SUCCESS) {
-        ERRLOG("Failed to send unlink req: %s err: %s", cbData->fileHandle.m_file->m_fileName,
-               cbData->writeSmbContext->SmbGetError());
+        ERRLOG("Failed to send unlink req: %s err: %s", cbData->fileHandle.m_file->m_fileName.c_str(),
+               cbData->writeSmbContext->SmbGetError().c_str());
         return FAILED;
     }
     return SUCCESS;
@@ -831,9 +891,12 @@ void SmbResetAttrCb(struct smb2_context *smb2, int status, void * /* data */, Sm
             cbData = nullptr;
             return;
         }
+        cbData->fileHandle.m_file->SetDstState(FileDescState::WRITE_FAILED);
         cbData->fileHandle.m_file->SetFlag(ATTR_RESETED);
         ++cbData->controlInfo->m_noOfFilesFailed;
-        ERRLOG("write file failed: %s, totalFailed: %llu", cbData->fileHandle.m_file->m_fileName.c_str(),
+        ERRLOG("write file failed: %s, metaInfo: %u, %llu, totalFailed: %llu",
+            cbData->fileHandle.m_file->m_fileName.c_str(),
+            cbData->fileHandle.m_file->m_metaFileIndex, cbData->fileHandle.m_file->m_metaFileOffset,
             cbData->controlInfo->m_noOfFilesFailed.load());
         delete cbData;
         cbData = nullptr;

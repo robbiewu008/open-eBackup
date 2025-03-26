@@ -1,5 +1,5 @@
 # 递归添加nas_service目录下所有的cpp文件
-file(GLOB_RECURSE utility_srcs *.cpp)
+file(GLOB utility_srcs *.cpp)
 
 add_library(utility_obj
     OBJECT
@@ -7,7 +7,7 @@ add_library(utility_obj
 )
 
 target_include_directories(utility_obj
-PRIVATE
+    PRIVATE
     ${PLUGIN_FRAMEWORK_PATH}/inc/thrift_interface
     ${PLUGIN_FRAMEWORK_PATH}/inc
     ${DME_FRAMEWORK_PATH}/src/inc

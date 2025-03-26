@@ -1,0 +1,14 @@
+Title:NAS Scanner Backup Control File
+Version:1.0
+Timestamp:2021-Dec-22 16:55:24
+TaskId:shuai_task
+BackupType:INCREMENTAL
+NasServer:192.168.97.165
+NasShare:/RL_z30020916_FilesystemSnapshot2112221639150
+NasProtocol:libnfs_async
+NasProtocolVersion:
+MetadataScope:folder-and-files
+DirectoryCount:0
+FileCount:0
+DataSize:0
+

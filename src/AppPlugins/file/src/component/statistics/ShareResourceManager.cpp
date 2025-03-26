@@ -92,7 +92,7 @@ bool ShareResourceManager::DeleteResource(ShareResourceType resType, const std::
     RemoveResourceCache(resType, jobId);
     bool result = PluginUtils::Remove(fileName);
     if (!result) {
-        HCP_Log(ERR, MODULE) << "DeleteResource, delete file failed, path:"<< fileName << HCPENDLOG;
+        HCP_Log(WARN, MODULE) << "DeleteResource, delete file failed, path:"<< fileName << HCPENDLOG;
     }
     return result;
 }

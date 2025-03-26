@@ -10,6 +10,7 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
+
 #include "JobMgr.h"
 #include "log/Log.h"
 
@@ -137,6 +138,7 @@ void JobMgr::EraseFinishJob()
 
 bool JobMgr::CheckJobIdExist(const std::string &jobId)
 {
+    std::lock_guard<std::mutex> lock(m_mtx);
     return m_jobIdMap.count(jobId) != 0;
 }
 

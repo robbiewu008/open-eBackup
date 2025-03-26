@@ -60,7 +60,7 @@ namespace Module {
             int nodeNumber = 0;
             for (auto &node : rsp) {
                 if (!node.isMember("hostname") || !node.isMember("nodeStatus")) {
-                    HCP_Log(ERR, MODULE) << "node info is invalid:" << node << HCPENDLOG;
+                    HCP_Log(WARN, MODULE) << "node info is invalid:" << node << HCPENDLOG;
                     continue;
                 }
                 bool ready = false;

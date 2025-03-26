@@ -332,6 +332,9 @@ void DirCacheParser::WriteToBfrBasedOnVersion(DirCache &dcache)
         ConvertDirCacheToV20(dcache, dcacheV20);
         m_writeBuffer.write((char *)&dcacheV20, sizeof(dcacheV20));
     }
+    if (m_writeBuffer.tellp() >= BINARY_MAX_BUFFER_SIZE) {
+        FlushToFile();
+    }
 }
 
 CTRL_FILE_RETCODE DirCacheParser::FlushToFile()

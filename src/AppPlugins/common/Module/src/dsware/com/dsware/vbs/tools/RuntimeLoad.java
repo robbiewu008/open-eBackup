@@ -24,7 +24,7 @@ import java.util.Map;
  * @since 2024-08-27
  */
 public class RuntimeLoad {
-    private static final String DSWARE_JSR_PATH = "DSWARE_JSR_PATH";
+    private static final String DSWARE_JSR_PATH = "DSWARE_JAR_PATH";
 
     private static final Map<String, Class<?>> classNameToClassObjMap = new HashMap<>();
 

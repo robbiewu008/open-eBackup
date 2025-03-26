@@ -39,18 +39,23 @@ public:
     {
         return *reinterpret_cast<const std::uint64_t*>(m_data.data());
     }
+    fuse_ino_t InodeNumber() const
+    {
+        return *reinterpret_cast<const fuse_ino_t*>(m_data.data() + sizeof(std::uint64_t));
+    }
     std::uint64_t Size() const
     {
-        return *reinterpret_cast<const std::uint64_t*>(m_data.data() + sizeof(std::uint64_t));
+        return *reinterpret_cast<const std::uint64_t*>(m_data.data() + sizeof(std::uint64_t) + sizeof(fuse_ino_t));
     }
     off_t Offset() const
     {
-        return *reinterpret_cast<const off_t*>(m_data.data() + sizeof(std::uint64_t) + sizeof(std::uint64_t));
+        return *reinterpret_cast<const off_t*>(m_data.data() + sizeof(std::uint64_t) + sizeof(fuse_ino_t) +
+            sizeof(std::uint64_t));
     }
     uint64_t FileHandle() const
     {
-        return *reinterpret_cast<const uint64_t*>(m_data.data() + sizeof(std::uint64_t) + sizeof(std::uint64_t) +
-                                                             sizeof(off_t));
+        return *reinterpret_cast<const uint64_t*>(m_data.data() + sizeof(std::uint64_t) + sizeof(fuse_ino_t) +
+            sizeof(std::uint64_t) + sizeof(off_t));
     }
 
 private:

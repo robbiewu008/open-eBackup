@@ -51,14 +51,31 @@ namespace Module {
         HCP_Logger_noid(INFO, "BackupNode") << "Create thread:"<<nThread<< HCPENDLOG;
         pool->m_Threads = new std::thread* [nThread];
         pool->m_threadNum = nThread;
+        pool->m_threadWorkingFlags = new std::atomic<bool>[nThread]{false}; // 初始化每个线程的停止标志
         if (NULL == pool->m_Threads) {
             HCP_Logger_noid(ERR, "BackupNode") << "new fault,m_threads is NULL."<< HCPENDLOG;
             return;
         }
         for (size_t i = 0; i < nThread; ++i) {
-            pool->m_Threads[i] = new std::thread(bind(&ThreadPool::WorkerLoop, pool));
+            pool->m_Threads[i] = new std::thread([pool, i]() {
+            pool->WorkerLoop(i);
+            });
         }
         DBGLOG("CreateThreads success");
+    }
+
+    // 获取线程工作状态
+    bool GetThreadWorkStatus(ThreadPool* pool, size_t threadID)
+    {
+        std::chrono::milliseconds checkInterval(CHECK_WORK_STATUS_INTERVAL);  //一秒钟, 每0.1秒检查一次
+
+        for (int i = 0; i < CHECK_WORK_STATUS_MAX_TIMES; ++i) {
+            if (!(pool->m_threadWorkingFlags[threadID])) {
+                return false;
+            }
+            std::this_thread::sleep_for(checkInterval);
+        }
+        return true;
     }
 
     void DeleteThreads(ThreadPool* pool)
@@ -66,7 +83,7 @@ namespace Module {
         lock_guard<std::mutex> lock(g_poolLock);
         DBGLOG("DeleteThreads");
         for (size_t i = 0; i < pool->m_threadNum; ++i) {
-            pool->m_input.Put(pool->m_haltItem);
+            pool->m_input.Put(pool->m_haltItem, true, PUT_HALTITEM_IN_POOL_TIME_LIMIT);
         }
         if (NULL == pool->m_Threads) {
             HCP_Logger_noid(ERR, "BackupNode") << "m_threads is NULL."<< HCPENDLOG;
@@ -76,7 +93,11 @@ namespace Module {
             if (NULL == pool->m_Threads[i]) {
                 continue;
             }
+            // 根据线程工作状态使用join或detach方法
+            
+            HCP_Logger_noid(INFO, "BackupNode") << "Joining thread " << i << HCPENDLOG;
             pool->m_Threads[i]->join();
+           
             delete pool->m_Threads[i];
             pool->m_Threads[i] = NULL;
         }
@@ -110,17 +131,20 @@ namespace Module {
         item->Exec();
     }
 
-    void ThreadPool::WorkerLoop()
+    void ThreadPool::WorkerLoop(size_t threadID)
     {
         shared_ptr<ExecutableItem> item;
+        m_threadWorkingFlags[threadID] = true;  // 线程开始工作
         while (true) {
             try {
                 if (m_input.Get(item)) {
                     if (!item) {
                         HCP_Logger_noid(ERR, "BackupNode") << "item is null" << HCPENDLOG;
+                        m_threadWorkingFlags[threadID] = false;
                         return;
                     }
                     if (item.get() == m_haltItem.get()) {
+                        m_threadWorkingFlags[threadID] = false;
                         return;
                     }
                     Run(item);
@@ -131,14 +155,17 @@ namespace Module {
                 HCP_Logger_noid(ERR, "BackupNode")
                     << " Exception, what=" << e.what()
                     << ", &item=" << ((uint64_t)item.get()) << HCPENDLOG;
+                m_threadWorkingFlags[threadID] = false;
             }
             catch (...) {
                 HCP_Logger_noid(ERR, "BackupNode")
                     << " Non standard exception thown"
                     << ", &item=" << ((uint64_t)item.get()) << HCPENDLOG;
+                m_threadWorkingFlags[threadID] = false;
             }
         }
         item.reset();
+        m_threadWorkingFlags[threadID] = false;
     }
 
         /*lint -e1524*/ /*lint -e1732*/ /*lint -e1733*/

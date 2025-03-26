@@ -103,6 +103,7 @@ private:
     std::string GetVolumeMountPath(const std::string& path) const;
     void GetBackupSubVolumesPath();
     void FillScanConfig(ScanConfig &scanConfig);
+    void FillScanConfigDefault(ScanConfig& scanConfig);
     void FillScanConfigMetaPath(ScanConfig &scanConfig, std::string pathId);
     void FilterAllSubVol(ScanConfig &scanConfig);
     void FilterSubVol(ScanConfig &scanConfig, std::string path, const std::string& prefix = "");
@@ -146,6 +147,8 @@ private:
     bool IsFullBackup() const;
     bool IsSubTaskStatsFileExists() const;
     bool NeedChangeIncToFull();
+    bool CheckPrevMetaExist(const std::string& metaPath);
+    bool UntarMetaFile(const std::string& metaFilePath, const std::string& dstPath);
 
     /* Backup */
     void FillBackupConfig(BackupParams &backupParams, BackupSubJob &backupSubJob);
@@ -217,6 +220,9 @@ private:
     void InitAndAddSysPath(std::string& notExistPath, std::string& notBackupPath);
     int InitSystemVolume();
     int GetSystemInfo();
+#ifdef __linux__
+    bool CopyDiskInfoToExtend(AggCopyExtendInfo &aggCopyExtendInfo);
+#endif
 private:
     std::shared_ptr<AppProtect::BackupJob> m_backupJobPtr { nullptr };
 
@@ -264,6 +270,7 @@ private:
 
     /* Is scanner restarted */
     bool m_isScannerRestarted { false };
+    bool m_forceChangeToFullScan { false };
 
     /* Backup instance */
     std::unique_ptr<FS_Backup::Backup> m_backup { nullptr };

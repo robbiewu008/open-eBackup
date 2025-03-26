@@ -13,7 +13,10 @@
 #include "CertCN.h"
 #include "log/Log.h"
 
-const std::string CRT_USER_NAME = "/CN=";
+namespace {
+    const std::string CRT_USER_NAME = "/CN=";
+}
+
 void InnerFreeGetHostMem(BIO *key, X509 *pCert, char *pSubject)
 {
     if (key != nullptr) {
@@ -62,7 +65,7 @@ void GetHostFromCert(std::string &certPath, std::string &hostName)
         INFOLOG("subjectName:%s", pSubject);
 
         std::string tmpHost(pSubject);
-        int index = tmpHost.find(CRT_USER_NAME);
+        size_t index = tmpHost.find(CRT_USER_NAME);
         if (index == std::string::npos) {
             errorStr = "Cannot find hostName flag.";
             break;

@@ -47,6 +47,14 @@ void Win32DirWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskPtr
     fileHandle.m_retryCnt++;
 
     DBGLOG("Win32 dir failed %s retry cnt %d", fileHandle.m_file->m_fileName.c_str(), fileHandle.m_retryCnt);
+
+    if (FSBackupUtils::IsStuck(m_controlInfo)) {
+        ERRLOG("set backup to failed due to stucked!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+        return;
+    }
+
     if (taskPtr->m_errDetails.second == FILENOTEXIST || taskPtr->m_errDetails.second == PATHNOTEXIST) {
         // 对于文件不存在的情况或者目录不存在的情况跳过
         WARNLOG("File/Folder %s not exist, discardReadError is true, ignore it", fileHandle.m_file->m_fileName.c_str());

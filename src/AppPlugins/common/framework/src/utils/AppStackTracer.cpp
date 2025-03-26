@@ -10,6 +10,7 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
+
 #include "AppStackTracer.h"
 #include <string>
 #include <vector>
@@ -115,13 +116,11 @@ void AppStackTracer::UninstallHandler()
     UninstallSignalHandler(SIGABRT);
 }
 
-void AppStackTracer::SignalHandler(int signum, siginfo_t *siginfo, void *ucontext)
+void AppStackTracer::SignalHandler(int signum, siginfo_t* /* siginfo */, void* /* ucontext */)
 {
     if ((signum != SIGSEGV) && (signum != SIGFPE) && (signum != SIGABRT)) {
         return;
     }
-    ucontext;
-    siginfo;
 
     std::string filePath = g_logPath + "/" + LOG_FILE_NAME;
     std::ofstream stream(filePath.c_str(), std::ios::app);
@@ -140,7 +139,7 @@ void AppStackTracer::SignalHandler(int signum, siginfo_t *siginfo, void *ucontex
     char **strings = backtrace_symbols(g_btarray, size);
 
     if (strings != nullptr) {
-        for (int i = 0; i < size; i++) {
+        for (size_t i = 0; i < size; i++) {
             if (strings[i] != nullptr) {
                 bt.emplace_back(strings[i]);
             }

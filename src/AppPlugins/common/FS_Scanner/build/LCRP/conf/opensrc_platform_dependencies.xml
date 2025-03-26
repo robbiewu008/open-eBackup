@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <artifact>
+        <versionType>Component</versionType>
+        <repoType>Generic</repoType>
+        <id>
+            <offering>OceanProtect X8000</offering>
+            <componentName>OceanProtect_Opensource_3rdparty_Centralized</componentName>
+            <componentVersion>1.2.1RC1</componentVersion>
+            <snapshot>N</snapshot>
+        </id>
+        <isClear>N</isClear>
+        <copies>
+            <copy>
+                <source></source>
+                <dest></dest>
+            </copy>
+        </copies>
+    </artifact>
+
+    <dependencies>
+        <dependency>
+            <versionType>Component</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>OceanProtect X8000</offering>
+                <componentName>OceanProtect_Opensource_3rdparty_Centralized</componentName>
+                <componentVersion>${COMPOENT_VERSION}</componentVersion>
+            </id>
+            <according>Y</according>
+            <copies>
+                <copy>
+                    <source>${THIRD_BRANCH}/${SYSTEM_NAME}/${OS_TYPE}/platform/OceanProtect_X8000_${COMPOENT_VERSION}_Platform_SDK_${SYSTEM_NAME}_${OS_TYPE}.tar.gz</source>
+                    <dest>.</dest>
+                </copy>
+                <copy>
+                    <source>${THIRD_BRANCH}/${SYSTEM_NAME}/${OS_TYPE}/third_party_groupware/OceanProtect_X8000_${COMPOENT_VERSION}_Opensrc_3rd_SDK_${SYSTEM_NAME}_${OS_TYPE}.tar.gz</source>
+                    <dest>.</dest>
+                </copy>
+            </copies>
+        </dependency>
+    </dependencies>
+</project>
+

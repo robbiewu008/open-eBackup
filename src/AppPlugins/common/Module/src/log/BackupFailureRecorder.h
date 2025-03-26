@@ -18,6 +18,7 @@
 #include <mutex>
 #include <map>
 #include "define/Defines.h"
+#include <ctime>
 
 namespace Module {
 /*
@@ -41,14 +42,21 @@ struct BackupFailureRecord {
     std::string     reason;
 };
 
+//存储文件相关信息
+struct FileInfo {
+    std::string filePath;
+    std::time_t creationTime;
+};
+
 class AGENT_API BackupFailureRecorder {
 public:
+    static size_t                       m_failureRecordsFileMax;
     BackupFailureRecorder(
         const std::string&          outputDirRootPath,
         const std::string&          jobID,
         const std::string&          subjobID,
-        size_t                      bufferMax,
-        uint64_t                    recordMax);
+        size_t                      bufferMax = 100,
+        uint64_t                    recordMax = 10000) ;
 
     ~BackupFailureRecorder();
 
@@ -64,7 +72,8 @@ public:
     
     static bool Merge(
         const std::string&          outputDirRootPath,
-        const std::string&          jobID);
+        const std::string&          jobID,
+        const std::string&          srcoutputDirRootPath);
 
 private:
     bool FlushInner();
@@ -80,6 +89,18 @@ private:
     static std::vector<std::string> GetFileListInDirectory(const std::string& path);
 
     static bool ClearSubTaskRecordFile(const std::string& jobRecordRootPath);
+
+    static uint64_t GetFileSize(std::ifstream& infile);
+
+    static uint64_t GetFileSize(std::ofstream& outfile);
+
+    static void DeleteExcessFiles(const std::string& directoryPath);
+
+    static uint32_t CountFiles(const std::string& directoryPath);
+
+    static void DeleteExcessFilesInner(const std::string& directoryPath);
+
+    static bool MergeInner(const std::string& outputDirRootPath, const std::string& jobID, const std::string& jobRecordRootPath, const std::vector<std::string>& fileList);
 
 private:
     /* immutable member */

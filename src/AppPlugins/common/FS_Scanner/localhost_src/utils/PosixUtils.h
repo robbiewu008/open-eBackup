@@ -1,0 +1,49 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+#ifndef FS_SCANNER_POSIX_UTILS_H
+#define FS_SCANNER_POSIX_UTILS_H
+
+#include <dirent.h>
+#include "ScanStructs.h"
+#include "ScanConfig.h"
+
+class PosixUtils {
+public:
+    PosixUtils() {};
+    virtual ~PosixUtils() {};
+
+    void WrapDirectory(Module::DirMetaWrapper &dirWrapper, DirStat& dirStat, const ScanConfig& config);
+    void CopyStatToDirMeta(Module::DirMeta &dmeta, DirStat &dirStat);
+    Module::XMetaField GetFileSparse(std::string path);
+#if defined _AIX
+    Module::XMetaField GetAcl4AIX(const std::string path);
+#elif defined SOLARIS
+    Module::XMetaField GetAcl4SOLARIS(const std::string path);
+#else
+    Module::XMetaField GetAccessAcl(std::string path);
+    Module::XMetaField GetDefaultAcl(std::string path);
+#endif
+
+    bool ReadXattr(std::vector<Module::XMetaField>& xattrList, std::string path,
+        char *key, ssize_t& keylen, ssize_t& buflen);
+    std::vector<Module::XMetaField> GetXattr(std::string path);
+    void RemovePathPrefixInDirectoryWrapper(Module::DirMetaWrapper &dirWrapper, std::string prefix);
+    void RecoverDirectoryWrapperOriginPath(Module::DirMetaWrapper& dirWrapper, std::shared_ptr<PathMapper> pathMapper);
+    std::string RemovePathPrefixFromString(std::string path, std::string prefix);
+    void WrapFile(Module::FileMetaWrapper &fileWrapper, struct stat statbuf,
+        std::string path, const ScanConfig& config);
+    void CopyStatToDirStat(DirStat &dstat, const struct stat &statbuf, std::string path);
+    void CopyStatToFileMeta(Module::FileMeta &fd, const struct stat &statbuf);
+};
+
+#endif

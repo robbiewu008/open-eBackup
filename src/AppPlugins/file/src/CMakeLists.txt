@@ -1,4 +1,4 @@
-# cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.14)
 project(FilePlugin)
 
 add_definitions(-DBOOST_ASIO_DISABLE_STD_ALIGNED_ALLOC)
@@ -6,13 +6,13 @@ add_definitions(-DBOOST_ASIO_DISABLE_STD_ALIGNED_ALLOC)
 SET(PLUGIN_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 SET(PLUGIN_FRAMEWORK_PATH ${PLUGIN_ROOT_PATH}/common/framework)
 include(${PLUGIN_FRAMEWORK_PATH}/build/cmake/global.cmake)
-
+ 
 SET(PLUGIN_SCANNER_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../common/FS_Scanner)
 SET(PLUGIN_BACKUP_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../common/FS_Backup)
 SET(PLUGIN_COMMON_PATH ${CMAKE_CURRENT_SOURCE_DIR}/common)
 SET(PLUGIN_SRC_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 SET(PLUGIN_FRAMEWORK_LIB_PATH ${PLUGIN_FRAMEWORK_PATH}/lib)
-
+ 
 SET(MODULE_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../common/Module)
 SET(OPEN_SRC_PATH ${MODULE_ROOT_PATH}/third_open_src)
 
@@ -99,7 +99,7 @@ add_library(common_dep
     IMPORTED
     GLOBAL
 )
-
+ 
 target_link_directories(common_dep
     INTERFACE
     ${MODULE_PLATFORM_PATH}/SecureCLib_rel/lib
@@ -113,7 +113,7 @@ target_link_directories(common_dep
     ${PLUGIN_FRAMEWORK_LIB_PATH}/thrift_interface
     ${MODULE_ROOT_PATH}/lib
 )
-
+ 
 target_link_libraries(common_dep
     INTERFACE
     safe_cmplib
@@ -131,7 +131,7 @@ target_link_libraries(common_dep
     system
     boost_filesystem
 )
-
+ 
 if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
     target_link_libraries(common_dep
         INTERFACE
@@ -144,4 +144,5 @@ if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
         boost_log
         boost_date_time
     )
+
 endif()

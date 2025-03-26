@@ -53,6 +53,9 @@ void HostServiceTask::Exec()
         case HostEvent::WRITE_META: {
             return HandleWriteMeta();
         }
+        case HostEvent::WRITE_SUB_STREAM: {
+            return HandleWriteSubStreams();
+        }
         case HostEvent::LINK: {
             return HandleLink();
         }

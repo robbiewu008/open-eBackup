@@ -92,8 +92,9 @@ int HostDirWriter::WriteMeta(FileHandle& fileHandle)
 {
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::WRITE_META, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write meta file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -168,6 +169,9 @@ int64_t HostDirWriter::ProcessTimers()
     vector<FileHandle> fileHandles;
     int64_t delay = m_timer.GetExpiredEventAndTime(fileHandles);
     for (FileHandle& fh : fileHandles) {
+        if (IsAbort()) {
+            return 0;
+        }
         DBGLOG("Process timer %s", fh.m_file->m_fileName.c_str());
         FileDescState state = fh.m_file->GetDstState();
         if (state == FileDescState::INIT) {

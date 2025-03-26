@@ -42,6 +42,9 @@ int SendReaderRequest(FileHandle &fileHandle, SmbReaderCommonData *cbData, Libsm
             break;
         case LibsmbEvent::READ:
             retVal = SendReadRequest(fileHandle, cbData);
+            if (retVal != SUCCESS) {
+                cbData->blockBufferMap->Delete(cbData->fileHandle.m_file->m_fileName, cbData->fileHandle);
+            }
             break;
         case LibsmbEvent::CLOSE_SRC:
             retVal = SendCloseRequest(fileHandle, cbData);
@@ -70,7 +73,7 @@ void ReaderCallBack(struct smb2_context *smb2, int status, void *data, void *pri
             cbData = nullptr;
             ERRLOG("ReaderCallBack failed: fileHandle.m_file or cbData->pktStats is nullptr, status:%d", status);
         } else {
-            ERRLOG("ReaderCallBack failed: cbData is nullptr, status:%d", status);
+            WARNLOG("ReaderCallBack failed: cbData is nullptr, status:%d", status);
         }
         return;
     }
@@ -147,7 +150,21 @@ void SmbOpenCb(struct smb2_context *smb2, int status, void *data, SmbReaderCommo
     cbData = nullptr;
 }
 
-void SmbOpenCbSendBlock(SmbReaderCommonData *cbData)
+void SmbDataRangeCb(struct smb2_context *smb2, int status, void *data, void *privateData)
+{
+    auto cbData = static_cast<SmbReaderCommonData *>(privateData);
+    auto dataInfo = static_cast<struct smb2_data_range_node *>(data);
+    std::string sparseStr = "";
+    while (dataInfo != nullptr) {
+        DBGLOG("smb sparse file :%s, data range [%d, %d]", cbData->fileHandle.m_file->m_onlyFileName.c_str(),
+            dataInfo->offset, dataInfo->length);
+        sparseStr += std::to_string(dataInfo->offset) + "," + std::to_string(dataInfo->length) + ";";
+        dataInfo = dataInfo->next;
+    }
+    return;
+}
+
+void SmbOpenCbSendBlockNormal(SmbReaderCommonData *cbData)
 {
     std::shared_ptr<FileDesc> file = cbData->fileHandle.m_file;
     uint32_t blockSize = cbData->params.blockSize;
@@ -178,13 +195,79 @@ void SmbOpenCbSendBlock(SmbReaderCommonData *cbData)
             newCbData->fileHandle.m_block.m_buffer = new uint8_t[newCbData->fileHandle.m_block.m_size];
             newCbData->blockBufferMap->Add(newCbData->fileHandle.m_file->m_fileName, newCbData->fileHandle);
             if (SendReaderRequest(newCbData->fileHandle, newCbData, LibsmbEvent::READ) != SUCCESS) {
-                newCbData->blockBufferMap->Delete(newCbData->fileHandle.m_file->m_fileName, newCbData->fileHandle);
                 return;
             }
         } else {
             cbData->partialReadQueue->Push(cbData->fileHandle);
         }
     }
+}
+
+uint64_t SmbOpenCbEnqueBlockBufferMap(SmbReaderCommonData *cbData, uint64_t fileSize, uint64_t &startOffSet, uint64_t &seq)
+{
+    uint64_t blockSize = cbData->params.blockSize;
+    uint64_t fullBlockNum = fileSize / blockSize;
+    uint32_t remainSize = fileSize % blockSize;
+
+    for (uint64_t i = 0; i < fullBlockNum + 1; ++i) {
+        if (i == fullBlockNum && remainSize == 0) {
+            break;
+        }
+        cbData->fileHandle.m_block.m_size = (i == fullBlockNum) ? remainSize : blockSize; // 最后一个块大小是remainSize
+        cbData->fileHandle.m_block.m_offset = startOffSet;
+        cbData->fileHandle.m_block.m_seq = seq;
+        DBGLOG("SmbOpenCb file:%s, blockSize: %d, file_offset:%d, seq num:%llu",
+            cbData->fileHandle.m_file->m_fileName.c_str(), cbData->fileHandle.m_block.m_size, startOffSet, seq);
+        startOffSet += blockSize;
+        seq += 1;
+        if (fileSize <= MAX_SMALL_FILE_SIZE) {
+            // 小文件直接发
+            auto newCbData = new(nothrow) SmbReaderCommonData(*cbData);
+            if (newCbData == nullptr) {
+                ERRLOG("Failed to allocate Memory for cbData");
+                return 0;
+            }
+            newCbData->fileHandle = cbData->fileHandle;
+            newCbData->fileHandle.m_block.m_buffer = new uint8_t[newCbData->fileHandle.m_block.m_size];
+            newCbData->blockBufferMap->Add(newCbData->fileHandle.m_file->m_fileName, newCbData->fileHandle);
+            if (SendReaderRequest(newCbData->fileHandle, newCbData, LibsmbEvent::READ) != SUCCESS) {
+                return 0;
+            }
+        } else {
+            cbData->partialReadQueue->Push(cbData->fileHandle);
+        }
+    }
+
+    return (remainSize == 0) ? fullBlockNum : fullBlockNum + 1;
+}
+
+void SmbOpenCbSendBlockSparse(SmbReaderCommonData *cbData)
+{
+    std::shared_ptr<FileDesc> file = cbData->fileHandle.m_file;
+    uint64_t blockSize = cbData->params.blockSize;
+    uint64_t seq = 1;
+    uint64_t totalCnt = 0;
+
+    for (auto &info : file->m_sparse) {
+        DBGLOG("spaerse file(%s) cb block offset: %d, length: %d", file->m_onlyFileName.c_str(), info.first, info.second);
+        totalCnt += SmbOpenCbEnqueBlockBufferMap(cbData, info.second, info.first, seq);
+    }
+
+    file->m_blockStats.m_totalCnt = totalCnt;
+    DBGLOG("SmbOpenCb file:%s, total blocks:%d, file size:%llu, blockSize:%d",
+        file->m_fileName.c_str(), file->m_blockStats.m_totalCnt.load(), file->m_size, blockSize);
+}
+
+void SmbOpenCbSendBlock(SmbReaderCommonData *cbData)
+{
+    std::shared_ptr<FileDesc> file = cbData->fileHandle.m_file;
+    DBGLOG("Libsmbcopy reader get file sparse size: %d", file->m_sparse.size());
+    if (file->m_sparse.empty()) {
+        SmbOpenCbSendBlockNormal(cbData);
+    } else {
+        SmbOpenCbSendBlockSparse(cbData);
+    }
+    return;
 }
 
 void HandleSmbOpenStatusFailed(struct smb2_context *smb2, int status, SmbReaderCommonData *cbData)
@@ -203,6 +286,7 @@ void HandleSmbOpenStatusFailed(struct smb2_context *smb2, int status, SmbReaderC
     // skipping to the failed cnt inc for zip files in restore which are not used in writetask
     if (!cbData->fileHandle.m_file->IsFlagSet(AGGREGATE_GEN_FILE)) {
         cbData->controlInfo->m_noOfFilesReadFailed++;
+        cbData->controlInfo->m_noOfFilesFailed++;
     }
     cbData->blockBufferMap->Delete(cbData->fileHandle.m_file->m_fileName, cbData->fileHandle);
     ERRLOG("Open failed file:%s, status:%s, errno:%d", cbData->fileHandle.m_file->m_fileName.c_str(),
@@ -442,7 +526,7 @@ void HandleSmbAdsStatusFailed(struct smb2_context *smb2, int status, SmbReaderCo
     if (status == -ENOENT || status == -EINVAL) {
         DBGLOG("SmbAdsCb file: %s, status: %d", cbData->fileHandle.m_file->m_fileName.c_str(), status);
     } else {
-        ERRLOG("SmbAdsCb failed: %s, status: %d, error: %s", cbData->fileHandle.m_file->m_fileName.c_str(),
+        WARNLOG("SmbAdsCb failed: %s, status: %d, error: %s", cbData->fileHandle.m_file->m_fileName.c_str(),
             status, smb2_get_error(smb2));
     }
     SmbAdsCbDispachFilehandle(cbData, 0);

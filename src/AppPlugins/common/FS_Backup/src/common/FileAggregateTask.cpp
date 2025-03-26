@@ -91,7 +91,7 @@ void FileAggregateTask::PushArchiveFileToWriter(FileHandle& fileHandle)
         tmpFileHandle.m_block.m_seq = i + 1;
 
         if (memcpy_s(tmpFileHandle.m_block.m_buffer, blockSize, buffer, blockSize) != 0) {
-            ERRLOG("memcpy failed");
+            WARNLOG("memcpy failed");
         }
 
         buffer += blockSize;
@@ -136,7 +136,7 @@ void FileAggregateTask::DeleteFileList(string &parentDir, vector<string> &blobFi
         std::string blobFileFullPath = FSBackupUtils::JoinPath(
             FSBackupUtils::JoinPath(dataPath, parentDir), eachBlobFile);
         if (!FSBackupUtils::RemoveFile(blobFileFullPath)) {
-            ERRLOG("failed to delete previous blob file: %s", blobFileFullPath.c_str());
+            WARNLOG("failed to delete previous blob file: %s", blobFileFullPath.c_str());
         }
 #endif
     }
@@ -214,7 +214,9 @@ void FileAggregateTask::DeleteOldBlobFiles()
             continue;
         }
 
-        blobFileList.push_back(sqlQueryInfo.blobFileName);
+        if (!sqlQueryInfo.blobFileName.empty()) {
+            blobFileList.push_back(sqlQueryInfo.blobFileName);
+        }
         for (auto &eachFile : vecNormalFiles) {
             if (normalFileList.erase(eachFile.normalFileName) != 0) {
                 DBGLOG("Deleted file: %s from normal file list.", eachFile.normalFileName.c_str());
@@ -252,7 +254,7 @@ void FileAggregateTask::CreateTaskForSqliteIndex(FileHandle &fileHandle, std::st
             fAttr.meta.emplace_back(mdata);
         }
         if (!Module::JsonHelper::StructToJsonString(fAttr, t_fileDesc.m_metaData)) {
-            ERRLOG("Save meta data failed for %s", smallFile.m_file->m_obsKey.c_str());
+            WARNLOG("Save meta data failed for %s", smallFile.m_file->m_obsKey.c_str());
         }
 #endif
         DBGLOG("smallFileDesc: %s", t_fileDesc.m_onlyFileName.c_str());
@@ -328,62 +330,19 @@ void FileAggregateTask::DoAggrFilesAndCreateIndex()
     delete[] fileHandle.m_block.m_buffer;  // 释放临时聚合文件内存
 }
 
-int32_t SqliteTask::CreateSqliteDb(std::shared_ptr<BlobFileDetails> blobFileDetails, string &dbFile)
+int32_t SqliteTask::CreateSqliteDb(const std::vector<std::pair<std::shared_ptr<BlobFileDetails>, uint16_t>> &blobList, const string &dbFile)
 {
     sqlite3_stmt *sqlStmt = nullptr;
     std::shared_ptr<SQLiteCoreInfo> sqlInfoPtr { nullptr };
-    string dbFullPath = blobFileDetails->m_sqliteDb->GetMetaPath() + dbFile;
-    sqlInfoPtr = blobFileDetails->m_sqliteDb->PrepareDb(dbFile, CREATE_DB_FLAGS);
+    std::shared_ptr<SQLiteDB> sqliteDb { blobList.begin()->first->m_sqliteDb };
+    string dbFullPath = sqliteDb->GetMetaPath() + dbFile;
+    sqlInfoPtr = sqliteDb->PrepareDb(dbFile, CREATE_DB_FLAGS);
     if (sqlInfoPtr == nullptr) {
         ERRLOG("PrepareDb failed for dbFile: %s", dbFullPath.c_str());
         return FAILED;
     }
 
-    /* Allow only one thread to operate on the same DB file */
-    std::lock_guard<std::mutex> lock(sqlInfoPtr->m_sqliteCoreInfoMutex);
-    int ret = FAILED;
-    uint32_t retryCnt = 0;
-    while ((ret != SUCCESS) && (retryCnt++ < RETRY_COUNT)) {
-        /* Begin transaction & prepare the sql stmt */
-        ret = blobFileDetails->m_sqliteDb->PrepareSqlStmt(dbFile, &sqlStmt, sqlInfoPtr);
-        if (ret != SUCCESS) {
-            ERRLOG("PrepareSqlStmt failed: %d for dbFile: %s, retrying: %d", ret, dbFullPath.c_str(), retryCnt);
-            Module::SleepFor(std::chrono::milliseconds(RETRY_TIMEOUT));
-            int32_t retLocal = blobFileDetails->m_sqliteDb->DeleteAndPrepareDb(dbFile, sqlInfoPtr, CREATE_DB_FLAGS);
-            if ((retLocal != SUCCESS) || (sqlInfoPtr == nullptr)) {
-                ERRLOG("DeleteAndPrepareDb failed: %d for dbFile: %s", ret, dbFullPath.c_str());
-                return FAILED;
-            }
-            continue;
-        }
-        /* Bind & Step */
-        ret = InsertIndexInfo(blobFileDetails, sqlStmt, sqlInfoPtr);
-        if (ret != SUCCESS) {
-            blobFileDetails->m_sqliteDb->FinalizeSqlStmt(sqlStmt, sqlInfoPtr);
-            ERRLOG("InsertIndexInfo failed: %d for dbFile: %s, retrying: %d", ret, dbFullPath.c_str(), retryCnt);
-            Module::SleepFor(std::chrono::milliseconds(RETRY_TIMEOUT));
-            int32_t retLocal = blobFileDetails->m_sqliteDb->DeleteAndPrepareDb(dbFile, sqlInfoPtr, CREATE_DB_FLAGS);
-            if ((retLocal != SUCCESS) || (sqlInfoPtr == nullptr)) {
-                ERRLOG("DeleteAndPrepareDb failed: %d for dbFile: %s", ret, dbFullPath.c_str());
-                return FAILED;
-            }
-            continue;
-        }
-
-        ret = blobFileDetails->m_sqliteDb->FinalizeSqlStmt(sqlStmt, sqlInfoPtr);
-        if (ret != SUCCESS) {
-            ERRLOG("FinalizeSqlStmt failed: %d for dbFile: %s, (retrying:%d)", ret, dbFullPath.c_str(), retryCnt);
-            Module::SleepFor(std::chrono::milliseconds(RETRY_TIMEOUT));
-            int32_t retLocal = blobFileDetails->m_sqliteDb->DeleteAndPrepareDb(dbFile, sqlInfoPtr, CREATE_DB_FLAGS);
-            if ((retLocal != SUCCESS) || (sqlInfoPtr == nullptr)) {
-                ERRLOG("DeleteAndPrepareDb failed: %d for dbFile: %s", ret, dbFullPath.c_str());
-                return FAILED;
-            }
-            continue;
-        }
-    }
-
-    return ret;
+    return ExecSqlTransaction(sqlStmt, sqlInfoPtr, sqliteDb, blobList, dbFile, dbFullPath);
 }
 
 // 备份时，生成指定文件名的sqlite，此时文件不存在，在插件记录前会创建
@@ -438,31 +397,35 @@ std::string SqliteTask::GetObsKey(const std::string &key, const std::string &typ
     return subKeyStr;
 }
 
-void SqliteTask::DoCreateSqliteIndex(std::shared_ptr<BlobFileDetails> blobFileDetails, uint16_t &index)
+void SqliteTask::DoCreateSqliteIndex(const std::vector<std::pair<std::shared_ptr<BlobFileDetails>, uint16_t>> &blobList)
 {
     int64_t time1 = FSBackupUtils::GetMilliSecond();
-    if (blobFileDetails->m_dirPath != ".") {
-        std::string fullPath = blobFileDetails->m_sqliteDBRootPath + Module::PATH_SEPARATOR +
-                               blobFileDetails->m_dirPath;
+    std::shared_ptr<BlobFileDetails> blobFileDetails = blobList.begin()->first;
+    /* 同一目录下blob文件的公共属性 */
+    std::string commonDirPath = blobFileDetails->m_dirPath;
+    std::string commonSqliteDBRootPath = blobFileDetails->m_sqliteDBRootPath;
+    std::string commonMetaPath = blobFileDetails->m_sqliteDb->GetMetaPath();
+    if (commonDirPath != ".") {
+        std::string fullPath = commonSqliteDBRootPath + Module::PATH_SEPARATOR + commonDirPath;
         FSBackupUtils::RecurseCreateDirectory(fullPath);
     } else {
-        FSBackupUtils::RecurseCreateDirectory(blobFileDetails->m_sqliteDBRootPath);
+        FSBackupUtils::RecurseCreateDirectory(commonSqliteDBRootPath);
     }
     int64_t time2 = FSBackupUtils::GetMilliSecond();
-    string dbFile = GetDbFile(blobFileDetails->m_dirPath);
+    string dbFile = GetDbFile(commonDirPath);
     DBGLOG("Dir creation time: %llu ms, dbFile %s", (time2 - time1), dbFile.c_str());
-
-    int32_t ret = CreateSqliteDb(blobFileDetails, dbFile);
+    int32_t ret = CreateSqliteDb(blobList, dbFile);
     if (ret != SUCCESS) {
-        string dbFullPath = blobFileDetails->m_sqliteDb->GetMetaPath() + dbFile;
+        string dbFullPath = commonMetaPath + dbFile;
         ERRLOG("Create sqlite db for dbFile: %s failed", dbFullPath.c_str());
         m_result = -SQLITE_TASK_FAIL_CODE;
-        m_failedIndex.push_back(index);
+        /* 记录失败的blobfile */
+        for (auto &item : blobList) {
+            m_failedIndex.push_back(item.second);
+        }
     }
     int64_t time3 = FSBackupUtils::GetMilliSecond();
-    DBGLOG("Sqlite insertion time for %u records: %llu ms, archiveFileName: %s, dir: %s",
-        blobFileDetails->m_smallFileDescList.size(), (time3 - time2),
-        blobFileDetails->archiveFileName.c_str(), blobFileDetails->m_dirPath.c_str());
+    DBGLOG("Sqlite insertion time for %s records: %llu ms", commonDirPath.c_str(), (time3 - time2));
 }
 
 int32_t SqliteTask::InsertIndexInfo(std::shared_ptr<BlobFileDetails> blobFileDetails, sqlite3_stmt *sqlStmt,
@@ -640,11 +603,81 @@ string SqliteTask::GetUniqueIdStr()
     return to_string(m_idGenerator->GenerateId());
 }
 
+/* 该方法被循环调用且与聚合同步，sqliteMap为局部变量，与不会占用大量内存 */
 void SqliteTask::DoCreateSqliteIndexBlobList()
 {
     m_result = SUCCESS;
     uint16_t len = m_blobFileDetailsList.size();
+    /* 每个sqlite对应一个vector */
+    std::map<std::string, std::vector<std::pair<std::shared_ptr<BlobFileDetails>, uint16_t>>> sqliteMap;
     for (uint16_t i = 0; i < len; i++) {
-        DoCreateSqliteIndex(m_blobFileDetailsList[i], i);
+        auto it = sqliteMap.find(m_blobFileDetailsList[i]->m_dirPath);
+        if (it == sqliteMap.end()) {
+            std::vector<std::pair<std::shared_ptr<BlobFileDetails>, uint16_t>> blobFileDetailsList;
+            blobFileDetailsList.push_back(make_pair(m_blobFileDetailsList[i], i));
+            sqliteMap.insert(make_pair(m_blobFileDetailsList[i]->m_dirPath, blobFileDetailsList));
+        } else {
+            it->second.push_back(make_pair(m_blobFileDetailsList[i], i));
+        }
     }
+    /* 处理每个sqlite中的blob文件 */
+    for (const auto& pair : sqliteMap) {
+        DoCreateSqliteIndex(pair.second);
+    }
+}
+
+int SqliteTask::ExecSqlTransaction(sqlite3_stmt *sqlStmt, std::shared_ptr<SQLiteCoreInfo> sqlInfoPtr,
+    std::shared_ptr<SQLiteDB> sqliteDb,
+    const std::vector<std::pair<std::shared_ptr<BlobFileDetails>, uint16_t>> &blobList,
+    const string &dbFile, const std::string &dbFullPath)
+{
+    /* Allow only one thread to operate on the same DB file */
+    std::lock_guard<std::mutex> lock(sqlInfoPtr->m_sqliteCoreInfoMutex);
+    int ret = FAILED;
+    uint32_t retryCnt = 0;
+    while ((ret != SUCCESS) && (retryCnt++ < RETRY_COUNT)) {
+        /* Begin transaction & prepare the sql stmt */
+        ret = sqliteDb->PrepareSqlStmt(dbFile, &sqlStmt, sqlInfoPtr);
+        if (ret != SUCCESS) {
+            WARNLOG("PrepareSqlStmt failed: %d for dbFile: %s, retrying: %d", ret, dbFullPath.c_str(), retryCnt);
+            Module::SleepFor(std::chrono::milliseconds(RETRY_TIMEOUT));
+            int32_t retLocal = sqliteDb->DeleteAndPrepareDb(dbFile, sqlInfoPtr, CREATE_DB_FLAGS);
+            if ((retLocal != SUCCESS) || (sqlInfoPtr == nullptr)) {
+                ERRLOG("DeleteAndPrepareDb failed: %d for dbFile: %s", ret, dbFullPath.c_str());
+                return FAILED;
+            }
+            continue;
+        }
+        /* Bind & Step */
+        for (uint64_t i = 0; i < blobList.size(); i++) {
+            ret = InsertIndexInfo(blobList[i].first, sqlStmt, sqlInfoPtr);
+            if (ret != SUCCESS) {
+                break;
+            }
+        }
+        if (ret != SUCCESS) {
+            sqliteDb->FinalizeSqlStmt(sqlStmt, sqlInfoPtr);
+            WARNLOG("InsertIndexInfo failed: %d for dbFile: %s, retrying: %d", ret, dbFullPath.c_str(), retryCnt);
+            Module::SleepFor(std::chrono::milliseconds(RETRY_TIMEOUT));
+            int32_t retLocal = sqliteDb->DeleteAndPrepareDb(dbFile, sqlInfoPtr, CREATE_DB_FLAGS);
+            if ((retLocal != SUCCESS) || (sqlInfoPtr == nullptr)) {
+                ERRLOG("DeleteAndPrepareDb failed: %d for dbFile: %s", ret, dbFullPath.c_str());
+                return FAILED;
+            }
+            continue;
+        }
+        /* Commit */
+        ret = sqliteDb->FinalizeSqlStmt(sqlStmt, sqlInfoPtr);
+        if (ret != SUCCESS) {
+            WARNLOG("FinalizeSqlStmt failed: %d for dbFile: %s, (retrying:%d)", ret, dbFullPath.c_str(), retryCnt);
+            Module::SleepFor(std::chrono::milliseconds(RETRY_TIMEOUT));
+            int32_t retLocal = sqliteDb->DeleteAndPrepareDb(dbFile, sqlInfoPtr, CREATE_DB_FLAGS);
+            if ((retLocal != SUCCESS) || (sqlInfoPtr == nullptr)) {
+                ERRLOG("DeleteAndPrepareDb failed: %d for dbFile: %s", ret, dbFullPath.c_str());
+                return FAILED;
+            }
+            continue;
+        }
+    }
+    return ret;
 }

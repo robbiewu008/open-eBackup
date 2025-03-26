@@ -217,7 +217,7 @@ int SendDstCloseFile(FileHandle &fileHandle, NfsCommonData *commonData)
             if (IS_INCREMENT_FAIL_COUNT(fileHandle)) {
                 FSBackupUtils::RecordFailureDetail(commonData->failureRecorder, fileHandle.m_file->m_fileName, EINVAL);
                 commonData->controlInfo->m_noOfFilesFailed++;
-                ERRLOG("request file failed: %s, totalFailed: %llu", fileHandle.m_file->m_fileName.c_str(),
+                WARNLOG("request file failed: %s, totalFailed: %llu", fileHandle.m_file->m_fileName.c_str(),
                     commonData->controlInfo->m_noOfFilesFailed.load());
             }
 

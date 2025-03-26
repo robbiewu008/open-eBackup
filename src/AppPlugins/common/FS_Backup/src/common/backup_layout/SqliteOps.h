@@ -80,7 +80,7 @@ const std::string CREATETABLE =
       "RES_SUB_TYPE     VARCHAR(8));";
 #endif
 
-const int32_t SQL_RETRY_MAX = 50;
+const int32_t SQL_RETRY_MAX = 3600;
 const int32_t SQL_SLEEP_TIME_MIN = 100;
 const int32_t SQL_SLEEP_TIME_MAX = 500;
 

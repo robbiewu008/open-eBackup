@@ -20,6 +20,10 @@ using namespace Module;
 using namespace FS_Backup;
 using namespace Win32BackupEngineUtils;
 
+namespace {
+    const int RETRY_TIME_MILLISENCOND = 1000;
+}
+
 Win32HardlinkReader::Win32HardlinkReader(const ReaderParams &hardlinkReaderParams,
     std::shared_ptr<Module::BackupFailureRecorder> failureRecorder)
     : HostHardlinkReader(hardlinkReaderParams, failureRecorder)
@@ -67,9 +71,10 @@ int Win32HardlinkReader::ReadSymlinkData(FileHandle& fileHandle)
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_readTaskProduce;
@@ -87,9 +92,10 @@ int Win32HardlinkReader::ReadNormalData(FileHandle& fileHandle)
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_readTaskProduce;

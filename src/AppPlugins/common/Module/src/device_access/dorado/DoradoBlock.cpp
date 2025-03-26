@@ -933,8 +933,8 @@ Description:
         int iRet = Module::FAILED;
         HttpRequest request = req;
         // 存储存在两种接口：
-        // https://8.40.97.155:8088/deviceManager/rest/2102354PBB10MC100006/USER_DATATURBO
-        // https://8.40.97.155:8088/api/v2/task/add_dataturbo_auth
+        // https://*.**.**.***:8088/deviceManager/rest/2102354PBB10MC100006/USER_DATATURBO
+        // https://*.**.**.***:8088/api/v2/task/add_dataturbo_auth
         if (req.url.find("api/v2") != 0) {
             request.url = curl_http + DoradoIP + ":" + DoradoPort + "/deviceManager/rest/" + this->sessionPtr->deviceId
                           + "/" + req.url;
@@ -981,15 +981,30 @@ Description:
         Json::FastWriter jsonWriter;
         req.body = jsonWriter.write(jsonReq);
         Json::Value rsp;
-        bool iRet = SendHttpRequest(req, rsp, TIME_OUT, false);
-        if (!iRet || (!rsp.isMember("error") && !rsp["error"].isMember("code") &&
-            rsp["error"]["code"].asInt() != 0)) {
-            errorCode = rsp["error"]["code"].asInt();
+        bool iRet = SendHttpRequest(req, rsp, TIME_OUT, true);
+        errorCode = -1;
+        std::string stringCode;
+        if (!iRet || !rsp.isMember("error") || !rsp["error"].isMember("code")) {
             ERRLOG("add or delete ip %s failed, error :%d", ip.c_str(), errorCode);
             return false;
         }
-        DBGLOG("Add or delete ip route for %s success!", ip.c_str());
-        return true;
+        if (rsp["error"]["code"].isIntegral()) {
+            errorCode = rsp["error"]["code"].asInt();
+        } else {
+            try {
+                stringCode = rsp["error"]["code"].asString();
+                errorCode = std::stoi(stringCode.c_str());
+            } catch (const std::invalid_argument &e) {
+                WARNLOG("Invalid convert : %s", rsp["error"]["code"].asString().c_str());
+            }
+        }
+
+        if (errorCode == 0 || stringCode == "0") {
+            DBGLOG("Add or delete ip route for %s success!", ip.c_str());
+            return true;
+        }
+        ERRLOG("add or delete ip %s failed, error :%d", ip.c_str(), errorCode);
+        return false;
     }
 
     int DoradoBlock::ResponseSuccessHandle(HttpRequest req,
@@ -1144,7 +1159,7 @@ Description:
                 this->sessionPtr = std::make_shared<Session>(sessionInfo.token,
                     sessionInfo.device_id, sessionInfo.cookie);
             } else {
-                HCP_Log(ERR, DORADO_MODULE_NAME) << "Get session from PM failed, errorDes: "
+                HCP_Log(WARN, DORADO_MODULE_NAME) << "Get session from PM failed, errorDes: "
                     << result.errDesc << HCPENDLOG;
             }
         }
@@ -1184,7 +1199,8 @@ Description:
         }
         req.revocationList = !crl.empty() ? crl : req.revocationList;
         int retryNum = 0;
-        while (retryNum < retryTimes) {
+        bool needRetry = true;
+        do {
             HCP_Log(INFO, DORADO_MODULE_NAME) << "send request for " << (retryNum + 1)
                                               << " time to " << WIPE_SENSITIVE(req.url) << HCPENDLOG;
             int ret = Module::SUCCESS;
@@ -1218,15 +1234,15 @@ Description:
             // in httpRspStatusCodeForRetry for retry.2.when when curl success and ret is Module::FAILED,
             // DoradoResposeNeedRetry, not judge http retry code, directly retry.3.when errorCode not 0,
             // mean curl failed,directly retry.
-            if (result.errorCode == 0 && !DoradoResposeNeedRetry(ret) &&
-                std::find(httpRspStatusCodeForRetry.begin(), httpRspStatusCodeForRetry.end(), ret)
-                == httpRspStatusCodeForRetry.end()) {
+            needRetry =  !(std::find(httpRspStatusCodeForRetry.begin(), httpRspStatusCodeForRetry.end(), ret)
+                        == httpRspStatusCodeForRetry.end() && result.errorCode == 0 && !DoradoResposeNeedRetry(ret));
+            if (needRetry) {
+                DelayTimeSendRequest();
+                retryNum++;
+            } else {
                 HCP_Log(INFO, DORADO_MODULE_NAME) << "not retry send msg for httpstatuscode:" << ret << HCPENDLOG;
-                break;
             }
-            DelayTimeSendRequest();
-            retryNum++;
-        }
+        } while (retryNum < retryTimes && needRetry);
         HCP_Log(ERR, DORADO_MODULE_NAME) << "send request failed. " << HCPENDLOG;
         return Module::FAILED;
     }
@@ -1435,7 +1451,7 @@ Description:
         std::vector<std::string> stderroutput;
         int iRet = runShellCmdWithOutput(DEBUG, DORADO_MODULE_NAME, 0, cmd, paramList, cmdoutput, stderroutput);
         if (iRet != 0) {
-            HCP_Log(ERR, DORADO_MODULE_NAME) << "Excute rescan-scsi-bus.sh filed " << HCPENDLOG;
+            HCP_Log(WARN, DORADO_MODULE_NAME) << "Excute rescan-scsi-bus.sh filed " << HCPENDLOG;
         }
 
         cmdoutput.clear();
@@ -1521,7 +1537,7 @@ Description:
                 return Module::FAILED;
             }
         } else {
-            HCP_Log(ERR, DORADO_MODULE_NAME) << "Snapshot does not exist. " << HCPENDLOG;
+            HCP_Log(WARN, DORADO_MODULE_NAME) << "Snapshot does not exist. " << HCPENDLOG;
         }
     }
 
@@ -1675,7 +1691,7 @@ Description:
         if (jsValue.isMember(strKey)) {
             if (jsValue[strKey].isString()) {
                 strValue = jsValue[strKey].asString();
-                HCP_Log(ERR, DORADO_MODULE_NAME) << "Get Json value failed." << HCPENDLOG;
+                HCP_Log(WARN, DORADO_MODULE_NAME) << "Get Json value failed." << HCPENDLOG;
                 return true;
             } else {
                 HCP_Log(ERR, DORADO_MODULE_NAME)

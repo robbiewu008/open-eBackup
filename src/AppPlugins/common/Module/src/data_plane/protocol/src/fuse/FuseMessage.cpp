@@ -566,13 +566,14 @@ std::shared_ptr<Module::Protocol::Message> FuseMessage::NewWriteBufferResponse(s
     return nullptr;
 }
 
-std::shared_ptr<Module::Protocol::Message> FuseMessage::NewReadRequest(ReqMsgParam& param,
+std::shared_ptr<Module::Protocol::Message> FuseMessage::NewReadRequest(ReqMsgParam& param, fuse_ino_t inodeNumber,
     std::uint64_t size, off_t offset, uint64_t fileHandle)
 {
-    constexpr static std::size_t additionalDataSize = sizeof(param.m_requestHandler) + sizeof(size) +
-                                                      sizeof(offset) + sizeof(fileHandle);
+    constexpr static std::size_t additionalDataSize = sizeof(param.m_requestHandler) + sizeof(inodeNumber) +
+                                                      sizeof(size) +sizeof(offset) + sizeof(fileHandle);
     auto message = AllocateRequestBuffer(FuseMessageClass::READ, param, additionalDataSize);
     message->AddData(reinterpret_cast<char*>(&(param.m_requestHandler)), sizeof(param.m_requestHandler));
+    message->AddData(reinterpret_cast<char*>(&inodeNumber), sizeof(inodeNumber));
     message->AddData(reinterpret_cast<char*>(&size), sizeof(size));
     message->AddData(reinterpret_cast<char*>(&offset), sizeof(offset));
     message->AddData(reinterpret_cast<char*>(&fileHandle), sizeof(fileHandle));

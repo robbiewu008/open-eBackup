@@ -198,7 +198,7 @@ void NdmpClientDataConnectSock(int sock, NdmpDataConnection_t *dataConn)
     dataConn->conn_sock = accept(sock, (struct sockaddr *)&from, (socklen_t *)&fromLen);
     if (dataConn->conn_sock < 0) {
         ERRLOG("Accept fd failed, sock:%d, port:%d, error: %d.", sock, dataConn->port, errno);
-        return;                                      
+        return;
     }
     INFOLOG("Accept fd SUCCESS, sock:%d, port:%d, error: %d.", dataConn->conn_sock, dataConn->port, errno);
 

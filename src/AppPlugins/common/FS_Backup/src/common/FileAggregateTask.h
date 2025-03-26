@@ -139,7 +139,6 @@ public:
           m_sqliteTaskProduce(&sqlTaskProduce), m_sqliteTaskConsume(&sqlTaskConsume),
           m_blobFileList(blobFileList)
     {
-        DBGLOG("FileAggregateTask constructor");
     }
 
     FileAggregateTask(AggregateEvent event,
@@ -155,7 +154,6 @@ public:
           m_idGenerator(idGenerator), m_sqliteTaskProduce(&sqlTaskProduce),
           m_sqliteTaskConsume(&sqlTaskConsume), m_blobFileList(blobFileList)
     {
-        DBGLOG("FileAggregateTask constructor");
     }
 
     explicit FileAggregateTask(UnaggregatedTaskParms &taskInfo)
@@ -169,7 +167,6 @@ public:
           m_blobfileHandle(taskInfo.blobfileHandle),
           m_isDeleteBlobFile(taskInfo.isDeleteBlobFile)
     {
-        DBGLOG("FileAggregateTask constructor-3");
     }
     virtual ~FileAggregateTask() {};
     void Exec() override;
@@ -216,7 +213,6 @@ public:
         std::atomic<uint64_t> *sqlTaskConsume, BackupParams &backupParams)
         : m_event(event), m_idGenerator(idGenerator), m_sqliteTaskConsume(sqlTaskConsume), m_backupParams(backupParams)
     {
-        DBGLOG("FileAggregateTask constructor");
     }
 
     virtual ~SqliteTask() {};
@@ -224,14 +220,19 @@ public:
 
 private:
     /* Backup related APIs */
-    int32_t CreateSqliteDb(std::shared_ptr<BlobFileDetails> blobFileDetails, std::string &dbFile);
-    void DoCreateSqliteIndex(std::shared_ptr<BlobFileDetails> blobFileDetails, uint16_t &index);
+    int32_t CreateSqliteDb(const std::vector<std::pair<std::shared_ptr<BlobFileDetails>, uint16_t>> &blobList,
+        const std::string &dbFile);
+    void DoCreateSqliteIndex(const std::vector<std::pair<std::shared_ptr<BlobFileDetails>, uint16_t>> &blobList);
     std::string GetUniqueIdStr();
     int32_t InsertIndexInfo(std::shared_ptr<BlobFileDetails> blobFileDetails, sqlite3_stmt *sqlStmt,
         std::shared_ptr<SQLiteCoreInfo> sqlInfoPtr);
     void DoCreateSqliteIndexBlobList();
     std::string GetDbFile(std::string &dirPath);
     std::string GetObsKey(const std::string &key, const std::string &type);
+    int ExecSqlTransaction(sqlite3_stmt *sqlStmt, std::shared_ptr<SQLiteCoreInfo> sqlInfoPtr,
+        std::shared_ptr<SQLiteDB> sqliteDb,
+        const std::vector<std::pair<std::shared_ptr<BlobFileDetails>, uint16_t>> &blobList,
+        const std::string &dbFile, const std::string &dbFullPath);
 
 public:
     SqliteEvent m_event { SqliteEvent::INVALID_EVENT };

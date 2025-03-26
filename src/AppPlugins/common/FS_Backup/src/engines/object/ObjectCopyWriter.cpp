@@ -46,7 +46,7 @@ ObjectCopyWriter::ObjectCopyWriter(
     m_params.authArgs = m_dstAdvParams->authArgs;
     m_params.dstBucket = m_dstAdvParams->dstBucket;
     for (auto &item : m_dstAdvParams->buckets) {
-        m_params.bucketNames.emplace_back(item.bucketName);
+        m_params.bucketNames.emplace_back(item);
     }
     m_params.writeCbData.controlInfo = m_controlInfo;
     m_params.writeCbData.maxBlockNum = m_backupParams.commonParams.maxBlockNum;
@@ -169,8 +169,9 @@ int ObjectCopyWriter::OpenFile(FileHandle& fileHandle)
 {
     DBGLOG("Enter OpenFile: %s", fileHandle.m_file->m_fileName.c_str());
     auto taskPtr = make_shared<ObjectServiceTask>(ObjectEvent::OPEN_DST, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(taskPtr) == false) {
+    if (m_jsPtr->Put(taskPtr, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put open file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -183,8 +184,9 @@ int ObjectCopyWriter::WriteData(FileHandle& fileHandle)
     DBGLOG("Enter WriteData: %s", fileHandle.m_file->m_fileName.c_str());
     m_params.writeCbData.fileName = fileHandle.m_file->m_fileName;
     auto task = make_shared<ObjectServiceTask>(ObjectEvent::WRITE_DATA, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write data task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -195,8 +197,9 @@ int ObjectCopyWriter::WriteData(FileHandle& fileHandle)
 int ObjectCopyWriter::WriteMeta(FileHandle& fileHandle)
 {
     auto task = make_shared<ObjectServiceTask>(ObjectEvent::WRITE_META, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write meta file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -208,8 +211,9 @@ int ObjectCopyWriter::CloseFile(FileHandle& fileHandle)
     DBGLOG("Enter CloseFile: %s, DstState: %d",
         fileHandle.m_file->m_fileName.c_str(), static_cast<int>(fileHandle.m_file->GetDstState()));
     auto task = make_shared<ObjectServiceTask>(ObjectEvent::CLOSE_DST, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put close task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -222,6 +226,9 @@ int64_t ObjectCopyWriter::ProcessTimers()
     vector<FileHandle> fileHandles;
     int64_t delay = m_timer.GetExpiredEventAndTime(fileHandles);
     for (FileHandle& fh : fileHandles) {
+        if (IsAbort()) {
+            return 0;
+        }
         ProcessWriteEntries(fh);
     }
     return delay;
@@ -418,8 +425,8 @@ void ObjectCopyWriter::HandleFailedEvent(std::shared_ptr<ObjectServiceTask> task
     ObjectEvent event = taskPtr->m_event;
     ++fileHandle.m_retryCnt;
 
-    ERRLOG("Object copy writer failed %s event %d retry cnt %d seq %d", fileHandle.m_file->m_fileName.c_str(),
-           static_cast<int>(event), fileHandle.m_retryCnt, fileHandle.m_block.m_seq);
+    WARNLOG("Object copy writer failed %s event %d retry cnt %d seq %d", fileHandle.m_file->m_fileName.c_str(),
+        static_cast<int>(event), fileHandle.m_retryCnt, fileHandle.m_block.m_seq);
 
     if (taskPtr->m_errDetails.second == EAGAIN) {
         m_needCheckServer = true;
@@ -461,8 +468,9 @@ void ObjectCopyWriter::HandleFailedEvent(std::shared_ptr<ObjectServiceTask> task
     if (!fileHandle.m_errMessage.empty()) {
         m_failedList.emplace_back(fileHandle);
     }
-    ERRLOG("copy write failed for file %s, totalFailed: %llu %llu",
+    ERRLOG("copy write failed for file %s, metaInfo: %u, %llu, totalFailed: %llu %llu",
            fileHandle.m_file->m_fileName.c_str(),
+           fileHandle.m_file->m_metaFileIndex, fileHandle.m_file->m_metaFileOffset,
            m_controlInfo->m_noOfFilesFailed.load(), m_controlInfo->m_noOfDirFailed.load());
     return;
 }
@@ -475,8 +483,8 @@ std::string ObjectCopyWriter::GetDstBucketName(std::string& path)
 
     for (auto &item : m_params.bucketNames) {
         // 不包含首字符"/"路径分割符
-        if (path.substr(1, item.length()) == item) {
-            return item;
+        if (path.substr(1, item.bucketName.length()) == item.bucketName) {
+            return item.bucketName;
         }
     }
     return "";
@@ -492,8 +500,9 @@ int ObjectCopyWriter::CreateBucket(FileHandle& fileHandle)
     }
 
     auto task = make_shared<ObjectServiceTask>(ObjectEvent::CREATE_DIR, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put create bucket task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;

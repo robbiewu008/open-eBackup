@@ -63,6 +63,7 @@ private:
     int ProcessReadSpecialFileData();
     int ProcessWriteSoftLinkData();
     int ProcessWriteSpecialFileData();
+    bool DealSpecialErrnoForOsRestore(std::pair<std::string, uint64_t>& m_errDetails);
 
     bool RemoveFile(const std::string &filePath);
     bool SetUtime(const std::string &dstPath);

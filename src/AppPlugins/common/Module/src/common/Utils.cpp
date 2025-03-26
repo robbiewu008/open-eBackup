@@ -68,6 +68,17 @@ long long SafeStoll(const std::string& str, long long defaultValue)
     }
 }
 
+unsigned long long SafeStoUll(const std::string& str, unsigned long long defaultValue)
+{
+    try {
+        unsigned long long res = std::stoull(str);
+        return res;
+    } catch (const std::exception& e) {
+        ERRLOG("Invalid Argument for stoi: %s, ERR:%s", str.c_str(), e.what());
+        return defaultValue;
+    }
+}
+
 float SafeStof(const std::string& str, float defaultValue)
 {
     try {

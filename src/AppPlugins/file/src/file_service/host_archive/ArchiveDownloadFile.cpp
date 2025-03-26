@@ -101,6 +101,11 @@ std::string ArchiveDownloadFile::GetFileSystemsId()
     return m_fsId;
 }
 
+std::string ArchiveDownloadFile::GetParentDir()
+{
+    return m_parentDir;
+}
+
 bool ArchiveDownloadFile::Start(const std::string& outputPath, const std::vector<std::string>& pathList)
 {
     m_state = ArchiveDownloadState::RUNNING;
@@ -142,6 +147,7 @@ bool ArchiveDownloadFile::StartDownloadMeta(const std::string& outputPath, const
         if (!GetFileListFromCtrl(controlfile, ctrlFileMap)) {
             return false;
         }
+        INFOLOG("ctrlFileMapSize : %d", ctrlFileMap.size());
         if (!DownloadFile(outputPath, ctrlFileMap)) {
             ERRLOG("DownloadFile failed controlfile: %s", controlfile.c_str());
             return false;
@@ -230,7 +236,7 @@ bool ArchiveDownloadFile::QueryPrepare()
     // 这里是共享名， windows场景也是 "/"
     size_t pos = cacheRepoFsName.find_first_of("/");
     cacheRepoFsName = cacheRepoFsName.substr(0, pos);
-    if (m_clientHandler->PrepareRecovery(metaFilePath, cacheRepoFsName) != SUCCESS) {
+    if (m_clientHandler->PrepareRecovery(metaFilePath, m_parentDir, cacheRepoFsName) != SUCCESS) {
         ERRLOG("Archive client prepare recovery failed.");
         return false;
     }

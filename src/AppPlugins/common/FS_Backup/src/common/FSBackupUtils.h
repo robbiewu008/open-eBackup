@@ -65,6 +65,7 @@ namespace FSBackupUtils {
     std::string FormatSpeed(uint64_t speed);
     std::string FloatToString(const float &val, const uint8_t &precisson = 1);
     std::string GetDateTimeString(uint64_t time);
+    bool IsStuck(std::shared_ptr<BackupControlInfo> controlInfo);
 #ifndef WIN32
     mode_t GetUmask();
 #endif

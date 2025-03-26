@@ -43,6 +43,7 @@ public:
     static bool FileExist(const std::string& pszFilePath);
     static bool DirExist(const char* pszDirPath);
     static int CreateDir(const char* pszDirPath);
+    static int CreateDir2(const char* pszDirPath);
     static int DelDir(const char* pszDirPath);
     static int GetPathFromFilePath(const std::string& strFileFullPath, std::string& strFilePath);
     static int GetNameFromFilePath(const std::string &strFileFullPath, std::string &strFileName);

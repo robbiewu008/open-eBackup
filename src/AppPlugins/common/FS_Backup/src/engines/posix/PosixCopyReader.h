@@ -33,7 +33,10 @@ private:
     int ReadMeta(FileHandle& fileHandle) override;
     int ReadEmptyData(FileHandle& fileHandle);
     void ProcessReadEntries(FileHandle& fileHandle) override; /* state to event */
-    void HandleSuccessEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr); /* event to state */
+    void HandleSuccessEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr) override; /* event to state */
+    void HandleFailedEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr) override;
+    void HandleFailedEventInner(FileDescState state, FileHandle fileHandle,
+        std::shared_ptr<OsPlatformServiceTask> taskPtr);
     bool isHugeObjectFile(FileHandle& fileHandle);
     void CloseOpenedHandle() override;
 };

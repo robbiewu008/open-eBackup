@@ -113,6 +113,8 @@ CTRL_FILE_RETCODE HardlinkCtrlParser::ReadEntry(HardlinkCtrlEntry &linkEntry, Ha
         boost::algorithm::split(ctlFileLineSplit, ctlFileLine, boost::is_any_of(","), boost::token_compress_off);
         if (ValidateEntry(ctlFileLineSplit, ctlFileLine) == CTRL_FILE_RETCODE::SUCCESS) {
             break;
+        } else if (HandleBreakLine(ctlFileLineSplit, ctlFileLine) == CTRL_FILE_RETCODE::SUCCESS) {
+            break;
         }
         ctlFileLine.clear();
         ctlFileLineSplit.clear();
@@ -126,6 +128,36 @@ CTRL_FILE_RETCODE HardlinkCtrlParser::ReadEntry(HardlinkCtrlEntry &linkEntry, Ha
     }
 
     return CTRL_FILE_RETCODE::SUCCESS;
+}
+
+/* 处理存在换行符的名称，直到获取到正常行为止 */
+CTRL_FILE_RETCODE HardlinkCtrlParser::HandleBreakLine(vector<string> &lineContents, std::string &ctlFileLine)
+{
+    std::string tmpLine {};
+    std::streampos currentPositon = m_readBuffer.tellg();
+    while (true) {
+        tmpLine.clear();
+        currentPositon = m_readBuffer.tellg();
+        getline(m_readBuffer, tmpLine);
+        // 读到正常的行，说明当前处理的数据为无效错误数据，把pos调整回原来的位置，返回失败
+        if (IsNormalEntry(lineContents, tmpLine)) {
+            m_readBuffer.seekg(currentPositon);
+            return CTRL_FILE_RETCODE::INVALID_CONTENT;
+        } else {
+            // 说明是截断的行，拼接并增加换行符
+            ctlFileLine = ctlFileLine + "\n" + tmpLine;
+            // 拼接后的得到有效的数据，返回成功，否则继续
+            if (IsNormalEntry(lineContents, ctlFileLine)) {
+                return CTRL_FILE_RETCODE::SUCCESS;
+            }
+        }
+    }
+}
+
+bool HardlinkCtrlParser::IsNormalEntry(std::vector<std::string> &lineContents, const std::string& ctlFileLine) const
+{
+    boost::algorithm::split(lineContents, ctlFileLine, boost::is_any_of(","), boost::token_compress_off);
+    return ValidateEntry(lineContents, ctlFileLine) == CTRL_FILE_RETCODE::SUCCESS;
 }
 
 void HardlinkCtrlParser::TranslateLinkEntry(vector<std::string> &fileContents, HardlinkCtrlEntry &linkEntry)
@@ -377,7 +409,8 @@ string HardlinkCtrlParser::GetFileHeaderLine(uint32_t headerLine)
     return ctlHeaderLine;
 }
 
-CTRL_FILE_RETCODE HardlinkCtrlParser::ValidateEntry(vector<std::string> &fileContents, std::string &line)
+CTRL_FILE_RETCODE HardlinkCtrlParser::ValidateEntry(const vector<std::string> &fileContents,
+    const std::string &line) const
 {
     if (fileContents.empty()) {
         return CTRL_FILE_RETCODE::FAILED;
@@ -386,14 +419,14 @@ CTRL_FILE_RETCODE HardlinkCtrlParser::ValidateEntry(vector<std::string> &fileCon
 
     if (fileContents[CTRL_FILE_NUMBER_ZERO] == HARDLINKCTRL_ENTRY_TYPE_INODE) {
         if (lineContentsVecSize != CTRL_FILE_OFFSET_3) {
-            HCP_Log(ERR, MODULE)
+            HCP_Log(WARN, MODULE)
                 << "Hardlink control Entry for inode incorrect. Line:" << line <<
                     "File: " << m_fileName << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
     } else if (fileContents[CTRL_FILE_NUMBER_ZERO] == HARDLINKCTRL_ENTRY_TYPE_FILE) {
         if (lineContentsVecSize < CTRL_FILE_OFFSET_10) {
-            HCP_Log(ERR, MODULE) << "Hardlink Entry for file has less columns. Line: "
+            HCP_Log(WARN, MODULE) << "Hardlink Entry for file has less columns. Line: "
                 << line << "File: " << m_fileName << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
@@ -402,12 +435,12 @@ CTRL_FILE_RETCODE HardlinkCtrlParser::ValidateEntry(vector<std::string> &fileCon
             (uint32_t)atoi(fileContents[CTRL_FILE_NUMBER_ONE].c_str());
         uint32_t fileCommaCount = (uint32_t)atoi(fileContents[fileCommaCntIdx].c_str());
         if (lineContentsVecSize != (dirCommaCount + fileCommaCount + CTRL_FILE_OFFSET_10)) {
-            HCP_Log(ERR, MODULE) << "Hardlink control Entry for file incorrect. Line: " << line <<
+            HCP_Log(WARN, MODULE) << "Hardlink control Entry for file incorrect. Line: " << line <<
                     "File: " << m_fileName << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
     } else {
-        HCP_Log(ERR, MODULE)
+        HCP_Log(WARN, MODULE)
             << "Hardlink control entry neither file nor dir. Line: " << line <<
                 "File: " << m_fileName << HCPENDLOG;
         return CTRL_FILE_RETCODE::FAILED;

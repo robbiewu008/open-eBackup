@@ -424,8 +424,6 @@ private:
     int GetRecordFromMultiSqliteByName(FileHandle &fileHandle, std::string& dbFile,
         std::vector<IndexDetails>& vecIndexInfo);
     int GetFileMetaByName(FileHandle &fileHandle);
-    bool CheckSqliteDir(const std::string& path);
-    bool GetDirCapacity(const char *pathName, uint64_t &capacity, uint64_t &free);
 };
 
 #endif

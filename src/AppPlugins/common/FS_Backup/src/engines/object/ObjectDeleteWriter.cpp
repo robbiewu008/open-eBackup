@@ -39,7 +39,7 @@ ObjectDeleteWriter::ObjectDeleteWriter(
     m_params.authArgs = m_dstAdvParams->authArgs;
     m_params.dstBucket = m_dstAdvParams->dstBucket;
     for (auto &item : m_dstAdvParams->buckets) {
-        m_params.bucketNames.emplace_back(item.bucketName);
+        m_params.bucketNames.emplace_back(item);
     }
     m_threadPoolKey = m_backupParams.commonParams.subJobId + "_deleteWriter";
     m_failureRecorder = failureRecorder;
@@ -110,8 +110,9 @@ int ObjectDeleteWriter::WriteData(FileHandle& fileHandle)
 {
     DBGLOG("Write data for %s", fileHandle.m_file->m_fileName.c_str());
     auto task = make_shared<ObjectServiceTask>(ObjectEvent::DELETE_ITEM, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write data (delete) task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     ++m_controlInfo->m_writeTaskProduce;
@@ -163,6 +164,9 @@ int64_t ObjectDeleteWriter::ProcessTimers()
     vector<FileHandle> fileHandles;
     int64_t delay = m_timer.GetExpiredEventAndTime(fileHandles);
     for (FileHandle& fh : fileHandles) {
+        if (IsAbort()) {
+            return 0;
+        }
         DBGLOG("Process timer %s", fh.m_file->m_fileName.c_str());
         FileDescState state = fh.m_file->GetDstState();
         if (state == FileDescState::INIT) {
@@ -278,8 +282,9 @@ void ObjectDeleteWriter::HandleFailedEvent(shared_ptr<ObjectServiceTask> taskPtr
         if (!fileHandle.m_errMessage.empty()) {
             m_failedList.emplace_back(fileHandle);
         }
-        ERRLOG("delete failed for file %s %llu %llu, totalFailed: %llu, %llu",
+        ERRLOG("delete failed for file %s %llu %llu, metaInfo: %u, %llu, totalFailed: %llu, %llu",
             fileHandle.m_file->m_fileName.c_str(), m_deleteFailedDir.load(), m_deleteFailedFile.load(),
+            fileHandle.m_file->m_metaFileIndex, fileHandle.m_file->m_metaFileOffset,
             m_controlInfo->m_noOfDirFailed.load(), m_controlInfo->m_noOfFilesFailed.load());
         return;
     }

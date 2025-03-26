@@ -31,6 +31,20 @@
 #include "ScannerBackupMeta.h"
 #include "CommonServiceParams.h"
 
+struct CmpFileByName {
+    bool operator()(const FileHandle &a, const FileHandle &b)
+    {
+        return a.m_file->m_fileName > b.m_file->m_fileName;
+    }
+};
+
+struct CmpFileByNameReverse {
+    bool operator()(const FileHandle &a, const FileHandle &b)
+    {
+        return a.m_file->m_fileName < b.m_file->m_fileName;
+    }
+};
+
 class CopyControlFileReader {
 public:
     explicit CopyControlFileReader(const ReaderParams& readerParams);
@@ -77,6 +91,10 @@ private:
     int ReadControlFileEntryAndProcessV10(ScannerBackupCtrlFileEntry& fileEntry,
         ScannerBackupCtrlDirEntry& dirEntry, ParentInfo& parentInfo);
     int PushFileHandleToReader(const int& ret, FileHandle& fileHandle);
+    template<typename CmpFile>
+    int PushPriorityToReader(std::priority_queue<FileHandle, std::vector<FileHandle>, CmpFile>& queue);
+    int JudgeAndPushPriorityToReader();
+    int PushFileHandleToPrioity(const int& ret, FileHandle& fileHandle);
     int PushDirToAggregator(const int& ret, FileHandle& fileHandle);
     void PushFileHandleToAggregator(FileHandle& fileHandle);
     int OpenControlFileV10(const std::string& controlFile);
@@ -93,11 +111,15 @@ private:
     int FillFileMetaDataV10(FileHandle& fileHandle, const NasScanner::FileMeta& fileMeta);
     bool IsWindowsStyleEngine(const BackupIOEngine& engine) const;
     std::string ParseAcl(const std::vector<Module::XMetaField> &xmetalist);
+    void MonitorReadControlHeader();
 
 private:
     BackupParams m_backupParams;
 
     std::thread m_thread;
+    std::thread m_monitorthread;
+    std::priority_queue<FileHandle, std::vector<FileHandle>, CmpFileByName> m_priorityQueue;
+    std::priority_queue<FileHandle, std::vector<FileHandle>, CmpFileByNameReverse> m_priorityQueueReverse;
     std::shared_ptr<BackupQueue<FileHandle>> m_readQueue;
     std::shared_ptr<BackupQueue<FileHandle>> m_aggregateQueue;
 
@@ -113,6 +135,7 @@ private:
     std::shared_ptr<BackupControlInfo> m_controlInfo;
     std::shared_ptr<BlockBufferMap> m_blockBufferMap;
 
+    bool m_readControlHeaderComplete = false;
     bool m_abort { false };
     time_t m_isCompleteTimer { 0 };
     std::string m_metaFileVersion = META_VERSION_V20;

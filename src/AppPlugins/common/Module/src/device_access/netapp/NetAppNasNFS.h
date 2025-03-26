@@ -74,6 +74,10 @@ namespace Module {
 
         int DeleteNFSShareClient(const std::vector<std::string> &iPList, const std::string shareId);
 
+        int QueryVolUuidByVolNameAndSvmName(const std::string &svmName, const std::string &volName);
+
+        int DeleteSnapshot(std::string SnapshotName);
+
         std::unordered_map<std::string, std::string> NFSShareIDList;
 
         bool isDeleteParentSnapShot = false;

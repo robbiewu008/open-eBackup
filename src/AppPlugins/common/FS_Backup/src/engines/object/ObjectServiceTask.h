@@ -56,10 +56,12 @@ struct ObjectServiceParams {
     std::string cachePath;
     uint64_t blockSize { 0 };
     uint32_t maxBlockNum { 0 };
+    std::string excludeMeta;
     Module::StorageConfig authArgs;
-    std::vector<std::string> bucketNames;
+    std::vector<ObsBucket> bucketNames;
     ObsBucket dstBucket; // 只能有一个
     bool isfineGrainedRestore {false};
+    std::size_t reqID  {};              // Request ID corresponding to a subjob
 
     UploadObjectCbData writeCbData {};
     std::shared_ptr<UploadInfoMap> m_uploadInfoMap;
@@ -105,6 +107,7 @@ private:
     void HandleCloseDst();
     void HandleDelete();
 
+    bool GetEncode(const std::string& bucketName);
     void FillAclGrant(std::vector<Module::ACLGrant>& aclGrants);
     int GetBucketAcl(std::unique_ptr<Module::GetBucketACLResponse>& newAcl);
     int GetObjectAcl(std::unique_ptr<Module::GetObjectACLResponse>& newAcl);
@@ -116,6 +119,7 @@ private:
     bool SetObjectAcl();
     bool SetObjectMeta();
     void RecordErrMessage(int64_t errCode, const std::string& errMessage);
+    bool IsSkipMetaData(const vector<std::string> &excludeItems, const std::string &meta);
 };
 
 #endif // OBJECT_SERVICE_TASK_H

@@ -27,6 +27,7 @@ namespace {
     const int MAX_PROCESS_TASK_NUM = 32;
     const int QUEUE_TIMEOUT_MILLISECOND = 200;
     const int64_t MAX_MERGE_RECORD_NUM = 100000; // 10w
+    const int RETRY_TIME_MILLISENCOND = 1000;
 }
 
 void MergeServiceTask::Exec()
@@ -187,7 +188,7 @@ int MergeSqliteDB::ThreadFunc()
         }
 
         auto task = make_shared<MergeServiceTask>(m_sqliteDb, m_sqlitePath, m_dirQueue, dirPath);
-        if (!m_jsPtr->Put(task)) {
+        if (!m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK)) {
             ERRLOG("put task failed");
             m_result = Module::FAILED;
         }

@@ -12,7 +12,7 @@
 */
 #include "FileParser.h"
 #include "Log.h"
-
+#include "common/Thread.h"
 using namespace std;
 using namespace Module;
 
@@ -65,9 +65,9 @@ CTRL_FILE_RETCODE FileParser::WriteToFile(std::stringstream& writeBuffer, bool i
 {
     CTRL_FILE_RETCODE ret = CTRL_FILE_RETCODE::SUCCESS;
     m_writeFd << writeBuffer.str();
-    // DTS2023101812316
     if (!m_writeFd.good()) {
         m_writeFd.close();
+        HCP_Log(ERR, MODULE) << "m_writeFd is not good, file: " << m_fileName << HCPENDLOG;
         std::ios::openmode fileOpenMode = std::ios::out | std::ios::app;
         if (isBinaryFile) {
             fileOpenMode |= std::ios::binary;
@@ -78,6 +78,7 @@ CTRL_FILE_RETCODE FileParser::WriteToFile(std::stringstream& writeBuffer, bool i
             m_writeFd.seekp(0, ios::end);
             if (!m_writeFd.good()) {
                 m_writeFd.close();
+                HCP_Log(ERR, MODULE) << "m_writeFd is not good, file: " << m_fileName << HCPENDLOG;
                 ret = CTRL_FILE_RETCODE::FAILED;
             }
         }
@@ -87,22 +88,58 @@ CTRL_FILE_RETCODE FileParser::WriteToFile(std::stringstream& writeBuffer, bool i
 
 CTRL_FILE_RETCODE FileParser::ReadFromFile()
 {
-    CTRL_FILE_RETCODE ret = CTRL_FILE_RETCODE::SUCCESS;
-    m_readBuffer << m_readFd.rdbuf();
-    if (!m_readBuffer.good()) {
-        m_readFd.close();
-        m_readBuffer.clear(m_readBuffer.goodbit);
-        m_readBuffer.str("");
-        ret = FileOpen<std::ifstream>(m_readFd, std::ios::in);
-        if (ret == CTRL_FILE_RETCODE::SUCCESS) {
-            m_readBuffer << m_readFd.rdbuf();
-            if (!m_readBuffer.good()) {
-                m_readFd.close();
-                m_readBuffer.str("");
-                ret = CTRL_FILE_RETCODE::FAILED;
-            }
+    if (!m_readFd.is_open()) {
+        // The std::ios::binary mode is also required for Windows.
+        // Otherwise, an error occurs when the read file is read based on the file size.
+        CTRL_FILE_RETCODE ret = FileOpen<std::ifstream>(m_readFd, std::ios::in | std::ios::binary);
+        if (ret != CTRL_FILE_RETCODE::SUCCESS) {
+            HCP_Log(ERR, MODULE) << "FileOpen failed: " << m_fileName << HCPENDLOG;
+            return CTRL_FILE_RETCODE::FAILED;
         }
     }
+    m_readFd.seekg(0, std::ios::end);
+    uint64_t fileLength = m_readFd.tellg();
+    HCP_Log(DEBUG, MODULE) << "The size: " << fileLength << ", file: " << m_fileName << HCPENDLOG;
+    std::shared_ptr<char> buffer = std::shared_ptr<char>(new char[fileLength], std::default_delete<char[]>());
+    if (buffer == nullptr) {
+        HCP_Log(ERR, MODULE) << "alloc buffer failed, len: " << fileLength << HCPENDLOG;
+        return CTRL_FILE_RETCODE::FAILED;
+    }
+    m_readFd.seekg(0, std::ios::beg);
+    m_readFd.read(buffer.get(), fileLength);
+    if (m_readFd.eof() && m_readFd.fail()) {
+        HCP_Log(ERR, MODULE) << "Read failed, Only read: " << m_readFd.gcount() << ", expect: " << fileLength << HCPENDLOG;
+        return CTRL_FILE_RETCODE::FAILED;
+    }
+    if (fileLength != m_readFd.gcount()) {
+        HCP_Log(ERR, MODULE) << "Only read: " << m_readFd.gcount() << ", expect: " << fileLength << HCPENDLOG;
+    }
+    m_readBuffer << std::string(buffer.get(), fileLength);
+    if (!m_readBuffer.good()) {
+        HCP_Log(ERR, MODULE) << "m_readBuffer status failed. file: " << m_fileName << HCPENDLOG;
+        return CTRL_FILE_RETCODE::FAILED;
+    }
+    return CTRL_FILE_RETCODE::SUCCESS;
+}
+
+CTRL_FILE_RETCODE FileParser::ReadFromFileRetry()
+{
+    CTRL_FILE_RETCODE ret = CTRL_FILE_RETCODE::SUCCESS;
+    constexpr uint16_t maxRetryCnt = 3;
+    int retry = 0;
+    do {
+        retry++;
+        ret = ReadFromFile();
+        if (ret == CTRL_FILE_RETCODE::SUCCESS) {
+            break;
+        }
+        // Read failed
+        m_readFd.close();
+        m_readBuffer.clear();
+        m_readBuffer.str("");
+        HCP_Log(ERR, MODULE) << "ReadFromFile failed. retry: " << retry << HCPENDLOG;
+        Module::SleepFor(chrono::seconds(retry));
+    } while (retry < maxRetryCnt);
     return ret;
 }
 
@@ -112,9 +149,13 @@ CTRL_FILE_RETCODE FileParser::ReadFromBinaryFile(uint64_t offset, uint32_t readL
     m_readFd.read(m_readBinaryBuffer, readLen);
     if (m_readFd.eof() && m_readFd.fail()) {
         m_readFd.clear();
+        HCP_Log(DEBUG, MODULE) << "m_readFd eof read: " << m_readFd.gcount() << ", expect: " << readLen << ", "
+                             << m_fileName << HCPENDLOG;
         return CTRL_FILE_RETCODE::READ_EOF;
     }
     if ((!m_readFd.eof()) && (!m_readFd.good())) {
+        HCP_Log(ERR, MODULE) << "m_readFd only read: " << m_readFd.gcount() << ", expect: " << readLen << ", "
+                             << m_fileName << HCPENDLOG;
         m_readFd.close();
         ret = FileOpen<std::ifstream>(m_readFd, std::ios::in | std::ios::binary);
         if (ret != CTRL_FILE_RETCODE::SUCCESS) {
@@ -123,12 +164,15 @@ CTRL_FILE_RETCODE FileParser::ReadFromBinaryFile(uint64_t offset, uint32_t readL
         if (offset != 0) {
             m_readFd.seekg(offset);
             if (m_readFd.fail()) {
+                HCP_Log(ERR, MODULE) << "m_readFd seek fail: " << m_fileName << HCPENDLOG;
                 return CTRL_FILE_RETCODE::FAILED;
             }
         }
         m_readFd.read(m_readBinaryBuffer, readLen);
         if ((!m_readFd.eof()) && (!m_readFd.good())) {
             m_readFd.close();
+            HCP_Log(ERR, MODULE) << "m_readFd only read: " << m_readFd.gcount() << ", expect: " << readLen << ", "
+                                 << m_fileName << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
     }
@@ -150,6 +194,7 @@ CTRL_FILE_RETCODE FileParser::Open(CTRL_FILE_OPEN_MODE mode)
                     << m_fileName << HCPENDLOG;
                 return CTRL_FILE_RETCODE::FAILED;
             }
+            memset_s(m_readBinaryBuffer, m_readBufferSize, 0, m_readBufferSize);
             ret = FileOpen<std::ifstream>(m_readFd, std::ios::in | std::ios::binary);
             if (ret != CTRL_FILE_RETCODE::SUCCESS) {
                 free(m_readBinaryBuffer);
@@ -157,11 +202,13 @@ CTRL_FILE_RETCODE FileParser::Open(CTRL_FILE_OPEN_MODE mode)
                 return CTRL_FILE_RETCODE::FAILED;
             }
         } else {
-            ret = FileOpen<std::ifstream>(m_readFd, std::ios::in);
+            // The std::ios::binary mode is also required for Windows.
+            // Otherwise, an error occurs when the read file is read based on the file size.
+            ret = FileOpen<std::ifstream>(m_readFd, std::ios::in | std::ios::binary);
             if (ret != CTRL_FILE_RETCODE::SUCCESS) {
                 return CTRL_FILE_RETCODE::FAILED;
             }
-            ret = ReadFromFile();
+            ret = ReadFromFileRetry();
             if (ret != CTRL_FILE_RETCODE::SUCCESS) {
                 HCP_Log(ERR, MODULE) << "Read from stream is failed for " << m_fileName << HCPENDLOG;
                 return CTRL_FILE_RETCODE::FAILED;

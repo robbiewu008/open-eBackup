@@ -266,6 +266,7 @@ public:
                                                            std::uint64_t size,
                                                            const std::shared_ptr<MessageHeader>& msgHeader);
     static std::shared_ptr<Module::Protocol::Message> NewReadRequest(ReqMsgParam& param,
+                                                   fuse_ino_t inodeNumber,
                                                    std::uint64_t size,
                                                    off_t offset,
                                                    uint64_t fileHandle);

@@ -1,0 +1,32 @@
+add_library(volume_index_obj
+    OBJECT
+    ${CMAKE_CURRENT_SOURCE_DIR}/VolumeIndex.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LinuxVolumeIndex.cpp
+)
+ 
+target_include_directories(volume_index_obj
+    PRIVATE
+    ${PLUGIN_FRAMEWORK_PATH}/inc
+    ${PLUGIN_FRAMEWORK_PATH}/inc/client
+    ${PLUGIN_FRAMEWORK_PATH}/inc/common
+    ${PLUGIN_FRAMEWORK_PATH}/inc/job/
+    ${PLUGIN_FRAMEWORK_PATH}/inc/job_mgr
+    ${PLUGIN_FRAMEWORK_PATH}/inc/rpc
+    ${PLUGIN_FRAMEWORK_PATH}/inc/rpc/certificateservice
+    ${PLUGIN_SRC_PATH}
+    ${PLUGIN_SRC_PATH}/common
+    ${PLUGIN_SRC_PATH}/common/constant
+    ${PLUGIN_SRC_PATH}/common/volume
+    ${PLUGIN_SRC_PATH}/utils
+    ${PLUGIN_SCANNER_PATH}/localhost_src/interface
+    ${PLUGIN_SCANNER_PATH}/localhost_src/model
+    ${PLUGIN_SCANNER_PATH}/localhost_src/filter
+    ${MODULE_ROOT_PATH}/src/
+    ${MODULE_ROOT_PATH}/src/parser
+)
+ 
+target_link_libraries(volume_index_obj
+    PRIVATE
+    volume_obj
+    common_dep
+)

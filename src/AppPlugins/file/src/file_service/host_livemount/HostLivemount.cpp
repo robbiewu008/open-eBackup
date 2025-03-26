@@ -207,8 +207,9 @@ int HostLivemount::GetFileSetMountDriveInfo(ActionResult &actionResult)
         return Module::FAILED;
     }
     std::string mountPath = driveInfo.mountDirve.substr(0, pos);
+    std::string temp = driveInfo.mountDirve.substr(pos + 1);
 #ifdef WIN32
-    AddLogDetail(logDetail, "file_plugin_host_livemount_cifs_mountinfo_label", JobLogLevel::TASK_LOG_INFO, mountPath);
+    AddLogDetail(logDetail, "file_plugin_host_livemount_cifs_mountinfo_label", JobLogLevel::TASK_LOG_INFO, temp);
 #else
     AddLogDetail(logDetail, "file_plugin_livemount_nfs_mountinfo_label", JobLogLevel::TASK_LOG_INFO, mountPath);
 #endif

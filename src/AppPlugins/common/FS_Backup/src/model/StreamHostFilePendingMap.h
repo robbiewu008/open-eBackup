@@ -14,8 +14,7 @@
 #define STREAM_HOST_FILE_PENDING_MAP_H
 
 #include <string>
-#include <map>
-#include <set>
+#include <unordered_set>
 #include <unordered_map>
 #include <mutex>
 
@@ -30,14 +29,14 @@ public:
     void DecStreamPending(const std::string& streampath);
     bool IsHostWriteComplete(const std::string& streampath);
     uint64_t PendingStreamNum(const std::string& streampath);
-    void MarkHostWriteFailed(const std::string& filepath);
-    bool IsHostWriteFailed(const std::string& streampath);
+    void MarkHostFailed(const std::string& filepath);
+    bool IsHostFailed(const std::string& streampath);
 private:
     // lock used for StreamHostFilePendingMapType mutual access
     std::mutex      m_mutex;
 
     InnerMapType    m_map;
-    std::set<std::string> m_failedAdsHost;
+    std::unordered_set<std::string> m_failedAdsHost;
 };
 
 #endif

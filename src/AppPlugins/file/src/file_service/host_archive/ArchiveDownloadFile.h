@@ -78,6 +78,7 @@ public:
     bool Start(const std::string& outputPath, const std::vector<std::string>& pathList);
     bool StartDownloadMeta(const std::string& outputPath, const std::vector<std::string>& pathList);
     std::string GetFileSystemsId();
+    std::string GetParentDir();
     void SetAbort();
 
     ArchiveDownloadState m_state {ArchiveDownloadState::RUNNING};
@@ -105,6 +106,7 @@ private:
     std::string m_fsId;
     std::string m_cacheFsPath;
     std::string m_cacheFsRemotePath;
+    std::string m_parentDir;
     bool m_isInit {false};
     ArchiveServerInfo m_archiveInfo;
     std::unique_ptr<ArchiveStreamService> m_clientHandler = std::make_unique<ArchiveStreamService>();

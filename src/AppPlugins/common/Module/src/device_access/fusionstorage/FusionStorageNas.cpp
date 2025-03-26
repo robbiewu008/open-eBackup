@@ -135,7 +135,7 @@ namespace Module {
         std::string errorDes;
         int errorCode;
         Json::Value data;
-        iRet = SendRequest(req, data, errorDes, errorCode);
+        iRet = SendRequest(req, data, errorDes, errorCode, true);
         HCP_Log(INFO, MODULE) << "Return data size " << data.size() << HCPENDLOG;
         if (iRet == SUCCESS && data.size() != 0 && errorCode == SUCCESS) {
             id = data["id"].asString();
