@@ -10,6 +10,9 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
+#ifndef C_DPP_MESSAGE_H
+#define C_DPP_MESSAGE_H
+
 #include "jsoncpp/include/json/value.h"
 #include "jsoncpp/include/json/json.h"
 #include "common/Types.h"

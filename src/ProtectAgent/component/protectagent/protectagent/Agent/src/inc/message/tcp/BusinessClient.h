@@ -10,6 +10,9 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
+#if !defined(BUSINIESS_CONNECTION_H)
+#define BUSINIESS_CONNECTION_H
+
 #include "common/Types.h"
 #include "message/tcp/CConnection.h"
 #include "message/tcp/CDppMessage.h"
