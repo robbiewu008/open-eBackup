@@ -32,6 +32,9 @@ private:
     int ExecGenSubJob(std::shared_ptr<BasicJob> job, const std::string& jobId);
     int ExecSubJob(std::shared_ptr<BasicJob> job, const std::string& jobId);
     int ExecPostJob(std::shared_ptr<BasicJob> job, const std::string& jobId);
+    int ExecuteAsyncJob(std::shared_ptr<BasicJob> job, const std::string& jobId);
+    int InitReentrantAsyncThread(std::shared_ptr<BasicJob> job,
+        std::shared_ptr<std::thread> thread, const std::string& jobId);
     int InitAsyncThread(std::shared_ptr<BasicJob> job, std::shared_ptr<std::thread> thread, const std::string& jobId);
     using CallFunc = std::function<int(std::shared_ptr<BasicJob>, const std::string& jobId)>;
     std::map<OperType, CallFunc> m_funcMap {};

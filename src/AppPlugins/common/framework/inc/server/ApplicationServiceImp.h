@@ -78,6 +78,18 @@ public:
         AppProtect::ResourceResultByPage& page, const AppProtect::ListResourceRequest& request) override;
     /**
     * Function description
+    *     query application information
+    * Parameters
+    *     request : ListResourceRequest struct （can be find in thrift file）
+    * Return value
+    *     returnValue return value
+    *
+    * @param request
+    */
+    EXTER_ATTACK void AsyncListApplicationResource(
+        ActionResult& returnValue, const AppProtect::ListResourceRequest& request);
+    /**
+    * Function description
     *     query host cluster information
     * Parameters
     *     appEnv : application environment information which is cluster member

@@ -446,7 +446,7 @@ static void StructToJson(const AppProtect::OracleDBInfo& st, Json::Value& jsonVa
     Module::JsonHelper::TypeToJsonValue(st.archThreshold, jsonValue["archThreshold"]);
 }
 
-static void StructToJson(const std::vector<AppProtect::OracleDBInfo>& infos, Json::Value& jsonValue)
+static void StructToJson(const std::vector<AppProtect::OracleDBInfo> &infos, Json::Value &jsonValue)
 {
     for (const auto& info : infos) {
         Json::Value value;
