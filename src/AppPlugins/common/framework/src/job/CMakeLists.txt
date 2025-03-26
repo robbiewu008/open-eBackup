@@ -24,5 +24,5 @@ target_link_libraries(basic_job
     PUBLIC
     thrift_interface
     thrift_client
-    lib_mgr_obj
+    mgr_obj
 )
