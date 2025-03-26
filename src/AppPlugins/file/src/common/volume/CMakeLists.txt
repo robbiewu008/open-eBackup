@@ -20,7 +20,7 @@ target_include_directories(volume_obj
     ${PLUGIN_FRAMEWORK_PATH}/inc/rpc/thriftservice
     ${PLUGIN_FRAMEWORK_PATH}/inc/thrift_interface
     #plugin included path
-    ${PLUGIN_ROOT_PATH}
+    ${PLUGIN_ROOT_PATH}/common
     ${PLUGIN_SRC_PATH}
     ${PLUGIN_SRC_PATH}/common
     ${PLUGIN_SRC_PATH}/common/constant

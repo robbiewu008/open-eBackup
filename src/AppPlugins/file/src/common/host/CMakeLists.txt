@@ -33,7 +33,7 @@ target_include_directories(host_obj
     ${MODULE_ROOT_PATH}/src/libnfs_ctx
     ${MODULE_ROOT_PATH}/src/threadpool
     ${MODULE_ROOT_PATH}/src/libsmb_ctx
-    ${PLUGIN_ROOT_PATH}
+    ${PLUGIN_ROOT_PATH}/common
     ${OPENSRC_THRIFT_INC_PATH}
     ${OPEN_SRC_PATH}/boost_rel/include
     ${MODULE_PLATFORM_PATH}/SecureCLib_rel/include
