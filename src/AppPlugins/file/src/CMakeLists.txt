@@ -33,15 +33,15 @@ add_library(scanner_interface
  
 target_include_directories(scanner_interface
     INTERFACE
-    ${PLUGIN_SCANNER_PATH}/localhost_src
-    ${PLUGIN_SCANNER_PATH}/localhost_src/common
-    ${PLUGIN_SCANNER_PATH}/localhost_src/filter
-    ${PLUGIN_SCANNER_PATH}/localhost_src/interface
-    ${PLUGIN_SCANNER_PATH}/localhost_src/model
-    ${PLUGIN_SCANNER_PATH}/localhost_src/service
-    ${PLUGIN_SCANNER_PATH}/localhost_src/statistics
-    ${PLUGIN_SCANNER_PATH}/localhost_src/utils
-    ${PLUGIN_SCANNER_PATH}/localhost_src/checkpoint
+    ${PLUGIN_SCANNER_PATH}/include
+    ${PLUGIN_SCANNER_PATH}/include/common
+    ${PLUGIN_SCANNER_PATH}/include/filter
+    ${PLUGIN_SCANNER_PATH}/include/interface
+    ${PLUGIN_SCANNER_PATH}/include/model
+    ${PLUGIN_SCANNER_PATH}/include/service
+    ${PLUGIN_SCANNER_PATH}/include/statistics
+    ${PLUGIN_SCANNER_PATH}/include/utils
+    ${PLUGIN_SCANNER_PATH}/include/checkpoint
 )
  
 target_link_directories(scanner_interface
@@ -67,7 +67,7 @@ add_library(file_plugin
 
 target_link_directories(file_plugin
     PRIVATE
-    ${PLUGIN_SCANNER_PATH}/build-cmake-file
+    ${PLUGIN_SCANNER_PATH}/lib
     ${PLUGIN_BACKUP_PATH}/build-cmake
     ${PLUGIN_FRAMEWORK_PATH}/dep/agent_sdk/lib
 )
@@ -93,24 +93,13 @@ target_link_libraries(file_plugin
     pluginsdk
 )
 
-if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
-    target_link_libraries(file_plugin
-        PRIVATE
-        volume_obj
-        volume_backup_obj
-        volume_restore_obj
-        volume_livemount_obj
-        volume_index_obj
-    )
-endif()
-
 # 插件使用的外部依赖项，比如开源三方、插件框架、Module
 add_library(common_dep
     INTERFACE
     IMPORTED
     GLOBAL
 )
-
+ 
 target_link_directories(common_dep
     INTERFACE
     ${MODULE_PLATFORM_PATH}/SecureCLib_rel/lib
@@ -124,7 +113,7 @@ target_link_directories(common_dep
     ${PLUGIN_FRAMEWORK_LIB_PATH}/thrift_interface
     ${MODULE_ROOT_PATH}/lib
 )
-
+ 
 target_link_libraries(common_dep
     INTERFACE
     safe_cmplib
@@ -142,7 +131,7 @@ target_link_libraries(common_dep
     system
     boost_filesystem
 )
-
+ 
 if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
     target_link_libraries(common_dep
         INTERFACE
@@ -155,4 +144,3 @@ if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
         boost_log
         boost_date_time
     )
-endif()
