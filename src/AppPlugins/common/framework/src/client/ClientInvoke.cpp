@@ -19,6 +19,8 @@ namespace {
     constexpr int INVOKE_AGENT_INTERFACE_RETRY_TIMES = 3;
     constexpr int INVOKE_AGENT_INTERFACE_RETRY_INTERVAL = 20;
     constexpr auto MODULE = "ClientInvoke";
+    constexpr int INVOKE_PLUGIN_SUCCESS = 0;
+    constexpr int INVOKE_PLUGIN_FAILED = -1;
 }
 
 void ShareResource::CreateResource(ActionResult& returnValue, const Resource& resource, const std::string& mainJobId)
@@ -533,6 +535,41 @@ void JobService::AddIpWhiteList(ActionResult& returnValue, const std::string &jo
             auto agentClient = client.GetAgentClient<JobServiceConcurrentClient>("JobService");
             if (agentClient != nullptr) {
                 agentClient->AddIpWhiteList(returnValue, jobId, ipListStr);
+            } else {
+                returnValue.code = Module::FAILED;
+            }
+            return;
+        } catch (AppProtectFrameworkException &e) {
+            throw e;
+        } catch (apache::thrift::transport::TTransportException& ex) {
+            HCP_Log(ERR, MODULE) << "TTransportException. " << WIPE_SENSITIVE(ex.what()) << HCPENDLOG;
+        } catch (apache::thrift::protocol::TProtocolException& ex) {
+            HCP_Log(ERR, MODULE) << "TProtocolException. " << WIPE_SENSITIVE(ex.what()) << HCPENDLOG;
+        } catch (apache::thrift::TApplicationException& ex) {
+            HCP_Log(ERR, MODULE) << "TApplicationException. " << WIPE_SENSITIVE(ex.what()) << HCPENDLOG;
+        } catch (const std::exception& ex) {
+            HCP_Log(ERR, MODULE) << "Standard C++ Exception. " << WIPE_SENSITIVE(ex.what()) << HCPENDLOG;
+        } catch (...) {
+            HCP_Log(ERR, MODULE) << "Unknown exception." << HCPENDLOG;
+        }
+        Module::SleepFor(std::chrono::seconds(INVOKE_AGENT_INTERFACE_RETRY_INTERVAL));
+        retryTimes--;
+    }
+    returnValue.code = Module::FAILED;
+    return;
+}
+
+void JobService::ReportAsyncJobDetails(ActionResult& returnValue, const std::string &jobId,
+    const int &code, const ResourceResultByPage &results)
+{
+    int retryTimes = INVOKE_AGENT_INTERFACE_RETRY_TIMES;
+    while (retryTimes > 0) {
+        try {
+            PluginThriftClient client;
+            auto agentClient = client.GetAgentClient<JobServiceConcurrentClient>("JobService");
+            if (agentClient != nullptr) {
+                HCP_Log(INFO, MODULE) << "ReportAsyncJobDetails. Code: " << code << HCPENDLOG;
+                agentClient->ReportAsyncJobDetails(returnValue, jobId, code, results);
             } else {
                 returnValue.code = Module::FAILED;
             }

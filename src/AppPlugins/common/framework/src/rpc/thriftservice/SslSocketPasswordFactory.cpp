@@ -26,9 +26,8 @@ namespace detail {
 SslSocketPasswordFactory::SslSocketPasswordFactory(SSLProtocol protocol) : TSSLSocketFactory(protocol)
 {}
 
-void SslSocketPasswordFactory::getPassword(std::string& password, int size)
+void SslSocketPasswordFactory::getPassword(std::string& password, int /* size */)
 {
-    size;
     m_handler->GetCertificateConfig(CertificateConfig::PASSWORD, password);
 }
 

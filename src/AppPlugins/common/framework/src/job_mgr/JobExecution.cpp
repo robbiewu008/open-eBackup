@@ -10,6 +10,7 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
+
 #include "JobExecution.h"
 #include "log/Log.h"
 #include "ApplicationProtectBaseDataType_types.h"
@@ -31,11 +32,13 @@ JobExecution::JobExecution()
         std::bind(&JobExecution::ExecSubJob, this, std::placeholders::_1, std::placeholders::_2));
     m_funcMap[OperType::POST] = CallFunc(
         std::bind(&JobExecution::ExecPostJob, this, std::placeholders::_1, std::placeholders::_2));
+    m_funcMap[OperType::RESOURCE] = CallFunc(
+        std::bind(&JobExecution::ExecuteAsyncJob, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 JobExecution::~JobExecution() {}
 
-int JobExecution::ExecuteJob(AppProtect::ActionResult& result, const std::shared_ptr<BasicJob>& job,
+int JobExecution::ExecuteJob(AppProtect::ActionResult& /* result */, const std::shared_ptr<BasicJob>& job,
     const std::string& jobId, OperType type)
 {
     auto func = m_funcMap[type];
@@ -83,6 +86,41 @@ int JobExecution::ExecPostJob(std::shared_ptr<BasicJob> job, const std::string& 
     return InitAsyncThread(job, thread, jobId);
 }
 
+int JobExecution::ExecuteAsyncJob(std::shared_ptr<BasicJob> job, const std::string& jobId)
+{
+    HCP_Log(INFO, MODULE) << "ExecuteAsyncJob jobId: " << jobId << HCPENDLOG;
+    JobMgr::GetInstance().EraseFinishJob();
+    HCP_Log(INFO, MODULE) << "Erase finish job" << HCPENDLOG;
+    if (JobMgr::GetInstance().CheckJobIdExist(jobId)) {
+        HCP_Log(WARN, MODULE) << "job id already exist in job map jobId: " << jobId << HCPENDLOG;
+        return Module::SUCCESS;
+    }
+    if (job == nullptr) {
+        HCP_Log(ERR, MODULE) << "Job nullptr! jobId: " << jobId << HCPENDLOG;
+        return Module::FAILED;
+    }
+    std::shared_ptr<std::thread> thread = std::make_shared<std::thread>(
+        &BasicJob::ExecuteAsyncJob, job);
+    return InitReentrantAsyncThread(job, thread, jobId);
+}
+
+int JobExecution::InitReentrantAsyncThread(std::shared_ptr<BasicJob> job,
+    std::shared_ptr<std::thread> thread, const std::string& jobId)
+{
+    if (thread == nullptr || job == nullptr) {
+        HCP_Log(ERR, MODULE) << "job thread is null" << HCPENDLOG;
+        return Module::FAILED;
+    }
+    job->SetJobThread(thread);
+    job->DetachJobThread();
+    bool jobExists = JobMgr::GetInstance().CheckJobIdExist(jobId);
+    if (!jobExists && (JobMgr::GetInstance().InsertJob(jobId, job) != Module::SUCCESS)) {
+        HCP_Log(ERR, MODULE) << "insert job into job mgr map fail" << HCPENDLOG;
+        return Module::FAILED;
+    }
+    return Module::SUCCESS;
+}
+
 int JobExecution::InitAsyncThread(std::shared_ptr<BasicJob> job, std::shared_ptr<std::thread> thread,
     const std::string& jobId)
 {
@@ -96,6 +134,5 @@ int JobExecution::InitAsyncThread(std::shared_ptr<BasicJob> job, std::shared_ptr
         HCP_Log(ERR, MODULE) << "insert job into job mgr map fail" << HCPENDLOG;
         return Module::FAILED;
     }
-
     return Module::SUCCESS;
 }

@@ -37,6 +37,7 @@ using DeliverTaskStatusFun = void (ActionResult& returnValue, const std::string&
 using AllowCheckCopyInLocalNodeFun = void (ActionResult& returnValue, const CheckCopyJob& job);
 using AllowCheckCopySubJobInLocalNodeFun = void (ActionResult& returnValue, const CheckCopyJob& job,
     const SubJob& subJob);
+using QueryScanRepositoriesFun = void(ScanRepositories& scanRepositories, const BackupJob& job);
 
 namespace {
     constexpr auto MODULE = "ProtectServiceImp";
@@ -206,6 +207,26 @@ EXTER_ATTACK void ProtectServiceImp::AllowBackupSubJobInLocalNode(
     }
     fun(returnValue, job, subJob);
     HCP_Log(INFO, MODULE) << "Exit AllowBackupSubJobInLocalNode" << HCPENDLOG;
+}
+
+EXTER_ATTACK void ProtectServiceImp::QueryScanRepositories(ScanRepositories& scanRepositories,
+    const AppProtect::BackupJob& job)
+{
+    HCP_Log(DEBUG, MODULE) << "Enter QueryScanRepositories" << HCPENDLOG;
+    auto fun = OpenLibMgr::GetInstance().GetObj<QueryScanRepositoriesFun>("QueryScanRepositories");
+    if (fun == nullptr) {
+        char errMsg[MAX_ERR_MSG_LEN] = {0};
+        HCP_Log(ERR, MODULE) << "Get QueryScanRepositories function failed: " <<
+            Module::DlibError(errMsg, sizeof(errMsg)) << HCPENDLOG;
+        return;
+    }
+    ActionResult ret;
+    if (!ParamCheck("BackupJob", StructToJson(job), ret)) {
+        HCP_Log(ERR, MODULE) << "QueryScanRepositories ParamCheck failed: " << HCPENDLOG;
+        return;
+    }
+    fun(scanRepositories, job);
+    HCP_Log(INFO, MODULE) << "Exit QueryScanRepositories" << HCPENDLOG;
 }
 
 EXTER_ATTACK void ProtectServiceImp::AsyncBackupPrerequisite(ActionResult& returnValue, const BackupJob& job)

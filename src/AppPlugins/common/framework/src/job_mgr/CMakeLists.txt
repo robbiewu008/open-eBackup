@@ -20,10 +20,12 @@ endif()
 target_include_directories(job_mgr_obj
     PUBLIC
     ${INC_PATH}/job_mgr
+    ${INC_PATH}/lib_mgr
     ${INC_PATH}
 )
 
 target_link_libraries(job_mgr_obj
     PUBLIC
     basic_job
+    lib_mgr_obj
 )
