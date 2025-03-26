@@ -48,6 +48,11 @@ unique_ptr<Backup> BackupMgr::CreateBackupInst(const BackupParams& backupParams)
         case BackupPhase::DIR_STAGE:
             backupInst = make_unique<Dir>(backupParams);
             break;
+#ifdef _NAS
+        case BackupPhase::ANTI_STAGE:
+            backupInst = make_unique<AntiRansomware>(backupParams);
+            break;
+#endif
         default:
             break;
     }
