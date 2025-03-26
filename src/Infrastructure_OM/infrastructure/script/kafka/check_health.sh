@@ -1,13 +1,19 @@
 #!/bin/bash
 
-#########################################
-# Copyright (c) 2012-2015 Huawei .
-# All rights reserved.
+########################################
+#  This file is part of the open-eBackup project.
+# Copyright (c) 2024 Huawei Technologies Co.,Ltd.
 #
-# Please send feedback to http://www.huawei.com
+# open-eBackup is licensed under MPL v2.
+# You can use this software according to the terms and conditions of the MPL v2.
+# You may obtain a copy of MPL v2 at:
 #
-# Function ÈÝÆ÷µÄ½¡¿µ¼ì²é
-# revise note
+#          https://www.mozilla.org/en-US/MPL/2.0
+#
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+# See the MPL v2 for more details.
 ########################################
 
 tokenFile=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
@@ -57,7 +63,7 @@ function check_kafka_service() {
 }
 
 function check_kafka_cluster() {
-  # brokerÊÇ·ñ×¢²áµ½zk
+  # brokerï¿½Ç·ï¿½×¢ï¿½áµ½zk
   broker_list=$(/usr/local/kafka/kafka-*/bin/zookeeper-shell.sh ${POD_IP}:2181 ls /brokers/ids | awk 'END {print}')
   broker_list_cleaned=$(echo $broker_list | tr -d '[]')
   if ! echo "$broker_list_cleaned" | grep -q "\b$NODE_NUMBER\b"; then
@@ -66,7 +72,7 @@ function check_kafka_cluster() {
     return 1
   fi
 
-  # brokerÊÇ·ñÕý³£ÔËÐÐ
+  # brokerï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   /usr/local/kafka/kafka-*/bin/kafka-broker-api-versions.sh --bootstrap-server ${POD_IP}:9092 --command-config /opt/third_data/kafka/client.properties
   if [ $? -ne 0 ]; then
     echo "Kafka broker error."
