@@ -11,6 +11,7 @@
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
 #include "CinderVolumeHandler.h"
+#include <algorithm>
 #include <boost/uuid/uuid_io.hpp>
 #include "common/Structs.h"
 #include "volume_handlers/common/DiskDeviceFile.h"
@@ -81,7 +82,10 @@ int32_t CinderVolumeHandler::DoAttachVolumeToHost(const std::string &volumeId)
         return FAILED;
     }
     std::vector<std::string> intermediateState = {"reserved", "attaching"};
-    if (DoWaitVolumeStatus(volumeId, OPENSTACK_VOLUME_IN_USE_STATUS, intermediateState) != SUCCESS) {
+    int32_t waitTime = Module::ConfigReader::getInt("OpenStackConfig", "AttachOrDetachVolumeWaitInterval");
+    int32_t retryTime = Module::ConfigReader::getInt("OpenStackConfig", "AttachOrDetachVolumeWaitRetryTimes");
+    if (DoWaitVolumeStatus(volumeId, OPENSTACK_VOLUME_IN_USE_STATUS, intermediateState, waitTime, retryTime)
+        != SUCCESS) {
         ERRLOG("Wait volume(%s) status in-use timeout.", volumeId.c_str());
         return FAILED;
     }
@@ -101,7 +105,7 @@ bool CinderVolumeHandler::FormCreateVolmeInfo(const VolSnapInfo &snapshot, std::
         return FAILED;
     }
     Json::Value metadataBody;
-    metadataBody["full_clone"] = "0"; // 表示创建链接克隆卷
+    metadataBody["full_clone"] = CheckCreateFullCloneVolum() ? "0" : "1"; // 表示创建链接克隆卷
     jsonBody["volume_type"] = extendInfo.m_volumeType;
     jsonBody["consistencygroup_id"] =
         extendInfo.m_groupSnapShotId.empty() ? Json::Value::null : extendInfo.m_groupSnapShotId;
@@ -114,6 +118,35 @@ bool CinderVolumeHandler::FormCreateVolmeInfo(const VolSnapInfo &snapshot, std::
     Json::FastWriter fastWriter;
     body = fastWriter.write(volume);
     return SUCCESS;
+}
+
+// 创建一致性快照时，支持链接克隆卷
+bool CinderVolumeHandler::CheckCreateFullCloneVolum()
+{
+    if (m_jobHandle == nullptr || m_jobHandle->GetJobCommonInfo() == nullptr) {
+        ERRLOG("Job handler or job common info is null.");
+        return false;
+    }
+    std::shared_ptr<ThriftDataBase> jobInfo = m_jobHandle->GetJobCommonInfo()->GetJobInfo();
+    std::shared_ptr<AppProtect::BackupJob> backupPara = std::dynamic_pointer_cast<AppProtect::BackupJob>(jobInfo);
+    if (backupPara == nullptr) {
+        ERRLOG("Get backup job parameter failed.");
+        return false;
+    }
+    if (!backupPara->extendInfo.empty()) {
+        Json::Value extendInfo;
+        if (!Module::JsonHelper::JsonStringToJsonValue(backupPara->extendInfo, extendInfo)) {
+            ERRLOG("Trans json value advanceparams failed, %s", m_taskId.c_str());
+            return false;
+        }
+        if (extendInfo.isMember("open_consistent_snapshots") &&
+            extendInfo["open_consistent_snapshots"].asString().compare("true") == SUCCESS) {
+            INFOLOG("Create full clone volume.");
+            return true;
+        }
+    }
+    INFOLOG("Dont create full clone volume.");
+    return false;
 }
 
 int32_t CinderVolumeHandler::DoCreateNewVolumeFromSnapShotId(const VolSnapInfo &snapshot)
@@ -146,7 +179,7 @@ int32_t CinderVolumeHandler::DoCreateNewVolumeFromSnapShotId(const VolSnapInfo &
     uint32_t interval = Module::ConfigReader::getInt("OpenStackConfig", "CreateVolumeWaitInterval");
     uint32_t retryTimes = Module::ConfigReader::getInt("OpenStackConfig", "CreateVolumeWaitRetryTimes");
     interval == 0 ? interval = QUERY_CREATE_VOL_RETRY_INTERVAL : interval;
-    retryTimes == 0 ? retryTimes = (m_volSizeInBytes / GB) * PER_GB_RETYR_TIMES  : retryTimes;
+    retryTimes = std::max((uint32_t)(m_volSizeInBytes / GB) * PER_GB_RETYR_TIMES, retryTimes);
     std::vector<std::string> interState = {};
     int ret = DoWaitVolumeStatus(m_newCreateVolInfo.m_id, OPENSTAK_VOLUME_AVAILABLE_STATUS, interState,
         interval, retryTimes);
@@ -212,8 +245,9 @@ int32_t CinderVolumeHandler::DoDetachVolumeFromeHost(const std::string &detachVo
             response->GetBody().c_str());
         return FAILED;
     }
-
-    if (DoWaitVolumeStatus(detachVolId, OPENSTAK_VOLUME_AVAILABLE_STATUS) != SUCCESS) {
+    int32_t waitTime = Module::ConfigReader::getInt("OpenStackConfig", "AttachOrDetachVolumeWaitInterval");
+    int32_t retryTime = Module::ConfigReader::getInt("OpenStackConfig", "AttachOrDetachVolumeWaitRetryTimes");
+    if (DoWaitVolumeStatus(detachVolId, OPENSTAK_VOLUME_AVAILABLE_STATUS, {}, waitTime, retryTime) != SUCCESS) {
         ERRLOG("Wait volume(%s) available timeout.", detachVolId.c_str());
         return FAILED;
     }

@@ -321,10 +321,14 @@ struct ResourceSetResponse {
 struct CreateSnapshotGroupResponse {
     std::string m_requestId;
     std::string m_snapshotGroupId;
+    std::string m_code;
+    std::string m_message;
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_requestId, RequestId)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_snapshotGroupId, SnapshotGroupId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_code, Code)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_message, Message)
     END_SERIAL_MEMEBER
 };
 
@@ -526,6 +530,28 @@ struct DesOrganizationResponse {
     SERIAL_MEMBER_TO_SPECIFIED_NAME(mCost, cost)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(mData, data)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(mMessage, message)
+    END_SERIAL_MEMEBER
+};
+
+struct InstanceResource {
+    std::string mRegionId;
+    std::string mPregionName;
+    std::string nZoneId;
+    std::string mStatus;
+    int32_t mResourceSetId;
+    std::string mResourceSetName;
+    std::string mOsType;
+    std::string mVmIp;
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mRegionId, regionId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mPregionName, regionName)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(nZoneId, zoneId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mStatus, status)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mResourceSetId, resourceSetId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mResourceSetName, resourceSetName)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mOsType, os_type)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mVmIp, vm_ip)
     END_SERIAL_MEMEBER
 };
  

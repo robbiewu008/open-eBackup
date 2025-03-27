@@ -59,6 +59,7 @@ const std::string CNWARE_CHECK_STORAGE_USAGE_FAILED_LABEL = "virtual_plugin_cnwa
 const std::string CNWARE_NAS_PREALLOCATION_WARNING_LABEL = "virtual_plugin_cnware_nas_preallocation_warning_label";
 const std::string CNWARE_VOLUME_STATUS_UNNORMAL_LABEL = "virtual_plugin_cnware_volume_status_unnormal_label";
 const std::string CNWARE_STORAGE_STATUS_UNNORMAL_LABEL = "virtual_plugin_cnware_storage_status_unnormal_label";
+const std::string CNWARE_RESOURCE_NOT_FIND_LABEL = "virtual_plugin_cnware_resource_not_find_label";
 
 /* cnware restore error code */
 constexpr int64_t CNWARE_VMNAME_CHECK_ERROR = 0x5E025E75;
@@ -75,6 +76,8 @@ constexpr int64_t CNWARE_AUTH_FAILED = 1577213541;
 constexpr int64_t CNWARE_ERR_PARAM = 1677929218;
 constexpr int64_t CNWARE_CONNECT_FAILED = 1677931275;
 constexpr int64_t CNWARE_CERT_FAILED = 1577213574;
+constexpr int64_t CNWARE_DISK_NOT_FOUND = 1677931451;
+constexpr int64_t ALLOW_COMMON_ERROR = 1677929228;
 };
 }
 #endif // CNWARE_ERRORCODE_H

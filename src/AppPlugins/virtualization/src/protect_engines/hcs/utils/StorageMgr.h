@@ -22,7 +22,7 @@ namespace HcsPlugin {
 class StorageMgr {
 public:
     static bool GetStorageSystemInfo(const ControlDeviceInfo &info, StorageSysInfo &storageSysInfo,
-        std::string &errorStr);
+        std::string &errorStr, bool isOpService = false);
 };
 }
 

@@ -18,10 +18,12 @@ namespace HyperVPlugin {
 class GetVMInfoResponse {
 public:
     std::string m_id;
+    int32_t m_generation;
     std::string m_configurationLocation;
     std::string m_checkpointFileLocation;
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_id, Id)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_generation, Generation)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_configurationLocation, ConfigurationLocation)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_checkpointFileLocation, CheckpointFileLocation)
     END_SERIAL_MEMEBER

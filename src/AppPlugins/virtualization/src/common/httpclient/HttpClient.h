@@ -23,6 +23,8 @@
 VIRT_PLUGIN_NAMESPACE_BEGIN
 
 const int32_t SEND_HTTP_MAX_RETRY_TIMES = 6;
+const uint32_t CONN_HTTP_TIME_OUT = 30; // unit - seconds
+const uint32_t HTTP_TIME_OUT = 300; // unit - seconds
 
 class HttpClient {
 public:
@@ -30,12 +32,15 @@ public:
     ~HttpClient() {}
     int32_t Send(const Module::HttpRequest &request, std::shared_ptr<ResponseModel> response,
         int32_t retryTimes = SEND_HTTP_MAX_RETRY_TIMES);
+    void SetTimeOut(const uint32_t connTimeOut, const uint32_t timeOut);
 
 protected:
     bool IsNetworkError(const uint32_t &statusCode);
     bool IsTimeoutError(const int32_t &errCode);
     bool IsServiceErr(const uint32_t &statusCode);
     bool SetResponse(std::shared_ptr<ResponseModel> response, std::shared_ptr<Module::IHttpResponse> httpRespone);
+    uint32_t m_connTimeOut { CONN_HTTP_TIME_OUT };
+    uint32_t m_timeOut { HTTP_TIME_OUT };
 };
 VIRT_PLUGIN_NAMESPACE_END
 

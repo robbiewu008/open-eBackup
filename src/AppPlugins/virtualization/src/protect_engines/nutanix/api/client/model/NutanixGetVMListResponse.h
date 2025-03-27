@@ -60,7 +60,7 @@ using namespace VirtPlugin;
 // 在服务端自动过滤管理虚拟机cvm;
 class GetVMListRequest : public NutanixRequest {
 public:
-    GetVMListRequest(int32_t offset, int32_t length, std::string filter = "") : m_offset(offset), m_length(length),
+    GetVMListRequest(int32_t offset, int32_t count, std::string filter = "") : m_offset(offset), m_count(count),
         m_includeVMDiskConfig(true), m_includeVMNicConfig(true) {
         if (!filter.empty()) {
             m_filter = "vm_name==" + filter;
@@ -75,7 +75,7 @@ public:
             requestInfo.m_queryParams["filter"] = m_filter;
         }
         requestInfo.m_queryParams["offset"] = std::to_string(m_offset);
-        requestInfo.m_queryParams["length"] = std::to_string(m_length);
+        requestInfo.m_queryParams["count"] = std::to_string(m_count);
         requestInfo.m_queryParams["include_vm_disk_config"] = m_includeVMDiskConfig ? "True" : "False";
         requestInfo.m_queryParams["include_vm_nic_config"] = m_includeVMNicConfig ? "True" : "False";
         requestInfo.m_body = "";
@@ -83,7 +83,7 @@ public:
 private:
     std::string m_filter;             // Filter criteria - semicolon for AND, comma for OR
     int64_t m_offset;                 // offset - Default 0
-    int64_t m_length;                 // Number of VMs to retrieve
+    int64_t m_count;                 // Number of VMs to retrieve
     std::string m_sortOrder;         // Sort order
     std::string m_sortAttribute;     // Sort Attribute
     bool m_includeVMDiskConfig;    // Whether to include Virtual Machine disk information.

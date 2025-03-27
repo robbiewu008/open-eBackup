@@ -368,6 +368,7 @@ protected:
     void ThrowPluginException(const int32_t &code, const std::string &message);
     int32_t CheckProtectEnvConn(const AppProtect::ApplicationEnvironment &env,
         const AppProtect::Application& app, const std::string &vmId);
+    int32_t GetVMBootType(VMInfo &vmInfo);
     int32_t GetVMMetaData(VMInfo &vmInfo);
     int32_t SaveVMInfoToCache(VMInfo &vmInfo, const std::string &vmFileInCache);
     bool UpdateCurSnapShotInfoWhenConvertRefFail();

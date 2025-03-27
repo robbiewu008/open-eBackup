@@ -24,23 +24,19 @@ HCS_PLUGIN_NAMESPACE_BEGIN
 
 class HcsOpServiceUtils {
 public:
-    static HcsOpServiceUtils *GetInstance();
-    HcsOpServiceUtils(const HcsOpServiceUtils &) = delete;
-    HcsOpServiceUtils &operator=(const HcsOpServiceUtils &) = delete;
+    HcsOpServiceUtils();
     virtual ~HcsOpServiceUtils();
 
     void GetAppEnv(const ApplicationEnvironment &appenv);
     bool GetOpServiceInfo();
     bool SetTokenInfo();
+    void SetToken(const std::string &token);
     std::string GetToken() const;
     std::string GetExpireAtTime() const;
     std::string GetDomain() const;
     std::string GetRegion() const;
     std::string GetProjectId() const;
     bool GetIsOpServiceEnv() const;
-
-private:
-    HcsOpServiceUtils();
 
 private:
     ApplicationEnvironment m_appEnv;

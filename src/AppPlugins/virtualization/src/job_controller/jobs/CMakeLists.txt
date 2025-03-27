@@ -3,6 +3,7 @@ aux_source_directory(backup BACKUP_SRCS)
 aux_source_directory(restore RESTORE_SRCS)
 aux_source_directory(verify VERIFY_SRCS)
 aux_source_directory(livemount LIVEMOUNT_SRCS)
+aux_source_directory(delcopy DELCOPY_SRCS)
 
 add_library(jobs_obj
     OBJECT
@@ -11,6 +12,7 @@ add_library(jobs_obj
     ${RESTORE_SRCS}
     ${VERIFY_SRCS}
     ${LIVEMOUNT_SRCS}
+    ${DELCOPY_SRCS}
 )
 
 target_include_directories(jobs_obj

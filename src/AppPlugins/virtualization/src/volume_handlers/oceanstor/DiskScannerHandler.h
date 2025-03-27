@@ -84,6 +84,9 @@ public:
     int32_t HextoDec(char* pDecStr, char* pHexStr, int iMaxLen);
     int32_t HexEncode(char cHex, int iStep, int& iDecNum);
     int32_t CalStep(int iStep) const;
+    int32_t DiscoveryIscsiTarget(const std::string &targetIP, std::string &iqnAddress);
+    int32_t LogOutTarget(const std::string &targetIp);
+    int32_t GetIscsiSessionStatus(std::vector<IscsiSessionStatus> &sessionStatusList);
     int32_t RunShellCmd(const std::string& cmd, const std::vector<std::string> &paramList,
         std::vector<std::string> &cmdOut);
     int32_t RunShellCmd(const std::string& cmd, const std::vector<std::string> &paramList,

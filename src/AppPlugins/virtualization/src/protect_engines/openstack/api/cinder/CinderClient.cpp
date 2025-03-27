@@ -817,6 +817,38 @@ std::shared_ptr<UpdateVolumeBootableResponse> CinderClient::UpdateVolumeBootable
     return response;
 }
 
+std::shared_ptr<GetPoolsResponse> CinderClient::GetProjectStoragePools(VolumeRequest &request)
+{
+    std::string endpoint;
+    std::string tokenStr;
+    Defer _(nullptr, [&](...) { Module::CleanMemoryPwd(tokenStr); });
+    if (!GetTokenEndPoint(request, tokenStr, endpoint)) {
+        return nullptr;
+    }
+    RequestInfo reqInfo;
+    reqInfo.m_method = "GET";
+    reqInfo.m_resourcePath = "{endpoint}/scheduler-stats/get_pools?detail=true";
+    reqInfo.m_pathParams["endpoint"] = std::move(endpoint);
+    reqInfo.m_queryParams = {};
+    reqInfo.m_headerParams["X-Auth-Token"] = std::move(tokenStr);
+    reqInfo.m_auth = request.GetUserInfo();
+    std::shared_ptr<GetPoolsResponse> response = std::make_shared<GetPoolsResponse>();
+    if (response == nullptr) {
+        ERRLOG("Create GetPoolsResponse pointer failed.");
+        return nullptr;
+    }
+    if (CallApi(reqInfo, response, request) != VirtPlugin::SUCCESS) {
+        ERRLOG("Cinder update volume bootable failed, errorCode: %d, errorString: %s",
+            response->GetErrCode(), response->GetErrString().c_str());
+        return nullptr;
+    }
+    if (!response->Serial()) {
+        ERRLOG("Cinder get pools serial failed.");
+        return nullptr;
+    }
+    return response;
+}
+
 int32_t CinderClient::SendRequest(RequestInfo &requestInfo, std::shared_ptr<ResponseModel> response, ModelBase &model)
 {
     std::string endpoint;

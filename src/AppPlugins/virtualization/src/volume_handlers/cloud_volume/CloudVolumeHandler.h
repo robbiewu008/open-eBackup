@@ -81,6 +81,7 @@ protected:
     int32_t DetachVolumeHandle(const std::string &volId, const std::string &serverId);
     int32_t ListDev(std::vector<std::string> &devList);
     int32_t UpdateDiskDev();
+    int32_t GetIscsiDiskPath(const std::string &volumeId);
     std::string GenNewVolumeName(const std::string &snapshotId)
     {
         return "Backup_volume_" + snapshotId + "_" + std::to_string(time(nullptr));

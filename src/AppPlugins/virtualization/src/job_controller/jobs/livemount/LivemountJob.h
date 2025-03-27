@@ -45,6 +45,7 @@ public:
     bool CheckMainTaskStatusFileExist();
     int SaveVMInfo(const VMInfo &vmInfo);
     int PowerOnMachine();
+    int SubJobRenameMachine();
     int SubJobPowerOnMachine();
     int ReportCopy();
     int FormatBackupCopy(Copy &copy);

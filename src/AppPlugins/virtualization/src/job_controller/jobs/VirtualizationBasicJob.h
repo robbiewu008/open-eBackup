@@ -47,6 +47,7 @@ public:
 public:
     std::string m_taskInfo;
     uint64_t m_completedDataSize = 0;
+    uint64_t m_totalVolumeSize = 0;
 
 protected:
     int ExecHook(const ExecHookParam &para);
@@ -58,6 +59,9 @@ protected:
     bool AddNewJobWithRetry(const std::vector<SubJob> &subJobs);
     void VolHandlerReportTaskLabel(const std::shared_ptr<VolumeHandler> &volHandler,
         const std::vector<std::string> &reportArgs = std::vector<std::string>());
+    std::string FindStartWithSourcePolicy(const std::string& fullString);
+    bool CheckPathExixts(const std::shared_ptr<RepositoryHandler> &repoHandler,
+        const std::string &path, const std::string &e1000RepeatedPath, std::string &repoPath);
 
 protected:
     std::shared_ptr<ProtectEngine> m_protectEngine = nullptr;

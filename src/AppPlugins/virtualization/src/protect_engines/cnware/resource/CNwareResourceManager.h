@@ -37,6 +37,7 @@ protected:
     int32_t SetHostPool(ApplicationResource &result, const Json::Value &items);
     int32_t SetHost(ApplicationResource &result, const Json::Value &items);
     int32_t SetVm(ApplicationResource &result, const Json::Value &items);
+    int32_t SetUuidVm(ApplicationResource &result, const Json::Value &items);
     int32_t SetDisk(ApplicationResource &result, const Json::Value &items);
     int32_t SetResourceUrl(CNwareRequest &req, const std::string &subType);
     int32_t ParseResponse(ResourceResultByPage &page, std::shared_ptr<ResponseModel> response,
@@ -47,6 +48,7 @@ protected:
     bool GetResourceType(std::string &subType);
     int32_t GetStoragePool(ResourceResultByPage &page, CNwareRequest &req);
     int32_t GetPortGroup(ResourceResultByPage &page, CNwareRequest &req);
+    int32_t GetVMTags(ResourceResultByPage &page, CNwareRequest &req);
     void SetStorageDetails(const StoragePool &storage, ApplicationResource &result);
 
 protected:

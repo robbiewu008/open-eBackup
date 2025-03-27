@@ -164,12 +164,14 @@ int32_t GetDeployType(std::string& result);
 int32_t GetAgentConfig(std::string& result, const std::string& section, const std::string& child);
 bool IsInnerAgentscence();
 std::string GetInnerAgentLocalIp();
-void InnerAgentAppointNetDevice(Module::HttpRequest& request);
+void InnerAgentAppointNetDevice(Module::HttpRequest& request, bool isOpService);
 bool GetStoragesInfoFromExtendInfo(const std::string &authExtendInfo, std::vector<StorageInfo> &storageVector);
 #ifndef WIN32
 std::string GetProxyHostId(bool isOpenstack);
 std::string DoGetProxyHostId(bool isOpenstack);
 void SaveStringToVirtConfig(const std::string &str, const std::string &item);
+void TransCmdParamsToCmdStr(const std::vector<Module::CmdParam> &cmdParam, std::string &cmdStr);
+int32_t CallAgentExecCmd(const std::vector<Module::CmdParam> &cmdParams, std::vector<std::string> &cmdOut);
 #endif
 bool CheckVolIpInStorage(const VolInfo &volInfo, const StorageInfo &storageInfo);
 void GetIpVectorFromString(std::vector<std::string> &ipList, const std::string &ip, const std::string &ipListString);
@@ -190,6 +192,9 @@ void InitAndRegTracePoint();
 void InitAndRegTracePointForHcs();
 double SafeStod(const std::string& str, double defaultValue = FAILED);
 int32_t GetUtf8CharNumber(const std::string &str);
+std::vector<int> ParseVersion(const std::string& version);
+bool CompareVersion(const std::string &version1, const std::string &version2);
+std::string UrlEncode(const std::string& str);
 template <class T>
 int32_t TransStrToApsaraApiResponse(const std::string &resStr, T &apiResponse, const int32_t &expectedCode = 200)
 {

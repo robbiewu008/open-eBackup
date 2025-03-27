@@ -121,11 +121,13 @@ struct SnapResidualListSaveInfo {
 struct CopyExtendInfo {
     std::vector<VolInfo> m_volList;
     std::vector<BridgeInterfaceInfo> m_interfaceList;
+    std::string m_bootType;
     std::string m_copyVerifyFile;
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_volList, volList)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_interfaceList, interfaceList)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_bootType, bootType)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_copyVerifyFile, copyVerifyFile)
     END_SERIAL_MEMEBER
 };
@@ -205,6 +207,8 @@ private:
     bool InitBlockDataBitMapFile(const std::string &blockBitMapFile);
     std::string VolValidDataBitMapFile();
     bool IfSaveValidDataBitMap();
+    int32_t AddIoJobToPool();
+    int32_t GetIoJobResultFromPool();
 
     /* PostJob */
     int PostJobInner();
@@ -315,7 +319,6 @@ private:
     std::string m_dataRepoPath {};
     SnapshotInfo m_curSnapshot {};
     DirtyRanges m_dirtyRanges {};
-    uint64_t m_totalVolumeSize = 0;
     uint64_t m_totalBlockCount = 0;
     uint64_t m_curSegmentSize = 0;
     uint64_t m_totalSegmentNum = 0;
@@ -344,6 +347,11 @@ protected:
     std::vector<VirtPlugin::DirtyRange> m_dirtyRangesForAio;
     std::shared_ptr<int> m_writerFD = nullptr;
     std::shared_ptr<int> m_readFD = nullptr;
+    uint64_t m_confSegSize;
+    std::atomic<bool> m_ioJobAddCompleted = false;
+    std::atomic<int32_t> m_ioJobCount = 0;    // 当前所有已添加的io任务数量
+    std::atomic<bool> m_ioJobFailed = false;    // 有io任务失败时，需要通知添加io任务的线程停止添加
+    std::atomic<int32_t> m_ioJobCurrentCount = 0;    // 当前正在实行的io任务数量
 #ifndef WIN32
     std::shared_ptr<DataMoverLog> m_aioLogger = nullptr;
 #endif

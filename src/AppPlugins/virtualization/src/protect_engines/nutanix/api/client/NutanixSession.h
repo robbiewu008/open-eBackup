@@ -140,7 +140,7 @@ private:
 
     std::mutex m_lock;
     // IP + Port + userID 作为key的三要素;
-    std::map< IP_PORT_USER_KEY, NutanixSessionCache > m_sessionCache;
+    std::map<IP_PORT_USER_KEY, NutanixSessionCache> m_sessionCache;
 };
 };
 #endif

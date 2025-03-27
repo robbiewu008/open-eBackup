@@ -63,6 +63,10 @@ public:
     {
         return m_spDeviceFile;
     }
+    void SetOpService(bool isOpService)
+    {
+        m_isOpService = isOpService;
+    }
 
     std::shared_ptr<FusionStorageBitmapHandle> m_spBitmapHandle;
 
@@ -109,6 +113,7 @@ private:
     AppProtect::BackupJobType m_backupType;
     std::string m_apiMode;
     bool m_isBackup;
+    bool m_isOpService {false};
 };
 }  // namespace VirtPlugin
 

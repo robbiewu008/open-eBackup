@@ -18,44 +18,52 @@ VIRT_PLUGIN_NAMESPACE_BEGIN
 AppProtect::ApplicationEnvironment JobHandle::GetAppEnv() const
 {
     AppProtect::ApplicationEnvironment appEnv;
-    std::shared_ptr<AppProtect::BackupJob> backupParam = nullptr;
-    std::shared_ptr<AppProtect::RestoreJob> restoreParam = nullptr;
-    std::shared_ptr<AppProtect::LivemountJob> livemountParam = nullptr;
-    std::shared_ptr<AppProtect::CancelLivemountJob> cancelLivemountParam = nullptr;
     switch (m_jobType) {
         case JobType::BACKUP:
-            backupParam = std::dynamic_pointer_cast<AppProtect::BackupJob>(m_jobInfo->GetJobInfo());
-            if (backupParam == nullptr) {
-                ERRLOG("Backup job para is null.");
-                return appEnv;
-            }
-            appEnv = backupParam->protectEnv;
+            appEnv = GetProtectAppEnv<AppProtect::BackupJob>();
             break;
         case JobType::RESTORE:
-            restoreParam = std::dynamic_pointer_cast<AppProtect::RestoreJob>(m_jobInfo->GetJobInfo());
-            if (restoreParam == nullptr) {
-                ERRLOG("Restore job para is null.");
-                return appEnv;
-            }
-            appEnv = restoreParam->targetEnv;
+        case JobType::INSTANT_RESTORE:
+            appEnv = GetTargetAppEnv<AppProtect::RestoreJob>();
             break;
         case JobType::LIVEMOUNT:
-            livemountParam = std::dynamic_pointer_cast<AppProtect::LivemountJob>(m_jobInfo->GetJobInfo());
-            if (livemountParam == nullptr) {
-                ERRLOG("LivemountJob job para is null.");
-                return appEnv;
-            }
-            appEnv = livemountParam->targetEnv;
+            appEnv = GetTargetAppEnv<AppProtect::LivemountJob>();
+            break;
         case JobType::CANCELLIVEMOUNT:
-            cancelLivemountParam = std::dynamic_pointer_cast<AppProtect::CancelLivemountJob>(m_jobInfo->GetJobInfo());
-            if (cancelLivemountParam == nullptr) {
-                ERRLOG("CancelLivemountJob job para is null.");
-                return appEnv;
-            }
-            appEnv = cancelLivemountParam->targetEnv;
+            appEnv = GetTargetAppEnv<AppProtect::CancelLivemountJob>();
+            break;
+        case JobType::DELCOPY:
+            appEnv = GetProtectAppEnv<AppProtect::DelCopyJob>();
+            break;
         default:
             break;
     }
+    return appEnv;
+}
+
+template <class T>
+AppProtect::ApplicationEnvironment JobHandle::GetProtectAppEnv() const
+{
+    AppProtect::ApplicationEnvironment appEnv;
+    std::shared_ptr<T> jobParam = std::dynamic_pointer_cast<T>(m_jobInfo->GetJobInfo());
+    if (jobParam == nullptr) {
+        ERRLOG("Job para is null.");
+        return appEnv;
+    }
+    appEnv = jobParam->protectEnv;
+    return appEnv;
+}
+
+template <class T>
+AppProtect::ApplicationEnvironment JobHandle::GetTargetAppEnv() const
+{
+    AppProtect::ApplicationEnvironment appEnv;
+    std::shared_ptr<T> jobParam = std::dynamic_pointer_cast<T>(m_jobInfo->GetJobInfo());
+    if (jobParam == nullptr) {
+        ERRLOG("Job para is null.");
+        return appEnv;
+    }
+    appEnv = jobParam->targetEnv;
     return appEnv;
 }
 
@@ -76,6 +84,7 @@ AppProtect::Application JobHandle::GetApp() const
             app = backupParam->protectObject;
             break;
         case JobType::RESTORE:
+        case JobType::INSTANT_RESTORE:
             restoreParam = std::dynamic_pointer_cast<AppProtect::RestoreJob>(m_jobInfo->GetJobInfo());
             if (restoreParam == nullptr) {
                 ERRLOG("Restore job para is null.");
@@ -116,6 +125,7 @@ std::string JobHandle::GetTaskId() const
             backupParam = std::dynamic_pointer_cast<AppProtect::BackupJob>(m_jobInfo->GetJobInfo());
             return backupParam->requestId;
         case JobType::RESTORE:
+        case JobType::INSTANT_RESTORE:
             restoreParam = std::dynamic_pointer_cast<AppProtect::RestoreJob>(m_jobInfo->GetJobInfo());
             return restoreParam->requestId;
         case JobType::LIVEMOUNT:
@@ -150,6 +160,7 @@ std::vector<AppProtect::ApplicationResource> JobHandle::GetVolumes() const
             }
             return backupParam->protectSubObject;
         case JobType::RESTORE:
+        case JobType::INSTANT_RESTORE:
             restoreParam = std::dynamic_pointer_cast<AppProtect::RestoreJob>(m_jobInfo->GetJobInfo());
             if (restoreParam == nullptr) {
                 ERRLOG("Restore job para is null");
@@ -192,6 +203,7 @@ std::vector<AppProtect::StorageRepository> JobHandle::GetStorageRepos() const
             }
             return backupParam->repositories;
         case JobType::RESTORE:
+        case JobType::INSTANT_RESTORE:
             restoreParam = std::dynamic_pointer_cast<AppProtect::RestoreJob>(m_jobInfo->GetJobInfo());
             if (restoreParam == nullptr) {
                 ERRLOG("Restore job para is null");

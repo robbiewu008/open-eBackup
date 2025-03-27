@@ -96,6 +96,7 @@ protected:
     Application m_application;
     ApplicationEnvironment m_appEnv;
     QueryByPage m_condition;
+    HcsOpServiceUtils m_hcsOpServiceUtils;
 };
 }
 #endif

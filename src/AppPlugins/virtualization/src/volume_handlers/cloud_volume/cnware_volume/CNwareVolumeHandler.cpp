@@ -87,7 +87,8 @@ bool CNwareVolumeHandler::InitClient()
     SetCommonInfo(req);
     int64_t errorCode;
     std::string errorDes;
-    if (m_cnwareClient->GetSessionAndlogin(req, errorCode, errorDes) != SUCCESS) {
+    RequestInfo requestInfo;
+    if (m_cnwareClient->GetSessionAndlogin(req, requestInfo, errorCode, errorDes) != SUCCESS) {
         ERRLOG("Login client failed! Taskid: %s", m_appEnv.id.c_str());
         return false;
     }

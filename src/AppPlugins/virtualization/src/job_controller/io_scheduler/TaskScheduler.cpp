@@ -72,7 +72,7 @@ int32_t TaskScheduler::TaskWrapper::Exec()
     m_task->SetReadHashBuffer(m_readHashBuffer);
     int32_t execCount = 0;
     uint64_t retryInterval = 3;
-    const int32_t maxExecCount = 5;
+    const int32_t maxExecCount = 3;
     int32_t retValue = FAILED;
 
     while (execCount < maxExecCount) {

@@ -70,15 +70,10 @@ int32_t FileSystemHandler::Close()
             return FAILED;
         }
 
-        Utils::RetryOper<int> retryOper;
-        retryOper.SetOperName("fclose");
-        retryOper.SetFailedChecker([](int retV) { return retV != 0; });
-        retryOper.SetOperator(std::bind(fclose, m_fp));
-        retryOper.AddBlackList(ENOENT);
-        auto [ret, errorNumber] = retryOper.Invoke();
-        if (ret == std::nullopt || ret != 0) {
-            ERRLOG("Close file %s failed. errno[%d]:[%s].", m_fileName.c_str(), errorNumber, strerror(errorNumber));
-            return errorNumber;
+        int retV = fclose(m_fp);
+        if (retV != 0) {
+            ERRLOG("Close file %s failed. errno[%d]:[%s].", m_fileName.c_str(), errno, strerror(errno));
+            return FAILED;
         }
     }
 

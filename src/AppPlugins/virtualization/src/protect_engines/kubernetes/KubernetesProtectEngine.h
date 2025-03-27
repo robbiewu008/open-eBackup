@@ -323,6 +323,11 @@ public:
 
     int32_t CreateLiveMount(const VMInfo &copyVm, VMInfo &newVm) override;
 
+    bool IfDeleteAllSnapshotWhenFailed() override
+    {
+        return true;
+    }
+
 private:
     void FillActionResult(ActionResult &_return, int code, int errorCode, const std::string &message,
         const std::vector<std::string> &bodyErrParams = {});

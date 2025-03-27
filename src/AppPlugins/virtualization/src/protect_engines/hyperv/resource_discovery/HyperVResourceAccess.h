@@ -264,6 +264,10 @@ struct ActionResultResAcc {
     END_SERIAL_MEMEBER
 };
 
+extern std::map<std::string, bool> g_listTaskMap;
+extern std::mutex g_listLock;
+extern std::condition_variable g_listCnv;
+
 class HyperVResourceAccess {
 public:
     HyperVResourceAccess(const ApplicationEnvironment &appEnv, const Application &application);
@@ -279,6 +283,15 @@ public:
     {
         m_requestId = requestId;
     }
+    void SetIsParentInfoExist(const bool &isParentInfoExist)
+    {
+        m_isParentInfoExist = true;
+    }
+    void SetParentInfo(const std::string &parentId, const std::string &parentName)
+    {
+        m_parentId = parentId;
+        m_parentName = parentName;
+    }
 
     int32_t CheckSCVMMConnection(ActionResult &returnValue);
     int32_t CheckHostConnection(ActionResult &returnValue);
@@ -289,6 +302,7 @@ public:
     int32_t GetVMList(ResourceResultByPage &page);
     int32_t GetDiskList(ResourceResultByPage &page);
     int32_t GetDirectoryList(ResourceResultByPage &page);
+    int32_t GetVMIpAddress(ResourceResultByPage &page);
     std::string GetExtendValue(const std::string &key);
 
 private:
@@ -296,7 +310,9 @@ private:
     ActionResultResAcc Executor(const std::string &command, T &res = T(), const Json::Value &param = Json::Value());
     bool CheckResultValid(const Json::Value &result);
     int32_t GetIpAddress(const std::string &hostName, std::string &ipAddress);
-    int32_t GetVMIpAddress(const std::string &vmId, std::string &ipAddress);
+    void GetParentInfo(ApplicationResource &appResource);
+    void CheckTask();
+    void EndTask();
 
 private:
     ApplicationEnvironment m_appEnv;
@@ -305,6 +321,9 @@ private:
     std::string m_requestId;
     int32_t m_pageNo = 0;
     int32_t m_pageSize = 0;
+    bool m_isParentInfoExist = false;
+    std::string m_parentId;
+    std::string m_parentName;
 };
 }
 #endif // __HYPERV_RESOURCE_ACCESS_H__

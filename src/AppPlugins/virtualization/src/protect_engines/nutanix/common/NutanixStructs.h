@@ -20,6 +20,8 @@
 
 namespace NutanixPlugin {
 
+const std::string STORAGE_USER_FREE_BYTES = "storage.user_free_bytes";
+
 struct ClusterListMetadata {
     int32_t count;
     int32_t endIndex;
@@ -315,20 +317,20 @@ struct ContainerUserStats {
 
     BEGIN_SERIAL_MEMEBER
     if (serial) {
-        if (jsonValue.isMember("storage.user_free_bytes")) {
-            std::string tmp = jsonValue["storage.user_free_bytes"].asString();
+        if (jsonValue.isMember(STORAGE_USER_FREE_BYTES) && jsonValue[STORAGE_USER_FREE_BYTES].isString()) {
+            std::string tmp = jsonValue[STORAGE_USER_FREE_BYTES].asString();
             userFreeBytes = std::stoull(tmp);
-            ERRLOG("The field is storage.user_free_bytes: %s, trans as%llu", jsonValue["storage.user_free_bytes"].asString().c_str(), userFreeBytes);
+            INFOLOG("The field is storage.user_free_bytes: %s, trans as %llu", jsonValue[STORAGE_USER_FREE_BYTES].asString().c_str(), userFreeBytes);
         } else {
             ERRLOG("The field is not storage.user_free_bytes");
         }
         if (jsonValue.isMember("storage")) {
-            ERRLOG("The fields has storage");
+            INFOLOG("The fields has storage");
         } else {
             ERRLOG("The fields has no storage");
         }
     } else {
-        Module::JsonHelper::TypeToJsonValue(userFreeBytes, jsonValue["storage.user_free_bytes"]);
+        Module::JsonHelper::TypeToJsonValue(userFreeBytes, jsonValue[STORAGE_USER_FREE_BYTES]);
     }
     END_SERIAL_MEMEBER
 };

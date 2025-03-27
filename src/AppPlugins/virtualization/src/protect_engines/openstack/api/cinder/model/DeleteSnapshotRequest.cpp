@@ -20,12 +20,12 @@ DeleteSnapshotRequest::~DeleteSnapshotRequest() {}
  
 Scope DeleteSnapshotRequest::GetScopeType() const
 {
-    return Scope::ADMIN_PROJECT;
+    return m_scope;
 }
  
 ApiType DeleteSnapshotRequest::GetApiType()
 {
-    return ApiType::CINDER;
+    return m_apiType;
 }
  
 std::string DeleteSnapshotRequest::GetSnapshotId() const

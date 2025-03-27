@@ -50,6 +50,7 @@ public:
     std::shared_ptr<PowerOnServerResponse> PowerOnServer(PowerOnServerRequest &request);
     std::shared_ptr<DetachServerVolumeResponse> DetachServerVolume(DetachServerVolumeRequest &request);
     std::shared_ptr<AttachServerVolumeResponse> AttachServerVolume(AttachServerVolumeRequest &request);
+    bool UpdateToken(ModelBase &request, std::string &tokenStr);
 };
 }
 

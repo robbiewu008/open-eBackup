@@ -44,6 +44,7 @@
 #include "protect_engines/openstack/api/cinder/model/GetSnapshotListResponse.h"
 #include "protect_engines/openstack/api/cinder/model/UpdateVolumeBootableRequest.h"
 #include "protect_engines/openstack/api/cinder/model/UpdateVolumeBootableResponse.h"
+#include "protect_engines/openstack/api/cinder/model/GetPoolsResponse.h"
 #include "protect_engines/openstack/api/cinder/model/ActiveSnapConsistencyResponse.h"
 #include "protect_engines/openstack/api/cinder/model/ActiveSnapConsistencyRequest.h"
 #include "protect_engines/openstack/utils/OpenStackTokenMgr.h"
@@ -81,6 +82,7 @@ public:
     std::shared_ptr<VolumeGroupResponse> GetVolumeGroupStatus(VolumeGroupRequest &request);
     std::shared_ptr<GetVolumeTypesResponse> GetVolumeTypes(GetVolumeTypesRequest &request);
     std::shared_ptr<UpdateVolumeBootableResponse> UpdateVolumeBootable(UpdateVolumeBootableRequest &request);
+    std::shared_ptr<GetPoolsResponse> GetProjectStoragePools(VolumeRequest &request);
     std::shared_ptr<ActiveSnapConsistencyResponse> ActiveSnapConsistency(ActiveSnapConsistencyRequest &request);
 
 protected:

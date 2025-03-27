@@ -108,8 +108,11 @@ std::string BaseTokenMgr::AddToken(ModelBase &model, std::shared_ptr<GetTokenRes
     auto headers = getTokenResponse->GetHeaders();
     auto it_head = headers.find("X-Subject-Token");
     if (it_head == headers.end()) {
-        ERRLOG("Not found head key X-Subject-Token");
-        return tokenValue;
+        it_head = headers.find("x-subject-token");
+        if (it_head == headers.end()) {
+            ERRLOG("Not found head key X-Subject-Token or x-subject-token");
+            return tokenValue;
+        }
     }
     tokenInfoTmp.m_token = *(it_head->second.begin());
     tokenInfoTmp.m_extendInfo = getTokenResponse->GetBody();
@@ -127,7 +130,7 @@ bool BaseTokenMgr::GetTokenFromMap(ModelBase &model, std::string &tokenValue, st
     std::string key = GetTokenKey(model);
     auto it = m_tokenMap.find(key);
     if (it == m_tokenMap.end()) {
-        DBGLOG("Not found token, the key:%s", key.c_str());
+        WARNLOG("Not found token, the key:%s", key.c_str());
         return false;
     }
     if (checkExpireFlag) {    // 检验是否过期

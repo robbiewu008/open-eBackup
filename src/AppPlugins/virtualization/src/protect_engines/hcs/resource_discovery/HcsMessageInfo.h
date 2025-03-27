@@ -323,14 +323,17 @@ class HcsOpServiceTokenInfo {
 public:
     std::string m_expiresAt;
     std::string m_token;
+    std::string m_tokenStr;
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_expiresAt, expires_at)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_token, token)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_tokenStr, tokenStr)
     END_SERIAL_MEMEBER
 
     ~HcsOpServiceTokenInfo() {
         Module::CleanMemoryPwd(m_token);
+        Module::CleanMemoryPwd(m_tokenStr);
     }
 };
 }
