@@ -40,7 +40,7 @@ mp_int32 Vmfs6IOEngine::Open()
         return MP_FAILED;
     }
     m_file = Vmfs6IO::VmfsFile::Instance()->OpenFromBlkid(m_vmfs, Vmfs6IO::ino2blkid(m_ino));
-    if (m_file <= 0) {
+    if (m_file == nullptr) {
         COMMLOG(OS_LOG_ERROR, "Open file failed.");
         return MP_FAILED;
     }

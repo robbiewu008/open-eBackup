@@ -17,7 +17,6 @@
 #include <cerrno>
 #include <cstdint>
 #include <memory>
-#include <uuid/uuid.h>
 #include <functional>
 #include <securec.h>
 

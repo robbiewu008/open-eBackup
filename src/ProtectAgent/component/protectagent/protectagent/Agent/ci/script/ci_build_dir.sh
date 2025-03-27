@@ -165,6 +165,7 @@ zip -r ${BASE_PATH}/final_pkg/PackageScript/package-like-unix.zip .
 rm -rf ${BASE_PATH}/tmp_zip/*
 
 find ${BASE_PATH}/Agent/bin/install/ -maxdepth 1 \( -name "*bat" -o -name "*txt*" \)  -exec cp -f "{}" "." \;
+find ./ -name "*.bat" | xargs unix2dos
 zip -r ${BASE_PATH}/final_pkg/PackageScript/package-windows.zip .
 rm -rf ${BASE_PATH}/tmp_zip/*
 
