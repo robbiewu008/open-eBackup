@@ -10,6 +10,13 @@ OPENSOURCE_REPOSITORY_DIR=${binary_path}
 WORKHOME=${AGENT_CODE_HOME}
 cd ${AGENT_CODE_HOME}/Agent/ci/script
 
+# tool check
+which unix2dos
+if [ $? -ne 0 ]; then
+	echo "there is no tool unix2dos for adapting bat script."
+	exit 1
+fi
+
 #set bep
 if [ "${BEP}" == "YES" ]; then
 	echo "start set Bep_Time!"
