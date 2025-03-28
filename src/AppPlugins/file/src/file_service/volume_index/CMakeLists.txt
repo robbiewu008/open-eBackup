@@ -18,9 +18,9 @@ target_include_directories(volume_index_obj
     ${PLUGIN_SRC_PATH}/common/constant
     ${PLUGIN_SRC_PATH}/common/volume
     ${PLUGIN_SRC_PATH}/utils
-    ${PLUGIN_SCANNER_PATH}/localhost_src/interface
-    ${PLUGIN_SCANNER_PATH}/localhost_src/model
-    ${PLUGIN_SCANNER_PATH}/localhost_src/filter
+    ${PLUGIN_SCANNER_PATH}/include/interface
+    ${PLUGIN_SCANNER_PATH}/include/model
+    ${PLUGIN_SCANNER_PATH}/include/filter
     ${MODULE_ROOT_PATH}/src/
     ${MODULE_ROOT_PATH}/src/parser
 )

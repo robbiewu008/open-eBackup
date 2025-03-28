@@ -38,15 +38,15 @@ target_include_directories(host_obj
     ${OPEN_SRC_PATH}/boost_rel/include
     ${MODULE_PLATFORM_PATH}/SecureCLib_rel/include
     ${OPEN_SRC_PATH}/jsoncpp_rel/include
-    ${PLUGIN_SCANNER_PATH}/localhost_src
-    ${PLUGIN_SCANNER_PATH}/localhost_src/common
-    ${PLUGIN_SCANNER_PATH}/localhost_src/checkpoint
-    ${PLUGIN_SCANNER_PATH}/localhost_src/filter
-    ${PLUGIN_SCANNER_PATH}/localhost_src/interface
-    ${PLUGIN_SCANNER_PATH}/localhost_src/model
-    ${PLUGIN_SCANNER_PATH}/localhost_src/service
-    ${PLUGIN_SCANNER_PATH}/localhost_src/statistics
-    ${PLUGIN_SCANNER_PATH}/localhost_src/utils
+    ${PLUGIN_SCANNER_PATH}/include
+    ${PLUGIN_SCANNER_PATH}/include/common
+    ${PLUGIN_SCANNER_PATH}/include/checkpoint
+    ${PLUGIN_SCANNER_PATH}/include/filter
+    ${PLUGIN_SCANNER_PATH}/include/interface
+    ${PLUGIN_SCANNER_PATH}/include/model
+    ${PLUGIN_SCANNER_PATH}/include/service
+    ${PLUGIN_SCANNER_PATH}/include/statistics
+    ${PLUGIN_SCANNER_PATH}/include/utils
 )
  
 target_link_libraries(host_obj

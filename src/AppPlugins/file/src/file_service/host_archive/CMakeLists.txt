@@ -24,14 +24,14 @@ target_include_directories(host_archive_restore_obj
     ${PLUGIN_SRC_PATH}/component
     ${PLUGIN_BACKUP_PATH}/src
     ${PLUGIN_BACKUP_PATH}/src/model
-    ${PLUGIN_SCANNER_PATH}/localhost_src
-    ${PLUGIN_SCANNER_PATH}/localhost_src/service
+    ${PLUGIN_SCANNER_PATH}/include
+    ${PLUGIN_SCANNER_PATH}/include/service
     ${PLUGIN_FRAMEWORK_PATH}/dep/agent_sdk/include
     PUBLIC
     ${PLUGIN_ROOT_PATH}
     ${MODULE_ROOT_PATH}
     ${PLUGIN_BACKUP_PATH}/src/engines
-    ${PLUGIN_SCANNER_PATH}/localhost_src/interface
+    ${PLUGIN_SCANNER_PATH}/include/interface
 )
 
 target_link_libraries(host_archive_restore_obj
