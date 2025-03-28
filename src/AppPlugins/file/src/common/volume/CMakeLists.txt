@@ -47,15 +47,15 @@ target_include_directories(volume_obj
     #Module platform included path
     ${MODULE_PLATFORM_PATH}/SecureCLib_rel/include
     # FS_Scanner
-    ${PLUGIN_SCANNER_PATH}/localhost_src
-    ${PLUGIN_SCANNER_PATH}/localhost_src/common
-    ${PLUGIN_SCANNER_PATH}/localhost_src/checkpoint
-    ${PLUGIN_SCANNER_PATH}/localhost_src/filter
-    ${PLUGIN_SCANNER_PATH}/localhost_src/interface
-    ${PLUGIN_SCANNER_PATH}/localhost_src/model
-    ${PLUGIN_SCANNER_PATH}/localhost_src/service
-    ${PLUGIN_SCANNER_PATH}/localhost_src/statistics
-    ${PLUGIN_SCANNER_PATH}/localhost_src/utils
+    ${PLUGIN_SCANNER_PATH}/include
+    ${PLUGIN_SCANNER_PATH}/include/common
+    ${PLUGIN_SCANNER_PATH}/include/checkpoint
+    ${PLUGIN_SCANNER_PATH}/include/filter
+    ${PLUGIN_SCANNER_PATH}/include/interface
+    ${PLUGIN_SCANNER_PATH}/include/model
+    ${PLUGIN_SCANNER_PATH}/include/service
+    ${PLUGIN_SCANNER_PATH}/include/statistics
+    ${PLUGIN_SCANNER_PATH}/include/utils
 )
 
 target_link_libraries(volume_obj

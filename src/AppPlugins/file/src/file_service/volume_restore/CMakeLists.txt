@@ -8,15 +8,15 @@ add_library(volume_restore_obj
 
 target_include_directories(volume_restore_obj
     PRIVATE
-    ${PLUGIN_SCANNER_PATH}/localhost_src
-    ${PLUGIN_SCANNER_PATH}/localhost_src/common
-    ${PLUGIN_SCANNER_PATH}/localhost_src/checkpoint
-    ${PLUGIN_SCANNER_PATH}/localhost_src/filter
-    ${PLUGIN_SCANNER_PATH}/localhost_src/interface
-    ${PLUGIN_SCANNER_PATH}/localhost_src/model
-    ${PLUGIN_SCANNER_PATH}/localhost_src/service
-    ${PLUGIN_SCANNER_PATH}/localhost_src/statistics
-    ${PLUGIN_SCANNER_PATH}/localhost_src/utils
+    ${PLUGIN_SCANNER_PATH}/include
+    ${PLUGIN_SCANNER_PATH}/include/common
+    ${PLUGIN_SCANNER_PATH}/include/checkpoint
+    ${PLUGIN_SCANNER_PATH}/include/filter
+    ${PLUGIN_SCANNER_PATH}/include/interface
+    ${PLUGIN_SCANNER_PATH}/include/model
+    ${PLUGIN_SCANNER_PATH}/include/service
+    ${PLUGIN_SCANNER_PATH}/include/statistics
+    ${PLUGIN_SCANNER_PATH}/include/utils
 
     ${PLUGIN_FRAMEWORK_PATH}/inc
     ${PLUGIN_FRAMEWORK_PATH}/inc/client
