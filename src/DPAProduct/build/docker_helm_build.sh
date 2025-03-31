@@ -414,7 +414,7 @@ function save_open_docker() {
 function dispatchTask() {
     if [ "$1" == "OpenSource" ]; then
         build_open_helm
-        save_open_docker ${G_VERSION}
+        save_open_docker "${G_VERSION}"
     else
         echo "Invalid params"
     fi
