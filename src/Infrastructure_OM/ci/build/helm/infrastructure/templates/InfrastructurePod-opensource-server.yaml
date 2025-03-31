@@ -490,6 +490,8 @@ spec:
               name: common-path
             - mountPath: /opt/network-conf
               name: network-conf
+            - mountPath: /opt/common-conf
+              name: common-conf
       initContainers:
         - name: init-gaussdb
           image: om:{{ .Values.global.version }}
@@ -542,6 +544,7 @@ spec:
         - name: ip-config
           hostPath:
             path: /etc/sysconfig/network-scripts/ifcfg-eth4
+            type: FileOrCreate
         - name: common-secret
           secret:
             secretName: common-secret
@@ -557,6 +560,9 @@ spec:
           configMap:
             name: multicluster-conf
             defaultMode: 0644
+        - name: common-conf
+          configMap:
+            name: common-conf
         {{- if eq $environment "Dorado" }}
         - name: data-nas
           persistentVolumeClaim:
