@@ -58,7 +58,7 @@ function build_all_helm() {
 
     echo "Build helm $(ls "${G_BASE_DIR}/build/helm/components")"
     find ./ -name "*.yaml" | xargs -I {} sed -i "s/{{ .Values.global.version }}/${LAST_MS_TAG}/g" {}
-    for h in "${G_BASE_DIR}/build/helm/components"/*; do
+    for h in $(ls "${G_BASE_DIR}/build/helm/components"); do
         sed -i "s/^version:.*/version: ${INTERNAL_VERSION}/g" "${G_BASE_DIR}/build/helm/components/$h/Chart.yaml"
         sed -i "s/^appVersion:.*/appVersion: ${G_VERSION}/g" "${G_BASE_DIR}/build/helm/components/$h/Chart.yaml"
         sed -i "s/product_version/${LAST_MS_TAG}/g" "${G_BASE_DIR}/build/helm/databackup/values.yaml"
@@ -145,7 +145,7 @@ function build_open_helm() {
         find ./ -name "*.yaml" | xargs -I {} sed -i "s/{{ .Values.global.version }}/${LAST_MS_TAG}/g" {}
         cp -rf ${G_BASE_DIR}/build/helm/components/protect-engine/conf ${G_BASE_DIR}/build/helm/components/infrastructure/
         rm -rf ${G_BASE_DIR}/build/helm/components/protect-engine
-        for h in "${G_BASE_DIR}/build/helm/components"/*; do
+        for h in $(ls "${G_BASE_DIR}/build/helm/components"); do
             sed -i "s/d8/d10/g" "${G_BASE_DIR}/build/helm/components/infrastructure/templates/MultiClusterConf.yaml"
             sed -i "s/^version:.*/version: ${INTERNAL_VERSION}/g" "${G_BASE_DIR}/build/helm/components/$h/Chart.yaml"
             sed -i "s/^appVersion:.*/appVersion: ${G_VERSION}/g" "${G_BASE_DIR}/build/helm/components/$h/Chart.yaml"
@@ -166,7 +166,7 @@ function build_open_helm() {
         find . -maxdepth 1 -type d ! -name 'protect-engine'  ! -name '.' -exec rm -rf {} +
         #和system_pm的包共用一套pv
         rm -rf ${G_BASE_DIR}/build/helm/databackup/templates/*.yaml
-        for h in "${G_BASE_DIR}/build/helm/components"/*; do
+        for h in $(ls "${G_BASE_DIR}/build/helm/components"); do
             find ./ -name "*dee*.yaml" -exec rm -rf {} +
             sed -i "s/^version:.*/version: ${INTERNAL_VERSION}/g" "${G_BASE_DIR}/build/helm/components/$h/Chart.yaml"
             sed -i "s/^appVersion:.*/appVersion: ${G_VERSION}/g" "${G_BASE_DIR}/build/helm/components/$h/Chart.yaml"
@@ -191,7 +191,7 @@ function build_open_helm() {
         rm -rf ${G_BASE_DIR}/build/helm/components/protect-manager
         rm -rf ${G_BASE_DIR}/build/helm/components/protect-engine
         rm -rf ${G_BASE_DIR}/build/helm/databackup/templates/*.yaml
-        for h in "${G_BASE_DIR}/build/helm/components"/*; do
+        for h in $(ls "${G_BASE_DIR}/build/helm/components"); do
             sed -i "s/^version:.*/version: ${INTERNAL_VERSION}/g" "${G_BASE_DIR}/build/helm/components/$h/Chart.yaml"
             sed -i "s/^appVersion:.*/appVersion: ${G_VERSION}/g" "${G_BASE_DIR}/build/helm/components/$h/Chart.yaml"
             sed -i "s/product_version/${LAST_MS_TAG}/g" "${G_BASE_DIR}/build/helm/databackup/values.yaml"
@@ -229,7 +229,7 @@ function build_patch_helm() {
     mkdir -p ${G_BASE_DIR}/build/helm/databackup/charts
 
     echo "Build helm $(ls "${G_BASE_DIR}/build/helm/components")"
-    for h in "${G_BASE_DIR}/build/helm/components"/*; do
+    for h in $(ls "${G_BASE_DIR}/build/helm/components"); do
         sed -i "s/^version:.*/version: ${INTERNAL_VERSION}/g" "${G_BASE_DIR}/build/helm/components/$h/Chart.yaml"
         sed -i "s/^appVersion:.*/appVersion: ${G_VERSION}/g" "${G_BASE_DIR}/build/helm/components/$h/Chart.yaml"
         sed -i "s/current_version/${patch_image_version}/g" "${G_BASE_DIR}/build/helm/components/$h/values.yaml"
