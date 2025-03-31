@@ -55,6 +55,7 @@ function insert_pkg_to_image()
   cd ${DOCKERFILE_PATH}
   cp ${PACKAGE_PATH}/${jdk_package} ${DOCKERFILE_PATH}/
   tar -zxpf ${jdk_package}
+  cp ${KMC_PAYH}/KmcLib/lib/libSecurityStarter.so ${DOCKERFILE_PATH}
   cp ${KMC_PAYH}/KmcLib/lib/libkmcv3.so ${DOCKERFILE_PATH}
   cp ${KMC_PAYH}/KmcLib/lib/kmcdecrypt ${DOCKERFILE_PATH}
   cp ${KMC_PAYH}/KmcLib/include/kmcv3.h ${DOCKERFILE_PATH}
