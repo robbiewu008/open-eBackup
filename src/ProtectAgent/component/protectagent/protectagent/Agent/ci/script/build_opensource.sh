@@ -46,9 +46,11 @@ fi
 
 # build
 if [ "${systemtypeage}" != "ASAN" ];then
-    sh ${AGENT_HOME}/Agent/build/get_open_third_party.sh "${binary_path}/ThirdParty"
-    if [ $? != 0 ]; then
-        echo "Get open third party fail."
+    if [ "${packagetype}" != "no_opensrc" ];then
+        sh ${AGENT_HOME}/Agent/build/get_open_third_party.sh "${binary_path}/ThirdParty"
+        if [ $? != 0 ]; then
+            echo "Get open third party fail."
+        fi
     fi
     cd ${AGENT_HOME}/
     source ${AGENT_HOME}/Agent/build/env.sh
