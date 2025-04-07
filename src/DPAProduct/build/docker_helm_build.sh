@@ -98,7 +98,7 @@ function copy_files() {
     cd ${G_BASE_DIR}/..
     cp -rf ProtectManager/build ${G_BASE_DIR}/component/PM_CI
     cp -rf ProtectManager/CI ${G_BASE_DIR}/component/PM_CI
-    cp -rf ProtectManager/component ${G_BASE_DIR}/component/PM_CI
+    # cp -rf ProtectManager/component ${G_BASE_DIR}/component/PM_CI
     cp -rf Infrastructure_OM/ci/* ${G_BASE_DIR}/component/INF_CI
 
     #拷贝PM_API_Gateway配置文件到ProtectManager的chart/template/目录下
@@ -414,16 +414,16 @@ function save_open_docker() {
 function dispatchTask() {
     if [ "$1" == "OpenSource" ]; then
         build_open_helm
-        save_open_docker ${G_VERSION}
+        save_open_docker "${G_VERSION}"
     else
         echo "Invalid params"
     fi
 }
 
 function main() {
-    dispatchTask $@
+    dispatchTask "$@"
     return $?
 }
 
-main $@
+main "$@"
 exit $?

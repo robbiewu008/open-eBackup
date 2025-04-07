@@ -7,6 +7,7 @@ metadata:
   name: inf-common-conf
   namespace: dpa
 data:
+  GAUSSDB_LOG_QUERY: "off"
   GAUSSDB_MAX_CONNECTIONS: "1500"
   GAUSSDB_SHARED_BUFFERS: "512MB"
   GAUSSDB_WORK_MEM: "32MB"

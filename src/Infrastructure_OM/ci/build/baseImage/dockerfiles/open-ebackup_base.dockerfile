@@ -16,6 +16,7 @@ COPY --chown=root:root restclient /usr/bin/
 COPY --chown=99:99 get.sh /usr/bin/
 COPY --chown=root:root init_logic_ports.py /usr/bin/
 COPY --chown=root:root $JDK_VERSION /usr/local/$JDK_VERSION
+COPY --chown=99:99 libSecurityStarter.so /usr/lib64/
 COPY --chown=99:99 FileClient /opt/FileClient
 RUN cp /opt/FileClient/lib/libkmcv3.so /usr/lib64/  \
     && chmod 755 /usr/lib64/libkmcv3.so \
@@ -23,7 +24,7 @@ RUN cp /opt/FileClient/lib/libkmcv3.so /usr/lib64/  \
     && chmod 755 /usr/lib64/libcrypto.so.3 \
     && cp /opt/FileClient/lib/libsecurec.so /usr/lib64/ \
     && chmod 755 /usr/lib64/libsecurec.so \
-#    && chmod 550 /usr/lib64/libSecurityStarter.so \
+    && chmod 550 /usr/lib64/libSecurityStarter.so \
     && echo "Defaults    env_keep += \"FILECLIENT_CONF_PATH FILECLIENT_LOG_PATH\"" >> /etc/sudoers
 ADD common-init-${COMMON_INIT_VERSION}.tar.gz /usr/local/
 

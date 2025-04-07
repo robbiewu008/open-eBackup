@@ -265,6 +265,8 @@ spec:
               name: network-conf
             - mountPath: /opt/common-conf
               name: common-conf
+            - mountPath: /opt/vmware-conf
+              name: vmware-conf
         - name: dme-replication
           env:
           - name: NODE_NAME
@@ -664,6 +666,9 @@ spec:
             - name: ENVIRONMENT
               value: {{ $environment }}
       volumes:
+        - name: dme-osa-conf
+          configMap:
+            name: dme-osa-conf
         - name: kmc-conf
           configMap:
             name: kmc-store-conf
@@ -692,6 +697,9 @@ spec:
         - name: replication-conf
           configMap:
             name: replication-conf
+        - name: archive-conf
+          configMap:
+            name: archive-conf
         - name: cluster-conf
           configMap:
             name: cluster-conf
