@@ -15,7 +15,7 @@
     <div class="aui-gutter-column-sm">
         <lv-group lvGutter='8px' [ngClass]="{'kerberos-group': showKerberos}">
             <h1>{{typeTitle}}</h1>
-            <ng-container *ngIf="isEmpty(routerType)">
+            <ng-container *ngIf="isEmpty(routerType) && !isOpenVersion">
                 <a [href]="helpUrl" target="_blank" lv-link [lvIcon]="true">{{'common_help_word_label' | i18n}}</a>
             </ng-container>
             <lv-group lvGutter='4px' *ngIf="showKerberos" class="aui-link" (click)="gotoKerberos()">

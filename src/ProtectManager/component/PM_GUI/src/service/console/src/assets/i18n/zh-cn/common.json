@@ -845,6 +845,7 @@
   "common_about_website_label": "网址: <a class='aui-link' href='http://www.huawei.com/{0}' target='_blank'>http://www.huawei.com/{1}</a>",
   "common_whitebox_about_website_label": "网址: <a class='aui-link' href='{0}' target='_blank'>{0}</a>",
   "common_about_warning_label": "警告: 本程序受版权法及国际版权公约的保护，凡未经授权而擅自复制本软件的部分或全部内容，将承担严厉的民事或刑事责任，并被追究最大程度的法律责任。",
+  "common_about_open_backup_label": "open-eBackup为主流数据库、虚拟化、文件系统、大数据等应用提供E2E包含数据备份、数据恢复能力，帮助用户实现关键数据高效备份，节省数据保护投资。",
   "common_whitebox_about_warning_label": "警告: {0}",
   "common_controller_label": "控制器",
   "common_vlan_id_desc_label": "配置VLAN ID后不可更改，请检查确认输入无误后提交。",

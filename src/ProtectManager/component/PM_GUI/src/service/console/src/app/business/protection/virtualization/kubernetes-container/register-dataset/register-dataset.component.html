@@ -98,7 +98,7 @@
     <div class="lv-modal-title">
         <div class="aui-custom-modal-title">
             {{'common_register_label' | i18n}}
-            <span class="lv-link lv-link-primary" (click)="openHelp()">
+            <span class="lv-link lv-link-primary" (click)="openHelp()" *ngIf="!isOpenVersion">
                 {{'common_help_word_label' | i18n}}
                 <i lv-icon="lv-icon-link"></i>
             </span>

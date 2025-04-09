@@ -1,15 +1,15 @@
 /*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+ * This file is a part of the open-eBackup project.
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ *
+ * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+ *
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ */
 import { Injectable } from '@angular/core';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -77,6 +77,7 @@ export class AppUtilsService {
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.openOem.value;
   isOpenServer =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.openServer.value;
+  isOpenVersion = this.isOpenOem || this.isOpenServer;
   isJumpToStorageUnits = false;
 
   // 备份一体机
@@ -1814,6 +1815,10 @@ export class AppUtilsService {
   }
 
   openSpecialHelp(url: string | string[]) {
+    // 开源没有联机帮助
+    if (this.isOpenVersion) {
+      return;
+    }
     setTimeout(() => {
       const doms = document.getElementsByClassName('special-help-link');
       each(doms, (dom, index) => {
