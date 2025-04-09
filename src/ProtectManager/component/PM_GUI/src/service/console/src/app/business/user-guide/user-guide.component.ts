@@ -1,15 +1,15 @@
 /*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+ * This file is a part of the open-eBackup project.
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ *
+ * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+ *
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ */
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import {
@@ -185,6 +185,13 @@ export class UserGuideComponent implements OnInit {
       // 没有步骤去掉
       delete backupSteps.beforeBackup;
     }
+    // 白牌没有GaussDB备份前准备
+    if (
+      (this.appUtilsService.isWhitebox || this.appUtilsService.isOpenVersion) &&
+      this.activeAppId === ApplicationType.LightCloudGaussDB
+    ) {
+      delete backupSteps.beforeBackup;
+    }
     if (this.activeApp.steps?.resource) {
       assign(backupSteps.resource, {
         steps: this.activeApp.steps?.resource
@@ -288,7 +295,7 @@ export class UserGuideComponent implements OnInit {
 
   // 跳转联机帮助
   gotoHelp(item) {
-    const targetUrl = `/console/assets/help/a8000/${
+    const targetUrl = `/console/assets/help/${this.appUtilsService.helpPkg}/${
       this.i18n.isEn ? 'en-us' : 'zh-cn'
     }/index.html#${this.i18n.isEn ? item.enLink : item.link}`;
     window.open(targetUrl, '_blank');

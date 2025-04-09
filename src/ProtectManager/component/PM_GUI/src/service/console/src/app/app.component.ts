@@ -1,15 +1,15 @@
 /*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+ * This file is a part of the open-eBackup project.
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ *
+ * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+ *
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ */
 import {
   AfterViewChecked,
   ChangeDetectorRef,
@@ -201,6 +201,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   guideTipShow = false;
   hasGuideTipShow = false;
 
+  // 开源
+  isOpenVersion = this.appUtilsService.isOpenVersion;
+
   cyberDarkHeader = false;
   customVeriosnLoaded = false;
   supportChangeTheme =
@@ -354,6 +357,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.setFavicon();
     this.listenStoragechange();
     this.getAppThemeKey();
+    // 开源处理
+    if (this.isOpenVersion) {
+      this.versionLabel = `${this.i18n.get(
+        'common_version_label',
+        [],
+        true
+      )}${this.i18n.get('common_open_version_label')}`;
+    }
   }
 
   ngAfterViewChecked() {
@@ -600,6 +611,18 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.guideTipShow = false;
   }
 
+  getWarningLabel(): string {
+    if (this.whitebox.isWhitebox) {
+      return this.i18n.get('common_whitebox_about_warning_label', [
+        this.whitebox.oem[`warn_${this.isZh ? 'zh' : 'en'}`]
+      ]);
+    }
+    if (this.isOpenVersion) {
+      return this.i18n.get('common_about_open_backup_label');
+    }
+    return this.i18n.get('common_about_warning_label');
+  }
+
   initAboutInfo() {
     this.isZh = this.i18n.language === LANGUAGE.CN;
     this.websiteLabel = this.whitebox.isWhitebox
@@ -610,11 +633,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
           this.isZh ? 'cn' : 'en',
           this.isZh ? 'cn' : 'en'
         ]);
-    this.warningLabel = this.whitebox.isWhitebox
-      ? this.i18n.get('common_whitebox_about_warning_label', [
-          this.whitebox.oem[`warn_${this.isZh ? 'zh' : 'en'}`]
-        ])
-      : this.i18n.get('common_about_warning_label');
+    this.warningLabel = this.getWarningLabel();
     this.copyRightLabel = this.whitebox.isWhitebox
       ? this.whitebox.oem[`copyright_${this.isZh ? 'zh' : 'en'}`]
       : this.i18n.get('common_copy_right_label', [
@@ -1607,7 +1626,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
                         DataMap.Deploy_Type.a8000.value,
                         DataMap.Deploy_Type.x3000.value,
                         DataMap.Deploy_Type.x6000.value,
-                        DataMap.Deploy_Type.x9000.value
+                        DataMap.Deploy_Type.x9000.value,
+                        DataMap.Deploy_Type.openOem.value
                       ],
                       this.i18n.get('deploy_type')
                     )
@@ -2476,7 +2496,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   getHelpPath(): string {
-    if (this.whitebox.isWhitebox) {
+    if (this.whitebox.isWhitebox || this.isOpenVersion) {
       return 'oem';
     } else if (
       includes(

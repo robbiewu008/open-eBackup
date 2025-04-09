@@ -1,15 +1,15 @@
 /*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+ * This file is a part of the open-eBackup project.
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ *
+ * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+ *
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ */
 import { Injectable } from '@angular/core';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -58,6 +58,7 @@ import { CookieService } from './cookie.service';
 import { DataMapService } from './data-map.service';
 import { I18NService } from './i18n.service';
 import { ResourceCatalogsService } from './resource-catalogs.service';
+import { WhiteboxService } from './whitebox.service';
 
 @Injectable({
   providedIn: 'root'
@@ -77,7 +78,12 @@ export class AppUtilsService {
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.openOem.value;
   isOpenServer =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.openServer.value;
+  isOpenVersion = this.isOpenOem || this.isOpenServer;
   isJumpToStorageUnits = false;
+  isWhitebox = this.whitebox.isWhitebox;
+
+  // 联机帮助包路径
+  helpPkg = this.isWhitebox || this.isOpenVersion ? 'oem' : 'a8000';
 
   // 备份一体机
   isDataBackup = includes(
@@ -100,6 +106,7 @@ export class AppUtilsService {
     private router: Router,
     private i18n: I18NService,
     private appService: AppService,
+    private whitebox: WhiteboxService,
     private cookieService: CookieService,
     private dataMapService: DataMapService,
     private systemApiService: SystemApiService,
@@ -1829,7 +1836,10 @@ export class AppUtilsService {
               '_blank'
             );
           } else {
-            window.open(targetUrl, '_blank');
+            window.open(
+              targetUrl.replace('/a8000/', `/${this.helpPkg}/`),
+              '_blank'
+            );
           }
         });
       });
@@ -1861,8 +1871,8 @@ export class AppUtilsService {
     const newType = type.replace(/-/g, '');
 
     const baseUrl = this.i18n.isEn
-      ? `/console/assets/help/a8000/en-us/index.html#${HelpUrlCode.en[newType]}.html`
-      : `/console/assets/help/a8000/zh-cn/index.html#${HelpUrlCode.zh[newType]}.html`;
+      ? `/console/assets/help/${this.helpPkg}/en-us/index.html#${HelpUrlCode.en[newType]}.html`
+      : `/console/assets/help/${this.helpPkg}/zh-cn/index.html#${HelpUrlCode.zh[newType]}.html`;
 
     if (this.isHcsUser) {
       const herf: string = first(window.location.href.split('#'));
