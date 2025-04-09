@@ -357,6 +357,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.setFavicon();
     this.listenStoragechange();
     this.getAppThemeKey();
+    // 开源处理
+    if (this.isOpenVersion) {
+      this.versionLabel = `${this.i18n.get(
+        'common_version_label',
+        [],
+        true
+      )}${this.i18n.get('common_open_version_label')}`;
+    }
   }
 
   ngAfterViewChecked() {

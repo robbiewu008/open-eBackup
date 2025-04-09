@@ -420,7 +420,7 @@
 <ng-template #aboutContentTpl>
   <div class="about-content">
     <p class="about-version">{{ versionLabel }}</p>
-    <p class="about-address">
+    <p class="about-address" *ngIf="!isOpenVersion">
       <span [innerHTML]="websiteLabel"></span>
     </p>
     <p class="about-warning">{{ warningLabel }}</p>
@@ -428,7 +428,7 @@
 </ng-template>
 
 <ng-template #aboutFooterTpl>
-  <div class="about-footer">
+  <div class="about-footer" *ngIf="!isOpenVersion">
     <p>{{ copyRightLabel }}</p>
   </div>
 </ng-template>
