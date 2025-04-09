@@ -1821,10 +1821,6 @@ export class AppUtilsService {
   }
 
   openSpecialHelp(url: string | string[]) {
-    // 开源没有联机帮助
-    if (this.isOpenVersion) {
-      return;
-    }
     setTimeout(() => {
       const doms = document.getElementsByClassName('special-help-link');
       each(doms, (dom, index) => {
