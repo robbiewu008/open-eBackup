@@ -67,9 +67,6 @@ export class SubAppCardComponent implements OnInit, OnDestroy {
   resizeSub$: Subscription;
   currentTabHasShow = false;
 
-  // 开源暂没没有联机帮助
-  isOpenVersion = this.appUtilsService.isOpenVersion;
-
   @ViewChild('customDropdown', { static: false }) customDropdown;
   @ViewChild('appTabs', { static: false }) appTabs;
 
