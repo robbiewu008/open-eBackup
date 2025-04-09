@@ -53,9 +53,6 @@ export class RegisterDatasetComponent implements OnInit {
 
   helpUrl: string;
 
-  // 开源
-  isOpenVersion = this.AppUtilsService.isOpenVersion;
-
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip,
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64])
@@ -102,8 +99,8 @@ export class RegisterDatasetComponent implements OnInit {
 
   openHelp() {
     const targetUrl = this.i18n.isEn
-      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002199956329.html'
-      : '/console/assets/help/a8000/zh-cn/index.html#kubernetes_CSI_00012.html';
+      ? `/console/assets/help/${this.AppUtilsService.helpPkg}/en-us/index.html#en-us_topic_0000002199956329.html`
+      : `/console/assets/help/${this.AppUtilsService.helpPkg}/zh-cn/index.html#kubernetes_CSI_00028.html`;
     if (this.AppUtilsService.isHcsUser) {
       const herf: string = first(window.location.href.split('#'));
       window.open(herf.replace('/console/', targetUrl), '_blank');

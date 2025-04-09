@@ -177,15 +177,19 @@ export class UserGuideComponent implements OnInit {
     this.activeAppId = app.id;
     this.activeApp = app;
     const backupSteps = cloneDeep(USER_GUIDE_PROTECTION_STEPS);
-    if (
-      this.activeApp.steps?.beforeBackup &&
-      !this.appUtilsService.isOpenVersion
-    ) {
+    if (this.activeApp.steps?.beforeBackup) {
       assign(backupSteps.beforeBackup, {
         steps: this.activeApp.steps?.beforeBackup
       });
     } else {
       // 没有步骤去掉
+      delete backupSteps.beforeBackup;
+    }
+    // 白牌没有GaussDB备份前准备
+    if (
+      (this.appUtilsService.isWhitebox || this.appUtilsService.isOpenVersion) &&
+      this.activeAppId === ApplicationType.LightCloudGaussDB
+    ) {
       delete backupSteps.beforeBackup;
     }
     if (this.activeApp.steps?.resource) {
@@ -291,7 +295,7 @@ export class UserGuideComponent implements OnInit {
 
   // 跳转联机帮助
   gotoHelp(item) {
-    const targetUrl = `/console/assets/help/a8000/${
+    const targetUrl = `/console/assets/help/${this.appUtilsService.helpPkg}/${
       this.i18n.isEn ? 'en-us' : 'zh-cn'
     }/index.html#${this.i18n.isEn ? item.enLink : item.link}`;
     window.open(targetUrl, '_blank');

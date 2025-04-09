@@ -2496,7 +2496,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   getHelpPath(): string {
-    if (this.whitebox.isWhitebox) {
+    if (this.whitebox.isWhitebox || this.isOpenVersion) {
       return 'oem';
     } else if (
       includes(
