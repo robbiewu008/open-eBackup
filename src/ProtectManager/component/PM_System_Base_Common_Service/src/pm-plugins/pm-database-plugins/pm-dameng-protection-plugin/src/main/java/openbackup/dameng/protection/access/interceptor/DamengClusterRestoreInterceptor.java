@@ -12,6 +12,9 @@
 */
 package openbackup.dameng.protection.access.interceptor;
 
+import com.google.common.collect.Maps;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.dameng.protection.access.service.DamengService;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
@@ -26,12 +29,12 @@ import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbRestoreInterceptorProvider;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * dameng集群恢复任务下发provider
@@ -58,6 +61,10 @@ public class DamengClusterRestoreInterceptor extends AbstractDbRestoreIntercepto
 
     @Override
     public RestoreTask initialize(RestoreTask task) {
+        Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElse(Maps.newHashMap());
+        // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        task.setAdvanceParams(advanceParams);
         // 设置部署类型
         task.getTargetEnv().getExtendInfo().put(DatabaseConstants.DEPLOY_TYPE, DatabaseDeployTypeEnum.AP.getType());
         // 设置子实例对应的agent到恢复对象中

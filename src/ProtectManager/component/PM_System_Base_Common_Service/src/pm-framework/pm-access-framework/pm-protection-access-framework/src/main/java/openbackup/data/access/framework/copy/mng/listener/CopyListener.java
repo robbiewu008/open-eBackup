@@ -12,6 +12,9 @@
 */
 package openbackup.data.access.framework.copy.mng.listener;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.core.common.enums.DmeJobStatusEnum;
@@ -19,7 +22,6 @@ import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.protection.dto.TaskCompleteMessageDto;
 import openbackup.data.protection.access.provider.sdk.copy.CopyBo;
 import openbackup.data.protection.access.provider.sdk.copy.CopyProvider;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.kafka.annotations.MessageListener;
@@ -31,8 +33,6 @@ import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.MessageTemplate;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;

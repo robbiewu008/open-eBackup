@@ -32,7 +32,8 @@ public:
     virtual ~RestClient() {}
     // 系统管理员信息
     virtual bool CheckParams(ModelBase &model) = 0;
-    int32_t CallApi(RequestInfo &requestInfo, std::shared_ptr<ResponseModel> response, ModelBase &model);
+    int32_t CallApi(RequestInfo &requestInfo, std::shared_ptr<ResponseModel> response, ModelBase &model,
+        bool isOpService = false);
     void SetRetryTimes(const int &retryTimes);
 
 protected:

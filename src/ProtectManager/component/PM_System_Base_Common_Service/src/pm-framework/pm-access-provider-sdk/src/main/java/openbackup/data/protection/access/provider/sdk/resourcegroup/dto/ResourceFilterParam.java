@@ -1,0 +1,55 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+package openbackup.data.protection.access.provider.sdk.resourcegroup.dto;
+
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+/**
+ * 资源过滤规则
+ *
+ */
+@Getter
+@Setter
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+public class ResourceFilterParam {
+    /**
+     * 过滤条件，根据什么字段过滤，TAG、NAME
+     */
+    private String filterBy;
+
+    /**
+     * 过滤的类型：如磁盘、虚拟机等
+     */
+    private String type;
+
+    /**
+     * 过滤规则：如模糊匹配、全匹配等
+     */
+    private String rule;
+
+    /**
+     * 过滤类型：INCLUDE、EXCLUDE
+     */
+    private String mode;
+
+    /**
+     * 具体过滤的值
+     */
+    private List<String> values;
+}

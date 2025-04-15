@@ -1,0 +1,21 @@
+@import url(../../../../../assets/style/aui.less);
+.special-col,
+a {
+  color: var(--live-angular-color-text-regular);
+  text-decoration: none;
+  outline: none;
+
+  &:hover,
+  &:active {
+    color: @color-hover-blue;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  &:disabled,
+  &[disabled] {
+    color: @text-color-tertiary;
+    text-decoration: none;
+    cursor: not-allowed;
+  }
+}

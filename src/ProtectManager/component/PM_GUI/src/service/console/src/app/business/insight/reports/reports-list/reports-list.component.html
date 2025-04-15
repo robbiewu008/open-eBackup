@@ -103,8 +103,8 @@
     *ngIf="item.timeRange === dataMap.Report_Generated_Period.custom.value"
   >
     <span lv-overflow>
-      {{ item.scope[0] | date: 'yyyy-MM-dd HH:mm:ss' | nil }} -
-      {{ item.scope[1] | date: 'yyyy-MM-dd HH:mm:ss' | nil }}
+      {{ item.scope[0] | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil }} -
+      {{ item.scope[1] | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil }}
     </span>
   </ng-container>
 </ng-template>
@@ -129,7 +129,7 @@
 
 <ng-template #createTimeTpl let-item>
   <span lv-overflow>
-    {{ item.createTime | date: 'yyyy-MM-dd HH:mm:ss' | nil }}
+    {{ item.createTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil }}
   </span>
 </ng-template>
 

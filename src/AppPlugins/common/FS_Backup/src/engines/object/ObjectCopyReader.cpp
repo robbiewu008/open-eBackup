@@ -36,11 +36,13 @@ ObjectCopyReader::ObjectCopyReader(const ReaderParams &copyReaderParams,
     m_threadPoolKey = m_backupParams.commonParams.subJobId + "_copyReader";
     m_pktStats = make_shared<PacketStats>();
 
+    m_params.reqID = m_backupParams.commonParams.reqID;
     m_params.blockSize = m_backupParams.commonParams.blockSize;
     m_params.saveMeta = m_srcAdvParams->saveMeta;
     m_params.authArgs = m_srcAdvParams->authArgs;
+    m_params.excludeMeta = m_srcAdvParams->excludeMeta;
     for (auto &item : m_srcAdvParams->buckets) {
-        m_params.bucketNames.emplace_back(item.bucketName);
+        m_params.bucketNames.emplace_back(item);
     }
 }
 
@@ -157,12 +159,14 @@ int ObjectCopyReader::ReadData(FileHandle& fileHandle)
     // 大小为0，说明是空文件，不需要申请内存
     if (fileHandle.m_block.m_size != 0) {
         fileHandle.m_block.m_buffer = new uint8_t[fileHandle.m_block.m_size];
+        memset_s(fileHandle.m_block.m_buffer, fileHandle.m_block.m_size, 0, fileHandle.m_block.m_size);
     }
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto task = make_shared<ObjectServiceTask>(ObjectEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
 
@@ -175,9 +179,10 @@ int ObjectCopyReader::ReadMeta(FileHandle& fileHandle)
     DBGLOG("Read meta for file %s", fileHandle.m_file->m_fileName.c_str());
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto task = make_shared<ObjectServiceTask>(ObjectEvent::READ_META, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return Module::FAILED;
     }
 
@@ -186,9 +191,16 @@ int ObjectCopyReader::ReadMeta(FileHandle& fileHandle)
 
 int ObjectCopyReader::CloseFile(FileHandle& fileHandle)
 {
-    ++m_controlInfo->m_noOfFilesRead;
-    DBGLOG("Close file %s, readed Files for now : %d", fileHandle.m_file->m_fileName.c_str(),
-        m_controlInfo->m_noOfFilesRead.load());
+    if (fileHandle.m_file->m_blockStats.m_totalErrCnt == 0) {
+        ++m_controlInfo->m_noOfFilesRead;
+    } else {
+        ++m_controlInfo->m_noOfFilesReadFailed;
+    }
+    DBGLOG("Close file %s, readed Files: %d, readed fail files: %d, ErrBlockCnt: %d",
+        fileHandle.m_file->m_fileName.c_str(),
+        m_controlInfo->m_noOfFilesRead.load(),
+        m_controlInfo->m_noOfFilesReadFailed.load(),
+        fileHandle.m_file->m_blockStats.m_totalErrCnt.load());
     return Module::SUCCESS;
 }
 
@@ -292,6 +304,12 @@ void ObjectCopyReader::ProcessReadEntries(FileHandle& fileHandle)
         ReadData(fileHandle);
     } else if (state == FileDescState::READED) {
         CloseFile(fileHandle);
+    } else if (state == FileDescState::READ_FAILED) {
+        // 如果有块下载失败，状态会设置为READ_FAILED, 不会进入ReadData进行下载数据。
+        ++fileHandle.m_file->m_blockStats.m_readReqCnt;
+        if (fileHandle.m_file->m_blockStats.m_totalCnt <= fileHandle.m_file->m_blockStats.m_readReqCnt) {
+            CloseFile(fileHandle);
+        }
     }
 
     return;
@@ -310,7 +328,7 @@ int64_t ObjectCopyReader::ProcessTimers()
 
 void ObjectCopyReader::HandleComplete()
 {
-    INFOLOG("Complete LibsmbCopyReader");
+    INFOLOG("Complete ObjectCopyReader");
     m_controlInfo->m_readPhaseComplete = true;
 }
 
@@ -455,7 +473,7 @@ void ObjectCopyReader::HandleSuccessEvent(std::shared_ptr<ObjectServiceTask> tas
 
     if (event == ObjectEvent::READ_DATA) {
         ++fileHandle.m_file->m_blockStats.m_readReqCnt;
-        if (fileHandle.m_file->m_blockStats.m_totalCnt == fileHandle.m_file->m_blockStats.m_readReqCnt ||
+        if (fileHandle.m_file->m_blockStats.m_totalCnt <= fileHandle.m_file->m_blockStats.m_readReqCnt ||
             fileHandle.m_file->m_size == 0) {
             fileHandle.m_file->SetSrcState(FileDescState::READED);
             PushToReader(fileHandle); // push to aggregate
@@ -466,21 +484,14 @@ void ObjectCopyReader::HandleSuccessEvent(std::shared_ptr<ObjectServiceTask> tas
     return;
 }
 
-void ObjectCopyReader::HandleFailedEvent(std::shared_ptr<ObjectServiceTask> taskPtr)
+bool ObjectCopyReader::HandleFailedEventInner(
+    FileHandle &fileHandle, std::shared_ptr<ObjectServiceTask> &taskPtr)
 {
-    FileHandle fileHandle = taskPtr->m_fileHandle;
     ObjectEvent event = taskPtr->m_event;
-    ++fileHandle.m_retryCnt;
-    DBGLOG("Object copy reader failed %s, %u, event %d retry cnt %d", fileHandle.m_file->m_fileName.c_str(),
-        fileHandle.m_block.m_size, static_cast<int>(event), fileHandle.m_retryCnt);
-
-    if (taskPtr->m_errDetails.second == EAGAIN) {
-        m_needCheckServer = true;
-    }
     if (fileHandle.m_file->GetSrcState() != FileDescState::READ_FAILED) {  /* If state is READ_FAILED, needn't retry */
         if (fileHandle.m_retryCnt < DEFAULT_ERROR_SINGLE_FILE_CNT && !taskPtr->IsCriticalError()) {
             m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
-            return;
+            return false;
         }
         FSBackupUtils::RecordFailureDetail(m_failureRecorder, taskPtr->m_errDetails);
         // 通过设置公共锁，防止read和write同时失败设置FAILED时导致两边都不计数的问题
@@ -497,9 +508,39 @@ void ObjectCopyReader::HandleFailedEvent(std::shared_ptr<ObjectServiceTask> task
             m_controlInfo->m_noOfDirFailed++;
         }
         fileHandle.m_file->UnlockCommonMutex();
-        ++m_controlInfo->m_noOfFilesReadFailed;
         fileHandle.m_errNum = taskPtr->m_errDetails.second;
         m_failedList.emplace_back(fileHandle);
+    }
+    // 最后一个块会执行PushToReader添加到读队列中，用于关闭操作
+    if (event == ObjectEvent::READ_DATA) {
+        ++fileHandle.m_file->m_blockStats.m_readReqCnt;
+        ++fileHandle.m_file->m_blockStats.m_totalErrCnt;
+        if (fileHandle.m_file->m_blockStats.m_totalCnt <= fileHandle.m_file->m_blockStats.m_readReqCnt) {
+            CloseFile(fileHandle);
+            WARNLOG("The last block reader failed %s m_readReqCnt %d, m_totalCnt %d",
+                fileHandle.m_file->m_fileName.c_str(),
+                fileHandle.m_file->m_blockStats.m_readReqCnt.load(),
+                fileHandle.m_file->m_blockStats.m_totalCnt.load());
+        } else {
+            PushToReader(fileHandle);
+        }
+    }
+    return true;
+}
+void ObjectCopyReader::HandleFailedEvent(std::shared_ptr<ObjectServiceTask> taskPtr)
+{
+    FileHandle fileHandle = taskPtr->m_fileHandle;
+    ObjectEvent event = taskPtr->m_event;
+    ++fileHandle.m_retryCnt;
+    ERRLOG("Object copy reader failed %s, %u, event %d retry cnt %d", fileHandle.m_file->m_fileName.c_str(),
+        fileHandle.m_block.m_size, static_cast<int>(event), fileHandle.m_retryCnt);
+
+    if (taskPtr->m_errDetails.second == EAGAIN) {
+        m_needCheckServer = true;
+    }
+
+    if (!HandleFailedEventInner(fileHandle, taskPtr)) {
+        return;
     }
     m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
     if (!m_backupParams.commonParams.skipFailure || taskPtr->IsCriticalError()) {
@@ -507,12 +548,17 @@ void ObjectCopyReader::HandleFailedEvent(std::shared_ptr<ObjectServiceTask> task
         m_controlInfo->m_failed = true;
         m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
     }
+    if (!fileHandle.m_errMessage.empty()) {
+        m_failedList.emplace_back(fileHandle);
+    }
     // NATIVE format doesn't need push to aggregator.
     if ((m_backupParams.commonParams.backupDataFormat == BackupDataFormat::AGGREGATE) ||
         FSBackupUtils::OnlyGenerateSqlite(m_backupParams.commonParams.genSqlite)) {
         PushToAggregator(fileHandle); // file handle so aggregate can handle failurs of reading file
     }
-    ERRLOG("copy read failed for file %s, %llu， totalFailed: %llu, %llu", fileHandle.m_file->m_fileName.c_str(),
+    ERRLOG("copy read failed for file %s, %llu, metaInfo: %u, %llu, totalFailed: %llu, %llu",
+        fileHandle.m_file->m_fileName.c_str(),
+        fileHandle.m_file->m_metaFileIndex, fileHandle.m_file->m_metaFileOffset,
         m_controlInfo->m_noOfFilesReadFailed.load(), m_controlInfo->m_noOfDirFailed.load(),
         m_controlInfo->m_noOfFilesFailed.load());
     return;

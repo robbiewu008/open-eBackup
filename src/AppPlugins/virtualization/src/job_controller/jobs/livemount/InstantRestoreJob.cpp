@@ -112,6 +112,43 @@ int InstantRestoreJob::GenerateJobInit()
     return SUCCESS;
 }
 
+bool InstantRestoreJob::InitHandlers()
+{
+    if (m_restorePara->copies.empty()) {
+        ERRLOG("No copy data, %s", m_taskInfo.c_str());
+        return false;
+    }
+    // 保护对象Handler
+    if (InitProtectEngineHandler(JobType::INSTANT_RESTORE) != SUCCESS) {
+        ERRLOG("Initialize protect engine handler failed, %s", m_taskInfo.c_str());
+        return false;
+    }
+    INFOLOG("Copy name is %s, copy id %s, %s", m_restorePara->copies[0].name.c_str(),
+        m_restorePara->copies[0].id.c_str(), m_taskInfo.c_str());
+    std::vector<StorageRepository> repoList = m_restorePara->copies[0].repositories;
+    for (const auto &repo : repoList) {
+        if (repo.repositoryType == RepositoryDataType::CACHE_REPOSITORY &&
+            !DoInitHandlers(repo, m_cacheRepoHandler, m_cacheRepoPath)) {
+            ERRLOG("Init cache repo handler failed, %s", m_taskInfo.c_str());
+            return false;
+        } else if (repo.repositoryType == RepositoryDataType::DATA_REPOSITORY &&
+            !DoInitHandlers(repo, m_dataRepoHandler, m_dataRepoPath)) {
+            ERRLOG("Init data repo handler failed, %s", m_taskInfo.c_str());
+            return false;
+        } else if (repo.repositoryType == RepositoryDataType::META_REPOSITORY &&
+            !DoInitHandlers(repo, m_metaRepoHandler, m_metaRepoPath)) {
+            ERRLOG("Init meta repo handler failed, %s", m_taskInfo.c_str());
+            return false;
+        }
+    }
+    if (m_cacheRepoHandler == nullptr || m_dataRepoHandler == nullptr || m_metaRepoHandler == nullptr) {
+        ERRLOG("Init repo handler failed, %s", m_taskInfo.c_str());
+        return false;
+    }
+    INFOLOG("Init repo handler success, %s", m_taskInfo.c_str());
+    return true;
+}
+
 int InstantRestoreJob::GenerateSubJobPreHook()
 {
     ExecHookParam para;
@@ -219,13 +256,15 @@ void InstantRestoreJob::SubJobStateInit()
         std::bind(&InstantRestoreJob::SubJobPowerOnMachine, this);
     m_stateHandles[static_cast<int>(VirtPlugin::State::STATE_EXECJOB_MIGRATE_VOLUME)] =
         std::bind(&InstantRestoreJob::SubJobMigrateVolume, this);
+    m_stateHandles[static_cast<int>(VirtPlugin::State::STATE_EXECJOB_RENAME_MACHINE)] =
+        std::bind(&InstantRestoreJob::SubJobRenameMachine, this);
     m_stateHandles[static_cast<int>(VirtPlugin::State::STATE_EXECJOB_POSTHOOK)] =
         std::bind(&InstantRestoreJob::ExecuteSubJobPostHook, this);
 }
 
 int InstantRestoreJob::SubJobMigrateVolume()
 {
-    m_nextState = static_cast<int>(VirtPlugin::State::STATE_EXECJOB_POSTHOOK);
+    m_nextState = static_cast<int>(VirtPlugin::State::STATE_EXECJOB_RENAME_MACHINE);
     if (m_protectEngine == nullptr) {
         ERRLOG("SubJobMigrateVolume m_protectEngine nullptr, %s", m_taskInfo.c_str());
         return FAILED;
@@ -235,10 +274,41 @@ int InstantRestoreJob::SubJobMigrateVolume()
     return iRet;
 }
 
+int InstantRestoreJob::SubJobRenameMachine()
+{
+    m_nextState = static_cast<int>(VirtPlugin::State::STATE_EXECJOB_POSTHOOK);
+    if (m_protectEngine == nullptr) {
+        ERRLOG("SubJobRenameMachine m_protectEngine nullptr, %s", m_taskInfo.c_str());
+        return FAILED;
+    }
+    Json::Value jobAdvancePara;
+    if (!Module::JsonHelper::JsonStringToJsonValue(m_restorePara->extendInfo, jobAdvancePara)) {
+        ERRLOG("Convert m_restorePara extendInfo failed, %s", m_jobId.c_str());
+        return FAILED;
+    }
+    std::string newName = jobAdvancePara["vmName"].asString();
+    m_protectEngine->RenameMachine(m_newVm, newName);
+    ReportTaskLabel();
+    return SUCCESS;
+}
+
+void InstantRestoreJob::WaitTimeForSystemReady()
+{
+    if (!m_poweron) {
+        INFOLOG("No need to power on, %s", m_taskInfo.c_str());
+        return;
+    }
+    int32_t waitTime = Module::ConfigReader::getInt("General", "InstantVMReadyTime");
+    Utils::SleepSeconds(waitTime);
+    return;
+}
+
 int InstantRestoreJob::SubJobPowerOnMachine()
 {
     m_nextState = static_cast<int>(VirtPlugin::State::STATE_EXECJOB_MIGRATE_VOLUME);
     int iRet = PowerOnMachine();
+    // 开机后，虚拟化平台通常只是下发开机指令成功就返回任务成功，实际系统并未就绪，进行人为等待后再进行迁移，防止开机时迁移导致虚拟机不可用
+    WaitTimeForSystemReady();
     ReportTaskLabel();
     return iRet;
 }
@@ -283,7 +353,7 @@ int InstantRestoreJob::SubTaskInitialize()
     m_nextState = static_cast<int>(VirtPlugin::State::STATE_EXECJOB_RESTORE_VOLUME);
     DBGLOG("extendInfo %s extendInfo, copy %s copy", WIPE_SENSITIVE(m_restorePara->extendInfo).c_str(),
         WIPE_SENSITIVE(m_restorePara->copies[0].extendInfo).c_str());
-    
+    m_protectEngine->SetLiveMountType(LivemountType::RESTORE);
     if (!LoadMetaData()) {
         ERRLOG("Load meta data failed, %s", m_taskInfo.c_str());
         return FAILED;

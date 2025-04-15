@@ -1,16 +1,16 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, OnInit } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -23,12 +23,15 @@ import {
   BaseUtilService,
   CommonConsts,
   DataMap,
+  GlobalService,
   I18NService,
   ProtectResourceAction
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   assign,
   each,
+  find,
   has,
   includes,
   isArray,
@@ -36,14 +39,14 @@ import {
   toNumber,
   trim
 } from 'lodash';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'aui-advanced-parameter',
   templateUrl: './advanced-parameter.component.html',
   styleUrls: ['./advanced-parameter.component.less']
 })
-export class AdvancedParameterComponent implements OnInit {
+export class AdvancedParameterComponent implements OnInit, OnDestroy {
   resourceData;
   resourceType;
   formGroup: FormGroup;
@@ -55,6 +58,10 @@ export class AdvancedParameterComponent implements OnInit {
   channelsErrorTip = {
     ...this.baseUtilService.rangeErrorTip,
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 40])
+  };
+  percentErrorTip = {
+    ...this.baseUtilService.rangeErrorTip,
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 100])
   };
   osType;
   dataMap = DataMap;
@@ -70,17 +77,27 @@ export class AdvancedParameterComponent implements OnInit {
   isExpanded = false;
   batchModify = false;
   extParams;
+  hasRansomware = false; // 用于判断是否有已创建的防勒索策略
+  isOsBackup = false; // 用于判断是否打开了操作系统备份
+  ransomwareStatus$: Subscription = new Subscription();
 
   constructor(
     public fb: FormBuilder,
     private i18n: I18NService,
+    private globalService: GlobalService,
     private baseUtilService: BaseUtilService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    public appUtilsService: AppUtilsService
   ) {}
 
   ngOnInit() {
     this.getOsType();
+    this.getRansomwareStatus();
     this.initForm();
+  }
+
+  ngOnDestroy() {
+    this.ransomwareStatus$.unsubscribe();
   }
 
   initDetailData(data) {
@@ -104,18 +121,25 @@ export class AdvancedParameterComponent implements OnInit {
       this.osType =
         this.resourceData[0].environment_os_type ||
         this.resourceData[0]?.environment?.osType;
+      this.isOsBackup = !!find(this.resourceData, item => item.osBackup);
     } else if (this.resourceData) {
       this.osType =
         this.resourceData.environment_os_type ||
         this.resourceData?.environment?.osType;
+      this.isOsBackup = this.resourceData.osBackup;
     }
   }
 
-  initForm() {
-    const resource = isArray(this.resourceData)
-      ? this.resourceData[0]
-      : this.resourceData;
+  getRansomwareStatus() {
+    // 开启了防勒索策略的资源是不能开小文件聚合的
+    this.ransomwareStatus$ = this.globalService
+      .getState('syncRansomwareStatus')
+      .subscribe(res => {
+        this.hasRansomware = res;
+      });
+  }
 
+  initForm() {
     this.scriptPlaceholder =
       this.osType === DataMap.Os_Type.windows.value
         ? this.i18n.get('protection_fileset_advance_script_windows_label')
@@ -133,6 +157,13 @@ export class AdvancedParameterComponent implements OnInit {
         ]
       }),
       sameBackup: new FormControl(true),
+      snapshot_size_percent: new FormControl(5, {
+        validators: [
+          this.baseUtilService.VALID.required(),
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.rangeValue(1, 100)
+        ]
+      }),
       crossFileBackup: new FormControl(true),
       nfsBackup: new FormControl(true),
       continueBackup: new FormControl(true),
@@ -193,6 +224,21 @@ export class AdvancedParameterComponent implements OnInit {
           this.formGroup.get('fileSize').value >=
             this.formGroup.get('maxFileSize').value
       );
+    });
+
+    this.formGroup.get('sameBackup').valueChanges.subscribe(res => {
+      if (res) {
+        this.formGroup
+          .get('snapshot_size_percent')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.integer(),
+            this.baseUtilService.VALID.rangeValue(1, 100)
+          ]);
+      } else {
+        this.formGroup.get('snapshot_size_percent').clearValidators();
+      }
+      this.formGroup.get('snapshot_size_percent').updateValueAndValidity();
     });
 
     this.formGroup.get('smallFile').valueChanges.subscribe(res => {
@@ -265,6 +311,7 @@ export class AdvancedParameterComponent implements OnInit {
       this.formGroup.patchValue({
         channels: extParameters.channels || 1,
         sameBackup: extParameters.consistent_backup,
+        snapshot_size_percent: extParameters?.snapshot_size_percent || 5,
         crossFileBackup: extParameters.cross_file_system,
         nfsBackup: isWindows
           ? extParameters.backup_smb
@@ -280,6 +327,9 @@ export class AdvancedParameterComponent implements OnInit {
     }
     if (this.batchModify) {
       this.isModified = true;
+    }
+    if (this.isOsBackup) {
+      this.formGroup.get('crossFileBackup').setValue(true);
     }
   }
 
@@ -321,6 +371,14 @@ export class AdvancedParameterComponent implements OnInit {
       ).value,
       small_file_aggregation: this.formGroup.get('smallFile').value
     };
+
+    if (this.formGroup.get('sameBackup').value) {
+      assign(params, {
+        snapshot_size_percent: toNumber(
+          this.formGroup.get('snapshot_size_percent').value
+        )
+      });
+    }
 
     if (this.osType === DataMap.Fileset_Template_Os_Type.windows.value) {
       set(params, 'backup_smb', this.formGroup.get('nfsBackup').value);
@@ -368,6 +426,7 @@ export class AdvancedParameterComponent implements OnInit {
       [
         'backup_res_auto_index',
         'archive_res_auto_index',
+        'tape_archive_auto_index',
         'enable_security_archive'
       ],
       key => {

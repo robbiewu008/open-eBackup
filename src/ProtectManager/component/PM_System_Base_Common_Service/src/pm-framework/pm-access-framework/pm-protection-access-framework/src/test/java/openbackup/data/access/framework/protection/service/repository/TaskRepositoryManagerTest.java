@@ -12,10 +12,10 @@
 */
 package openbackup.data.access.framework.protection.service.repository;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
-import openbackup.data.access.framework.protection.service.repository.RepositoryStrategyManager;
-import openbackup.data.access.framework.protection.service.repository.TaskRepositoryManager;
 import openbackup.data.access.framework.protection.service.repository.strategies.NativeNfsRepositoryStrategy;
 import openbackup.data.protection.access.provider.sdk.backup.v2.StorageRepositoryCreateService;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
@@ -44,6 +44,8 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.api.support.membermodification.MemberModifier;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -115,6 +117,42 @@ public class TaskRepositoryManagerTest {
             .thenReturn("Admin@123");
         Assert.assertEquals(1,
             taskRepositoryManager.buildTargetRepositories("123456", SlaPolicyTypeEnum.BACKUP.getName()).size());
+    }
+
+    /**
+     * 用例场景：容量未超过限制
+     * 前置条件：使用率低于90%
+     * 检查点：成功
+     */
+    @Test
+    public void testCapacityLimitExceeded()
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        BackupClusterVo backupClusterVo = new BackupClusterVo();
+        backupClusterVo.setUsedCapacity(new BigDecimal(150));
+        backupClusterVo.setCapacity(new BigDecimal(200));
+        backupClusterVo.setAvailableCapacityRatio(90);
+        Method method = TaskRepositoryManager.class.getDeclaredMethod("capacityLimitExceeded", BackupClusterVo.class);
+        method.setAccessible(true);
+        boolean result = (Boolean) method.invoke(taskRepositoryManager, backupClusterVo);
+        assertTrue(result);
+    }
+
+    /**
+     * 用例场景：容量超过限制
+     * 前置条件：使用率高于90%
+     * 检查点：False
+     */
+    @Test
+    public void testCapacityLimitExceededFalse()
+            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        BackupClusterVo backupClusterVo = new BackupClusterVo();
+        backupClusterVo.setUsedCapacity(new BigDecimal(190));
+        backupClusterVo.setCapacity(new BigDecimal(200));
+        backupClusterVo.setAvailableCapacityRatio(90);
+        Method method = TaskRepositoryManager.class.getDeclaredMethod("capacityLimitExceeded", BackupClusterVo.class);
+        method.setAccessible(true);
+        boolean result = (Boolean) method.invoke(taskRepositoryManager, backupClusterVo);
+        assertFalse(result);
     }
 
     /**

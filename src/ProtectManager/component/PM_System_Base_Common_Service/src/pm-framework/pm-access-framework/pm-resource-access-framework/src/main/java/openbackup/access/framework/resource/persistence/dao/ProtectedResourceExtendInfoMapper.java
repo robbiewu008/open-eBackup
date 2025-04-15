@@ -12,10 +12,10 @@
 */
 package openbackup.access.framework.resource.persistence.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
 import openbackup.access.framework.resource.persistence.model.ProtectedResourceExtendInfoPo;
 import openbackup.access.framework.resource.persistence.model.ResourcesGroupViewPo;
-
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

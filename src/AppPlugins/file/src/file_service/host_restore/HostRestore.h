@@ -19,6 +19,9 @@
 #include "ScanConfig.h"
 #include "Scanner.h"
 #include "constant/Defines.h"
+#ifdef __linux__
+#include "OsRestore.h"
+#endif
 
 namespace FilePlugin {
 struct SubJobInfo {
@@ -62,7 +65,6 @@ struct HostTaskInfo {
     END_SERIAL_MEMEBER
 };
 
-
 struct CopyControlFilePath {
     std::string scanContrlFilePath;
     std::string restoreContrlFilePath;
@@ -79,7 +81,7 @@ public:
     int PostJob() override;
 
 private:
-    int PrerequisiteJobInner() const;
+    int PrerequisiteJobInner();
     int GenerateSubJobInner();
     int ExecuteSubJobInner();
     int PostJobInner();
@@ -144,6 +146,7 @@ private:
     int GetSpecialConfigForRestore();
     void UpdateTaskInfo();
     inline bool GetIgnoreFailed();
+    void FillCommonParams(CommonParams &commonParams, size_t subJobRequestId);
 
     /* fill restore config for according to different platform */
     void FillRestoreConfig(BackupParams& backupParams);
@@ -156,6 +159,7 @@ private:
         BackupParams&       backupParams,
         const std::string&  resourcePath,
         const std::string&  destinationPath);
+    bool ReadBackupCopyInfo(HostBackupCopy& hostBackupCopy);
 #endif
 
     void ReportCopyPhaseStart();
@@ -179,6 +183,12 @@ private:
     void CalcuSpeed(BackupStatistic& mainBackupStats, time_t startTime);
     std::string GetLastCtrlPath();
 
+#ifdef __linux__
+    bool OSConfigRestore();
+    bool CheckBMRCompatible();
+    bool InitDiskMapInfo();
+#endif
+
 private:
     StorageRepository m_cacheFs {};
     std::string m_cacheFsPath;
@@ -189,6 +199,13 @@ private:
     StorageRepository m_metaFs {};
     std::string m_metaFsPath;
     std::string m_scanStatusPath;
+    std::string m_backupCopyInfoFilePath;
+
+    std::string m_sysInfoPath;
+    std::string m_lvmInfoPath;
+#ifdef __linux__
+    std::vector<DiskMapInfo> m_diskMapInfoSet;
+#endif
 
     bool m_scanRedo {false};
 

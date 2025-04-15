@@ -14,9 +14,11 @@ package openbackup.system.base.sdk.dee;
 
 import openbackup.system.base.common.rest.CommonFeignConfiguration;
 import openbackup.system.base.sdk.dee.model.DownloadFilesRequest;
+import openbackup.system.base.sdk.dee.model.VmBrowserMountRequest;
 import openbackup.system.base.security.exterattack.ExterAttack;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,6 +39,17 @@ public interface DeeBaseParseRest {
      */
     @PostMapping("/flr/action/export")
     void downloadFiles(@RequestBody DownloadFilesRequest downloadFilesRequest);
+
+    /**
+     * 开启副本guest system浏览
+     *
+     * @param copyId 副本id
+     * @param vmBrowserMountRequest 请求体
+     */
+    @ExterAttack
+    @PostMapping("/browse/guest-system/open/{copyId}")
+    void openCopyGuestSystem(
+        @PathVariable("copyId") String copyId, @Validated @RequestBody VmBrowserMountRequest vmBrowserMountRequest);
 
     /**
      * 关闭副本guest system浏览

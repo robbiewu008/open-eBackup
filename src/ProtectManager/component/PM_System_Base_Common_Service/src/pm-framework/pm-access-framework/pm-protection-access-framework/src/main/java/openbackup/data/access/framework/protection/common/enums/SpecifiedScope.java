@@ -12,10 +12,9 @@
 */
 package openbackup.data.access.framework.protection.common.enums;
 
+import lombok.Getter;
 import openbackup.data.access.framework.copy.mng.enums.CopyTypeEnum;
 import openbackup.system.base.common.enums.TimeUnitEnum;
-
-import lombok.Getter;
 
 /**
  * 统一转换成天比较

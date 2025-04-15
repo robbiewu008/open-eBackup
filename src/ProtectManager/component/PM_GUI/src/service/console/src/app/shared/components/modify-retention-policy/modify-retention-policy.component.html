@@ -30,14 +30,14 @@
     <lv-form-item *ngIf="formGroup.value.retention_type === 2">
         <lv-form-label lvRequired>
             {{'common_retention_label' | i18n}}
-            <i *ngIf="!isCyberEngine" lv-icon="aui-icon-help"
-                lv-tooltip="{{'protection_retention_policy_desc_label' | i18n}}" lvTooltipTheme="light"
-                class="configform-constraint" lvColorState='true'></i>
+            <i *ngIf="!isCyberEngine" lv-icon="aui-icon-help" lv-tooltip="{{'protection_retention_policy_desc_label' | i18n}}
+{{helpTipsLabel}}{{retainedTipLabel}}" lvTooltipTheme="light" class="configform-constraint" lvColorState='true'>
+            </i>
         </lv-form-label>
         <lv-form-control [lvErrorTip]="retentionDurationErrorTip">
             <lv-input-group [lvAddAfter]="unitTpl" class="input-group-select-right">
                 <input lv-input formControlName="retention_duration"
-                    placeholder="{{formGroup.value.duration_unit=='d'?'1~365':formGroup.value.duration_unit=='w'?'1~54':formGroup.value.duration_unit=='MO'?'1~24':'1~10'}}" />
+                    placeholder="1~{{isArchiveOrRep ? repOrArchiveUnitMap[formGroup.value.duration_unit]:backupUnitMap[formGroup.value.duration_unit]}}" />
             </lv-input-group>
             <ng-template #unitTpl>
                 <lv-select [lvOptions]="retentionDurations" formControlName="duration_unit" class="unit-inner-select"

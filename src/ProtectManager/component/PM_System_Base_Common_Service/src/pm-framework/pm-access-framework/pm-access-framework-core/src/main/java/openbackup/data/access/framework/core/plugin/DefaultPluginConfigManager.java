@@ -12,15 +12,14 @@
 */
 package openbackup.data.access.framework.core.plugin;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfig;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigConstants;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;

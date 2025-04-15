@@ -38,6 +38,7 @@ static const std::string VIRTUAL_LOG_NAME = "VirtualPlugin.log";
 const std::string MODULE_NAME = "PluginMain";
 const std::string ENV_APPTYPE_HCS = "HCSContainer";
 const std::string ENV_APPTYPE_HCSENVOP = "HcsEnvOp";
+const std::string GENERAL_CONFIG_KEY = "General";
 const uint64_t MIN_SEGMENT_THRESHOLD = 1024;       // MB
 const uint64_t MAX_SEGMENT_THRESHOLD = 60 * 1024;
 const int MAX_BACKUP_THREADS = 4;
@@ -61,13 +62,17 @@ const int MAX_TASK_AIO_MEM_IN_MB = 2048;
 const int DEFAULT_TASK_AIO_MEM_IN_MB = 1024;
 const int MIN_TASK_AIO_MEM_IN_MB = 128;
 const int MIN_TIME_OUT_ONE_VOLUME = 86400;    // 24h
-const int MAX_TIME_OUT_ONE_VOLUME = 86400 * 7;
+const int DEFAULT_TIME_OUT_ONE_VOLUME = 86400 * 5;
+const int MAX_TIME_OUT_ONE_VOLUME = 86400 * 15;
 const int MIN_RATE = 0;
 const int MAX_RATE = 100;
 const int DEFAULT_CPU_USAGE_RATE_LIMIT = 80;
 const int DEFAULT_MEMORY_USAGE_RATE_LIMIT = 80;
 const int DEFAULT_STORAGE_USAGE_RATE_LIMIT = 80;
 const int DEFAULT_MAX_STORAGE = 80;
+const int MIN_INSRES_WAIT_TIME = 0;
+const int MAX_INSRES_WAIT_TIME = 600;
+const int DEFAULT_INSRES_WAIT_TIME = 60;
 const int DEFAULT_WAIT_TIME = 20;
 const int DEFAULT_RETRY_TIME = 20;
 const int DEFAULT_MAX_PAGENUM = 500;
@@ -75,6 +80,26 @@ const int MAX_PAGENUM = 1000;
 const int MIN_LENTH = 0;
 const int DEFAULT_LENTH = 193;
 const int MAX_LENTH = 1024;
+const int MIN_DOWN_TIME = 300; // unit - mileseconds
+const int DEFAULT_MIN_DOWN_TIME = 300; // unit - mileseconds
+const int MAX_DOWN_TIME = 2000000; // unit - mileseconds
+const int DEFAULT_MAX_DOWN_TIME = 10000; // unit - mileseconds
+const int CONFIG_CLOSE = 0;
+const int CONFIG_OPEN = 1;
+const int MIN_THREAD = 1;          // 任务上报进程进程数范围
+const int MAX_THREAD = 64;         // 1-64
+const int DEFAULT_THREAD = 10;     // 默认值：10
+const uint32_t MIN_TIMEOUT = 0; // unit - seconds
+const uint32_t MAX_TIMEOUT = 3600; // unit - seconds
+const uint32_t DEFAULT_CONNECTION_TIMEOUT = 30; // unit - seconds
+const uint32_t DEFAULT_TIMEOUT = 300; // unit - seconds
+const int MAX_VOLUME_ATACH_INTERVAL = 120;
+const int MAX_VOLUME_ATACH_TIMES = 200;
+const int DEFAULT_VOLUME_ATACH_INTERVAL = 5;
+const int DEFAULT_VOLUME_ATACH_TIME = 30;
+const int MIN_IO_THREAD = 50;
+const int MAX_IO_THREAD = 500;
+const int DEFAULT_IO_THREAD = 100;
 }
 
 EXTER_ATTACK VIRTUAL_PLUGIN_API JobFactoryBase* CreateFactory()
@@ -112,31 +137,14 @@ EXTER_ATTACK VIRTUAL_PLUGIN_API int32_t AppInit(std::string& logPath)
 
     Module::CLogger::GetInstance().Init(VIRTUAL_LOG_NAME.c_str(), logFilePath, iLogLevel, iLogCount, iLogMaxSize);
 
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("StorageModel", "OceanStorage", "61,62,63,64,68,69,70,"
-        "71,72,73,74,82,84,85,86,87,88,89,90,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,112,113,114,"
-        "115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,137,139,805,"
-        "OceanStorV3,OceanStoreV3,OceanStorV5,OceanStorV6");
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("StorageModel", "DoradoStorage", "811,812,813,814,815,"
-        "816,817,818,819,821,822,823,824,825,826,827,828,829,830,831,832,833,834,835,836,837,838,839,840,1202,"
-        "DoradoV3,DoradoV6");
     Module::ConfigReaderImpl::instance()->putIntConfigInfo("VOLUME_DATA_PROCESS", "VOLUME_SEGMENT_THRESHOLD",
         MIN_SEGMENT_THRESHOLD, MAX_SEGMENT_THRESHOLD, MAX_SEGMENT_THRESHOLD);
     Module::ConfigReaderImpl::instance()->putIntConfigInfo("VOLUME_DATA_PROCESS", "MAX_BACKUP_THREADS",
         MIN_BACKUP_THREADS, MAX_BACKUP_THREADS, MAX_BACKUP_THREADS);
-    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HcsConfig", "CreateSnapshotApigwFailedRetry",
-        MIN_CREATE_SNAPSHOT_RETRY, MAX_CREATE_SNAPSHOT_RETRY, DEFAULT_CREATE_SNAPSHOT_RETRY);
-    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HcsConfig", "CreateSnapshotLimit",
-        MIN_CREATE_SNAPSHOT_LIMIT, MAX_CREATE_SNAPSHOT_LIMIT, DEFAULT_CREATE_SNAPSHOT_LIMIT);
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "ECSSupportBackupStatus",
-        "active,stopped,suspended");
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "ECSSupportRestoreStatus", "active,stopped");
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "EVSSupportStatus", "in-use");
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("General", "RecoverIgnoreBadBlock", "no");
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("General", "DmiDecodeUUID", "");
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "VdcUserRole", "vdcServiceManager");
-    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "FusionStorageApiMode", "ISCSI");
-    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HcsConfig", "LongestTimeBackUpOneVolume",
-        MIN_TIME_OUT_ONE_VOLUME, MAX_TIME_OUT_ONE_VOLUME, MIN_TIME_OUT_ONE_VOLUME);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("IOTaskPoolThreads", "max_pool_threads",
+        MIN_IO_THREAD, MAX_IO_THREAD, DEFAULT_IO_THREAD);
+    InitGeneralCfg();
+    InitHCSCfg();
     InitConfigItemsForAIO();
     InitAppCfg();
 #ifndef WIN32
@@ -150,11 +158,35 @@ EXTER_ATTACK VIRTUAL_PLUGIN_API int32_t AppInit(std::string& logPath)
     return SUCCESS;
 }
 
+void InitGeneralCfg()
+{
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo(GENERAL_CONFIG_KEY, "InstantVMReadyTime",
+        MIN_INSRES_WAIT_TIME, MAX_INSRES_WAIT_TIME, DEFAULT_INSRES_WAIT_TIME);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo(GENERAL_CONFIG_KEY, "ConnectTimeOut",
+        MIN_TIMEOUT, MAX_TIMEOUT, DEFAULT_CONNECTION_TIMEOUT);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo(GENERAL_CONFIG_KEY, "TotalTimeOut",
+        MIN_TIMEOUT, MAX_TIMEOUT, DEFAULT_TIMEOUT);
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo(GENERAL_CONFIG_KEY, "RecoverIgnoreBadBlock", "no");
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo(GENERAL_CONFIG_KEY, "DmiDecodeUUID", "");
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo(GENERAL_CONFIG_KEY, "ReportThreadNum",
+        MIN_THREAD, MAX_THREAD, DEFAULT_THREAD);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo(GENERAL_CONFIG_KEY, "ReportQueueSize",
+        MIN_THREAD, MAX_THREAD, DEFAULT_THREAD);
+}
+
 void InitAppCfg()
 {
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("StorageModel", "OceanStorage", "61,62,63,64,68,69,70,"
+        "71,72,73,74,82,84,85,86,87,88,89,90,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,112,113,114,"
+        "115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,137,139,805,"
+        "OceanStorV3,OceanStoreV3,OceanStorV5,OceanStorV6");
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("StorageModel", "DoradoStorage", "811,812,813,814,815,"
+        "816,817,818,819,821,822,823,824,825,826,827,828,829,830,831,832,833,834,835,836,837,838,839,840,1202,"
+        "DoradoV3,DoradoV6");
     InitOpenStackCfg();
     InitApsaraStackCfg();
     InitCNwareCfg();
+    InitNutanixCfg();
     InitHyperVCfg();
 }
 
@@ -177,14 +209,39 @@ void InitHyperVCfg()
 {
     Module::ConfigReaderImpl::instance()->putIntConfigInfo("HyperVConfig", "PathLenthLimit",
         MIN_LENTH, MAX_LENTH, DEFAULT_LENTH);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HyperVConfig", "WmiApiRetryCount",
+        MIN_RETRY_COUNT, MAX_RETRY_COUNT, DEFAULT_RETRY_COUNT);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HyperVConfig", "WmiApiRetryInterval",
+        MIN_RETRY_INTERVAL, MAX_RETRY_INTERVAL, DEFAULT_RETRY_INTERVAL);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HyperVConfig", "GenerateReferPointCount",
+        MIN_RETRY_COUNT, MAX_RETRY_COUNT, DEFAULT_RETRY_COUNT);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HyperVConfig", "GenerateReferPointInterval",
+        MIN_RETRY_INTERVAL, MAX_RETRY_INTERVAL, DEFAULT_RETRY_INTERVAL);
+}
+
+void InitHCSCfg()
+{
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HcsConfig", "CreateSnapshotApigwFailedRetry",
+        MIN_CREATE_SNAPSHOT_RETRY, MAX_CREATE_SNAPSHOT_RETRY, DEFAULT_CREATE_SNAPSHOT_RETRY);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HcsConfig", "CreateSnapshotLimit",
+        MIN_CREATE_SNAPSHOT_LIMIT, MAX_CREATE_SNAPSHOT_LIMIT, DEFAULT_CREATE_SNAPSHOT_LIMIT);
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "ECSSupportBackupStatus",
+        "active,stopped,suspended");
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "ECSSupportRestoreStatus", "active,stopped");
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "EVSSupportStatus", "in-use");
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "VdcUserRole", "vdcServiceManager");
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "FusionStorageApiMode", "ISCSI");
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("HcsConfig", "LongestTimeBackUpOneVolume",
+        MIN_TIME_OUT_ONE_VOLUME, MAX_TIME_OUT_ONE_VOLUME, DEFAULT_TIME_OUT_ONE_VOLUME);
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("HcsConfig", "IgnoreSnapshotPreCheck", "false");
 }
 
 void InitOpenStackCfg()
 {
     Module::ConfigReaderImpl::instance()->putStringConfigInfo("OpenStackConfig", "VMSupportBackupStatus",
-        "active,stopped,suspended");
+        "ACTIVE,SHUTOFF,SUSPENDED");
     Module::ConfigReaderImpl::instance()->putStringConfigInfo("OpenStackConfig", "VMSupportRestoreStatus",
-        "active,stopped");
+        "ACTIVE,SHUTOFF");
     Module::ConfigReaderImpl::instance()->putStringConfigInfo("OpenStackConfig", "VolSupportStatus",
         "in-use,available");
     Module::ConfigReaderImpl::instance()->putIntConfigInfo("OpenStackConfig", "CreateSnapshotApigwFailedRetry",
@@ -209,6 +266,11 @@ void InitOpenStackCfg()
         "volume 3.59");
     Module::ConfigReaderImpl::instance()->putStringConfigInfo("OpenStackConfig", "SupportCloneVolume", "false");
     Module::ConfigReaderImpl::instance()->putStringConfigInfo("General", "DataRepoPathBalance", "false");
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("OpenStackConfig", "AttachOrDetachVolumeWaitInterval",
+        1, MAX_VOLUME_ATACH_INTERVAL, DEFAULT_VOLUME_ATACH_INTERVAL);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("OpenStackConfig", "AttachOrDetachVolumeWaitRetryTimes",
+        1, MAX_VOLUME_ATACH_TIMES, DEFAULT_VOLUME_ATACH_TIME);
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("OpenStackConfig", "AvailabilityZoneVolumeCreate", "");
 }
 
 void InitApsaraStackCfg()
@@ -220,7 +282,7 @@ void InitApsaraStackCfg()
     Module::ConfigReaderImpl::instance()->putStringConfigInfo("ApsaraStackConfig", "VolSupportStatus",
         "In_use,Available");
     Module::ConfigReaderImpl::instance()->putStringConfigInfo("ApsaraStackConfig", "CreateConsistenSnapshot",
-        "false");
+        "true");
     Module::ConfigReaderImpl::instance()->putStringConfigInfo("ApsaraStackConfig", "FakeDiskId",
         "Default");
     Module::ConfigReaderImpl::instance()->putIntConfigInfo("ApsaraStackConfig", "CreateSnapshotWaitInterval",
@@ -248,6 +310,22 @@ void InitCNwareCfg()
     Module::ConfigReaderImpl::instance()->putIntConfigInfo("CNwareConfig", "RequestPageNums",
         MIN_RATE, MAX_PAGENUM, DEFAULT_MAX_PAGENUM);
     Module::ConfigReaderImpl::instance()->putStringConfigInfo("CNwareConfig", "DomainName", "default");
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("CNwareConfig", "RetryErrorCode",
+        "1126,2382,4095,2182");
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("CNwareConfig", "MigrateDownTimeMax",
+        MIN_DOWN_TIME, MAX_DOWN_TIME, DEFAULT_MAX_DOWN_TIME);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("CNwareConfig", "MigrateDownTimeMin",
+        MIN_DOWN_TIME, MAX_DOWN_TIME, DEFAULT_MIN_DOWN_TIME);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("CNwareConfig", "DiskSynchronousWrites",
+        CONFIG_CLOSE, CONFIG_OPEN, CONFIG_CLOSE);
+    Module::ConfigReaderImpl::instance()->putIntConfigInfo("CNwareConfig", "RestoreOsVersion",
+        CONFIG_CLOSE, CONFIG_OPEN, CONFIG_OPEN);
+}
+
+void InitNutanixCfg()
+{
+    Module::ConfigReaderImpl::instance()->putStringConfigInfo("NutanixConfig", "RetryCode",
+        "{httpRetryCode:[],curlRetryCode:[]}");
 }
 
 EXTER_ATTACK VIRTUAL_PLUGIN_API void DiscoverApplications(std::vector<Application>& returnValue,
@@ -438,6 +516,10 @@ bool IsSha256FileExist(const std::shared_ptr<RepositoryHandler> &metaRepoHandler
     bool result = false;
     std::string shaPathName = metaRepoPath + VIRT_PLUGIN_SHA_FILE_ROOT;
     std::vector <std::string> fileNames{};
+    if (!metaRepoHandler->Exists(shaPathName)) {
+        ERRLOG("File/Dir(%s) DOES NOT exist.", shaPathName.c_str());
+        return false;
+    }
     metaRepoHandler->GetFiles(shaPathName, fileNames);
     for (auto fileName: fileNames) {
         if (fileName.find("_sha256.info") != std::string::npos) {
@@ -614,6 +696,41 @@ EXTER_ATTACK VIRTUAL_PLUGIN_API void AllowCheckCopyInLocalNode(ActionResult& ret
 EXTER_ATTACK VIRTUAL_PLUGIN_API void AllowCheckCopySubJobInLocalNode(ActionResult& returnValue,
     const AppProtect::CheckCopyJob& job, const AppProtect::SubJob& subJob)
 {
+    returnValue.__set_code(SUCCESS);
+    return;
+}
+
+EXTER_ATTACK VIRTUAL_PLUGIN_API void AllowDelCopyInLocalNode(ActionResult& returnValue,
+    const AppProtect::DelCopyJob& job)
+{
+    returnValue.__set_code(INNER_ERROR);
+    std::shared_ptr<ProtectEngine> protectEngine = EngineFactory::CreateProtectEngineWithoutTask(
+        job.protectEnv.subType);
+    if (protectEngine.get() == nullptr) {
+        return;
+    }
+    int32_t errorCode = SUCCESS;
+    if (protectEngine->AllowDelCopyInLocalNode(job, returnValue) != SUCCESS) {
+        ERRLOG("Can not allow del copy in local node.");
+        return;
+    }
+    returnValue.__set_code(SUCCESS);
+    return;
+}
+EXTER_ATTACK VIRTUAL_PLUGIN_API void AllowDelCopySubJobInLocalNode(ActionResult& returnValue,
+    const AppProtect::DelCopyJob& job, const AppProtect::SubJob& subJob)
+{
+    returnValue.__set_code(INNER_ERROR);
+    std::shared_ptr<ProtectEngine> protectEngine = EngineFactory::CreateProtectEngineWithoutTask(
+        job.protectEnv.subType);
+    if (protectEngine.get() == nullptr) {
+        return;
+    }
+    int32_t errorCode = SUCCESS;
+    if (protectEngine->AllowDelCopySubJobInLocalNode(job, subJob, returnValue) != SUCCESS) {
+        ERRLOG("Can not allow del copy sub job in local node.");
+        return;
+    }
     returnValue.__set_code(SUCCESS);
     return;
 }

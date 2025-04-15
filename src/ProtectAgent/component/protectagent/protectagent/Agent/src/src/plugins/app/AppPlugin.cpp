@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "plugins/app/AppPlugin.h"
 #include "common/Log.h"
 #include "common/ErrorCode.h"
@@ -5,7 +17,6 @@
 #include "common/Path.h"
 #include "common/Defines.h"
 #include "common/Utils.h"
-#include "apps/oracle/Oracle.h"
 
 #include <cmath>
 using namespace std;
@@ -16,7 +27,6 @@ static mp_int32 SECONDS_PER_MINITE = 60;
 
 AppPlugin::AppPlugin()
 {
-    REGISTER_ACTION(REST_APP_QUERY_DB_INFO, REST_URL_METHOD_GET, &AppPlugin::QueryInfo);
 #ifdef REST_PUBLISH
     REGISTER_ACTION(REST_APP_FREEZE, REST_URL_METHOD_PUT, &AppPlugin::Freeze);
     REGISTER_ACTION(REST_APP_UNFREEZE, REST_URL_METHOD_PUT, &AppPlugin::UnFreeze);
@@ -40,62 +50,6 @@ mp_void AppPlugin::GetDBAuthInfo(CRequestMsg& req, app_auth_info_t& stAppAuthInf
 
     pHeadStr = req.GetHttpReq().GetHeadNoCheck(HTTPPARAM_DBPASSWORD);
     stAppAuthInfo.strPasswd = CMpString::Trim(pHeadStr);
-}
-
-mp_int32 AppPlugin::QueryOracleList(Json::Value& oraList)
-{
-    // Get oracle information
-    Oracle oracle;
-    list<oracle_inst_info_t> lstOraInstInfo;
-    mp_string strVer;
-    mp_string strHome;
-    mp_int32 iRet = oracle.GetDBInfo(lstOraInstInfo, strVer, strHome);
-    if (iRet != MP_SUCCESS) {
-        COMMLOG(OS_LOG_ERROR, "Query database info failed.");
-        return iRet;
-    }
-
-    oraList["version"] = strVer;
-    oraList["oracleHome"] = strHome;
-    Json::Value oraIntances;
-    for (list<oracle_inst_info_t>::iterator iter = lstOraInstInfo.begin(); iter != lstOraInstInfo.end(); ++iter) {
-        Json::Value jValue;
-        jValue[RESPOND_ORACLE_PARAM_INSTNAME] = iter->strInstName;
-        jValue[RESPOND_ORACLE_PARAM_DBNAME] = iter->strDBName;
-        jValue[RESPOND_ORACLE_PARAM_STATE] = iter->iState;
-        jValue[RESPOND_ORACLE_PARAM_ISASMDB] = iter->iIsASMDB;
-        jValue[RESPOND_ORACLE_PARAM_AUTHTYPE] = iter->authType;
-        jValue[RESPOND_ORACLE_PARAM_DBROLE] = iter->dbRole;
-        oraIntances.append(std::move(jValue));
-    }
-    oraList["instances"] = std::move(oraIntances);
-
-    return iRet;
-}
-
-mp_int32 AppPlugin::QueryInfo(CRequestMsg& req, CResponseMsg& rsp)
-{
-    (mp_void)req;
-    Json::Value& jRspValue = rsp.GetJsonValueRef();
-
-    Json::Value oraList;
-    mp_int32 iRet = QueryOracleList(oraList);
-    if (iRet != MP_SUCCESS) {
-        COMMLOG(OS_LOG_ERROR, "Query database info failed.");
-    } else {
-        jRspValue["oracle"] = std::move(oraList);
-    }
-
-    timezone_info_t sttimezone;
-    iRet = m_host.GetTimeZone(sttimezone);
-    if (iRet != MP_SUCCESS) {
-        COMMLOG(OS_LOG_ERROR, "Query host time zone info failed, iRet is %d.", ERROR_HOST_GET_TIMEZONE_FAILED);
-
-        return ERROR_HOST_GET_TIMEZONE_FAILED;
-    }
-    jRspValue["timezone"] = sttimezone.strTzBias;
-
-    return MP_SUCCESS;
 }
 
 mp_int32 AppPlugin::Freeze(CRequestMsg& req, CResponseMsg& rsp)

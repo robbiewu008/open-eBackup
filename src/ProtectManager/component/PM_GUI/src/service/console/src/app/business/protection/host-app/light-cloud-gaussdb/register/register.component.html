@@ -65,22 +65,12 @@
       {{ 'common_password_label' | i18n }}
     </lv-form-label>
     <lv-form-control [lvErrorTip]="usernameErrorTip">
-      <input
-        lv-input
-        type="password"
-        formControlName="iamPassword"
-        autocomplete="new-password"
-        [placeholder]="
-          i18n.get('common_please_enter_label', [
-            i18n.get('common_password_label')
-          ])
-        "
-      />
+      <aui-inupt-with-eye formControlName="iamPassword"></aui-inupt-with-eye>
     </lv-form-control>
   </lv-form-item>
   <lv-form-item>
     <lv-form-label lvRequired>
-      {{ 'protection_proxy_host_label' | i18n }}
+      {{ 'protection_clients_label' | i18n }}
       <aui-agent-jumper-tips
         [type]="i18n.get('common_project_label')"
       ></aui-agent-jumper-tips>

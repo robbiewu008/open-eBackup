@@ -1,0 +1,80 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤9：登录iSCSI启动器">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="vmware_gud_0018.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="vmware_gud_0031">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤9：登录iSCSI启动器</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="vmware_gud_0031"></a><a name="vmware_gud_0031"></a>
+  <h1 class="topictitle1">步骤9：登录iSCSI启动器</h1>
+  <div>
+   <p>在以太网组网场景下，如果想要使用SAN传输模式或基于OceanStor Dorado LUN建立的Datastore的虚拟机磁盘需要使用存储层备份模式时，请参考本章节在客户端所在主机上登录iSCSI启动器。</p>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p>客户端所在主机已安装iSCSI启动器（iscsi-initiator-utils）。具体操作请参见《客户端安装指南》中的“<span>安装iSCSI启动器（适用于VMware）</span>”章节。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <p>以下操作以生产存储设备为OceanStor Dorado为例：</p>
+    <ol>
+     <li id="vmware_gud_0031__li768819316116"><a name="vmware_gud_0031__li768819316116"></a><a name="li768819316116"></a><span>登录ESXi Datastore对应的生产存储设备，查询iSCSI逻辑端口，获取逻辑端口IP。</span><p></p>
+      <ol type="a">
+       <li>登录DeviceManager。</li>
+       <li>选择“服务 &gt; 网络 &gt; 逻辑端口”。</li>
+       <li>在信息显示区，查询<span class="uicontrol">“数据协议”</span>为<span style="color:#282B33;">iSCSI</span>的逻辑端口，记录逻辑端口IP。</li>
+      </ol> <p></p></li>
+     <li><span>在客户端所在主机上，依次执行以下命令，登录iSCSI启动器。</span><p></p><pre class="screen">iscsiadm -m discovery -t st -p <em>IP</em></pre> <pre class="screen">iscsiadm -m node -l -p <em>IP</em></pre>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>命令中的<em>IP</em>请根据<a href="#vmware_gud_0031__li768819316116">1</a>中获取的实际逻辑端口IP替换。</p>
+       </div>
+      </div> <p>回显类似如下：</p> <p><span><img src="zh-cn_image_0000002200055081.png"></span></p> <p></p></li>
+     <li><span>在客户端所在主机上，执行以下命令，查看session信息，确认生产存储设备的IQN状态在线。</span><p></p><pre class="screen">iscsiadm -m session</pre> <p>如果回显包含逻辑端口信息，表示IQN状态在线。</p> <p><span><img src="zh-cn_image_0000002164814074.png"></span></p> <p></p></li>
+     <li id="vmware_gud_0031__li1140194514210"><a name="vmware_gud_0031__li1140194514210"></a><a name="li1140194514210"></a><span>在客户端所在主机上，执行以下命令，获取主机的IQN。</span><p></p><pre class="screen">cat /etc/iscsi/initiatorname.iscsi </pre> <p>回显类似如下：</p> <p><span><img src="zh-cn_image_0000002200140661.png"></span></p> <p></p></li>
+     <li><span>在ESXi Datastore对应的生产存储设备上，确认客户端所在主机的IQN状态是否在线。</span><p></p>
+      <ol type="a">
+       <li>登录DeviceManager。</li>
+       <li>选择“服务 &gt; 块服务 &gt; 主机组 &gt; 启动器 &gt; iSCSI”。</li>
+       <li>在<span class="uicontrol">“iSCSI”</span>页签，查询<a href="#vmware_gud_0031__li1140194514210">4</a>获取的IQN，确认IQN状态是否为在线。</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="vmware_gud_0018.html">备份VMware虚拟机</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

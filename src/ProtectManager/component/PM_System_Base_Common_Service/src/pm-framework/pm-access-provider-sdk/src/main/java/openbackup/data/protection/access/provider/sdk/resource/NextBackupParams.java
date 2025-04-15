@@ -12,12 +12,11 @@
 */
 package openbackup.data.protection.access.provider.sdk.resource;
 
-import openbackup.data.protection.access.provider.sdk.enums.BackupTypeEnum;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.data.protection.access.provider.sdk.enums.BackupTypeEnum;
 
 import java.util.Locale;
 

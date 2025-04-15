@@ -153,7 +153,7 @@ CTRL_FILE_RETCODE MetaParser::WriteHeader()
         return CTRL_FILE_RETCODE::FAILED;
     }
     m_writeFd.flush();
-    HCP_Log(INFO, MODULE) << "Write Header completed for metafile: " << m_fileName << HCPENDLOG;
+    HCP_Log(DEBUG, MODULE) << "Write Header completed for metafile: " << m_fileName << HCPENDLOG;
     return CTRL_FILE_RETCODE::SUCCESS;
 }
 
@@ -520,6 +520,7 @@ CTRL_FILE_RETCODE MetaParser::FillReadCache(uint64_t offset, uint32_t readLen)
     m_readFd.read(m_readCache, readLen);
     m_readFd.sync();
     if ((!m_readFd.eof()) && (!m_readFd.good())) {
+        HCP_Log(ERR, MODULE) << "m_readFd read failed: " << m_readFd.gcount() << ", readLen:" << readLen << HCPENDLOG;
         m_readFd.close();
         CTRL_FILE_RETCODE ret = FileOpen<std::ifstream>(m_readFd, std::ios::in | std::ios::binary);
         if (ret != CTRL_FILE_RETCODE::SUCCESS) {
@@ -536,6 +537,8 @@ CTRL_FILE_RETCODE MetaParser::FillReadCache(uint64_t offset, uint32_t readLen)
         m_readFd.read(m_readCache, readLen);
         m_readFd.sync();
         if ((!m_readFd.eof()) && (!m_readFd.good())) {
+            HCP_Log(ERR, MODULE) << "m_readFd read failed: " << m_readFd.gcount() << ", readLen:" << readLen
+                                 << HCPENDLOG;
             m_readFd.close();
             m_readCacheOffsetStart = 0;
             m_readCacheOffsetEnd = 0;
@@ -685,7 +688,7 @@ CTRL_FILE_RETCODE MetaParser::ReadDirectoryMetaV10(DirMetaV10 &dirMeta, uint16_t
     return ret;
 }
 
-uint16_t MetaParser::WriteDirectoryMeta(DirMeta &dirMeta)
+uint16_t MetaParser::WriteDirectoryMeta(const DirMeta &dirMeta)
 {
     lock_guard<std::mutex> lk(m_lock);
     DirMeta dirMetaInLe {};
@@ -693,15 +696,18 @@ uint16_t MetaParser::WriteDirectoryMeta(DirMeta &dirMeta)
     m_writeBuffer.write(reinterpret_cast<char *>(&dirMetaInLe), sizeof(dirMetaInLe));
     uint16_t metaLength = sizeof(dirMetaInLe);
     m_offset += metaLength;
+    if (m_writeBuffer.tellp() > BINARY_MAX_BUFFER_SIZE) {
+        FlushToFile();
+    }
     return metaLength;
 }
 
 void MetaParser::PrintFileMeta(const FileMeta& fileMeta)
 {
     DBGLOG("Write to metafile - %s", m_fileName.c_str());
-    DBGLOG("Write filemeta - type: %u, m_attr %u, m_mode %u, m_nlink %u, m_uid %u, m_gid %u, m_inode %u, m_size %u,"
-        "m_err %u, m_rdev %u, m_mtime %u, m_ctime %u, m_atime %u"
-        "m_btime %u, m_blksize %u, m_blocks %u, m_xMetaFileIndex %u, m_xMetaFileOffset %u",
+    DBGLOG("Write filemeta - type: %u, m_attr %u, m_mode %u, m_nlink %u, m_uid %u, m_gid %u, m_inode %llu, m_size %llu,"
+        "m_err %llu, m_rdev %llu, m_mtime %llu, m_ctime %llu, m_atime %llu"
+        "m_btime %llu, m_blksize %llu, m_blocks %llu, m_xMetaFileIndex %llu, m_xMetaFileOffset %llu",
         fileMeta.type, fileMeta.m_attr, fileMeta.m_mode, fileMeta.m_nlink, fileMeta.m_uid,
         fileMeta.m_gid, fileMeta.m_inode, fileMeta.m_size, fileMeta.m_err, fileMeta.m_rdev,
         fileMeta.m_mtime, fileMeta.m_ctime, fileMeta.m_atime, fileMeta.m_btime, fileMeta.m_blksize,
@@ -711,49 +717,49 @@ void MetaParser::PrintFileMeta(const FileMeta& fileMeta)
 void MetaParser::PrintDirectoryMeta(const DirMeta& dirMeta)
 {
     DBGLOG("Write to metafile - %s", m_fileName.c_str());
-    DBGLOG("Write dirMeta - type: %u, m_attr %u, m_mode %u, m_uid %u, m_gid %u, m_inode %u, m_size %u, m_mtime %u,"
-        "m_ctime %u, m_atime %u, m_btime %u, m_xMetaFileIndex %u, m_xMetaFileOffset %u",
+    DBGLOG("Write dirMeta - type: %u, m_attr %u, m_mode %u, m_uid %u, m_gid %u, m_inode %llu, m_size %llu, m_mtime %llu,"
+        "m_ctime %llu, m_atime %llu, m_btime %llu, m_xMetaFileIndex %llu, m_xMetaFileOffset %llu",
         dirMeta.type, dirMeta.m_attr, dirMeta.m_mode, dirMeta.m_uid, dirMeta.m_gid, dirMeta.m_inode,
         dirMeta.m_size, dirMeta.m_mtime, dirMeta.m_atime, dirMeta.m_ctime, dirMeta.m_btime,
         dirMeta.m_xMetaFileIndex, dirMeta.m_xMetaFileOffset);
 }
 
-void MetaParser::TranslateToLittleEndian(DirMeta &dirMeta, DirMeta &dirMetaInLe)
+void MetaParser::TranslateToLittleEndian(const DirMeta &dirMeta, DirMeta &dirMetaInLe)
 {
-    dirMetaInLe.type              = htole16(dirMeta.type);
-    dirMetaInLe.m_attr            = htole32(dirMeta.m_attr);
-    dirMetaInLe.m_mode            = htole32(dirMeta.m_mode);
-    dirMetaInLe.m_uid             = htole32(dirMeta.m_uid);
-    dirMetaInLe.m_gid             = htole32(dirMeta.m_gid);
-    dirMetaInLe.m_inode           = htole64(dirMeta.m_inode);
-    dirMetaInLe.m_size            = htole64(dirMeta.m_size);
-    dirMetaInLe.m_mtime           = htole64(dirMeta.m_mtime);
-    dirMetaInLe.m_atime           = htole64(dirMeta.m_atime);
-    dirMetaInLe.m_ctime           = htole64(dirMeta.m_ctime);
-    dirMetaInLe.m_btime           = htole64(dirMeta.m_btime);
-    dirMetaInLe.m_hardLinkFilesCnt  = htole64(dirMeta.m_hardLinkFilesCnt);
-    dirMetaInLe.m_subDirsCnt      = htole64(dirMeta.m_subDirsCnt);
-    dirMetaInLe.m_xMetaFileIndex  = htole64(dirMeta.m_xMetaFileIndex);
-    dirMetaInLe.m_xMetaFileOffset = htole64(dirMeta.m_xMetaFileOffset);
+    dirMetaInLe.type               = htole16(dirMeta.type);
+    dirMetaInLe.m_hardLinkFilesCnt = htole32(dirMeta.m_hardLinkFilesCnt);
+    dirMetaInLe.m_subDirsCnt       = htole32(dirMeta.m_subDirsCnt);
+    dirMetaInLe.m_attr             = htole32(dirMeta.m_attr);
+    dirMetaInLe.m_mode             = htole32(dirMeta.m_mode);
+    dirMetaInLe.m_uid              = htole32(dirMeta.m_uid);
+    dirMetaInLe.m_gid              = htole32(dirMeta.m_gid);
+    dirMetaInLe.m_inode            = htole64(dirMeta.m_inode);
+    dirMetaInLe.m_size             = htole64(dirMeta.m_size);
+    dirMetaInLe.m_mtime            = htole64(dirMeta.m_mtime);
+    dirMetaInLe.m_atime            = htole64(dirMeta.m_atime);
+    dirMetaInLe.m_ctime            = htole64(dirMeta.m_ctime);
+    dirMetaInLe.m_btime            = htole64(dirMeta.m_btime);
+    dirMetaInLe.m_xMetaFileIndex   = htole64(dirMeta.m_xMetaFileIndex);
+    dirMetaInLe.m_xMetaFileOffset  = htole64(dirMeta.m_xMetaFileOffset);
 }
 
-void MetaParser::TranslateToHostEndian(DirMeta &dirMeta, DirMeta &dirMetaInHost)
+void MetaParser::TranslateToHostEndian(const DirMeta &dirMeta, DirMeta &dirMetaInHost)
 {
-    dirMetaInHost.type              = le16toh(dirMeta.type);
-    dirMetaInHost.m_attr            = le32toh(dirMeta.m_attr);
-    dirMetaInHost.m_mode            = le32toh(dirMeta.m_mode);
-    dirMetaInHost.m_uid             = le32toh(dirMeta.m_uid);
-    dirMetaInHost.m_gid             = le32toh(dirMeta.m_gid);
-    dirMetaInHost.m_inode           = le64toh(dirMeta.m_inode);
-    dirMetaInHost.m_size            = le64toh(dirMeta.m_size);
-    dirMetaInHost.m_mtime           = le64toh(dirMeta.m_mtime);
-    dirMetaInHost.m_atime           = le64toh(dirMeta.m_atime);
-    dirMetaInHost.m_ctime           = le64toh(dirMeta.m_ctime);
-    dirMetaInHost.m_btime           = le64toh(dirMeta.m_btime);
-    dirMetaInHost.m_hardLinkFilesCnt  = le64toh(dirMeta.m_hardLinkFilesCnt);
-    dirMetaInHost.m_subDirsCnt      = le64toh(dirMeta.m_subDirsCnt);
-    dirMetaInHost.m_xMetaFileIndex  = le64toh(dirMeta.m_xMetaFileIndex);
-    dirMetaInHost.m_xMetaFileOffset = le64toh(dirMeta.m_xMetaFileOffset);
+    dirMetaInHost.type               = le16toh(dirMeta.type);
+    dirMetaInHost.m_hardLinkFilesCnt = le32toh(dirMeta.m_hardLinkFilesCnt);
+    dirMetaInHost.m_subDirsCnt       = le32toh(dirMeta.m_subDirsCnt);
+    dirMetaInHost.m_attr             = le32toh(dirMeta.m_attr);
+    dirMetaInHost.m_mode             = le32toh(dirMeta.m_mode);
+    dirMetaInHost.m_uid              = le32toh(dirMeta.m_uid);
+    dirMetaInHost.m_gid              = le32toh(dirMeta.m_gid);
+    dirMetaInHost.m_inode            = le64toh(dirMeta.m_inode);
+    dirMetaInHost.m_size             = le64toh(dirMeta.m_size);
+    dirMetaInHost.m_mtime            = le64toh(dirMeta.m_mtime);
+    dirMetaInHost.m_atime            = le64toh(dirMeta.m_atime);
+    dirMetaInHost.m_ctime            = le64toh(dirMeta.m_ctime);
+    dirMetaInHost.m_btime            = le64toh(dirMeta.m_btime);
+    dirMetaInHost.m_xMetaFileIndex   = le64toh(dirMeta.m_xMetaFileIndex);
+    dirMetaInHost.m_xMetaFileOffset  = le64toh(dirMeta.m_xMetaFileOffset);
 }
 
 void MetaParser::TranslateDirMetaV10(DirMetaV10 &dirMeta, DirectoryMetaReadWrite &dirMetaRw)
@@ -796,7 +802,7 @@ CTRL_FILE_RETCODE MetaParser::TranslateFileMetaV10(FileMetaV10 &fMeta, FileMetaR
     return CTRL_FILE_RETCODE::SUCCESS;
 }
 
-uint16_t MetaParser::WriteFileMeta(FileMeta &fMeta)
+uint16_t MetaParser::WriteFileMeta(const FileMeta &fMeta)
 {
     lock_guard<std::mutex> lk(m_lock);
     FileMeta fMetaInLe {};
@@ -804,10 +810,13 @@ uint16_t MetaParser::WriteFileMeta(FileMeta &fMeta)
     m_writeBuffer.write(reinterpret_cast<char *>(&fMetaInLe), sizeof(fMetaInLe));
     uint16_t metaLength = sizeof(fMetaInLe);
     m_offset += metaLength;
+    if (m_writeBuffer.tellp() > BINARY_MAX_BUFFER_SIZE) {
+        FlushToFile();
+    }
     return metaLength;
 }
 
-void MetaParser::TranslateToLittleEndian(FileMeta &fMeta, FileMeta &fMetaInLe)
+void MetaParser::TranslateToLittleEndian(const FileMeta &fMeta, FileMeta &fMetaInLe)
 {
     fMetaInLe.type              = htole16(fMeta.type);
     fMetaInLe.m_attr            = htole32(fMeta.m_attr);
@@ -829,7 +838,7 @@ void MetaParser::TranslateToLittleEndian(FileMeta &fMeta, FileMeta &fMetaInLe)
     fMetaInLe.m_xMetaFileOffset = htole64(fMeta.m_xMetaFileOffset);
 }
 
-void MetaParser::TranslateToHostEndian(FileMeta &fMeta, FileMeta &fMetaInHost)
+void MetaParser::TranslateToHostEndian(const FileMeta &fMeta, FileMeta &fMetaInHost)
 {
     fMetaInHost.type              = le16toh(fMeta.type);
     fMetaInHost.m_attr            = le32toh(fMeta.m_attr);
@@ -883,7 +892,6 @@ CTRL_FILE_RETCODE MetaParser::ReadFileMetaWithoutCache(FileMeta &fMeta, uint64_t
         return CTRL_FILE_RETCODE::FAILED;
     }
     ret = ReadFromBinaryFile(offset, sizeof(FileMeta));
- 
     if (ret != CTRL_FILE_RETCODE::SUCCESS) {
         char errMsg[ERROR_MSG_SIZE];
         HCP_Log(ERR, MODULE) << "failed to read metafile of length " << sizeof(FileMeta) << " error= "
@@ -961,7 +969,9 @@ CTRL_FILE_RETCODE MetaParser::UpdateFileMeta(const FileMeta &fMeta, uint64_t off
     }
 
     m_writeFd.seekp(offset, std::ios::beg);
-    m_writeFd.write(reinterpret_cast<const char*>(&fMeta), sizeof(FileMeta));
+    FileMeta fMetaInLe {};
+    TranslateToLittleEndian(fMeta, fMetaInLe);
+    m_writeFd.write(reinterpret_cast<const char*>(&fMetaInLe), sizeof(fMetaInLe));
     m_writeFd.flush();
     if (m_writeFd.fail()) {
         ERRLOG("failed to write data.");
@@ -1032,7 +1042,7 @@ CTRL_FILE_RETCODE MetaParser::FlushToFile()
     m_writeBuffer.str("");
     m_writeBuffer.clear();
     m_writeFd.flush();
-    HCP_Log(INFO, MODULE) << "Metafile flush data completed filename: " << m_fileName
+    HCP_Log(DEBUG, MODULE) << "Metafile flush data completed filename: " << m_fileName
         << " offset: " << m_writeFd.tellp() << " offset variable: " << m_offset << HCPENDLOG;
     return CTRL_FILE_RETCODE::SUCCESS;
 }
@@ -1144,8 +1154,8 @@ CTRL_FILE_RETCODE MetaParser::ReadFileMeta(FileMeta &fMeta)
     ret = ReadFileMetaFromBuffer(fMeta);
     if (ret != CTRL_FILE_RETCODE::SUCCESS) {
         char errMsg[ERROR_MSG_SIZE];
-        HCP_Log(DEBUG, MODULE) << "failed to read File MetaParser from buffer error= "
-            << strerror_r(errno, errMsg, ERROR_MSG_SIZE) << " metafile: " << m_fileName << HCPENDLOG;
+        HCP_Log(ERR, MODULE) << "failed to read File MetaParser from buffer error= "
+                             << strerror_r(errno, errMsg, ERROR_MSG_SIZE) << " metafile: " << m_fileName << HCPENDLOG;
         return CTRL_FILE_RETCODE::FAILED;
     }
     return ret;

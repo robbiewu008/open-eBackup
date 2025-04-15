@@ -37,12 +37,16 @@
 #include <protocol/fuse/Read.h>
 #include <protocol/fuse/Unlink.h>
 #include <protocol/fuse/RemoveDirectory.h>
+#include <protocol/fuse/MkNod.h>
 #include <protocol/fuse/MakeDirectory.h>
 #include <protocol/fuse/Link.h>
 #include <protocol/fuse/SymLink.h>
 #include <protocol/fuse/Rename.h>
 #include <protocol/fuse/FAllocate.h>
 #include <protocol/fuse/ListExtendedAttributes.h>
+#include <protocol/MessageHeader.h>
+
+using Module::Protocol::MessageHeader;
 
 namespace DataMove {
 namespace Protocol { // Ugly, but nested namespaces are not present in C++11
@@ -56,7 +60,7 @@ enum class FuseMessageClass : std::uint16_t {
     GETATTR,
     SETATTR,
     READLINK,
-    MKNOD,   // Not used
+    MKNOD,
     MKDIR,
     UNLINK,
     RMDIR,
@@ -100,6 +104,46 @@ enum class FuseMessageType : std::uint8_t {
     RESPONSE
 };
 
+struct ReqMsgParam {
+    std::string m_token;
+    std::string m_targetSource;
+    std::size_t m_requestHandler;
+    uint16_t m_sequecNumber;
+    ReqMsgParam(std::string token, std::string targetSource,
+        std::size_t requestHandler, uint16_t sequenceNumber) : m_token(token), m_targetSource(targetSource),
+        m_requestHandler(requestHandler), m_sequecNumber(sequenceNumber) {}
+};
+
+using ReqMsgParam = struct ReqMsgParam;
+
+struct RenameMsgParam {
+    struct ReqMsgParam m_reqMsgParam;
+    fuse_ino_t m_parentInodeNumber;
+    fuse_ino_t m_newParentInodeNumber;
+    std::uint32_t m_flags;
+    const char* m_oldName;
+    const char* m_newName;
+    RenameMsgParam(const struct ReqMsgParam& reqMsgParam, fuse_ino_t parentInodeNumber, fuse_ino_t newParentInodeNumber,
+        std::uint32_t flags, const char* oldName, const char* newName) : m_reqMsgParam(reqMsgParam),
+        m_parentInodeNumber(parentInodeNumber), m_newParentInodeNumber(newParentInodeNumber), m_flags(flags),
+        m_oldName(oldName), m_newName(newName) {}
+};
+
+using RenameMsgParam = struct RenameMsgParam;
+
+struct AllocateReqParam {
+    struct ReqMsgParam m_reqMsgParam;
+    fuse_ino_t m_inodeNumber;
+    int m_mode;
+    off_t m_offset;
+    off_t m_length;
+    uint64_t m_fileHandle;
+    AllocateReqParam(const struct ReqMsgParam& reqMsgParam, fuse_ino_t inodeNumber, int mode, off_t offset,
+        off_t length, uint64_t fileHandle) : m_reqMsgParam(reqMsgParam), m_inodeNumber(inodeNumber), m_mode(mode),
+        m_offset(offset), m_length(length), m_fileHandle(fileHandle) {}
+};
+
+using AllocateReqParam = struct AllocateReqParam;
 class FuseMessage final {
 public:
     FuseMessage() = delete;
@@ -126,26 +170,22 @@ public:
     static void UpdateTokenInRequest(const std::shared_ptr<Module::Protocol::Message>& request,
      const std::string& newToken);
 
-    static std::shared_ptr<Module::Protocol::Message> NewLookupRequest(const std::string& token,
-                                                     const std::string& targetSource,
-                                                     std::uint64_t requestHandler,
+    static std::shared_ptr<Module::Protocol::Message> NewLookupRequest(ReqMsgParam& param,
                                                      fuse_ino_t parentInodeNumber,
                                                      const char* name);
     static std::shared_ptr<Module::Protocol::Message> NewLookupResponse(std::uint64_t requestHandler,
                                                       LookupResponse::ResponseType type,
-                                                      const fuse_entry_param* params);
+                                                      const fuse_entry_param* param,
+                                                      const std::shared_ptr<MessageHeader>& msgHeader);
 
-    static std::shared_ptr<Module::Protocol::Message> NewGetAttributesRequest(const std::string& token,
-                                                            const std::string& targetSource,
-                                                            std::uint64_t requestHandler,
+    static std::shared_ptr<Module::Protocol::Message> NewGetAttributesRequest(ReqMsgParam& param,
                                                             fuse_ino_t inodeNumber);
     static std::shared_ptr<Module::Protocol::Message> NewGetAttributesResponse(std::uint64_t requestHandler,
                                                              GetAttributesResponse::ResponseType type,
                                                              int error,
-                                                             const struct stat* attributes);
-    static std::shared_ptr<Module::Protocol::Message> NewGetExtendedAttributesRequest(const std::string& token,
-                                                                    const std::string& targetSource,
-                                                                    std::uint64_t requestHandler,
+                                                             const struct stat* attributes,
+                                                             const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewGetExtendedAttributesRequest(ReqMsgParam& param,
                                                                     fuse_ino_t inodeNumber,
                                                                     std::uint64_t size,
                                                                     const char* name);
@@ -153,10 +193,9 @@ public:
                                                                      GetExtendedAttributesResponse::ResponseType type,
                                                                      std::uint64_t size,
                                                                      int error,
-                                                                     const std::string* data);
-    static std::shared_ptr<Module::Protocol::Message> NewReadDirectoryRequest(const std::string& token,
-                                                            const std::string& targetSource,
-                                                            std::uint64_t requestHandler,
+                                                                     const std::string* data,
+                                                                     const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewReadDirectoryRequest(ReqMsgParam& param,
                                                             fuse_ino_t inodeNumber,
                                                             std::uint64_t size,
                                                             std::uint64_t offset,
@@ -167,62 +206,56 @@ public:
                                                              int error,
                                                              std::uint64_t size,
                                                              std::uint64_t offset,
-                                                             boost::string_view data);
-    static std::shared_ptr<Module::Protocol::Message> NewReadLinkRequest(const std::string& token,
-                                                       const std::string& targetSource,
-                                                       std::uint64_t requestHandler,
+                                                             boost::string_view data,
+                                                             const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewReadLinkRequest(ReqMsgParam& param,
                                                        fuse_ino_t inodeNumber);
     static std::shared_ptr<Module::Protocol::Message> NewReadLinkResponse(std::uint64_t requestHandler,
                                                         ReadLinkResponse::ResponseType type,
                                                         int error,
-                                                        const std::string* link);
-    static std::shared_ptr<Module::Protocol::Message> NewCreateRequest(const std::string& token,
-                                                     const std::string& targetSource,
-                                                     std::uint64_t requestHandler,
+                                                        const std::string* link,
+                                                        const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewCreateRequest(ReqMsgParam& param,
                                                      fuse_ino_t parentInodeNumber,
                                                      std::uint32_t mode,
-                                                     const char* name);
+                                                     const char* name,
+                                                     struct UserGroup ug);
     static std::shared_ptr<Module::Protocol::Message> NewCreateResponse(std::uint64_t requestHandler,
                                                       CreateResponse::ResponseType type,
                                                       int error,
                                                       const fuse_entry_param* params,
-                                                      uint64_t fileHandle);
-    static std::shared_ptr<Module::Protocol::Message> NewSetAttributeRequest(const std::string& token,
-                                                           const std::string& targetSource,
-                                                           std::uint64_t requestHandler,
+                                                      uint64_t fileHandle,
+                                                      const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewSetAttributeRequest(ReqMsgParam& param,
                                                            fuse_ino_t inodeNumber,
                                                            int fieldsToSet,
                                                            const struct stat* attributes);
     static std::shared_ptr<Module::Protocol::Message> NewSetAttributeResponse(std::uint64_t requestHandler,
                                                             SetAttributeResponse::ResponseType type,
                                                             int error,
-                                                            const struct stat* attributes);
-    static std::shared_ptr<Module::Protocol::Message> NewReleaseRequest(const std::string& token,
-                                                      const std::string& targetSource,
-                                                      std::uint64_t requestHandler,
+                                                            const struct stat* attributes,
+                                                            const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewReleaseRequest(ReqMsgParam& param,
                                                       uint64_t fileHandle);
     static std::shared_ptr<Module::Protocol::Message> NewReleaseResponse(std::uint64_t requestHandler,
                                                         ReleaseResponse::ResponseType type,
-                                                       int error);
-    static std::shared_ptr<Module::Protocol::Message> NewFlushRequest(const std::string& token,
-                                                      const std::string& targetSource,
-                                                      std::uint64_t requestHandler,
+                                                       int error,
+                                                       const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewFlushRequest(ReqMsgParam& param,
                                                       uint64_t fileHandle);
     static std::shared_ptr<Module::Protocol::Message> NewFlushResponse(std::uint64_t requestHandler,
                                                        FlushResponse::ResponseType type,
-                                                       int error);
-    static std::shared_ptr<Module::Protocol::Message> NewOpenRequest(const std::string& token,
-                                                   const std::string& targetSource,
-                                                   std::uint64_t requestHandler,
+                                                       int error,
+                                                       const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewOpenRequest(ReqMsgParam& param,
                                                    fuse_ino_t inodeNumber,
                                                    int flags);
     static std::shared_ptr<Module::Protocol::Message> NewOpenResponse(std::uint64_t requestHandler,
                                                     OpenResponse::ResponseType type,
                                                     int error,
-                                                    uint64_t fileHandle);
-    static std::shared_ptr<Module::Protocol::Message> NewWriteBufferRequest(const std::string& token,
-                                                          const std::string& targetSource,
-                                                          std::uint64_t requestHandler,
+                                                    uint64_t fileHandle,
+                                                    const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewWriteBufferRequest(ReqMsgParam& param,
                                                           fuse_ino_t inodeNumber,
                                                           uint64_t fileHandle,
                                                           off_t offset,
@@ -230,10 +263,10 @@ public:
     static std::shared_ptr<Module::Protocol::Message> NewWriteBufferResponse(std::uint64_t requestHandler,
                                                            WriteBufferResponse::ResponseType type,
                                                            int error,
-                                                           std::uint64_t size);
-    static std::shared_ptr<Module::Protocol::Message> NewReadRequest(const std::string& token,
-                                                   const std::string& targetSource,
-                                                   std::uint64_t requestHandler,
+                                                           std::uint64_t size,
+                                                           const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewReadRequest(ReqMsgParam& param,
+                                                   fuse_ino_t inodeNumber,
                                                    std::uint64_t size,
                                                    off_t offset,
                                                    uint64_t fileHandle);
@@ -241,85 +274,80 @@ public:
                                                     ReadResponse::ResponseType type,
                                                     int error,
                                                     const std::string* data,
-                                                    std::uint64_t dataLength);
-    static std::shared_ptr<Module::Protocol::Message> NewUnlinkRequest(const std::string& token,
-                                                     const std::string& targetSource,
-                                                     std::uint64_t requestHandler,
+                                                    std::uint64_t dataLength,
+                                                    const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewUnlinkRequest(ReqMsgParam& param,
                                                      fuse_ino_t parentInodeNumber,
                                                      const char* name);
     static std::shared_ptr<Module::Protocol::Message> NewUnlinkResponse(std::uint64_t requestHandler,
                                                       UnlinkResponse::ResponseType type,
-                                                      int error);
-    static std::shared_ptr<Module::Protocol::Message> NewRemoveDirectoryRequest(const std::string& token,
-                                                              const std::string& targetSource,
-                                                              std::uint64_t requestHandler,
+                                                      int error,
+                                                      const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewRemoveDirectoryRequest(ReqMsgParam& param,
                                                               fuse_ino_t parentInodeNumber,
                                                               const char* name);
     static std::shared_ptr<Module::Protocol::Message> NewRemoveDirectoryResponse(std::uint64_t requestHandler,
                                                                RemoveDirectoryResponse::ResponseType type,
-                                                               int error);
-    static std::shared_ptr<Module::Protocol::Message> NewMakeDirectoryRequest(const std::string& token,
-                                                            const std::string& targetSource,
-                                                            std::uint64_t requestHandler,
+                                                               int error,
+                                                               const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewMkNodRequest(ReqMsgParam& param,
                                                             fuse_ino_t parentInodeNumber,
                                                             mode_t mode,
-                                                            const char* name);
+                                                            const char* name,
+                                                            const struct UserGroup& ug);
+    static std::shared_ptr<Module::Protocol::Message> NewMkNodResponse(std::uint64_t requestHandler,
+                                                            MkNodResponse::ResponseType type,
+                                                            int error,
+                                                            const fuse_entry_param* params,
+                                                            const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewMakeDirectoryRequest(ReqMsgParam& param,
+                                                            fuse_ino_t parentInodeNumber,
+                                                            mode_t mode,
+                                                            const char* name,
+                                                            struct UserGroup ug);
     static std::shared_ptr<Module::Protocol::Message> NewMakeDirectoryResponse(std::uint64_t requestHandler,
                                                              MakeDirectoryResponse::ResponseType type,
                                                              int error,
-                                                             const fuse_entry_param* params);
-    static std::shared_ptr<Module::Protocol::Message> NewLinkRequest(const std::string& token,
-                                                   const std::string& targetSource,
-                                                   std::uint64_t requestHandler,
+                                                             const fuse_entry_param* params,
+                                                             const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewLinkRequest(ReqMsgParam& param,
                                                    fuse_ino_t inodeNumber,
                                                    fuse_ino_t newParentInodeNumber,
                                                    const char* newName);
     static std::shared_ptr<Module::Protocol::Message> NewLinkResponse(std::uint64_t requestHandler,
                                                     LinkResponse::ResponseType type,
                                                     int error,
-                                                    const fuse_entry_param* params);
-    static std::shared_ptr<Module::Protocol::Message> NewSymLinkRequest(const std::string& token,
-                                                      const std::string& targetSource,
-                                                      std::uint64_t requestHandler,
+                                                    const fuse_entry_param* params,
+                                                    const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewSymLinkRequest(ReqMsgParam& param,
                                                       fuse_ino_t parentInodeNumber,
                                                       const char* link,
-                                                      const char* name);
+                                                      const char* name,
+                                                      const struct UserGroup& ug);
     static std::shared_ptr<Module::Protocol::Message> NewSymLinkResponse(std::uint64_t requestHandler,
                                                        SymLinkResponse::ResponseType type,
                                                        int error,
-                                                       const fuse_entry_param* params);
-    static std::shared_ptr<Module::Protocol::Message> NewRenameRequest(const std::string& token,
-                                                     const std::string& targetSource,
-                                                     std::uint64_t requestHandler,
-                                                     fuse_ino_t parentInodeNumber,
-                                                     fuse_ino_t newParentInodeNumber,
-                                                     std::uint32_t flags,
-                                                     const char* name,
-                                                     const char* newName);
+                                                       const fuse_entry_param* params,
+                                                       const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewRenameRequest(RenameMsgParam& renameParam);
     static std::shared_ptr<Module::Protocol::Message> NewRenameResponse(std::uint64_t requestHandler,
                                                       RenameResponse::ResponseType type,
-                                                      int error);
-    static std::shared_ptr<Module::Protocol::Message> NewFAllocateRequest(const std::string& token,
-                                                        const std::string& targetSource,
-                                                        std::uint64_t requestHandler,
-                                                        fuse_ino_t inodeNumber,
-                                                        int mode,
-                                                        off_t offset,
-                                                        off_t length,
-                                                        uint64_t fileHandle);
+                                                      int error,
+                                                      const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewFAllocateRequest(AllocateReqParam& allocParam);
     static std::shared_ptr<Module::Protocol::Message> NewFAllocateResponse(std::uint64_t requestHandler,
                                                          FAllocateResponse::ResponseType type,
-                                                         int error);
-    static std::shared_ptr<Module::Protocol::Message> NewListExtendedAttributesRequest(const std::string& token,
-                                                                     const std::string& targetSource,
-                                                                     std::uint64_t requestHandler,
+                                                         int error,
+                                                         const std::shared_ptr<MessageHeader>& msgHeader);
+    static std::shared_ptr<Module::Protocol::Message> NewListExtendedAttributesRequest(ReqMsgParam& param,
                                                                      fuse_ino_t inodeNumber,
                                                                      std::uint64_t size);
     static std::shared_ptr<Module::Protocol::Message> NewListExtendedAttributesResponse(std::uint64_t requestHandler,
                                                                       ListExtendedAttributesResponse::ResponseType type,
                                                                       int error,
                                                                       std::uint64_t size,
-                                                                      boost::string_view data);
+                                                                      boost::string_view data,
+                                                                      const std::shared_ptr<MessageHeader>& msgHeader);
 
     template <typename MessageType>
     MessageType GetRequest() const;
@@ -331,11 +359,11 @@ private:
     constexpr static std::uint64_t TOKEN_OFFSET = TOKEN_SIZE_OFFSET + sizeof(AuxDataSize);
 
     static std::shared_ptr<Module::Protocol::Message> AllocateRequestBuffer(FuseMessageClass messageClass,
-                                                          const std::string& token,
-                                                          const std::string& targetSource,
+                                                          ReqMsgParam& param,
                                                           std::uint64_t additionalDataSize);
     static std::shared_ptr<Module::Protocol::Message> AllocateResponseBuffer(FuseMessageClass messageClass,
-                                                           std::uint64_t additionalDataSize);
+                                                           std::uint64_t additionalDataSize,
+                                                           const std::shared_ptr<MessageHeader>& msgHeader);
 
     const FuseMessageClass m_messageClass;
     const FuseMessageType m_messageType;

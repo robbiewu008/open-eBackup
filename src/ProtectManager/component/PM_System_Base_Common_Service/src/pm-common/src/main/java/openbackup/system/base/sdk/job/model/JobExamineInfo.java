@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.sdk.job.model;
 
+import lombok.Data;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.job.model.request.JobSchedulePolicy;
-
-import lombok.Data;
 
 import java.util.Arrays;
 import java.util.List;

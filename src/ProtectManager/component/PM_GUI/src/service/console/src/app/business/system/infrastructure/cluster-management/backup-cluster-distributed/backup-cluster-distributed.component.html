@@ -17,7 +17,6 @@
         <lv-group lvGutter="8px" lvDirection="vertical">
             <h1 class="vertical-up-text"> {{ clusterName }} </h1>
             <lv-group lvGutter="4px" lvDirection="vertical" *ngIf="!isDecouple; else decoupleStatus">
-                <span class="aui-text-label desc-font"> {{ deployType }} </span>
                 <span class="aui-link desc-font" (click)="clusterDetail()"> {{ 'system_view_cluster_details_label' | i18n}} </span>
             </lv-group>
         </lv-group>

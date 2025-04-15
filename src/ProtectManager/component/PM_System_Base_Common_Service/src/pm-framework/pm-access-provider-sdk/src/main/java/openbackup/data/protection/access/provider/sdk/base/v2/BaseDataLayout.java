@@ -12,12 +12,11 @@
 */
 package openbackup.data.protection.access.provider.sdk.base.v2;
 
-import openbackup.data.protection.access.provider.sdk.enums.ClientProtocolTypeEnum;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.data.protection.access.provider.sdk.enums.ClientProtocolTypeEnum;
 
 /**
  * 数据布局

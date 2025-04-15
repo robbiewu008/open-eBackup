@@ -21,14 +21,12 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeUnifiedRestApi;
 import openbackup.data.access.framework.agent.ProtectAgentSelector;
 import openbackup.data.access.framework.backup.constant.BackupConstant;
-import openbackup.data.access.framework.backup.service.impl.BackupServiceImpl;
 import openbackup.data.access.framework.copy.mng.service.DeeCopyService;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.protection.service.SanClientService;
@@ -41,8 +39,10 @@ import openbackup.data.protection.access.provider.sdk.backup.BackupObject;
 import openbackup.data.protection.access.provider.sdk.backup.ProtectedObject;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupInterceptorProvider;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
+import openbackup.data.protection.access.provider.sdk.backup.v2.StorageRepositoryProvider;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
+import openbackup.data.protection.access.provider.sdk.enums.AgentMountTypeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RepositoryProtocolEnum;
 import openbackup.data.protection.access.provider.sdk.resource.NextBackupParams;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
@@ -136,7 +136,7 @@ public class BackupServiceImplTest {
      * 检查点：无异常抛出
      */
     @Test
-    public void smoke_test() throws IllegalAccessException {
+    public void smoke_test() throws Exception {
         BackupServiceImpl backupService = mockBackupService(true);
         Whitebox.setInternalState(backupService, "storageUnitService", storageUnitService);
         Whitebox.setInternalState(backupService, "memberClusterService", memberClusterService);
@@ -167,7 +167,7 @@ public class BackupServiceImplTest {
         assertEquals(task.getAdvanceParams().get("file_scan_channel_number"), "20");
         assertEquals(task.getAdvanceParams().get("read_and_send_channel_number"), "1");
         assertNull(task.getAdvanceParams().get("before_protect_script"));
-        assertEquals(task.getRepositories().size(), 1);
+        assertEquals(1, task.getRepositories().size());
         assertEquals(task.getBackupType(), "fullBackup");
         assertFalse(task.isParameterChanged("encryption"));
         assertTrue(task.getDataLayout().isSrcDeduption());
@@ -230,7 +230,8 @@ public class BackupServiceImplTest {
         objectNode.put(BackupConstant.BACKUP_EXT_PARAM_STORAGE_INFO_KEY, temp);
         task = backupService.backup(backupObject);
         assertEquals(task.getRepositories().size(), 1);
-
+        // isDstCompression默认开启。X系列该字段默认为true，且不能修改为false，否则底座上文件系统无法开启压缩功能。
+        assertTrue(task.getDataLayout().isDstCompression());
     }
     /**
      * 用例场景：正常下发备份命令时，没有可用的agent
@@ -238,7 +239,7 @@ public class BackupServiceImplTest {
      * 检查点：异常抛出
      */
     @Test
-    public void should_exception_if_no_agents() throws IllegalAccessException {
+    public void should_exception_if_no_agents() throws Exception {
         BackupServiceImpl backupService = mockBackupService(false);
         Whitebox.setInternalState(backupService, "storageUnitService", storageUnitService);
         Whitebox.setInternalState(backupService, "memberClusterService", memberClusterService);
@@ -267,7 +268,7 @@ public class BackupServiceImplTest {
      * 检查点：数据布局使用默认的
      */
     @Test
-    public void should_return_default_value_if_data_layout_is_not_set() throws IllegalAccessException {
+    public void should_return_default_value_if_data_layout_is_not_set() throws Exception {
         BackupServiceImpl backupService = mockBackupService(true);
         Whitebox.setInternalState(backupService, "storageUnitService", storageUnitService);
         Whitebox.setInternalState(backupService, "memberClusterService", memberClusterService);
@@ -303,7 +304,7 @@ public class BackupServiceImplTest {
      * 检查点：Qos为Null
      */
     @Test
-    public void should_return_null_value_if_qos_is_not_set() throws IllegalAccessException {
+    public void should_return_null_value_if_qos_is_not_set() throws Exception {
         BackupServiceImpl backupService = mockBackupService(true);
         Whitebox.setInternalState(backupService, "storageUnitService", storageUnitService);
         Whitebox.setInternalState(backupService, "memberClusterService", memberClusterService);
@@ -348,7 +349,7 @@ public class BackupServiceImplTest {
      * 检查点：备份任务中的存储类型为S3
      */
     @Test
-    public void should_return_s3_repository_if_storage_is_set_s3() throws IllegalAccessException {
+    public void should_return_s3_repository_if_storage_is_set_s3() throws Exception {
         BackupServiceImpl backupService = mockBackupService(true);
         Whitebox.setInternalState(backupService, "storageUnitService", storageUnitService);
         Whitebox.setInternalState(backupService, "memberClusterService", memberClusterService);
@@ -382,7 +383,7 @@ public class BackupServiceImplTest {
      * 检查点：检查备份变化的备份参数
      */
     @Test
-    public void should_return_full_backup_type_if_datalayout_changed() throws IllegalAccessException {
+    public void should_return_full_backup_type_if_datalayout_changed() throws Exception {
         BackupServiceImpl backupService = mockBackupService(true);
         Whitebox.setInternalState(backupService, "storageUnitService", storageUnitService);
         Whitebox.setInternalState(backupService, "memberClusterService", memberClusterService);
@@ -468,13 +469,13 @@ public class BackupServiceImplTest {
      * @throws IllegalAccessException 抛出异常
      */
     @Test
-    public void should_return_false_if_agents_not_config_sanClient() throws IllegalAccessException {
+    public void should_return_false_if_agents_not_config_sanClient() throws Exception {
         BackupServiceImpl backupService = mockBackupService(true);
         Whitebox.setInternalState(backupService, "storageUnitService", storageUnitService);
         Whitebox.setInternalState(backupService, "memberClusterService", memberClusterService);
         SanClientService sanClientService = PowerMockito.mock(SanClientService.class);
         PowerMockito.when(sanClientService.getAgentsNotConfiguredSanclient(any()))
-                .thenReturn(new String[] {"9527"});
+            .thenReturn(new String[] {"9527"});
         backupService.setSanClientService(sanClientService);
         BackupObject backupObject = mockBackupObject();
         Policy policy = mockPolicy();
@@ -506,13 +507,13 @@ public class BackupServiceImplTest {
      * @throws IllegalAccessException 抛出异常
      */
     @Test(expected = LegoCheckedException.class)
-    public void should_throw_LegoCheckedException_if_agents_no_sanClient() throws IllegalAccessException, JsonProcessingException {
+    public void should_throw_LegoCheckedException_if_agents_no_sanClient() throws Exception {
         BackupServiceImpl backupService = mockBackupService(true);
         Whitebox.setInternalState(backupService, "storageUnitService", storageUnitService);
         Whitebox.setInternalState(backupService, "memberClusterService", memberClusterService);
         SanClientService sanClientService = PowerMockito.mock(SanClientService.class);
         PowerMockito.when(sanClientService.getAgentsNotConfiguredSanclient(any()))
-                .thenReturn(new String[]{"9527", "9527a"});
+            .thenReturn(new String[]{"9527", "9527a"});
         backupService.setSanClientService(sanClientService);
         BackupObject backupObject = mockBackupObject();
         Policy policy = mockPolicy();
@@ -536,11 +537,12 @@ public class BackupServiceImplTest {
         BackupTask task = backupService.backup(backupObject);
     }
 
-    private BackupServiceImpl mockBackupService(Boolean isAgents) throws IllegalAccessException {
+    private BackupServiceImpl mockBackupService(Boolean isAgents) throws Exception {
         ProviderManager manager = PowerMockito.mock(ProviderManager.class);
         ResourceService resourceService = PowerMockito.mock(ResourceService.class);
         QosCommonRestApi qosCommonRestApi = PowerMockito.mock(QosCommonRestApi.class);
         ProtectAgentSelector selector = PowerMockito.mock(ProtectAgentSelector.class);
+        StorageRepositoryProvider storageRepositoryProvider = PowerMockito.mock(StorageRepositoryProvider.class);
         RedissonClient redissonClient = PowerMockito.mock(RedissonClient.class);
         MemberClusterService memberClusterService = PowerMockito.mock(MemberClusterService.class);
         AvailableAgentManagementDomainService domainService = PowerMockito.mock(AvailableAgentManagementDomainService.class);
@@ -587,6 +589,8 @@ public class BackupServiceImplTest {
         BackupServiceImpl backupService = new BackupServiceImpl(manager, resourceService, protectedEnvironmentService, qosCommonRestApi, unifiedRestApi);
         backupService.setCommonAgentService(commonAgentService);
 
+        PowerMockito.when(commonAgentService.getJobAgentMountTypeByJob(any())).thenReturn(AgentMountTypeEnum.MOUNT);
+
         MemberModifier.field(BackupServiceImpl.class, "taskRepositoryManager")
             .set(backupService, taskRepositoryManager);
         MemberModifier.field(BackupServiceImpl.class, "systemSwitchInternalService")
@@ -596,7 +600,18 @@ public class BackupServiceImplTest {
         backupService.setCopyRestApi(copyRestApi);
         backupService.setDeployTypeService(deployTypeService);
         backupService.setAvailableAgentManagementDomainService(domainService);
-        PowerMockito.when(manager.findProvider(ArgumentMatchers.eq(ProtectAgentSelector.class), any(), any())).thenReturn(selector);
+        PowerMockito.when(manager.findProvider(ArgumentMatchers.eq(ProtectAgentSelector.class), any(), any()))
+            .thenReturn(selector);
+
+        PowerMockito.when(manager.findProviderOrDefault(ArgumentMatchers.eq(StorageRepositoryProvider.class), any(),
+                any()))
+            .thenReturn(storageRepositoryProvider);
+        List<StorageRepository> storageRepositoryList = new ArrayList<>();
+        StorageRepository storageRepository = new StorageRepository();
+        storageRepository.setProtocol(RepositoryProtocolEnum.S3.getProtocol());
+        storageRepositoryList.add(storageRepository);
+        PowerMockito.when(storageRepositoryProvider.buildBackupDataRepository(any())).thenReturn(storageRepositoryList);
+
         JobBo jobBo = new JobBo();
         jobBo.setUserId(UUID.randomUUID().toString());
         JobService jobService = Mockito.mock(JobService.class);

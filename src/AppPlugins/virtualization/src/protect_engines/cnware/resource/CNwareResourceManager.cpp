@@ -31,7 +31,8 @@ std::map<std::string, std::string> urlMap = {
     {"CNwareVm",       "domains"},
     {"CNwareDisk",     "domainDiskInfo"},
     {"StoragePool",     ""},
-    {"PortGroup",     ""}
+    {"PortGroup",     ""},
+    {"Tag",     ""}
 };
 std::map<int, std::string> osTypeMap = {
     {0, "other"},
@@ -80,6 +81,8 @@ int32_t CNwareResourceManager::GetTargetResource(ResourceResultByPage& page, CNw
         return GetStoragePool(page, req);
     } else if (subType == "PortGroup") {
         return GetPortGroup(page, req);
+    } else if (subType == "Tag") {
+        return GetVMTags(page, req);
     }
     if (SetResourceUrl(req, subType) != SUCCESS) {
         ERRLOG("SetResourceUrl failed! Ip: %s", req.GetEnvAddress().c_str());
@@ -136,7 +139,7 @@ int32_t CNwareResourceManager::GetStoragePool(ResourceResultByPage &page, CNware
     do {
         start++;
         std::shared_ptr<StoragePoolResponse> response = m_cnwareClient->GetStoragePoolInfo(
-            req, m_vmId, "", start, pageNum);
+            req, m_vmId, "", NameType::PoolName, start);
         if (response == nullptr) {
             ERRLOG("GetStoragePoolInfo failed.");
             return FAILED;
@@ -202,6 +205,42 @@ int32_t CNwareResourceManager::GetPortGroup(ResourceResultByPage &page, CNwareRe
     return SUCCESS;
 }
 
+int32_t CNwareResourceManager::GetVMTags(ResourceResultByPage &page, CNwareRequest &req)
+{
+    DBGLOG("Enter.");
+    if (m_cnwareClient == nullptr) {
+        ERRLOG("Get VMTags m_cnwareClient nullptr!");
+        return FAILED;
+    }
+    std::shared_ptr<AssociateResponse> response = m_cnwareClient->PostVMTagsInfo(req, m_condition);
+    if (response == nullptr) {
+        ERRLOG("Get VMTags Info failed.");
+        return FAILED;
+    }
+    TagsInfo tagsInfo = response->GetTagsInfo();
+    page.__set_pageNo(tagsInfo.m_pages);
+    page.__set_total(tagsInfo.m_total);
+    page.__set_pageSize(tagsInfo.m_size);
+    std::vector<ApplicationResource> resourceResults;
+    for (const ResourceRecord &record : tagsInfo.m_records) {
+        ApplicationResource result;
+        result.__set_type("CNware");
+        result.__set_id(record.m_resourceId);
+        result.__set_name(record.m_resourceName);
+        result.__set_parentId(m_appEnv.id);
+        result.__set_parentName(m_appEnv.name);
+        Json::Value tagsExtendInfo;
+        Json::Value tagsJson;
+        Module::JsonHelper::TypeToJsonValue(record.m_tags, tagsJson);
+        Json::FastWriter jsonWriter;
+        tagsExtendInfo["tags"] = jsonWriter.write(tagsJson);
+        result.__set_extendInfo(jsonWriter.write(tagsExtendInfo));
+        resourceResults.emplace_back(result);
+    }
+    page.__set_items(resourceResults);
+    return SUCCESS;
+}
+
 bool CNwareResourceManager::GetResourceType(std::string &subType)
 {
     Json::Value conditionJson;
@@ -236,6 +275,7 @@ int32_t CNwareResourceManager::SetResourceUrl(CNwareRequest &req, const std::str
         req.url = req.url + "api/compute/" + urlMap[subType];
     }
     if (subType == "CNwareVm") {
+        req.url = m_vmId.empty() ? req.url : req.url + "/" + m_vmId;
         Json::Value extendJson;
         if (!Module::JsonHelper::JsonStringToJsonValue(m_appEnv.extendInfo, extendJson)) {
             ERRLOG("SetResourceUrl JsonStringToJsonValue error, str: %s", m_appEnv.extendInfo.c_str());
@@ -292,7 +332,7 @@ void CNwareResourceManager::ParseJsonValue(const Json::Value &jsonValue, const J
                 resourceResults.emplace_back(result);
             }
         }
-    } else if (jsonValue.isMember("diskDevices") && jsonValue["diskDevices"].isArray()) {
+    } else if (subType == "CNwareDisk" && jsonValue.isMember("diskDevices") && jsonValue["diskDevices"].isArray()) {
         for (auto &items : jsonValue["diskDevices"]) {
             if (!items.isObject()) {
                 ERRLOG("Get data item error, item str: %s",
@@ -306,6 +346,11 @@ void CNwareResourceManager::ParseJsonValue(const Json::Value &jsonValue, const J
                 resourceResults.emplace_back(result);
             }
         }
+    } else if (subType == "CNwareVm" && !m_vmId.empty()) {
+        ApplicationResource result;
+        SetUuidVm(result, jsonValue);
+        resourceResults.emplace_back(result);
+        return;
     }
 }
 
@@ -459,6 +504,41 @@ int32_t CNwareResourceManager::SetVm(ApplicationResource &result, const Json::Va
     return FAILED;
 }
 
+int32_t CNwareResourceManager::SetUuidVm(ApplicationResource &result, const Json::Value &items)
+{
+    result.__set_subType("CNwareVm");
+    if (items.isMember("name") && items.isMember("id")) {
+        result.__set_name(items["name"].asString());
+        result.__set_id(items["id"].asString());
+    }
+    if (items.isMember("status") && items.isMember("remark") && items.isMember("osType")
+        && items.isMember("osVersion") && items.isMember("bootType")) {
+        Json::Value hostExtendInfo;
+        Json::Value hostDetails;
+        hostDetails["status"] = items["status"].asString();
+        hostDetails["remark"] = items["remark"].asString();
+        hostDetails["osVersion"] = items["osVersion"].asString();
+        hostDetails["osType"] = items["osType"].asInt();
+        hostDetails["bootType"] = std::to_string(items["bootType"].asInt());
+        Json::FastWriter jsonWriter;
+        std::string detail = jsonWriter.write(hostDetails);
+        Utils::RemoveSpecialSymbols(detail);
+        hostExtendInfo["os_type"] = "other";
+        hostExtendInfo["remark"] = items["remark"].asString();
+        hostExtendInfo["status"] = items["status"].asString();
+        if (osTypeMap.count(items["osType"].asInt()) != 0) {
+            hostExtendInfo["os_type"] = osTypeMap[items["osType"].asInt()];
+        }
+        hostExtendInfo["details"] = detail;
+        result.__set_extendInfo(jsonWriter.write(hostExtendInfo));
+    }
+    if (items.isMember("hostName") && items.isMember("hostId")) {
+        result.__set_parentId(items["hostId"].asString());
+        result.__set_parentName(items["hostName"].asString());
+        return SUCCESS;
+    }
+    return SUCCESS;
+}
 int32_t CNwareResourceManager::SetDisk(ApplicationResource &result, const Json::Value &items)
 {
     result.__set_subType("CNwareDisk");

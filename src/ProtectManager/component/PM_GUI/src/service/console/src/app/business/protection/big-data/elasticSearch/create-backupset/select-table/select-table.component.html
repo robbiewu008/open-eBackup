@@ -14,10 +14,10 @@
 <div class="aui-text-desc desc-mg">{{'protection_select_es_index_tip_label' | i18n}}</div>
 <lv-group lvGutter='4px'>
     <div class="hive-all-table">
-        <div class="table-header">{{'protection_selecte_index_label' | i18n}}</div>
+        <div class="custom-table-header">{{'protection_selecte_index_label' | i18n}}</div>
         <lv-datatable [lvData]="allTableData" #lvAllTable [lvScroll]="{y: '580px'}" [lvPaginator]='pageA' lvSize="small"
             lvSelectionMode='multiple' [lvSelection]='selectionData' lvCompareWith="uuid"
-            (lvSelectionChange)="selectionChange()">
+            (lvSelectionChange)="selectionChange()" lvAsync>
             <thead>
                 <tr>
                     <th lvShowCheckbox width='64px' [lvRowsData]='lvAllTable.renderData | selectable'>
@@ -30,13 +30,13 @@
                     <td width='64px' lvShowCheckbox [lvRowData]='item' [lvDisabled]="item.disabled">
                     </td>
                     <td>
-                        <span>{{item.name}}</span>
+                        <span>{{item.name}}{{item.extendInfo?.type === 'DATA_STREAM'?dataFlowLabel:''}}</span>
                     </td>
                 </tr>
             </tbody>
         </lv-datatable>
         <ng-container *ngIf="totalTable > 0">
-            <lv-paginator #pageA lvMode='simple' lvShowPageSizeOptions="false" class="table-paginator"
+            <lv-paginator #pageA lvMode='simple' lvShowPageSizeOptions="false"
                 [lvPageSize]="pageSize" [lvTotal]="totalTable" (lvPageChange)="pageChange($event)">
             </lv-paginator>
         </ng-container>
@@ -66,7 +66,7 @@
                 <tr *ngFor="let item of lvSelectTable.renderData">
                     <td>
                         <lv-group class="th-group">
-                            <span>{{item.name}}</span>
+                            <span>{{item.name}}{{item.extendInfo?.type === 'DATA_STREAM'?dataFlowLabel:''}}</span>
                             <i lv-icon="lv-icon-close" lvTooltipTheme="light" lvColorState='true'
                                 (click)="removeSingle(item)"></i>
                         </lv-group>
@@ -75,7 +75,7 @@
             </tbody>
         </lv-datatable>
         <ng-container *ngIf="selectedTableData.length">
-            <lv-paginator #pageS lvMode='simple' lvShowPageSizeOptions="false" class="table-paginator" lvPageSize="100">
+            <lv-paginator #pageS lvMode='simple' lvShowPageSizeOptions="false" lvPageSize="100">
             </lv-paginator>
         </ng-container>
     </div>

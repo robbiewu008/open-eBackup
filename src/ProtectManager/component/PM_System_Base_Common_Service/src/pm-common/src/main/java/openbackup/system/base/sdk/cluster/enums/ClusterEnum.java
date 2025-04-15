@@ -12,6 +12,8 @@
 */
 package openbackup.system.base.sdk.cluster.enums;
 
+import lombok.Getter;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -698,23 +700,19 @@ public class ClusterEnum {
     }
 
     /**
-     * 故障切换 超时时间 时间单位
+     * 存储机器状态枚举
      */
-    public enum TimeoutUnitEnum {
-        MINUTE(1, "Minute"),
-        HOUR(2, "Hour");
+    @Getter
+    public enum StorageStatusEnum {
+        /**
+         * 正常运行的机器状态
+         */
+        STATUS_RUNNING("10");
 
-        private final Integer type;
+        private final String status;
 
-        private final String name;
-
-        TimeoutUnitEnum(Integer type, String name) {
-            this.type = type;
-            this.name = name;
-        }
-
-        public Integer getType() {
-            return this.type;
+        StorageStatusEnum(String status) {
+            this.status = status;
         }
     }
 }

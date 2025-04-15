@@ -102,9 +102,15 @@
           </lv-form-item>
           <lv-form-item>
             <lv-form-label lvRequired>
-              {{'system_adfs_provider_url_label' | i18n}}
-            <i lv-icon="aui-icon-help" lv-tooltip="{{'system_adfs_provider_url_tip_label' | i18n}}"
-            lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint" lvColorState='true'></i>
+              {{ 'system_adfs_provider_url_label' | i18n }}
+              <i
+                lv-icon="aui-icon-help"
+                lv-tooltip="{{ 'system_adfs_provider_url_tip_label' | i18n }}"
+                lvTooltipTheme="light"
+                lvTooltipPosition="right"
+                class="configform-constraint"
+                lvColorState="true"
+              ></i>
             </lv-form-label>
             <lv-form-control [lvErrorTip]="proUrlErrorTip">
               <input
@@ -167,7 +173,7 @@
             }}</lv-form-label>
             <lv-form-control>
               <lv-upload
-                lvAccept=".pem"
+                lvAccept=".pem,.cer"
                 lvShowUpload="false"
                 [lvFilters]="filters"
                 (lvFilesChange)="filesChange($event)"
@@ -183,10 +189,9 @@
     </ng-container>
     <ng-template #closeTemplate>
       <div class="closeStatus">
-        <i lv-icon="aui-icon-no-data"></i>
-        <div class="no-data-label">
-          {{ 'system_adfs_close_tip_label' | i18n }}
-        </div>
+        <lv-empty
+          lvDescription="{{ 'system_adfs_close_tip_label' | i18n }}"
+        ></lv-empty>
       </div>
     </ng-template>
   </div>

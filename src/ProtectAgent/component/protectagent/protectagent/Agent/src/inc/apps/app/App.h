@@ -1,10 +1,23 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef __AGENT_APP_H__
 #define __AGENT_APP_H__
 
 #include <vector>
 #include <list>
 #include "common/Types.h"
-#include "apps/oracle/Oracle.h"
+#include "common/CMpThread.h"
+#include "common/Defines.h"
 
 // 如果是windows上的vss操作，失败响应中的"dbName"字段的值固定填写"VSS"
 static const mp_string DBNAME_FOR_VSS_IN_ERR_RESPONSE = "VSS";
@@ -45,7 +58,6 @@ private:
 #ifdef WIN32
     VSSRequester* m_pVssRequester;
 #endif
-    Oracle m_oracle;
     mp_int32 m_freezeState;
 
     thread_lock_t m_freezeStateLock;

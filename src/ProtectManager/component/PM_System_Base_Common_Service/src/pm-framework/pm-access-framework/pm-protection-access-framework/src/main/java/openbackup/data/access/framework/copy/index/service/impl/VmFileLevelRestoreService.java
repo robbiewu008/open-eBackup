@@ -12,9 +12,11 @@
 */
 package openbackup.data.access.framework.copy.index.service.impl;
 
+import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedResourceEvent;
 import openbackup.access.framework.resource.service.ProtectedResourceMonitorService;
-import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
 import openbackup.data.access.framework.copy.index.service.IvmFileLevelRestoreService;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
@@ -42,8 +44,6 @@ import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 import openbackup.system.base.sdk.kmc.EncryptorRestApi;
 import openbackup.system.base.sdk.kmc.model.PlaintextVo;
 import openbackup.system.base.sdk.storage.StorageRestClient;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.logging.log4j.util.Strings;
 import org.redisson.api.RMap;
@@ -149,6 +149,7 @@ public class VmFileLevelRestoreService implements IvmFileLevelRestoreService {
         request.setSnapType(copy.getGeneratedBy());
         request.setSnapMetadata(snapMetaData);
         request.setResourceSubType(copy.getResourceSubType());
+        request.setIndexed(copy.getIndexed());
         // 下发DEE参数，适配软硬解耦
         Optional<StorageUnitVo> storageUnitVoOptional = storageUnitService.getStorageUnitById(copy.getStorageUnitId());
         if (storageUnitVoOptional.isPresent()) {
@@ -183,6 +184,8 @@ public class VmFileLevelRestoreService implements IvmFileLevelRestoreService {
         destInfo.setUsername(parameterMap.get("USER_NAME"));
         destInfo.setVmIp(parameterMap.get("VM_IP"));
         destInfo.setPassword(parameterMap.get("PASSWORD"));
+        destInfo.setPort(parameterMap.get("PORT"));
+        destInfo.setTargetPath(parameterMap.get("TARGET_PATH"));
         return destInfo;
     }
 

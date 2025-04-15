@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.network.Ipv6AddressUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -45,4 +44,3 @@ public class UriUtil {
         throw new LegoCheckedException(CommonErrorCode.NETWORK_CONNECTION_TIMEOUT, "Get uri failed");
     }
 }
-

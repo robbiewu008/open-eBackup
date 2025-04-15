@@ -1,20 +1,21 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MessageService } from '@iux/live';
 import {
   BaseUtilService,
+  ClientManagerApiService,
   CommonConsts,
   DataMap,
   EnvironmentsService,
@@ -23,6 +24,7 @@ import {
   ResourceType
 } from 'app/shared';
 import { ProtectFilterComponent } from 'app/shared/components/protect-filter/protect-filter.component';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   assign,
   cloneDeep,
@@ -58,9 +60,17 @@ export class AdvancedComponent implements OnInit {
   resourceType: string;
   concurrentErrorTip = {
     ...this.baseUtilService.rangeErrorTip,
-    invalidRang: this.i18n.get('common_valid_rang_label', [1, 10])
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 99999999])
   };
   extParams;
+  isSingleHostClusterProtect = false;
+  belongTag = [];
+
+  isGroupRule = false;
+
+  slaOverwriteHelp: string;
+  slaApplyAllHelp: string;
+
   @ViewChild(ProtectFilterComponent, { static: false })
   ProtectFilterComponent: ProtectFilterComponent;
   constructor(
@@ -68,7 +78,9 @@ export class AdvancedComponent implements OnInit {
     public baseUtilService: BaseUtilService,
     public environmentsApiService: EnvironmentsService,
     public message: MessageService,
-    public i18n: I18NService
+    public i18n: I18NService,
+    private appUtilsService: AppUtilsService,
+    private clientManagerApiService: ClientManagerApiService
   ) {}
 
   ngOnInit() {
@@ -76,8 +88,22 @@ export class AdvancedComponent implements OnInit {
     this.showProxyHost && this.getProxyHost();
   }
 
-  initData(data: any, type: string) {
+  initData(data: any, type: any) {
     this.resourceData = isArray(data) ? data[0] : data;
+    this.isSingleHostClusterProtect =
+      (!isArray(data) || (isArray(data) && data.length === 1)) &&
+      includes(
+        [ProtectResourceCategory.esix, ProtectResourceCategory.cluster],
+        type
+      );
+    this.belongTag = [
+      {
+        label:
+          type === ProtectResourceCategory.cluster
+            ? this.i18n.get('protection_belong_cluster_label')
+            : this.i18n.get('protection_belong_host_label')
+      }
+    ];
     this.virtualType =
       type === DataMap.Resource_Type.vmGroup.value
         ? ProtectResourceCategory.vmware
@@ -91,8 +117,7 @@ export class AdvancedComponent implements OnInit {
       ProtectResourceCategory.vmwares
     ].includes(this.virtualType);
     if (
-      (this.resourceData['resType'] === ResourceType.VM &&
-        this.isVirtualMachine) ||
+      this.resourceData['resType'] === ResourceType.VM ||
       type === DataMap.Resource_Type.vmGroup.value
     ) {
       this.showProxyHost = true;
@@ -103,6 +128,26 @@ export class AdvancedComponent implements OnInit {
         ? 'protection_cluster_label'
         : 'common_host_label'
     );
+
+    this.isGroupRule =
+      type === DataMap.Resource_Type.vmGroup.value &&
+      this.resourceData.groupType === DataMap.vmGroupType.rule.value;
+
+    if (this.isGroupRule) {
+      this.slaOverwriteHelp = this.i18n.get(
+        'protection_overwrite_policy_group_help_label'
+      );
+    } else if (type === ProtectResourceCategory.cluster) {
+      this.slaOverwriteHelp = this.i18n.get(
+        'protection_overwrite_policy_cluster_help_label'
+      );
+      this.slaApplyAllHelp = this.i18n.get('protection_cluster_sla_help_label');
+    } else {
+      this.slaOverwriteHelp = this.i18n.get(
+        'protection_overwrite_policy_host_help_label'
+      );
+      this.slaApplyAllHelp = this.i18n.get('protection_host_sla_help_label');
+    }
   }
 
   initForm() {
@@ -123,6 +168,11 @@ export class AdvancedComponent implements OnInit {
       if (!isEmpty(ext.resource_filters)) {
         defer(() =>
           this.ProtectFilterComponent.setFilter(ext.resource_filters)
+        );
+      }
+      if (!isEmpty(ext.resource_tag_filters)) {
+        defer(() =>
+          this.ProtectFilterComponent.setTagFilter(ext.resource_tag_filters)
         );
       }
     }
@@ -148,7 +198,7 @@ export class AdvancedComponent implements OnInit {
         {
           validators: [
             this.baseUtilService.VALID.integer(),
-            this.baseUtilService.VALID.rangeValue(1, 10)
+            this.baseUtilService.VALID.rangeValue(1, 99999999)
           ]
         }
       ),
@@ -162,7 +212,82 @@ export class AdvancedComponent implements OnInit {
     });
   }
 
+  getVmwareAgents() {
+    const conditions = {
+      type: ResourceType.HOST,
+      subType: [DataMap.Resource_Type.VMBackupAgent.value]
+    };
+    if (!this.resourceData.sla_id) {
+      assign(conditions, {
+        linkStatus: [DataMap.resource_LinkStatus_Special.normal.value]
+      });
+    }
+    const extParams = {
+      uuid: this.resourceData.uuid,
+      conditions: JSON.stringify(conditions)
+    };
+    this.appUtilsService.getResourceByRecursion(
+      extParams,
+      params =>
+        this.clientManagerApiService.queryVMwareAgentListInfoUsingGET(params),
+      resource => {
+        // 修改过滤其它的离线主机
+        const recordsTemp = reject(
+          resource,
+          item =>
+            item.linkStatus !==
+              DataMap.resource_LinkStatus_Special.normal.value &&
+            this.resourceData.ext_parameters?.proxy_id !== item.uuid &&
+            !includes(
+              map(this.resourceData.ext_parameters?.host_list, 'proxy_id'),
+              item.uuid
+            )
+        );
+        const hostArr = [];
+        each(recordsTemp, item => {
+          hostArr.push({
+            key: item.uuid,
+            value: item.uuid,
+            label: !isEmpty(item.endpoint)
+              ? `${item.name}(${item.endpoint})`
+              : item.name,
+            link_status: Number(item.linkStatus),
+            isLeaf: true,
+            extendInfo: item.extendInfo
+          });
+        });
+        hostArr.sort(a => {
+          return a.extendInfo?.is_belongs_to_host_or_cluster === 'true'
+            ? -1
+            : 1;
+        });
+        this.proxyHost = hostArr;
+        this.originHost = recordsTemp;
+        if (this.resourceData?.ext_parameters?.host_list) {
+          this.formGroup
+            .get('proxyHost')
+            .setValue(
+              map(this.resourceData.ext_parameters.host_list, 'proxy_id')
+            );
+        }
+        // 兼容升级场景
+        if (
+          this.resourceData?.ext_parameters?.proxy_id &&
+          isEmpty(this.resourceData?.ext_parameters?.host_list)
+        ) {
+          this.formGroup
+            .get('proxyHost')
+            .setValue([this.resourceData.ext_parameters?.proxy_id]);
+        }
+      }
+    );
+  }
+
   getProxyHost(recordsTemp?, startPage?) {
+    if (this.isSingleHostClusterProtect) {
+      this.getVmwareAgents();
+      return;
+    }
     const conditions = {
       type: ResourceType.HOST,
       sub_type: DataMap.Resource_Type.VMBackupAgent.value
@@ -244,7 +369,7 @@ export class AdvancedComponent implements OnInit {
       pre_script: this.formGroup.value.preScript,
       post_script: this.formGroup.value.postScript
     };
-    if (this.isVirtualMachine) {
+    if (this.showProxyHost) {
       assign(ext, {
         host_list: map(this.formGroup.value.proxyHost, item => {
           const host = find(this.originHost, { uuid: item });
@@ -256,26 +381,29 @@ export class AdvancedComponent implements OnInit {
           };
         })
       });
-      each(
-        [
-          'backup_res_auto_index',
-          'archive_res_auto_index',
-          'enable_security_archive'
-        ],
-        key => {
-          if (this.formGroup.get(key)) {
-            assign(ext, {
-              [key]: this.formGroup.get(key).value
-            });
-          }
-        }
-      );
     }
+
+    each(
+      [
+        'backup_res_auto_index',
+        'archive_res_auto_index',
+        'enable_security_archive'
+      ],
+      key => {
+        if (this.formGroup.get(key)) {
+          assign(ext, {
+            [key]: this.formGroup.get(key).value
+          });
+        }
+      }
+    );
 
     if (!this.isVirtualMachine) {
       const vmFilters = this.ProtectFilterComponent.getAllFilters();
+      const vmTagFilters = this.ProtectFilterComponent.getAllTagFilters();
       assign(ext, {
         resource_filters: !isEmpty(vmFilters) ? vmFilters : null,
+        resource_tag_filters: !isEmpty(vmTagFilters) ? vmTagFilters : null,
         overwrite: this.formGroup.value.slaOverwrite,
         binding_policy: this.formGroup.value.slaPolicy,
         concurrent_requests: this.formGroup.value.concurrent
@@ -290,6 +418,12 @@ export class AdvancedComponent implements OnInit {
         concurrent_requests: this.formGroup.value.concurrent
           ? `${this.formGroup.value.concurrent}`
           : '0'
+      });
+    }
+
+    if (this.isGroupRule) {
+      assign(ext, {
+        overwrite: this.formGroup.value.slaOverwrite
       });
     }
     return {

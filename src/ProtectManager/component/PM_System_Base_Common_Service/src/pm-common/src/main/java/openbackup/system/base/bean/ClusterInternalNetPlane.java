@@ -12,16 +12,15 @@
 */
 package openbackup.system.base.bean;
 
-import openbackup.system.base.sdk.cluster.netplane.BondPort;
-import openbackup.system.base.sdk.cluster.netplane.PortRoute;
-import openbackup.system.base.sdk.cluster.netplane.VlanPortDto;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import openbackup.system.base.sdk.cluster.netplane.BondPort;
+import openbackup.system.base.sdk.cluster.netplane.PortRoute;
+import openbackup.system.base.sdk.cluster.netplane.VlanPortDto;
 
 import java.util.List;
 

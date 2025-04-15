@@ -30,8 +30,17 @@ from typing import List
 
 import psutil
 
-from common.const import ParamConstant, RpcParamKey, CMDResult, PathConstant, RepositoryDataTypeEnum
+from common.const import ParamConstant, RpcParamKey, CMDResult, PathConstant, RepositoryDataTypeEnum, DBLogLevel, \
+    SubJobStatusEnum, Progress
+from common.common_models import LogDetail, SubJobDetails, ProgressStatus
 from common.schemas.thrift_base_data_type import Copy
+from common.util.library_utils import add_library
+
+if platform.system().lower() == "windows":
+    from common.logger_wins import Logger
+else:
+    from common.logger import Logger
+log = Logger().get_logger()
 
 
 def retry_when_exception(exceptions=Exception, retry_times=3, delay=1, logger=None):
@@ -68,6 +77,14 @@ def read_result_file(file_name, encoding='UTF-8'):
         return result
 
 
+def read_platform_result_file(file_name):
+    if platform.system().lower() == "windows":
+        encoding = locale.getdefaultlocale()[1]
+        return read_result_file(file_name, encoding)
+    else:
+        return read_result_file(file_name)
+
+
 def read_tmp_json_file(file_path):
     """
     读取临时json文件
@@ -80,9 +97,10 @@ def read_tmp_json_file(file_path):
         return json.load(file_content)
 
 
-def execute_cmd(cmd, encoding=None, timeout=None, cmd_array_flag=False):
+def execute_cmd(cmd, encoding=None, timeout=None, cmd_array_flag=False, library_path=None):
     """
     执行不包含管道符的命令
+    :param library_path: 库路径
     :param cmd: 命令
     :param encoding: 使用自定义编码
     :param timeout: 执行命令超时
@@ -93,8 +111,13 @@ def execute_cmd(cmd, encoding=None, timeout=None, cmd_array_flag=False):
         encoding = locale.getdefaultlocale()[1]
     if not cmd_array_flag:
         cmd = shlex.split(cmd)
-    process = subprocess.Popen(cmd, stdin=None, stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE, encoding=encoding, errors='ignore')
+    if library_path:
+        add_library(library_path)
+        process = subprocess.Popen(cmd, stdin=None, stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE, encoding=encoding, errors='ignore', env=os.environ.copy())
+    else:
+        process = subprocess.Popen(cmd, stdin=None, stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE, encoding=encoding, errors='ignore')
     try:
         std_out, std_err = process.communicate(timeout=timeout)
     except TimeoutError as err:
@@ -327,6 +350,7 @@ def write_content_to_file(file_path, content):
     modes = stat.S_IWUSR | stat.S_IRUSR | stat.S_IXUSR
     with os.fdopen(os.open(file_path, flags, modes), 'w') as f:
         f.write(content)
+        f.flush()
 
 
 def output_execution_result_ex(file_path, payload):
@@ -384,6 +408,28 @@ def clean_dir(dir_path):
     for path in os.listdir(dir_path):
         new_path = os.path.join(dir_path, path)
         if os.path.isfile(new_path):
+            os.remove(new_path)
+        elif os.path.isdir(new_path):
+            shutil.rmtree(new_path)
+
+
+def clean_dir_not_walk_link(dir_path):
+    """
+    删除目标文件夹下的文件，如果目标文件夹是软链接，不处理；对于目标文件夹下的软链接，只删软链接，不删除链接目标目录
+    :param dir_path:
+    """
+    if os.path.islink(dir_path):
+        return
+    if platform.system().lower() == "windows":
+        real_dir_path = os.path.realpath(dir_path)
+        system_drive_up = os.getenv("SystemDrive").upper()
+        system_drive_down = system_drive_up.lower()
+        if real_dir_path.startswith(system_drive_up) or \
+                real_dir_path.startswith(system_drive_down):
+            return
+    for path in os.listdir(dir_path):
+        new_path = os.path.join(dir_path, path)
+        if os.path.isfile(new_path) or os.path.islink(new_path):
             os.remove(new_path)
         elif os.path.isdir(new_path):
             shutil.rmtree(new_path)
@@ -785,3 +831,51 @@ def ismount_with_timeout(path, timeout=10):
         signal.alarm(0)
 
     return result
+
+
+def get_progress_status(job_id, job_name, cache_area):
+    if not cache_area:
+        log.info(f"Get cache area fail, job_id: {job_id}, job_name: {job_name}.")
+        return {}
+    file_path = os.path.join(cache_area, f'{job_name}_status_{job_id}.json')
+    if not os.path.exists(file_path):
+        return {}
+    with open(file_path, "r") as f_object:
+        json_dict = json.loads(f_object.read())
+    return json_dict
+
+
+@exter_attack
+def get_subjob_via_progress_file(job_id, sub_job_id, job_name, cache_area):
+    """
+    读取任务进度文件，获取子任务详情
+    """
+    log_detail = None
+    progress_sts_dict = get_progress_status(job_id, job_name, cache_area)
+    log.info(f"Get progress status success, {progress_sts_dict}, job_id: {job_id}, job_name: {job_name}.")
+    task_status = progress_sts_dict.get("taskStatus", SubJobStatusEnum.RUNNING.value)
+    progress = progress_sts_dict.get("progress", Progress.RUNNING)
+    if task_status == SubJobStatusEnum.FAILED.value:
+        log.error(f"Get error from progress status, job_id: {job_id}, job_name: {job_name}.")
+        log_detail = progress_sts_dict.get("logDetail")
+        log_detail_param = progress_sts_dict.get("logDetailParam")
+        if log_detail:
+            log.error(f"Get error with log details from progress status, job_id: {job_id}, job_name: {job_name}.")
+            log_detail = [
+                LogDetail(logInfoParam=[job_id],
+                          logLevel=DBLogLevel.ERROR,
+                          logDetail=log_detail,
+                          logDetailParam=log_detail_param)
+            ]
+    sub_job_details = SubJobDetails(taskId=job_id, subTaskId=sub_job_id,
+                                    taskStatus=task_status,
+                                    logDetail=log_detail,
+                                    progress=progress)
+    log.info(f"Get sub job details, job_id: {job_id}, job_name: {job_name}, sub_job_details: {sub_job_details}.")
+    return sub_job_details
+
+
+def save_progress_file(job_id, job_name, cache_area, progress_status: ProgressStatus):
+    log.info(f"Save progress status, job_id: {job_id}, job_name: {job_name}, progress_status: {progress_status}.")
+    file_path = os.path.join(cache_area, f'{job_name}_status_{job_id}.json')
+    output_execution_result_ex(file_path, progress_status.dict(by_alias=True))

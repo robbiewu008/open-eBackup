@@ -12,10 +12,9 @@
 */
 package openbackup.data.protection.access.provider.sdk.protection.model;
 
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 
 /**
  * 用于project object provider的dto

@@ -1,55 +1,55 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ModalRef, MessageService } from '@iux/live';
+import { MessageService, ModalRef } from '@iux/live';
 import {
   BaseUtilService,
   CommonConsts,
   DataMap,
-  I18NService,
-  PolicyType,
-  PolicyAction,
-  LANGUAGE,
   FilesetTemplatesApiService,
-  ProtectedResourceApiService,
+  I18NService,
+  LANGUAGE,
+  MODAL_COMMON,
+  PolicyAction,
+  PolicyType,
   ProjectedObjectApiService,
-  MODAL_COMMON
+  ProtectedResourceApiService
 } from 'app/shared';
 import { SelectSlaComponent } from 'app/shared/components/protect/select-sla/select-sla.component';
-import { SystemTimeService } from 'app/shared/services/system-time.service';
-import {
-  assign,
-  map,
-  isArray,
-  each,
-  includes,
-  size,
-  reject,
-  trim,
-  cloneDeep,
-  find,
-  get
-} from 'lodash';
-import { combineLatest, Observable, Observer } from 'rxjs';
-import { CreateFilesetComponent } from '../../create-fileset/create-fileset.component';
-import { AdvancedParameterComponent } from '../../advanced-parameter/advanced-parameter.component';
-import { DatePipe } from '@angular/common';
+import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
 import { BackupMessageService } from 'app/shared/services/backup-message.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
+import { SystemTimeService } from 'app/shared/services/system-time.service';
+import {
+  assign,
+  cloneDeep,
+  each,
+  find,
+  get,
+  includes,
+  isArray,
+  map,
+  reject,
+  size,
+  trim
+} from 'lodash';
+import { combineLatest, Observable, Observer } from 'rxjs';
+import { AdvancedParameterComponent } from '../../advanced-parameter/advanced-parameter.component';
+import { CreateFilesetComponent } from '../../create-fileset/create-fileset.component';
 import { BatchResultsComponent } from './batch-results/batch-results.component';
-import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
 @Component({
   selector: 'aui-create-fileset-template',
   templateUrl: './create-fileset-template.component.html',
@@ -60,6 +60,7 @@ export class CreateFilesetTemplateComponent implements OnInit {
   rowItem;
   queryName;
   formGroup: FormGroup;
+  dataMap = DataMap;
   isEn = this.i18n.language === LANGUAGE.EN;
   hostOptions = [];
   templateOptions = [];
@@ -143,6 +144,7 @@ export class CreateFilesetTemplateComponent implements OnInit {
       template_id: new FormControl('', {
         validators: [this.baseUtilService.VALID.required()]
       }),
+      is_OS_backup: new FormControl(false),
       sla: new FormControl(false),
       sla_id: new FormControl('')
     });
@@ -161,8 +163,14 @@ export class CreateFilesetTemplateComponent implements OnInit {
         name: this.rowItem ? this.rowItem.name || '' : '',
         template_id: this.rowItem
           ? this.rowItem.extendInfo?.templateId || ''
-          : ''
+          : '',
+        is_OS_backup: this.rowItem
+          ? get(this.rowItem.extendInfo, 'is_OS_backup', 'false') === 'true'
+          : false
       });
+      if (this.rowItem) {
+        this.osType = this.rowItem.environment?.osType;
+      }
     }, 5);
   }
 
@@ -346,6 +354,9 @@ export class CreateFilesetTemplateComponent implements OnInit {
       if (currentOsType !== this.osType) {
         this.formGroup.get('sla').setValue(false);
       }
+      if (currentOsType !== DataMap.Os_Type.linux.value) {
+        this.formGroup.get('is_OS_backup').setValue(false);
+      }
       this.osType = currentOsType;
       this.parameterComponent.updateForm(this.osType);
 
@@ -474,7 +485,8 @@ export class CreateFilesetTemplateComponent implements OnInit {
           type: DataMap.Resource_Type.fileset.value,
           subType: DataMap.Resource_Type.fileset.value,
           extendInfo: {
-            templateId: this.formGroup.value.template_id
+            templateId: this.formGroup.value.template_id,
+            is_OS_backup: this.formGroup.get('is_OS_backup').value
           }
         };
 
@@ -610,7 +622,8 @@ export class CreateFilesetTemplateComponent implements OnInit {
           type: DataMap.Resource_Type.fileset.value,
           subType: DataMap.Resource_Type.fileset.value,
           extendInfo: {
-            templateId: this.formGroup.value.template_id
+            templateId: this.formGroup.value.template_id,
+            is_OS_backup: this.formGroup.get('is_OS_backup').value
           }
         };
         this.protectedResourceApiService

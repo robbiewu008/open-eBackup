@@ -12,6 +12,11 @@
 */
 package openbackup.gaussdbdws.protection.access.util;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
@@ -20,8 +25,6 @@ import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
 import openbackup.gaussdbdws.protection.access.constant.DwsConstant;
 import openbackup.gaussdbdws.protection.access.enums.BackupToolEnum;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
-
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
@@ -32,10 +35,6 @@ import openbackup.system.base.sdk.cluster.model.ClusterDetailInfo;
 import openbackup.system.base.sdk.cluster.model.TargetClusterRequestParm;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -67,13 +66,21 @@ public class DwsBuildRepositoryUtil {
     /**
      * 给Repository修改 角色和添加 esn
      *
-     * @param repository repository
+     * @param repositories repository列表
      * @param esn esn号
      */
-    public static void addRepositoryEsnAndRole(StorageRepository repository, String esn) {
-        repository.setRole(DwsConstant.MASTER_ROLE);
-        repository.setId(esn);
-        addRepositoryEsn(repository, esn);
+    public static void addRepositoryEsnAndRole(List<StorageRepository> repositories, String esn) {
+        for (StorageRepository repository : repositories) {
+            if (esn.equals(repository.getId())) {
+                repository.setRole(DwsConstant.MASTER_ROLE);
+                repository.setId(esn);
+                addRepositoryEsn(repository, esn);
+                return;
+            }
+        }
+        repositories.get(0).setRole(DwsConstant.MASTER_ROLE);
+        repositories.get(0).setId(esn);
+        addRepositoryEsn(repositories.get(0), esn);
     }
 
     /**

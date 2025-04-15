@@ -18,3 +18,17 @@
   font-size: 12px;
   color: #808080;
 }
+
+.custom-required::after {
+  content: '*';
+  padding-left: 0.02rem;
+  color: #c63939;
+  font-weight: 700;
+  font-size: 0.14rem;
+}
+
+.tree-border {
+  border: 0.01rem solid var(--live-angular-color-border-regular);
+  border-radius: 0.01rem solid var(--live-angular-color-border-regular);
+  border-top: none;
+}

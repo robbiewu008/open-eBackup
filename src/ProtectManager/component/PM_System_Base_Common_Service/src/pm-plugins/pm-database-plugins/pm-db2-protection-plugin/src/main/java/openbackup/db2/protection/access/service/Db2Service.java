@@ -18,6 +18,7 @@ import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -63,4 +64,13 @@ public interface Db2Service {
      * @return 数据量大小
      */
     String queryDatabaseSize(ProtectedResource resource);
+
+    /**
+     * 删除生产环境的归档日志
+     *
+     * @param resource resource
+     * @param extendInfo extendInfo
+     * @param agent_id agent_id
+     */
+    void deleteLogFromProductEnv(ProtectedResource resource, HashMap<String, String> extendInfo, String agent_id);
 }

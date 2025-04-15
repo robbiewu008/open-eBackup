@@ -12,12 +12,11 @@
 */
 package openbackup.goldendb.protection.access.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.goldendb.protection.access.constant.GoldenDbConstant;
 import openbackup.goldendb.protection.access.dto.instance.GoldenInstance;
 import openbackup.system.base.common.utils.json.JsonUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 功能描述 GoldenDbValidator参数校验

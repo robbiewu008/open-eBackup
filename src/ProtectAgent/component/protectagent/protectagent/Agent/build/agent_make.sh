@@ -24,7 +24,7 @@ CFLAGS=
 cFLAGS=
 OFLAGS=
 DFLAGS=
-OS_NAME=
+OS_NAME=UN_DEFINE_OS
 NGINX_CPU_OPT=
 NGINX_CPU_OPT_FLAG=0
 #Linux version 2.6.29 support the file system freeze and thaw
@@ -398,6 +398,8 @@ make_init()
             OS_NAME=REDHAT
         elif [ -f /etc/euleros-release ]; then
             OS_NAME=EULER
+        elif [ -f /etc/openEuler-release ]; then
+            OS_NAME=OPEN_EULER
         elif [ "${sysLinuxName}" != "" ]; then
             OS_NAME=ROCKY
         elif [ -z "${sysLinuxName}" ]; then
@@ -508,9 +510,11 @@ main_enter()
     if [ ${CLEAN} -eq 1 ]; then
         gmake $MAKE_JOB -f ${AGENT_ROOT}/build/makefile "clean"
     elif [ ${DATAPROCESS} -eq 1 ]; then
+        echo "make -s $MAKE_JOB -f ${AGENT_ROOT}/build/makefile dp"
         make -s $MAKE_JOB -f ${AGENT_ROOT}/build/makefile "dp"
     # compile xbsa
     elif [ ${XBSA} -eq 1 ]; then
+        echo "make -s $MAKE_JOB -f ${AGENT_ROOT}/build/makefile xbsa"
         make -s $MAKE_JOB -f ${AGENT_ROOT}/build/makefile "xbsa"
     # compile agent
     elif [ ${AGENT} -eq 1 ] || [ ${SANCLIENT_PLUIN} -eq 1 ]; then
@@ -531,7 +535,7 @@ main_enter()
 
         CFLAGS=$CFLAGS" -Wl,--whole-archive"
         export CFLAGS
-        make -s $MAKE_JOB -f ${AGENT_ROOT}/build/makefile ${MAKE_OPTION} ${MAKE_OPTION_AGENT}
+        make $MAKE_JOB -f ${AGENT_ROOT}/build/makefile ${MAKE_OPTION} ${MAKE_OPTION_AGENT}
     # compile all
     else
         if [ ${CLEAN_ALL} -eq 1 ]; then

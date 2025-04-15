@@ -26,8 +26,11 @@ DeleteAggregator::DeleteAggregator(const AggregatorParams& aggregatorParams)
     : m_backupParams(aggregatorParams.backupParams), m_aggregateQueue(aggregatorParams.aggregateQueuePtr),
     m_writeQueue(aggregatorParams.writeQueuePtr), m_controlInfo(aggregatorParams.controlInfo)
 {
-    m_fileAggregator = make_unique<FileAggregator>(aggregatorParams.backupParams, aggregatorParams.writeQueuePtr,
-        aggregatorParams.readQueuePtr, aggregatorParams.blockBufferMap, aggregatorParams.controlInfo);
+    /* 只有OBS永久增量备份需要使用删除sqlite文件中的记录 */
+    if (m_backupParams.srcEngine == BackupIOEngine::OBJECTSTORAGE) {
+        m_fileAggregator = make_unique<FileAggregator>(aggregatorParams.backupParams, aggregatorParams.writeQueuePtr,
+            aggregatorParams.readQueuePtr, aggregatorParams.blockBufferMap, aggregatorParams.controlInfo);
+    }
 }
 
 DeleteAggregator::DeleteAggregator(
@@ -135,7 +138,7 @@ void DeleteAggregator::ThreadFunc()
         ++m_controlInfo->m_aggregateConsume;
 
         if ((m_fileAggregator != nullptr) && (m_fileAggregator->DeleteSqliteRecord(fileHandle) != Module::SUCCESS)) {
-            ERRLOG("Delete sqlite record failed. file name: %s", fileHandle.m_file->m_fileName.c_str());
+            WARNLOG("Delete sqlite record failed. file name: %s", fileHandle.m_file->m_fileName.c_str());
         }
 
         // do aggregate here

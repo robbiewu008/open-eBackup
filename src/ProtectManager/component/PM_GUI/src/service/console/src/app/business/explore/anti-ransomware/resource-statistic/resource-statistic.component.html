@@ -16,7 +16,7 @@
         <lv-group lvGutter="16px">
             <span>
                 <lv-search [lvFocus]="true" [(ngModel)]="name" (lvSearch)="search($event)"
-                    lvPlaceHolder="{{'common_search_type_label'|i18n:['']}}" style="width:262px">
+                    lvPlaceHolder="{{'search_resource_keyword_label'|i18n:['']}}" style="width:262px">
                 </lv-search>
             </span>
             <lv-select [lvOptions]="appTypeOptions" [(ngModel)]="appType" lvMode="multiple"
@@ -40,43 +40,44 @@
 </div>
 
 <ng-template #repicasTpl let-item>
-    <span [ngClass]="{'aui-link': item.total_copy_num}" id="outerClosable" lv-overflow
+    <span [ngClass]="{'special-col': item.total_copy_num}" id="outerClosable" lv-overflow
         (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.all.value,item.total_copy_num)">
         {{item.total_copy_num ? item.total_copy_num : '--'}}
     </span>
 </ng-template>
 <ng-template #infectedRepicasTpl let-item>
-    <span [ngClass]="{'aui-link': item.infected_copy_num}" id="outerClosable" lv-overflow
+    <span [ngClass]="{'special-col': item.infected_copy_num}" id="outerClosable" lv-overflow
         (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.infected.value,item.infected_copy_num)">
+      <i lv-icon="lv-icon-status-error" *ngIf="item.infected_copy_num>0"></i>
         {{item.infected_copy_num ? item.infected_copy_num : '--'}}
     </span>
 </ng-template>
 <ng-template #uninfectedRepicasTpl let-item>
-    <span [ngClass]="{'aui-link': item.uninfected_copy_num}" id="outerClosable" lv-overflow
+    <span [ngClass]="{'special-col': item.uninfected_copy_num}" id="outerClosable" lv-overflow
         (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.uninfected.value,item.uninfected_copy_num)">
         {{item.uninfected_copy_num ? item.uninfected_copy_num : '--'}}
     </span>
 </ng-template>
 <ng-template #prepareRepicasTpl let-item>
-    <span [ngClass]="{'aui-link': item.prepare_copy_num}" id="outerClosable" lv-overflow
+    <span [ngClass]="{'special-col': item.prepare_copy_num}" id="outerClosable" lv-overflow
         (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.ready.value,item.prepare_copy_num)">
         {{item.prepare_copy_num ? item.prepare_copy_num : '--'}}
     </span>
 </ng-template>
 <ng-template #detectingRepicasTpl let-item>
-    <span [ngClass]="{'aui-link': item.detecting_copy_num}" id="outerClosable" lv-overflow
+    <span [ngClass]="{'special-col': item.detecting_copy_num}" id="outerClosable" lv-overflow
         (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.detecting.value,item.detecting_copy_num)">
         {{item.detecting_copy_num ? item.detecting_copy_num : '--'}}
     </span>
 </ng-template>
 <ng-template #uninspectedRepicasTpl let-item>
-    <span [ngClass]="{'aui-link': item.uninspected_copy_num}" id="outerClosable" lv-overflow
+    <span [ngClass]="{'special-col': item.uninspected_copy_num}" id="outerClosable" lv-overflow
         (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.uninspected.value,item.uninspected_copy_num)">
         {{item.uninspected_copy_num ? item.uninspected_copy_num : '--'}}
     </span>
 </ng-template>
 <ng-template #abnormalRepicasTpl let-item>
-    <span [ngClass]="{'aui-link': item.abnormal_copy_num}" id="outerClosable" lv-overflow
+    <span [ngClass]="{'special-col': item.abnormal_copy_num}" id="outerClosable" lv-overflow
         (click)="getRepicasDetail(item,dataMap.Detection_Copy_Status.exception.value,item.abnormal_copy_num)">
         {{item.abnormal_copy_num ? item.abnormal_copy_num : '--'}}
     </span>

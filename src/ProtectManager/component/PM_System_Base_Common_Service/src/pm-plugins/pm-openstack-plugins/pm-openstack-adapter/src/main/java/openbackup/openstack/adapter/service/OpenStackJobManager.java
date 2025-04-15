@@ -13,6 +13,8 @@
 package openbackup.openstack.adapter.service;
 
 import com.huawei.oceanprotect.job.sdk.JobService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.model.PageListResponse;
 import openbackup.system.base.common.model.PagingParamRequest;
 import openbackup.system.base.common.model.SortingParamRequest;
@@ -20,8 +22,6 @@ import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.model.job.request.QueryJobRequest;
 import openbackup.system.base.common.utils.CommonUtil;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
-
-import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 
 import org.springframework.stereotype.Component;

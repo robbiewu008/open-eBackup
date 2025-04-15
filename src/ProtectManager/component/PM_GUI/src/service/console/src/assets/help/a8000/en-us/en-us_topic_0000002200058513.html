@@ -1,0 +1,56 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Log Backup Failed Due to DN/CN Restart or Active/Standby Switchover">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164657742.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200058513">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Log Backup Failed Due to DN/CN Restart or Active/Standby Switchover</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200058513"></a><a name="EN-US_TOPIC_0000002200058513"></a>
+
+<h1 class="topictitle1">Log Backup Failed Due to DN/CN Restart or Active/Standby Switchover</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>During log backup, some operations are performed, such as DN/CN restart or active/standby switchover. As a result, log backup fails.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Causes</h4><p>The xlog becomes incomplete due to DN/CN restart or active/standby switchover. As a result, log backup fails.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Troubleshooting</h4><ol><li id="EN-US_TOPIC_0000002200058513__li10777153211159"><span>Log in to the host where the client is installed.</span></li><li id="EN-US_TOPIC_0000002200058513__li111747487157"><span>Run the <strong id="EN-US_TOPIC_0000002200058513__b1792217164163">cd <em id="EN-US_TOPIC_0000002200058513__i220810187432">/opt/</em>DataBackup/ProtectClient/ProtectClient-E/slog/Plugins/GeneralDBPlugin</strong> command to go to the log directory of the host where the client is installed. (In this step, assume that the client is installed in the <strong id="EN-US_TOPIC_0000002200058513__b678513114277">/opt</strong> directory. Change the directory based on the actual installation directory).</span></li><li id="EN-US_TOPIC_0000002200058513__li191194761616"><a name="EN-US_TOPIC_0000002200058513__li191194761616"></a><a name="li191194761616"></a><span>Run the following command to search for key error information:</span><p><pre class="screen">grep -nr "GS-53429 : The recovery time is invalidxlog has been archived"</pre>
+</p></li><li><span>If the error information can be found in <a href="#EN-US_TOPIC_0000002200058513__li191194761616">3</a>, the xlog is incomplete. In this case, perform a full backup again.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164657742.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -22,6 +22,7 @@ import re
 import shlex
 import shutil
 import socket
+import sqlite3
 import stat
 import subprocess
 import threading
@@ -33,15 +34,18 @@ from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from common import common as pg_util_common
-from common.common import check_command_injection, invoke_rpc_tool_interface, is_clone_file_system
-from common.const import CMDResult
+from common.common import check_command_injection, invoke_rpc_tool_interface, is_clone_file_system, execute_cmd, \
+    read_tmp_json_file
+from common.const import CMDResult, RepositoryDataTypeEnum, RoleType
 from common.file_common import change_path_permission
 from common.logger import Logger
 from common.number_const import NumberConst
-from common.util import check_utils as pg_check_utils, check_user_utils
+from common.util import check_utils as pg_check_utils, check_user_utils, check_utils
 from common.util.backup import query_progress, backup, backup_files
 from common.util.cmd_utils import cmd_format
-from common.util.exec_utils import check_path_valid, exec_overwrite_file, exec_append_file, exec_cp_cmd
+from common.util.exec_utils import check_path_valid, exec_overwrite_file, exec_append_file, exec_cp_cmd, \
+    exec_append_newline_file
+from common.util.kmc_utils import Kmc
 from postgresql.common.const import PgConst, CmdRetCode, ConfigKeyStatus, BackupStatus
 from postgresql.common.error_code import ErrorCode
 from postgresql.common.models import RestoreProgress
@@ -138,14 +142,15 @@ class PostgreCommonUtils:
         return datetime.datetime.fromtimestamp(s_timestamp).strftime(PgConst.RECOVERY_TARGET_TIME_FORMATTER)
 
     @staticmethod
-    def is_db_running(pg_system_user: str, db_install_path: str, db_data_path: str) -> bool:
+    def is_db_running(pg_system_user: str, db_install_path: str, db_data_path: str, config_file=None) -> bool:
         LOGGER.info("Start checking database is running ...")
         PostgreCommonUtils.check_dir_path(db_install_path)
-        pg_cfg_file = os.path.realpath(os.path.join(db_data_path, PgConst.POSTGRESQL_CONF_FILE_NAME))
+        pg_cfg_file = config_file if config_file else os.path.realpath(
+            os.path.join(db_data_path, PgConst.POSTGRESQL_CONF_FILE_NAME))
         if any([not os.path.isdir(db_data_path), not os.path.exists(pg_cfg_file)]):
             LOGGER.warning(f"Database data path: {db_data_path} doest not exist or is corrupted when checking status.")
             return False
-        if not PostgreCommonUtils.check_os_name(pg_system_user, db_install_path)[0]:
+        if not PostgreCommonUtils.check_os_user(pg_system_user, db_install_path)[0]:
             return False
         pg_ctl_path = os.path.realpath(os.path.join(db_install_path, "bin", "pg_ctl"))
         PostgreCommonUtils.check_file_path(pg_ctl_path)
@@ -164,15 +169,15 @@ class PostgreCommonUtils:
         return False
 
     @staticmethod
-    def start_postgresql_database(pg_system_user: str, db_install_path: str, db_data_path: str):
+    def start_postgresql_database(pg_system_user: str, db_install_path: str, db_data_path: str, param_dict):
         LOGGER.info("Try to start database ...")
         PostgreCommonUtils.check_dir_path(db_install_path)
         PostgreCommonUtils.check_dir_path(db_data_path)
         pg_ctl_path = os.path.realpath(os.path.join(db_install_path, "bin", "pg_ctl"))
-        tmp_logfile = os.path.realpath(os.path.join(db_data_path, "..", "pg_start.log"))
+        tmp_logfile = os.path.realpath(os.path.join(db_data_path, "pg_start.log"))
         PostgreCommonUtils.delete_path(tmp_logfile)
         enable_root = PostgreCommonUtils.get_root_switch()
-        if not PostgreCommonUtils.check_os_name(pg_system_user, db_install_path, enable_root)[0]:
+        if not PostgreCommonUtils.check_os_user(pg_system_user, db_install_path, enable_root)[0]:
             LOGGER.error("Execute start database command failed,because os username is not exist.")
             raise ErrCodeException(ErrorCode.EXEC_START_DB_CMD_FAILED, message="Os username is not exist.")
         if not enable_root:
@@ -183,6 +188,13 @@ class PostgreCommonUtils:
         # 启动时等待直到启动成功
         start_db_cmd = cmd_format("su - {} -c '{} -D {} -w -t {} -l {} start'", pg_system_user, pg_ctl_path,
                                   db_data_path, PgConst.CHECK_POINT_TIME_OUT, tmp_logfile)
+        # 从资源中获取
+        config_file = param_dict.get("job", {}).get("targetObject", {}).get("extendInfo", {}).get("configFile", "")
+        if config_file and os.path.exists(config_file) and not os.path.abspath(
+                os.path.dirname(config_file)) == os.path.abspath(db_data_path):
+            start_db_cmd = cmd_format("su - {} -c '{} -D {} -w -t {} -l {} start -o \"-c config_file={}\"'",
+                                      pg_system_user, pg_ctl_path, db_data_path, PgConst.CHECK_POINT_TIME_OUT,
+                                      tmp_logfile, config_file)
         LOGGER.info("Executing start database command: %s.", start_db_cmd)
         return_code, std_out, std_err = pg_util_common.execute_cmd(start_db_cmd)
         LOGGER.info(f"Execute start database command, return code: {return_code}, out: {std_out}, err: {std_err}.")
@@ -308,9 +320,10 @@ class PostgreCommonUtils:
         ])
 
     @staticmethod
-    def get_archive_path_offline(db_data_path):
+    def get_archive_path_offline(db_data_path, config_file=None, archive_dir=""):
         archive_path = ""
-        pg_conf_file_path = os.path.realpath(os.path.join(db_data_path, PgConst.POSTGRESQL_CONF_FILE_NAME))
+        pg_conf_file_path = config_file if config_file else os.path.realpath(
+            os.path.join(db_data_path, PgConst.POSTGRESQL_CONF_FILE_NAME))
         PostgreCommonUtils.check_file_path(pg_conf_file_path)
         with open(pg_conf_file_path, "r", encoding="utf-8") as fp:
             lines = fp.readlines()
@@ -320,8 +333,8 @@ class PostgreCommonUtils:
                 if all([i.strip().startswith("archive_command"), "=" in i, "%p" in i, "/%f" in i]):
                     tmp_splits = i.split("%p")
                     archive_path = tmp_splits[1].split("/%f")[0].strip().strip("\'\"") if len(tmp_splits) > 1 else ""
-                    break
-        return archive_path.strip().strip("\'\"")
+                    return archive_path.strip().strip("\'\"")
+        return archive_dir
 
     @staticmethod
     def delete_path(del_path):
@@ -333,14 +346,14 @@ class PostgreCommonUtils:
         if not check_path_valid(del_path, False):
             LOGGER.warning(f"The path: {del_path} not allowed to be deleted.")
             return
-        if os.path.isdir(del_path):
-            # 目录不存在会报错
-            shutil.rmtree(del_path)
-            LOGGER.info(f"Delete directory: {del_path} success.")
-        else:
+        if os.path.isfile(del_path) or os.path.islink(del_path):
             # 文件不存在会报错
             os.remove(del_path)
             LOGGER.info(f"Delete file: {del_path} success.")
+        else:
+            # 目录不存在会报错
+            shutil.rmtree(del_path)
+            LOGGER.info(f"Delete directory: {del_path} success.")
 
     @staticmethod
     def clear_dir_when_exist(clear_path):
@@ -348,7 +361,7 @@ class PostgreCommonUtils:
         if not os.path.isdir(clear_path):
             LOGGER.warning(f"The path: {clear_path} does not exist when trying to clear it.")
             return
-        pg_util_common.clean_dir(clear_path)
+        pg_util_common.clean_dir_not_walk_link(clear_path)
         LOGGER.info(f"Cleared directory: {clear_path} successfully.")
 
     @staticmethod
@@ -393,16 +406,17 @@ class PostgreCommonUtils:
         return PostgreCommonUtils.get_restore_status(job_id)
 
     @staticmethod
-    def copy_files(os_user: str, src_path: str, target_path: str, wildcard=".", job_id=""):
+    def copy_files(src_path: str, target_path: str, number: str, job_id=""):
         LOGGER.info(f"Start copying file: {src_path} to path: {target_path}")
+        temp_job_id = f"{job_id}_{number}"
         PostgreCommonUtils.check_path_exist(target_path)
         if os.path.isdir(src_path):
             src_path = f"{src_path}" if src_path.endswith("/") else f"{src_path}/"
-        res = backup_files(job_id, [src_path], target_path, write_meta=True)
+        res = backup_files(temp_job_id, [src_path], target_path, write_meta=True)
         if not res:
-            LOGGER.error(f"Failed to start backup, jobId: {job_id}.")
+            LOGGER.error(f"Failed to start backup, jobId: {temp_job_id}.")
             return False
-        return PostgreCommonUtils.get_restore_status(job_id)
+        return PostgreCommonUtils.get_restore_status(temp_job_id)
 
     @staticmethod
     def get_restore_status(job_id):
@@ -567,9 +581,6 @@ class PostgreCommonUtils:
         if not is_data_dir:
             LOGGER.info("Current input path is log dir, change its owner.")
             os.lchown(input_path, uid, gid)
-        if not is_clone_file_system(param_dict):
-            LOGGER.info("Current filesystem is not clone.")
-            return
         # 处理目录
         for root, dirs, files in os.walk(input_path):
             for tmp_dir in dirs:
@@ -754,7 +765,7 @@ class PostgreCommonUtils:
             LOGGER.warning("The log copy are empty when checking transaction.")
             return exist_txn
         enable_root = PostgreCommonUtils.get_root_switch()
-        if not PostgreCommonUtils.check_os_name(os_user, wal_dump_path, enable_root)[0]:
+        if not PostgreCommonUtils.check_os_user(os_user, wal_dump_path, enable_root)[0]:
             return False
         # WAL日志名称是16进制，转int型排序
         wal_names.sort(key=lambda x: int(x, 16))
@@ -801,15 +812,15 @@ class PostgreCommonUtils:
         conf_file = os.path.join(current_dir, 'applications', 'postgresql', 'conf', PgConst.OWNER_FILE_NAME)
         try:
             with open(conf_file, "r", encoding='utf-8') as f:
-                result = json.loads(f.readlines()[0])
+                result = json.loads(f.readlines()[1])
         except Exception as e:
             raise Exception("Read switch failed.") from e
         enable_root = result.get("enable_root", 0)
         return enable_root
 
     @staticmethod
-    def check_os_name(os_username, file_path, enable_root=0):
-        if os_username == "root":
+    def check_os_user(os_username, file_path, enable_root=1):
+        if os_username.strip() == "root":
             LOGGER.info("The os username can not be root")
             return False, ErrorCode.USER_IS_NOT_EXIST
         try:
@@ -854,7 +865,7 @@ class PostgreCommonUtils:
 
     @staticmethod
     def write_content_to_file(file_path, content):
-        exec_append_file(file_path, content)
+        exec_append_newline_file(file_path, content)
 
     @staticmethod
     def get_patroni_config(host_ips, nodes):
@@ -926,3 +937,328 @@ class PostgreCommonUtils:
                 tem.append(kne.get(char))
         result = "".join(tem) + "A"
         return result
+
+    @staticmethod
+    def get_copy_mount_paths(copy_dict: {}, repo_type):
+        copy_mount_paths = []
+        for repo in copy_dict.get("repositories", []):
+            tmp_repo_type = repo.get("repositoryType")
+            if tmp_repo_type != repo_type:
+                continue
+            if not repo.get("path"):
+                LOGGER.error(f"The path value in repository is empty, repository type: {tmp_repo_type}.")
+                raise Exception("The path value in repository is empty")
+            copy_mount_paths.append(repo.get("path")[0])
+        if not copy_mount_paths and not check_utils.check_path_in_white_list(copy_mount_paths[0]):
+            LOGGER.error(f"The copy mount path list: {copy_mount_paths} is incorrrect.")
+            raise Exception("The copy mount path list is empty")
+        LOGGER.info(f"Get copy mount path success, paths: {copy_mount_paths}, repository type: {repo_type}.")
+        return copy_mount_paths
+
+    @staticmethod
+    def get_repl_info(job_dict):
+        # 如果副本里有就用副本里的
+        copies = job_dict.get("copies", [])
+        if not copies:
+            raise Exception("The copies value in the param file is empty or does not exist")
+        copy_id = copies[0].get("id")
+        copy_mount_path = PostgreCommonUtils.get_copy_mount_paths(
+            copies[0], RepositoryDataTypeEnum.DATA_REPOSITORY.value)[0]
+        repl_info_name = os.path.join(copy_mount_path, f"Repl_{copy_id}.info")
+        repl_user = ''
+        repl_pwd = ''
+        if os.path.exists(repl_info_name):
+            repl_info = read_tmp_json_file(repl_info_name)
+            repl_user = Kmc().decrypt(repl_info.get('repl_user'))
+            repl_pwd = Kmc().decrypt(repl_info.get('repl_pwd'))
+        return repl_user, repl_pwd
+
+    @staticmethod
+    def get_nodes(data_nodes):
+        host_ips = PostgreCommonUtils.get_local_ips()
+        patroni_config, port, role = PostgreCommonUtils.get_patroni_config(host_ips, data_nodes)
+        if check_command_injection(patroni_config):
+            LOGGER.error(f"patroni config:{patroni_config} check error!")
+            return []
+        cmd = cmd_format("patronictl -c {} list", patroni_config)
+        ret_code, std_out, std_err = execute_cmd(cmd)
+        if ret_code != CMDResult.SUCCESS.value:
+            LOGGER.error(f"get_nodes out: {std_out},error: {std_err}")
+            return []
+        nodes = []
+        if len(std_out) > 0:
+            rows = std_out.splitlines()
+            rows_len = len(rows)
+            for i in range(3, rows_len - 1):
+                row = rows[i]
+                columns = row.split()
+                role = columns[5]
+                hostname = columns[3]
+                status = columns[7]
+                node = {
+                    'hostname': hostname,
+                    'role': str(RoleType.PRIMARY.value) if role in ['Leader'] else str(RoleType.STANDBY.value),
+                    'status': status
+                }
+                nodes.append(node)
+        return nodes
+
+    @staticmethod
+    def get_online_data_nodes(data_nodes):
+        nodes = []
+        # 获取Patroni集群节点信息
+        instance_list = PostgreCommonUtils.get_nodes(data_nodes)
+        LOGGER.info(f"patroni get_online_data_nodes body {instance_list}")
+        ip_list = []
+        for instance in instance_list:
+            ip_str = str(instance.get("hostname"))
+            ip_list.append(ip_str)
+        LOGGER.info(f"get_online_data_nodes ip_list {ip_list}")
+        for data_node in data_nodes:
+
+            node_extend_info = data_node.get("extendInfo", {})
+            ip_str = str(node_extend_info.get('serviceIp', ""))
+            if ip_str in ip_list:
+                nodes.append(data_node)
+        LOGGER.info(f"get_online_data_nodes nodes {nodes}")
+        return nodes
+
+    @staticmethod
+    def init_node_data(file_name, nodes_info, timeout):
+        ret, output = PostgreCommonUtils.init_create_info(file_name, timeout)
+        if not ret:
+            LOGGER.error(f"create table nodeinfo error , ret is {ret}, output is {output}")
+            return False
+        sql_lists = []
+        for _, value in nodes_info.items():
+            node_host = value.get("nodeHost")
+            set_id = value.get("setId")
+            agent_uuid = value.get("agentUuid")
+            is_exec = value.get("isExecNode")
+            ever_backup = value.get("everBackup")
+            is_completed = value.get("isCompleted")
+            is_master = value.get("isMaster")
+            is_alive = value.get("isAlive")
+            sql = f"insert into nodeinfo(node_host, set_id, agent_uuid, is_exec_node, ever_backup, " \
+                  f"is_completed, is_master, is_alive) values " \
+                  f"('{node_host}', '{set_id}', '{agent_uuid}', " \
+                  f"{is_exec}, {ever_backup}, {is_completed}, {is_master}, {is_alive})"
+            sql_lists.append(sql)
+        ret, output = PostgreCommonUtils.exec_sqlite_sql(file_name, timeout, sql_lists)
+        if not ret:
+            LOGGER.error(f"insert into nodeinfo error , ret is {ret}, output is {output}")
+            return False
+        LOGGER.info(f"Successfully insert patroni cluster node information into nodeinfo.")
+        return True
+
+    @staticmethod
+    def init_create_info(file_name, timeout):
+        sql_list = "create table nodeinfo(node_host varchar(200) primary key, set_id varchar(200), \
+                            agent_uuid varchar(200), is_exec_node int, last_modified_time varchar(100), \
+                            ever_backup int, is_completed int, is_master int, is_alive int)"
+
+        ret, output = PostgreCommonUtils.exec_sqlite_sql(file_name, timeout, [sql_list])
+        if ret:
+            LOGGER.info("init table success")
+            return True, output
+        LOGGER.error(f"init table failed, the output is {output}")
+        return False, []
+
+    @staticmethod
+    def get_nodelist(file_name, timeout):
+        sql_lists = "select node_host, is_exec_node, ever_backup, is_completed, is_master, \
+                         is_alive from nodeinfo"
+        ret, output = PostgreCommonUtils.exec_sqlite_sql(file_name, timeout, [sql_lists])
+        if ret:
+            return output
+        LOGGER.info("nodelist is null")
+        return {}
+
+    @staticmethod
+    def exec_sqlite_sql(file_name, timeout, sql_lists):
+        try:
+            conn = sqlite3.connect(file_name, timeout=timeout)
+            cursor = conn.cursor()
+            cursor.execute("begin exclusive transaction")
+            for sql_list in sql_lists:
+                cursor = conn.execute(sql_list)
+            conn.commit()
+            results = cursor.fetchall()
+            conn.close()
+        except Exception as ex:
+            LOGGER.error(f"exception {ex}, execute sql {sql_lists} failed!")
+            conn.rollback()
+            conn.close()
+            return False, {}
+        return True, results
+
+    @staticmethod
+    def can_exec_backup(host_node, file_name, data_nodes, job_id):
+        # 获取获共享文件
+        LOGGER.info(f"start to execute can_exec_backup, job_id: {job_id}")
+        timeout = 100
+        PostgreCommonUtils.check_cnt_update_file(file_name)
+        node_list = PostgreCommonUtils.get_nodelist(file_name, timeout)
+        LOGGER.info(f"the current node_list is {node_list}, job_id: {job_id}")
+        for j in node_list:
+            # 确保pre生成的节点能够执行备份
+            if j[0] == host_node and j[1] == 1 and j[2] == 0:
+                sql = [f"update nodeinfo set ever_backup=1 where node_host='{host_node}'"]
+                PostgreCommonUtils.exec_sqlite_sql(file_name, timeout, sql)
+                LOGGER.info(f"the current executing node is {host_node}")
+                return True
+
+            # 判断节点是否已down，更新共享文件
+            if j[1] == 1 and \
+                    not PostgreCommonUtils.is_node_living(j[0], data_nodes):
+                sql = [f"update nodeinfo set is_exec_node=0, is_completed=2 where node_host='{j[0]}'"]
+                PostgreCommonUtils.exec_sqlite_sql(file_name, timeout, sql)
+                next_node = PostgreCommonUtils.choose_next_node(file_name)
+                if next_node:
+                    sql = [f"update nodeinfo set is_exec_node=1 where node_host='{next_node}'"]
+                    PostgreCommonUtils.exec_sqlite_sql(file_name, timeout, sql)
+                return False
+        return False
+
+    @staticmethod
+    def check_cnt_update_file(file_name):
+        cnt = 0
+        timeout = 100
+        node_list = PostgreCommonUtils.get_nodelist(file_name, 100)
+        if not node_list:
+            LOGGER.warn("node_list is empty")
+            return
+        for j in node_list:
+            if j[1] == 0:
+                cnt = cnt + 1
+        if cnt == len(node_list):
+            next_node = PostgreCommonUtils.choose_next_node(file_name)
+            if next_node:
+                LOGGER.info(f"the current executing node is null, choosing {next_node} as the next executing node")
+                sql = [f"update nodeinfo set is_exec_node=1 where node_host='{next_node}'"]
+                PostgreCommonUtils.exec_sqlite_sql(file_name, timeout, sql)
+
+    @staticmethod
+    def choose_next_node(file_name):
+        timeout = 100
+        node_list = PostgreCommonUtils.get_nodelist(file_name, timeout)
+        if not node_list or len(node_list) == 0:
+            return ""
+        master = ""
+        nodes_selected = []
+        for value in node_list:
+            if value[5] != 0:
+                continue
+            if value[4] == 1 and value[2] != 1:
+                master = value[0]
+                continue
+            if value[2] == 1:
+                continue
+            nodes_selected.append([value[0]])
+        if not master:
+            if not nodes_selected:
+                LOGGER.info("the next executing node is null")
+                return ""
+            else:
+                LOGGER.info(f"the next executing node is {nodes_selected[0][0]}")
+                return nodes_selected[0][0]
+        LOGGER.info(f"the next executing node is {master}")
+        return master
+
+    @staticmethod
+    def is_job_finished(file_name):
+        LOGGER.info("begin to check job finished")
+        timeout = 100
+        node_list = PostgreCommonUtils.get_nodelist(file_name, timeout)
+
+        LOGGER.info("the nodelist is node_host, is_exec_node, ever_backup, is_completed, is_master, is_alive")
+        LOGGER.info(f"check job finished, {node_list}")
+        cnt = 0
+        for value in node_list:
+            if value[3] == 1:
+                LOGGER.info("job is finished, one node has finished backup job")
+                return True
+            if value[3] == 2 or value[5] != 0:
+                cnt = cnt + 1
+        if len(node_list) == cnt:
+            LOGGER.info("job is finished, all nodes have failed")
+            return True
+        LOGGER.info("job is still running")
+        return False
+
+    @staticmethod
+    def monitor(backup_thread, file_name, curr_node, nodes):
+        while True:
+            LOGGER.info("begin to execute monitor job")
+            LOGGER.info(f"monitor job curr_node:{curr_node}")
+            if not PostgreCommonUtils.is_primary(nodes):
+                LOGGER.info(f"{curr_node} is not primary")
+                try:
+                    LOGGER.error(f"database {curr_node} is not master, terminate backup job")
+                    LOGGER.error(f"backup thead is stilling running, try to stop it")
+                    backup_thread.terminate()
+                except Exception as ex:
+                    LOGGER.error(f"ex {ex}")
+                PostgreCommonUtils.set_failed_node_list(file_name, curr_node)
+                break
+            if PostgreCommonUtils.is_job_finished(file_name):
+                LOGGER.warn(f"the backup job has finished")
+                break
+            time.sleep(15)
+
+    @staticmethod
+    def set_failed_and_choose_node(file_name, node_info):
+        timeout = 100
+        update_sql = [f"update nodeinfo set is_exec_node=0, is_completed = 2 where node_host='{node_info}'"]
+        PostgreCommonUtils.exec_sqlite_sql(file_name, timeout, update_sql)
+        next_node = PostgreCommonUtils.choose_next_node(file_name)
+        if next_node:
+            sql = [f"update nodeinfo set is_exec_node=1 where node_host='{next_node}'"]
+            PostgreCommonUtils.exec_sqlite_sql(file_name, timeout, sql)
+            nodes = [node_info, next_node]
+
+    @staticmethod
+    def after_backup(file_name, node_info):
+        timeout = 100
+        LOGGER.info(f"set isCompleted=1 on node {node_info} and write it to shared file {file_name}")
+        sql_lists = [f"update nodeinfo set is_completed=1 where node_host='{node_info}'"]
+        while os.path.exists(file_name):
+            ret, output = PostgreCommonUtils.exec_sqlite_sql(file_name, timeout, sql_lists)
+            if ret:
+                break
+
+    @staticmethod
+    def set_failed_node_list(file_name, curr_node):
+        timeout = 100
+        sql = [f"update nodeinfo set is_exec_node=0, is_completed=2 where node_host='{curr_node}'"]
+        PostgreCommonUtils.exec_sqlite_sql(file_name, timeout, sql)
+        next_node = PostgreCommonUtils.choose_next_node(file_name)
+        if next_node:
+            sql = [f"update nodeinfo set is_exec_node=1 where node_host='{next_node}'"]
+            PostgreCommonUtils.exec_sqlite_sql(file_name, timeout, sql)
+            nodes = [curr_node, next_node]
+
+    @staticmethod
+    def is_primary(data_nodes):
+        host_ips = PostgreCommonUtils.get_local_ips()
+        cluster_nodes = PostgreCommonUtils.get_nodes(data_nodes)
+        for cluster_node in cluster_nodes:
+            host = cluster_node.get('hostname', "")
+            if host in host_ips:
+                if cluster_node.get('role', "") == str(RoleType.PRIMARY.value):
+                    return True
+                else:
+                    return False
+        return False
+
+    @staticmethod
+    def is_node_living(ip, data_nodes):
+        cluster_nodes = PostgreCommonUtils.get_nodes(data_nodes)
+        for cluster_node in cluster_nodes:
+            host = cluster_node.get('hostname', "")
+            if host == ip:
+                if cluster_node.get('status', "") in ["running", "streaming"]:
+                    return True
+                else:
+                    return False
+        return False

@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.service.email;
 
-import openbackup.system.base.common.utils.ExceptionUtil;
-
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.utils.ExceptionUtil;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -53,7 +52,7 @@ public class ProtocolManager {
 
         String[] enabledProtocols = sslSocket.getEnabledProtocols();
         log.debug("sslSocket protocol: {},set protocols: {}.", Arrays.toString(enabledProtocols),
-            Arrays.toString(protocols));
+                Arrays.toString(protocols));
 
         if (protocols != null && protocols.length > 0) {
             sslSocket.setEnabledProtocols(protocols);

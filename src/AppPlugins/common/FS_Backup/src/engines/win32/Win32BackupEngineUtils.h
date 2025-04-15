@@ -48,6 +48,7 @@ namespace Win32BackupEngineUtils {
     std::string GetJunctionPointTargetPath(const FileHandle& fileHandle);
 
     std::string RemoveExtraSlash(const std::string& path);
+    std::string RemoveExtraBackSlash(const std::string& path);
 
     bool RemovePath(const std::string& path);
     
@@ -69,7 +70,7 @@ namespace Win32BackupEngineUtils {
     {
         return writeSparseFile &&
             FileHandleHasAttribute(fileHandle, FILE_ATTRIBUTE_SPARSE_FILE) &&
-            fileHandle.m_block.m_size != 0;
+            fileHandle.m_file->m_size != 0;
     }
  
     inline bool IsEmptySparseFile(const FileHandle& fileHandle)

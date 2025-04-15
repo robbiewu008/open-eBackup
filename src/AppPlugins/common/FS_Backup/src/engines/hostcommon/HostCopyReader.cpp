@@ -21,9 +21,9 @@ using namespace FS_Backup;
 
 namespace {
     const int QUEUE_TIMEOUT_MILLISECOND = 200;
-    const int RETRY_TIME_MILLISENCOND = 1000;
     const int OOM_SLEEP_SECOND = 1;
     const uint32_t INVALID_MEMORY = static_cast<uint32_t>(-1);
+    const int RETRY_TIME_MILLISENCOND = 1000;
 }
 
 HostCopyReader::HostCopyReader(
@@ -42,6 +42,7 @@ HostCopyReader::HostCopyReader(
     m_params.discardReadError = m_backupParams.commonParams.discardReadError;
     m_params.blockSize = m_backupParams.commonParams.blockSize;
     m_params.maxBlockNum = m_backupParams.commonParams.maxBlockNum;
+    m_params.adsProcessType = m_backupParams.commonParams.adsProcessType;
     m_threadPoolKey = m_backupParams.commonParams.subJobId + "_copyReader";
     m_failureRecorder = failureRecorder;
 }
@@ -123,7 +124,7 @@ bool HostCopyReader::IsComplete()
             "(totalFiles %llu totalDir %llu unarchiveFiles %llu)",
             m_controlInfo->m_controlReaderPhaseComplete.load(),
             m_readQueue->GetSize(), m_timer.GetCount(),
-            m_readTaskProduce.load(), m_readTaskConsume.load(),
+            m_controlInfo->m_readTaskProduce.load(), m_controlInfo->m_readTaskConsume.load(),
             m_controlInfo->m_noOfFilesRead.load(), m_controlInfo->m_noOfDirRead.load(),
             m_controlInfo->m_noOfFilesReadFailed.load(),
             m_controlInfo->m_skipFileCnt.load(), m_controlInfo->m_skipDirCnt.load(),
@@ -135,9 +136,9 @@ bool HostCopyReader::IsComplete()
     if (m_controlInfo->m_controlReaderPhaseComplete &&
         m_readQueue->Empty() &&
         (m_timer.GetCount() == 0) &&
-        (m_readTaskProduce == m_readTaskConsume) &&
+        (m_controlInfo->m_readTaskProduce == m_controlInfo->m_readTaskConsume) &&
         ((m_controlInfo->m_noOfFilesRead + m_controlInfo->m_noOfDirRead + m_controlInfo->m_noOfFilesReadFailed +
-        m_controlInfo->m_skipFileCnt + m_controlInfo->m_skipDirCnt +
+        m_controlInfo->m_skipFileCnt + m_controlInfo->m_skipDirCnt + m_controlInfo -> m_noOfFilesWriteSkip +
         m_controlInfo->m_unaggregatedFiles + m_controlInfo->m_emptyFiles + m_controlInfo->m_unaggregatedFaildFiles) ==
         (m_controlInfo->m_noOfFilesToBackup + m_controlInfo->m_noOfDirToBackup + m_controlInfo->m_unarchiveFiles))) {
         INFOLOG("CopyReader complete: controlReaderComplete %d readQueueSize %llu timerSize %llu "
@@ -146,7 +147,7 @@ bool HostCopyReader::IsComplete()
             "(totalFiles %llu totalDir %llu unarchiveFiles %llu)",
             m_controlInfo->m_controlReaderPhaseComplete.load(),
             m_readQueue->GetSize(), m_timer.GetCount(),
-            m_readTaskProduce.load(), m_readTaskConsume.load(),
+            m_controlInfo->m_readTaskProduce.load(), m_controlInfo->m_readTaskConsume.load(),
             m_controlInfo->m_noOfFilesRead.load(), m_controlInfo->m_noOfDirRead.load(),
             m_controlInfo->m_noOfFilesReadFailed.load(),
             m_controlInfo->m_skipFileCnt.load(), m_controlInfo->m_skipDirCnt.load(),
@@ -165,13 +166,14 @@ int HostCopyReader::OpenFile(FileHandle& fileHandle)
     DBGLOG("Enter OpenFile: %s", fileHandle.m_file->m_fileName.c_str());
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::OPEN_SRC, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put open file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
     m_srcOpenedHandleSet.insert(fileHandle.m_file);
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -189,13 +191,14 @@ int HostCopyReader::ReadSymlinkData(FileHandle& fileHandle)
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -218,14 +221,15 @@ int HostCopyReader::ReadHugeObjectData(FileHandle& fileHandle)
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto taskptr = make_shared<OsPlatformServiceTask>(
         HostEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(taskptr) == false) {
+    if (m_jsPtr->Put(taskptr, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
 
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -249,14 +253,15 @@ int HostCopyReader::ReadNormalData(FileHandle& fileHandle)
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
         ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
-    ++m_readTaskProduce;
+    ++m_controlInfo->m_readTaskProduce;
 
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -296,13 +301,14 @@ int HostCopyReader::CloseFile(FileHandle& fileHandle)
     DBGLOG("Enter CloseFile: %s", fileHandle.m_file->m_fileName.c_str());
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::CLOSE_SRC, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put close src task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
-    ++m_readTaskProduce;
+    ++m_controlInfo->m_readTaskProduce;
     m_srcOpenedHandleSet.erase(fileHandle.m_file);
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -363,8 +369,8 @@ void HostCopyReader::PollReadTask()
             } else {
                 HandleFailedEvent(task);
             }
-            ++m_readTaskConsume;
-            DBGLOG("read tasks consume cnt for now %llu", m_readTaskConsume.load());
+            ++m_controlInfo->m_readTaskConsume;
+            DBGLOG("read tasks consume cnt for now %llu", m_controlInfo->m_readTaskConsume.load());
         }
     }
     INFOLOG("Finish HostCopyReader PollReadTask thread");
@@ -457,57 +463,6 @@ void HostCopyReader::DecomposeAndPush(FileHandle& fileHandle) const
         DecomposeAndPush(fileHandle, 0, fileHandle.m_file->m_size, startSeqCnt);
     }
 
-    return;
-}
-
-void HostCopyReader::HandleFailedEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr)
-{
-    FileHandle fileHandle = taskPtr->m_fileHandle;
-    HostEvent event = taskPtr->m_event;
-    ++fileHandle.m_retryCnt;
-    DBGLOG("%s copy reader failed %s, %u, event %d retry cnt %d",
-        OS_PLATFORM_NAME.c_str(), fileHandle.m_file->m_fileName.c_str(), fileHandle.m_block.m_size,
-        static_cast<int>(event), fileHandle.m_retryCnt);
-    FileDescState state = fileHandle.m_file->GetSrcState();
-    if (state != FileDescState::READ_FAILED &&  /* If state is READ_FAILED, needn't retry */
-        fileHandle.m_retryCnt < DEFAULT_ERROR_SINGLE_FILE_CNT && !taskPtr->IsCriticalError()) {
-        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
-        return;
-    }
-    if (state != FileDescState::READ_FAILED) {
-        FSBackupUtils::RecordFailureDetail(m_failureRecorder, taskPtr->m_errDetails);
-        // 通过设置公共锁，防止read和write同时失败设置FAILED时导致两边都不计数的问题
-        fileHandle.m_file->LockCommonMutex();
-        fileHandle.m_file->SetSrcState(FileDescState::READ_FAILED);
-        if (!fileHandle.m_file->IsFlagSet(IS_DIR)) {
-            // skipping to the failed cnt inc for zip files in restore which are not used in writetask
-            if (!fileHandle.m_file->IsFlagSet(AGGREGATE_GEN_FILE) &&
-                fileHandle.m_file->GetDstState() != FileDescState::WRITE_FAILED) {
-                // 若write的状态为WRITE_FAILED时，说明该文件已经被writer记为失败
-                m_controlInfo->m_noOfFilesFailed++;
-            }
-        } else {
-            m_controlInfo->m_noOfDirFailed++;
-        }
-        fileHandle.m_file->UnlockCommonMutex();
-        ++m_controlInfo->m_noOfFilesReadFailed;
-        // errno -> m_retryCnt
-        fileHandle.m_errNum = taskPtr->m_errDetails.second;
-        m_failedList.emplace_back(fileHandle);
-    }
-    m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
-    if (!m_backupParams.commonParams.skipFailure || taskPtr->IsCriticalError()) {
-        ERRLOG("set backup to failed!");
-        m_controlInfo->m_failed = true;
-        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
-    }
-    // NATIVE format doesn't need push to aggregator.
-    if (m_backupParams.commonParams.backupDataFormat == BackupDataFormat::AGGREGATE) {
-        PushToAggregator(fileHandle); // file handle so aggregate can handle failurs of reading file
-    }
-    ERRLOG("copy read failed for file %s, %llu, totalFailed: %llu, %llu", fileHandle.m_file->m_fileName.c_str(),
-        m_controlInfo->m_noOfFilesReadFailed.load(), m_controlInfo->m_noOfDirFailed.load(),
-        m_controlInfo->m_noOfFilesFailed.load());
     return;
 }
 

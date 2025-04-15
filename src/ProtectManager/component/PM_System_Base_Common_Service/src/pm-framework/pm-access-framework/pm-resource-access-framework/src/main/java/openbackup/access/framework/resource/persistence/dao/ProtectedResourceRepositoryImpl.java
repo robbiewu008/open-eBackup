@@ -14,6 +14,17 @@ package openbackup.access.framework.resource.persistence.dao;
 
 import static openbackup.system.base.common.validator.constants.RegexpConstants.UUID_N0_SEPARATOR;
 
+import com.huawei.oceanprotect.system.base.label.service.LabelService;
+
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.persistence.model.ProtectedAgentExtendPo;
 import openbackup.access.framework.resource.persistence.model.ProtectedEnvironmentExtendInfoPo;
 import openbackup.access.framework.resource.persistence.model.ProtectedEnvironmentPo;
@@ -41,29 +52,19 @@ import openbackup.system.base.common.constants.ErrorCodeConstant;
 import openbackup.system.base.common.constants.ResExtendConstant;
 import openbackup.system.base.common.enums.ConsistentStatusEnum;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.scurity.TokenVerificationService;
 import openbackup.system.base.common.utils.CollectionUtils;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.StringUtil;
 import openbackup.system.base.common.utils.ValidateUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.validator.constants.RegexpConstants;
-import com.huawei.oceanprotect.system.base.label.dao.LabelResourceServiceDao;
 import openbackup.system.base.query.PageQueryService;
 import openbackup.system.base.query.Pagination;
 import openbackup.system.base.query.SessionService;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.IdUtil;
-
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -131,6 +132,8 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
 
     private static final int NOTIFY_SIZE = 5;
 
+    private static final String USE_OLD_AGENT = "1.3";
+
     private final ProtectedResourceMapper protectedResourceMapper;
 
     private final ProtectedResourceExtendInfoMapper protectedResourceExtendInfoMapper;
@@ -159,7 +162,10 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
     private SessionService sessionService;
 
     @Autowired
-    private LabelResourceServiceDao labelResourceServiceDao;
+    private LabelService labelService;
+
+    @Autowired
+    private TokenVerificationService tokenVerificationService;
 
     /**
      * constructor
@@ -266,19 +272,28 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
         if (resource.getUuid() == null) {
             resource.setUuid(UUID.randomUUID().toString());
         }
-        int count = protectedResourceMapper.insert(resource);
-        if (count != 1) {
-            throw new LegoCheckedException(ErrorCodeConstant.SYSTEM_ERROR, "create resource failed");
+        QueryWrapper<ProtectedResourcePo> wrapper = new QueryWrapper<>();
+        wrapper.eq("uuid", resource.getUuid());
+        if (!protectedResourceMapper.exists(wrapper)) {
+            int count = protectedResourceMapper.insert(resource);
+            if (count != 1) {
+                throw new LegoCheckedException(ErrorCodeConstant.SYSTEM_ERROR, "create resource failed");
+            }
         }
         return resource.getUuid();
     }
 
     private void insertProtectedResourceExtendInfoBo(ProtectedResourceExtendInfoPo protectedResourceExtendInfoPo) {
-        int count = protectedResourceExtendInfoMapper.insert(protectedResourceExtendInfoPo);
-        if (count != 1) {
-            throw new LegoCheckedException(
+        QueryWrapper<ProtectedResourceExtendInfoPo> wrapper = new QueryWrapper<>();
+        wrapper.eq("resource_id", protectedResourceExtendInfoPo.getResourceId())
+            .eq("key", protectedResourceExtendInfoPo.getKey());
+        if (!protectedResourceExtendInfoMapper.exists(wrapper)) {
+            int count = protectedResourceExtendInfoMapper.insert(protectedResourceExtendInfoPo);
+            if (count != 1) {
+                throw new LegoCheckedException(
                     ErrorCodeConstant.SYSTEM_ERROR,
                     "save extend info failed for key " + protectedResourceExtendInfoPo.getKey());
+            }
         }
     }
 
@@ -300,12 +315,6 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
         // 不可更新字段Po
         cleanUnmodifiableFields(protectedResourcePo);
 
-        // 更新资源的固有属性
-        if (resource instanceof ProtectedEnvironment) {
-            ProtectedEnvironment env = (ProtectedEnvironment) resource;
-            log.info("update resource in respository. uuid: {},ip:{}, port:{}, linkStatus:{}", env.getUuid(),
-                env.getEndpoint(), env.getPort(), env.getLinkStatus());
-        }
         LambdaUpdateWrapper<ProtectedResourcePo> resourcePoLambdaUpdateWrapper =
             new UpdateWrapper<ProtectedResourcePo>().lambda();
         resourcePoLambdaUpdateWrapper.eq(ProtectedResourcePo::getUuid, protectedResourcePo.getUuid())
@@ -672,17 +681,22 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
     private void addLabelNameCondition(QueryWrapper<ProtectedResourcePo> wrapper, Map<String, Object> labelConditions) {
         Object labelName = labelConditions.get("labelName");
         boolean isLabelNameValid = false;
-
         StringBuilder resourceIdSqlBuilder = new StringBuilder();
+        if (!VerifyUtil.isEmpty(labelName)) {
         resourceIdSqlBuilder.append(
             "select distinct tlb.resource_object_id from t_label_r_resource_object tlb,t_label tl "
                 + "where tl.uuid=tlb.label_id");
-        if (!VerifyUtil.isEmpty(labelName)) {
             if (ValidateUtil.match(RegexpConstants.NAME_STR, labelName.toString())) {
-                resourceIdSqlBuilder.append(" and tl.name like " + "'%").append(labelName).append("%'");
+                resourceIdSqlBuilder.append(" and tl.name like " + "'%")
+                    .append(labelName)
+                    .append("%'")
+                    .append(" and tl.BUILDER_NAME = '")
+                    .append(sessionService.getCurrentUser().getName())
+                    .append("'");
                 isLabelNameValid = true;
             } else {
-                log.warn("labelName({}) do not match regex", labelName);
+                log.error("labelName({}) do not match regex", labelName);
+                throw new LegoCheckedException(CommonErrorCode.ERR_PARAM, "labelName do not match regex");
             }
         }
         if (isLabelNameValid) {
@@ -701,7 +715,7 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
         }
         // 根据标签id查出对应的agent的uuid
         List<String> stringList = new ArrayList<>();
-        List<String> idList = labelResourceServiceDao.selectResourceIdByLabelIds(labelList, stringList);
+        List<String> idList = labelService.selectResourceIdByLabelIds(labelList, stringList);
         StringBuilder resourceIdSqlBuilder = new StringBuilder();
         if (VerifyUtil.isEmpty(idList)) {
             // 如果ipList为空,设置搜不出来
@@ -949,8 +963,20 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
                                 })
                         .collect(Collectors.toList());
         IPage<ProtectedResourcePo> target = new Page<>(source.getCurrent(), source.getSize(), source.getTotal(), true);
-        target.setRecords(resources);
+        target.setRecords(setLabelList(resources));
         return target;
+    }
+
+    private List<ProtectedResourcePo> setLabelList(List<ProtectedResourcePo> protectedResourcePos) {
+        // 不带token场景供系统内部调用
+        if (VerifyUtil.isEmpty(sessionService.getCurrentUser())) {
+            return protectedResourcePos;
+        }
+        for (ProtectedResourcePo protectedResourcePo : protectedResourcePos) {
+            protectedResourcePo.setLabelList(labelService.findAllDomainLabelByResourceId(protectedResourcePo.getUuid(),
+                sessionService.getCurrentUser().getDomainId()));
+        }
+        return protectedResourcePos;
     }
 
     private List<String> getExtendInfoFields(Map<String, Object> conditions) {
@@ -1023,7 +1049,9 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
 
     @Override
     public List<ProtectedResourcePo> queryAgentResourceList(Map<String, Object> map) {
-        return new ArrayList<>(protectedResourceAgentMapper.queryAgentResourceList(map));
+        List<ProtectedResourcePo> protectedResourcePos = new ArrayList<>(
+            protectedResourceAgentMapper.queryAgentResourceList(map));
+        return setLabelList(protectedResourcePos);
     }
 
     @Override
@@ -1255,7 +1283,7 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
     }
 
     @Override
-    public void legoHostSighWithOldPrivateKey() {
+    public void legoHostSighWithOldPrivateKey(boolean isFileExits) {
         Map<String, Object> param = new HashMap<>();
         param.put("type", "Host");
         param.put("scenario", AgentTypeEnum.EXTERNAL_AGENT.getValue());
@@ -1264,15 +1292,66 @@ public class ProtectedResourceRepositoryImpl implements ProtectedResourceReposit
         param.put("pageSize", 20000);
         // 查询在线主机
         List<ProtectedResourcePo> protectedResourcePos = this.queryAgentResourceList(param);
+        if (isFileExits) {
+            protectedResourcePos = Optional.of(protectedResourcePos)
+                .map(list -> list.stream()
+                    .filter(protectedResourcePo ->
+                        USE_OLD_AGENT.equals(getHostVersion(protectedResourcePo.getVersion())))
+                    .collect(Collectors.toList()))
+                .orElseGet(ArrayList::new);
+            for (ProtectedResourcePo protectedResourcePo : protectedResourcePos) {
+                ProtectedResourceExtendInfoPo extendInfoPo = protectedResourceExtendInfoMapper.selectOne(
+                    new QueryWrapper<ProtectedResourceExtendInfoPo>()
+                        .eq("resource_id", protectedResourcePo.getUuid())
+                        .eq("key", Constants.USE_OLD_PRIVATE));
+                if (VerifyUtil.isEmpty(extendInfoPo)) {
+                    sighWithOldPrivateKey(protectedResourcePo);
+                }
+            }
+        } else {
+            protectedResourcePos.forEach(this::sighWithOldPrivateKey);
+        }
         log.info("legoHostSighWithOld protectedResourcePos size: {}", protectedResourcePos.size());
-        protectedResourcePos.forEach(protectedResourcePo -> {
-            log.info("legoHostSighWithOld uuid: {}", protectedResourcePo.getUuid());
-            ProtectedResourceExtendInfoPo resourceExtendInfoPo = new ProtectedResourceExtendInfoPo();
-            resourceExtendInfoPo.setUuid(UUID.randomUUID().toString());
-            resourceExtendInfoPo.setResourceId(protectedResourcePo.getUuid());
-            resourceExtendInfoPo.setKey(Constants.USE_OLD_PRIVATE);
-            resourceExtendInfoPo.setValue("1");
-            this.insertProtectedResourceExtendInfoBo(resourceExtendInfoPo);
-        });
+    }
+
+    @Override
+    public List<ProtectedResource> queryResourcesByParentUuid(String parentId) {
+        LambdaQueryWrapper<ProtectedResourcePo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(!VerifyUtil.isEmpty(parentId), ProtectedResourcePo::getParentUuid, parentId);
+        List<ProtectedResourcePo> pos = protectedResourceMapper.selectList(queryWrapper);
+        return pos.stream().map(ProtectedResourcePo::toProtectedResource).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProtectedResource> queryResourcesByRootUuidAndSourceType(String rootUuid, String sourceType) {
+        LambdaQueryWrapper<ProtectedResourcePo> wrapper = new LambdaQueryWrapper<ProtectedResourcePo>()
+            .eq(ProtectedResourcePo::getRootUuid, rootUuid)
+            .eq(ProtectedResourcePo::getSourceType, sourceType);
+
+        return protectedResourceMapper.selectList(wrapper).stream()
+            .map(protectedResourcePo -> {
+                ProtectedResource resource = new ProtectedResource();
+                BeanUtils.copyProperties(protectedResourcePo, resource);
+                return resource;
+            }).collect(Collectors.toList());
+    }
+
+    private void sighWithOldPrivateKey(ProtectedResourcePo protectedResourcePo) {
+        log.info("legoHostSighWithOld uuid: {}", protectedResourcePo.getUuid());
+        ProtectedResourceExtendInfoPo resourceExtendInfoPo = new ProtectedResourceExtendInfoPo();
+        resourceExtendInfoPo.setUuid(UUID.randomUUID().toString());
+        resourceExtendInfoPo.setResourceId(protectedResourcePo.getUuid());
+        resourceExtendInfoPo.setKey(Constants.USE_OLD_PRIVATE);
+        resourceExtendInfoPo.setValue("1");
+        this.insertProtectedResourceExtendInfoBo(resourceExtendInfoPo);
+    }
+
+    private String getHostVersion(String version) {
+        String[] parts = version.split("\\.");
+        if (parts.length >= 2) {
+            return parts[0] + "." + parts[1];
+        } else {
+            throw new IllegalArgumentException("Incorrect version number.");
+        }
     }
 }

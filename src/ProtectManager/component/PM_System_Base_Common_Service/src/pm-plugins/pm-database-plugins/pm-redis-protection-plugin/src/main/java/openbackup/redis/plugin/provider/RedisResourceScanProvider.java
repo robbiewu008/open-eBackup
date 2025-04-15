@@ -12,6 +12,10 @@
 */
 package openbackup.redis.plugin.provider;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+import com.huawei.oceanprotect.system.base.kerberos.service.KerberosService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
@@ -22,14 +26,9 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceConstants
 import openbackup.data.protection.access.provider.sdk.resource.ResourceScanProvider;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.utils.AuthParamUtil;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.redis.plugin.service.RedisService;
 import openbackup.redis.plugin.service.impl.RedisServiceImpl;
-import com.huawei.oceanprotect.system.base.kerberos.service.KerberosService;
-
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

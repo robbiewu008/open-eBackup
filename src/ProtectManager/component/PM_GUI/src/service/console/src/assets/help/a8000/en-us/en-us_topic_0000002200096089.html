@@ -1,0 +1,88 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring Active Directory Objects in the Scenario with Primary and Secondary Domain Controllers">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200010533.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200096089">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring Active Directory Objects in the Scenario with Primary and Secondary Domain Controllers</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200096089"></a><a name="EN-US_TOPIC_0000002200096089"></a>
+
+<h1 class="topictitle1">Restoring Active Directory Objects in the Scenario with Primary and Secondary Domain Controllers</h1>
+<div><p>This section describes how to perform object-level restoration for Active Directory to restore Active Directory objects (including user accounts, computer accounts, and more) to their original locations in the scenario with primary and secondary domain controllers.</p>
+<p>Backup copies, replication copies (only reverse replication copies can be used for restoration to the original location), and archive copies can be used for restoration. Data can be restored to the original location.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_ul155946913719"><li id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_li178221624154012">Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li><li id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_li16688125151511">Before restoration, ensure that the value of <strong id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_b14640161103013">Backup Data</strong> is <strong id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_b1531981423012">System state + Object</strong> for the copy to be used for restoration.</li><li id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_li17523102517320">Active Directory object-level restoration applies to scenarios where objects, including users, user groups, and organizational units (OUs), or their attributes are deleted by mistake.</li><li id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_li16356195914216">Before restoration, ensure that the Active Directory Recycle Bin has been enabled.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><p>After the restoration, data cannot be synchronized from the primary domain controller to the secondary domain controller immediately due to the time difference in data replication between the primary and secondary domain controllers.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002199964685_uicontrol193721239145518"><b>Explore &gt; Applications &gt; Active Directory</b></span>.</span></li><li><span>You can search for copies by Active Directory resource or copy. This section describes how to search for copies by resource.</span><p><p>Locate the resource based on the name of the resource where the object to be restored resides and click the resource name.</p>
+</p></li><li><span>Click the <strong>Copy Data</strong> tab.</span></li><li><span>Select the year, month, and day in sequence to find the copy.</span><p><p>If <span><img src="en-us_image_0000002164769682.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p>
+</p></li><li><span>In the row of the copy to be used for restoration, choose <span><strong>More</strong></span> &gt; <strong>Object-Level Restoration</strong> to configure restoration parameters.</span><p><div class="p"><a href="#EN-US_TOPIC_0000002200096089__table194961441141219">Table 1</a> describes the related parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200096089__table194961441141219"></a><a name="table194961441141219"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200096089__table194961441141219" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters for restoring an Active Directory object</caption><colgroup><col style="width:19.97%"><col style="width:80.03%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_row849615417124"><th align="left" class="cellrowborder" valign="top" width="19.97%" id="mcps1.3.5.2.5.2.1.2.2.3.1.1"><p id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_p3496134113127">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="80.03%" id="mcps1.3.5.2.5.2.1.2.2.3.1.2"><p id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_p184961241131217">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_row84968417127"><td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.5.2.5.2.1.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_p124963413125"><span id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_text1586717301177"><strong>Restore To</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.5.2.5.2.1.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_p16496164110123">Only restoration to <span class="uicontrol" id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_uicontrol14229450192418"><b><span id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_text8228185062416"><strong>Original location</strong></span></b></span> is supported.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_row349644119122"><td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.5.2.5.2.1.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_p249664112126"><span id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_text15801515817"><strong>Location</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.5.2.5.2.1.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_p16496184121216">By default, the restoration location is displayed.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_row2607163816448"><td class="cellrowborder" valign="top" width="19.97%" headers="mcps1.3.5.2.5.2.1.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_p1160911389443"><strong id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_b11794113910177">Object Obtaining Mode</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.03%" headers="mcps1.3.5.2.5.2.1.2.2.3.1.2 "><div class="p" id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_p76091238114417">Set <strong id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_b1538819415170">Object Obtaining Mode</strong>, which can be <strong id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_b438811411178">Select objects from the directory tree</strong> or <strong id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_b11388114171712">Enter object names</strong>.<div class="note" id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_en-us_topic_0000001792387972_note1195634711290"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_ul64460213919"><li id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_li244632591">If the copy contains too many objects, the system may time out, preventing you from selecting objects to be restored from the directory tree. Therefore, you are advised to enter the names of objects to be restored.</li><li id="EN-US_TOPIC_0000002200096089__en-us_topic_0000002200010565_li1953685992">When you manually enter the names of objects to be restored, only one of the objects can be randomly restored if the copy contains two objects with the same name (for example, a computer and a user group are in different directories but have the same name). You are advised to ensure that the names of objects are unique in the Active Directory domain during backup.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>In the <strong>Select Object</strong> area, you can select the desired object directly or select it by entering the object name in the search box.</p>
+</p></li><li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200010533.html">Restoration</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

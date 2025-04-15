@@ -80,6 +80,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -88,6 +89,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -98,6 +100,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -113,12 +116,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\platform\securec\include;..\..\..\open_src\openssl\include;..\..\..\open_src;..\..\..\open_src\tinyxml;..\..\..\platform\kmc;..\..\..\platform\kmc\include;..\..\..\platform\kmc\src\sdp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\src\inc;..\..\..\platform\securec\include;..\..\..\open_src\openssl\include;..\..\..\open_src;..\..\..\open_src\tinyxml;..\..\..\platform\kmc;..\..\..\platform\kmc\include;..\..\..\platform\kmc\src\sdp;..\..\..\platform\kmc\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OmitFramePointers>
       </OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <PreprocessorDefinitions>WIN32;AGENT_DLL_EXPORTS;WSEC_ERR_CODE_BASE=0;_CRT_SECURE_NO_WARNINGS;__WINDOWS__;HAVE_STRUCT_TIMESPEC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

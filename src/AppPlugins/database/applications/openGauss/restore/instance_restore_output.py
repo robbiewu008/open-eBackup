@@ -15,16 +15,19 @@ import os
 import sys
 import time
 import shutil
-from common.common import output_result_file
+import stat
+
+from common.util.cmd_utils import cmd_format
+from openGauss.common.const import logger, Env, CopyDirectory, SubJobType, NodeDetailRole, WhitePath, BackupStatus, \
+    OpenGaussDeployType, ProtectObject, ParamKey, ProgressInfo
+from common.common import output_result_file, execute_cmd
 from common.common_models import ActionResult, SubJobDetails, LogDetail
 from common.const import JobData, ExecuteResultEnum, RepositoryDataTypeEnum, SubJobStatusEnum
-from common.parse_parafile import ParamFileUtil
 from common.util.check_utils import is_valid_id, check_path_in_white_list
 from common.util.exec_utils import su_exec_rm_cmd, exec_mkdir_cmd
 from common.util.backup import query_progress, backup_files
 from openGauss.common.common import read_progress, query_speed, check_path, safe_get_environ, \
-    safe_check_injection_char, get_hostname, record_err_code, query_err_code, safe_remove_path
-from openGauss.common.const import logger, Env, CopyDirectory, SubJobType, NodeDetailRole, WhitePath, BackupStatus
+    safe_check_injection_char, get_hostname, record_err_code, query_err_code, safe_remove_path, write_progress_file
 from openGauss.common.error_code import NormalErr
 from openGauss.common.opengauss_param import JsonParam
 from openGauss.resource.cluster_instance import GaussCluster
@@ -53,7 +56,7 @@ class RestoreOutput:
         if env_path and not (os.path.isfile(env_path) and check_path(env_path)):
             logger.error(f"Bad env path. pid: {pid}, job id: {job_id}")
             return False
-        logger.info(f"传入的context为：{context}")
+        logger.debug(f"Input context is {context}")
         meta_path = context["meta_path"]
         if meta_path and os.path.islink(meta_path):
             logger.error(f"Bad meta path. pid: {pid}, job id: {job_id}")
@@ -90,7 +93,6 @@ class RestoreOutput:
             return NodeDetailRole.STANDBY
         return NodeDetailRole.PRIMARY if default_primary else NodeDetailRole.STANDBY
 
-
     @staticmethod
     def get_media_path(context, job_dict):
         # 获取实例备份所在目录和cache仓目录
@@ -104,6 +106,32 @@ class RestoreOutput:
             if reps.get("repositoryType") == RepositoryDataTypeEnum.DATA_REPOSITORY and check_path(path):
                 context["meta_path"] = path
                 context["media_path"] = os.path.join(path, CopyDirectory.INSTANCE_DIRECTORY)
+            if reps.get("repositoryType") == RepositoryDataTypeEnum.CACHE_REPOSITORY:
+                if check_path(path):
+                    context["cache_path"] = path
+        logger.info(f"Get media path success.")
+        return context
+
+    @staticmethod
+    def get_cmdb_media_path(context, job_dict, job_id):
+        # 获取实例备份所在目录和cache仓目录
+        if context["restoreTimeStamp"]:
+            copy_dict = job_dict.get("copies", [{}])[-2]
+        else:
+            copy_dict = job_dict.get("copies", [{}])[-1]
+        repositories_info = copy_dict.get("repositories", [])
+        for reps in repositories_info:
+            path = reps.get("path", [])[0]
+            if reps.get("repositoryType") == RepositoryDataTypeEnum.DATA_REPOSITORY and check_path(path):
+                # 临时规避，e系列需组装livemount路径
+                e_path = os.path.join(path, "livemount", job_id, CopyDirectory.INSTANCE_DIRECTORY)
+                if os.path.exists(e_path):
+                    context["livemount_path"] = os.path.join(path, "livemount")
+                    context["meta_path"] = os.path.join(path, "livemount")
+                    context["media_path"] = e_path
+                else:
+                    context["meta_path"] = path
+                    context["media_path"] = os.path.join(path, CopyDirectory.INSTANCE_DIRECTORY)
             if reps.get("repositoryType") == RepositoryDataTypeEnum.CACHE_REPOSITORY:
                 if check_path(path):
                     context["cache_path"] = path
@@ -132,7 +160,6 @@ class RestoreOutput:
         logger.info(f"Get copy mount path success, paths: {copy_mount_paths}, repository type: {repo_type}.")
         return copy_mount_paths
 
-
     @staticmethod
     def get_restore_status(job_id):
         restore_status = False
@@ -155,7 +182,6 @@ class RestoreOutput:
                 restore_status = False
                 break
         return restore_status
-
 
     @staticmethod
     def copy_files(os_user: str, src_path: str, target_path: str, wildcard=".", job_id=""):
@@ -187,7 +213,6 @@ class RestoreOutput:
         logger.info(f"merged_path下存在文件: {contents}")
         logger.info("Merge log copies success.")
 
-
     @staticmethod
     def handle_log_copy(job_dict):
         # 生成日志合并目录并将日志拷到对应目录下
@@ -212,7 +237,6 @@ class RestoreOutput:
             logger.error("No log copy mount path exists for point-in-time recovery.")
             raise Exception("No log copy mount path exists for point-in-time recovery.")
 
-
     @staticmethod
     def parse_param():
         """
@@ -234,28 +258,97 @@ class RestoreOutput:
             return {}, context
         context["local_role"] = local_role
         job_dict = param_dict.get("job", {})
+        merge_path_list = []
+        copies = job_dict.get("copies", [{}])
+        RestoreOutput.set_data_save_path(copies, merge_path_list)
+        context["merge_path_list"] = merge_path_list
+        # 日志恢复任务，框架下发两个时间大小顺序排列的副本，全量+日志。日志副本中 repositories 是历次日志副本,也按时间大小顺序排列
+        # 第一个 copy 是全量副本
+        RestoreOutput.set_full_copy_id(context, job_dict)
+        logger.info(f"Get full_copy_id: {context['full_copy_id']}")
         copy_dict = job_dict.get("copies", [{}])[-1]
         context["restore_type"] = job_dict.get("jobParam", {}).get("restoreType")
         context["nodes"] = job_dict.get("targetEnv", {}).get("nodes", [])
         extend_dict = copy_dict.get("extendInfo", {})
         if not extend_dict.get("backupIndexId"):
             extend_dict = copy_dict.get("extendInfo", {}).get("extendInfo", {})
-        context["backup_key"] = extend_dict.get("backupIndexId")
-        context["parent_id"] = extend_dict.get("parentCopyId")
-        context["backup_type"] = extend_dict.get("backupType")
-        context["conf_file"] = extend_dict.get("pg_probackup.conf")
-        context["version"] = extend_dict.get("protectObject", {}).get("type")
-        context["pre_user"] = extend_dict.get("userName")
+        RestoreOutput.set_context_info(context, copy_dict, extend_dict)
         context["restoreTimeStamp"] = job_dict.get("extendInfo", {}).get("restoreTimestamp", "")
+        context["deploy_type"] = job_dict.get("targetEnv", {}).get("extendInfo", {}).get("deployType", "")
+        context["restore_type_"] = job_dict.get("targetEnv", {}).get("extendInfo", {}).get("deployType", "")
+        context["cluster_version"] = job_dict.get("targetEnv", {}).get("extendInfo", {}).get("clusterVersion", "")
+        context["archive_mode"] = job_dict.get("targetObject", {}).get("extendInfo", {}).get("archiveMode", "false")
+        context["dcs_address"] = job_dict.get("targetEnv", {}).get("extendInfo", {}).get(ParamKey.DCS_ADDRESS, "")
+        context["dcs_port"] = job_dict.get("targetEnv", {}).get("extendInfo", {}).get(ParamKey.DCS_PORT, "")
         # 仅当任意时间点恢复时生成日志合并目录
-        if context["restoreTimeStamp"]:
+        # 检查是否需要生成日志合并目录
+        if context["restoreTimeStamp"] and (
+                context["deploy_type"] != OpenGaussDeployType.DISTRIBUTED or ProtectObject.CMDB not in context[
+            "cluster_version"]):
             logger.info(f'The restore timestamp: {context["restoreTimeStamp"]}')
             context["merged_log_path"] = new_instance.handle_log_copy(job_dict)
         env_path = job_dict.get("targetEnv", {}).get("extendInfo", {}).get("envPath")
         context["env_path"] = env_path if check_path(env_path) else ""
         if param_dict.get("subJob", {}):
             context["sub_job_name"] = param_dict.get("subJob", {}).get("jobName")
-        return job_dict, RestoreOutput.get_media_path(context, job_dict)
+        if context["deploy_type"] == OpenGaussDeployType.DISTRIBUTED or ProtectObject.CMDB in context[
+            "cluster_version"]:
+            result = RestoreOutput.get_cmdb_media_path(context, job_dict, JobData.JOB_ID)
+        else:
+            result = RestoreOutput.get_media_path(context, job_dict)
+        return job_dict, result
+
+    @staticmethod
+    def set_full_copy_id(context, job_dict):
+        context["full_copy_id"] = (
+                job_dict.get("copies", [{}])[0].get("extendInfo", {}).get("extendInfo", {}).get("baseCopyId") or
+                job_dict.get("copies", [{}])[0].get("extendInfo", {}).get("baseCopyId") or
+                job_dict.get("copies", [{}])[0].get("id")
+        )
+
+    @staticmethod
+    def set_context_info(context, copy_dict, extend_dict):
+        context["backup_key"] = extend_dict.get("backupIndexId")
+        context["parent_id"] = extend_dict.get("parentCopyId")
+        context["backup_type"] = extend_dict.get("backupType")
+        context["conf_file"] = extend_dict.get("pg_probackup.conf")
+        context["base_copy_id"] = extend_dict.get("baseCopyId")
+        context["target_copy_id"] = copy_dict.get("id")
+        context["version"] = extend_dict.get("protectObject", {}).get("type")
+        context["pre_user"] = extend_dict.get("userName")
+
+    @staticmethod
+    def set_data_save_path(copies, merge_path_list):
+        for copy in copies:
+            if copy.get("type", "full") == "full":
+                continue
+            repositories = copy.get("repositories", {})
+            cur_copy_id = copy.get("id", {})
+            for repository in repositories:
+                repository_type = repository.get("repositoryType", "")
+                RestoreOutput.set_merge_path(cur_copy_id, merge_path_list, repository, repository_type)
+
+    @staticmethod
+    def set_merge_path(cur_copy_id, merge_path_list, repository, repository_type):
+        if repository_type in [RepositoryDataTypeEnum.DATA_REPOSITORY.value,
+                               RepositoryDataTypeEnum.LOG_REPOSITORY.value]:
+            repository_list = repository.get("path", [])
+
+            # 查询到空仓库路径时，返回
+            if not repository_list:
+                logger.info(f"Cur repository {repository} path is empty")
+                return
+            merge_path = repository_list[0]
+            if repository_type == RepositoryDataTypeEnum.LOG_REPOSITORY.value:
+                merge_path = os.path.join(merge_path, CopyDirectory.INSTANCE_DIRECTORY)
+            else:
+                e_path = os.path.join(merge_path, "livemount", JobData.JOB_ID, CopyDirectory.INSTANCE_DIRECTORY,
+                                      cur_copy_id)
+                if os.path.exists(e_path):
+                    merge_path = e_path
+                else:
+                    merge_path = os.path.join(merge_path, CopyDirectory.INSTANCE_DIRECTORY, cur_copy_id)
+            merge_path_list.append(merge_path)
 
 
 if __name__ == '__main__':
@@ -295,6 +388,7 @@ if __name__ == '__main__':
         output_result_file(JobData.PID, sub_jobs)
         sys.exit(0)
     if func_type == "RestorePrerequisite":
+        logger.info(f"Get restore param: {job_log_dict}")
         pre_job_err = check_ins.pre_restore_job()
         if input_info.get("backup_type") == "LOG":
             new_instance.pre_merge_logs(job_log_dict, input_info)
@@ -320,6 +414,23 @@ if __name__ == '__main__':
     elif func_type == "Restore":
         sub_job_name = input_info.get("sub_job_name")
         logger.info(f"sub job name: {sub_job_name}. pid: {JobData.PID}. job id: {JobData.JOB_ID}")
+        if sub_job_name == SubJobType.EMPTY:
+            progress_file = os.path.join(input_info.get("cache_path"),
+                                         f'{JobData.JOB_ID}{get_hostname()}{SubJobType.EMPTY}')
+            write_progress_file(ProgressInfo.START, progress_file)
+
+            livemount_path = input_info.get("livemount_path", "")
+            if livemount_path:
+                logger.info(f'Chmod : {livemount_path}')
+                execute_cmd(cmd_format("chmod -R 777 {}", livemount_path))
+            write_progress_file(ProgressInfo.SUCCEED, progress_file)
+            new_instance.output_code.code, new_instance.output_code.body_err, new_instance.output_code.message \
+                = ExecuteResultEnum.SUCCESS, 0, ""
+        # CMDB 分布式分支
+        if sub_job_name == SubJobType.CMDB_RESTORE:
+            new_instance.output_code.code, new_instance.output_code.body_err, new_instance.output_code.message \
+                = exec_ins.do_restore_job_cmdb()
+        # 主备分支
         if sub_job_name == SubJobType.PREPARE_RESTORE:
             new_instance.output_code.code, new_instance.output_code.body_err, new_instance.output_code.message \
                 = exec_ins.do_prepare_restore()
@@ -339,8 +450,14 @@ if __name__ == '__main__':
         new_instance.progress_info.progress = progress
         new_instance.progress_info.task_status = status
         inst = GaussCluster(safe_get_environ(f"{Env.OPEN_GAUSS_USER}_{JobData.PID}"), input_info.get("env_path"))
-        new_instance.progress_info.data_size, new_instance.progress_info.speed = \
-            query_speed(inst.get_instance_data_path(), os.path.join(input_info.get("cache_path"), f'T{JobData.JOB_ID}'))
+        deploy_type = input_info.get("deploy_type", "")
+        cluster_version = input_info.get("cluster_version", "")
+        logger.info(
+            f"Restore job deploy type {deploy_type}, cluster_version: {cluster_version}")
+        if deploy_type != OpenGaussDeployType.DISTRIBUTED or ProtectObject.CMDB not in cluster_version:
+            new_instance.progress_info.data_size, new_instance.progress_info.speed = \
+                query_speed(inst.get_instance_data_path(),
+                            os.path.join(input_info.get("cache_path"), f'T{JobData.JOB_ID}'))
         output_result_file(JobData.PID, new_instance.progress_info.dict(by_alias=True))
         sys.exit(0)
     elif func_type == "RestorePost":
@@ -350,17 +467,17 @@ if __name__ == '__main__':
                 logger.warn(f"Execute remove file command failed! File path: {restore_post_file}.")
                 sys.exit(0)
         merged_log_path = input_info.get("merged_log_path")
-        if os.path.exists(merged_log_path):
+        if merged_log_path is not None and os.path.exists(merged_log_path):
             shutil.rmtree(merged_log_path)
             logger.info("Delete the temporary log copy merge directory success.")
         user_name = safe_get_environ(f"{Env.OPEN_GAUSS_USER}_{JobData.PID}")
         inst = GaussCluster(user_name, input_info.get("env_path"))
         status = inst.cluster_state
+        logger.info(f"Restore post job cluster status: {status}")
         if status == "Normal":
             new_instance.output_code.code = ExecuteResultEnum.SUCCESS
         else:
             new_instance.output_code.code = ExecuteResultEnum.INTERNAL_ERROR
-        exec_ins.stop_recovery_status()
     elif func_type == "RestorePostProgress":
         user_name = safe_get_environ(f"{Env.OPEN_GAUSS_USER}_{JobData.PID}")
         inst = GaussCluster(user_name, input_info.get("env_path"))

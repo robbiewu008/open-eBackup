@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.backup.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupFeatureService;
@@ -20,8 +21,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.exception.ResourceNotExistException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,10 +42,13 @@ public class BackupFeatureServiceImpl implements BackupFeatureService {
     private ProviderManager providerManager;
 
     @Override
-    public boolean isSupportDataAndLogParallelBackup(String resourceId) {
+    public boolean isSupportDataAndLogParallelBackup(String resourceId, boolean isStrictMatch) {
         Optional<ProtectedResource> resource = resourceService.getBasicResourceById(resourceId);
         if (!resource.isPresent()) {
             log.warn("Protected resource is not found. resourceId is {}", resourceId);
+            if (isStrictMatch) {
+                throw new ResourceNotExistException(CommonErrorCode.OBJ_NOT_EXIST, "resource is not found");
+            }
             return false;
         }
         return isSupportDataAndLogParallelBackup(resource.get());

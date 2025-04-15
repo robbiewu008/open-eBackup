@@ -19,7 +19,7 @@
     <ng-template #backupTipTpl>
         <span innerHTML="{{'protection_backup_tip_label' | i18n}}"></span>
     </ng-template>
-    <div class="tips" *ngIf="[appType.TiDB, appType.TDSQL, appType.MongoDB].includes(applicationType)">
+    <div class="tips" *ngIf="[appType.TiDB, appType.TDSQL].includes(applicationType)">
         <i style="display: inline-block; margin-right: 4px;" lv-icon="lv-icon-status-info" lvColorState='true'
             class="type-icon"></i>
         <span style="display: inline-block; width: 96%;">
@@ -37,13 +37,11 @@
         [(lvActiveIndex)]="activeIndex" [lvClosable]="![].includes(applicationType) && !isHyperdetect"
         (lvTabRemove)="removeBackupTeam($event)">
         <lv-tab *ngFor="let item of formGroup.get('backupTeams')?.controls; let teamIndex = index"
-            [formGroupName]="teamIndex" [lvTitle]="!isHyperdetect?
-				item.get('name').value + '(' + i18n.get(slaBackupName[item.get('action').value]) + ')':
-				item.get('name').value" [lvId]="item.get('name').value + teamIndex">
+            [formGroupName]="teamIndex" [lvTitle]="!isHyperdetect? title
+				: i18n.get('common_production_snapshot_label')" [lvId]="item.get('name').value + teamIndex">
             <ng-template #title>
-                <div [ngClass]="{'min-width': ![appType.NASFileSystem].includes(applicationType), 'max-width':[appType.NASFileSystem, appType.LocalFileSystem].includes(applicationType)}"
-                    lvOverflow>
-                    {{ item.get('title').value }}
+                <div lvOverflow>
+                    {{ item.get('name').value + '(' + i18n.get(slaBackupName[item.get('action').value]) + ')' }}
                 </div>
             </ng-template>
             <ng-container
@@ -92,6 +90,9 @@
                 </lv-form-item>
             </div>
 
+            <lv-alert lvType="info" lvClosable="false" *ngIf="isHyperdetect">
+                {{'protection_hyperdect_sla_backup_tip_label' | i18n}}
+            </lv-alert>
             <div class="aui-gutter-column-lg time-policy-container">
                 <div class="aui-gutter-column-xs pdl-10 trigger-action-container">
                     <lv-radio-group formControlName="trigger_action" [lvGroupName]="'daysOfTypeGroup'">
@@ -131,8 +132,8 @@
                 <div *ngIf="_includes([daysOfType.DaysOfDay, daysOfType.DaysOfHour, daysOfType.DaysOfMinute], item.get('trigger_action').value)"
                     class="container" [ngClass]="{'container-en':i18n.isEn}">
                     <lv-group lvDirection='vertical' lvGutter="24px" [ngClass]="{'group-en':i18n.isEn}">
-                        <lv-group>
-                            <lv-group>
+                        <lv-group lvGutter="3px">
+                            <lv-group lvGutter="3px">
                                 <ng-container *ngIf="i18n.isEn">
                                     <lv-form-label>{{'common_english_since_label' | i18n}}</lv-form-label>
                                 </ng-container>
@@ -155,7 +156,7 @@
                                     </lv-form-label>
                                 </ng-container>
                             </lv-group>
-                            <lv-group>
+                            <lv-group lvGutter="3px">
                                 <ng-container *ngIf="i18n.isEn">
                                     <lv-form-label>{{'common_english_executed_once_every_label' | i18n}}</lv-form-label>
                                 </ng-container>
@@ -182,19 +183,30 @@
                                     <ng-container *ngIf="!i18n.isEn">
                                         {{'protection_execute_once_label' | i18n}}
                                     </ng-container>
-                                    {{applicationType === appType.HBase && item.get('action').value === policyAction.LOG
-                                    ?
-                                    '' : 'common_comma_label' | i18n}}
+                                    {{'common_comma_label' | i18n}}
                                 </lv-form-label>
                             </lv-group>
-                            <lv-group>
-                                <ng-container
-                                    *ngIf="applicationType !== appType.HBase || item.get('action').value !== policyAction.LOG">
+                            <lv-group lvGutter="3px">
+                                <ng-container>
                                     <ng-container *ngIf="i18n.isEn">
-                                        <lv-form-label>{{'common_english_retained_label' | i18n}}</lv-form-label>
+                                        <lv-form-label>
+                                            {{'common_english_retained_label' | i18n}}
+                                            <i *ngIf="item.get('action').value === policyAction.LOG"
+                                                lv-icon="aui-icon-help"
+                                                lv-tooltip="{{ 'protection_sla_log_retained_tip_label' | i18n }}"
+                                                lvTooltipTheme="light" lvTooltipPosition="top"
+                                                class="configform-constraint" lvColorState="true"></i>
+                                        </lv-form-label>
                                     </ng-container>
                                     <ng-container *ngIf="!i18n.isEn">
-                                        <lv-form-label>{{'protection_copies_retention_label' | i18n}}</lv-form-label>
+                                        <lv-form-label>
+                                            {{'protection_copies_retention_label' | i18n}}
+                                            <i *ngIf="item.get('action').value === policyAction.LOG"
+                                                lv-icon="aui-icon-help"
+                                                lv-tooltip="{{ 'protection_sla_log_retained_tip_label' | i18n }}"
+                                                lvTooltipTheme="light" lvTooltipPosition="top"
+                                                class="configform-constraint" lvColorState="true"></i>
+                                        </lv-form-label>
                                     </ng-container>
                                     <lv-form-control [lvErrorTip]="item.value.retention_duration_error_tip"
                                         class="groupInControl">
@@ -211,7 +223,7 @@
                                 </ng-container>
                             </lv-group>
                         </lv-group>
-                        <lv-group *ngIf="item.get('action').value !== policyAction.LOG">
+                        <lv-group lvGutter="3px" *ngIf="item.get('action').value !== policyAction.LOG">
                             <ng-container *ngIf="i18n.isEn">
                                 <lv-form-label>{{'common_english_backup_allowed_from_label' | i18n}}</lv-form-label>
                             </ng-container>
@@ -219,7 +231,7 @@
                                 <lv-form-label>{{'common_from_label' | i18n}}</lv-form-label>
                             </ng-container> <lv-form-control [lvErrorTip]="windowStartTimeErrorTip">
                                 <lv-time-picker formControlName="window_start" lvPlaceholder="HH:mm:ss"
-                                    class="start-time">
+                                    [lvFooter]="startTimePickerFooterTpl" class="start-time">
                                 </lv-time-picker>
                             </lv-form-control>
                             <ng-container *ngIf="i18n.isEn">
@@ -229,21 +241,34 @@
                                 <lv-form-label>{{'common_to_label' | i18n}}</lv-form-label>
                             </ng-container>
                             <lv-form-control [lvErrorTip]="windowEndTimeErrorTip">
-                                <lv-time-picker formControlName="window_end" lvPlaceholder="HH:mm:ss" class="end-time">
+                                <lv-time-picker formControlName="window_end" lvPlaceholder="HH:mm:ss"
+                                    [lvFooter]="endTimePickerFooterTpl" class="end-time">
                                 </lv-time-picker>
                             </lv-form-control>
                             <ng-container *ngIf="!i18n.isEn">
                                 <lv-form-label>{{'protection_allow_backup_label' | i18n}}</lv-form-label>
                             </ng-container>
                         </lv-group>
+                        <ng-template #startTimePickerFooterTpl>
+                            <button lv-button lvType="link" class="time-picker-current"
+                                (click)="setSysTime(item.get('window_start'))">
+                                {{'common_current_time_label' | i18n}}
+                            </button>
+                        </ng-template>
+                        <ng-template #endTimePickerFooterTpl>
+                            <button lv-button lvType="link" class="time-picker-current"
+                                (click)="setSysTime(item.get('window_end'))">
+                                {{'common_current_time_label' | i18n}}
+                            </button>
+                        </ng-template>
                     </lv-group>
                 </div>
 
                 <div *ngIf="_includes([daysOfType.DaysOfYear, daysOfType.DaysOfMonth, daysOfType.DaysOfWeek], item.get('trigger_action').value)"
                     class="container" [ngClass]="{'container-en':i18n.isEn}">
                     <lv-group lvDirection='vertical' lvGutter="24px">
-                        <lv-group>
-                            <lv-group>
+                        <lv-group lvGutter="3px">
+                            <lv-group lvGutter="3px">
 
                                 <!--每年-->
                                 <ng-container *ngIf="item.get('trigger_action').value === daysOfType.DaysOfYear">
@@ -371,7 +396,7 @@
                                     </ng-container>
                                 </ng-container>
                             </lv-group>
-                            <lv-group>
+                            <lv-group lvGutter="3px">
                                 <ng-container *ngIf="i18n.isEn">
                                     <lv-form-label>{{'common_english_retained_label' | i18n}}</lv-form-label>
                                 </ng-container>
@@ -393,7 +418,7 @@
                                 </lv-form-control>
                             </lv-group>
                         </lv-group>
-                        <lv-group>
+                        <lv-group lvGutter="3px">
                             <ng-container *ngIf="i18n.isEn">
                                 <lv-form-label>{{'common_english_backup_allowed_from_label' | i18n}}</lv-form-label>
                             </ng-container>
@@ -402,7 +427,7 @@
                             </ng-container>
                             <lv-form-control [lvErrorTip]="windowStartTimeErrorTip">
                                 <lv-time-picker formControlName="specified_window_start" lvPlaceholder="HH:mm:ss"
-                                    class="start-time">
+                                    [lvFooter]="specifiedStartTimePickerFooterTpl" class="start-time">
                                 </lv-time-picker>
                             </lv-form-control>
                             <ng-container *ngIf="i18n.isEn">
@@ -413,13 +438,25 @@
                             </ng-container>
                             <lv-form-control [lvErrorTip]="windowEndTimeErrorTip">
                                 <lv-time-picker formControlName="specified_window_end" lvPlaceholder="HH:mm:ss"
-                                    class="end-time">
+                                    [lvFooter]="specifiedEndTimePickerFooterTpl" class="end-time">
                                 </lv-time-picker>
                             </lv-form-control>
                             <ng-container *ngIf="!i18n.isEn">
                                 <lv-form-label>{{'protection_allow_backup_label' | i18n}}</lv-form-label>
                             </ng-container>
                         </lv-group>
+                        <ng-template #specifiedStartTimePickerFooterTpl>
+                            <button lv-button lvType="link" class="time-picker-current"
+                                (click)="setSysTime(item.get('specified_window_start'))">
+                                {{'common_current_time_label' | i18n}}
+                            </button>
+                        </ng-template>
+                        <ng-template #specifiedEndTimePickerFooterTpl>
+                            <button lv-button lvType="link" class="time-picker-current"
+                                (click)="setSysTime(item.get('specified_window_end'))">
+                                {{'common_current_time_label' | i18n}}
+                            </button>
+                        </ng-template>
                     </lv-group>
                 </div>
             </div>
@@ -440,9 +477,70 @@
                     </lv-form-item>
                 </div>
             </ng-container>
+            <ng-container *ngIf="!isCyber&&!isDistributed&&applicationType!==appType.CommonShare">
+                <lv-form-item>
+                    <lv-form-label style="font-size: 14px;font-weight: 700;">{{'WORM' | i18n}} <i
+                            lv-icon="aui-icon-help" [lv-tooltip]="wormTipTpl" lvTooltipTheme="light"
+                            style="margin-left:4px"></i>
+                    </lv-form-label>
+                    <lv-form-control>
+                        <lv-switch formControlName="worm_switch" [lvDisabled]="isWormData||isBasicDisk"></lv-switch>
+                        <lv-alert lvType="info" *ngIf="isWormData" class="worm-alert-mgt">
+                            <h2 class="lv-alert-title">{{'common_security_worm_alarm_label'|i18n}}</h2>
+                        </lv-alert>
+                        <ng-container *ngIf="item.get('worm_switch').value">
+                            <lv-form-label>{{'common_worm_validity_label' | i18n}}</lv-form-label>
+                            <lv-form-control class="groupInControl">
+                                <lv-group lvGutter='8px' class="lv-group-flex-start">
+                                    <div>
+                                        <lv-radio-group [lvGroupName]="'wormTypeGroup'"
+                                            formControlName="worm_validity_type">
+                                            <lv-group [lvGutter]="'24px'">
+                                                <lv-radio [lvValue]="1">
+                                                    {{'common_worm_same_validity_label' | i18n}}
+                                                    <i lv-icon="aui-icon-help"
+                                                        lv-tooltip="{{ 'common_worm_same_validity_tip_label' | i18n }}"
+                                                        lvTooltipTheme="light" lvTooltipPosition="top"
+                                                        class="configform-constraint" lvColorState="true"
+                                                        style="margin-bottom:3px"></i>
+                                                </lv-radio>
+                                                <lv-radio [lvValue]="2">
+                                                    {{'common_worm_custom_validity_label' | i18n}}
+                                                </lv-radio>
+                                            </lv-group>
+                                        </lv-radio-group>
+                                        <ng-container *ngIf="item.get('worm_validity_type').value===2">
+                                            <lv-form-control
+                                                [lvErrorTip]="item.value.special_retention_duration_error_tip"
+                                                class="groupInControl">
+                                                <ng-container>{{'common_valid_worm_label' | i18n}}</ng-container>
+                                                <lv-input-group [lvAddAfter]="unitTpl" class="input-group-select-right">
+                                                    <input lv-input formControlName="worm_specified_retention_duration"
+                                                        placeholder="{{dataMap.unitPlaceHolderMap[item.get('worm_specified_duration_unit').value]}}" />
+                                                </lv-input-group>
+                                                <ng-template #unitTpl>
+                                                    <lv-select [lvOptions]="wormDurationUnitOptions"
+                                                        formControlName="worm_specified_duration_unit"
+                                                        class="unit-inner-select" lvValueKey="value"
+                                                        (ngModelChange)="changeUnit(item, item.get('worm_specified_duration_unit').value, 'worm_specified_retention_duration')"></lv-select>
+                                                </ng-template>
+                                            </lv-form-control>
+                                        </ng-container>
+                                    </div>
+
+                                </lv-group>
+                            </lv-form-control>
+                        </ng-container>
+                    </lv-form-control>
+                </lv-form-item>
+            </ng-container>
         </lv-tab>
     </lv-tabs>
 </lv-form>
+
+<ng-template #wormTipTpl>
+    <span innerHTML="{{'common_open_worm_tips_label' | i18n}}"></span>
+</ng-template>
 
 <ng-template #extraTpl>
     <ng-container

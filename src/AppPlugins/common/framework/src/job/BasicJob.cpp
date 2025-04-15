@@ -10,6 +10,7 @@
 * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
+
 #include "BasicJob.h"
 #include "log/Log.h"
 
@@ -39,6 +40,12 @@ int BasicJob::ExecuteSubJob()
     return Module::SUCCESS;
 }
 int BasicJob::PostJob()
+{
+    SetJobToFinish();
+    return Module::SUCCESS;
+}
+
+int BasicJob::ExecuteAsyncJob()
 {
     SetJobToFinish();
     return Module::SUCCESS;

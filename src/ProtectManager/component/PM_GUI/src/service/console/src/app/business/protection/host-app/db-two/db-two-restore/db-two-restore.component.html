@@ -11,21 +11,16 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div
-  class="block-tips aui-gutter-column-sm"
-  *ngIf="
-    rowCopy?.resource_sub_type === dataMap.Resource_Type.dbTwoTableSet.value
-  "
->
-  <i
-    lv-icon="lv-icon-status-info"
-    lvColorState="true"
-    class="type-icon icon-tips"
-  ></i>
-  <span class="form-tips">
-    {{ 'protection_db_two_tablespace_retsore_tips_label' | i18n }}
-  </span>
-</div>
+<lv-alert lvType="info" lvClosable="false">
+    <lv-group lvDirection="vertical" lvGutter="4px">
+        <span *ngIf="rowCopy?.resource_sub_type === dataMap.Resource_Type.dbTwoTableSet.value">
+            {{ 'protection_db_two_tablespace_retsore_tips_label' | i18n }}
+        </span>
+        <span *ngIf="connectTipsLabel">
+            {{connectTipsLabel}}
+        </span>
+    </lv-group>
+</lv-alert>
 <lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
   <lv-form-item *ngIf="!isDrill">
     <lv-form-label>

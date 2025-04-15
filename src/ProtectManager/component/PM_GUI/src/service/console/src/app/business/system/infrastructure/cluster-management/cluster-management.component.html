@@ -19,12 +19,12 @@
   </div>
   <div class="aui-block aui-paginator-container custom-main-tab">
     <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab" lvType="card">
-      ​ <lv-tab lvTitle="{{'common_backup_cluster_label' | i18n}}" lvId="backup">
+      ​ <lv-tab lvTitle="{{'common_backup_clusters_label' | i18n}}" lvId="backup">
         <ng-template lv-tab-lazy>
           <aui-backup-cluster *ngIf="!showDistributedCluster; else distributed"></aui-backup-cluster>
         </ng-template>
         ​</lv-tab>
-      ​ <lv-tab *ngIf="!appUtilsService.isDistributed" lvTitle="{{'system_replication_cluster_label' | i18n}}"
+      ​ <lv-tab lvTitle="{{'system_replication_cluster_label' | i18n}}"
         lvId="target">
         <ng-template lv-tab-lazy>
           <aui-target-cluster></aui-target-cluster>

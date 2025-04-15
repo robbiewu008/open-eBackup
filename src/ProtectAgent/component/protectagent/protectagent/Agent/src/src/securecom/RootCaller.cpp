@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "securecom/RootCaller.h"
 #include <sstream>
 #include <fstream>
@@ -16,6 +28,8 @@ using namespace std;
 namespace {
     const mp_string INSTALL_TYPE_INTERNAL = "1";
     const mp_string CMD_SUDO = "sudo";
+    constexpr int64_t ERROR_MOUNTPATH_BLOCk = 200;
+    constexpr int64_t ERROR_POINT_MOUNTED = 201;
 }
 
 namespace {
@@ -117,6 +131,9 @@ mp_int32 CRootCaller::ExecEx(mp_int32 iCommandID, const std::vector<mp_string>& 
                 iCommandID, iRet, iNewRet);
             if (iCommandID == ROOT_COMMAND_SCRIPT_MOUNT_NAS_FILESYS) {
                 ReadResultFile(iCommandID, strUniqueID, pvecResult);
+                bool isInstantMountErr = (iRet == ERROR_POINT_MOUNTED ||
+                    iRet == ERROR_MOUNTPATH_BLOCk || iRet == ERROR_MOUNTPATH);
+                iNewRet = isInstantMountErr ? iRet : iNewRet;
                 return iNewRet;
             }
             if (iCommandID != ROOT_COMMAND_THIRDPARTY && iCommandID != ROOT_COMMAND_SCRIPT_USER_DEFINED_USER_DO) {

@@ -39,15 +39,15 @@
         </lv-form-label>
         <lv-form-control [lvErrorTip]="descErrorTip">
             <lv-input-lint style="width:368px">
-                <textarea placeholder="Enter ..." lv-input formControlName="desc" lvMaxLength="255"
-                    [lvAutosize]="{ minRows: 2, maxRows: 6 }" style="width: 368px"></textarea>
+                <textarea lv-input formControlName="desc" lvMaxLength="255" [lvAutosize]="{ minRows: 2, maxRows: 6 }"
+                    style="width: 368px"></textarea>
             </lv-input-lint>
         </lv-form-control>
     </lv-form-item>
 </lv-form>
 
 <div class="select-header">
-    <h2>{{'explore_select_resource_label' | i18n}}</h2>
+    <h2>{{'protection_select_resources_label' | i18n}}</h2>
 </div>
 
 <lv-tabs>
@@ -104,13 +104,25 @@
             <ng-container *ngSwitchCase="resourceSetType.Report">
                 <lv-tab [lvTitle]="tabTitleTpl">
                     <ng-template lv-tab-lazy>
-                        <aui-reports-list [allSelectionMap]="allSelectionMap" [data]="data" [isResourceSet]="true"
-                            (allSelectChange)="selectChange($event)"></aui-reports-list>
+                        <lv-tabs lvType="underline">
+                            <lv-tab [lvTitle]="'common_report_label'|i18n">
+                                <aui-reports-list [allSelectionMap]="allSelectionMap" [data]="data"
+                                    [isResourceSet]="true" (allSelectChange)="selectChange($event)"></aui-reports-list>
+                            </lv-tab>
+                            <lv-tab [lvTitle]="'insight_report_subscription_label'|i18n">
+                                <aui-reports-subscription [allSelectionMap]="allSelectionMap" [data]="data"
+                                    [isResourceSet]="true"
+                                    (allSelectChange)="selectChange($event)"></aui-reports-subscription>
+                            </lv-tab>
+                        </lv-tabs>
                     </ng-template>
                 </lv-tab>
             </ng-container>
             <ng-container *ngSwitchDefault>
                 <lv-tab [lvTitle]="tabTitleTpl">
+                    <lv-alert lvType="info"
+                        *ngIf="!!item?.key && item.key === 'virtualization'">{{'system_resourceset_virtual_tip_label' |
+                        i18n}}</lv-alert>
                     <lv-collapse [lvMultiExpansion]="false" [lvBeforeExpanded]="beforeExpanded"
                         [lvAfterCollapsed]="afterCollapse">
                         <ng-container *ngFor="let app of item.apps">
@@ -122,8 +134,9 @@
                                     <ng-container *ngFor="let tab of app?.tabs">
                                         <lv-tab lvTitle="{{tab.label}}">
                                             <aui-normal-resourceset-template [resourceType]="tab.resType"
-                                                [subName]="app.label" [allSelectionMap]="allSelectionMap"
-                                                [appType]="app.resourceSetType" [data]="data" [allSelect]="!!app?.allSelect"
+                                                [tableLabel]="tab.label" [subName]="app.label"
+                                                [allSelectionMap]="allSelectionMap" [appType]="app.resourceSetType"
+                                                [data]="data" [allSelect]="!!app?.allSelect"
                                                 (allSelectChange)="selectChange($event)"></aui-normal-resourceset-template>
                                         </lv-tab>
                                     </ng-container>
@@ -143,7 +156,7 @@
                                 <aui-virtual-cloud-template [resourceType]="app.resType" [subName]="app.label"
                                     [allSelectionMap]="allSelectionMap" [appType]="app.resourceSetType" [data]="data"
                                     [allSelect]="!!app?.allSelect"
-                                    (allSelectChange)="selectChange($event)"></aui-virtual-cloud-template>
+                                    (allSelectChange)="selectChange($event)" (resourceGroupChange)="resourceGroupChange($event)"></aui-virtual-cloud-template>
                             </lv-collapse-panel>
                             <ng-template #extraTpl>
                                 <!-- 用于右侧全选 -->

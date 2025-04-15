@@ -1,0 +1,46 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]='formGroup' [lvLabelColon]="false" class="formGroup" lvKeepRequiredWidth>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_name_label' | i18n}}</lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <input lv-input formControlName='name' />
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'protection_storage_device_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-select formControlName="equipment" [lvOptions]='equipmentOptions' lvValueKey="uuid"
+                lvPlaceholder="{{'common_select_label'|i18n}}" lvShowFilter lvFilterKey='label' lvFilterMode='contains'
+                [lvVirtualScroll]="equipmentOptions.length > 10">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>{{'common_file_system_label' | i18n}}</lv-form-label>
+        <lv-form-control>
+            <lv-select formControlName="fileSystem" [lvOptions]='fileSystemOptions' lvValueKey="uuid" lvShowFilter
+                lvFilterKey='label' lvFilterMode='contains' [lvVirtualScroll]="fileSystemOptions.length > 10">
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'common_directory_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="directoryErrorTip">
+            <input lv-input type="text" formControlName="directory" placeholder="{{ 'protection_linux_path_backup_label' | i18n }}" />
+        </lv-form-control>
+    </lv-form-item>
+</lv-form>

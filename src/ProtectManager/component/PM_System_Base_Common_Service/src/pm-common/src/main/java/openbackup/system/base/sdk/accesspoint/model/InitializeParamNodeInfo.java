@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.sdk.accesspoint.model;
 
-import openbackup.system.base.config.business.initialize.StorageVolumeConfig;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import openbackup.system.base.config.business.initialize.StorageVolumeConfig;
 
 import org.apache.commons.lang3.StringUtils;
 

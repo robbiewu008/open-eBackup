@@ -13,12 +13,12 @@
 #include "NasControlFile.h"
 #include "define/Defines.h"
 #include "define/Types.h"
-using namespace std;
 
 #ifdef WIN32
 /* Hint: to provide dir exist check */
 #include <filesystem>
 #endif
+using namespace std;
 
 time_t GetCurrentTimeInSeconds()
 {

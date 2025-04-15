@@ -14,17 +14,26 @@ package openbackup.access.framework.resource.service;
 
 import openbackup.access.framework.resource.persistence.dao.ProtectedResourceRepositoryImpl;
 import openbackup.access.framework.resource.persistence.dao.ResourceGroupMemberMapper;
+import openbackup.access.framework.resource.persistence.dao.VirtualResourceMapper;
+import openbackup.access.framework.resource.persistence.model.VirtualResourceExtendPo;
+import openbackup.access.framework.resource.util.ResourceFilterUtil;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.constants.ProtectObjectErrorCode;
 import openbackup.data.protection.access.provider.sdk.protection.ProtectionInterceptorProvider;
+import openbackup.data.protection.access.provider.sdk.protection.model.ProtectionExecuteDto;
+import openbackup.data.protection.access.provider.sdk.protection.model.ProtectionResourceDto;
+import openbackup.data.protection.access.provider.sdk.protection.service.ProjectedObjectService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceQueryParams;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.data.protection.access.provider.sdk.resourcegroup.enums.GroupTypeEnum;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.constant.ResourceGroupConstant;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.constant.ResourceGroupErrorCode;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.constant.ResourceGroupLabelConstant;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupDto;
+import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceFilterConditionParam;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupMemberDto;
+import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupProtectedObjectDto;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupProtectedObjectLabelDto;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.dto.ResourceGroupResultDto;
 import openbackup.data.protection.access.provider.sdk.resourcegroup.req.CreateResourceGroupProtectedObjectRequest;
@@ -38,6 +47,10 @@ import openbackup.data.protection.access.provider.sdk.resourcegroup.resp.Resourc
 import openbackup.data.protection.access.provider.sdk.resourcegroup.service.ResourceGroupService;
 import com.huawei.oceanprotect.job.sdk.JobService;
 import com.huawei.oceanprotect.sla.sdk.enums.PolicyAction;
+import com.huawei.oceanprotect.system.base.label.service.LabelService;
+
+import com.alibaba.fastjson.JSON;
+
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -45,18 +58,20 @@ import openbackup.system.base.common.model.PageListResponse;
 import openbackup.system.base.common.model.job.request.QueryJobRequest;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.asserts.PowerAssert;
+import openbackup.system.base.query.SessionService;
 import openbackup.system.base.sdk.common.model.UuidObject;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.resource.ProtectObjectRestApi;
+import openbackup.system.base.sdk.resource.ResourceGroupProtectedObjectRestApi;
 import openbackup.system.base.sdk.resource.enums.ProtectionStatusEnum;
 import openbackup.system.base.sdk.resource.model.ManualBackupReq;
 import openbackup.system.base.sdk.resource.model.ProtectedObjectInfo;
 import openbackup.system.base.sdk.resource.model.ProtectionBatchOperationReq;
 import openbackup.system.base.sdk.resource.model.ProtectionModifyDto;
+import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.security.callee.CalleeMethod;
 import openbackup.system.base.security.callee.CalleeMethods;
-import openbackup.system.base.util.DefaultRoleHelper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,6 +84,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -100,10 +116,25 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
     private ProtectObjectRestApi protectObjectRestApi;
 
     @Autowired
+    private ResourceGroupProtectedObjectRestApi resourceGroupProtectedObjectRestApi;
+
+    @Autowired
     private JobService jobService;
 
     @Autowired
     private ProviderManager providerManager;
+
+    @Autowired
+    private LabelService labelService;
+
+    @Autowired
+    private SessionService sessionService;
+
+    @Autowired
+    private VirtualResourceMapper virtualResourceMapper;
+
+    @Autowired
+    private ProjectedObjectService projectedObjectService;
 
     /**
      * 获取资源组后置操作label
@@ -161,6 +192,8 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
         checkResourceGroupCount(resourceGroupDto);
         // 检查资源组成员
         checkAndUpdateGroupMembers(resourceGroupDto);
+        // 检查资源组子类型
+        checkSourceSubType(resourceGroupDto);
         // 设置初始保护状态
         resourceGroupDto.setProtectionStatus(ProtectionStatusEnum.UNPROTECTED.getType());
         // 资源组入库
@@ -182,11 +215,32 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
                 resourceGroupCount < ResourceGroupConstant.EACH_SUBTYPE_RESOURCE_GROUP_COUNT_MAX_LIMIT,
                 () -> new LegoCheckedException(ResourceGroupErrorCode.EXCEED_RESOURCE_GROUP_MAX_NUM_LIMIT,
                         "ResourceGroup quantity exceed the limit."));
+
+        // 按规则过滤资源组需要限制规格
+        if (!GroupTypeEnum.RULE.getValue().equals(resourceGroupDto.getGroupType())) {
+            return;
+        }
+        int ruleGroupCount = resourceGroupRepository.countByGroupType(resourceGroupDto.getGroupType());
+        PowerAssert.state(
+            ruleGroupCount < ResourceGroupConstant.RULE_RESOURCE_GROUP_COUNT_MAX_LIMIT,
+            () -> new LegoCheckedException(ResourceGroupErrorCode.EXCEED_RESOURCE_GROUP_MAX_NUM_LIMIT,
+                "ResourceGroup quantity exceed the limit."));
+    }
+
+    private void checkSourceSubType(ResourceGroupDto dto) {
+        if (!GroupTypeEnum.RULE.getValue().equals(dto.getGroupType())) {
+            return;
+        }
+        String sourceSubType = dto.getSourceSubType();
+        PowerAssert.state(ResourceSubTypeEnum.VMWARE.equalsSubType(sourceSubType),
+            () -> new LegoCheckedException(ResourceGroupErrorCode.SOURCE_SUB_TYPE_NOT_MATCH,
+                "The subtype of resource must be vmware."));
     }
 
     private void checkAndUpdateGroupMembers(ResourceGroupDto resourceGroupDto) {
         List<ResourceGroupMemberDto> groupMemberDtos = resourceGroupDto.getResources();
-        if (VerifyUtil.isEmpty(groupMemberDtos)) {
+        if (GroupTypeEnum.RULE.getValue().equals(resourceGroupDto.getGroupType())
+            || VerifyUtil.isEmpty(groupMemberDtos)) {
             log.info("No resources in the resource group.");
             return;
         }
@@ -296,8 +350,6 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
     public String updateResourceGroup(ResourceGroupDto newResourceGroupDto) {
         // 检查存在性
         ResourceGroupDto existGroupDto = checkIfExist(newResourceGroupDto);
-        // 校验用户权限
-        checkUserRights(existGroupDto);
         // 检查名称
         checkNameForUpdate(newResourceGroupDto);
         // 存在运行中的任务不允许修改
@@ -308,9 +360,93 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
         }
         // 将数据库中资源类型赋值给修改用的dto，该值不会允许修改，但是后面组成员校验需要用
         newResourceGroupDto.setSourceSubType(existGroupDto.getSourceSubType());
+        newResourceGroupDto.setGroupType(existGroupDto.getGroupType());
+
         // 检查并更新组成员
         checkAndUpdateGroupMembers(newResourceGroupDto);
-        return resourceGroupRepository.update(newResourceGroupDto);
+
+        // 找出当前的existResourceIdSet，manual组会查询member表， rule会查protected_object表
+        Set<String> existResourceIdSet = existGroupDto.getResources().stream().map(
+            ResourceGroupMemberDto::getSourceId).collect(Collectors.toSet());
+
+        // 取出新的newResourceIdSet
+        Set<String> newResourceIdset;
+        List<ProtectionResourceDto> protectionResources = Collections.emptyList();
+        if (GroupTypeEnum.RULE.getValue().equals(existGroupDto.getGroupType())) {
+            protectionResources = filterGroupMembersByRule(newResourceGroupDto,
+                existGroupDto);
+            newResourceIdset = protectionResources.stream()
+                .map(ProtectionResourceDto::getUuid).collect(Collectors.toSet());
+        } else {
+            newResourceIdset = newResourceGroupDto.getResources().stream().map(
+                ResourceGroupMemberDto::getSourceId).collect(Collectors.toSet());
+        }
+
+        // 计算待删除和待添加的ids
+        Set<String> toDeleteResourceIdSet = removeElements(existResourceIdSet, newResourceIdset);
+        Set<String> toAddResourceIdSet = removeElements(newResourceIdset, existResourceIdSet);
+        updateProtectObjectIfProtected(newResourceGroupDto, existGroupDto,
+            toDeleteResourceIdSet, toAddResourceIdSet, protectionResources);
+        return resourceGroupRepository.update(newResourceGroupDto, toDeleteResourceIdSet, toAddResourceIdSet);
+    }
+
+    private void updateProtectObjectIfProtected(ResourceGroupDto newGroupDto, ResourceGroupDto existGroupDto,
+        Set<String> toDeleteResourceIdSet, Set<String> toAddResourceIdSet,
+        List<ProtectionResourceDto> protectionResources) {
+        ResourceGroupProtectedObjectDto protectedObject = existGroupDto.getProtectedObjectDto();
+        if (VerifyUtil.isEmpty(protectedObject) || VerifyUtil.isEmpty(protectedObject.getSlaId())) {
+            return;
+        }
+        // 创建保护时旧的dto中的保护对象
+        newGroupDto.setProtectedObjectDto(existGroupDto.getProtectedObjectDto());
+        ProtectionExecuteDto dto = new ProtectionExecuteDto();
+        dto.setSlaId(protectedObject.getSlaId());
+        dto.setResource(newGroupDto);
+        dto.setExtParameters(protectedObject.getExtParameters());
+        if (GroupTypeEnum.RULE.getValue().equals(newGroupDto.getGroupType())) {
+            dto.setSubResources(protectionResources.stream()
+                .filter(v -> toAddResourceIdSet.contains(v.getUuid())).collect(Collectors.toList()));
+        } else {
+            dto.setSubResources(resourceService
+                .getResourceListByUuidList(new ArrayList<>(toAddResourceIdSet))
+                .stream()
+                .map(this::convertToProtectionResource)
+                .collect(Collectors.toList()));
+        }
+        projectedObjectService.changeGroupProjectedObject(dto, new ArrayList<>(toDeleteResourceIdSet));
+    }
+
+    private Set<String> removeElements(Set<String> sources, Set<String> removes) {
+        Set<String> target = new HashSet<>(sources);
+        target.removeAll(removes);
+        return target;
+    }
+
+    private List<ProtectionResourceDto> filterGroupMembersByRule(ResourceGroupDto dto, ResourceGroupDto existGroupDto) {
+        if (!GroupTypeEnum.RULE.getValue().equals(dto.getGroupType())) {
+            return Collections.emptyList();
+        }
+        if (VerifyUtil.isEmpty(dto.getExtendStr())
+        || VerifyUtil.isEmpty(existGroupDto.getProtectedObjectDto())) {
+            return Collections.emptyList();
+        }
+        ResourceFilterConditionParam extendParam = JSON.parseObject(dto.getExtendStr(),
+            ResourceFilterConditionParam.class);
+        List<VirtualResourceExtendPo> resourceExtendPos = listAllVmware(extendParam.getResourcePathFilter(),
+            existGroupDto.getScopeResourceId());
+        List<VirtualResourceExtendPo> resources = resourceExtendPos.stream()
+            .filter(v -> v.getProtectedObject() == null
+                || dto.getUuid().equals(v.getProtectedObject().getResourceGroupId()))
+            .collect(Collectors.toList());
+        resources = ResourceFilterUtil.filterResources(resources, extendParam);
+        return resources
+            .stream()
+            .map(this::convertToProtectionResource)
+            .collect(Collectors.toList());
+    }
+
+    private List<VirtualResourceExtendPo> listAllVmware(String path, String scopeId) {
+        return virtualResourceMapper.listAll(VerifyUtil.isEmpty(path) ? path : path + "%", scopeId);
     }
 
     private ResourceGroupDto checkIfExist(ResourceGroupDto newResourceGroupDto) {
@@ -342,6 +478,7 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
      * @param queryParams queryParams
      * @return PageListResponse<ResourceGroupVo>
      */
+    @Override
     public PageListResponse<ResourceGroupVo> queryResourceGroups(ResourceGroupQueryParams queryParams) {
         BasePage<ResourceGroupDto> resourceGroupPoBasePage = resourceGroupRepository.queryResourceGroups(queryParams);
         PageListResponse<ResourceGroupVo> voPageListResponse = new PageListResponse<>();
@@ -362,8 +499,6 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
                 "resource group has been deleted.");
         }
         ResourceGroupDto resourceGroupDto = optionalResourceGroupDto.get();
-        // 校验用户权限
-        checkUserRights(resourceGroupDto);
         String[] errorParams = new String[] {resourceGroupDto.getName()};
         if (!VerifyUtil.isEmpty(resourceGroupDto.getProtectedObjectDto())) {
             throw new LegoCheckedException(ProtectedResourceRepositoryImpl.RESOURCE_ALREADY_BIND_SLA, errorParams,
@@ -371,20 +506,6 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
         }
         resourceGroupRepository.delete(uuid);
         return uuid;
-    }
-
-    private void checkUserRights(ResourceGroupDto resourceGroupDto) {
-        TokenBo tokenBo = TokenBo.get(null);
-        if (VerifyUtil.isEmpty(tokenBo) || VerifyUtil.isEmpty(tokenBo.getUser())) {
-            log.warn("Internal invoking. Skip verification.");
-            return;
-        }
-        TokenBo.UserBo user = tokenBo.getUser();
-        String userId = user.getId();
-        if (!DefaultRoleHelper.isAdmin(user.getId()) && !userId.equals(resourceGroupDto.getUserId())) {
-            throw new LegoCheckedException(CommonErrorCode.ACCESS_DENIED,
-                String.format("Current user(Id: %s) doesn't have permission.", userId));
-        }
     }
 
     private void convertBasePageToPageListResponse(BasePage<ResourceGroupDto> poBasePage,
@@ -403,6 +524,8 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
             resourceGroupVo.setResourceCount(
                     resourceGroupDto.getResources() != null ? resourceGroupDto.getResources().size() : 0);
             resourceGroupVo.setResourceGroupMembers(getResourceGroupMembers(resourceGroupDto));
+            resourceGroupVo.setLabelList(labelService.findAllDomainLabelByResourceId(resourceGroupDto.getUuid(),
+                sessionService.getCurrentUser().getDomainId()));
             // 转换保护对象
             if (resourceGroupDto.getProtectedObjectDto() != null) {
                 ResourceGroupProtectedObjectVo protectedObjectVo = new ResourceGroupProtectedObjectVo();
@@ -482,20 +605,64 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
                                 "Not found resource group. ID:" + request.getResourceGroupId()));
         // 保护前检查
         preCheckBeforeProtect(request, resourceGroupDto);
-        // 创建资源组的保护对象
-        UuidObject groupProtectObject = createResourceGroupProtectObject(request);
-        String groupProtectObjectUuid = groupProtectObject.getUuid();
-        log.info("Create group protect object success.Resource group id: {}, protect object id: {}",
-            request.getResourceGroupId(), groupProtectObjectUuid);
-        // 创建资源组每个子资源的保护对象
-        List<ResourceGroupResultDto> resourceGroupResultDtoList = createGroupSubResourceProtectObject(
-            request, resourceGroupDto);
-        // 处理postAction
-        handlePostAction(request);
+        // 创建保护
+        ProtectionExecuteDto dto = buildProtectionExecuteDto(request, resourceGroupDto);
+        projectedObjectService.createGroupProjectedObject(dto, (userId) -> handlePostAction(request, userId));
+        List<ResourceGroupResultDto> resourceGroupResultDtoList = new ArrayList<>();
+        ResourceGroupResultDto resourceGroupResultDto = new ResourceGroupResultDto();
+        resourceGroupResultDto.setResourceName(resourceGroupDto.getName());
+        resourceGroupResultDto.setSuccess(true);
+        resourceGroupResultDtoList.add(resourceGroupResultDto);
         return resourceGroupResultDtoList;
     }
 
-    private void handlePostAction(CreateResourceGroupProtectedObjectRequest createReq) {
+    private ProtectionExecuteDto buildProtectionExecuteDto(CreateResourceGroupProtectedObjectRequest request,
+        ResourceGroupDto resourceGroupDto) {
+        ProtectionExecuteDto dto = new ProtectionExecuteDto();
+        dto.setSlaId(request.getSlaId());
+        dto.setResource(resourceGroupDto);
+        dto.setExtParameters(request.getExtParams());
+        dto.setPostAction(request.getPostAction());
+        if (GroupTypeEnum.RULE.getValue().equals(resourceGroupDto.getGroupType())) {
+            ResourceFilterConditionParam extendParam = JSON.parseObject(resourceGroupDto.getExtendStr(),
+                ResourceFilterConditionParam.class);
+            List<VirtualResourceExtendPo> resourceExtendPos = listAllVmware(extendParam.getResourcePathFilter(),
+                resourceGroupDto.getScopeResourceId());
+            List<ProtectionResourceDto> protectionResources = ResourceFilterUtil
+                .filterResources(resourceExtendPos, extendParam)
+                .stream()
+                .map(this::convertToProtectionResource)
+                .collect(Collectors.toList());
+            dto.setSubResources(protectionResources);
+        } else {
+            List<String> ids = dto.getResource()
+                .getResources()
+                .stream()
+                .map(ResourceGroupMemberDto::getSourceId)
+                .collect(Collectors.toList());
+            List<ProtectionResourceDto> protectionResources = resourceService.getResourceListByUuidList(ids)
+                .stream()
+                .map(this::convertToProtectionResource)
+                .collect(Collectors.toList());
+            dto.setSubResources(protectionResources);
+        }
+        return dto;
+    }
+
+    private ProtectionResourceDto convertToProtectionResource(VirtualResourceExtendPo po) {
+        ProtectionResourceDto dto = new ProtectionResourceDto();
+        BeanUtils.copyProperties(po, dto);
+        dto.setProtectedObject(po.getProtectedObject());
+        return dto;
+    }
+
+    private ProtectionResourceDto convertToProtectionResource(ProtectedResource member) {
+        ProtectionResourceDto dto = new ProtectionResourceDto();
+        BeanUtils.copyProperties(member, dto);
+        return dto;
+    }
+
+    private void handlePostAction(CreateResourceGroupProtectedObjectRequest createReq, String userId) {
         log.info("Start to handle postAction {}", createReq.getPostAction());
         if (VerifyUtil.isEmpty(createReq.getPostAction())) {
             log.info("the post action is empty, nothing need to do.");
@@ -509,8 +676,8 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
         backupReq.setAction(PolicyAction.FULL.getAction());
         backupReq.setSlaId(createReq.getSlaId());
         backupReq.setIsResourceGroup(true);
-        String userId = TokenBo.get().getUser().getId();
-        List<String> jobIds = protectObjectRestApi.manualBackup(createReq.getResourceGroupId(), userId, backupReq);
+        List<String> jobIds = resourceGroupProtectedObjectRestApi.manualBackup(
+                createReq.getResourceGroupId(), userId, backupReq);
         log.info("Create manual backup job success, job id{} for resource group {} for post action {}.", jobIds,
                 createReq.getResourceGroupId(), createReq.getPostAction());
     }
@@ -524,7 +691,8 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
                 "The resource has been already protected.");
         }
         //  资源组为空，不允许创建保护
-        if (VerifyUtil.isEmpty(resourceGroupDto.getResources())) {
+        if (!GroupTypeEnum.RULE.getValue().equals(resourceGroupDto.getGroupType())
+            && VerifyUtil.isEmpty(resourceGroupDto.getResources())) {
             throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, "The resource group with no member can not "
                     + "be protected.");
         }
@@ -543,46 +711,6 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
         ProtectedObjectRequest request = new ProtectedObjectRequest();
         BeanUtils.copyProperties(createReq, request);
         return request;
-    }
-
-    private List<ResourceGroupResultDto> createGroupSubResourceProtectObject(
-        CreateResourceGroupProtectedObjectRequest createProtectedObjectReq, ResourceGroupDto resourceGroupDto) {
-        UpdateResourceGroupProtectedObjectRequest request = new UpdateResourceGroupProtectedObjectRequest();
-        BeanUtils.copyProperties(createProtectedObjectReq, request);
-        List<ResourceGroupResultDto> resourceGroupResultDtoList = new ArrayList<>();
-        List<String> protectObjectIds = resourceGroupDto.getResources().stream().map(memberDto -> {
-            ProtectionModifyDto modifyDto = createProtectionModifyDto(request, memberDto.getSourceId(),
-                    false, true, resourceGroupDto.getUuid());
-            ResourceGroupResultDto resourceGroupResultDto = new ResourceGroupResultDto();
-            ProtectedResource resource = resourceService.getBasicResourceById(memberDto.getSourceId())
-                .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "resource not exist"));
-            resourceGroupResultDto.setResourceName(resource.getName());
-            UuidObject protectObject = new UuidObject();
-            try {
-                protectObject = protectObjectRestApi.createProtectedObjectInternal(modifyDto);
-                resourceGroupResultDto.setSuccess(Boolean.TRUE);
-            } catch (Exception exception) {
-                log.error("Resource create protected fail,resourceId:{}", memberDto.getSourceId());
-                fillResourceGroupResultDto(resourceGroupResultDto, exception);
-            }
-            resourceGroupResultDtoList.add(resourceGroupResultDto);
-            return protectObject;
-        }).map(UuidObject::getUuid).collect(Collectors.toList());
-        log.info("Create group sub resource protect object success.Id list :{}", protectObjectIds);
-        return resourceGroupResultDtoList;
-    }
-
-    private void fillResourceGroupResultDto(ResourceGroupResultDto resourceGroupResultDto, Exception exception) {
-        resourceGroupResultDto.setSuccess(Boolean.FALSE);
-        if (exception instanceof LegoCheckedException) {
-            LegoCheckedException ex = (LegoCheckedException) exception;
-            resourceGroupResultDto.setErrorCode(ex.getErrorCode());
-            resourceGroupResultDto.setParameters(ex.getParameters());
-            resourceGroupResultDto.setMessage(ex.getMessage());
-        } else {
-            resourceGroupResultDto.setErrorCode(CommonErrorCode.SYSTEM_ERROR);
-            resourceGroupResultDto.setMessage(exception.getMessage());
-        }
     }
 
     private ProtectionModifyDto createProtectionModifyDto(
@@ -613,20 +741,12 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
         ResourceGroupDto resourceGroupDto = resourceGroupRepository.selectById(updateReq.getResourceGroupId())
             .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST,
                 "Not found resource group. ID:" + updateReq.getResourceGroupId()));
-        // 校验用户权限
-        checkUserRights(resourceGroupDto);
         if (VerifyUtil.isEmpty(resourceGroupDto.getResources())) {
             throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, "The protected object of resource group "
                     + "with no member can not be modified.");
         }
-        // 如果资源组类型为虚拟机组，不能修改绑定为通用sla
-        ProtectionInterceptorProvider provider = providerManager.findProvider(ProtectionInterceptorProvider.class,
-                resourceGroupDto.getSourceSubType(), null);
-        if (provider != null) {
-            log.debug("Protection interceptor for {} is provided, and the interceptor will be used!",
-                    resourceGroupDto.getSourceSubType());
-            provider.preCheck(buildUpdateProtectedObjectRequest(updateReq));
-        }
+        // 校验资源组绑定sla是否发生更改，如果发生更改，类型为虚拟机组的资源不能修改绑定为通用sla
+        checkSlaIsChanged(updateReq, resourceGroupDto);
         // 存在运行中任务的资源组不允许修改保护
         if (checkHasUnfinishedJob(resourceGroupDto.getUuid())) {
             throw new LegoCheckedException(CommonErrorCode.HAVE_RUNNING_JOB, "There are some unfinished jobs with "
@@ -642,25 +762,10 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
         log.info("Success create modify protect object job(for group resource:{}). Job id :{}",
             updateReq.getResourceGroupId(), groupJobId);
         List<ResourceGroupResultDto> resourceGroupResultDtoList = new ArrayList<>();
-        resourceGroupDto.getResources().forEach(memberDto -> {
-            ProtectionModifyDto protectionModifyDto =
-                createProtectionModifyDto(updateReq, memberDto.getSourceId(),
-                        false, true, updateReq.getResourceGroupId());
-            ResourceGroupResultDto resourceGroupResultDto = new ResourceGroupResultDto();
-            ProtectedResource resource = resourceService.getBasicResourceById(memberDto.getSourceId())
-                .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "resource not exist"));
-            resourceGroupResultDto.setResourceName(resource.getName());
-            try {
-                String jobId = protectObjectRestApi.modifyProtectedObject(userId, protectionModifyDto);
-                log.info("Success create modify protect object job(for sub group resource:{}). Job id :{}",
-                    memberDto.getSourceId(), jobId);
-                resourceGroupResultDto.setSuccess(Boolean.TRUE);
-            } catch (Exception exception) {
-                log.error("Resource modify protected fail,resourceId:{}", memberDto.getSourceId());
-                fillResourceGroupResultDto(resourceGroupResultDto, exception);
-            }
-            resourceGroupResultDtoList.add(resourceGroupResultDto);
-        });
+        ResourceGroupResultDto resourceGroupResultDto = new ResourceGroupResultDto();
+        resourceGroupResultDto.setResourceName(resourceGroupDto.getName());
+        resourceGroupResultDto.setSuccess(true);
+        resourceGroupResultDtoList.add(resourceGroupResultDto);
         return resourceGroupResultDtoList;
     }
 
@@ -681,13 +786,24 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
         return jobCount != 0;
     }
 
+    private void checkSlaIsChanged(UpdateResourceGroupProtectedObjectRequest updateReq,
+                                   ResourceGroupDto resourceGroupDto) {
+        if (!updateReq.getSlaId().equals(resourceGroupDto.getProtectedObjectDto().getSlaId())) {
+            ProtectionInterceptorProvider provider = providerManager.findProvider(ProtectionInterceptorProvider.class,
+                    resourceGroupDto.getSourceSubType(), null);
+            if (provider != null) {
+                log.debug("Protection interceptor for {} is provided, and the interceptor will be used!",
+                        resourceGroupDto.getSourceSubType());
+                provider.preCheck(buildUpdateProtectedObjectRequest(updateReq));
+            }
+        }
+    }
+
     @Override
     public String deleteProtectedObject(String resourceGroupId) {
         ResourceGroupDto resourceGroupDto = resourceGroupRepository.selectById(resourceGroupId)
             .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST,
                 "Not found resource group. ID:" + resourceGroupId));
-        // 校验用户权限
-        checkUserRights(resourceGroupDto);
         // 存在运行中任务的资源组不允许删除保护
         if (checkHasUnfinishedJob(resourceGroupDto.getUuid())) {
             throw new LegoCheckedException(CommonErrorCode.HAVE_RUNNING_JOB, "There are some unfinished jobs with "

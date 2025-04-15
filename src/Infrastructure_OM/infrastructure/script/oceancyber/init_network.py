@@ -17,8 +17,8 @@ MY_NAME = os.path.basename(__file__)
 LOGGER = None
 TMP_FILE_SUFFIX = ".init_network.tmp"
 
-BUS_INFO_0 = "0000:83:00.0"
-BUS_INFO_1 = "0000:84:00.0"
+BUS_INFO_0 = "0000:81:00.0"
+BUS_INFO_1 = "0000:81:00.1"
 
 USAGE = '''
 Usage:
@@ -59,6 +59,11 @@ class ErrorCode:
     ACTIVE_FAILED = 10028
     UPDATE_MGT_IP_FAILED = 10031
     K8S_ERROR = 10032
+    ETH_PARAM_EMPTY = 10033
+    IPS_NUM_NOT_MATCH_NETMASK_NUM = 10034
+    IPS_NUM_NOT_MATCH_VLANS_NUM = 10035
+    ETH_INVALID_IP_NUM = 10036
+    EXCEED_VLAN_MAX_NUM = 10037
 
 
 class CustomResult:
@@ -170,6 +175,36 @@ def _is_ip_conflict(ip):
         _construct_result(f"{ip} have been occupied", ErrorCode.OCCUPIED_IP)
 
 
+def _update_nic_network_config(interface, ip=None, netmask=None):
+    base_contents = [
+        f"DEVICE={interface}",
+        "BONDING_MASTER=yes",
+        "STARTMODE=auto",
+        "BONDING_OPTS='mode=1 miimon=200'",
+        "BOOTPROTO=static",
+        "ONBOOT=yes",
+    ]
+    if ip:
+        base_contents.append(f"IPADDR={ip}")
+        base_contents.append(f"NETMASK={netmask}")
+    # 刷新主接口网络配置文件
+    _re_write_file(interface, base_contents)
+
+
+def _update_vlan_network_config(interface, ip, netmask, vlan_id):
+    # 刷新子接口网络配置文件
+    vlan_contents = [
+        f"DEVICE={interface}.{vlan_id}",
+        "ONBOOT=yes",
+        "VLAN=yes",
+        "BOOTPROTO=static",
+        "STARTMODE=auto",
+        f"IPADDR={ip}",
+        f"NETMASK={netmask}"
+    ]
+    _re_write_file(interface + "." + vlan_id, vlan_contents)
+
+
 def _update_network_config(interface, ip, netmask, gateway=None, vlan_id=None):
     """
     修改指定网络接口的IP地址、子网掩码和默认网关配置文件
@@ -179,6 +214,11 @@ def _update_network_config(interface, ip, netmask, gateway=None, vlan_id=None):
     :param gateway: gateway
     :param vlan_id: vlan_id
     :return: None
+    """
+    """
+    1、判断是否包含vlan
+    2、如果包含vlan，判断vlan个数，创建vlan文件，创建业务网卡文件，激活网卡
+    3、如果不包含vlan，则直接创建业务网卡文件，激活网卡
     """
     base_contents = [
         f"DEVICE={interface}",
@@ -344,7 +384,7 @@ def _is_same_subnet(ip, netmask, cur_interface):
     k8s_interface = "eth1"
     cidr = _subnet_mask_to_cidr(netmask)
     subnet = _calculate_network_address(ip, cidr)
-    exist_ips = _execute_piped_command(f"ip addr show | grep {k8s_interface} | grep -oP 'inet \\K[\\d.]+/[0-9]+'")\
+    exist_ips = _execute_piped_command(f"ip addr show | grep {k8s_interface} | grep -oP 'inet \\K[\\d.]+/[0-9]+'") \
         .split('\n')
     same_subnets = []
     for exist_ip in exist_ips:
@@ -395,7 +435,7 @@ def _valid_vlan_id(vlan_id):
                           ErrorCode.INVALID_VLAN_ID)
 
 
-def config_biz_net(args):
+def config_single_biz_net(args):
     """
     配置业务面网络
     :param args: args
@@ -432,6 +472,112 @@ def config_biz_net(args):
     _update_network_config(interface=interface, ip=ip_address, netmask=netmask, gateway=gateway, vlan_id=vlan_id)
     _active_network(interface=interface, ip=ip_address, vlan_id=vlan_id)
     LOGGER.info("%s config success", interface)
+
+
+def validate_vlan_quantity(eth2_vlan_list, eth3_vlan_list):
+    """
+    校验VLAN的总体数量是否不超过32个
+    :param eth2_vlan_list: eth3_vlan_list
+    :return: None
+    """
+    existing_vlan_num = int(_execute_piped_command(f"ip -d link show | grep 'vlan' | wc -l"))
+    total_vlan_num = existing_vlan_num
+    if eth2_vlan_list:
+        total_vlan_num += len(eth2_vlan_list)
+    if eth3_vlan_list:
+        total_vlan_num += len(eth3_vlan_list)
+    if total_vlan_num > 32:
+        LOGGER.error("the number of vlans: %s exceeds 32", str(total_vlan_num))
+        _construct_result(
+            f"eth2 vlan num: {len(eth2_vlan_list)} add, eth3 vlan num: {len(eth3_vlan_list)} "
+            f"add existing vlan num: {existing_vlan_num}, exceeds 32", ErrorCode.EXCEED_VLAN_MAX_NUM)
+
+
+def validate_and_update_multi_vlan_network(eth_name, eth_ip_list, eth_netmask_list, eth_vlan_list):
+    """
+    配置多VLAN业务面网络
+    :param eth_name: 网卡名(eth2/eth3)
+    :param eth_ip_list: IP列表
+    :param eth_netmask_list: 子网掩码列表
+    :param eth_vlan_list: vlan列表
+    :return: None
+    """
+    if not eth_name:
+        return
+    if not eth_ip_list or not eth_netmask_list:
+        LOGGER.error(f"{eth_name}_ip_list or {eth_name}_netmask_list is empty")
+        _construct_result(
+            f"when the {eth_name} network interface is configured, but the {eth_name}_ip_list or "
+            f"{eth_name}_netmask_list is empty", ErrorCode.ETH_PARAM_EMPTY)
+    if len(eth_ip_list) != len(eth_netmask_list):
+        LOGGER.error(f"the number of ips on the {eth_name} network interface does not match the number of vlans")
+        _construct_result(
+            f"{eth_name}_ip_list num:{len(eth_ip_list)} not match {eth_name}_netmask_list num: {len(eth_netmask_list)}",
+            ErrorCode.IPS_NUM_NOT_MATCH_NETMASK_NUM)
+    bond_status = _execute_piped_command(f"nmcli connection | grep -i 'Bond {eth_name}'")
+    if not bond_status:
+        LOGGER.error(f"Please bond the service port [{eth_name}] first")
+        _construct_result(f"Please bond the service port [{eth_name}] first.", ErrorCode.NOT_BONDED_ERROR)
+    if eth_vlan_list:
+        if len(eth_ip_list) != len(eth_vlan_list):
+            LOGGER.error(f"the num of ips on the {eth_name} network interface does not match the number of vlans")
+            _construct_result(
+                f"{eth_name}_ip_list num: {len(eth_ip_list)} not match {eth_name}_vlan_list num: {len(eth_vlan_list)}",
+                ErrorCode.IPS_NUM_NOT_MATCH_VLANS_NUM)
+        _update_nic_network_config(eth_name)
+        for index in range(len(eth_ip_list)):
+            _is_valid_ipv4([eth_ip_list[index], eth_netmask_list[index]])
+            _is_ip_conflict(eth_ip_list[index])
+            _is_same_subnet(eth_ip_list[index], eth_netmask_list[index], eth_name)
+            _valid_vlan_id(int(eth_vlan_list[index]))
+            _update_vlan_network_config(eth_name, eth_ip_list[index], eth_netmask_list[index], eth_vlan_list[index])
+            _active_network(interface=eth_name, ip=eth_ip_list[index], vlan_id=int(eth_vlan_list[index]))
+    else:
+        if len(eth_ip_list) != 1 or len(eth_netmask_list) != 1:
+            LOGGER.error("where no vlan is configured, The number of IP addresses and netmask must be 1")
+            _construct_result(
+                f"where no vlan is configured, {eth_name}_ip_list num: {len(eth_ip_list)} and "
+                f"{eth_name}_netmask_list num: {len(eth_netmask_list)} not be 1", ErrorCode.ETH_INVALID_IP_NUM)
+        _is_valid_ipv4([eth_ip_list[0], eth_netmask_list[0]])
+        _is_ip_conflict(eth_ip_list[0])
+        _is_same_subnet(eth_ip_list[0], eth_netmask_list[0], eth_name)
+        _update_nic_network_config(eth_name, eth_ip_list[0], eth_netmask_list[0])
+        _active_network(interface=eth_name, ip=eth_ip_list[0])
+
+
+def config_multi_biz_net(args):
+    """
+    配置多VLAN业务面网络
+    :param args: args
+    :return: None
+    """
+    eth2_name = args.eth2_name
+    eth2_ip_list = args.eth2_ip_list.split(',') if args.eth2_ip_list else []
+    eth2_netmask_list = args.eth2_netmask_list.split(',') if args.eth2_netmask_list else []
+    eth2_vlan_list = args.eth2_vlan_list.split(',') if args.eth2_vlan_list else []
+    eth3_name = args.eth3_name
+    eth3_ip_list = args.eth3_ip_list.split(',') if args.eth3_ip_list else []
+    eth3_netmask_list = args.eth3_netmask_list.split(',') if args.eth3_netmask_list else []
+    eth3_vlan_list = args.eth3_vlan_list.split(',') if args.eth3_vlan_list else []
+    LOGGER.info("start valid vlan num")
+    validate_vlan_quantity(eth2_vlan_list, eth3_vlan_list)
+    LOGGER.info("start valid param and config eth2")
+    validate_and_update_multi_vlan_network(eth2_name, eth2_ip_list, eth2_netmask_list, eth2_vlan_list)
+    LOGGER.info("start valid param and config eth3")
+    validate_and_update_multi_vlan_network(eth3_name, eth3_ip_list, eth3_netmask_list, eth3_vlan_list)
+
+
+def config_biz_net(args):
+    """
+    配置业务面网络
+    :param args: args
+    :return: None
+    """
+    interface = args.interface
+    if interface:
+        config_single_biz_net(args)
+    else:
+        config_multi_biz_net(args)
 
 
 def _construct_result(err_msg, err_code=1):
@@ -571,12 +717,23 @@ def _parse_params_and_execute():
     parser_mgt.set_defaults(func=config_mgt_net)
     # 添加子命令 config_biz_net
     parser_biz = subparsers.add_parser('config_biz_net', description="Configure business network interfaces.")
-    parser_biz.add_argument("--interface", required=True, choices=['eth2', 'eth3'],
+    parser_biz.add_argument("--interface", choices=['eth2', 'eth3'],
                             help="The name of the network interface.")
-    parser_biz.add_argument("--ip_address", required=True, help="The IP address to assign.")
-    parser_biz.add_argument("--netmask", required=True, help="The netmask for the interface.")
+    parser_biz.add_argument("--ip_address", help="The IP address to assign.")
+    parser_biz.add_argument("--netmask", help="The netmask for the interface.")
     parser_biz.add_argument("--gateway", help="The gateway address.")
     parser_biz.add_argument("--vlan_id", type=int, help="The VLAN ID (optional).")
+    parser_biz.add_argument("--eth2_name", choices=['eth2'], type=str, help="The name of the eth2 interface.")
+    parser_biz.add_argument("--eth2_ip_list", type=str, help="The list of ip addresses for eth2, separated by commas")
+    parser_biz.add_argument("--eth2_netmask_list", type=str, help="The netmask for the eth2 interface.")
+    parser_biz.add_argument("--eth2_vlan_list", type=str,
+                            help="The VLAN ID List for eth2, separated by commas (optional)")
+    parser_biz.add_argument("--eth3_name", choices=['eth3'], type=str, help="The name of the eth3 interface.")
+    parser_biz.add_argument("--eth3_ip_list", type=str,
+                            help="The list of ip addresses for eth3, separated by commas")
+    parser_biz.add_argument("--eth3_netmask_list", type=str, help="The netmask for the eth3 interface.")
+    parser_biz.add_argument("--eth3_vlan_list", type=str,
+                            help="The VLAN ID List for eth3, separated by commas (optional)")
     parser_biz.set_defaults(func=config_biz_net)
     # 添加子命令 is_100GE_card_available
     parser_check = subparsers.add_parser('is_100ge_card_available', description="Validate 100GE network card.")

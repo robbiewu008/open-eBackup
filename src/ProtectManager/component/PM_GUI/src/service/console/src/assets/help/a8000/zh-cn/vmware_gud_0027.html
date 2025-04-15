@@ -1,0 +1,170 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤5：注册VMware虚拟化环境">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="vmware_gud_0018.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="vmware_gud_0027">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤5：注册VMware虚拟化环境</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="vmware_gud_0027"></a><a name="vmware_gud_0027"></a>
+
+<h1 class="topictitle1">步骤5：注册VMware虚拟化环境</h1>
+<div><p>执行VMware备份前，需要将VMware虚拟化环境注册至<span>OceanProtect</span>。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><ul><li>注册VMware虚拟化环境至<span>OceanProtect</span>时，支持注册vCenter Server或ESXi主机。如果有多个独立的ESXi主机则需要注册多次。</li><li>注册VMware虚拟化环境后，可以在管理界面浏览vCenter Server、ESXi主机或虚拟机的信息并对其进行保护。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="vmware_gud_0027__zh-cn_topic_0000002199964685_uicontrol1738217261378">“<span id="vmware_gud_0027__zh-cn_topic_0000002199964685_text738292620372">保护</span> &gt; 虚拟化 &gt; VMware”</span>。</span></li><li><span>单击<span class="uicontrol">“注册”</span>，注册VMware虚拟化平台信息。</span><p><div class="p">VMware注册信息如<a href="#vmware_gud_0027__table613227155112">表1</a>所示。
+<div class="tablenoborder"><a name="vmware_gud_0027__table613227155112"></a><a name="table613227155112"></a><table cellpadding="4" cellspacing="0" summary="" id="vmware_gud_0027__table613227155112" frame="border" border="1" rules="all"><caption><b>表1 </b>VMware注册信息</caption><colgroup><col style="width:25.6%"><col style="width:74.4%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.6%" id="mcps1.3.3.2.2.2.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.4%" id="mcps1.3.3.2.2.2.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>用户自定义虚拟化平台名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>IP地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><ul><li>当由vCenter Server管理ESXi主机时，请输入vCenter Server的管理IP地址。</li><li>当ESXi主机未被vCenter Server管理时，请输入ESXi主机的管理IP地址。</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>端口</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p><span>OceanProtect</span>与vCenter Server或者ESXi主机管理平面通信的端口号。</p>
+<p>默认端口号为443。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>用户名</span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><ul><li>当注册的是vCenter Server时，输入登录VMware vSphere web Client的用户名及其密码。</li><li>当注册的是ESXi时，输入登录ESXi主机的用户名及其密码。</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>密码</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>资源扫描频率</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>系统自动扫描资源的间隔时间。</p>
+<p>设置后系统将按照该频率自动扫描VMware虚拟化环境，将变更后的虚拟机更新至<span>OceanProtect</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>校验证书</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>默认开启，注册VMware受保护环境时，系统将对其所访问设备的信息进行校验。关闭后，系统与VMware通信可能存在安全风险，请谨慎操作。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>证书</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>开启<span class="uicontrol">“<span>校验证书</span>”</span>后，导入<a href="vmware_gud_0026.html">步骤4：获取VMware证书</a>中获取的证书。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>吊销列表</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>吊销列表由证书颁发机构发布，导入证书吊销列表后，系统将校验客户端证书是否被吊销，如果证书已被吊销，则注册集群失败。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>安全tls版本与算法</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><div class="p">默认关闭，关闭后默认使用TLS 1.3安全协议，开启后通信双方自主协商。<div class="note" id="vmware_gud_0027__zh-cn_topic_0000001657021745_note1655773912333"><span class="notetitle"> 说明： </span><div class="notebody"><p id="vmware_gud_0027__zh-cn_topic_0000001657021745_p355717393330">开启后，系统连接外部服务端可能会使用不安全的加密算法，存在安全风险，请谨慎操作。</p>
+</div></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>对于1.6.0及后续版本，如需执行存储层备份，请执行本步骤添加存储资源。否则，请跳过。</span><p><ol type="a"><li>在“<span>存储资源</span>”区域，单击<span class="uicontrol">“<span>添加</span>”</span>。</li><li>按界面要求配置参数。参数说明如<a href="#vmware_gud_0027__table20829151954610">表2</a>所示。
+<div class="tablenoborder"><a name="vmware_gud_0027__table20829151954610"></a><a name="table20829151954610"></a><table cellpadding="4" cellspacing="0" summary="" id="vmware_gud_0027__table20829151954610" frame="border" border="1" rules="all"><caption><b>表2 </b>添加存储资源参数说明</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.3.2.3.2.1.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.3.2.3.2.1.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span>类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>存储资源的类型，包括：OceanStor Dorado 6.x和NetApp ONTAP。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>仅1.6.0及后续版本支持选择NetApp ONTAP。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span>管理IP地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>存储设备的管理IP地址。</p>
+<p>单击“添加”可以填写存储设备的多个管理IP地址。当某个管理IP地址无法访问时，系统将自动切换到其他可访问的管理IP地址。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span>端口</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p><span>OceanProtect</span>与存储设备的管理平面通信的端口号。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span>用户名</span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p><span style="color:#282B33;">存储设备的用户名及密码，用户角色必须是管理员或超级管理员。</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span>密码</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span>校验证书</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>默认开启，添加存储设备时会对其证书进行校验，确保<span>OceanProtect</span>与存储设备交互的安全性。关闭后，系统与存储设备通信可能存在安全风险，请谨慎操作。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span>证书</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>导入存储设备的CA证书。获取存储设备的CA证书具体操作可参考<span>《OceanProtect DataBackup 1.5.0-1.6.0 数据备份特性指南(适用于NAS文件)》</span>中的<span class="parmvalue">“步骤1：获取存储设备CA证书”</span>章节。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.1 "><p><span>吊销列表</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.1.2.2.2.3.1.2 "><p>吊销列表由证书颁发机构发布，导入证书吊销列表后，系统将校验客户端证书是否被吊销，如果证书已被吊销，则注册存储设备失败。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ol>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span><p><p>注册成功后，已注册的VMware虚拟化环境信息将在页面左侧显示。您可以浏览vCenter Server或ESXi主机，及其虚拟机列表。</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="vmware_gud_0018.html">备份VMware虚拟机</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

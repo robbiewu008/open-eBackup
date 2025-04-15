@@ -1,16 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- 
- This file is a part of the open-eBackup project.
- This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- If a copy of the MPL was not distributed with this file, You can obtain one at
- http://mozilla.org/MPL/2.0/.
-
- Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-
- THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
--->
 <root>
     <System>
         <!-- Agent FastCGI listening ip -->
@@ -26,7 +14,7 @@
         <!-- Agent log level -->
         <log_level value="1"/>
         <!-- Agent log count -->
-        <log_count value="6"/>
+        <log_count value="40"/>
         <!-- Agent log max size -->
         <log_max_size value="50"/>
         <!-- Agent log keep time -->
@@ -36,11 +24,13 @@
         <!-- Agent access user name -->
         <name value=""/>
         <!-- sl value -->
-        <sl value="2709023617"/>
+        <sl value=""/>
         <!-- hash value -->
         <hash value=""/>
         <!-- windows version value -->
         <win_version value="6.2"/>
+        <!-- windows system disk value -->
+        <win_system_disk value="C"/>
         <!-- freeze interval time-->
         <freeze_interval_time value="5"/>
         <!-- auth_type value -->
@@ -76,9 +66,9 @@
         <!-- use curl test connectivity timeout, unit: s -->
         <curl_connectivity_timeout value="5"/>
         <!-- interval of reporting heartbeat to pm, unit: s -->
-        <heartbeat_to_pm_interval value="180"/>
+        <heartbeat_to_pm_interval value="300"/>
         <!-- interval of reporting resource usage to pm, unit: s, range [1, 300] -->
-        <resourse_usage_to_pm_interval value="30"/>
+        <resourse_usage_to_pm_interval value="300"/>
         <!-- interval of print sys resource usage, unit: s, range [1, 300] -->
         <resourse_rest_print value="300"/>
         <!-- the esn of internal agent> -->
@@ -120,6 +110,8 @@
         <if_keep_vmsnap_on_fail value="0"/>
         <!-- update interval time ms -->
         <check_conn_time value="60000"/>
+        <!-- thread num of ConnectivityManager thread pool -->
+        <check_conn_thread_num value="30"/>
         <!-- update vcenter state interval time s ,Default value: 2h/7200s-->
         <check_vsphere_conn_time value="7200"/>
         <!--Progress Report Interval,Default value: 30000 ms-->
@@ -162,6 +154,14 @@
         <!-- is_dpc_compute_node -->
         <is_dpc_compute_node value="false"/>
     </Backup>
+    <JobFrame>
+        <!-- get job from ubc base interval, unit: s -->
+        <get_job_base_interval value="2"/>
+        <!-- get job from ubc dynamic adjustment interval, unit: s -->
+        <get_job_inc_interval value="2"/>
+        <!-- get job from ubc interval max adjustment times -->
+        <get_job_interval_max_adjust_times value="4"/>
+    </JobFrame>
     <Monitor>
         <retry_time value="3"/>
         <monitor_interval value="30"/>
@@ -180,7 +180,7 @@
             <tmpfile_size value="20"/>
             <!--log & slog directory size in M unit.
             Notice: Agent will be stopped if log size exceeds the value. -->
-            <logfile_size value="12288"/>
+            <logfile_size value="8192"/>
             <!--log size alarm threshold [0.1-0.9]].
             Notice: Agent will send alarm if log size exceeds logfile_size*logfile_size_alarm_threshold. -->
             <logfile_size_alarm_threshold value="0.8"/>
@@ -247,8 +247,8 @@
         <isEnableSSL value = "1" />
         <isEnableAdvanced value = "1" />
         <dee_gid value = "10289" />
-        <vddkapi_timeout value = "7200" />
-        <api_invoking_time_interval value = "900"/>
+        <vddkapi_timeout value = "1800" />
+        <api_invoking_time_interval value = "1800"/>
         <!--host type:  0:physical  1:virtual machine, include kvm,xen,vmware-->
         <system_virt value="0"/>
         <!-- async task of vmware feature -->
@@ -287,6 +287,7 @@
     <Mount>
         <check_link_status_timeout value="200"/>
         <link_host_port value="111" />
+        <win_mount_public_path value="C:\mnt\databackup\" />
         <general_mount_protocol value="nfs" />
         <general_mount_option value="nfsvers=3,rw,bg,soft,nointr,rsize=1048576,wsize=1048576,tcp,timeo=600,retrans=3,nolock,sync" />
         <linkencyption_mount_option value="sec=krb5p,vers=4.1,rw,bg,soft,nointr,rsize=1048576,wsize=1048576,tcp,timeo=600,retrans=3,nolock,sync" />

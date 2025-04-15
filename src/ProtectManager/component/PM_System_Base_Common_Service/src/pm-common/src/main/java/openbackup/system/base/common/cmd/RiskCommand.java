@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.common.cmd;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -62,11 +61,11 @@ public class RiskCommand {
         if (code != SUCCESS_CODE) {
             throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR, "run cmd error. code: " + code);
         }
-        final InputStream stream = process.getInputStream();
         StringBuilder value = new StringBuilder();
         String line;
         final long startTime = System.currentTimeMillis();
-        try (BufferedReader bf = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
+        try (InputStream stream = process.getInputStream();
+            BufferedReader bf = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
             while ((line = bf.readLine()) != null) {
                 // 计算是否读取数据的超时时间达到上限
                 if (System.currentTimeMillis() - startTime > RiskCommand.MAX_TIMEOUT) {
@@ -92,8 +91,8 @@ public class RiskCommand {
         ProcessBuilder processBuilder = new ProcessBuilder(items);
         Process process = processBuilder.start();
         try (OutputStream outputStream = process.getOutputStream();
-             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
-             BufferedWriter writer = new BufferedWriter(outputStreamWriter)) {
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
+                BufferedWriter writer = new BufferedWriter(outputStreamWriter)) {
             writer.write(password);
             writer.newLine();
             writer.flush();

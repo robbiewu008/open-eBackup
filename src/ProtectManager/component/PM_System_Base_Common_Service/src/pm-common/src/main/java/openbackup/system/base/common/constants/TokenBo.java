@@ -12,14 +12,13 @@
 */
 package openbackup.system.base.common.constants;
 
-import openbackup.system.base.common.aspect.OperationLogAspect;
-import openbackup.system.base.common.exception.LegoCheckedException;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Tolerate;
+import openbackup.system.base.common.aspect.OperationLogAspect;
+import openbackup.system.base.common.exception.LegoCheckedException;
 
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -70,7 +69,7 @@ public class TokenBo {
         }
         if (!(attributes instanceof ServletRequestAttributes)) {
             throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM,
-                "RequestAttributes is not instance of ServletRequestAttributes");
+                    "RequestAttributes is not instance of ServletRequestAttributes");
         }
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) attributes;
         HttpServletRequest request = servletRequestAttributes.getRequest();

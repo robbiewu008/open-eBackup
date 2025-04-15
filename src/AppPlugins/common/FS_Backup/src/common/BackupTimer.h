@@ -16,6 +16,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include "log/Log.h"
 #include "FSBackupUtils.h"
 
 class BackupTimer {
@@ -24,7 +25,11 @@ public:
     {
         std::lock_guard<std::mutex> lck(m_mutex);
         int64_t currentTime = FSBackupUtils::GetMilliSecond();
-        m_map.emplace(currentTime + retryTimeInterval, fileHandle);
+        try {
+            m_map.emplace(currentTime + retryTimeInterval, fileHandle);
+        } catch (const std::exception& e) {
+            ERRLOG("map emplace(%s) exception: %s", fileHandle.m_file->m_fileName.c_str(), e.what());
+        }
     }
 
     // return value is next expired time, if without next expired event, return INT64_MAX.
@@ -79,6 +84,13 @@ public:
             fileHandles.push_back(it->second);
             m_map.erase(it++);
         }
+    }
+
+    void Clear()
+    {
+        std::lock_guard<std::mutex> lck(m_mutex);
+        m_map.clear();
+        INFOLOG("timer clear");
     }
 
     uint64_t GetCount()

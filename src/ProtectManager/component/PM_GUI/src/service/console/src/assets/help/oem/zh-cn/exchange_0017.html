@@ -1,0 +1,66 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="检查Exchange Writer状态">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="exchange_0015.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="exchange_0017">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>检查Exchange Writer状态</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="exchange_0017"></a><a name="exchange_0017"></a>
+  <h1 class="topictitle1">检查Exchange Writer状态</h1>
+  <div>
+   <p>确保Exchange服务器上的Exchange Writer已安装且状态为Stable。</p>
+   <p>可以采用vssadmin list writers命令进行确认。</p>
+   <pre class="screen">C:\Users\Administrator&gt;vssadmin list writers</pre>
+   <p>回显状态如下表示状态为Stable。</p>
+   <pre class="screen">C:\Users\Administrator&gt;vssadmin list writers
+vssadmin 1.1 - Volume Shadow Copy Service administrative 
+command-line tool
+(C) Copyright 2001-2013 Microsoft Corp.
+Writer name: 'System Writer'
+ Writer Id: {e8132975-6f93-4464-a53e-1050253ae220}
+ Writer Instance Id: {a2f2507d-b348-493a-9685-da3f20959e9d}
+ State: [1] Stable
+ Last error: No error
+<strong>Writer name: 'Microsoft Exchange Writer'</strong>
+<strong> Writer Id: {76fe1ac4-15f7-4bcd-987e-8e1acb462fb7}</strong>
+<strong> Writer Instance Id: {2e8409fa-1dd8-483c-ba95-5c9277be0509}</strong>
+<strong> State: [1] Stable</strong>
+<strong> Last error: No error</strong></pre>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="exchange_0015.html">备份前准备</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

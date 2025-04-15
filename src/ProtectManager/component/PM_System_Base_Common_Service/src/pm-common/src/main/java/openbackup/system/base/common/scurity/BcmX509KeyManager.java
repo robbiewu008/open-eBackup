@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.common.scurity;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.net.Socket;
 import java.security.Key;
@@ -49,7 +48,7 @@ public class BcmX509KeyManager extends X509ExtendedKeyManager {
     /**
      * 构造函数
      *
-     * @param pmServerCertName            pm server key的别名
+     * @param pmServerCertName pm server key的别名
      * @param pmServerCertNameProtectPass pm server key的保护密码
      */
     public BcmX509KeyManager(String pmServerCertName, char[] pmServerCertNameProtectPass) {
@@ -62,7 +61,7 @@ public class BcmX509KeyManager extends X509ExtendedKeyManager {
      *
      * @param keyType keyType
      * @param issuers issuers
-     * @param socket  socket
+     * @param socket socket
      * @return server证书别名
      */
     @Override
@@ -75,7 +74,7 @@ public class BcmX509KeyManager extends X509ExtendedKeyManager {
      *
      * @param keyType keyType
      * @param issuers issuers
-     * @param socket  socket
+     * @param socket socket
      * @return server证书别名
      */
     @Override

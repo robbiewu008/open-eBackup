@@ -12,16 +12,30 @@
 */
 package openbackup.oracle.interceptor;
 
+import com.huawei.oceanprotect.job.dto.JobLogDto;
+import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import com.alibaba.fastjson.JSON;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.HostDto;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
+import openbackup.data.access.framework.protection.common.converters.JobDataConverter;
+import openbackup.data.access.framework.protection.controller.req.UpdateJobLogRequest;
+import openbackup.data.access.framework.protection.controller.req.UpdateJobStatusRequest;
 import openbackup.data.access.framework.restore.service.RestoreTaskHelper;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
+import openbackup.data.protection.access.provider.sdk.backup.v2.PostBackupTask;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
+import openbackup.data.protection.access.provider.sdk.enums.BackupTypeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.CopyFormatEnum;
+import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
@@ -36,8 +50,6 @@ import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
 import openbackup.database.base.plugin.utils.AgentDtoUtil;
 import openbackup.database.base.plugin.utils.ProtectionTaskUtils;
-import com.huawei.oceanprotect.job.sdk.JobService;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.oracle.constants.OracleConstants;
 import openbackup.oracle.provider.OracleAgentProvider;
 import openbackup.oracle.service.OracleBaseService;
@@ -46,20 +58,21 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.PagingParamRequest;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.model.job.request.QueryJobRequest;
+import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.RandomPwdUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.copy.model.Copy;
+import openbackup.system.base.sdk.copy.model.CopyInfo;
+import openbackup.system.base.sdk.job.model.JobLogMessageLevelEnum;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
@@ -119,6 +132,8 @@ public class OracleBackupInterceptor extends AbstractDbBackupInterceptor {
 
     private JobService jobService;
 
+    private DeployTypeService deployTypeService;
+
     /**
      * Oracle数据库拦截器操作实现
      * <p>
@@ -138,6 +153,11 @@ public class OracleBackupInterceptor extends AbstractDbBackupInterceptor {
         checkIsLogBackup(backupTask);
 
         checkStorageSnapshotBackupType(backupTask);
+
+        // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+        if (deployTypeService.isPacific()) {
+            backupTask.getAdvanceParams().put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        }
 
         // 填充auth信息和副本密码
         fillBackupParams(backupTask);
@@ -302,6 +322,10 @@ public class OracleBackupInterceptor extends AbstractDbBackupInterceptor {
      */
     @Override
     protected void checkConnention(BackupTask backupTask) {
+        if (ResourceSubTypeEnum.ORACLE_PDB.getType().equals(backupTask.getProtectObject().getSubType())) {
+            handelPdbCheck(backupTask);
+            return;
+        }
         if (!ResourceSubTypeEnum.ORACLE_CLUSTER.getType().equals(backupTask.getProtectObject().getSubType())) {
             super.checkConnention(backupTask);
             return;
@@ -330,6 +354,42 @@ public class OracleBackupInterceptor extends AbstractDbBackupInterceptor {
             backupTask.getAgents().stream().map(Endpoint::getIp).collect(Collectors.joining(",", "[", "]")));
     }
 
+    private void handelPdbCheck(BackupTask backupTask) {
+        String parentUuid = backupTask.getProtectObject().getParentUuid();
+        ProtectedResource parentRes = oracleBaseService.getResource(parentUuid);
+        String parentSubType = parentRes.getSubType();
+        if (ResourceSubTypeEnum.ORACLE.getType().equals(parentSubType)) {
+            ProtectedEnvironment agent = oracleBaseService.getEnvironmentById(parentRes.getParentUuid());
+            AgentBaseDto response = agentUnifiedService.checkApplication(parentRes, agent);
+            if (!OracleConstants.SUCCESS.equals(response.getErrorCode())) {
+                throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "All agent network error");
+            }
+        } else if (ResourceSubTypeEnum.ORACLE_CLUSTER.getType().equals(parentSubType)) {
+            List<ProtectedEnvironment> agents = oracleBaseService.getEnvironmentById(parentRes.getParentUuid())
+                    .getDependencies()
+                    .get(DatabaseConstants.AGENTS)
+                    .stream()
+                    .filter(resource -> resource instanceof ProtectedEnvironment)
+                    .map(resource -> (ProtectedEnvironment) resource)
+                    .collect(Collectors.toList());
+            for (ProtectedEnvironment agent : agents) {
+                AgentBaseDto response = agentUnifiedService.checkApplication(parentRes, agent);
+                if (!OracleConstants.SUCCESS.equals(response.getErrorCode())) {
+                    backupTask.getAgents().removeIf(endpoint -> agent.getEndpoint().equals(endpoint.getIp()));
+                }
+            }
+            if (backupTask.getAgents().isEmpty()) {
+                throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "All agent network error");
+            }
+            log.info("oracle check connection finished. task id is: {}, cluster instance available agents is: {}",
+                    backupTask.getTaskId(),
+                    backupTask.getAgents().stream().map(Endpoint::getIp).collect(Collectors.joining(",", "[", "]")));
+        } else {
+            throw new LegoCheckedException(
+                    CommonErrorCode.AGENT_NOT_EXIST, "not support for type: " + parentSubType);
+        }
+    }
+
     /**
      * 副本格式
      *
@@ -347,8 +407,10 @@ public class OracleBackupInterceptor extends AbstractDbBackupInterceptor {
 
     private boolean isBelongToOracle(String subType) {
         return ResourceSubTypeEnum.ORACLE.equalsSubType(subType)
-            || ResourceSubTypeEnum.ORACLE_CLUSTER.equalsSubType(subType);
+                || ResourceSubTypeEnum.ORACLE_CLUSTER.equalsSubType(subType)
+                || ResourceSubTypeEnum.ORACLE_PDB.equalsSubType(subType);
     }
+
 
     @Override
     protected void supplyNodes(BackupTask backupTask) {
@@ -428,7 +490,18 @@ public class OracleBackupInterceptor extends AbstractDbBackupInterceptor {
 
     private void fillBackupParams(BackupTask backupTask) {
         Map<String, String> envExtendInfo = backupTask.getProtectEnv().getExtendInfo();
-        ProtectedResource resource = oracleBaseService.getResource(backupTask.getProtectObject().getUuid());
+        ProtectedResource resource;
+        if (ResourceSubTypeEnum.ORACLE_PDB.getType().equals(backupTask.getProtectObject().getSubType())) {
+            resource = oracleBaseService.getResource(backupTask.getProtectObject().getParentUuid());
+            Map<String, String> extendInfo = resource.getExtendInfo();
+            ProtectedResource resourcePdb = oracleBaseService.getResource(backupTask.getProtectObject().getUuid());
+            extendInfo.put("pdb", resourcePdb.getExtendInfoByKey("pdb"));
+            extendInfo.put("parentSubType", resource.getSubType());
+            backupTask.getProtectObject().getExtendInfo().putAll(extendInfo);
+            backupTask.getProtectObject().setParentName(resource.getName());
+        } else {
+            resource = oracleBaseService.getResource(backupTask.getProtectObject().getUuid());
+        }
         if (backupTask.getProtectEnv().getSubType().equals(ResourceSubTypeEnum.ORACLE_CLUSTER_ENV.getType())) {
             envExtendInfo.put(DatabaseConstants.DEPLOY_TYPE, DatabaseDeployTypeEnum.AP.getType());
         } else {
@@ -444,7 +517,8 @@ public class OracleBackupInterceptor extends AbstractDbBackupInterceptor {
         }
 
         fillEncKey(backupTask);
-        if (ResourceSubTypeEnum.ORACLE_CLUSTER.getType().equals(backupTask.getProtectObject().getSubType())) {
+        if (ResourceSubTypeEnum.ORACLE_CLUSTER.getType().equals(backupTask.getProtectObject().getSubType()) ||
+                ResourceSubTypeEnum.ORACLE_CLUSTER.getType().equals(resource.getSubType())) {
             // 获取集群实例或者是单实例的version，设置到保护对象的extendInfo里
             oracleBaseService.fillVersionToExtendInfo(resource.getVersion(), backupTask.getProtectObject());
             backupTask.getAdvanceParams().put("nodes", resource.getExtendInfo().get(OracleConstants.INSTANCES));
@@ -534,5 +608,63 @@ public class OracleBackupInterceptor extends AbstractDbBackupInterceptor {
     @Override
     public boolean isSupportDataAndLogParallelBackup(ProtectedResource resource) {
         return true;
+    }
+
+    @Override
+    public void finalize(PostBackupTask postBackupTask) {
+        if (BackupTypeEnum.LOG.getAbbreviation() != postBackupTask.getBackupType().getAbbreviation()) {
+            log.info("finalize not log backup job");
+            return;
+        }
+        if (!ProviderJobStatusEnum.SUCCESS.equals(postBackupTask.getJobStatus())) {
+            log.info("finalize backup job not success");
+            return;
+        }
+
+        CopyInfo copyInfo = postBackupTask.getCopyInfo();
+        String copyPropertiesStr = copyInfo.getProperties();
+        JSONObject copyProperties = JSONObject.fromObject(copyPropertiesStr);
+        String deleteArchivelog = copyProperties.getString(OracleConstants.DELETE_ARCHIVED_LOG);
+        log.info("finalize deletearchivelog {}", deleteArchivelog);
+        if (VerifyUtil.isEmpty(deleteArchivelog) || OracleConstants.FALSE.equals(deleteArchivelog)) {
+            log.info("finalize deletearchivelog is false");
+            return;
+        }
+        String resourceId = postBackupTask.getProtectedObject().getResourceId();
+        log.info("finalize resource is {}", resourceId);
+        ProtectedResource resource = oracleBaseService.getResource(resourceId);
+        String endScn = copyProperties.getString(OracleConstants.END_SCN);
+        String beginScn = copyProperties.getString(OracleConstants.BEGIN_SCN);
+        String backupTime = copyProperties.getString(OracleConstants.BACKUP_TIME);
+        String beforeTime = copyProperties.getString(OracleConstants.DELETE_BEFORE_TIME);
+        String beforeTimeUnit = copyProperties.getString(OracleConstants.DELETE_BEFORE_TIME_UNIT);
+        String endTime = copyProperties.getString(OracleConstants.END_TIME);
+        HashMap<String, String> extendInfo = new HashMap<>();
+        extendInfo.put(OracleConstants.BEGIN_SCN, beginScn);
+        extendInfo.put(OracleConstants.END_SCN, endScn);
+        extendInfo.put(OracleConstants.BACKUP_TIME, backupTime);
+        extendInfo.put(OracleConstants.END_TIME, endTime);
+        extendInfo.put(OracleConstants.DELETE_BEFORE_TIME, beforeTime);
+        extendInfo.put(OracleConstants.DELETE_BEFORE_TIME_UNIT, beforeTimeUnit);
+        AgentBaseDto response = oracleBaseService.deleteLogFromProductEnv(resource, extendInfo);
+        log.info("finalize deleteLogFromProductEnv agentBaseDto, {}", JSON.toJSONString(response));
+        checkDeleteResult(copyInfo.getUuid(), response);
+        log.info("finalize deleteLogFromProductEnv end");
+    }
+
+    private void checkDeleteResult(String taskId, AgentBaseDto response) {
+        if (!OracleConstants.SUCCESS.equals(response.getErrorCode())) {
+            log.info("checkDeleteResult not success");
+            UpdateJobStatusRequest jobStatusRequest = new UpdateJobStatusRequest();
+            jobStatusRequest.setJobRequestId(taskId);
+            jobStatusRequest.setTaskId(taskId);
+            UpdateJobLogRequest jobLogRequest = new UpdateJobLogRequest();
+            jobLogRequest.setLogTimestamp(System.currentTimeMillis());
+            jobLogRequest.setLogLevel(JobLogMessageLevelEnum.WARNING.getValue());
+            jobLogRequest.setLogInfo("oracle_plugin_delete_archivelog_failed_label");
+            jobStatusRequest.setJobLogs(Collections.singletonList(jobLogRequest));
+            List<JobLogDto> jobLogsDto = JobDataConverter.getJobLogsFromStatusRequest(taskId, jobStatusRequest);
+            jobService.updateJobLogs(taskId, jobLogsDto);
+        }
     }
 }

@@ -12,11 +12,10 @@
 */
 package openbackup.data.protection.access.provider.sdk.copy;
 
-import openbackup.data.protection.access.provider.sdk.backup.ProtectedObject;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.data.protection.access.provider.sdk.backup.ProtectedObject;
 
 /**
  * Copy Data Replication Object

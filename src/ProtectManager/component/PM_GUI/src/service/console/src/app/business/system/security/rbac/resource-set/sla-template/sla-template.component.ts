@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -145,6 +145,9 @@ export class SlaTemplateComponent implements OnInit {
       return includes(
         [
           ApplicationType.Common,
+          ApplicationType.AntDB,
+          ApplicationType.ActiveDirectory,
+          ApplicationType.ApsaraStack,
           ApplicationType.DB2,
           ApplicationType.Fileset,
           ApplicationType.Oracle,
@@ -166,6 +169,7 @@ export class SlaTemplateComponent implements OnInit {
           ApplicationType.Replica,
           ApplicationType.LocalFileSystem,
           ApplicationType.HCSCloudHost,
+          ApplicationType.HyperV,
           ApplicationType.Dameng,
           ApplicationType.OpenGauss,
           ApplicationType.Elasticsearch,
@@ -181,7 +185,10 @@ export class SlaTemplateComponent implements OnInit {
           ApplicationType.Informix,
           ApplicationType.TDSQL,
           ApplicationType.OceanBase,
+          ApplicationType.SapHana,
+          ApplicationType.Saponoracle,
           ApplicationType.TiDB,
+          ApplicationType.Ndmp,
           ApplicationType.Volume,
           ApplicationType.CommonShare,
           ApplicationType.ObjectStorage,
@@ -241,9 +248,14 @@ export class SlaTemplateComponent implements OnInit {
   getSlaList(refreshData?) {
     const params = {
       pageNo: this.pageNo,
-      pageSize: this.pageSize,
-      isGlobal: false
+      pageSize: this.pageSize
     };
+
+    if (!this.isDetail) {
+      assign(params, {
+        isGlobal: false
+      });
+    }
 
     if (this.isDetail) {
       assign(params, {
@@ -324,13 +336,14 @@ export class SlaTemplateComponent implements OnInit {
       type: ResourceSetType.SLA
     };
 
-    this.resourceSetService.QueryResourceObjectIdList(params).subscribe(res => {
+    this.resourceSetService.queryResourceObjectIdList(params).subscribe(res => {
       set(this.allSelectionMap, ResourceSetType.SLA, {
         data: _map(res, item => {
           return { uuid: item };
         })
       });
       this.selection = this.allSelectionMap[ResourceSetType.SLA]?.data;
+      this.cdr.detectChanges();
     });
   }
 

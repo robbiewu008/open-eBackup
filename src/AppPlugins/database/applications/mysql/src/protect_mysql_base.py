@@ -16,7 +16,7 @@ import os
 import signal
 import time
 
-from common.cleaner import clear, clear_repository_dir
+from common.cleaner import clear
 from common.common import execute_cmd, exter_attack, check_path_legal, execute_cmd_list, \
     execute_cmd_list_communicate, is_clone_file_system
 from common.const import ParamConstant, SubJobStatusEnum, RepositoryDataTypeEnum, \
@@ -26,25 +26,27 @@ from common.job_const import ParamKeyConst
 from common.parse_parafile import ParamFileUtil
 from common.util.check_utils import is_ip_address, is_port
 from common.util.cmd_utils import cmd_format
-from common.util.exec_utils import exec_overwrite_file, exec_cat_cmd, check_path_valid
+from common.util.exec_utils import exec_overwrite_file, exec_cat_cmd
 from common.util.exec_utils import su_exec_rm_cmd
 from common.util.kmc_utils import Kmc
 from mysql import log
 from mysql.src.common.constant import MySQLProgressFileType, MySQLType, ExecCmdResult, RestorePath, RestoreType, \
     MySQLStrConstant, MySQLJsonConstant, MySQLParamType, MySQLClusterType, MysqlBackupToolName, MysqlParentPath, \
     RoleType, MySQLCmdStr, MySQLRestoreStep, MysqlLabel, MysqlProgress, IPConstant, \
-    MySQLPreTableLockStatus, XtrbackupErrStr, SystemServiceType, SystemConstant, SQLCMD
+    MySQLPreTableLockStatus, XtrbackupErrStr, SystemServiceType, SystemConstant
 from mysql.src.common.error_code import BodyErr, MySQLCode, MySQLErrorCode
 from mysql.src.common.execute_cmd import exec_rc_tool_cmd, get_config_value_from_job_param, \
     get_config_value_from_instance, get_passwd, is_port_in_use
-from mysql.src.common.execute_cmd import exec_sql, mysql_get_status_output, exec_cmd_spawn, safe_get_environ, \
+from mysql.src.common.execute_cmd import exec_sql, mysql_get_status_output, safe_get_environ, \
     check_path_in_white_list, mysql_backup_files, get_charset_from_instance
-from mysql.src.common.parse_parafile import ReadFile, RestoreParseParam, MasterInfoParseParam, ExecSQLParseParam
+from mysql.src.common.parse_parafile import ReadFile, RestoreParseParam, ExecSQLParseParam
 from mysql.src.protect_mysql_base_utils import MysqlBaseUtils, get_lock_ddl_param, check_tool_exist
 from mysql.src.protect_mysql_restore_common import MysqlRestoreCommon
-from mysql.src.utils.common_func import SQLParam
+from mysql.src.service.backup.backup_func import support_parameter
+from mysql.src.utils.common_func import SQLParam, exec_cmd_spawn
 from mysql.src.utils.mysql_job_param_util import MysqlJobParamUtil
 from mysql.src.utils.mysql_utils import MysqlUtils
+from mysql.src.utils.restore_func import parse_xtrabackup_info
 
 
 def check_copy_complete(path):
@@ -110,11 +112,13 @@ class MysqlBase(MysqlBaseUtils):
         """
         if passwd and tool_name in [MysqlBackupToolName.XTRBACKUP2, MysqlBackupToolName.MYSQLDUMP,
                                     MysqlBackupToolName.MYSQL, MysqlBackupToolName.XTRBACKUP8]:
+            passwd = safe_get_environ(passwd)
             # 需要输密码的命令
             exec_fun = exec_cmd_spawn
         else:
             exec_fun = mysql_get_status_output
         env_cmd_str = f"{tool_name} {cmd_param_str}"
+        log.info(f"env_cmd_str:{env_cmd_str}")
         ret, output = exec_fun(env_cmd_str, passwd)
         if ret == int(ExecCmdResult.SUCCESS):
             # 成功不再打印输出
@@ -176,29 +180,21 @@ class MysqlBase(MysqlBaseUtils):
         return self._p_id
 
     def get_channel_number(self):
-        channel_number = 1
-        extend_info = self._json_param.get(MySQLJsonConstant.JOB, {}).get(MySQLJsonConstant.EXTENDINFO, {})
-        if not extend_info:
-            log.warning(f"Job extendIfnfo failed. pid:{self._p_id} jobId{self._job_id}")
+        try:
+            job_param_extend = self.get_json_param().get(MySQLJsonConstant.JOB, {}).get("extendInfo")
+            channel_number = job_param_extend.get("channel_number")
+            if channel_number:
+                log.info(f"channel_number:{channel_number}")
+                return int(channel_number)
+            backup_task_sla_str = job_param_extend.get("backupTask_sla")
+            backup_task_sla = json.loads(backup_task_sla_str)
+            policy_list = backup_task_sla.get("policy_list", [])
+            channel_number = int(policy_list[0].get("ext_parameters", {}).get("channel_number"))
+            log.info(f"channel_number:{channel_number}")
             return channel_number
-        backup_task_sla = json.loads(extend_info.get(MySQLJsonConstant.BACKUPTASKSLA, {}))
-        if not backup_task_sla:
-            log.warning(f"Backup task sla failed. pid:{self._p_id} jobId{self._job_id}")
-            return channel_number
-        application_name = backup_task_sla.get(MySQLJsonConstant.APPLICTION, "")
-        if application_name != MySQLStrConstant.MYSQLAPPLICTATION:
-            log.info(f"Not MySQL sla. pid:{self._p_id} jobId{self._job_id}")
-            return channel_number
-        policy_lisk = backup_task_sla.get(MySQLJsonConstant.POLICYLIST, [])
-        if not policy_lisk:
-            return channel_number
-        ext_parameters = policy_lisk[0].get(MySQLJsonConstant.EXTPARAMETERS, {})
-        if not ext_parameters:
-            log.info(f"Ext parameter not exist. pid:{self._p_id} jobId{self._job_id}")
-            return channel_number
-        channel_number = int(ext_parameters.get(MySQLJsonConstant.CHANNELNUMBER, 1))
-        log.info(f"Get channel number({channel_number}) success. pid:{self._p_id} jobId{self._job_id}")
-        return channel_number
+        except Exception as err:
+            log.warning(f"get_channel_number error,{err}")
+            return 1
 
     def get_lock_ddl_cmd(self):
         lock_ddl_param = get_lock_ddl_param()
@@ -403,48 +399,6 @@ class MysqlBase(MysqlBaseUtils):
         file_path = os.path.join(ParamConstant.RESULT_PATH, f"result{self._p_id}")
         exec_overwrite_file(file_path, json_str)
 
-    def exec_pre_job(self):
-        self.set_mysql_param()
-        # 针对数据库备份，需要检验每一张表是否正常
-        app_type = self._json_param.get(MySQLJsonConstant().JOB, {}). \
-            get(MySQLJsonConstant.PROTECTOBJECT, {}).get(MySQLJsonConstant.SUBTYPE, "")
-        db_name = self._json_param.get(MySQLJsonConstant().JOB, {}). \
-            get(MySQLJsonConstant.PROTECTOBJECT, {}).get(MySQLJsonConstant.NAME, "")
-        backup_type = ParamFileUtil.parse_backup_type(self._json_param.get("job", {}).get("jobParam", ""))
-        if backup_type == BackupTypeEnum.FULL_BACKUP.value:
-            self.set_data_path()
-            clear_repository_dir(self._data_path)
-        log.info(f"Backup sub type is {app_type},database is {db_name},backup_type:{backup_type}"
-                 f",job id:{self._job_id},sub job id:{self._p_id}")
-        self.write_progress_file_ex(SubJobStatusEnum.COMPLETED.value, 100, MySQLProgressFileType.COMMON)
-        if backup_type != BackupTypeEnum.LOG_BACKUP.value and not self.check_columns_instant():
-            log.error(f"check_columns_instant failed, job_id:{self._job_id}")
-            return False
-        return True
-
-    def check_columns_instant(self):
-        """
-        针对MySQL 8.0.29 8.0.30 8.0.31这三个版本，PerconaXtrabackup不支持 INSTANT ADD/DROP COLUMN 功能
-        """
-        version = self.get_mysql_version()
-        log.info(f"version:{version}")
-        if str(version) not in SystemConstant.UNSUPPORTED_INSTANT_VERSION:
-            return True
-        exec_sql_param = self.generate_exec_sql_param()
-        exec_sql_param.sql_str = SQLCMD.select_instant
-        ret, output = exec_sql(exec_sql_param)
-        log.info(f"ret:{ret},out:{output}")
-        if not ret or not output:
-            return True
-        instant_table_names = []
-        for i in output:
-            table_full_name = i[0]
-            instant_table_names.append(str(table_full_name).replace("/", "."))
-        self._error_code = MySQLErrorCode.UNSUPPORTED_INSTANT_COLUMN
-        self._log_detail_params = instant_table_names
-        self.write_progress_file(SubJobStatusEnum.FAILED.value, 100, MySQLProgressFileType.COMMON)
-        return False
-
     def delete_copy(self):
         backup_type = self._json_param.get(MySQLJsonConstant.JOB, {}).get(MySQLJsonConstant.JOBPARAM, {}) \
             .get(MySQLJsonConstant.BACKUPTYPE, "")
@@ -504,11 +458,7 @@ class MysqlBase(MysqlBaseUtils):
         else:
             self.write_progress_file(SubJobStatusEnum.ABORTED.value, 100, MySQLProgressFileType.ABORT)
 
-    def write_copy_info(self, date_time):
-        """
-        将副本信息写道cache仓中
-        :return: 
-        """
+    def write_copy_info(self, date_time, copy_path):
         self.set_cache_path()
         if not self._cache_path:
             return False
@@ -521,9 +471,17 @@ class MysqlBase(MysqlBaseUtils):
             # 获取hostsn失败不影响当次备份
             log.warning(f"Get host sn failed. pid:{self._p_id} jobId{self._job_id},error:{exception_str}")
             host_sn = ""
+        xtrabackup_info_path = os.path.join(copy_path, 'xtrabackup_info')
+        cluster_type = MysqlUtils.get_cluster_type(self.get_json_param())
+        if os.path.exists(xtrabackup_info_path) and cluster_type != MySQLClusterType.EAPP:
+            xtrabackup_info = parse_xtrabackup_info(xtrabackup_info_path)
+            backup_bin_log = str(xtrabackup_info.get("binlog_filename"))
+        else:
+            backup_bin_log = ""
         copy_json[MySQLJsonConstant.EXTENDINFO] = {
             MySQLJsonConstant.BACKUPTIME: date_time,
             MySQLJsonConstant.BACKUPHOSTSN: host_sn,
+            MySQLJsonConstant.BINLOG_NAMES: backup_bin_log,
             MySQLJsonConstant.FIRSTFULLBACKUPTIME: self.get_first_full_backup_time(date_time)
         }
         exec_overwrite_file(copy_info_path, copy_json)
@@ -545,47 +503,6 @@ class MysqlBase(MysqlBaseUtils):
         self.output_other_result(json_copy)
         return True
 
-    def check_backup_job_type(self):
-        """
-        检查是否增量转全量
-        :return: 
-        """
-        self.set_data_path()
-        if not self._data_path:
-            return False
-        if not self.check_can_backup_inc():
-            return True
-        for path in os.listdir(self._data_path):
-            new_path = os.path.join(self._data_path, path)
-            if os.path.isdir(new_path) and MySQLStrConstant.MYSQL in new_path:
-                return False
-        return True
-
-    def check_local_is_standby(self):
-        """
-        检查本机是主还是备
-        :return: 
-        """
-        exec_sql_param = self.generate_exec_sql_param()
-        exec_sql_param.sql_str = "show slave status"
-        ret, output = exec_sql(exec_sql_param)
-        if not ret:
-            log.error(f"Exec sql failed. sql:show salve status \
-                ret:{ret}  pid:{self._p_id} jobId{self._job_id}")
-            # 连不上认为是备机
-            return True
-        # 低版本的数据库，主机查不到这个信息
-        if not output:
-            return False
-        master_ip = output[0][1]
-        local_ips = self.get_local_ips()
-        if master_ip in local_ips:
-            return False
-        return True
-
-    def get_master_ips(self):
-        return self.get_info_by_slave_status(1)
-
     def get_info_by_slave_status(self, idx):
         exec_sql_param = self.generate_exec_sql_param()
         exec_sql_param.sql_str = "show slave status"
@@ -599,23 +516,6 @@ class MysqlBase(MysqlBaseUtils):
             master_ip.add(line[idx])
         return master_ip
 
-    def get_master_info(self):
-        exec_sql_param = self.generate_exec_sql_param()
-        exec_sql_param.database_name = "mysql"
-        exec_sql_param.sql_str = "select * from slave_master_info"
-        ret, output = exec_sql(exec_sql_param)
-        if not ret or not output:
-            log.error(f"Get master.info by exec sql failed.")
-            return False, []
-        master_info_list = []
-        for master_info in output:
-            master_host = str(master_info[3])
-            master_user = str(master_info[4])
-            master_password = str(master_info[5])
-            master_port = str(master_info[6])
-            master_info_list.append(MasterInfoParseParam(master_host, master_user, master_password, master_port))
-        return True, master_info_list
-
     def check_cluster_sync_status(self):
         io_errors = self.get_info_by_slave_status(35)
         for io_error in io_errors:
@@ -624,15 +524,6 @@ class MysqlBase(MysqlBaseUtils):
                 return False, io_error
         return True, ''
 
-    def is_ap_cluster(self):
-        if self._json_param:
-            cluster_type = self._json_param.get(MySQLJsonConstant.JOB, {}). \
-                get(MySQLJsonConstant.PROTECTOBJECT, {}). \
-                get(MySQLJsonConstant.EXTENDINFO, {}).get(MySQLJsonConstant.CLUSTERTYPE, "")
-            if cluster_type == MySQLClusterType.AP:
-                return True
-        return False
-
     def check_mysql_and_backtools_version(self):
         """
         查询备份工具是否存在
@@ -640,47 +531,6 @@ class MysqlBase(MysqlBaseUtils):
         """
         tool_name = self.get_backup_tool_name()
         return check_tool_exist(tool_name)
-
-    def check_allow_backup_in_local(self):
-        """
-        检查本机是否能做备份任务
-        :return: 
-        """
-        if not self.check_local_node_can_backup_inc():
-            return False, MySQLErrorCode.ERR_DATABASE_STATUS
-        if self.my_cnf_path and not check_path_valid(self.my_cnf_path, False):
-            return False, MySQLErrorCode.INPUT_MY_CNF_NOT_EXIST
-        # 检查是否有配置文件，mysql可以不要配置文件的方式启动，但是这种启动方式无法开启Big_log
-        # 所以这里检查一下是否可以拿到mysql的配置文件
-        ret, _ = self.find_mycnf_path(self.my_cnf_path)
-        if not ret:
-            log.info(f"Find my.cnf failed. pid:{self._p_id} jobId{self._job_id}")
-            return False, MySQLErrorCode.CHECK_MYSQL_CONF_FAILED
-        # 检查备份工具与数据库版本是否匹配
-        ret = self.check_mysql_and_backtools_version()
-        if not ret:
-            return False, MySQLErrorCode.CHECK_BACKUP_TOOL_FAILED
-        cluster_type = MysqlUtils.get_cluster_type(self._json_param)
-        # eapp不检查服务是否启动，所有节点都需要下发备份任务
-        check_running_result = False
-        if cluster_type == MySQLClusterType.EAPP:
-            check_running_result = True
-        else:
-            self.set_mysql_param()
-            version = self.get_mysql_version()
-            if version:
-                check_running_result = True
-        if not check_running_result:
-            log.error(f"Mysql not running. pid:{self._p_id} jobId{self._job_id}")
-            return False, MySQLErrorCode.CHECK_MYSQL_NOT_RUNNING
-        # 检查是否安装日志备份工具
-        ret = check_tool_exist(MysqlBackupToolName.MYSQLBINLOG)
-        if not ret:
-            return False, MySQLErrorCode.CHECK_MYSQL_BIN_LOG_FAILED
-        ret = check_tool_exist(MysqlBackupToolName.MYSQLDUMP)
-        if not ret:
-            return False, MySQLErrorCode.CHECK_BACKUP_TOOL_FAILED
-        return True, int(ExecCmdResult.SUCCESS)
 
     def write_progress_file(self, task_status, progress, progress_type, speed=0):
         """
@@ -911,33 +761,6 @@ class MysqlBase(MysqlBaseUtils):
                 version = item[1]
                 continue
         return version
-
-    def find_log_bin_path_dir(self, version):
-        """
-        找到运行中MySQL数据库的index日志文件路径
-        在高版本的mysql中，通过variables可以查询到log_bin_index配置
-        在低版本的mysql中，即使在/etc/my.cnf中配置了，也无法通过variables查询到，通过查询/etc/my.cnf文件
-        """
-        exec_sql_param = self.generate_exec_sql_param()
-        exec_sql_param.sql_str = "show variables like '%log_bin%'"
-        ret, output = exec_sql(exec_sql_param)
-        if not ret:
-            log.error(f"Exec_sql failed. sql:show variables like '%log_bin%' \
-                        ret:{ret} pid:{self._p_id} jobId{self._job_id}")
-            return ""
-        for item in output:
-            if item[0] != 'log_bin_index':
-                continue
-            try:
-                return item[1]
-            except Exception as exception_str:
-                log.warning(f"Get log bin index path dir exception . reason:{exception_str} \
-                            pid:{self._p_id} jobId:{self._job_id}")
-            return ""
-        # 如果variables查不到，则从配置文件里取
-        if version.startswith("5.5"):
-            return MysqlUtils.get_log_bin_by_config_file(self.my_cnf_path)
-        return MysqlUtils.get_log_bin_by_config_file(self.my_cnf_path)
 
     def get_self_average_speed(self):
         return self._average_speed
@@ -1690,6 +1513,8 @@ class MysqlBase(MysqlBaseUtils):
             raise Exception(f"get mysql version from job param is null. pid:{self._p_id} jobId:{self._job_id}")
         if MySQLStrConstant.MARIADB in version:
             set_gtid_purged = ""
+        if not support_parameter("mysqldump", "--set-gtid-purged"):
+            set_gtid_purged = ""
         cmd = cmd_format("--user={} -h{} -P{} \
                 --password --no-data --compact --add-drop-table --skip_add_locks --skip-lock-tables \
                 --routines --triggers --events {}\
@@ -1765,81 +1590,6 @@ class MysqlBase(MysqlBaseUtils):
         log.info(f"Succeed to get data copy info last backup time({last_backup_time}). \
             pid:{self._p_id} jobId{self._job_id}")
         return True, int(last_backup_time)
-
-    def get_copy_info_last_backup_time_new(self):
-        ret, out_info = self.get_last_copy_info([CopyDataTypeEnum.LOG_COPY.value])
-        if not ret or not out_info:
-            ret, out_info = self.get_last_copy_info([CopyDataTypeEnum.FULL_COPY.value])
-            if not ret:
-                log.error(f"Failed to get last copy info. pid:{self._p_id} jobId{self._job_id}")
-                return False, ""
-            return True, int(out_info.get("extendInfo", {}).get("backupTime", ""))
-        return True, int(out_info.get("extendInfo", {}).get("endTime", ""))
-
-    def check_can_backup_inc(self):
-        # 判断集群备份此次备份是否需要增量转全量
-        # 如果上一次备份的节点，不能备份了需要转全量
-        app_type = self._json_param.get(MySQLJsonConstant.JOB, {}). \
-            get(MySQLJsonConstant.PROTECTOBJECT, {}).get(MySQLJsonConstant.SUBTYPE, "")
-        if app_type != MySQLType.SUBTYPECLUSTER:
-            # 非集群直接返回成功
-            log.info(f"Get app type({app_type}). pid:{self._p_id} jobId:{self._job_id}")
-            return True
-        cluster_type = MysqlUtils.get_cluster_type(self._json_param)
-        if cluster_type == MySQLClusterType.EAPP:
-            return True
-
-        ret, copy_host_sn = self.get_copy_info_host_sn()
-        if not ret:
-            log.error(f"Get copy host_sn failed. pid:{self._p_id} jobId:{self._job_id}")
-            return False
-        node_list = self._json_param.get(MySQLJsonConstant.JOB, {}). \
-            get(MySQLJsonConstant.APPENV, {}).get(MySQLJsonConstant.NODES, [])
-        if not node_list:
-            log.error(f"Get nodes failed. pid:{self._p_id} jobId:{self._job_id}")
-            return False
-        for node in node_list:
-            node_id = node.get(MySQLJsonConstant.ID, "")
-            if node_id and node_id == copy_host_sn:
-                log.info(f"Node id({node_id}) copy host sn({copy_host_sn}) match.\
-                    pid:{self._p_id} jobId:{self._job_id}")
-                return True
-        log.error(f"Hostsn dont match.need inc to full. pid:{self._p_id} jobId:{self._job_id}")
-        return False
-
-    def check_local_node_can_backup_inc(self):
-        # 检查当前节点是否能做增量
-        backup_type = int(self._json_param.get(MySQLJsonConstant.JOB, {}). \
-                          get(MySQLJsonConstant.JOBPARAM, {}).get(MySQLJsonConstant.BACKUPTYPE, "0"))
-        if backup_type not in [BackupTypeEnum.DIFF_BACKUP.value, BackupTypeEnum.INCRE_BACKUP.value]:
-            log.info(f"Get backup type is {backup_type}. pid:{self._p_id} jobId:{self._job_id}")
-            return True
-        app_type = self._json_param.get(MySQLJsonConstant.JOB, {}). \
-            get(MySQLJsonConstant.PROTECTOBJECT, {}).get(MySQLJsonConstant.SUBTYPE, "")
-        if app_type != MySQLType.SUBTYPECLUSTER:
-            # 非集群直接返回成功
-            log.info(f"Get app type({app_type}). pid:{self._p_id} jobId:{self._job_id}")
-            return True
-        # 不是backup子任务的检查直接返回成功
-        subjob_name = self._json_param.get(MySQLJsonConstant.SUBJOB, {}).get(MySQLJsonConstant.JOBNAME, "")
-        log.info(f"Get sub job name: {subjob_name}.pid:{self._p_id} jobId:{self._job_id}")
-        if subjob_name != "backup" or not subjob_name:
-            return True
-        cluster_type = MysqlUtils.get_cluster_type(self._json_param)
-        if cluster_type == MySQLClusterType.EAPP:
-            return True
-        ret, copy_host_sn = self.get_copy_info_host_sn()
-        if not ret:
-            log.error(f"Get copy host_sn failed. pid:{self._p_id} jobId:{self._job_id}")
-            return False
-        local_host_sn = self.get_host_sn()
-        if copy_host_sn == local_host_sn:
-            log.info(f"Host sn match(self:{local_host_sn} copy({copy_host_sn})). \
-            pid:{self._p_id} jobId:{self._job_id}")
-            return True
-        log.error(f"Host sn dont match(self:{local_host_sn} copy({copy_host_sn})). \
-            pid:{self._p_id} jobId:{self._job_id}")
-        return False
 
     def get_first_full_backup_time(self, current_backup_time):
         # 返回恢复后第一次全量备份的时间，将此时间填入副本信息中
@@ -2040,17 +1790,6 @@ class MysqlBase(MysqlBaseUtils):
     def get_mysql_port(self):
         return self._mysql_port
 
-    def check_auth_info(self):
-        try:
-            exec_sql_param = self.generate_exec_sql_param()
-            exec_sql_param.sql_str = "show variables like 'version'"
-            ret, output = exec_sql(exec_sql_param)
-            return ret, output
-        except Exception as exception_str:
-            # 异机恢复，有可能导致用户丢失，需要报错误码
-            log.error("Failed to check auth.%s", exception_str)
-            return False, str(exception_str)
-
     def get_last_bin_log_file(self):
         return os.path.join(self._cache_path, self.get_host_sn() + '_bin_log')
 
@@ -2079,4 +1818,8 @@ class MysqlBase(MysqlBaseUtils):
         connect_param.passwd = Kmc().encrypt(passwd)
         exec_overwrite_file(connect_param_path, connect_param.__dict__)
         clear(passwd)
+
+    def clear_password_environ_for_maria(self):
+        if self.get_backup_tool_name() == MysqlBackupToolName.MARIADBBACKUP:
+            del os.environ["MYSQL_PWD"]
 

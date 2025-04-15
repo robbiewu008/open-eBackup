@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include <memory>
 #include <algorithm>
 #ifndef WIN32
@@ -38,6 +50,8 @@ namespace {
             static_cast<int32_t>(MainJobState::CHECK_BACKUP_TYPE)},
         {{PluginMainJob::ActionEvent::GENE_POST_JOB, PluginMainJob::EventResult::START},
             static_cast<int32_t>(MainJobState::INITIALIZING)},
+        {{PluginMainJob::ActionEvent::GENE_POST_JOB, PluginMainJob::EventResult::FAILED},
+            static_cast<int32_t>(MainJobState::FAILED)},
         {{PluginMainJob::ActionEvent::MAIN_JOB_FINISHED, PluginMainJob::EventResult::SUCCESS},
             static_cast<int32_t>(MainJobState::COMPLETE)},
         {{PluginMainJob::ActionEvent::MAIN_JOB_FINISHED, PluginMainJob::EventResult::FAILED},
@@ -225,7 +239,7 @@ mp_int32 PluginMainJob::ReportAction(PluginMainJob::ActionEvent event, PluginMai
 {
     INFOLOG("ReportAction jobId=%s: event:%d result:%d resCode:%d.", data.mainID.c_str(), event, result, resultCode);
     if (DetermineWhetherToReportAction(event, result, resultCode, data) == false) {
-    INFOLOG("Job no need report.");
+        INFOLOG("Job no need report.");
         return MP_FAILED;
     }
     std::pair<ActionEvent, EventResult> key{event, result};
@@ -427,7 +441,7 @@ mp_int32 PluginMainJob::GenerateMainJob()
     DmeRestClient::HttpReqParam param("POST",
         "/v1/dme-unified/tasks/sub-tasks", jobValue.toStyledString());
     param.mainJobId = m_data.mainID;
-    mp_int32 iRet = dmeClient->SendRequest(param, response);
+    mp_int32 iRet = dmeClient->SendKeyRequest(param, response);
     if (iRet != MP_SUCCESS) {
         return iRet;
     }
@@ -473,6 +487,7 @@ mp_int32 PluginMainJob::ExecutePreSubJob()
         m_data.param,
         m_data.mainType,
         SubJobType::type::PRE_SUB_JOB};
+
     m_pPrepJob = PluginJobFactory::GetInstance()->CreatePluginJob(jobData);
     if (m_pPrepJob.get() == nullptr) {
         ERRLOG("ExecutePreSubJob faild, pointer is null.");
@@ -548,6 +563,14 @@ mp_int32 PluginMainJob::CanbeRunInLocalNode()
             ret.code = (ret.bodyErr == 0) ? ERR_PLUGIN_AUTHENTICATION_FAILED : ret.bodyErr;
             ERRLOG("Check jobId=%s can be allow check copy in local node failed, error=%d",
                 m_data.mainID.c_str(), ret.code);
+        }
+    } else if (m_data.mainType == MainJobType::DELETE_COPY_JOB && m_data.appType == "HCSCloudHost") {
+        DelCopyJob delCopyJob;
+        JsonToStruct(m_data.param, delCopyJob);
+        ProtectServiceCall(&ProtectServiceIf::AllowDelCopyInLocalNode, ret, delCopyJob);
+        if (ret.code != MP_SUCCESS) {
+            ret.code = (ret.bodyErr == 0) ? ERR_PLUGIN_AUTHENTICATION_FAILED : ret.bodyErr;
+            ERRLOG("AllowDelCopyInLocalNode failed, jobId=%s error=%d", m_data.mainID.c_str(), ret.code);
         }
     }
     JobStateDB::GetInstance().UpdateRunEnable(m_data.mainID, ret.code);
@@ -813,7 +836,8 @@ mp_int32 PluginMainJob::SetQosStrategy()
     JsonToStruct(m_data.param, jobParam);
     mp_int32 dataRepositorieSize = 0;
     for (const auto iter : jobParam.repositories) {
-        if (iter.repositoryType == RepositoryDataType::type::DATA_REPOSITORY) {
+        if (iter.repositoryType == RepositoryDataType::type::DATA_REPOSITORY ||
+            iter.repositoryType == RepositoryDataType::type::LOG_REPOSITORY) {
             dataRepositorieSize++;
         }
     }

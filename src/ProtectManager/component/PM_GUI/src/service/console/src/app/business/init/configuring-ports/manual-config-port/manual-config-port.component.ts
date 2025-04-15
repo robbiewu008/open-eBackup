@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -31,15 +31,14 @@ import {
   I18NService,
   LogManagerApiService,
   MODAL_COMMON,
-  SystemApiService
+  SystemApiService,
+  WarningMessageService
 } from 'app/shared';
 import { TableData } from 'app/shared/components/pro-table';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
-import { RememberColumnsService } from 'app/shared/services/remember-columns.service';
 import { assign, cloneDeep, each, filter, find, includes, size } from 'lodash';
 import { combineLatest } from 'rxjs';
 import { CreatLogicPortComponent } from '../creat-logic-port/creat-logic-port.component';
-import { ReusePortComponent } from '../reuse-port/reuse-port.component';
 
 @Component({
   selector: 'aui-manual-config-port',
@@ -76,6 +75,7 @@ export class ManualConfigPortComponent implements OnInit {
     ],
     this.i18n.get('deploy_type')
   );
+  isWorked = true;
 
   @ViewChild('operationTpl', { static: true }) operationTpl: TemplateRef<any>;
   @ViewChild('titleTpl', { static: true }) titleTpl: TemplateRef<any>;
@@ -89,7 +89,7 @@ export class ManualConfigPortComponent implements OnInit {
     private systemApiService: SystemApiService,
     private drawModalService: DrawModalService,
     private logManagerApiService: LogManagerApiService,
-    private rememberColumnsService: RememberColumnsService
+    private warningMessageService: WarningMessageService
   ) {}
 
   ngOnInit(): void {
@@ -147,7 +147,13 @@ export class ManualConfigPortComponent implements OnInit {
         key: 'ethernetPort',
         label: this.i18n.get('common_bounded_ethernet_port_label'),
         isShow: true,
-        width: this.isModify ? 120 : 240
+        width: this.isModify ? 132 : 240
+      },
+      {
+        key: 'currentPortName',
+        label: this.i18n.get('common_home_port_and_current_port_label'),
+        isShow: true,
+        width: this.isModify ? 156 : 240
       },
       {
         key: 'operation',
@@ -162,6 +168,13 @@ export class ManualConfigPortComponent implements OnInit {
         key: 'id',
         isShow: false,
         width: 134
+      });
+      this.columns.splice(3, 0, {
+        label: this.i18n.get('common_dm_exist_label'),
+        key: 'dmExists',
+        isShow: true,
+        filter: true,
+        filterMap: this.dataMapService.toArray('initLogicPortExistStatus')
       });
       this.columns.pop();
     }
@@ -195,6 +208,7 @@ export class ManualConfigPortComponent implements OnInit {
       })
       .subscribe((res: any) => {
         this.clearControl();
+        this.isWorked = res.allLogicPortsValid;
         if (!!res?.ethPortDtoList?.length) {
           // 除physicaltype为1的端口不能使用
           res.ethPortDtoList = filter(
@@ -204,6 +218,20 @@ export class ManualConfigPortComponent implements OnInit {
         }
         this.rawData = cloneDeep(res);
         each(res.logicPortDtoList, item => {
+          // 通过dmport去找当前名
+          const tmpDmPort = find(res.dmLogicPortList, { NAME: item.name });
+          if (tmpDmPort) {
+            assign(item, {
+              currentPortName: tmpDmPort.CURRENTPORTNAME
+            });
+          }
+          // 通过以太网口去找当前mtu
+          if (item.homePortType === DataMap.initHomePortType.ethernet.value) {
+            const tmpEthPort = find(res.ethPortDtoList, {
+              id: item.homePortId
+            });
+            item.mtu = tmpEthPort ? tmpEthPort?.mtu : '';
+          }
           if (
             find(res.reuseLogicPortNameList, usedPort => usedPort === item.name)
           ) {
@@ -217,7 +245,10 @@ export class ManualConfigPortComponent implements OnInit {
             this.orginalNetworkType = this.networkType;
           }
           each(this.controllers, control => {
-            if (control.controllerName === item.homeControllerId) {
+            if (
+              control.controllerName ===
+              (item?.homeControllerId ?? item.currentControllerId)
+            ) {
               control.controllerData.push(item);
             }
             control.controllerData = [...control.controllerData];
@@ -340,38 +371,58 @@ export class ManualConfigPortComponent implements OnInit {
         },
         lvOk: modal => {
           return new Promise(resolve => {
-            const content = modal.getContentComponent() as CreatLogicPortComponent;
-            content.onOk().subscribe({
-              next: res => {
-                resolve(true);
-                this.getData();
-              },
-              error: () => {
-                resolve(false);
-              }
-            });
+            this.modifyMessage(modal, resolve);
           });
         }
       })
     );
   }
 
-  deletePort(data, rowData, name) {
-    this.systemApiService
-      .deletePort({
-        name: rowData.name,
-        memberEsn: this.memberEsn || ''
-      })
-      .subscribe(
-        res => {
-          this.deletePortChange(data, rowData, name);
-          this.disableBtn();
-          this.getData();
-        },
-        () => {
-          this.disableBtn();
+  private modifyMessage(modal: any, resolve: (value: unknown) => void) {
+    this.warningMessageService.create({
+      content: this.i18n.get('common_config_modify_port_tip_label'),
+      onOK: () => {
+        const content = modal.getContentComponent() as CreatLogicPortComponent;
+        content.onOk().subscribe({
+          next: res => {
+            resolve(true);
+            this.getData();
+          },
+          error: () => {
+            resolve(false);
+          }
+        });
+      },
+      onCancel: () => resolve(false),
+      lvAfterClose: result => {
+        if (result && result.trigger === 'close') {
+          resolve(false);
         }
-      );
+      }
+    });
+  }
+
+  deletePort(data, rowData, name) {
+    this.warningMessageService.create({
+      content: this.i18n.get('common_config_delete_port_tip_label'),
+      onOK: () => {
+        this.systemApiService
+          .deletePort({
+            name: rowData.name,
+            memberEsn: this.memberEsn || ''
+          })
+          .subscribe(
+            res => {
+              this.deletePortChange(data, rowData, name);
+              this.disableBtn();
+              this.getData();
+            },
+            () => {
+              this.disableBtn();
+            }
+          );
+      }
+    });
   }
 
   deletePortChange(data, rowData, name) {
@@ -418,41 +469,12 @@ export class ManualConfigPortComponent implements OnInit {
         lvFooter: [
           {
             label: this.i18n.get('common_close_label'),
-            onClick: modal => modal.close()
+            onClick: modal => {
+              modal.close();
+              this.getData();
+            }
           }
         ]
-      })
-    );
-  }
-
-  reusePort(type) {
-    this.drawModalService.create(
-      assign({}, MODAL_COMMON.generateDrawerOptions(), {
-        lvModalKey: 'reusePort',
-        lvWidth: MODAL_COMMON.normalWidth + 100,
-        lvHeader: this.i18n.get('common_reuse_dm_port_label'),
-        lvContent: ReusePortComponent,
-        lvOkDisabled: true,
-        lvComponentParams: {
-          controlType: type,
-          memberEsn: this.memberEsn,
-          portData: this.dmLogicData,
-          data: this.rawData
-        },
-        lvOk: modal => {
-          return new Promise(resolve => {
-            const content = modal.getContentComponent() as ReusePortComponent;
-            content.onOk().subscribe({
-              next: res => {
-                resolve(true);
-                this.getData();
-              },
-              error: () => {
-                resolve(false);
-              }
-            });
-          });
-        }
       })
     );
   }
@@ -467,8 +489,6 @@ export class ManualConfigPortComponent implements OnInit {
       this.routeConfig(e.item);
     } else if (e.action === 'delete') {
       this.deletePort(e.data, e.item, e.name);
-    } else if (e.action === 'reuse') {
-      this.reusePort(e.name);
     }
   }
 

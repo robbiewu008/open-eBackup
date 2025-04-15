@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.common.model.storage;
 
-import openbackup.system.base.common.constants.LegoNumberConstant;
-import openbackup.system.base.common.utils.VerifyUtil;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.common.constants.LegoNumberConstant;
+import openbackup.system.base.common.utils.VerifyUtil;
 
 /**
  * 功能描述

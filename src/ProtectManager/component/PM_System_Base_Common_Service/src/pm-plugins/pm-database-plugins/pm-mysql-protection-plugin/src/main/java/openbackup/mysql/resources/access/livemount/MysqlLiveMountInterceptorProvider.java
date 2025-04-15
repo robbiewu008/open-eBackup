@@ -12,6 +12,7 @@
 */
 package openbackup.mysql.resources.access.livemount;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.access.framework.livemount.common.constants.LiveMountConstants;
 import openbackup.data.access.framework.livemount.common.model.LiveMountFileSystemShareInfo;
@@ -31,16 +32,11 @@ import openbackup.database.base.plugin.utils.StorageRepositoryUtil;
 import openbackup.mysql.resources.access.common.MysqlConstants;
 import openbackup.mysql.resources.access.enums.MysqlResourceSubTypeEnum;
 import openbackup.mysql.resources.access.service.MysqlBaseService;
-import openbackup.system.base.common.constants.ErrorCodeConstant;
-import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
-import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -156,9 +152,6 @@ public class MysqlLiveMountInterceptorProvider implements LiveMountInterceptorPr
 
         // 拦截版本,跨MySQL以及MariaDB
         mysqlBaseService.checkVersion(targetResource, resourceJson);
-
-        // 只支持备份的副本即时挂载。
-        checkLiveMountCopy(copy);
     }
 
     private void supplyNodes(TaskEnvironment taskEnvironment, List<Endpoint> agents) {
@@ -177,19 +170,6 @@ public class MysqlLiveMountInterceptorProvider implements LiveMountInterceptorPr
         StorageRepository dataRepository = StorageRepositoryUtil.getDataStorageRepository(task.getRepositories());
         dataRepository.setExtendInfo(extendInfo);
         dataRepository.setProtocol(nasShareProtocol);
-    }
-
-    /**
-     * 检测即时挂载的副本
-     * 注：此处的copy为新生成即时挂载副本，需要对其源副本的生成方式做校验
-     *
-     * @param copy 即时挂载副本
-     */
-    private void checkLiveMountCopy(Copy copy) {
-        Copy parentCopy = copyRestApi.queryCopyByID(copy.getParentCopyUuid());
-        if (!parentCopy.getGeneratedBy().equals(CopyGeneratedByEnum.BY_BACKUP.value())) {
-            throw new LegoCheckedException(ErrorCodeConstant.ERR_PARAM, "Mysql live mount check getGenerated failed!");
-        }
     }
 
     /**

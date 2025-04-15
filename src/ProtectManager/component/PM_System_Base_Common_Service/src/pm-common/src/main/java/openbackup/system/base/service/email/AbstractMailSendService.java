@@ -12,11 +12,6 @@
 */
 package openbackup.system.base.service.email;
 
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.exception.LegoCheckedException;
-import openbackup.system.base.common.utils.ExceptionUtil;
-import openbackup.system.base.service.email.entity.RemoteNotifyServer;
-
 import jakarta.mail.Address;
 import jakarta.mail.AuthenticationFailedException;
 import jakarta.mail.Authenticator;
@@ -29,20 +24,33 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.MimeUtility;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.utils.ExceptionUtil;
+import openbackup.system.base.common.utils.SecurityUtil;
+import openbackup.system.base.service.email.entity.RemoteNotifyServer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.Properties;
 
 import javax.activation.CommandMap;
 import javax.activation.MailcapCommandMap;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * 邮件发送服务
@@ -101,7 +109,7 @@ public abstract class AbstractMailSendService {
      * @return int
      */
     public static int sendAttachmentEmail(RemoteNotifyServer remoteNotifyServer, String title, String content,
-        String receiver, String[] attachments) {
+            String receiver, String[] attachments) {
         try {
             int errorCode = EmailCodes.ERROR_CODE_EXCEPTION;
             int count = 0;
@@ -131,7 +139,7 @@ public abstract class AbstractMailSendService {
      * @return int
      */
     private static int sentSingleEmail(RemoteNotifyServer remoteNotifyServer, String title, String content,
-        String receiver) {
+            String receiver) {
         // smtp配置，保存到props文件，读取
         Properties props = generateProperties(remoteNotifyServer);
         // 创建会话
@@ -139,9 +147,9 @@ public abstract class AbstractMailSendService {
         MimeMessage msg = new MimeMessage(session);
         try {
             msg.setFrom(remoteNotifyServer.getEmailFrom());
-            msg.setSubject(title, EMAIL_CHARSET);  // 邮件主题
-            msg.setText(content, EMAIL_CHARSET);  // 邮件正文
-            msg.setRecipients(Message.RecipientType.TO, new Address[] {new InternetAddress(receiver)});
+            msg.setSubject(title, EMAIL_CHARSET); // 邮件主题
+            msg.setText(content, EMAIL_CHARSET); // 邮件正文
+            msg.setRecipients(Message.RecipientType.TO, new Address[]{new InternetAddress(receiver)});
             initMailcapCommandMap();
             Transport.send(msg);
         } catch (MessagingException e) {
@@ -164,7 +172,7 @@ public abstract class AbstractMailSendService {
      * @return int
      */
     private static int sendSingleAttachmentEmail(RemoteNotifyServer remoteNotifyServer, String title, String content,
-        String receiver, String[] attachments) {
+            String receiver, String[] attachments) {
         // smtp配置，保存到props文件，读取
         Properties props = generateProperties(remoteNotifyServer);
         // 创建会话
@@ -172,8 +180,8 @@ public abstract class AbstractMailSendService {
         MimeMessage msg = new MimeMessage(session);
         try {
             msg.setFrom(remoteNotifyServer.getEmailFrom());
-            msg.setSubject(title, EMAIL_CHARSET);  // 邮件主题
-            msg.setRecipients(Message.RecipientType.TO, new Address[] {new InternetAddress(receiver)});
+            msg.setSubject(title, EMAIL_CHARSET); // 邮件主题
+            msg.setRecipients(Message.RecipientType.TO, new Address[]{new InternetAddress(receiver)});
             initMailcapCommandMap();
             MimeMultipart mp = new MimeMultipart();
             // 正文
@@ -185,6 +193,13 @@ public abstract class AbstractMailSendService {
                 File file = new File(path);
                 MimeBodyPart attachment = new MimeBodyPart();
                 attachment.attachFile(file);
+                // 手动指定附件编码为UTF-8 以及文件格式为zip
+                String encodedFileName = MimeUtility.encodeText(file.getName(), "UTF-8", null);
+                attachment.setFileName(encodedFileName);
+                // 手动设置 Content-Type 和 Content-Disposition
+                attachment.setHeader("Content-Type",
+                    Files.probeContentType(file.toPath()) + "; name=\"" + encodedFileName + "\"");
+                attachment.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"");
                 mp.addBodyPart(attachment);
             }
             msg.setContent(mp);
@@ -217,7 +232,7 @@ public abstract class AbstractMailSendService {
         Properties props = new Properties();
         if (remoteNotifyServer == null) {
             throw new LegoCheckedException(CommonErrorCode.ALARM_SMTP_CONNECT_FAILED,
-                "The remoteNotifyServer is not deployed.");
+                    "The remoteNotifyServer is not deployed.");
         }
         props.put(EmailConstants.MAIL_HOST, remoteNotifyServer.getServer());
         props.put(EmailConstants.MAIL_PORT, String.valueOf(remoteNotifyServer.getPort()));
@@ -266,12 +281,17 @@ public abstract class AbstractMailSendService {
             props.put(EmailConstants.STARTTLS_REQUIRED, TRUE);
             props.put(EmailConstants.MAIL_PORT, String.valueOf(remoteNotifyServer.getPort()));
             props.setProperty(SmtpSslSocketFactory.SMTP_IP_ADDRESS, remoteNotifyServer.getServer());
-            props.setProperty(SmtpSslSocketFactory.SMTP_SSL_CONTEXT, SmtpSslSocketFactory.TLS_CONTEXT);
+            props.setProperty(SmtpSslSocketFactory.SMTP_SSL_CONTEXT, SecurityUtil.getTlsContext());
             props.put(EmailConstants.MAIL_SMTP_SSL_SOCKET_FACTORY, new SmtpSslSocketFactory(props));
             props.setProperty(EmailConstants.MAIL_SMTP_SSL_SOCKET_FALLBACK, FALSE);
             props.setProperty(EmailConstants.MAIL_TRANSPORT_PROTOCOL, EmailConstants.SMTP_PROTOCOL);
             props.setProperty(EmailConstants.MAIL_SMTP_SENDPARTIAL, FALSE);
             props.setProperty(EmailConstants.MAIL_SMTPS_SENDPARTIAL, FALSE);
+            // 是否开启证书CA校验
+            log.info("TLS Indicates whether to enable CA verification: {}", remoteNotifyServer.getIsContainCert());
+            if (!remoteNotifyServer.getIsContainCert()) {
+                setNoCertificate(props, SecurityUtil.getTlsContext());
+            }
         }
     }
 
@@ -284,9 +304,56 @@ public abstract class AbstractMailSendService {
             props.put(EmailConstants.MAIL_SMTP_SSL_SOCKET_FACTORY, new SmtpSslSocketFactory(props));
             props.setProperty(EmailConstants.MAIL_SMTP_SSL_SOCKET_FALLBACK, FALSE);
             props.setProperty(EmailConstants.MAIL_SMTP_SSL_SOCKET_FACTORY_PORT,
-                String.valueOf(remoteNotifyServer.getSslSmtpPort()));
-            props.setProperty(SmtpSslSocketFactory.SMTP_SSL_CONTEXT, SmtpSslSocketFactory.SSL_CONTEXT);
+                    String.valueOf(remoteNotifyServer.getSslSmtpPort()));
+            props.setProperty(SmtpSslSocketFactory.SMTP_SSL_CONTEXT, SecurityUtil.getSslContext());
+            // 是否开启证书CA校验
+            log.info("SSL Indicates whether to enable CA verification: {}", remoteNotifyServer.getIsContainCert());
+            if (!remoteNotifyServer.getIsContainCert()) {
+                setNoCertificate(props, SecurityUtil.getSslContext());
+            }
         }
+    }
+
+    private static void setNoCertificate(Properties props, String type) {
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            /**
+             * 授信
+             *
+             * @return X509Certificate
+             */
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return new java.security.cert.X509Certificate[0]; // 返回空数组
+            }
+
+            /**
+             * 检查受信任的客户端
+             *
+             * @param certs the peer certificate chain
+             * @param authType the authentication type based on the client certificate
+             */
+            public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+                log.info("Check Client Trusted");
+            }
+
+            /**
+             * 检查受信任的服务器
+             *
+             * @param certs the peer certificate chain
+             * @param authType the key exchange algorithm used
+             */
+            public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+                log.info("Check Server Trusted");
+            }
+        }};
+        SSLContext sc;
+        try {
+            sc = SSLContext.getInstance(type);
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR, "Mail Service Issues");
+        }
+        SSLSocketFactory sslSocketFactory = sc.getSocketFactory();
+        props.put("mail.smtp.ssl.socketFactory", sslSocketFactory);
     }
 
     private static void setAuthProperty(RemoteNotifyServer remoteNotifyServer, Properties props) {
@@ -309,16 +376,19 @@ public abstract class AbstractMailSendService {
     }
 
     private static void writeExceptionLog(RemoteNotifyServer remoteNotifyServer, Throwable throwable) {
-        log.error("Sending the receiver the following server failed, "
-                + "mail server is: {}, port is: {}, proxy server is: {}, proxy port is: {}.",
-            remoteNotifyServer.getServer(), remoteNotifyServer.getPort(), remoteNotifyServer.getProxyServer(),
-            remoteNotifyServer.getProxyPort(), throwable);
+        log.error(
+                "Sending the receiver the following server failed, "
+                        + "mail server is: {}, port is: {}, proxy server is: {}, proxy port is: {}.",
+                remoteNotifyServer.getServer(), remoteNotifyServer.getPort(), remoteNotifyServer.getProxyServer(),
+                remoteNotifyServer.getProxyPort(), throwable);
     }
 
     private static void recordSuccessLog(RemoteNotifyServer remoteNotifyServer) {
-        log.info("Sending the receiver the following server success, mail server is: {}, "
-                + "port is: {}, proxy server is: {}, proxy port is: {}.", remoteNotifyServer.getServer(),
-            remoteNotifyServer.getPort(), remoteNotifyServer.getProxyServer(), remoteNotifyServer.getProxyPort());
+        log.info(
+                "Sending the receiver the following server success, mail server is: {}, "
+                        + "port is: {}, proxy server is: {}, proxy port is: {}.",
+                remoteNotifyServer.getServer(), remoteNotifyServer.getPort(), remoteNotifyServer.getProxyServer(),
+                remoteNotifyServer.getProxyPort());
     }
 
     /**
@@ -336,7 +406,7 @@ public abstract class AbstractMailSendService {
 
     private static int processMessagingException(Exception exception) {
         if (exception.getCause() != null && (ExceptionUtil.lookFor(exception, CertificateException.class) != null
-            || ExceptionUtil.lookFor(exception, SSLHandshakeException.class) != null)) {
+                || ExceptionUtil.lookFor(exception, SSLHandshakeException.class) != null)) {
             return EmailCodes.SMTP_CERTIFICATE_VERIFICATION_FAILED;
         } else if (exception.getCause() != null && exception.getMessage().contains("Can't verify identity of server")) {
             return EmailCodes.SMTP_SERVER_IDENTITY_CHECK_FAIL;

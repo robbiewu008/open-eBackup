@@ -12,13 +12,18 @@
 */
 package openbackup.data.access.framework.restore.service;
 
+import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
+import com.huawei.oceanprotect.job.constants.JobPayloadKeys;
+import com.huawei.oceanprotect.job.dto.JobProgressRange;
+import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dee.DeeCopiesManagementRestApi;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeUnifiedRestApi;
 import openbackup.data.access.framework.copy.mng.constant.CopyPropertiesKeyConstant;
 import openbackup.data.access.framework.core.copy.CopyManagerService;
-import openbackup.data.access.framework.core.dao.CopiesAntiRansomwareDao;
 import openbackup.data.access.framework.protection.service.lock.ResourceLockService;
-import openbackup.data.access.framework.protection.service.repository.RepositoryStrategyManager;
 import openbackup.data.access.framework.restore.dto.RestoreTaskContext;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.constants.RestoreTaskExtendInfoConstant;
@@ -27,12 +32,12 @@ import openbackup.data.protection.access.provider.sdk.lock.LockResourceBo;
 import openbackup.data.protection.access.provider.sdk.restore.v2.DeeCopiesRelatedTask;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
 import openbackup.data.protection.access.provider.sdk.util.AgentApiUtil;
-import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
-import com.huawei.oceanprotect.job.constants.JobPayloadKeys;
-import com.huawei.oceanprotect.job.dto.JobProgressRange;
-import com.huawei.oceanprotect.job.sdk.JobService;
+import openbackup.system.base.common.constants.FaultEnum;
+import openbackup.system.base.common.constants.IsmNumberConstant;
+import openbackup.system.base.common.constants.LegoInternalAlarm;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.JSONObject;
+import openbackup.system.base.sdk.alarm.CommonAlarmService;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyStatus;
@@ -40,9 +45,6 @@ import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.CreateJobRequest;
 import openbackup.system.base.service.AvailableAgentManagementDomainService;
 import openbackup.system.base.service.DeployTypeService;
-import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,13 +64,17 @@ public class RestoreTaskService {
 
     private static final String LOCK_ID = "lock_id";
 
+    private static final String RESTORE_FAIL_ALARM_ID = "0x64006E0001";
+
+    private static final String RESTORE_LABEL = "3";
+
+    private static final String COMMON_FAIL_LABEL = "0";
+
     private final CopyRestApi copyRestApi;
 
     private final JobService jobService;
 
     private final DmeUnifiedRestApi dmeUnifiedRestApi;
-
-    private final RepositoryStrategyManager repositoryStrategyManager;
 
     private final ResourceLockService resourceLockService;
 
@@ -80,9 +86,9 @@ public class RestoreTaskService {
 
     private CopyManagerService copyManagerService;
 
-    private CopiesAntiRansomwareDao copiesAntiRansomwareDao;
-
     private ResourceSetApi resourceSetApi;
+
+    private CommonAlarmService commonAlarmService;
 
     /**
      * 恢复任务服务构造函数
@@ -90,15 +96,13 @@ public class RestoreTaskService {
      * @param copyRestApi 副本Rest服务
      * @param jobService 任务服务
      * @param dmeUnifiedRestApi dme统一框架Rest Api
-     * @param repositoryStrategyManager 存储库管理类
      * @param resourceLockService 资源锁服务
      */
     public RestoreTaskService(CopyRestApi copyRestApi, JobService jobService, DmeUnifiedRestApi dmeUnifiedRestApi,
-        RepositoryStrategyManager repositoryStrategyManager, ResourceLockService resourceLockService) {
+        ResourceLockService resourceLockService) {
         this.copyRestApi = copyRestApi;
         this.jobService = jobService;
         this.dmeUnifiedRestApi = dmeUnifiedRestApi;
-        this.repositoryStrategyManager = repositoryStrategyManager;
         this.resourceLockService = resourceLockService;
     }
 
@@ -129,8 +133,8 @@ public class RestoreTaskService {
     }
 
     @Autowired
-    public void setCopiesAntiRansomwareDao(CopiesAntiRansomwareDao copiesAntiRansomwareDao) {
-        this.copiesAntiRansomwareDao = copiesAntiRansomwareDao;
+    public void setCommonAlarmService(CommonAlarmService commonAlarmService) {
+        this.commonAlarmService = commonAlarmService;
     }
 
     /**
@@ -281,6 +285,38 @@ public class RestoreTaskService {
     public RestoreTask getRestoreTaskFromJob(String jobId) {
         final JobBo jobBo = jobService.queryJob(jobId);
         return RestoreTaskHelper.parseFromJobMessage(jobBo.getMessage());
+    }
+
+    /**
+     * 恢复失败添加告警
+     *
+     * @param resourceId 资源ID
+     * @param resourceName 资源名称
+     */
+    public void sendAlarmWhenRestoreFailed(String resourceId, String resourceName) {
+        commonAlarmService.generateAlarm(genRestoreFailAlarmObject(resourceId, resourceName));
+    }
+
+    /**
+     * 恢复失败删除告警
+     *
+     * @param resourceId 资源ID
+     * @param resourceName 资源名称
+     */
+    public void recoverAlarmWhenRestoreSuccess(String resourceId, String resourceName) {
+        commonAlarmService.clearAlarm(genRestoreFailAlarmObject(resourceId, resourceName));
+    }
+
+    private static LegoInternalAlarm genRestoreFailAlarmObject(String resourceId, String resourceName) {
+        LegoInternalAlarm alarm = new LegoInternalAlarm();
+        alarm.setAlarmId(RESTORE_FAIL_ALARM_ID);
+        alarm.setAlarmLevel(FaultEnum.AlarmSeverity.MAJOR);
+        long curTime = System.currentTimeMillis() / IsmNumberConstant.THOUSAND;
+        alarm.setAlarmTime(curTime);
+        alarm.setAlarmSequence(curTime);
+        alarm.setAlarmParam(new String[] {resourceName, RESTORE_LABEL, COMMON_FAIL_LABEL, resourceId});
+        alarm.setSourceType(FaultEnum.AlarmResourceType.RESOURCE.getValue());
+        return alarm;
     }
 
     /**

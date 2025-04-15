@@ -1,26 +1,27 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   CommonConsts,
   DataMap,
   GlobalService,
   I18NService,
-  JOB_ORIGIN_TYPE,
   JobAPIService,
-  JobColorConsts
+  JobColorConsts,
+  JOB_ORIGIN_TYPE
 } from 'app/shared';
-import { includes, intersection, size, values } from 'lodash';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
+import { includes, intersection, isEmpty, size, values } from 'lodash';
 import { Subject, Subscription } from 'rxjs';
 
 @Component({
@@ -49,22 +50,15 @@ export class JobStatisticsComponent implements OnInit, OnDestroy {
         this.emitStore(item);
       }
     },
-    dispatching: {
-      id: 'dispatching',
-      label: this.i18n.get('common_dispatch_label'),
-      value: 0,
-      statusList: [
-        DataMap.Job_status.dispatching.value,
-        DataMap.Job_status.redispatch.value
-      ],
-      color: JobColorConsts.PENDING,
-      click: item => this.emitStore(item)
-    },
     pending: {
       id: 'pending',
       label: this.i18n.get('common_pending_label'),
       value: 0,
-      statusList: [DataMap.Job_status.pending.value],
+      statusList: [
+        DataMap.Job_status.pending.value,
+        DataMap.Job_status.dispatching.value,
+        DataMap.Job_status.redispatch.value
+      ],
       color: JobColorConsts.PENDING,
       click: item => this.emitStore(item)
     },
@@ -128,7 +122,8 @@ export class JobStatisticsComponent implements OnInit, OnDestroy {
   constructor(
     private jobAPIService: JobAPIService,
     private i18n: I18NService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    public appUtilsService?: AppUtilsService
   ) {}
 
   ngOnDestroy() {
@@ -138,9 +133,10 @@ export class JobStatisticsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (!this.isOceanProtect) {
-      delete this.items.dispatching;
-    } else {
+    if (!isEmpty(this.appUtilsService.getCacheValue('homeToJob', false))) {
+      this.emitStore(this.appUtilsService.getCacheValue('homeToJob', false));
+    }
+    if (this.isOceanProtect) {
       this.items.fail.statusList.push(DataMap.Job_status.dispatch_failed.value);
     }
     this.getData();
@@ -172,9 +168,11 @@ export class JobStatisticsComponent implements OnInit, OnDestroy {
             this.items['aborted']['value'] =
               res[key] + this.items['aborted']['value'];
           }
-          if (key === 'redispatch' && this.isOceanProtect) {
-            this.items['dispatching']['value'] =
-              res[key] + this.items['dispatching']['value'];
+          if (
+            ['redispatch', 'dispatching'].includes(key) &&
+            this.isOceanProtect
+          ) {
+            this.items.pending.value = res[key] + this.items.pending.value;
           }
         }
         this.summaryTimeOut = setTimeout(() => {

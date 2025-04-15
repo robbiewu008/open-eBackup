@@ -648,7 +648,7 @@ int32_t OpenStackResourceAccess::GetAppCluster(ApplicationEnvironment& returnEnv
             Module::CmdParam(Module::SCRIPT_CMD_NAME, agentHomedir + SUDO_DISK_TOOL_PATH),
             "get_openstack_cps_ip"
         };
-        if (Module::RunCommand("sudo", cmdParam, cmdOut) != 0) {
+        if (Utils::CallAgentExecCmd(cmdParam, cmdOut) != 0) {
             WARNLOG("Get cps ip failed, ignore fail.");
         }
         if (cmdOut.size() == 1) {

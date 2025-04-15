@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { ModalRef } from '@iux/live';
 import {
@@ -26,6 +26,7 @@ import {
   cloneDeep,
   each,
   every,
+  filter,
   find,
   includes,
   isEmpty,
@@ -52,11 +53,11 @@ export class AddLimitComponent implements OnInit {
     );
   copyTypes: any = [
     {
-      label: this.i18n.get('explore_backup_copy_label'),
+      label: this.i18n.get('explore_backup_copies_label'),
       key: 'Backup'
     },
     {
-      label: this.i18n.get('common_copy_a_copy_label'),
+      label: this.i18n.get('common_replication_copies_label'),
       key: 'Replicated'
     }
   ];
@@ -88,6 +89,11 @@ export class AddLimitComponent implements OnInit {
           subType: DataMap.Resource_Type.hyperVVm.value,
           type: 'Hyper-V',
           label: 'Hyper-V'
+        },
+        {
+          subType: DataMap.Resource_Type.nutanixVm.value,
+          type: ApplicationType.Nutanix,
+          label: 'Nutanix'
         }
       ]
     },
@@ -107,7 +113,7 @@ export class AddLimitComponent implements OnInit {
       ]
     },
     {
-      label: this.i18n.get('common_file_system_label'),
+      label: this.i18n.get('common_file_systems_label'),
       apps: [
         {
           subType: DataMap.Resource_Type.NASFileSystem.value,
@@ -138,6 +144,7 @@ export class AddLimitComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.hcsSupport();
     each(this.copyTypes, item => {
       assign(item, {
         appList: cloneDeep(this.appList)
@@ -146,6 +153,21 @@ export class AddLimitComponent implements OnInit {
     // 在单个资源的限制修改时回显操作
     if (!!this.data && this.data.length === 1) {
       this.updateData();
+    }
+  }
+
+  hcsSupport() {
+    if (this.appUtilsService.isHcsUser) {
+      each(this.appList, item => {
+        item.apps = filter(
+          item.apps,
+          v =>
+            !includes(
+              [DataMap.Resource_Type.openStackCloudServer.value],
+              v.subType
+            )
+        );
+      });
     }
   }
 

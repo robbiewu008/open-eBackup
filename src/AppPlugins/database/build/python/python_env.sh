@@ -1,4 +1,16 @@
 #!/bin/bash
+#
+# This file is a part of the open-eBackup project.
+# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+# If a copy of the MPL was not distributed with this file, You can obtain one at
+# http://mozilla.org/MPL/2.0/.
+#
+# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+#
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+#
 # Create python virtual env for DB plugin.
 
 SYS_ARCH=`uname -m`
@@ -18,6 +30,11 @@ log()
 }
 
 virtualenvwrapper() {
+    if [ "${IGNORE_PIP_REQUIRE_VIRTUALENV}" != "true" ]; then
+        # 某些环境上需要配置如下环境变量才能正常安装pip依赖
+        # 若要禁用，则配置export IGNORE_PIP_REQUIRE_VIRTUALENV=true即可
+        export PIP_REQUIRE_VIRTUALENV=false
+    fi
     cd ${INITIAL_PATH}
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
     export LIBPATH=${LD_LIBRARY_PATH}

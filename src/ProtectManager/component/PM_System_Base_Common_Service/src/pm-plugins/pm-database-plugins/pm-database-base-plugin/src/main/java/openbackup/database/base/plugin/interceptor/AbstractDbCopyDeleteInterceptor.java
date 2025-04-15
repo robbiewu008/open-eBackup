@@ -12,6 +12,7 @@
 */
 package openbackup.database.base.plugin.interceptor;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.provider.BaseCopyDeleteInterceptor;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
@@ -24,8 +25,6 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -176,10 +175,11 @@ public abstract class AbstractDbCopyDeleteInterceptor extends BaseCopyDeleteInte
     /**
      * getShouldDeleteCopies
      *
-     * @param copies copies
-     * @param thisCopy thisCopy
-     * @return List<String>
+     * @param copies copies 本个副本之后的所有备份副本
+     * @param thisCopy thisCopy 本个副本
+     * @return List<String> 需要删除的集合
      */
+    @Override
     protected List<String> getShouldDeleteCopies(List<Copy> copies, Copy thisCopy) {
         return super.getShouldDeleteCopies(copies, thisCopy);
     }
@@ -192,6 +192,7 @@ public abstract class AbstractDbCopyDeleteInterceptor extends BaseCopyDeleteInte
      * @param nextFullCopy 下个全量副本
      * @return 需要删除的集合
      */
+    @Override
     protected List<String> getCopiesCopyTypeIsFull(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
         return CopyUtil.getCopyUuidsBetweenTwoCopy(copies, thisCopy, nextFullCopy);
     }
@@ -204,6 +205,7 @@ public abstract class AbstractDbCopyDeleteInterceptor extends BaseCopyDeleteInte
      * @param nextFullCopy 下个全量副本
      * @return 需要删除的集合
      */
+    @Override
     protected List<String> getCopiesCopyTypeIsDifferenceIncrement(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
         return Collections.emptyList();
     }
@@ -216,6 +218,7 @@ public abstract class AbstractDbCopyDeleteInterceptor extends BaseCopyDeleteInte
      * @param nextFullCopy 下个全量副本
      * @return 需要删除的集合
      */
+    @Override
     protected List<String> getCopiesCopyTypeIsCumulativeIncrement(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
         return Collections.emptyList();
     }
@@ -228,6 +231,7 @@ public abstract class AbstractDbCopyDeleteInterceptor extends BaseCopyDeleteInte
      * @param nextFullCopy 下个全量副本
      * @return 需要删除的集合
      */
+    @Override
     protected List<String> getCopiesCopyTypeIsLog(List<Copy> copies, Copy thisCopy, Copy nextFullCopy) {
         return Collections.emptyList();
     }

@@ -160,13 +160,13 @@ namespace Module {
     }
 
     int NetAppNas::ValidateSetVolumeResponseDataCheck(const Json::Value::ArrayIndex &i, const Json::Value &data,
-                                                        std::string sharePath, std::string &volumeName,
-                                                        std::string &volumeUuid)
+        std::string sharePath, std::string &volumeName, std::string &volumeUuid)
     {
         if (!data["records"][i]["name"].empty() &&
             (data["records"][i]["svm"].isMember("name") && !data["records"][i]["svm"]["uuid"].empty()) &&
             (data["records"][i]["volume"].isMember("name") && !data["records"][i]["volume"]["uuid"].empty()) &&
-            (data["records"][i]["svm"]["name"].asString() == m_vserverName && data["records"][i]["svm"]["uuid"].asString() == m_vserverUuid) &&
+            (data["records"][i]["svm"]["name"].asString() == m_vserverName &&
+             data["records"][i]["svm"]["uuid"].asString() == m_vserverUuid) &&
             data["records"][i]["name"].asString() == sharePath.substr(1)) {
             volumeName = data["records"][i]["volume"]["name"].asString();
             volumeUuid = data["records"][i]["volume"]["uuid"].asString();
@@ -177,8 +177,8 @@ namespace Module {
         return FAILED;
     }
 
-    int NetAppNas::ValidateSetVolumeResponse(Json::Value &data, std::string sharePath,
-                                                std::string &volumeName, std::string &volumeUuid)
+    int NetAppNas::ValidateSetVolumeResponse(Json::Value &data, std::string sharePath, std::string &volumeName,
+        std::string &volumeUuid)
     {
         for (Json::Value::ArrayIndex i = 0; i != data["records"].size(); i++) {
             if (!data["records"][i].isMember("volume") || !data["records"][i].isMember("name") ||
@@ -199,8 +199,7 @@ namespace Module {
     }
 
     int NetAppNas::ValidateSetVolumeResponseDataCheck4Nfs(const Json::Value::ArrayIndex &i, const Json::Value &data,
-                                                        std::string sharePath, std::string &volumeName,
-                                                        std::string &volumeUuid)
+        std::string sharePath, std::string &volumeName, std::string &volumeUuid)
     {
         if (!data["records"][i]["name"].empty() && !data["records"][i]["uuid"].empty() &&
             (data["records"][i]["nas"].isMember("path") && !data["records"][i]["nas"]["path"].empty()) &&
@@ -218,8 +217,8 @@ namespace Module {
         return FAILED;
     }
 
-    int NetAppNas::ValidateSetVolumeResponse4Nfs(Json::Value &data, std::string sharePath,
-                                                std::string &volumeName, std::string &volumeUuid)
+    int NetAppNas::ValidateSetVolumeResponse4Nfs(Json::Value &data, std::string sharePath, std::string &volumeName,
+        std::string &volumeUuid)
     {
         for (Json::Value::ArrayIndex i = 0; i != data["records"].size(); i++) {
             if (!data["records"][i].isMember("nas") || !data["records"][i].isMember("name") ||
@@ -240,8 +239,7 @@ namespace Module {
     }
 
 
-    int NetAppNas::ValidateSharePath(std::string sharePath, std::string &volumeName,
-                                        std::string &volumeUuid)
+    int NetAppNas::ValidateSharePath(std::string sharePath, std::string &volumeName, std::string &volumeUuid)
     {
         if (sharePath.at(0) != '/') {
             volumeName = "";
@@ -254,8 +252,7 @@ namespace Module {
     }
 
     // sets volumeName and volumeUuid by quering a given share path
-    int NetAppNas::SetVolumeNameFromPath(std::string sharePath, std::string &volumeName,
-                                            std::string &volumeUuid)
+    int NetAppNas::SetVolumeNameFromPath(std::string sharePath, std::string &volumeName, std::string &volumeUuid)
     {
         if (CheckSvmDetails() != SUCCESS)
             return FAILED;
@@ -284,8 +281,7 @@ namespace Module {
         }
     }
 
-    int NetAppNas::SetVolumeNameFromShareName(std::string shareName, std::string &volumeName,
-                                            std::string &volumeUuid)
+    int NetAppNas::SetVolumeNameFromShareName(std::string shareName, std::string &volumeName, std::string &volumeUuid)
     {
         HCP_Log(DEBUG, NETAPP_MODULE) << "enter SetVolumeNameFromShareName " << HCPENDLOG;
         if (ValidateSharePath(shareName, volumeName, volumeUuid) != SUCCESS) {
@@ -296,7 +292,8 @@ namespace Module {
         int iRet;
         HttpRequest req;
         req.method = "GET";
-        req.url = "/api/protocols/cifs/shares?return_timeout=120&max_records=40&fields=name%2Cpath%2Cvolume&name=" + shareName4Url;
+        req.url = "/api/protocols/cifs/shares?return_timeout=120&max_records=40&fields=name%2Cpath%2Cvolume&name=" +
+            shareName4Url;
         std::string errorDes;
         int errorCode;
         Json::Value data;
@@ -316,8 +313,8 @@ namespace Module {
         }
     }
 
-    int NetAppNas::ValidateSetNasPathResponse(Json::Value &data, std::string volumeName,
-                                                std::string &sharePath, int &errorCode)
+    int NetAppNas::ValidateSetNasPathResponse(Json::Value &data, std::string volumeName, std::string &sharePath,
+        int &errorCode)
     {
         for (Json::Value::ArrayIndex i = 0; i != data["records"].size(); i++) {
             if (!data["records"][i].isMember("name") || !data["records"][i].isMember("uuid") ||
@@ -445,13 +442,13 @@ namespace Module {
     int NetAppNas::ValidateDeleteVolumeResponse(Json::Value &data, std::string volumeName)
     {
         int iRet;
-        for (Json::Value::ArrayIndex i = 0; i != data["jobs"].size(); i++) {
-            if (!data["jobs"][i].isMember("uuid") || data["jobs"][i]["uuid"].empty()) {
-                HCP_Log(DEBUG, NETAPP_MODULE) << "response data format does not"
-                    "have uuid or it is empty" << data["jobs"][i] << HCPENDLOG;
-                continue;
-            }
-            if (!data["jobs"][i]["uuid"].empty()) {
+        if (data.isMember("jobs") && data["jobs"].isArray()) {
+            for (Json::Value::ArrayIndex i = 0; i != data["jobs"].size(); i++) {
+                if (!data["jobs"][i].isMember("uuid") || data["jobs"][i]["uuid"].empty()) {
+                    HCP_Log(DEBUG, NETAPP_MODULE) << "response data format does not"
+                        "have uuid or it is empty" << data["jobs"][i] << HCPENDLOG;
+                    continue;
+                }
                 iRet = CheckJobStatus(data["jobs"][i]["uuid"].asString(), "DeleteVolume");
                 if (iRet != SUCCESS) {
                     return FAILED;
@@ -461,6 +458,15 @@ namespace Module {
                     return SUCCESS;
                 }
             }
+        } else if (!data["job"]["uuid"].empty()) {
+            iRet = CheckJobStatus(data["job"]["uuid"].asString(), "DeleteVolume");
+            if (iRet != SUCCESS) {
+                return FAILED;
+            } else {
+                HCP_Log(INFO, NETAPP_MODULE) << "Delete Volume: "
+                    << volumeName << " success" << HCPENDLOG;
+                return SUCCESS;
+            }
         }
         HCP_Log(ERR, NETAPP_MODULE) << "Couldn't delete Vol: "<<volumeName<<HCPENDLOG;
         return FAILED;
@@ -469,11 +475,11 @@ namespace Module {
     int NetAppNas::DeleteVolumeCheck(const int& iRet, Json::Value& data, const std::string& volumeName)
     {
         if (iRet == SUCCESS || iRet == HTTP_202) {
-            if (data.size() > 0 && data.isMember("jobs") && data["jobs"].isArray()) {
+            if (data.size() > 0 && (data.isMember("job") || (data.isMember("jobs") && data["jobs"].isArray()))) {
                 return ValidateDeleteVolumeResponse(data, volumeName);
             } else {
-                if (!data.isMember("jobs") || !data["jobs"].isArray()) {
-                    HCP_Log(ERR, NETAPP_MODULE) << "response does not have jobs field"
+                if (!data.isMember("job") || (!data.isMember("jobs") || !data["jobs"].isArray())) {
+                    HCP_Log(ERR, NETAPP_MODULE) << "response does not have job field"
                         "or it is not an array" << HCPENDLOG;
                 }
                 if (data.isMember("num_records") && data["num_records"].asInt() == 0) {
@@ -516,8 +522,7 @@ namespace Module {
         return DeleteVolume(m_resourceName);
     }
 
-    int NetAppNas::ValidateQueryVolumeResponse(Json::Value &data, std::string volumeName,
-                                                    int &errorCode)
+    int NetAppNas::ValidateQueryVolumeResponse(Json::Value &data, std::string volumeName, int &errorCode)
     {
         for (Json::Value::ArrayIndex i = 0; i != data["records"].size(); i++) {
             if (!data["records"][i].isMember("name") || !data["records"][i].isMember("uuid")) {
@@ -530,7 +535,7 @@ namespace Module {
                 (data["records"][i]["svm"].isMember("name") && !data["records"][i]["svm"]["name"].empty()) &&
                 data["records"][i]["svm"]["name"].asString() == m_vserverName &&
                 data["records"][i]["svm"]["uuid"].asString() == m_vserverUuid) {
-                HCP_Log(INFO, NETAPP_MODULE) << "++++++volumeName: " << volumeName
+                HCP_Log(INFO, NETAPP_MODULE) << "volumeName: " << volumeName
                     << " exists, volumeUuid: " << data["records"][i]["uuid"].asString() << HCPENDLOG;
                 errorCode = NUMB_ZERO;
                 return SUCCESS;
@@ -790,8 +795,7 @@ namespace Module {
         return nullptr;
     }
 
-    int NetAppNas::ValidateQuerySnapshotResponse(Json::Value &data, std::string snapshotName,
-                                                    int &errorCode)
+    int NetAppNas::ValidateQuerySnapshotResponse(Json::Value &data, std::string snapshotName, int &errorCode)
     {
         for (Json::Value::ArrayIndex i = 0; i != data["records"].size(); i++) {
             if (!data["records"][i].isMember("name") || !data["records"][i].isMember("uuid")) {
@@ -845,7 +849,7 @@ namespace Module {
     }
 
     std::unique_ptr<ControlDevice> NetAppNas::ValidateCreateSnapshotResponse(Json::Value &data,
-                                                                            std::string snapshotName)
+        std::string snapshotName)
     {
         int iRet;
         ControlDeviceInfo deviceInfo = {};
@@ -968,8 +972,7 @@ namespace Module {
     }
 
     int NetAppNas::ValidateQueryParentVolumeResponse(Json::Value &data, std::string volumeName,
-                                                        std::string &parentVolName, std::string &parentVolUuid,
-                                                        std::string &parentSnapshot)
+        std::string &parentVolName, std::string &parentVolUuid, std::string &parentSnapshot)
     {
         for (Json::Value::ArrayIndex i = 0; i != data["records"].size(); i++) {
             if (ValidateQueryParentVolumeResponseDataCheck(data, i)) {
@@ -998,7 +1001,7 @@ namespace Module {
     }
 
     int NetAppNas::QueryParentVolumeDetails(std::string volumeName, std::string &parentVolName,
-                                                std::string &parentVolUuid, std::string &parentSnapshot)
+        std::string &parentVolUuid, std::string &parentSnapshot)
     {
         if (volumeName.at(0) == '/' || volumeName.empty()) {
             HCP_Log(ERR, NETAPP_MODULE) << "VolumeName is improper"<<volumeName<<HCPENDLOG;
@@ -1019,7 +1022,7 @@ namespace Module {
             if (data.size() > 0 && data.isMember("records") &&
                 (data["records"].isArray() && !data["records"].empty())) {
                 return ValidateQueryParentVolumeResponse(data, volumeName, parentVolName,
-                                                        parentVolUuid, parentSnapshot);
+                                                         parentVolUuid, parentSnapshot);
             } else {
                 if (data["records"].isArray() && data["records"].empty() &&
                     data["num_records"].asInt() == 0) {
@@ -1033,7 +1036,7 @@ namespace Module {
     }
 
     int NetAppNas::DeleteParentSnapshot(std::string parentVolName, std::string parentVolUuid,
-                                            std::string parentSnapshot)
+        std::string parentSnapshot)
     {
         if (parentVolName.empty() || parentVolUuid.empty() || parentSnapshot.empty()) {
             HCP_Log(ERR, NETAPP_MODULE) << "Parent Info not proper: parentVolumeName="
@@ -1129,8 +1132,44 @@ namespace Module {
         }
     }
 
-    int NetAppNas::ValidateJobStatusResponse(Json::Value &data, std::string jobUuid,
-                                                std::string &status)
+    int NetAppNas::ValidateQueryVolumeResponse(Json::Value &data, const std::string &volName)
+    {
+        HCP_Log(ERR, NETAPP_MODULE) << "Enter validate" << HCPENDLOG;
+        for (Json::Value::ArrayIndex i = 0; i != data["records"].size(); i++) {
+            if (!ValidateQueryVolumeResponseDataCheck(data, i)) {
+                continue;
+            }
+            if (data["records"][i]["name"].asString() == volName &&
+                data["records"][i]["svm"]["name"].asString() == m_vserverName &&
+                data["records"][i]["svm"]["uuid"].asString() == m_vserverUuid) {
+                m_volumeUuid = data["records"][i]["uuid"].asString();
+                m_volumeName = data["records"][i]["name"].asString();
+
+                HCP_Log(INFO, NETAPP_MODULE) << "volName: " << m_volumeName << " volUuid: " << m_volumeUuid << HCPENDLOG;
+                return SUCCESS;
+            }
+        }
+        m_volumeUuid = "";
+        m_volumeName = "";
+        HCP_Log(ERR, NETAPP_MODULE)<<"No volume found for: "<< volName << HCPENDLOG;
+        return FAILED;
+    }
+
+    bool NetAppNas::ValidateQueryVolumeResponseDataCheck(Json::Value &data, const Json::Value::ArrayIndex &i)
+    {
+        if (!data["records"][i].isMember("name") || !data["records"][i].isMember("uuid") ||
+            data["records"][i]["name"].empty() || data["records"][i]["uuid"].empty() ||
+            !data["records"][i].isMember("svm") ||
+            !data["records"][i]["svm"].isMember("name") || data["records"][i]["svm"]["name"].empty() ||
+            !data["records"][i]["svm"].isMember("uuid") || data["records"][i]["svm"]["uuid"].empty()) {
+            HCP_Log(DEBUG, NETAPP_MODULE) << "response data format not proper: "
+                << data["records"][i] << HCPENDLOG;
+            return false;
+        }
+        return true;
+    }
+
+    int NetAppNas::ValidateJobStatusResponse(Json::Value &data, std::string jobUuid, std::string &status)
     {
         if (data.size() > 0 && data.isMember("uuid") && data.isMember("state") &&
             data["uuid"].asString() == jobUuid) {
@@ -1166,10 +1205,7 @@ namespace Module {
 
     int NetAppNas::CheckJobStatus(std::string jobUuid, std::string jobName)
     {
-        int retryNum = 0;
-        int retryTimes = 4;
         int ret = SUCCESS;
-
         HttpRequest req;
         req.method = "GET";
         req.url = "/api/cluster/jobs/" + jobUuid;
@@ -1177,8 +1213,8 @@ namespace Module {
         int errorCode;
         Json::Value data;
         std::string jobStatus;
-        HCP_Log(INFO, NETAPP_MODULE) << "Checking Job status for: " <<jobName<<HCPENDLOG;
-        while (retryNum < retryTimes) {
+        HCP_Log(INFO, NETAPP_MODULE) << "Checking Job status for: " << jobName << HCPENDLOG;
+        while (true) {
             ret = SendRequestOnce(req, data, errorDes, errorCode);
             if (ret == SUCCESS || ret == HTTP_202) {
                 jobStatus = "";
@@ -1188,13 +1224,11 @@ namespace Module {
                     break;
                 } else if (jobStatus == JOB_RUNNING || jobStatus == JOB_QUEUED) {
                     DelayTimeSendRequest(jobName);
-                    retryNum++;
                     continue;
                 } else if (jobStatus == JOB_FAILURE) {
                     ret = FAILED;
                     break;
                 } else if (jobStatus == JOB_RETRY) {
-                    retryNum++;
                     continue;
                 } else if (jobStatus == JOB_INVALID) {
                     ret = FAILED;
@@ -1208,11 +1242,7 @@ namespace Module {
                 break;
             }
         }
-        if (ret == SUCCESS) {
-            return SUCCESS;
-        } else {
-            return FAILED;
-        }
+        return ret;
     }
 
     void NetAppNas::AssignDeviceInfo(ControlDeviceInfo &deviceInfo, std::string deviceName)
@@ -1233,8 +1263,7 @@ namespace Module {
         HCP_Log(INFO, NETAPP_MODULE) << "set retry times: " << this->retryTimes << HCPENDLOG;
     }
 
-    int NetAppNas::SendRequest(HttpRequest &req, Json::Value &data,
-                                    std::string &errorDes, int &errorCode)
+    int NetAppNas::SendRequest(HttpRequest &req, Json::Value &data, std::string &errorDes, int &errorCode)
     {
         // 检查存储设备是否含有证书和吊销列表信息
         if (!certification.empty()) {
@@ -1290,8 +1319,7 @@ namespace Module {
         return backupScene == "0" ? false : true;
     }
 
-    int NetAppNas::SendRequestOnce(HttpRequest req, Json::Value &data,
-                                        std::string &errorDes, int &errorCode)
+    int NetAppNas::SendRequestOnce(HttpRequest req, Json::Value &data, std::string &errorDes, int &errorCode)
     {
         int iRet = FAILED;
         HttpRequest request = req;
@@ -1316,8 +1344,8 @@ namespace Module {
         return iRet;
     }
 
-    int NetAppNas::SendHttpReq(std::shared_ptr<IHttpResponse> &rsp, const HttpRequest &req,
-                                    std::string &errorDes, int& errorCode)
+    int NetAppNas::SendHttpReq(std::shared_ptr<IHttpResponse> &rsp, const HttpRequest &req, std::string &errorDes,
+        int& errorCode)
     {
         HttpRequest tempReq = req;
         tempReq.url = FormatFullUrl(tempReq.url);
@@ -1353,8 +1381,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int NetAppNas::ResponseSuccessHandle(HttpRequest req, std::shared_ptr<IHttpResponse>& rsp,
-                                            Json::Value &data, std::string &errorDes, int &errorCode)
+    int NetAppNas::ResponseSuccessHandle(HttpRequest req, std::shared_ptr<IHttpResponse>& rsp, Json::Value &data,
+        std::string &errorDes, int &errorCode)
     {
         int Ret = SUCCESS;
         if (errorCode == HTTP_401) {
@@ -1377,8 +1405,7 @@ namespace Module {
         return Ret;
     }
 
-    int NetAppNas::ParseResponse(const std::string &json_data, Json::Value &data,
-                                    std::string &errorDes, int &errorCode)
+    int NetAppNas::ParseResponse(const std::string &json_data, Json::Value &data, std::string &errorDes, int &errorCode)
     {
         Json::Value jsonValue;
         Json::Reader reader;

@@ -16,10 +16,13 @@ import static openbackup.database.base.plugin.common.DatabaseConstants.CHILDREN;
 import static openbackup.informix.protection.access.constant.InformixConstant.HOST_ID;
 import static openbackup.informix.protection.access.constant.InformixConstant.MASTER_STATUS_LIST;
 
-import openbackup.access.framework.resource.persistence.dao.ProtectedEnvironmentExtendInfoMapper;
 import com.huawei.oceanprotect.client.resource.manager.service.AgentLanFreeService;
 import com.huawei.oceanprotect.client.resource.manager.service.dto.AgentLanFreeAixViewDTO;
 import com.huawei.oceanprotect.client.resource.manager.utils.LanFreeValidator;
+
+import io.jsonwebtoken.lang.Collections;
+import lombok.extern.slf4j.Slf4j;
+import openbackup.access.framework.resource.persistence.dao.ProtectedEnvironmentExtendInfoMapper;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
@@ -42,9 +45,6 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import io.jsonwebtoken.lang.Collections;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -115,6 +115,8 @@ public class InformixBackupInterceptorProvider extends AbstractDbBackupIntercept
         // 设置agents
         List<Endpoint> agentsByInstanceResource = informixService.getAgentsByInstanceResource(resource);
         backupTask.setAgents(agentsByInstanceResource);
+        setBackupAdvanceParams(backupTask);
+        log.info("End to set parameters for backup interceptor, task id: {}", backupTask.getTaskId());
         return backupTask;
     }
 
@@ -238,6 +240,12 @@ public class InformixBackupInterceptorProvider extends AbstractDbBackupIntercept
         }
         List<String> sanclientResourceIds = agentLanFreeAixViewDTO.getSanclientResourceIds();
         return !Collections.isEmpty(sanclientResourceIds);
+    }
+
+    private void setBackupAdvanceParams(BackupTask task) {
+        Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElseGet(HashMap::new);
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        task.setAdvanceParams(advanceParams);
     }
 
     @Override

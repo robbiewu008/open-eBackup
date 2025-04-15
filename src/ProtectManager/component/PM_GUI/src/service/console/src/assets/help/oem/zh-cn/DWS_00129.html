@@ -1,0 +1,72 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="GaussDB(DWS)全量备份失败后进行增量备份，增量备份同样无法成功">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="DWS_00109.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="DWS_00129">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>GaussDB(DWS)全量备份失败后进行增量备份，增量备份同样无法成功</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="DWS_00129"></a><a name="DWS_00129"></a>
+  <h1 class="topictitle1">GaussDB(DWS)全量备份失败后进行增量备份，增量备份同样无法成功</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle"><span style="color:#5B9BD5;">故障现象</span></h4>
+    <p>GaussDB(DWS)全量备份失败，在未排除失败原因和未完成全量备份的情况下，便继续进行增量备份，增量备份同样无法成功。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle"><span style="color:#5B9BD5;">可能原因</span></h4>
+    <ul>
+     <li>关于GaussDB(DWS)中的cbm文件说明：
+      <ul>
+       <li>每进行一次全量备份，无论此次全量备份是否成功、无论此次全量备份是否会成功生成一个新的全量备份副本，数据库都会重新生成cbm文件，用于记录此次全量备份任务开始后GaussDB(DWS)发生的相关操作。</li>
+       <li>每进行一次全量备份，数据库都会删除已有的cbm文件。即使该次全量备份失败，已有的cbm文件也会在备份任务结束时被全部删除。</li>
+       <li>增量备份时，数据库会基于上一次成功生成的全量备份副本和cbm文件来生成增量备份副本。</li>
+      </ul></li>
+     <li>全量备份失败后增量备份也失败的原因说明：<p>上一次全量备份1任务成功，并生成了全量备份副本1。生成的cbm文件，记录了全量备份1任务结束后GaussDB(DWS)发生的相关操作。进行新一次全量备份时：</p>
+      <ul>
+       <li>若全量备份成功，数据库会生成全量备份副本2，生成的cbm文件，记录了全量备份2任务开始后GaussDB(DWS)发生的相关操作。此时进行增量备份，数据库会基于全量备份副本2和cbm文件产生增量备份副本。</li>
+       <li>若全量备份失败，数据库无法生成全量备份副本2，但任务结束后生成的cbm文件，依然记录了全量备份2任务开始后GaussDB(DWS)发生的相关操作。此时进行增量备份，数据库会基于全量副本1和cbm文件产生增量备份副本、cbm文件里记录的相关操作不连续，导致增量备份无法成功。</li>
+      </ul></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle"><span style="color:#5B9BD5;">处理建议</span></h4>
+    <p>查找和排除导致GaussDB(DWS)全量备份失败的原因，并在完成全量备份后，再进行增量备份。</p>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="DWS_00109.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

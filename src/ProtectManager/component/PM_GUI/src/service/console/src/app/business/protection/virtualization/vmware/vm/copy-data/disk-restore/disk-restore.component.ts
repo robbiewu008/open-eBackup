@@ -1,29 +1,33 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
   BaseUtilService,
   CAPACITY_UNIT,
+  ClientManagerApiService,
   CommonConsts,
   DataMap,
   DatastoreType,
   EnvironmentsService,
+  Features,
+  getBootTypeWarnTipByType,
   I18NService,
   ResourceType,
   RestoreLocationType,
   RestoreManagerService as RestoreService,
   RestoreType,
+  Scene,
   VmRestoreOptionType,
   VmwareService
 } from 'app/shared';
@@ -56,6 +60,7 @@ export class DiskRestoreComponent implements OnInit {
   dataMap = DataMap;
   formGroup: FormGroup;
   resourceProperties;
+  properties;
   restoreLocationType = RestoreLocationType;
   VmRestoreOptionType = VmRestoreOptionType;
   DatastoreType = DatastoreType;
@@ -103,6 +108,10 @@ export class DiskRestoreComponent implements OnInit {
   selectedRdmDiskRow = [];
   sameSelectedRow = [];
   proxyHostOptions = [];
+  isSupport = true;
+
+  // 引导选项不一致提示
+  bootOptionsWarnTip: string;
 
   constructor(
     private fb: FormBuilder,
@@ -110,7 +119,8 @@ export class DiskRestoreComponent implements OnInit {
     private restoreService: RestoreService,
     private vmwareService: VmwareService,
     private i18n: I18NService,
-    private environmentsService: EnvironmentsService
+    private environmentsService: EnvironmentsService,
+    private clientManagerApiService: ClientManagerApiService
   ) {}
 
   ngOnInit() {
@@ -166,6 +176,7 @@ export class DiskRestoreComponent implements OnInit {
 
   initDiskTable() {
     this.resourceProperties = JSON.parse(this.rowCopy.resource_properties);
+    this.properties = JSON.parse(this.rowCopy.properties);
     this.allDiskDatas = cloneDeep(
       JSON.parse(this.rowCopy.properties).vmware_metadata.disk_info
     );
@@ -248,7 +259,7 @@ export class DiskRestoreComponent implements OnInit {
       datastoreCapacity: '',
       guid: [item.GUID],
       options: [[]],
-      diskType: [item.DISKTYPE],
+      diskType: [item.DISKTYPE || 'normal'],
       diskDatastore: new FormControl(
         null,
         this.restoreToNewLocationOnly ||
@@ -363,6 +374,7 @@ export class DiskRestoreComponent implements OnInit {
       diskStorage: this.fb.array(diskGroupList),
       targetDatastore: [],
       isForceNBDSsl: new FormControl(true),
+      isStartupSnapGen: new FormControl(true),
       proxyHost: new FormControl([])
     });
 
@@ -372,6 +384,8 @@ export class DiskRestoreComponent implements OnInit {
         location: ''
       });
     }
+
+    this.listenForm();
 
     // 恢复位置选项变化
     this.listenRestoreLocation();
@@ -388,13 +402,53 @@ export class DiskRestoreComponent implements OnInit {
     });
   }
 
+  listenForm() {
+    this.formGroup.get('proxyHost').valueChanges.subscribe(res => {
+      if (isEmpty(res)) {
+        this.isSupport = true;
+        return;
+      }
+      const params = {
+        hostUuidsAndIps: res,
+        applicationType: 'VMware',
+        scene: Scene.Restore,
+        buttonNames: [Features.SnapshotGeneration]
+      };
+      this.clientManagerApiService
+        .queryAgentApplicationUsingPOST({
+          AgentCheckSupportParam: params,
+          akOperationTips: false
+        })
+        .subscribe(res => {
+          this.isSupport = res?.SnapshotGeneration;
+          if (!this.isSupport) {
+            this.formGroup.get('isStartupSnapGen').setValue(false);
+          }
+        });
+    });
+  }
+
+  getBootOptionsTip(event) {
+    if (event?.subType === DataMap.Resource_Type.virtualMachine.value) {
+      getBootTypeWarnTipByType(
+        this,
+        event.firmware,
+        this.properties.vmware_metadata?.firmware
+      );
+    } else {
+      this.bootOptionsWarnTip = '';
+    }
+  }
+
   changeLocation(event) {
     this.newLocation = event.path;
     this.formGroup.patchValue({ location: event.path });
     this.selectedVm = event.uuid;
     this.selectedHost = event.parent ? event.parent.uuid : '';
+    this.getBootOptionsTip(event);
     if (
       event.parent &&
+      event.subType === DataMap.Resource_Type.virtualMachine.value &&
       event.parent.subType ===
         DataMap.Resource_Type.clusterComputeResource.value
     ) {
@@ -429,6 +483,7 @@ export class DiskRestoreComponent implements OnInit {
   }
 
   changeVcenter(event) {
+    this.bootOptionsWarnTip = '';
     const selectedObj = event.key;
     if (selectedObj === this.selectedVCenter) {
       return;
@@ -830,6 +885,7 @@ export class DiskRestoreComponent implements OnInit {
       restore_op_type: VmRestoreOptionType.DISK,
       startup_network_adaptor: false,
       isForceNBDSsl: this.formGroup.value.isForceNBDSsl,
+      isStartupSnapGen: this.formGroup.value.isStartupSnapGen,
       host_list: JSON.stringify(
         map(this.formGroup.value.proxyHost, item => {
           const host = find(this.proxyHostOptions, { value: item });
@@ -900,7 +956,7 @@ export class DiskRestoreComponent implements OnInit {
           ],
           env_id:
             this.formGroup.value.restoreLocation === RestoreLocationType.NEW
-              ? this.selectedHost
+              ? this.cacheHostUuid || this.selectedHost
               : '',
           env_type: 'Host',
           restore_target:

@@ -22,6 +22,7 @@ import openbackup.system.base.common.model.job.JobBo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -115,5 +116,22 @@ public interface RestoreInterceptorProvider extends DataProtectionProvider<Strin
      */
     default Optional<AgentMountTypeEnum> getMountType(RestoreTask task) {
         return Optional.empty();
+    }
+
+    /**
+     * 加密任务扩展信息中敏感信息
+     *
+     * @param extendInfo 任务扩展信息
+     */
+    default void encryptExtendInfo(Map<String, String> extendInfo) {
+    }
+
+    /**
+     * 恢复任务是否支持停止
+     *
+     * @return 是否支持停止
+     */
+    default boolean enableStop() {
+        return false;
     }
 }

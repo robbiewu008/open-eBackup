@@ -1,0 +1,69 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="After Data Is Recovered from the Oracle 12.1 Cluster Installed in ASM Mode to the Oracle 12.1 Single-Node System Installed in Non-ASM Mode, Data Backup of the Oracle 12.1 Single-Node System Is Suspended">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164757014.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002199963533">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>After Data Is Recovered from the Oracle 12.1 Cluster Installed in ASM Mode to the Oracle 12.1 Single-Node System Installed in Non-ASM Mode, Data Backup of the Oracle 12.1 Single-Node System Is Suspended</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002199963533"></a><a name="EN-US_TOPIC_0000002199963533"></a>
+  <h1 class="topictitle1">After Data Is Recovered from the Oracle 12.1 Cluster Installed in ASM Mode to the Oracle 12.1 Single-Node System Installed in Non-ASM Mode, Data Backup of the Oracle 12.1 Single-Node System Is Suspended</h1>
+  <div>
+   <div class="section" id="EN-US_TOPIC_0000002199963533__en-us_topic_0000001608748138_en-us_topic_0000001524685274_section188331150174018">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p id="EN-US_TOPIC_0000002199963533__en-us_topic_0000001608748138_p13121135310497">After Oracle backup is performed, the following error information is displayed in the Oracle trace logs:</p>
+    <pre class="screen" id="EN-US_TOPIC_0000002199963533__en-us_topic_0000001608748138_screen176741627670">Starting background process ASMB
+Thu Jul 20 04:52:37 2023
+ASMB started with pid=89, OS id=13500518 
+WARNING: failed to start ASMB (connection failed) state=0x1 sid=''
+WARNING: ASMB exiting with error</pre>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002199963533__en-us_topic_0000001608748138_en-us_topic_0000001524685274_section1610619004217">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p id="EN-US_TOPIC_0000002199963533__en-us_topic_0000001608748138_p369473842415">According to Oracle official documents, this error is related to migrating database from ASM to file systems.</p>
+    <p id="EN-US_TOPIC_0000002199963533__en-us_topic_0000001608748138_p15759842165816">The production database is deployed in RAC mode and ASM disk groups are used. However, the target database for recovery is a non-ASM database and file systems are used. Therefore, this error is related to Oracle Bug 19503821, that is, when the database is migrated from ASM to the file system, the RMAN catalog runs extremely slow.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002199963533__en-us_topic_0000001608748138_en-us_topic_0000001524685274_section185905353429">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol id="EN-US_TOPIC_0000002199963533__en-us_topic_0000001608748138_ol6372184462411">
+     <li id="EN-US_TOPIC_0000002199963533__en-us_topic_0000001608748138_li237284414241"><span>Stop the Oracle database backup job.</span></li>
+     <li id="EN-US_TOPIC_0000002199963533__en-us_topic_0000001608748138_li17377203121420"><span>Install the 19503821 patch of the Oracle database.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164757014.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

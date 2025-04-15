@@ -46,7 +46,8 @@ Description:
              2.cache token for this instance
 */
 
-    SessionInfo FusionStorageBlock::Login() {
+    SessionInfo FusionStorageBlock::Login()
+    {
         HCP_Log(DEBUG, FUSION_STORAGE_MODULE_NAME)
                 << "Start get FusionStorage " << FusionStorageIP << " token." << HCPENDLOG;
         Json::Value jsonReq;
@@ -83,7 +84,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.logout at destruct this instance
 */
-    int FusionStorageBlock::Logout(SessionInfo sessionInfo) {
+    int FusionStorageBlock::Logout(SessionInfo sessionInfo)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start Authentication Exit. " << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -101,7 +103,8 @@ Description:
     }
 
     int FusionStorageBlock::SendRequestEx(HttpRequest &req, Json::Value &data, std::string &errorDes,
-                                          int &errorCode, SessionInfo &sessionInfo) {
+                                          int &errorCode, SessionInfo &sessionInfo)
+    {
         if (fs_pHttpCLient == NULL) {
             HCP_Log(ERR, FUSION_STORAGE_MODULE_NAME) << "HttpClient is NULL. " << HCPENDLOG;
             return FAILED;
@@ -144,7 +147,8 @@ Description:
     }
 
 
-    void FusionStorageBlock::Clean() {
+    void FusionStorageBlock::Clean()
+    {
         DeleteDeviceSession();
     }
 
@@ -158,7 +162,8 @@ Description:
              1.Create fusionstorage Lun
 */
 
-    int FusionStorageBlock::Create(unsigned long long size) {
+    int FusionStorageBlock::Create(unsigned long long size)
+    {
         LunParams lun(ResourceName, Compress, Dedup, FusionStoragePoolId, size);
         int ret = CreateLUN(lun, ResourceId, Wwn);
         if (ret != SUCCESS) {
@@ -168,7 +173,8 @@ Description:
         return SUCCESS;
     }
 
-    int FusionStorageBlock::Bind(HostInfo &host, const std::string &shareId) {
+    int FusionStorageBlock::Bind(HostInfo &host, const std::string &shareId)
+    {
         int ret = CreateHost(host.hostId, host.hostIp);
         if (ret != SUCCESS) {
             HCP_Log(ERR, FUSION_STORAGE_MODULE_NAME) << "Create host failed!"
@@ -200,7 +206,8 @@ Description:
         return ret;
     }
 
-    int FusionStorageBlock::CreateLUN(LunParams params, int &id, std::string &WWN) {
+    int FusionStorageBlock::CreateLUN(LunParams params, int &id, std::string &WWN)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start create lun " << params.volumeName << HCPENDLOG;
         int mpRet = QueryLUN(params.volumeName, id, WWN, params.Size, params.usedSize);
         if (mpRet == SUCCESS) {
@@ -229,7 +236,8 @@ Description:
         }
     }
 
-    int FusionStorageBlock::Query(DeviceDetails &info) {
+    int FusionStorageBlock::Query(DeviceDetails &info)
+    {
         unsigned long long size = 0;
         unsigned long long usedSize = 0;
         int ret = QueryLUN(ResourceName, ResourceId, Wwn, size, usedSize);
@@ -263,7 +271,8 @@ Description:
              1.query fusionstorage Lun by lun name
 */
     int FusionStorageBlock::QueryLUN(
-            std::string volumeName, int &id, std::string &WWN, unsigned long long &size, unsigned long long &usedSize) {
+        std::string volumeName, int &id, std::string &WWN, unsigned long long &size, unsigned long long &usedSize)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start query lun " << volumeName << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -292,7 +301,8 @@ Description:
              1.create fusionstorage host by host name and host ip address
 */
 
-    int FusionStorageBlock::CreateHost(const std::string UUID, const std::string ip) {
+    int FusionStorageBlock::CreateHost(const std::string UUID, const std::string ip)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start create host " << UUID << HCPENDLOG;
         int mpRet = QueryHost(UUID);
         if (mpRet == SUCCESS) {
@@ -326,7 +336,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.query fusionstorage host by host name
 */
-    int FusionStorageBlock::QueryHost(const std::string UUID) {
+    int FusionStorageBlock::QueryHost(const std::string UUID)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start query host " << UUID << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -351,7 +362,8 @@ Description:
              1.create fusionstorage port with iscsi connector
 */
 
-    int FusionStorageBlock::CreateISCSIPort(const std::string InitiatorName) {
+    int FusionStorageBlock::CreateISCSIPort(const std::string InitiatorName)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start create iscsi port " << InitiatorName << HCPENDLOG;
         int mpRet = QueryISCSIPort(InitiatorName);
         if (mpRet == SUCCESS) {
@@ -384,7 +396,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.query fusionstorage port with iscsi connector
 */
-    int FusionStorageBlock::QueryISCSIPort(const std::string InitiatorName) {
+    int FusionStorageBlock::QueryISCSIPort(const std::string InitiatorName)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start query iscsi port " << InitiatorName << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -414,7 +427,8 @@ Description:
              1.bind fusionstorage port to host
 */
 
-    int FusionStorageBlock::BindInitiator(std::string hostName, std::string iscsiPort) {
+    int FusionStorageBlock::BindInitiator(std::string hostName, std::string iscsiPort)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME)
                 << "Start bind iscsi port " << hostName << "," << iscsiPort << HCPENDLOG;
         int mpRet = QueryHostISCSIPort(hostName, iscsiPort);
@@ -451,7 +465,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.query is fusionstorage port bind to this host
 */
-    int FusionStorageBlock::QueryHostISCSIPort(std::string hostName, std::string iscsiPort) {
+    int FusionStorageBlock::QueryHostISCSIPort(std::string hostName, std::string iscsiPort)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME)
                 << "Start query iscsi port bind " << hostName << "," << iscsiPort << HCPENDLOG;
         HttpRequest req;
@@ -483,7 +498,8 @@ Description:
              1.attach lun to special host
 */
 
-    int FusionStorageBlock::CreateHostMapping(const std::string hostName, const std::string lunName) {
+    int FusionStorageBlock::CreateHostMapping(const std::string hostName, const std::string lunName)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME)
                 << "Start create host mapping" << hostName << "," << lunName << HCPENDLOG;
         int mpRet = QueryHostMapping(hostName, lunName);
@@ -513,11 +529,13 @@ Description:
         }
     }
 
-    int FusionStorageBlock::UnBind(HostInfo host, const std::string &shareId) {
+    int FusionStorageBlock::UnBind(HostInfo host, const std::string &shareId)
+    {
         return DeleteHostMapping(host.hostId, ResourceName);
     }
 
-    int FusionStorageBlock::DeleteHostMapping(const std::string hostName, const std::string lunName) {
+    int FusionStorageBlock::DeleteHostMapping(const std::string hostName, const std::string lunName)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME)
                 << "Start delete host mapping" << hostName << "," << lunName << HCPENDLOG;
         int mpRet = QueryHostMapping(hostName, lunName);
@@ -554,7 +572,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.query is lun attached to special host
 */
-    int FusionStorageBlock::QueryHostMapping(const std::string hostName, const std::string lunName) {
+    int FusionStorageBlock::QueryHostMapping(const std::string hostName, const std::string lunName)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME)
                 << "query host mapping" << hostName << "," << lunName << HCPENDLOG;
         HttpRequest req;
@@ -589,7 +608,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.create link clone volume with special snapshot
 */
-    std::unique_ptr <ControlDevice> FusionStorageBlock::CreateClone(std::string volumeName, int &errorCode) {
+    std::unique_ptr <ControlDevice> FusionStorageBlock::CreateClone(std::string volumeName, int &errorCode)
+    {
         unsigned long long size;
         unsigned long long usedSize;
         int id;
@@ -634,7 +654,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.delete volume with name
 */
-    int FusionStorageBlock::Delete() {
+    int FusionStorageBlock::Delete()
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start delete lun " << ResourceName << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -663,7 +684,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.create snapshot for special volume
 */
-    std::unique_ptr <ControlDevice> FusionStorageBlock::CreateSnapshot(std::string SnapshotName, int &errorCode) {
+    std::unique_ptr <ControlDevice> FusionStorageBlock::CreateSnapshot(std::string SnapshotName, int &errorCode)
+    {
         int id;
         std::string sWwn;
         ControlDeviceInfo deviceInfo = {};
@@ -700,7 +722,8 @@ Description:
         return std::make_unique<FSBlockSnapshot>(deviceInfo, id, sWwn);
     }
 
-    int FusionStorageBlock::QuerySnapshot(std::string SnapshotName, int &id, std::string &WWN) {
+    int FusionStorageBlock::QuerySnapshot(std::string SnapshotName, int &id, std::string &WWN)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start query snapshot " << SnapshotName << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -726,7 +749,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.query all iscsi host,need Manual open on DeviceManager.
 */
-    int FusionStorageBlock::QueryServiceHost(std::vector<std::string> &iscsiList, IP_TYPE ipType) {
+    int FusionStorageBlock::QueryServiceHost(std::vector<std::string> &iscsiList, IP_TYPE ipType)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start query iscsi host " << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -747,8 +771,9 @@ Description:
         }
     }
 
-    void
-    FusionStorageBlock::IterateIscsiHostAction(const Json::Value &iscsiPortalList, std::vector<std::string> &iscsiList) {
+    void FusionStorageBlock::IterateIscsiHostAction(const Json::Value &iscsiPortalList,
+        std::vector<std::string> &iscsiList)
+    {
         for (int v = 0; v < iscsiPortalList.size(); v++) {
             if (iscsiPortalList[v]["iscsiStatus"].asString() == "active") {
                 iscsiList.push_back(iscsiPortalList[v]["iscsiPortal"].asString());
@@ -758,7 +783,8 @@ Description:
         }
     }
 
-    int FusionStorageBlock::IterateIscsiHost(Json::Value data, std::vector<std::string> &iscsiList) {
+    int FusionStorageBlock::IterateIscsiHost(Json::Value data, std::vector<std::string> &iscsiList)
+    {
         for (int i = 0; i < data["nodeResultList"].size(); i++) {
             Json::Value oneNode = data["nodeResultList"][i];
             if (oneNode["status"].asString() == "successful") {
@@ -777,7 +803,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.query all iscsi host,need Manual open on DeviceManager.
 */
-    int FusionStorageBlock::ExtendSize(unsigned long long size) {
+    int FusionStorageBlock::ExtendSize(unsigned long long size)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start query iscsi host " << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -802,18 +829,21 @@ Description:
         }
     }
 
-    void FusionStorageBlock::DeleteDeviceSession() {
+    void FusionStorageBlock::DeleteDeviceSession()
+    {
         g_fusionStorageSessionCache->DeleteSession(FusionStorageIP, FusionStorageUsername, FusionStoragePort,
                                                    [this](SessionInfo sesInfo) -> int { return Logout(sesInfo); });
     }
 
-    void FusionStorageBlock::CreateDeviceSession() {
+    void FusionStorageBlock::CreateDeviceSession()
+    {
         this->sessionPtr = g_fusionStorageSessionCache->CreateSession(FusionStorageIP, FusionStorageUsername,
                                                                       FusionStoragePort,
                                                                       [this]() -> SessionInfo { return Login(); });
     }
 
-    void FusionStorageBlock::LoginAndGetSessionInfo() {
+    void FusionStorageBlock::LoginAndGetSessionInfo()
+    {
         if (useCache && g_fusionStorageSessionCache != nullptr) {
             CreateDeviceSession();
         } else {
@@ -828,7 +858,8 @@ Description:
         return;
     }
 
-    void FusionStorageBlock::DelayTimeSendRequest() {
+    void FusionStorageBlock::DelayTimeSendRequest()
+    {
         auto now = std::chrono::steady_clock::now();
         while ((double(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() -
                                                                              now).count()) *
@@ -840,7 +871,8 @@ Description:
         return;
     }
 
-    bool FusionStorageBlock::FusionStorageResposeNeedRetry(const int ret) {
+    bool FusionStorageBlock::FusionStorageResposeNeedRetry(const int ret)
+    {
         // when errorCode ==0 && ret == FAILED mean dorado response need retry
         if (ret == FAILED) {
             return true;
@@ -848,25 +880,29 @@ Description:
         return false;
     }
 
-    void FusionStorageBlock::SetRetryAttr(int _retryTimes, int _retryIntervalTime) {
+    void FusionStorageBlock::SetRetryAttr(int _retryTimes, int _retryIntervalTime)
+    {
         retryTimes = _retryTimes;
         retryIntervalTime = _retryIntervalTime;
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "set retry times: " << retryTimes << HCPENDLOG;
     }
 
-    void FusionStorageBlock::SetCurlTimeOut(uint64_t tmpTimeOut) {
+    void FusionStorageBlock::SetCurlTimeOut(uint64_t tmpTimeOut)
+    {
         if (tmpTimeOut > MIN_CURL_TIME_OUT) {
             CurlTimeOut = tmpTimeOut;
         }
     }
 
-    void FusionStorageBlock::InitHttpStatusCodeForRetry() {
+    void FusionStorageBlock::InitHttpStatusCodeForRetry()
+    {
         ConfigReader::getIntValueVector("MicroService", "HttpStatusCodesForRetry", ",",
                                         httpRspStatusCodeForRetry);
     }
 
     int FusionStorageBlock::SendRequest(HttpRequest &req, Json::Value &data, std::string &errorDes, int &errorCode,
-                                        bool lockSession) {
+                                        bool lockSession)
+    {
         // 检查存储设备是否含有证书和吊销列表信息
         if (!certification.empty()) {
             req.cert = certification;
@@ -876,14 +912,15 @@ Description:
             req.revocationList = crl;
         }
         int retryNum = 0;
-        while (retryNum < retryTimes) {
+        bool needRetry = true;
+        do {
             HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "send request for " << (retryNum + 1) << " time to " <<
                                                       WIPE_SENSITIVE(req.url) << HCPENDLOG;
             int ret = SUCCESS;
             if (this->sessionPtr == nullptr) {
                 LoginAndGetSessionInfo();
                 if (this->sessionPtr == nullptr) {
-                    HCP_Log(ERR, FUSION_STORAGE_MODULE_NAME) << "Invalid session" << HCPENDLOG;
+                    HCP_Log(WARN, FUSION_STORAGE_MODULE_NAME) << "Invalid session" << HCPENDLOG;
                 }
             }
             if (this->sessionPtr != nullptr) {
@@ -903,21 +940,23 @@ Description:
             // 2.when when curl success and ret is FAILED,
             // FusionStorageResposeNeedRetry, not judge http retry code, directly retry.
             // 3.when errorCode not 0,mean curl failed,directly retry.
-            if (errorCode == 0 && !FusionStorageResposeNeedRetry(ret) &&
-                std::find(httpRspStatusCodeForRetry.begin(), httpRspStatusCodeForRetry.end(), ret)
-                == httpRspStatusCodeForRetry.end()) {
+            needRetry = !(errorCode == 0 && !FusionStorageResposeNeedRetry(ret) &&
+                        std::find(httpRspStatusCodeForRetry.begin(), httpRspStatusCodeForRetry.end(), ret)
+                        == httpRspStatusCodeForRetry.end());
+            if (needRetry) {
+                DelayTimeSendRequest();
+                retryNum++;
+            } else {
                 HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "not retry send msg for httpstatuscode:" << ret
                                                           << HCPENDLOG;
-                break;
             }
-            DelayTimeSendRequest();
-            retryNum++;
-        }
+        } while (retryNum < retryTimes && needRetry);
         HCP_Log(ERR, FUSION_STORAGE_MODULE_NAME) << "send request failed. " << HCPENDLOG;
         return FAILED;
     }
 
-    int FusionStorageBlock::SendRequestOnce(HttpRequest req, Json::Value &data, std::string &errorDes, int &errorCode) {
+    int FusionStorageBlock::SendRequestOnce(HttpRequest req, Json::Value &data, std::string &errorDes, int &errorCode)
+    {
         if (this->sessionPtr == nullptr) {
             HCP_Log(ERR, FUSION_STORAGE_MODULE_NAME) << "Invalid session" << HCPENDLOG;
             return FAILED;
@@ -946,7 +985,8 @@ Description:
     }
 
     int FusionStorageBlock::SendHttpReq(std::shared_ptr <IHttpResponse> &rsp, const HttpRequest &req,
-                                        std::string &errorDes, int &errorCode) {
+                                        std::string &errorDes, int &errorCode)
+    {
         HttpRequest tempReq = req;
         tempReq.url = FormatFullUrl(tempReq.url);
         rsp = fs_pHttpCLient->SendRequest(tempReq, CurlTimeOut);
@@ -983,7 +1023,8 @@ Description:
 
     int FusionStorageBlock::ResponseSuccessHandle(HttpRequest req,
                                                   std::shared_ptr <IHttpResponse> &rsp, Json::Value &data,
-                                                  std::string &errorDes, int &errorCode) {
+                                                  std::string &errorDes, int &errorCode)
+    {
         int Ret;
         if (req.url.find("/v2/") != std::string::npos) {
             Ret = ParseBodyV2(rsp->GetBody(), data, errorDes, errorCode);
@@ -991,20 +1032,10 @@ Description:
             Ret = ParseBodyV1(rsp->GetBody(), data, errorDes, errorCode);
         }
         if (errorCode != SUCCESS) {
-            SessionInfo sessionInfo = Login();
-            if (sessionInfo.device_id.empty() || sessionInfo.token.empty() || sessionInfo.cookie.empty()) {
-                HCP_Log(ERR, FUSION_STORAGE_MODULE_NAME) << "Login FusionStorage Failed! deviceId: " <<
-                                                         sessionInfo.device_id << HCPENDLOG;
-                return FAILED;
-            }
             if (this->sessionPtr == nullptr) {
                 HCP_Log(ERR, FUSION_STORAGE_MODULE_NAME) << "Invalid session" << HCPENDLOG;
                 return FAILED;
             }
-            // Refresh session
-            this->sessionPtr->deviceId = sessionInfo.device_id;
-            this->sessionPtr->cookie = sessionInfo.cookie;
-            this->sessionPtr->token = sessionInfo.token;
             HttpRequest request = req;
             request.url = "https://" + FusionStorageIP + ":" + FusionStoragePort + req.url;
             request.heads.insert(std::make_pair("Accept", "application/json"));
@@ -1035,7 +1066,8 @@ Description:
              1.analisys response package with V2 format
 */
     int FusionStorageBlock::ParseBodyV2(
-            const std::string &json_data, Json::Value &data, std::string &errorDes, int &errorCode) {
+        const std::string &json_data, Json::Value &data, std::string &errorDes, int &errorCode)
+    {
         Json::Value jsonValue;
         Json::Reader reader;
         if (!reader.parse(json_data, jsonValue)) {
@@ -1069,7 +1101,8 @@ Description:
              1.analisys response package with V1 format
 */
     int FusionStorageBlock::ParseBodyV1(
-            const std::string &json_data, Json::Value &data, std::string &errorDes, int &errorCode) {
+        const std::string &json_data, Json::Value &data, std::string &errorDes, int &errorCode)
+    {
         const int errCodeV1 = 1;
         const int errCodeV2 = 2;
         Json::Value jsonValue;
@@ -1105,7 +1138,8 @@ Description:
         return SUCCESS;
     }
 
-    bool FusionStorageBlock::GetJsonValue(const Json::Value &jsValue, std::string strKey, std::string &strValue) {
+    bool FusionStorageBlock::GetJsonValue(const Json::Value &jsValue, std::string strKey, std::string &strValue)
+    {
         if (jsValue.isArray()) {
             HCP_Log(ERR, FUSION_STORAGE_MODULE_NAME) << "Json is Array." << HCPENDLOG;
             return false;
@@ -1128,7 +1162,8 @@ Description:
         }
     }
 
-    int FusionStorageBlock::Revert(std::string SnapshotName) {
+    int FusionStorageBlock::Revert(std::string SnapshotName)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME)
                 << "Start revert snapshot " << SnapshotName << " to " << ResourceId << HCPENDLOG;
 
@@ -1154,7 +1189,8 @@ Description:
         }
     }
 
-    int FusionStorageBlock::QuerySnapshotList(std::vector<FSSnapshotInfo> &snapshots) {
+    int FusionStorageBlock::QuerySnapshotList(std::vector<FSSnapshotInfo> &snapshots)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start query snapshot list." << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -1179,28 +1215,34 @@ Description:
     }
 
     int FusionStorageBlock::CreateReplication(
-            int localResId, int rResId, std::string rDevId, int bandwidth, std::string &repId) {
+        int localResId, int rResId, std::string rDevId, int bandwidth, std::string &repId)
+    {
         return FAILED;
     }
 
-    int FusionStorageBlock::ActiveReplication(std::string repId) {
+    int FusionStorageBlock::ActiveReplication(std::string repId)
+    {
         return FAILED;
     }
 
-    int FusionStorageBlock::QueryReplication(ReplicationPairInfo &replicationPairInfo) {
+    int FusionStorageBlock::QueryReplication(ReplicationPairInfo &replicationPairInfo)
+    {
         return FAILED;
     }
 
-    int FusionStorageBlock::DeleteReplication(std::string pairId) {
+    int FusionStorageBlock::DeleteReplication(std::string pairId)
+    {
         return FAILED;
     }
 
     int FusionStorageBlock::QueryServiceIpController(
-            std::vector<std::pair<std::string, std::string>> &ipControllerList, IP_TYPE ipType) {
+        std::vector<std::pair<std::string, std::string>> &ipControllerList, IP_TYPE ipType)
+    {
         return FAILED;
     }
 
-    int FusionStorageBlock::DeleteSnapshot(std::string SnapshotName) {
+    int FusionStorageBlock::DeleteSnapshot(std::string SnapshotName)
+    {
         return SUCCESS;
     }
 }

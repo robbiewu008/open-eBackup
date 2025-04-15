@@ -1,0 +1,139 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="创建SFTP用户">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="admin-00261.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="admin-00264">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>创建SFTP用户</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="admin-00264"></a><a name="admin-00264"></a>
+
+<h1 class="topictitle1">创建SFTP用户</h1>
+<div><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_zh-cn_topic_0000001123352597_p159125100541">系统管理员支持创建具有SFTP存储空间的SFTP用户，通过SFTP用户连接SFTP服务器后进行用户数据的上传和下载。</p>
+<div class="section" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_zh-cn_topic_0223232402_section52135297"><h4 class="sectiontitle">前提条件</h4><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_p115222054124215">已经开启SFTP服务。</p>
+</div>
+<div class="section" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_section186551153144815"><h4 class="sectiontitle">操作步骤</h4><ol id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_zh-cn_topic_0000001123352597_ol61721291281"><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_zh-cn_topic_0000001123352597_li31809451213"><span>在导航栏上，选择<span class="uicontrol" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002200070033_uicontrol1145511130412">“系统 &gt; 设置 &gt; SFTP服务”</span>。</span></li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_li8802632469"><span>在<span class="uicontrol" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_uicontrol1916413215418">“<span id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_text24174611313">授权用户</span>”</span>区域，单击<span class="uicontrol" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_uicontrol748115312417">“<span id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_text17551118111113">添加</span>”</span>。</span></li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_zh-cn_topic_0000001123352597_li6423103312715"><a name="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_zh-cn_topic_0000001123352597_li6423103312715"></a><a name="zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_zh-cn_topic_0000001123352597_li6423103312715"></a><span>配置SFTP用户参数，相关参数说明如<a href="#admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_table13374941017">表1</a>所示。</span><p>
+<div class="tablenoborder"><a name="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_table13374941017"></a><a name="zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_table13374941017"></a><table cellpadding="4" cellspacing="0" summary="" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_table13374941017" frame="border" border="1" rules="all"><caption><b>表1 </b>SFTP用户参数说明</caption><colgroup><col style="width:23.96%"><col style="width:76.03999999999999%"></colgroup><thead align="left"><tr id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_row937139171015"><th align="left" class="cellrowborder" valign="top" width="23.96%" id="mcps1.3.3.2.3.2.1.2.3.1.1"><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p43287665">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="76.03999999999999%" id="mcps1.3.3.2.3.2.1.2.3.1.2"><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p16640014">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_row153810991014"><td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.3.2.3.2.1.2.3.1.1 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p6517565"><span id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_text4386152991115">用户名</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.3.2.3.2.1.2.3.1.2 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p58160785">新创建的SFTP用户的名称。</p>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p13403145">[取值范围]</p>
+<ul id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_ul53519446"><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_li11912974">长度为6～32位。</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li1695319470583">只能包含数字、字母、“_”，且只能以字母或“_”作为首字符。</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_li40107904">不能是敏感字符（root, bin, daemon, adm, lp, sync, shutdown, halt, mail, operator, games, ftp, nobody, dbus, tss, polkitd, libstoragemgmt, unbound, setroubleshoot, chrony, ntp, sshd, rpc, cloudmonitor, rpcuser, nfsnobody, radvd, uvpkmc, dnsmasq, saslauth, qemu, gluster, dhcpd, hwcdm），且敏感字符不区分大小写。</li></ul>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p14107846">[示例]</p>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p59861751">sftpuser</p>
+</td>
+</tr>
+<tr id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_row13381496108"><td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.3.2.3.2.1.2.3.1.1 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p18455085"><span id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_text846114201115">密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.3.2.3.2.1.2.3.1.2 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p18466913">新创建的SFTP用户的密码。</p>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p19425014">[取值范围]</p>
+<ul id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_ul40607404"><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_li29922324">密码长度范围为8~64个字符。</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_li865461">密码必须由特殊字符（~!@%^*_=+{}[]:,.\/?和空格）、大写字母、小写字母和数字中的至少3种组成。</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li974935915104">密码不能是回文，如hw123@321wh。</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li01371247111513">密码不能包含连续的4个及以上的相同字符。</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li16385950191615">密码不能包含3个及以上的连续字符（键盘q-m、字母a-z、数字1-9）及其倒序。</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_li26941704">密码不能包含用户名中连续的3个及以上的字符或用户名的倒写。</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li9256111951418">密码不能包含敏感字符（root, bin, daemon, adm, lp, sync, shutdown, halt, mail, operator, games, ftp, nobody, dbus, tss, polkitd, libstoragemgmt, unbound, setroubleshoot, chrony, ntp, sshd, rpc, cloudmonitor, rpcuser, nfsnobody, radvd, uvpkmc,  saslauth, qemu, gluster, dhcpd, hwcdm）。</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li13956131271810">以上规则均不区分大小写。</li></ul>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p65087093">[示例]</p>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p48912926">abfq@1248</p>
+</td>
+</tr>
+<tr id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_row17381292106"><td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.3.2.3.2.1.2.3.1.1 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p22716784"><span id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_text18714205116116">确认密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.3.2.3.2.1.2.3.1.2 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p28120176">新创建的SFTP用户的确认密码。</p>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p63141756">[取值范围]</p>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p31404899"><span class="uicontrol" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_uicontrol1998712110125">“<span id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_text1164214316124">确认密码</span>”</span>必须与<span class="uicontrol" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_uicontrol148782301219">“<span id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_text1834449151217">密码</span>”</span>一致。</p>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0223232411_p14208637">[示例]</p>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_p148921364119">abfq@1248</p>
+</td>
+</tr>
+<tr id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_row8393941011"><td class="cellrowborder" valign="top" width="23.96%" headers="mcps1.3.3.2.3.2.1.2.3.1.1 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_p320516317119"><span id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_text1271371110129">配额</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.03999999999999%" headers="mcps1.3.3.2.3.2.1.2.3.1.2 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_p4100073">新创建的SFTP用户的配额。</p>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_p11684161853319">支持<span class="uicontrol" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_uicontrol174764362569">“GB”</span>和<span class="uicontrol" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_uicontrol19508204175616">“TB”</span>两种单位。</p>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_p368912186328">取值范围为：大于0GB，小于800TB。取值需为有效整数。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_zh-cn_topic_0000001123352597_li117683399153"><span>单击<span class="uicontrol" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_uicontrol161741581645">“<span id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_text182331428139">确定</span>”</span>。</span></li></ol>
+</div>
+<div class="section" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_section36681347143711"><h4 class="sectiontitle">后续处理</h4><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_p9316791620">用户在管理界面中创建好SFTP用户后，可以通过如下操作使用SFTP服务：</p>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_p5884711091">如果本地服务器操作系统为Windows，建议下载SFTP工具进行上传和下载操作。如果本地服务器操作系统为Linux，请参考以下操作步骤：</p>
+<ol id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_ol4986539664"><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_li3354184518532">执行以下命令，以<strong id="admin-00264__zh-cn_topic_0000002200155717_b2354165591213">sftpuser</strong>用户连接SFTP备份服务器。<pre class="screen" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_screen129721413151412">sftp -oPort=<em id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_i53471815158">端口号</em> <em id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_i19940113018148">username</em>@<em id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_i13940030151410">IP地址</em></pre>
+<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_p139371550547">参数说明如<a href="#admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_table19645122441616">表2</a>所示。</p>
+
+<div class="tablenoborder"><a name="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_table19645122441616"></a><a name="zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_table19645122441616"></a><table cellpadding="4" cellspacing="0" summary="" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_table19645122441616" frame="border" border="1" rules="all"><caption><b>表2 </b>连接SFTP备份服务器参数说明</caption><colgroup><col style="width:27.189999999999998%"><col style="width:72.81%"></colgroup><thead align="left"><tr id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_row8646202412164"><th align="left" class="cellrowborder" valign="top" width="27.189999999999998%" id="mcps1.3.4.4.1.4.2.3.1.1"><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_p136465247167">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="72.81%" id="mcps1.3.4.4.1.4.2.3.1.2"><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_p14646624111610">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_row5646152413166"><td class="cellrowborder" valign="top" width="27.189999999999998%" headers="mcps1.3.4.4.1.4.2.3.1.1 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_p18646152415168">username</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.81%" headers="mcps1.3.4.4.1.4.2.3.1.2 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_p11646024131618"><a href="#admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_zh-cn_topic_0000001123352597_li6423103312715">3</a>中添加的SFTP用户，此处以<strong id="admin-00264__zh-cn_topic_0000002200155717_b8398738015">sftpuser</strong>为例。</p>
+</td>
+</tr>
+<tr id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_row206461247169"><td class="cellrowborder" valign="top" width="27.189999999999998%" headers="mcps1.3.4.4.1.4.2.3.1.1 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_p136461724121612">IP地址</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.81%" headers="mcps1.3.4.4.1.4.2.3.1.2 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_p11646524141617">SFTP服务器的IP地址。即<a href="admin-00263.html#admin-00263">查看SFTP服务</a>中<a href="admin-00263.html#admin-00263__zh-cn_topic_0000002164829010_zh-cn_topic_0000001839224857_li1225141815444">2</a>查看到的IP地址。</p>
+</td>
+</tr>
+<tr id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_row1864642415166"><td class="cellrowborder" valign="top" width="27.189999999999998%" headers="mcps1.3.4.4.1.4.2.3.1.1 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_p18646124131612">端口号</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.81%" headers="mcps1.3.4.4.1.4.2.3.1.2 "><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_p464611241164">默认为“30177”。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_note613292113402"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_zh-cn_topic_0000001123352597_p10738881161">使用SFTP用户连接SFTP备份服务器时，如果出现以下异常：WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED! ，请进入本地服务器的“/root/.ssh/”目录，删除known_hosts文件中SFTP服务器IP地址所在行的内容后重试。</p>
+</div></div>
+</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_li832614421873">根据系统提示，输入<strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b1452420157010">sftpuser</strong>用户登录SFTP服务器的密码，进入SFTP命令行。<div class="note" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_note166010101164"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_p14601210101611">登录SFTP服务器后，推荐您参考<a href="zh-cn_topic_0000002164669354.html">在SFTP服务端添加SFTP客户端用户的公钥</a>章节在SFTP服务端添加一个或多个客户端用户的公钥。添加完成后，您后续可以在SFTP客户端对应用户下，使用公钥免密登录服务端。</p>
+</div></div>
+</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_li16417193210263">执行<strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b1686585111261">cd</strong> <em id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_i594116127281">用户名</em>命令，进入SFTP备份服务器目录“/sftpuser”；执行<strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b6184822102720">l</strong><strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b185977156279">cd</strong><strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b23508364280"> /opt</strong>命令，进入本地服务器目录“/opt”。</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_li3986153910618">查看SFTP备份服务器目录和本地服务器目录。<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_p1831669663"><a name="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_li3986153910618"></a><a name="zh-cn_topic_0000002200155717_zh-cn_topic_0000001792505514_li3986153910618"></a>执行<strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b1031639162">pwd</strong>命令，查看SFTP备份服务器当前的目录，执行<strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b18236415134313">lpwd</strong>命令，查看本地服务器当前的目录。如：SFTP备份服务器回显的目录为“/sftpuser”，本地服务器回显的目录为“/opt”。</p>
+<ul id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_ul176441153121720"><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li20538141261815">SFTP上传文件至SFTP备份服务器。<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_p202762217910"><a name="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li20538141261815"></a><a name="zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li20538141261815"></a>执行<strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b03161191569">put /opt/file1.conf /sftpuser</strong>命令，将本地服务器的“/opt”目录下的file1.conf文件上传至SFTP备份服务器的“/sftpuser”目录下。</p>
+</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li129701921131816">SFTP上传目录至SFTP备份服务器。<ol type="a" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_ol5565614144416"><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li145651314104418">执行<strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b62651042243">mkdir </strong><em id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_i6725104218417">file1</em>命令，在“/sftpuser”目录下新建“file1”目录。<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_p10561641864">其中，file1目录的名称需要和本地服务器上传的目录名称一致。</p>
+</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li1581595354411">执行<strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b9428124610419">put -r /opt/</strong><em id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_i1287710461415">file1</em><strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b134283461446"> /sftpuser</strong>命令，将本地服务器的“/opt/file1”目录上传至SFTP备份服务器的“/sftpuser”目录下。</li></ol>
+</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li176447532177">SFTP下载文件至本地服务器。<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_p44601261085"><a name="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li176447532177"></a><a name="zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li176447532177"></a>执行<strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b1431616915612">get /sftpuser/file.conf /opt</strong>命令，将SFTP备份服务器的“/sftpuser”目录下的file.conf文件下载至本地服务器的“/opt”目录下。</p>
+</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li165559441812">SFTP下载目录至本地服务器。<ol type="a" id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_ol1986715275012"><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li169631813261">执行<strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b836413540415">mkdir </strong><em id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_i1386818541345">file</em>命令，在“/opt”目录下新建“file”目录。<p id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_p1832318141361">其中，file目录的名称需要和下载的SFTP备份服务器目录名称一致。</p>
+</li><li id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_li19521112325019">执行<strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b25151231879">get -r /sftpuser/</strong><em id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_i792642719">file</em><strong id="admin-00264__zh-cn_topic_0000002200155717_zh-cn_topic_0000002164828902_b1051513317716"> /opt</strong>命令，将SFTP备份服务器的“/sftpuser/file”目录下载至本地服务器的“/opt”目录下。</li></ol>
+</li></ul>
+</li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="admin-00261.html">管理SFTP服务（适用于1.6.0及后续版本）（适用于OceanProtect X系列备份一体机）</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

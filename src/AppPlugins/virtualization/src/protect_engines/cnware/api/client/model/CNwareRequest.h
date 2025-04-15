@@ -31,7 +31,7 @@ public:
     ~CNwareRequest() {};
     ApiType GetApiType();
     Scope GetScopeType() const;
-    virtual bool BuildBody(std::string &body);
+    virtual bool BuildBody(const std::string &body);
     std::string GetBody();
     void SetIpPort(std::string port);
     std::string GetPort();

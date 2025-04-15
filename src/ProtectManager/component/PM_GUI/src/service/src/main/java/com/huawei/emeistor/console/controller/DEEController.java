@@ -18,6 +18,7 @@ import com.huawei.emeistor.console.controller.request.DownloadAbnormalRequest;
 import com.huawei.emeistor.console.controller.request.ExportSuspectFileReportRequest;
 import com.huawei.emeistor.console.exception.LegoCheckedException;
 import com.huawei.emeistor.console.exterattack.ExterAttack;
+import com.huawei.emeistor.console.util.DownloadUtil;
 import com.huawei.emeistor.console.util.ExceptionUtil;
 import com.huawei.emeistor.console.util.NormalizerUtil;
 import com.huawei.emeistor.console.util.RequestUtil;
@@ -52,6 +53,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -70,6 +72,7 @@ public class DEEController {
     private static final String DETECT_ABNORMAL_FILE_URL = "/v1/anti/ransomware/detect/copy/action/abnormal/download";
 
     private static final String DOWNLOAD_RFI_FILE_URL = "/v1/flr/indexes/action/download-rfi";
+
     private static final String NODE_NAME = "NODE_NAME";
 
     private static final String CSV_SUFFIX = ".csv";
@@ -87,6 +90,9 @@ public class DEEController {
 
     @Value("${api.gateway.endpoint}")
     private String antiUrl;
+
+    @Autowired
+    private DownloadUtil downloadUtil;
 
     /**
      * 上传检测模型
@@ -210,44 +216,14 @@ public class DEEController {
     /**
      * rfi文件下载
      *
-     * @param copyId copyId
-     * @param archiveType archiveType
-     * @param deviceId deviceId
-     * @param chainId chainId
+     * @param request request
      * @param response response
      */
     @ExterAttack
     @GetMapping(DOWNLOAD_RFI_FILE_URL)
-    public void downloadRfiFile(
-            @RequestParam(name = "uuid", required = true) String copyId,
-            @RequestParam(name = "generatedBy", required = true) String archiveType,
-            @RequestParam(name = "deviceEsn", required = true) String deviceId,
-            @RequestParam(name = "chainId", required = true) String chainId, HttpServletResponse response) {
-        HttpHeaders headers = requestUtil.getForwardHeaderAndValidCsrf();
-        String rfiDownloadUrl = NormalizerUtil.normalizeForString(
-                antiUrl + DOWNLOAD_RFI_FILE_URL + "?uuid=" + copyId + "&generatedBy=" + archiveType
-                        + "&deviceEsn=" + deviceId + "&chainId=" + chainId);
-        String fileName = "RFI_" + copyId + ".json";
-        restTemplate.execute(rfiDownloadUrl, HttpMethod.GET,
-                clientHttpRequest -> clientHttpRequest.getHeaders().setAll(headers.toSingleValueMap()),
-                clientHttpResponse -> {
-                    try (InputStream inputStream = clientHttpResponse.getBody();
-                         OutputStream outputStream = response.getOutputStream()) {
-                        response.setStatus(clientHttpResponse.getStatusCode().value());
-                        response.setContentType("application/x-download");
-                        response.setCharacterEncoding("UTF-8");
-                        response.setHeader("Pragma", "no-cache");
-                        response.setHeader("Cache-Control", "no-store, must-revalidate");
-                        response.addHeader("Content-Disposition",
-                                "attachment;filename=" + fileName);
-                        IOUtils.copy(inputStream, outputStream);
-                    } catch (IOException e) {
-                        log.error("Fail to export suspect files.", ExceptionUtil.getErrorMessage(e));
-                        throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR, e);
-                    }
-                    log.info("Export suspect files.");
-                    return null;
-                }
-        );
+    public void downloadRfiFile(HttpServletRequest request, HttpServletResponse response) {
+        String requestUrl =
+            NormalizerUtil.normalizeForString(antiUrl + DOWNLOAD_RFI_FILE_URL + "?" + request.getQueryString());
+        downloadUtil.download(requestUrl);
     }
 }

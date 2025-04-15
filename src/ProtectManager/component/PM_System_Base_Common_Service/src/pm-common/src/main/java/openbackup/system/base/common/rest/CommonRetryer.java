@@ -12,14 +12,13 @@
 */
 package openbackup.system.base.common.rest;
 
+import feign.RetryableException;
+import feign.Retryer;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.utils.CollectionUtils;
 import openbackup.system.base.common.utils.CommonUtil;
 import openbackup.system.base.common.utils.ExceptionUtil;
-
-import feign.RetryableException;
-import feign.Retryer;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -72,6 +71,16 @@ public class CommonRetryer<T> implements Retryer {
      */
     public static CommonRetryer<Long> create(Long... codes) {
         return new CommonRetryer<>((items, error) -> true, codes);
+    }
+
+    /**
+     * retry on special policy
+     *
+     * @param policy policy
+     * @return retryer
+     */
+    public static CommonRetryer<Long> create(CommonRetryPolicy policy) {
+        return new CommonRetryer<>(policy, (items, error) -> true);
     }
 
     /**

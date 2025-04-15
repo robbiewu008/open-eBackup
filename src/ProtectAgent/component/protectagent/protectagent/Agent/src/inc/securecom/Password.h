@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef __AGENT_PASSWORD_H__
 #define __AGENT_PASSWORD_H__
 
@@ -100,8 +112,6 @@ public:
     static mp_uint64 GetLockTime();
     static mp_void ClearLock();
     static mp_int32 EncPwd(mp_string& ciphertext, const mp_string& strvalue);
-    static mp_int32 DecPwdAndConfuse(const mp_string& ciphertext, mp_string& plaintext);
-    static mp_void Confuse(const mp_string& inStr, mp_string& outStr);
     static mp_int32 VerifyAgentUser(mp_string& strUsrName);
 };
 

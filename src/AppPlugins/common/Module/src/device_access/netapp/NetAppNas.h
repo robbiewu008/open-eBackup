@@ -24,11 +24,9 @@
 #include <boost/archive/iterators/binary_from_base64.hpp>
 #include <boost/archive/iterators/transform_width.hpp>
 #include "json/json.h"
-// #include "framework/MessageProcess.h"
 #include "curl_http/HttpClientInterface.h"
 #include "define/Types.h"
 #include "log/Log.h"
-// #include "common/DiskCommDef.h"
 #include "device_access/Const.h"
 #include "common/CleanMemPwd.h"
 #include "device_access/ControlDevice.h"
@@ -90,15 +88,15 @@ namespace Module {
         std::unique_ptr<ControlDevice> CreateSnapshot(std::string snapshotName, int &errorCode) override;
         std::unique_ptr<ControlDevice> CreateClone(std::string cloneName, int &errorCode) override;
 
-        int Bind(HostInfo &host, const std::string &shareId="") override
+        int Bind(HostInfo &host, const std::string &shareId = "") override
         {
             return SUCCESS;
         }
-        int UnBind(HostInfo host, const std::string &shareId="") override
+        int UnBind(HostInfo host, const std::string &shareId = "") override
         {
             return SUCCESS;
         }
-        int Mount(DeviceMountInfo mountInfo, const std::string &shareName="") override
+        int Mount(DeviceMountInfo mountInfo, const std::string &shareName = "") override
         {
             return FAILED;
         }
@@ -216,11 +214,11 @@ namespace Module {
         int CheckJobStatus(std::string jobUuid, std::string jobName);
         int ValidateJobStatusResponse(Json::Value &data, std::string jobUuid, std::string &status);
         int ValidateSetVolumeResponseDataCheck(const Json::Value::ArrayIndex &i, const Json::Value &data,
-                                                    std::string sharePath, std::string &volumeName, std::string &volumeUuid);
+                std::string sharePath, std::string &volumeName, std::string &volumeUuid);
         int ValidateSetVolumeResponse(Json::Value &data, std::string sharePath,
                                         std::string &volumeName, std::string &volumeUuid);
         int ValidateSetVolumeResponseDataCheck4Nfs(const Json::Value::ArrayIndex &i, const Json::Value &data,
-                                                    std::string sharePath, std::string &volumeName, std::string &volumeUuid);
+                std::string sharePath, std::string &volumeName, std::string &volumeUuid);
         int ValidateSetVolumeResponse4Nfs(Json::Value &data, std::string sharePath,
                                         std::string &volumeName, std::string &volumeUuid);
 
@@ -251,6 +249,8 @@ namespace Module {
         int Base64Decryption(std::string encryptedkey, std::string &plainKey);
         void DelayTimeSendRequest(const std::string &delayForJobName);
         int DestroyDeviceSession();
+        int ValidateQueryVolumeResponse(Json::Value &data, const std::string &volName);
+        bool ValidateQueryVolumeResponseDataCheck(Json::Value &data, const Json::Value::ArrayIndex &i);
 
     protected:
         std::string m_encryptedKey {};

@@ -12,6 +12,11 @@
 */
 package openbackup.exchange.protection.access.service.impl;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
@@ -33,8 +38,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.exchange.protection.access.constant.ExchangeConstant;
 import openbackup.exchange.protection.access.service.ExchangeService;
-import com.huawei.oceanprotect.job.sdk.JobService;
-
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONArray;
@@ -48,10 +51,6 @@ import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

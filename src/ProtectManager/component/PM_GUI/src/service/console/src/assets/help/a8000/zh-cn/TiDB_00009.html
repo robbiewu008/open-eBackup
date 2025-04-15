@@ -1,0 +1,105 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤1：注册TiDB集群">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="TiDB_00008.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="TiDB_00009">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤1：注册TiDB集群</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="TiDB_00009"></a><a name="TiDB_00009"></a>
+
+<h1 class="topictitle1">步骤1：注册TiDB集群</h1>
+<div><p>执行TiDB备份资源备份恢复前，需要将TiDB集群注册至<span>OceanProtect</span>。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><p>集群状态正常。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><p>请确保TiDB集群版本对应的TiUP组件br和ctl已安装，否则备份失败。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ol><li>使用<strong>root</strong>用户登录TiUP中控机。</li><li>执行<strong>tiup cluster list</strong>命令查询该中控机部署的TiDB集群版本。</li><li>执行<strong>which tiup</strong>命令查询TiUP的安装路径，例如/root/.tiup/bin/tiup。</li><li>执行<strong>cd </strong><em>/root/.tiup</em>/<strong>components</strong>命令查看br、ctl组件版本。<p>当未查询到对应的组件版本信息，请执行<strong>tiup install br</strong>或者<strong>tiup install ctl</strong>命令安装对应组件。</p>
+</li></ol>
+</div></div>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="TiDB_00009__zh-cn_topic_0000001249935107_li0198134611381"><span>选择<span class="uicontrol" id="TiDB_00009__zh-cn_topic_0000002199964685_uicontrol538217262370">“<span id="TiDB_00009__zh-cn_topic_0000002199964685_text1938272620379">保护</span> &gt; 数据库 &gt; TiDB”</span>。</span></li><li><span>在<span class="uicontrol">“<span>集群</span>”</span>页签，单击<span class="uicontrol">“<span>注册</span>”</span>，注册TiDB集群。</span><p><ol type="a"><li>在“<span>名称</span>”参数下，输入自定义TiDB集群的名称。</li><li>在“<span style="color:#282B33;">添加TiUP节点</span>”页签配置TiUP节点信息。一套TiDB集群环境支持部署多个TiUP节点。TiDB集群添加TiUP节点参数信息如<a href="#TiDB_00009__table1125089123913">表1</a>所示。
+<div class="tablenoborder"><a name="TiDB_00009__table1125089123913"></a><a name="table1125089123913"></a><table cellpadding="4" cellspacing="0" summary="" id="TiDB_00009__table1125089123913" width="90%" frame="border" border="1" rules="all"><caption><b>表1 </b>TiDB集群添加TiUP节点信息</caption><colgroup><col style="width:16.45%"><col style="width:83.55%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="16.45%" id="mcps1.3.4.2.2.2.1.2.3.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="83.55%" id="mcps1.3.4.2.2.2.1.2.3.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="16.45%" headers="mcps1.3.4.2.2.2.1.2.3.2.3.1.1 "><p>客户端</p>
+</td>
+<td class="cellrowborder" valign="top" width="83.55%" headers="mcps1.3.4.2.2.2.1.2.3.2.3.1.2 "><p>已注册到<span>OceanProtect</span>的主机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="16.45%" headers="mcps1.3.4.2.2.2.1.2.3.2.3.1.1 "><p><span>TiUP安装路径</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="83.55%" headers="mcps1.3.4.2.2.2.1.2.3.2.3.1.2 "><p>TiDB集群数据库节点TiUP安装路径。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>单击“下一步”，选择集群。</li><li>单击“下一步”，添加节点。添加节点参数信息如<a href="#TiDB_00009__table3237154494313">表2</a>所示。
+<div class="tablenoborder"><a name="TiDB_00009__table3237154494313"></a><a name="table3237154494313"></a><table cellpadding="4" cellspacing="0" summary="" id="TiDB_00009__table3237154494313" frame="border" border="1" rules="all"><caption><b>表2 </b>TiDB集群添加节点信息</caption><colgroup><col style="width:16.97%"><col style="width:83.03%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="16.97%" id="mcps1.3.4.2.2.2.1.4.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="83.03%" id="mcps1.3.4.2.2.2.1.4.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="16.97%" headers="mcps1.3.4.2.2.2.1.4.2.2.3.1.1 "><p><span>TiDB集群用户名</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="83.03%" headers="mcps1.3.4.2.2.2.1.4.2.2.3.1.2 "><p>TiDB集群管理员用户名。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="16.97%" headers="mcps1.3.4.2.2.2.1.4.2.2.3.1.1 "><p><span>密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="83.03%" headers="mcps1.3.4.2.2.2.1.4.2.2.3.1.2 "><p>TiDB集群管理员密码。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="16.97%" headers="mcps1.3.4.2.2.2.1.4.2.2.3.1.1 "><p><span>日志备份路径</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="83.03%" headers="mcps1.3.4.2.2.2.1.4.2.2.3.1.2 "><p>TiDB集群的日志备份路径。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>为TiDB集群的各节点选择主机，单击<span class="uicontrol">“完成”</span>。</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="TiDB_00008.html">备份TiDB资源</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

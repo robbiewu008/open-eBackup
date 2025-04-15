@@ -11,11 +11,13 @@
 # EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-set -x
+
 SYS_NAME=`uname -s`
 BASE_PATH=""
 if [ "${SYS_NAME}" = "AIX" ]; then
     BASE_PATH="$(cd "$(dirname $0)/../" && pwd)"
+    export OBJECT_MODE=64
+    export CFLAGS=-maix64 && export CXXFLAGS=-maix64
 else
     BASE_PATH="$(cd "$(dirname "$BASH_SOURCE")/../" && pwd)"
 fi
@@ -25,15 +27,6 @@ DB_BIN_PATH="${BASE_PATH}/bin"
 DB_BUILD_PATH="${BASE_PATH}/build-cmake"
 MODULE_DIR="${BASE_PATH}/../common/Module"
 
-ReplaceFlagsMake()
-{
-    cd "${BASE_PATH}/build-cmake"
-    flags_list=`find ./ -name flags.make`
-    for item in $flags_list; do
-        sed 's/-isystem /-I/g' $item > $item.bk
-        mv $item.bk $item
-    done
-}
 
 MakePlugin()
 {
@@ -60,9 +53,7 @@ MakePlugin()
         echo "cmake error!!!"
         exit 1
     fi
-    if [ ${SYS_NAME} = "AIX" ]; then
-        ReplaceFlagsMake
-    fi
+
     make -j8 $@
     if [ $? -ne 0 ]; then
         echo "make error!!!"

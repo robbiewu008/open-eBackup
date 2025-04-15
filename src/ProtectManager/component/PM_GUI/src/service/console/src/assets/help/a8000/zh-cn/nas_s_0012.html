@@ -1,0 +1,59 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤1：（可选）获取存储设备CA证书">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="nas_s_0011.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="nas_s_0012">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤1：（可选）获取存储设备CA证书</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="nas_s_0012"></a><a name="nas_s_0012"></a>
+
+<h1 class="topictitle1">步骤1：（可选）获取存储设备CA证书</h1>
+<div id="body0000001103768052"><p id="nas_s_0012__p1733182219508">为了确保<span id="nas_s_0012__text1420811157135">OceanProtect</span>与存储设备交互的安全性，可以将存储设备证书导入到系统中。此操作为可选操作。</p>
+<p id="nas_s_0012__p19722164210475">存储设备CA证书的获取方式如下。</p>
+<ul id="nas_s_0012__ul9722184217475"><li id="nas_s_0012__li9722042184720">方式1：向设备管理员获取。</li><li id="nas_s_0012__li18722242154714">方式2：自行下载华为存储设备证书，其他存储设备请向设备管理员获取。以下以获取华为OceanStor存储设备CA证书为例进行说明。<ol id="nas_s_0012__ol1723642184711"><li id="nas_s_0012__li1644514484819">在浏览器中输入待获取证书的存储设备DeviceManager登录地址，浏览器提示不安全（Microsoft Edge提示为“证书错误”）。<p id="nas_s_0012__p1410010574816"><a name="nas_s_0012__li1644514484819"></a><a name="li1644514484819"></a>不同浏览器提示方式不同，此处以Google Chrome 84为例进行说明。</p>
+</li><li id="nas_s_0012__li177235428473"><span style="color:#494949;">单击url输入栏左侧的</span><span style="color:#494949;">“不安全”</span><span style="color:#494949;">。</span><p id="nas_s_0012__p1472318425476"><span><img id="nas_s_0012__image3723164274715" src="zh-cn_image_0000002164645344.png"></span></p>
+</li><li id="nas_s_0012__li20723134211473"><span style="color:#494949;">在弹出的提示框中单击</span><span style="color:#494949;">“证书无效”</span><span style="color:#494949;">。</span><p id="nas_s_0012__p7683465539"><span><img id="nas_s_0012__image194097119545" src="zh-cn_image_0000002200131673.png"></span></p>
+</li><li id="nas_s_0012__li166118685812">在弹出的提示框中选择<span class="uicontrol" id="nas_s_0012__uicontrol486418249586">“基本信息”</span>页签，查看颁发者是否为<span style="color:#494949;">Huawei。</span><p id="nas_s_0012__p10664171318"><span><img id="nas_s_0012__image49571921627" src="zh-cn_image_0000002164645348.png"></span></p>
+</li><li id="nas_s_0012__li15834331125420">选择<span class="uicontrol" id="nas_s_0012__uicontrol1997063816543">“详细信息”</span>页签，单击<span class="uicontrol" id="nas_s_0012__uicontrol16970123818540">“导出”</span>。<p id="nas_s_0012__p055711719557"><span><img id="nas_s_0012__image3604193991312" src="zh-cn_image_0000002164805076.png"></span></p>
+</li><li id="nas_s_0012__li847718278550">将文件名后缀修改为<span class="uicontrol" id="nas_s_0012__uicontrol3859193445518">“.pem”</span>，保存类型为<span class="uicontrol" id="nas_s_0012__uicontrol181729238175">“Base64 编码ASCII，单一证书”</span>，单击<span class="uicontrol" id="nas_s_0012__uicontrol58591534205514">“保存”</span>。将导出的证书文件保存在本地。<p id="nas_s_0012__p1570371417561"><span><img id="nas_s_0012__image55961634141519" src="zh-cn_image_0000002200046113.png"></span></p>
+</li></ol>
+</li></ul>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="nas_s_0011.html">备份NAS文件系统（适用于OceanProtect X系列备份一体机）</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

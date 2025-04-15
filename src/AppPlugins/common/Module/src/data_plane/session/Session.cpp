@@ -24,6 +24,9 @@ namespace {
 constexpr auto FAILED_TO_SEND_MESSAGE     = "Failed to send message";
 constexpr auto FAILED_TO_READ_HEADER      = "Failed to read message header";
 constexpr auto FAILED_TO_READ_MESSAGE     = "Failed to read message";
+constexpr int32_t TCP_KEEPALIVE_IDLE_TIME = 8;    // 空闲多久后开始发送keepalive探测（秒）
+constexpr int32_t TCP_KEEPALIVE_PROBE_COUNT = 2;  // 最大探测次数
+constexpr int32_t TCP_KEEPALIVE_INTERVAL = 2;     // 每次探测之间的间隔（秒）
 
 // --- Send functions ---
 template <typename SocketType>
@@ -45,18 +48,20 @@ template <typename SocketType>
 void SendAsync(const std::shared_ptr<Module::Session>& session,
                SocketType& socket,
                const std::shared_ptr<Module::Protocol::Message>& message,
-               const std::function<void(const boost::system::error_code& error, std::size_t)>& finalHandler)
+               const std::function<void(const boost::system::error_code& error, std::size_t, bool)>& finalHandler)
 {
     boost::asio::async_write(*socket,
         boost::asio::buffer(message->Data().data(), message->Data().size()),
         [session, message, finalHandler] (const boost::system::error_code& error, std::size_t length) {
             if (session->HandleError(error, FAILED_TO_SEND_MESSAGE)) {
+                ERRLOG("Failed to send message.");
+                finalHandler(error, length, true);
                 return;
             }
             // Session should be alive up until this point.
             // If user want to extend life ot a session, they should capture it in callback.
             (void) session;
-            finalHandler(error, length);
+            finalHandler(error, length, false);
         });
 }
 
@@ -90,26 +95,26 @@ template <typename SocketType>
 void ReceiveAsync(const std::shared_ptr<Module::Session>& session,
                   SocketType& socket,
                   const std::function<void(std::shared_ptr<Module::Protocol::Message>,
-                                           Module::Protocol::MessageType)>& finalHandler)
+                  std::shared_ptr<Module::Protocol::MessageHeader>, bool)>& finalHandler)
 {
     // Read message header
     auto header = std::make_shared<Module::Protocol::MessageHeader>();
+    auto message = std::make_shared<Module::Protocol::Message>();
     boost::asio::async_read(
         *socket,
         boost::asio::buffer(header.get(), sizeof(*header)),
-        [session, &socket, header, finalHandler] (const boost::system::error_code& error, std::size_t) {
+        [session, &socket, message, header,  finalHandler] (const boost::system::error_code& error, std::size_t) {
             if (session->HandleError(error, FAILED_TO_READ_HEADER)) {
                 ERRLOG("Failed to receive async message.");
+                finalHandler(message, header, true);
                 return;
             }
             // Read message body
-            auto message = std::make_shared<Module::Protocol::Message>();
             message->Resize(header->messageLength);
-            auto messageType = static_cast<Module::Protocol::MessageType>(header->type);
             boost::asio::async_read(
                 *socket,
                 boost::asio::buffer(message->Data().data(), header->messageLength),
-                [session, message, messageType, finalHandler](const boost::system::error_code& error, std::size_t) {
+                [session, message, header, finalHandler](const boost::system::error_code& error, std::size_t) {
                     if (session->HandleError(error, FAILED_TO_READ_MESSAGE)) {
                         return;
                     }
@@ -117,7 +122,7 @@ void ReceiveAsync(const std::shared_ptr<Module::Session>& session,
                     // Session should be alive up until this point.
                     // If user want to extend life ot a session, they should capture it in callback.
                     (void) session;
-                    finalHandler(message, messageType);
+                    finalHandler(message, header, false);
                 });
         });
 }
@@ -193,6 +198,17 @@ void Session::TurnDelayOff()
             : m_socket->lowest_layer().set_option(boost::asio::ip::tcp::no_delay(true));
 }
 
+void Session::ConfigureTcpKeepAlive()
+{
+    boost::asio::ip::tcp::socket::lowest_layer_type& lowestLayer = IsSsl() ? m_sslSocket->lowest_layer() :
+                                                                   m_socket->lowest_layer();
+    lowestLayer.set_option(boost::asio::socket_base::keep_alive(true));
+    int32_t nativeHandle = lowestLayer.native_handle();
+    setsockopt(nativeHandle, SOL_TCP, TCP_KEEPIDLE, &TCP_KEEPALIVE_IDLE_TIME, sizeof(TCP_KEEPALIVE_IDLE_TIME));
+    setsockopt(nativeHandle, SOL_TCP, TCP_KEEPCNT, &TCP_KEEPALIVE_PROBE_COUNT, sizeof(TCP_KEEPALIVE_PROBE_COUNT));
+    setsockopt(nativeHandle, SOL_TCP, TCP_KEEPINTVL, &TCP_KEEPALIVE_INTERVAL, sizeof(TCP_KEEPALIVE_INTERVAL));
+}
+
 bool Session::Connect(const boost::asio::ip::tcp::resolver::results_type& endpoints)
 {
     boost::asio::ip::tcp::socket::lowest_layer_type& lowestLayer = IsSsl() ? m_sslSocket->lowest_layer() :
@@ -206,7 +222,6 @@ bool Session::Connect(const boost::asio::ip::tcp::resolver::results_type& endpoi
     }
 
     INFOLOG("New connection established(id: %zu)", reinterpret_cast<std::size_t>(this));
-
     TurnDelayOff();
 
     m_connected = true;
@@ -216,6 +231,7 @@ bool Session::Connect(const boost::asio::ip::tcp::resolver::results_type& endpoi
 
 bool Session::Disconnect()
 {
+    std::lock_guard<std::recursive_mutex> disconnectLockGuard(m_disconnectMutex);
     m_deadlineTimer.cancel();
     if (m_connected && m_sslSocket != nullptr) {
         boost::system::error_code error;
@@ -283,12 +299,19 @@ void Session::SendMessage(const Protocol::Message& message)
 }
 
 void Session::SendAsyncMessage(const std::shared_ptr<Protocol::Message>& message,
-                               const std::function<void(const boost::system::error_code&, std::size_t)>& finalHandler)
+                               const std::function<void(const boost::system::error_code&, std::size_t,
+                               bool)>& finalHandler)
 {
     auto self = shared_from_this();
     // Wrap final handler in a way that we will check if there is anything in the queue to queue it up to perform new
     // send operation.
-    auto finalHandlerWrapper = [self, finalHandler](const boost::system::error_code& error, std::size_t length) {
+    auto finalHandlerWrapper = [self, finalHandler](const boost::system::error_code& error, std::size_t length,
+                                                    bool networkErrorFlag) {
+        if (networkErrorFlag) {
+            ERRLOG("Network error occurs.");
+            finalHandler(error, length, networkErrorFlag);
+            return;
+        }
         std::function<void()> operation;
         {
             std::lock_guard<std::mutex> lockGuard(self->m_writeQueueMutex);
@@ -302,7 +325,7 @@ void Session::SendAsyncMessage(const std::shared_ptr<Protocol::Message>& message
             operation();
         }
 
-        finalHandler(error, length);
+        finalHandler(error, length, networkErrorFlag);
     };
     std::function<void()> writeOperation;
     if (IsSsl()) {
@@ -338,14 +361,21 @@ boost::optional<Protocol::Message> Session::ReceiveMessage()
 }
 
 void Session::ReceiveAsyncMessage(
-    const std::function<void(std::shared_ptr<Protocol::Message>, Module::Protocol::MessageType)>& finalHandler)
+    const std::function<void(std::shared_ptr<Protocol::Message>, std::shared_ptr<Protocol::MessageHeader>,
+    bool)>& finalHandler)
 {
     auto self = shared_from_this();
 
     // Wrap final handler in a way that we will check if there is anything in the queue to queue it up to perform new
     // receive operation.
     auto finalHandlerWrapper = [self, finalHandler](std::shared_ptr<Protocol::Message> message,
-                                                    Module::Protocol::MessageType messageType) {
+                                                    std::shared_ptr<Protocol::MessageHeader> msgHeader,
+                                                    bool networkErrorFlag) {
+        if (networkErrorFlag) {
+            ERRLOG("Network error occurs.");
+            finalHandler(std::move(message), msgHeader, networkErrorFlag);
+            return;
+        }
         std::function<void()> operation;
         {
             std::lock_guard<std::mutex> lockGuard(self->m_readQueueMutex);
@@ -354,12 +384,11 @@ void Session::ReceiveAsyncMessage(
                 operation = self->m_readQueue.front();
             }
         }
-
         if (operation) {
             operation();
         }
 
-        finalHandler(std::move(message), messageType);
+        finalHandler(std::move(message), msgHeader, networkErrorFlag);
     };
 
     std::function<void()> readOperation;
@@ -508,4 +537,9 @@ void Session::ClearQueues()
     m_writeQueue = {};
 }
 
+uint16_t Session::GetSequecenNumber()
+{
+    m_sequnceNumber++;
+    return m_sequnceNumber;
+}
 }

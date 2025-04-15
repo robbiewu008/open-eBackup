@@ -12,6 +12,7 @@
 */
 package openbackup.db2.protection.access.provider.restore;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreLocationEnum;
@@ -35,8 +36,6 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -83,6 +82,8 @@ public class Db2RestoreInterceptorProvider extends AbstractDbRestoreInterceptorP
         log.info("Start db2 restore interceptor set parameters. uuid: {}", task.getTaskId());
         // 设置恢复的目标对象
         setTargetObject(task);
+
+        super.setCopyRestoreNeedWritable(task);
 
         // 设置速度统计方式为UBC
         TaskUtil.setRestoreTaskSpeedStatisticsEnum(task, SpeedStatisticsEnum.UBC);

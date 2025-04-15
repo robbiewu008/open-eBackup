@@ -42,12 +42,14 @@ public:
     
     virtual ~ReaderBase()
     {
+        INFOLOG("Destruct ReaderBase");
+        m_timer.Clear();
         m_aggregateQueue.reset();
         m_readQueue.reset();
         m_blockBufferMap.reset();
         m_controlInfo.reset();
         m_hardlinkMap.reset();
-        INFOLOG("Destruct ReaderBase");
+        INFOLOG("Destruct ReaderBase done");
     }
 
     virtual int OpenFile(FileHandle& fileHandle) = 0;

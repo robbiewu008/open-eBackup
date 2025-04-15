@@ -213,7 +213,7 @@ int32_t CloudVolumeHandler::ListDev(std::vector<std::string> &devList)
         Module::CmdParam(Module::SCRIPT_CMD_NAME, agentHomedir + SUDO_DISK_TOOL_PATH),
         "scan_dev"
     };
-    if (Module::RunCommand("sudo", cmdParam, cmdOut) != 0) {
+    if (Utils::CallAgentExecCmd(cmdParam, cmdOut) != 0) {
         ERRLOG("lsblk command is not enable.");
         return FAILED;
     }
@@ -241,7 +241,7 @@ int32_t CloudVolumeHandler::UpdateDiskDev()
         Module::CmdParam(Module::SCRIPT_CMD_NAME, agentHomedir + SUDO_DISK_TOOL_PATH),
         "update_disk_dev"
     };
-    if (Module::RunCommand("sudo", cmdParam, cmdOut) != 0) {
+    if (Utils::CallAgentExecCmd(cmdParam, cmdOut) != 0) {
         ERRLOG("Exec command partprobe failed.");
         return FAILED;
     }
@@ -259,7 +259,7 @@ int32_t CloudVolumeHandler::GetDiskPathList(std::map<std::string, std::set<std::
         Module::CmdParam(Module::SCRIPT_CMD_NAME, agentHomedir + SUDO_DISK_TOOL_PATH),
         "get_virtio_diskpath_list"
     };
-    if (Module::RunCommand("sudo", cmdParam, cmdOut) != 0) {
+    if (Utils::CallAgentExecCmd(cmdParam, cmdOut) != 0) {
         ERRLOG("ls -l /dev/disk/by-id/virtio-* command is not enable.");
         return FAILED;
     }
@@ -327,6 +327,8 @@ int CloudVolumeHandler::DoScanDisk(const std::string &volumeId, int32_t retryTim
         int32_t ret = GetDiskPathList(diskPathMap);
         if (ret == SUCCESS && GetVolumePath(volumeId, diskPathMap) == SUCCESS) {
             return SUCCESS;
+        } else if (GetIscsiDiskPath(volumeId) == SUCCESS) {
+            return SUCCESS;
         }
         retryTimes--;
         if (retryTimes > 0) {
@@ -335,6 +337,39 @@ int CloudVolumeHandler::DoScanDisk(const std::string &volumeId, int32_t retryTim
         }
     }
     return FAILED;
+}
+
+int32_t CloudVolumeHandler::GetIscsiDiskPath(const std::string &volumeId)
+{
+    std::vector<std::string> cmdOut;
+    std::string agentHomedir = Module::EnvVarManager::GetInstance()->GetAgentHomePath();
+    std::vector<Module::CmdParam> cmdParam{
+        Module::CmdParam(Module::COMMON_CMD_NAME, "sudo"),
+        Module::CmdParam(Module::SCRIPT_CMD_NAME, agentHomedir + SUDO_DISK_TOOL_PATH),
+        "get_diskpath_for_wwn",
+        Module::CmdParam(Module::COMMON_PARAM, volumeId)
+    };
+    if (Utils::CallAgentExecCmd(cmdParam, cmdOut) != 0) {
+        ERRLOG("Excute get_diskpath_for_wwn failed.");
+        return FAILED;
+    }
+    if (cmdOut.size() !=1) {
+        ERRLOG("Excute get_diskpath_for_wwn failed, cmdOut.size() is %d.", cmdOut.size());
+        return FAILED;
+    }
+    std::string strLine = cmdOut[0];
+    int nPos = strLine.find(D_FINDDISK);
+    if (nPos == std::string::npos) {
+        ERRLOG("Excute get_diskpath_for_wwn failed, cmdOut is %s.", strLine.c_str());
+        return FAILED;
+    }
+    strLine.erase(strLine.find_last_not_of("\n") + 1);
+    INFOLOG("Line:%s", strLine.c_str());
+    strLine.erase(0, nPos);
+    strLine = "/dev/disk/by-id/" + strLine;
+    m_diskDevicePath = strLine;
+    INFOLOG("GetIscsiDiskPath success, m_diskDevicePath is %s.", m_diskDevicePath.c_str());
+    return SUCCESS;
 }
 
 int32_t CloudVolumeHandler::DoDetachVolumeFromeHost(const std::string &detachVolId, const std::string &serverId)
@@ -389,7 +424,7 @@ bool CloudVolumeHandler::ChangeFilePriviledge(const std::string &file, const Vol
         Module::CmdParam(Module::COMMON_PARAM, permissions),
         Module::CmdParam(Module::PATH_PARAM, file)
     };
-    if (Module::RunCommand("sudo", cmdParam, cmdOut, pathWhitelist) != 0) {
+    if (Utils::CallAgentExecCmd(cmdParam, cmdOut) != 0) {
         ERRLOG("Add o+r priviledge to %s failed.", file.c_str());
         return false;
     }
@@ -454,6 +489,7 @@ bool CloudVolumeHandler::ReadHashData(uint64_t startAddr, std::shared_ptr<uint8_
 {
     int32_t retryTimes = 0;
     while (retryTimes < MAX_EXEC_COUNT) {
+        std::lock_guard<std::mutex> lock(m_metaRepoHandler->m_repoMutex);
         if (m_metaRepoHandler->Seek(startAddr) != SUCCESS) {
             ERRLOG("Seek hash file <%llu> failed", startAddr);
             sleep(RETRY_INTERVAL_SECOND);

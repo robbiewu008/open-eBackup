@@ -185,7 +185,7 @@ bool LibsmbDirWriter::IsComplete()
 
 void LibsmbDirWriter::HandleComplete()
 {
-    INFOLOG("Complete LibsmbCopyWriter");
+    INFOLOG("Complete LibsmbDirWriter");
     m_controlInfo->m_writePhaseComplete = true;
 }
 
@@ -223,7 +223,7 @@ int LibsmbDirWriter::ProcessConnectionException()
     int retCode = HandleConnectionException(m_asyncContext, m_params.dstSmbContextArgs, RECONNECT_CONTEXT_RETRY_TIMES);
     if (retCode != SUCCESS) {
         ERRLOG("Stop and Abort read phase due to server inaccessible");
-        m_failed = true;
+        m_controlInfo->m_failed = true;
         FSBackupUtils::SetServerNotReachableErrorCode(m_backupParams.backupType, m_failReason, false);
         return FAILED;
     }

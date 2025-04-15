@@ -12,6 +12,12 @@
 */
 package openbackup.data.access.framework.livemount.provider;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.system.base.user.service.UserService;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dee.DeeLiveMountRestApi;
 import openbackup.data.access.client.sdk.api.framework.dee.model.OcLiveMountFsShareInfo;
 import openbackup.data.access.client.sdk.api.framework.dee.model.OcLiveMountFsShareReq;
@@ -59,7 +65,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.util.AgentApiUtil;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.ErrorCodeConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -76,12 +81,7 @@ import openbackup.system.base.sdk.job.util.JobUpdateUtil;
 import openbackup.system.base.sdk.livemount.model.Performance;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.service.AvailableAgentManagementDomainService;
-import com.huawei.oceanprotect.system.base.user.service.UserService;
 import openbackup.system.base.util.BeanTools;
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -577,9 +577,12 @@ public class UnifiedLiveMountProvider extends AbstractLiveMountProvider {
 
     private List<Endpoint> buildAgents(String jobId, ProtectedResource targetResource, Map<String, Object> parameters) {
         // 此处最好走内置agent,先暂时使用此selector
-        Map<String, String> parametersString = parameters.entrySet()
-            .stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().toString()));
+        Map<String, String> parametersString = new HashMap<>();
+        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+            if (!VerifyUtil.isEmpty(entry.getValue())) {
+                parametersString.put(entry.getKey(), entry.getValue().toString());
+            }
+        }
         JobBo jobBo = jobService.queryJob(jobId);
         if (jobBo != null && !VerifyUtil.isEmpty(jobBo.getUserId())) {
             UserInnerResponse userInnerResponse = userService.getUserInfoByUserId(jobBo.getUserId());

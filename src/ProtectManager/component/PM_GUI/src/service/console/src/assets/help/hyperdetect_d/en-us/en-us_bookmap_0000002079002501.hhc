@@ -1,0 +1,166 @@
+
+<html>
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+   
+<!-- Sitemap 1.0 -->
+</head>
+<body>
+<OBJECT type="text/site properties">
+<param value="0x800025" name="Window Styles">
+<param value="Arial,9,1" name="Font">
+</OBJECT>
+
+<UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Overview"><param name="Local" value="en-us_topic_0000002079043913.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="About ProtectManager"><param name="Local" value="en-us_topic_0000002042963152.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Quick Start"><param name="Local" value="en-us_topic_0000002079043973.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Personal Data Description"><param name="Local" value="en-us_topic_0000002079043957.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Home"><param name="Local" value="en-us_topic_0000002042804900.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Data Security"><param name="Local" value="en-us_topic_0000002079002529.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Using Ransomware File Interception (Applicable to File Services)"><param name="Local" value="en-us_topic_0000002042963200.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Configuring a File Name Extension Filtering Rule"><param name="Local" value="en-us_topic_0000002042963220.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Creating a File Name Extension Filtering Rule"><param name="Local" value="en-us_topic_0000002042963184.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Updating a File Name Extension Filtering Rule"><param name="Local" value="en-us_topic_0000002042804920.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Enabling File Interception"><param name="Local" value="en-us_topic_0000002042804936.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing File Name Extension Filtering Rules"><param name="Local" value="en-us_topic_0000002079043901.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Scanning for File Systems"><param name="Local" value="en-us_topic_0000002042963196.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Using Real-Time Ransomware Detection (Applicable to File Services)"><param name="Local" value="en-us_topic_0000002043400826.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Configuring the Real-Time Ransomware Detection Whitelist"><param name="Local" value="en-us_topic_0000002079518441.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Enabling Real-Time Ransomware Detection"><param name="Local" value="en-us_topic_0000002079639853.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Configuring Honeypot Detection"><param name="Local" value="en-us_topic_0000002043559110.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Viewing Real-Time Ransomware Detection Results"><param name="Local" value="en-us_topic_0000002043400830.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing Real-Time Ransomware Detection Whitelists"><param name="Local" value="en-us_topic_0000002079518445.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing Honeypot Detection"><param name="Local" value="en-us_topic_0000002079639857.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Using Real-Time Ransomware Detection (Applicable to Block Services)"><param name="Local" value="en-us_topic_0000002079622285.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Enabling Real-Time Ransomware Detection"><param name="Local" value="en-us_topic_0000002043383262.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Viewing Real-Time Ransomware Detection Results"><param name="Local" value="en-us_topic_0000002043383266.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Using Intelligent Ransomware Detection"><param name="Local" value="en-us_topic_0000002079002573.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Enabling Intelligent Ransomware Detection"><param name="Local" value="en-us_topic_0000002079002589.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Creating a Ransomware Detection Snapshot"><param name="Local" value="en-us_topic_0000002079043893.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Creating an SLA"><param name="Local" value="en-us_topic_0000002079043933.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Performing Ransomware Detection Snapshot-based Backup"><param name="Local" value="en-us_topic_0000002079043897.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Performing Ransomware Detection Snapshot-based Backup Periodically"><param name="Local" value="en-us_topic_0000002079002525.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Performing Ransomware Detection Snapshot-based Backup Manually"><param name="Local" value="en-us_topic_0000002079002561.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing Ransomware Detection Snapshots"><param name="Local" value="en-us_topic_0000002042804928.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Overview"><param name="Local" value="en-us_topic_0000002042804860.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing Detection Models"><param name="Local" value="en-us_topic_0000002042804932.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Protection"><param name="Local" value="en-us_topic_0000002079043941.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Local File System"><param name="Local" value="en-us_topic_0000002042804916.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Viewing File System Information"><param name="Local" value="en-us_topic_0000002042963148.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing File Systems"><param name="Local" value="en-us_topic_0000002079043977.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Local LUN"><param name="Local" value="en-us_topic_0000002042963156.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Viewing LUN Information"><param name="Local" value="en-us_topic_0000002079043925.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing LUNs"><param name="Local" value="en-us_topic_0000002042804904.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="SLA"><param name="Local" value="en-us_topic_0000002042963160.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Viewing SLA Information"><param name="Local" value="en-us_topic_0000002042963228.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing SLAs"><param name="Local" value="en-us_topic_0000002079002553.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Jobs"><param name="Local" value="en-us_topic_0000002122960256.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Viewing the Job Progress"><param name="Local" value="en-us_topic_0000002122802056.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Stopping Jobs"><param name="Local" value="en-us_topic_0000002158360241.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Downloading Jobs"><param name="Local" value="en-us_topic_0000002158241849.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Alarms and Events"><param name="Local" value="en-us_topic_0000002092571225.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing Alarms and Events"><param name="Local" value="en-us_topic_0000002122960260.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="System"><param name="Local" value="en-us_topic_0000002083405941.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing Local Storage"><param name="Local" value="en-us_topic_0000002083287353.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Viewing Local Storage Information"><param name="Local" value="en-us_topic_0000002047208428.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Viewing Local Storage Authentication Information"><param name="Local" value="en-us_topic_0000002083405945.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Modifying Local Storage Authentication Information"><param name="Local" value="en-us_topic_0000002083287357.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing Users"><param name="Local" value="en-us_topic_0000002122802060.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Overview of User Roles"><param name="Local" value="en-us_topic_0000002158360245.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Creating a User"><param name="Local" value="en-us_topic_0000002158241853.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Modifying a User"><param name="Local" value="en-us_topic_0000002122960264.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Locking a User"><param name="Local" value="en-us_topic_0000002122802064.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Unlocking a User"><param name="Local" value="en-us_topic_0000002158360249.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Deleting a User"><param name="Local" value="en-us_topic_0000002158241857.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Resetting a User Password"><param name="Local" value="en-us_topic_0000002122960268.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing Security Policies"><param name="Local" value="en-us_topic_0000002158244633.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing Certificates"><param name="Local" value="en-us_topic_0000002158363045.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Viewing Certificate Information"><param name="Local" value="en-us_topic_0000002122963020.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Importing a Certificate"><param name="Local" value="en-us_topic_0000002158244637.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Exporting Request Files"><param name="Local" value="en-us_topic_0000002158363049.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Modifying Expiration Warning Days"><param name="Local" value="en-us_topic_0000002122963024.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Regenerating a Certificate"><param name="Local" value="en-us_topic_0000002122804876.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Downloading a Certificate"><param name="Local" value="en-us_topic_0000002122963032.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Replacing the SSL Certificate on the Server"><param name="Local" value="en-us_topic_0000002158244649.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing Logs"><param name="Local" value="en-us_topic_0000002158241861.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Exporting Records"><param name="Local" value="en-us_topic_0000002123462130.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing the Email Service"><param name="Local" value="en-us_topic_0000002122802072.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Managing Event Dump"><param name="Local" value="en-us_topic_0000002158360257.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI></UL>
+</body>
+</html>

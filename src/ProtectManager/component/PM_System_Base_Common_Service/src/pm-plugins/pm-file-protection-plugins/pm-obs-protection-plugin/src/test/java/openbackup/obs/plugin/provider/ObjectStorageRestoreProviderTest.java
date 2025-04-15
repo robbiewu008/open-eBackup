@@ -20,15 +20,20 @@ import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
+import openbackup.data.protection.access.provider.sdk.enums.RestoreLocationEnum;
 import openbackup.data.protection.access.provider.sdk.lock.LockResourceBo;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
+
+import com.huawei.oceanprotect.job.sdk.JobService;
 import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 
+import openbackup.obs.plugin.common.constants.EnvironmentConstant;
 import openbackup.obs.plugin.service.ObjectStorageAgentService;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -61,6 +66,12 @@ public class ObjectStorageRestoreProviderTest {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ObjectStorageAgentService agentService;
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private JobService jobService;
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private DeployTypeService deployTypeService;
 
     @InjectMocks
     private ObjectStorageRestoreProvider objectStorageProvider;
@@ -179,5 +190,27 @@ public class ObjectStorageRestoreProviderTest {
         endpoint.setPort(11);
         endpoints.add(endpoint);
         return endpoints;
+    }
+
+    @Test
+    public void test_set_target_location_success() {
+        PowerMockito.when(encryptorService.encrypt(anyString())).thenReturn("string");
+        PowerMockito.when(agentService.getObjectStorageEndpoint(anyString())).thenReturn(mockEndPoint());
+        PowerMockito.when(copyRestApi.queryCopyByID(anyString())).thenReturn(mockCopy());
+        RestoreTask restoreTask = new RestoreTask();
+        restoreTask.setRequestId("1111");
+        restoreTask.setTaskId("Storage_ObjectStorage_2_a139cfc81cb144ba8b45aad828c813e4");
+        restoreTask.setCopyId("Storage_ObjectStorage_2_a139cfc81cb144ba8b45aad828c813e4");
+        TaskEnvironment environment = mockEnvironment();
+        restoreTask.setTargetEnv(environment);
+        TaskResource protectedResource = mockProtectObject();
+        restoreTask.setTargetObject(protectedResource);
+        restoreTask.setTargetLocation(RestoreLocationEnum.NEW);
+        restoreTask.getAdvanceParams().put(EnvironmentConstant.BUCKET_NAME, "bucket1");
+        restoreTask.getAdvanceParams().put(EnvironmentConstant.PREFIX, "pre");
+        objectStorageProvider.initialize(restoreTask);
+        Assert.assertNotNull(restoreTask.getRestoreMode());
+        Assert.assertEquals(restoreTask.getTargetObject().getTargetLocation(),
+            restoreTask.getTargetObject().getName().concat("/").concat("bucket1").concat("/").concat("pre"));
     }
 }

@@ -1,0 +1,71 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="生产环境异步IO请求数达到最大值，导致备份失败">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="SAP_HANA_0100.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="SAP_HANA_0109">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>生产环境异步IO请求数达到最大值，导致备份失败</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="SAP_HANA_0109"></a><a name="SAP_HANA_0109"></a>
+  <h1 class="topictitle1">生产环境异步IO请求数达到最大值，导致备份失败</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>备份任务失败，在任务界面可查到如下图的事件失败描述。</p>
+    <p><span><img src="zh-cn_image_0000002200155097.png"></span></p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>生产环境异步IO请求数达到最大值，导致备份失败。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol>
+     <li><span>登录生产环境，执行<strong>vi /etc/sysctl.conf</strong>命令，在编辑模式查看“fs.aio-max-nr”参数的值。</span></li>
+     <li><span>根据以下场景确认问题产生原因：</span><p></p>
+      <ul>
+       <li>当“fs.aio-max-nr”参数异常（如参数值小于参考值或该参数不存在等）时，需要根据<a href="https://help.sap.com/docs/SAP_HANA_PLATFORM/6b94445c94ae495c83a19646e7c3fd56/82e4575eec664846a9918e9ed1d90d41.html" target="_blank" rel="noopener noreferrer">Linux Kernel Parameters</a>的参数对应参考值（18446744073709551615）重新设置该参数，设置完成后执行<a href="#SAP_HANA_0109__li265812449712">3</a>。</li>
+       <li>当“fs.aio-max-nr”参数存在且参数值正常时（参数值参考<a href="https://help.sap.com/docs/SAP_HANA_PLATFORM/6b94445c94ae495c83a19646e7c3fd56/82e4575eec664846a9918e9ed1d90d41.html" target="_blank" rel="noopener noreferrer">Linux Kernel Parameters</a>中对应的值），请收集日志并联系华为技术支持工程师协助处理。</li>
+      </ul> <p></p></li>
+     <li id="SAP_HANA_0109__li265812449712"><a name="SAP_HANA_0109__li265812449712"></a><a name="li265812449712"></a><span>执行<strong>sysctl -p /etc/sysctl.conf</strong>命令，使配置生效，命令执行完成后重新执行备份。</span></li>
+    </ol>
+    <p></p>
+   </div>
+   <p></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="SAP_HANA_0100.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

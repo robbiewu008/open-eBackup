@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -27,12 +27,14 @@ import {
   CookieService,
   DataMap,
   DataMapService,
-  GROUP_COMMON,
   getPermissionMenuItem,
+  GROUP_COMMON,
   I18NService,
   OperateItems,
-  WarningMessageService
+  WarningMessageService,
+  MultiCluster
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import {
   assign,
@@ -48,7 +50,6 @@ import {
 import { Subject, Subscription, timer } from 'rxjs';
 import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { TableCols, TableConfig, TableData } from '../pro-table';
-import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'aui-export-query-results',
@@ -84,21 +85,13 @@ export class ExportQueryResultsComponent implements OnInit, OnDestroy {
   ].includes(this.i18n.get('deploy_type'));
   isCyberEngine =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.cyberengine.value;
-  isDataBackup = includes(
-    [
-      DataMap.Deploy_Type.a8000.value,
-      DataMap.Deploy_Type.x3000.value,
-      DataMap.Deploy_Type.x6000.value,
-      DataMap.Deploy_Type.x8000.value,
-      DataMap.Deploy_Type.x9000.value
-    ],
-    this.i18n.get('deploy_type')
-  );
+  isDataBackup = this.appUtilsService.isDataBackup;
+  exportQueryTips: string;
 
   columns = [
     {
       key: 'nodeName',
-      label: this.i18n.get('system_servers_label'),
+      label: this.i18n.get('common_home_node_name_label'),
       hidden: !this.isDataBackup
     },
     {
@@ -142,6 +135,11 @@ export class ExportQueryResultsComponent implements OnInit, OnDestroy {
                 ],
                 item.value
               );
+            } else if (this.appUtilsService.isDecouple) {
+              return !includes(
+                [DataMap.exportLogType.config.value],
+                item.value
+              );
             } else {
               return true;
             }
@@ -169,7 +167,6 @@ export class ExportQueryResultsComponent implements OnInit, OnDestroy {
 
   groupCommon = GROUP_COMMON;
 
-  @ViewChild('fileNamePopover', { static: false }) fileNamePopover;
   @ViewChild('sizeTpl', { static: true })
   sizeTpl: TemplateRef<any>;
   @ViewChild('statusTpl', { static: true })
@@ -197,8 +194,23 @@ export class ExportQueryResultsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.initExportQueryTips();
     this.getDatas();
     this.initTable();
+  }
+
+  initExportQueryTips() {
+    if (this.isDataBackup || this.appUtilsService.isDistributed) {
+      this.exportQueryTips = this.i18n.get('common_export_query_desc_label');
+    } else if (this.appUtilsService.isDecouple) {
+      this.exportQueryTips = this.i18n.get(
+        'common_export_query_other_desc_label'
+      );
+    } else {
+      this.exportQueryTips = this.i18n.get(
+        'common_export_query_special_desc_label'
+      );
+    }
   }
 
   initTable() {
@@ -379,11 +391,8 @@ export class ExportQueryResultsComponent implements OnInit, OnDestroy {
   }
 
   searchByName(value) {
-    if (this.fileNamePopover) {
-      this.fileNamePopover.hide();
-    }
     assign(this.filterParams, {
-      fileName: trim(this.fileName)
+      fileName: trim(value)
     });
     this.getDatas();
   }
@@ -476,14 +485,6 @@ export class ExportQueryResultsComponent implements OnInit, OnDestroy {
   }
 
   exportItem(item) {
-    this.messageService.info(
-      this.i18n.get('common_file_download_processing_label'),
-      {
-        lvDuration: 0,
-        lvShowCloseButton: true,
-        lvMessageKey: 'downloadKey'
-      }
-    );
     const params = {
       id: item.id,
       akLoading: false
@@ -491,29 +492,74 @@ export class ExportQueryResultsComponent implements OnInit, OnDestroy {
     if (this.isDataBackup) {
       assign(params, { memberEsn: item.esn });
     }
-    this.exportFilesApi
-      .DownloadExportFile(params)
-      .pipe(finalize(() => this.messageService.destroy('downloadKey')))
-      .subscribe((res: any) => {
-        const bf = new Blob([res], {
-          type: 'application/zip'
+    if (MultiCluster.isMulti) {
+      this.messageService.info(
+        this.i18n.get('common_file_download_processing_label'),
+        {
+          lvDuration: 0,
+          lvShowCloseButton: true,
+          lvMessageKey: 'downloadKey'
+        }
+      );
+      this.exportFilesApi
+        .DownloadExportFile(params)
+        .pipe(finalize(() => this.messageService.destroy('downloadKey')))
+        .subscribe((res: any) => {
+          const bf = new Blob([res], {
+            type: 'application/zip'
+          });
+          this.appUtilsService.downloadFile(`${item.fileName}.zip`, bf);
         });
-        this.appUtilsService.downloadFile(`${item.fileName}.zip`, bf);
-      });
+    } else {
+      this.appUtilsService.downloadUseAElement(
+        `/v1/export-files/${encodeURIComponent(
+          String(params.id)
+        )}/action/download`,
+        `${item.fileName}.zip`
+      );
+    }
+    setTimeout(() => this.getDatas(), 2e3);
   }
 
   exportSubItem(data) {
-    this.exportFilesApi
-      .DownloadExportFile({ id: data?.parentId, subId: data?.uuid })
-      .subscribe((res: any) => {
-        const bf = new Blob([res], {
-          type: 'application/zip'
+    const fileName = data?.agentEndpoint
+      ? `${data.agentEndpoint}_${data.uuid}`
+      : `${data.uuid}`;
+    const parentNode = find(this.data, item => item.id === data.parentId);
+    if (MultiCluster.isMulti && parentNode?.esn) {
+      this.messageService.info(
+        this.i18n.get('common_file_download_processing_label'),
+        {
+          lvDuration: 0,
+          lvShowCloseButton: true,
+          lvMessageKey: 'downloadKey'
+        }
+      );
+      this.exportFilesApi
+        .DownloadExportFile({
+          id: data?.parentId,
+          subId: data?.uuid,
+          memberEsn: parentNode?.esn,
+          akLoading: false
+        })
+        .pipe(finalize(() => this.messageService.destroy('downloadKey')))
+        .subscribe((res: any) => {
+          const bf = new Blob([res], {
+            type: 'application/zip'
+          });
+          const fileName = data?.agentEndpoint
+            ? `${data.agentEndpoint}_${data.uuid}`
+            : `${data.uuid}`;
+          this.appUtilsService.downloadFile(`${fileName}.zip`, bf);
         });
-        const fileName = data?.agentEndpoint
-          ? `${data.agentEndpoint}_${data.uuid}`
-          : `${data.uuid}`;
-        this.appUtilsService.downloadFile(`${fileName}.zip`, bf);
-      });
+    } else {
+      this.appUtilsService.downloadUseAElement(
+        `/v1/export-files/${encodeURIComponent(
+          data?.parentId
+        )}/action/download?subId=${data?.uuid}`,
+        `${fileName}.zip`
+      );
+    }
   }
 
   trackById = (index, item) => {

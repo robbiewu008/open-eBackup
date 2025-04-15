@@ -12,7 +12,13 @@
 */
 package openbackup.obs.plugin.provider;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.framework.core.common.enums.v2.RestoreTypeEnum;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
+import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreLocationEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreModeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
@@ -23,7 +29,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreInterceptorProvider;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
 import openbackup.data.protection.access.provider.sdk.util.TaskUtil;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.obs.plugin.common.constants.EnvironmentConstant;
 import openbackup.obs.plugin.service.ObjectStorageAgentService;
 import openbackup.system.base.common.constants.CommonErrorCode;
@@ -33,9 +38,8 @@ import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
+import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.service.DeployTypeService;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -45,6 +49,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -77,6 +82,9 @@ public class ObjectStorageRestoreProvider implements RestoreInterceptorProvider 
     @Autowired
     private DeployTypeService deployTypeService;
 
+    @Autowired
+    private JobService jobService;
+
     @Override
     public boolean applicable(String subType) {
         // 恢复新位置时，参数中targetObject值为对象存储id
@@ -96,7 +104,7 @@ public class ObjectStorageRestoreProvider implements RestoreInterceptorProvider 
             throw new LegoCheckedException(CommonErrorCode.ERR_PARAM, "TargetObject is illegal.");
         }
 
-        TaskUtil.setRestoreTaskSpeedStatisticsEnum(task, SpeedStatisticsEnum.UBC);
+        TaskUtil.setRestoreTaskSpeedStatisticsEnum(task, SpeedStatisticsEnum.APPLICATION);
 
         // 校验原始资源是否存在
         checkOriginalResource(task);
@@ -114,8 +122,32 @@ public class ObjectStorageRestoreProvider implements RestoreInterceptorProvider 
 
         // 设置恢复模式
         setRestoreMode(task);
+
+        // 设置恢复目标位置
+        setTargetLocation(task);
         log.info("object restore success. taskId: {}", task.getTaskId());
         return task;
+    }
+
+    private void setTargetLocation(RestoreTask task) {
+        // 原位置恢复：对象存储名称
+        if (!Objects.equals(task.getTargetLocation(), RestoreLocationEnum.NEW)) {
+            return;
+        }
+        if (StringUtils.isEmpty(task.getAdvanceParams().get(EnvironmentConstant.BUCKET_NAME))) {
+            return;
+        }
+        TaskResource targetObject = task.getTargetObject();
+        // 新位置恢复：前缀为空：对象存储名称/桶名；前缀不为空：对象存储名称/桶名/前缀
+        String targetLocation = targetObject.getName();
+        targetLocation += "/" + task.getAdvanceParams().get(EnvironmentConstant.BUCKET_NAME);
+        if (StringUtils.isNotEmpty(task.getAdvanceParams().get(EnvironmentConstant.PREFIX))) {
+            targetLocation += "/" + task.getAdvanceParams().get(EnvironmentConstant.PREFIX);
+        }
+        targetObject.setTargetLocation(targetLocation);
+        UpdateJobRequest updateJobRequest = new UpdateJobRequest();
+        updateJobRequest.setTargetLocation(task.getTargetObject().getTargetLocation());
+        jobService.updateJob(task.getTaskId(), updateJobRequest);
     }
 
     private void checkOriginalResource(RestoreTask task) {
@@ -160,6 +192,10 @@ public class ObjectStorageRestoreProvider implements RestoreInterceptorProvider 
             task.setRestoreMode(RestoreModeEnum.DOWNLOAD_RESTORE.getMode());
         } else if (CopyGeneratedByEnum.BY_TAPE_ARCHIVE.value().equals(generatedBy)) {
             task.setRestoreMode(RestoreModeEnum.DOWNLOAD_RESTORE.getMode());
+            // 如果是细粒度的磁带恢复，走普通副本恢复模块
+            if (RestoreTypeEnum.FLR.getType().equals(task.getRestoreType())) {
+                task.setRestoreMode(RestoreModeEnum.LOCAL_RESTORE.getMode());
+            }
         } else {
             task.setRestoreMode(RestoreModeEnum.LOCAL_RESTORE.getMode());
         }

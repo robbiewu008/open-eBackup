@@ -45,7 +45,7 @@
     </lv-form-control>
   </lv-form-item>
   <lv-form-item
-    *ngIf="formGroup.value.restoreLocation === restoreLocationType.ORIGIN"
+    *ngIf="formGroup.get('restoreLocation').value === restoreLocationType.ORIGIN"
   >
     <lv-form-label>
       {{ 'common_location_label' | i18n }}
@@ -55,9 +55,24 @@
     </lv-form-control>
   </lv-form-item>
   <lv-form-item
-    *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW"
+    *ngIf="formGroup.get('restoreLocation').value === restoreLocationType.NEW"
   >
   <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'targetProject'"></aui-select-tag>
+      <lv-form-item>
+          <lv-form-label>{{'protection_version_verify_label'|i18n}}
+              <i
+                      lv-icon="aui-icon-help"
+                      [lv-tooltip]="'protection_gaussdb_version_verify_tips_label'|i18n"
+                      lvTooltipTheme="light"
+                      class="configform-constraint"
+                      lvColorState="true"
+              ></i>
+          </lv-form-label>
+          <lv-form-control>
+              <lv-switch formControlName="versionVerify"></lv-switch>
+          </lv-form-control>
+          <lv-alert lvType="info" *ngIf="versionVerifyFailed" lvClosable="false">{{'protection_gaussdb_version_verify_failed_label'|i18n}}</lv-alert>
+      </lv-form-item>
     <lv-form-label lvRequired>
       {{ 'common_target_project_label' | i18n }}
     </lv-form-label>
@@ -74,7 +89,7 @@
     </lv-form-control>
   </lv-form-item>
   <lv-form-item
-    *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW"
+    *ngIf="formGroup.get('restoreLocation').value === restoreLocationType.NEW"
   >
     <lv-form-label lvRequired>
       {{ 'protection_target_instance_label' | i18n }}

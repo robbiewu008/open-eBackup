@@ -1,4 +1,5 @@
 @echo off
+:: 
 ::  This file is a part of the open-eBackup project.
 ::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 ::  If a copy of the MPL was not distributed with this file, You can obtain one at
@@ -9,6 +10,7 @@
 ::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
 ::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 ::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+::
 setlocal EnableDelayedExpansion
 ::The script is used to start Agent Service.
 
@@ -204,6 +206,7 @@ exit /b 0
     set WIN_RELEASE_VERSION=
     for /f "delims=" %%i in ('"!AGENT_BIN_PATH!xmlcfg.exe" read System win_version') do (set WIN_RELEASE_VERSION=%%i)
 
+    rem change user while using original password
     if not "!STATUS!" == "%DS_REPAIR_MODE%" (
         if not "!USER_NAME!" == "%WORKING_USER%" (
             echo "Normal boot start!"
@@ -350,7 +353,21 @@ exit /b 0
         set PORT_NAME=nginx
         call :setports !PORT_NAME! 
     )
-
+    set LOCK_RETRY_COUNT =1
+    :locknginxconffile
+        if exist "!AGENT_ROOT!nginx\conf\nginx.conf.lock" (
+            rem retry 5 times 
+            if !LOCK_RETRY_COUNT! LEQ 5 (
+                set /a LOCK_RETRY_COUNT+=1
+                call :Log "Retry to lock !LOCK_RETRY_COUNT! times after 3 sec."
+                call :Log "nginx.conf is locked."
+                call :Winsleep 3
+                goto :locknginxconffile
+            )
+        ) else (
+            set LOCK_RETRY_COUNT =1
+            echo. "lock" >>"!AGENT_ROOT!nginx\conf\nginx.conf.lock"
+        )
     for /f "tokens=1* delims=:" %%a in ('findstr /n .* "!AGENT_ROOT!\nginx\conf\nginx.conf"') do (
         if %%a equ %IFLAF_NUM% (
             if "!PARAM_NAME!" == "listen" (
@@ -361,8 +378,22 @@ exit /b 0
         ) else (
             echo.%%b >>"!AGENT_ROOT!nginx\conf\nginx.conf.bak1"
         )   
+        set LINE_NUM = %%a
+    )
+    for /f "tokens=1* delims=:" %%a in ('findstr /n .* "!AGENT_ROOT!nginx\conf\nginx.conf.bak1"') do (
+        set LINE_NUM_BAK = %%a 
+    )
+    if !LINE_NUM! NEQ !LINE_NUM_BAK! (
+        del /f /q "!AGENT_ROOT!nginx\conf\nginx.conf.bak1"
+        del /f /q "!AGENT_ROOT!nginx\conf\nginx.conf.lock"
+        set /a RandWaitTime = !random! %% 10
+        call :Log "nginx.conf is corrupted."
+        call :Winsleep !RandWaitTime!
+        set LOCK_RETRY_COUNT =1
+        goto :locknginxconffile
     )
     MOVE "!AGENT_ROOT!nginx\conf\nginx.conf.bak1" "!AGENT_ROOT!nginx\conf\nginx.conf" >nul
+    del /f /q "!AGENT_ROOT!nginx\conf\nginx.conf.lock"
     call :Log "Set %PORT_NAME% port %PORT_NUM% successfully."
     goto :EOF
 

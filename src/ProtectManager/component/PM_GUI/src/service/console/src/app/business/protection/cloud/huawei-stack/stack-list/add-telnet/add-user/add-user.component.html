@@ -11,15 +11,10 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
+<lv-alert lvType="info" *ngIf="treeSelection.type !== resourceType.OpenStack" lvClosable="false">
+  <span>{{ 'protection_hcs_add_user_tips_label' | i18n }}</span>
+</lv-alert>
 <lv-form [lvLabelColon]="false" [formGroup]="formGroup" class="formGroup">
-  <span class="add-user-tips-container" *ngIf="treeSelection.type !== resourceType.OpenStack">
-    <div>
-      <i lv-icon="lv-icon-status-info" lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
-    </div>
-    <div class="add-user-tips">
-      {{ 'protection_hcs_add_user_tips_label' | i18n }}
-    </div>
-  </span>
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'common_username_label' | i18n }}

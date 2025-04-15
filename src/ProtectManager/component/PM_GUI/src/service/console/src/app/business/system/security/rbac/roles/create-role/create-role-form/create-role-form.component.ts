@@ -39,6 +39,9 @@ export class CreateRoleFormComponent implements OnInit {
     ...this.baseUtilService.requiredErrorTip,
     invalidName: this.i18n.get('common_storage_pool_name_invalid_label')
   };
+  helpUrl = this.i18n.isEn
+    ? `/console/assets/help/${this.appUtilsService.helpPkg}/en-us/index.html#en-us_topic_0000002164788864.html`
+    : `/console/assets/help/${this.appUtilsService.helpPkg}/zh-cn/index.html#zh-cn_topic_0000002164788864.html`;
 
   constructor(
     public i18n: I18NService,
@@ -90,7 +93,7 @@ export class CreateRoleFormComponent implements OnInit {
     if (this.i18n.get('deploy_type') === DataMap.Deploy_Type.x3000.value) {
       const tmpSecurity = find(this.permissionTable, { value: 'DataSecurity' });
       tmpSecurity.children.pop();
-      tmpSecurity.children[1].label = this.i18n.get('common_worm_policy_label');
+      tmpSecurity.children[1].label = this.i18n.get('system_manage_worm_label');
     }
   }
 

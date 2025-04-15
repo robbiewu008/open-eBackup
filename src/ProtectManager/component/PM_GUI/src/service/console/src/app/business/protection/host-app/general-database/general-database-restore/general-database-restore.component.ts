@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
@@ -93,7 +93,7 @@ export class GeneralDatabaseRestoreComponent implements OnInit {
       : {};
     const type = JSON.parse(this.rowCopy.resource_properties).extendInfo
       ?.databaseTypeDisplay;
-    if (type.indexOf('Gbase') !== -1) {
+    if (type.indexOf('GBase 8a') !== -1) {
       this.isGbase = true;
     }
     this.initForm();
@@ -244,7 +244,7 @@ export class GeneralDatabaseRestoreComponent implements OnInit {
             ','
           );
           resource = filter(resource, item => {
-            return !includes(relateIp, item.environment.uuid);
+            return includes(relateIp, item.environment.uuid);
           });
         }
         each(resource, item => {

@@ -3,7 +3,7 @@
 source ./log.sh
 HA_LOG_PATH="/opt/OceanProtect/logs/${NODE_NAME}/infrastructure/ha"
 HA_PATH="/usr/local/ha"
-HA_MOUNT_PATH="/opt/third_data/ha/"
+HA_MOUNT_PATH="/opt/third_data/ha"
 
 if [ ! -d ${HA_LOG_PATH} ];then
     sudo /opt/script/change_permission.sh mkdir ${HA_LOG_PATH}
@@ -86,31 +86,42 @@ check_result "$?" "${LINENO} chmod 770 ${HA_LOG_PATH}/scriptlog/ha_monitor.log"
 sudo /opt/script/change_permission.sh mkdir $HA_MOUNT_PATH
 chmod 770 $HA_MOUNT_PATH
 
-deploy_ha()
-{
-    if [ ! -d $1 ];then
-        # 在pvc新建目录以待存放
-        mkdir -p $1
-        # 赋予父目录770权限
-        chmod 770 $1
-        # 修改属主为nobody:nobody
-        sudo /opt/script/change_permission.sh chown $1
-        # 拷贝安装目录下的内容到pvc，通配避免父目录拷贝，同时保留子目录权限
-        cp -Rp $2/* $1
-        log_info "Exec ${LINENO} Copy conf finished, start to mount path."
-    else
-        log_info "Exec ${LINENO} HA has been installed, start to mount path."
-    fi
-    # 挂载老目录到新的目录中
-    sudo /opt/script/change_permission.sh mount $1 $2
-    if [ "$?" != "0" ];then
-        log_error "Exec ${LINENO} mount path $1 to $2 failed"
-        exit 1
-    fi
+# 创建标记文件，记录gaussdb上次所在节点位置
+touch $HA_MOUNT_PATH/gaussdb_node
+check_result "$?" "${LINENO} touch ${HA_MOUNT_PATH}/gaussdb_node"
+sudo /opt/script/change_permission.sh chown "${HA_MOUNT_PATH}/gaussdb_node"
+check_result "$?" "${LINENO} chown ${HA_MOUNT_PATH}/gaussdb_node"
+
+deploy_ha() {
+  if [ ! -d $1 ]; then
+    # 在pvc新建目录以待存放
+    mkdir -p $1
+    # 赋予父目录770权限
+    chmod 770 $1
+    # 修改属主为nobody:nobody
+    sudo /opt/script/change_permission.sh chown $1
+    # 拷贝安装目录下的内容到pvc，通配避免父目录拷贝，同时保留子目录权限
+    cp -Rp $2/* $1
+    log_info "Exec ${LINENO} Copy conf finished, start to mount path."
+  else
+    log_info "Exec ${LINENO} HA has been installed, start to mount path."
+  fi
+  # 挂载老目录到新的目录中
+  sudo /opt/script/change_permission.sh mount $1 $2
+  if [ "$?" != "0" ]; then
+    log_error "Exec ${LINENO} mount path $1 to $2 failed"
+    exit 1
+  fi
 }
 
 deploy_ha /opt/third_data/ha/local /usr/local/ha/local
-deploy_ha /opt/third_data/ha/module /usr/local/ha/module
+deploy_ha /opt/third_data/ha/module/haarb /usr/local/ha/module/haarb
+deploy_ha /opt/third_data/ha/module/hacom /usr/local/ha/module/hacom
+deploy_ha /opt/third_data/ha/module/hamon /usr/local/ha/module/hamon
+# harm script中包含floatIp.sh和gaussdb.sh脚本，不可以使用/opt/third_data挂载覆盖，否则脚本无法更新
+deploy_ha /opt/third_data/ha/module/harm/conf /usr/local/ha/module/harm/conf
+deploy_ha /opt/third_data/ha/module/harm/plugin/conf /usr/local/ha/module/harm/plugin/conf
+deploy_ha /opt/third_data/ha/module/hasync /usr/local/ha/module/hasync
 
 # 整体修改/opt/third_data/ha/module目录的属主
 sudo /opt/script/change_permission.sh chown /opt/third_data/ha/module

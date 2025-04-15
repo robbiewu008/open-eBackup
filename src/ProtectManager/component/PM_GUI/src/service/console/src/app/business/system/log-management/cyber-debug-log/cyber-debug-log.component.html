@@ -1,0 +1,86 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-fullpage">
+    <div class="aui-header-1">
+        <lv-group lvGutter='8px'>
+            <h1>{{'common_log_management_label'|i18n}}</h1>
+            <aui-multi-cluster-switch (onChange)="onChange()"></aui-multi-cluster-switch>
+        </lv-group>
+    </div>
+    <div class="aui-block aui-gutter-column-md">
+        <div class="aui-header-2">
+            <h2>{{'system_debug_log_label'|i18n}}</h2>
+        </div>
+        <lv-form [formGroup]="debugLogFormGroup" class="aui-gutter-column-lg">
+            <lv-form-item>
+                <lv-form-label>{{'system_log_level_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <lv-select class="form-control-input" formControlName="log_level" [lvOptions]='levelOptions' lvValueKey="value">
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form>
+        <lv-group [lvGutter]="'8px'" pmpermission pmOperation='SetLogLevel'>
+            <button lv-button lvType='primary' (click)='ok()' [disabled]="debugLogFormGroup.invalid || debugLogDisable">
+                {{ 'common_ok_label' | i18n }}
+            </button>
+            <button lv-button (click)='getDebugLog()' [disabled]="debugLogDisable">
+                {{ 'common_cancel_label' | i18n }}
+            </button>
+        </lv-group>
+    </div>
+
+    <div class="aui-block">
+        <div class="aui-header-2">
+            <h2>{{'system_export_log_label'|i18n}}</h2>
+        </div>
+        <lv-alert lvType="info" [lvClosable]="false">
+            {{ 'system_export_log_desc_label'|i18n }}
+        </lv-alert>
+        <lv-form [formGroup]="exportLogFormGroup" class="aui-gutter-column-lg">
+            <lv-form-item>
+                <lv-form-label>{{'system_node_id_label' | i18n}}</lv-form-label>
+                <lv-form-control>
+                    <lv-select class="form-control-input" formControlName="nodeName" [lvOptions]='nodeNameOptions' lvValueKey="nodeName"
+                               lvMode='multiple' lvShowCheckAll>
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'system_sub_module_label' | i18n}}
+                    <ng-container *ngIf="isCyberEngine">
+                        <i lv-icon="aui-icon-help" [lv-tooltip]="logHelpTpl" lvTooltipTheme="light"
+                           class="configform-constraint"></i>
+                    </ng-container>
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select class="form-control-input" formControlName="componentName" [lvOptions]='componentOptions' lvValueKey="value"
+                               lvMode='multiple' lvShowCheckAll>
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form>
+        <button lv-button lvType='primary' (click)='export()' [disabled]="exportLogFormGroup.invalid">
+            {{ 'common_export_label' | i18n }}
+        </button>
+    </div>
+</div>
+
+<ng-template #fileDownloadCompletedTpl>
+    <div id="file-download-completed" [innerHTML]="fileDownloadCompletedLabel"></div>
+</ng-template>
+<ng-template #logHelpTpl>
+    <span innerHTML="{{'system_sub_module_help_label' | i18n}}"></span>
+</ng-template>

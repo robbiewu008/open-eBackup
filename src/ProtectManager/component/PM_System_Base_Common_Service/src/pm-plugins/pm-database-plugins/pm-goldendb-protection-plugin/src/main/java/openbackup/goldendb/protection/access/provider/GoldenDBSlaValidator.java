@@ -12,14 +12,14 @@
 */
 package openbackup.goldendb.protection.access.provider;
 
-import openbackup.data.protection.access.provider.sdk.sla.SlaValidateProvider;
 import com.huawei.oceanprotect.sla.sdk.constants.SlaConstants;
 import com.huawei.oceanprotect.sla.sdk.enums.PolicyAction;
 import com.huawei.oceanprotect.sla.sdk.validator.PolicyLimitConfig;
 import com.huawei.oceanprotect.sla.sdk.validator.SlaValidateConfig;
-import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.data.protection.access.provider.sdk.sla.SlaValidateProvider;
+import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import org.springframework.stereotype.Component;
 
@@ -47,6 +47,8 @@ public class GoldenDBSlaValidator implements SlaValidateProvider {
             .setLimit(PolicyLimitConfig.of(PolicyAction.DIFFERENCE_INCREMENT,
                 SlaConstants.DIFFERENCE_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
             .setLimit(PolicyLimitConfig.of(PolicyAction.LOG, SlaConstants.LOG_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
+            .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION_LOG,
+                    SlaConstants.REPLICATION_LOG_POLICY_COUNT_LIMIT))
             .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION, SlaConstants.REPLICATION_POLICY_COUNT_LIMIT))
             .setLimit(PolicyLimitConfig.of(PolicyAction.ARCHIVING, SlaConstants.ARCHIVE_POLICY_COUNT_LIMIT));
         return slaValidateConfig;

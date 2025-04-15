@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { OptionItem } from '@iux/live';
@@ -24,7 +24,10 @@ import {
   ProtectedResourceApiService,
   ResourceType,
   RestoreApiV2Service,
-  RestoreV2LocationType
+  RestoreV2LocationType,
+  SYSTEM_TIME,
+  filterVersion,
+  isOpenstackSystemDisk
 } from 'app/shared';
 import {
   ProTableComponent,
@@ -97,7 +100,6 @@ export class RestoreComponent implements OnInit {
   proxyOptions = [];
   verifyStatus;
   copyVerifyDisableLabel;
-  diskSystemPath = '/dev/vda';
 
   targetDisksOptions;
   cacheSelectedDisk = [];
@@ -234,8 +236,15 @@ export class RestoreComponent implements OnInit {
       this.rowCopy?.resource_properties || '{}'
     );
     this.restoreToNewLocationOnly =
-      this.rowCopy?.generated_by ===
-        DataMap.CopyData_generatedType.cascadedReplication.value ||
+      includes(
+        [
+          DataMap.CopyData_generatedType.replicate.value,
+          DataMap.CopyData_generatedType.reverseReplication.value,
+          DataMap.CopyData_generatedType.cascadedReplication.value
+        ],
+        this.rowCopy?.generated_by
+      ) ||
+      this.rowCopy.is_replicated ||
       this.rowCopy?.resource_status === DataMap.Resource_Status.notExist.value;
     const properties = JSON.parse(this.rowCopy.properties);
     this.verifyStatus = properties?.verifyStatus;
@@ -438,7 +447,7 @@ export class RestoreComponent implements OnInit {
           value: disk.id,
           key: disk.id,
           label: `${disk.name || '--'}(${disk.id})`,
-          diskType: `${disk.device === this.diskSystemPath}`,
+          diskType: isOpenstackSystemDisk(disk.device, disk.bootable),
           isLeaf: true
         });
       });
@@ -571,7 +580,10 @@ export class RestoreComponent implements OnInit {
         nameId: `${item.name || '--'}(${item.uuid})`,
         volumeType: item.volume_type,
         id: item.uuid,
-        diskType: `${item.attachments[0]?.device === this.diskSystemPath}`,
+        diskType: isOpenstackSystemDisk(
+          item.attachments[0]?.device,
+          item.bootable
+        ),
         size: item.volSizeInBytes / 1024 / 1024 / 1024,
         sizeDisplay: `${parseFloat(capacity)} ${trim(
           capacity.replace(/[0-9.]/g, '')
@@ -585,19 +597,11 @@ export class RestoreComponent implements OnInit {
   }
 
   fiterDisk(value, item) {
-    // 数据盘不能恢复到系统盘
-    if (item.bootable === DataMap.Disk_Mode.false.value) {
-      return (
-        !includes(this.cacheSelectedDisk, value.id) &&
-        +value.size >= +item.size &&
-        value.bootable === DataMap.Disk_Mode.false.value &&
-        value.device !== this.diskSystemPath
-      );
-    }
+    // 磁盘不能恢复到系统盘
     return (
       !includes(this.cacheSelectedDisk, value.id) &&
       +value.size >= +item.size &&
-      value.device !== this.diskSystemPath
+      value.diskType !== DataMap.Disk_Mode.true.value
     );
   }
 

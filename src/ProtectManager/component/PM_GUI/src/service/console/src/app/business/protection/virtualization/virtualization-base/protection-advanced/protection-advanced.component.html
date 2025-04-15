@@ -16,7 +16,7 @@
         <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
             <lv-form-item *ngIf="!hiddenProxy">
                 <lv-form-label>
-                    {{'protection_proxy_host_label' | i18n}}
+                    {{'protection_clients_label' | i18n}}
                 </lv-form-label>
                 <lv-form-control>
                     <lv-select [lvOptions]="proxyOptions" formControlName="proxyHost" lvValueKey='value' lvShowFilter
@@ -34,10 +34,14 @@
                     </ng-template>
                 </lv-form-control>
             </lv-form-item>
+            <aui-update-index [formGroup]="formGroup" [extParams]="extParams"
+                [noNeedMgt]="vmFilterShow"></aui-update-index>
             <ng-container *ngIf="vmFilterShow">
                 <lv-form-item>
                     <lv-form-label>
                         {{'protection_overwrite_policy_label' | i18n}}
+                        <i lv-icon="aui-icon-help" [lv-tooltip]="slaOverwriteHelp" lvTooltipPosition="rightTop"
+                            lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
                     </lv-form-label>
                     <lv-form-control>
                         <lv-radio-group formControlName="slaOverwrite">
@@ -61,6 +65,8 @@
                             <lv-group [lvGutter]="'8px'" lvDirection='vertical' class="mgt-8">
                                 <lv-checkbox lvValue="APPLY_TO_ALL">
                                     {{applySlaLabel}}
+                                    <i lv-icon="aui-icon-help" [lv-tooltip]="slaApplyAllHelp"
+                                        lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
                                 </lv-checkbox>
                                 <lv-checkbox lvValue="APPLY_TO_NEW">
                                     {{applySlaNewLabel}}
@@ -77,9 +83,6 @@
         <ng-container *ngIf="!vmFilterShow">
             <aui-copy-limit-advanced-parameter [formGroup]="formGroup"
                 [data]="resourceData"></aui-copy-limit-advanced-parameter>
-        </ng-container>
-        <ng-container *ngIf="!vmFilterShow">
-            <aui-update-index [formGroup]="formGroup" [extParams]="extParams"></aui-update-index>
         </ng-container>
     </lv-collapse-panel>
 </lv-collapse>

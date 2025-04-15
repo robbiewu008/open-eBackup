@@ -12,12 +12,11 @@
 */
 package openbackup.data.access.client.sdk.api;
 
-import openbackup.system.base.sdk.copy.model.CopyReplicationImportParam;
-import openbackup.system.base.security.exterattack.ExterAttack;
-
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
+import openbackup.system.base.sdk.copy.model.CopyReplicationImportParam;
+import openbackup.system.base.security.exterattack.ExterAttack;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -31,7 +30,7 @@ public interface AccessPointRestApi {
     /**
      * import copy
      *
-     * @param uri  uri
+     * @param uri uri
      * @param token token
      * @param importParam import param
      * @return result

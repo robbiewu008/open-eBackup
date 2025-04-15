@@ -35,6 +35,18 @@ enum PoolStatus {
     UNUSED
 };
 
+enum NameType {
+    UnSet = 0,
+    PoolName,
+    Resource,
+    Device
+};
+
+enum DriverType {
+    QOCW2 = 1,  // 智能
+    RAW         // 高速
+};
+
 const std::map<std::string, CNwareType> typeMap = {
 {"CNwareHostPool", CNwareType::Pool},
 {"CNwareHost",     CNwareType::Host},
@@ -45,6 +57,7 @@ const std::map<std::string, CNwareType> typeMap = {
 };
 const std::string CNWARE_VERSION_V1 = "8.2";
 const std::string PREALLOCATION_OFF = "off";  // 精简置备类型
+const std::string CNWARE_LIVEMOUNT_PREFIX = "LiveMounting-";
 const int CNWARE_ATTACH_LIMIT_V1 = 16; // CNware 8.2 版本
 const int CNWARE_ATTACH_LIMIT_V2 = 60;
 }

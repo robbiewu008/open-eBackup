@@ -17,6 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import com.huawei.emeistor.console.bean.Token;
 import com.huawei.emeistor.console.contant.CommonErrorCode;
 import com.huawei.emeistor.console.contant.ConfigConstant;
+import com.huawei.emeistor.console.dao.RedisExpireDao;
 import com.huawei.emeistor.console.exception.LegoCheckedException;
 import com.huawei.emeistor.console.service.impl.SecurityPolicyServiceImpl;
 import com.huawei.emeistor.console.service.impl.SessionServiceImpl;
@@ -76,6 +77,9 @@ public class FlrFileExportControllerTest {
 
     @MockBean
     private SHA256Encryptor sha256Encryptor;
+
+    @MockBean
+    private RedisExpireDao redisExpireDao;
 
     @Before
     public void setup() {

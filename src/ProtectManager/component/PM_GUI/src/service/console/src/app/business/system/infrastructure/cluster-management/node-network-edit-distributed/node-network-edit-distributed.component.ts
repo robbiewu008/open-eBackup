@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   OnInit,
@@ -57,6 +57,7 @@ export class NodeNetworkEditDistributedComponent
   implements OnInit, AfterViewInit {
   activeIndex = 'backup';
   tableDataBackup;
+  tableDataCopy;
   tableDataArchived;
   selectionData = {
     backupNetWorkInfoList: [],
@@ -86,6 +87,8 @@ export class NodeNetworkEditDistributedComponent
   }
 
   validSelection() {
+    const copyZeroCount = filter(this.tableDataCopy, item => item.port === 0)
+      .length;
     const archiveZeroCount = filter(
       this.tableDataArchived,
       item => item.port === 0
@@ -93,13 +96,15 @@ export class NodeNetworkEditDistributedComponent
     this.selectionInvalid.emit(
       some(this.tableDataBackup, item => item.port === 0) ||
         (archiveZeroCount > 0 &&
-          archiveZeroCount < this.tableDataArchived.length)
+          archiveZeroCount < this.tableDataArchived.length) ||
+        (copyZeroCount > 0 && copyZeroCount < this.tableDataCopy.length)
     );
   }
 
   getData() {
     this.clustersApiService.getPacificNetworkInfo({}).subscribe(res => {
       const arrBackup = [];
+      const arrCopy = [];
       const arrArchive = [];
       each(res, item => {
         arrBackup.push({
@@ -108,6 +113,13 @@ export class NodeNetworkEditDistributedComponent
           expand: false,
           selection: item.usedNetworkInfo.backupIpInfoList,
           ipPoolDtoList: item.allNetworkInfo.backupIpInfoList
+        });
+        arrCopy.push({
+          manageIp: item.pacificNodeInfoVo.manageIp,
+          port: item.usedNetworkInfo.replicationIpInfoList?.length,
+          expand: false,
+          selection: item.usedNetworkInfo.replicationIpInfoList,
+          ipPoolDtoList: item.allNetworkInfo.replicationIpInfoList
         });
         arrArchive.push({
           manageIp: item.pacificNodeInfoVo.manageIp,
@@ -118,6 +130,7 @@ export class NodeNetworkEditDistributedComponent
         });
       });
       this.tableDataBackup = arrBackup;
+      this.tableDataCopy = arrCopy;
       this.tableDataArchived = arrArchive;
       this.validSelection();
     });
@@ -132,6 +145,17 @@ export class NodeNetworkEditDistributedComponent
         };
       })
     };
+    if (!isEmpty(this.tableDataCopy[0].selection)) {
+      assign(request, {
+        copyNetWorkInfoList: map(this.tableDataCopy, item => {
+          return {
+            manageIp: item.manageIp,
+            ipInfoList: item.selection
+          };
+        })
+      });
+    }
+
     if (!isEmpty(this.tableDataArchived[0].selection)) {
       assign(request, {
         archiveNetWorkInfoList: map(this.tableDataArchived, item => {

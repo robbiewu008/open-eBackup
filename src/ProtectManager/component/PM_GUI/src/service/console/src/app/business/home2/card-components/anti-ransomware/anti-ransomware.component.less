@@ -3,7 +3,7 @@
   height: 100%;
   .detail {
     .title {
-      color: #e6e6e6;
+      color: var(--live-angular-color-text-regular);
       font-size: 32px;
       font-weight: 700;
       line-height: 38px;
@@ -14,7 +14,7 @@
       font-size: 14px;
       font-weight: 400;
       line-height: 16px;
-      color: #b3b3b3;
+      color: var(--live-angular-color-text-secondary);
     }
 
     .detection-resource,
@@ -24,7 +24,7 @@
         font-size: 24px;
         font-weight: 700;
         line-height: 28px;
-        color: #e6e6e6;
+        color: var(--live-angular-color-text-regular);
       }
 
       .title {
@@ -32,7 +32,7 @@
         font-size: 14px;
         font-weight: 400;
         line-height: 22px;
-        color: #b3b3b3;
+        color: var(--live-angular-color-text-secondary);
       }
 
       .abnormal {
@@ -44,7 +44,7 @@
             font-size: 14px;
             font-weight: 400;
             line-height: 22px;
-            color: #b3b3b3;
+            color: var(--live-angular-color-text-secondary);
           }
         }
       }
@@ -57,7 +57,7 @@
           font-size: 16px;
           font-weight: 700;
           line-height: 19px;
-          color: #e6e6e6;
+          color: var(--live-angular-color-text-regular);
         }
         .title {
           display: flex;
@@ -68,7 +68,7 @@
             font-size: 14px;
             font-weight: 400;
             line-height: 22px;
-            color: #b3b3b3;
+            color: var(--live-angular-color-text-secondary);
           }
         }
       }
@@ -94,18 +94,11 @@
   .chart-box-0,
   .chart-box-3,
   .chart-box-4 {
-    background: url('assets\img\home-anti-ransomware-normal.gif') no-repeat
-      center;
-  }
-
-  .chart-box-1 {
-    background: url('assets\img\home-anti-ransomware-abnormal.gif') no-repeat
-      center;
+    background: var(--custom-anti-ransomware-normal-gif);
   }
 
   .chart-box-2 {
-    background: url('assets\img\home-anti-ransomware-infected.gif') no-repeat
-      center;
+    background: var(--custom-anti-ransomware-infected-gif);
   }
 
   .static.chart-box-0,

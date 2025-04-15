@@ -75,7 +75,7 @@ chmod 750 "${ES_NAS_PATH}/config"
 rm -rf ${ES_NAS_PATH}/config/*
 cp -ar ${ELAS_PATH}/config/* ${ES_NAS_PATH}/config/
 
-LISTEN_ADDRESS=${POD_IP}
+LISTEN_ADDRESS="127.0.0.1"
 
 ES_CFG_IN_NAS=${ES_NAS_PATH}/config/elasticsearch.yml
 sed -i "s%#network.host.*$%network.host: ${LISTEN_ADDRESS}%g" ${ES_CFG_IN_NAS}
@@ -90,10 +90,12 @@ if [ -f $infra_inner_commnunicate_ip_file ];then
 fi
 
 config_map="/opt/multicluster-conf"
-cluster=$(cat "${config_map}/CLUSTER")
 es_cluster=$(cat "${config_map}/ES_CLUSTER")
 
-if [[ "${cluster}" == "true" ]]; then
+if [[ "${CLUSTER}" == "TRUE" ]];then
+  master_node=$(cat "${config_map}/MASTER")
+  standby_node=$(cat "${config_map}/STANDBY")
+
   # 查询基础设施所在三个节点ip
   master_ip=$(cat "${config_map}/MASTER_IP")
   standby_ip=$(cat "${config_map}/STANDBY_IP")
@@ -101,17 +103,18 @@ if [[ "${cluster}" == "true" ]]; then
 
   if [[ -n "${master_ip}" ]] && [[ -n "${standby_ip}" ]] && [[ -n "${slave_ip}" ]];then
     # 软硬解耦集群形态参数
-    echo 'cluster.name: databackup' >> ${ES_CFG_IN_NAS}
-    echo "node.name: ${NODE_NAME}" >> ${ES_CFG_IN_NAS}
-    echo 'node.master: true' >> ${ES_CFG_IN_NAS}
-    echo 'node.data: true' >> ${ES_CFG_IN_NAS}
-    echo 'http.port: 9200' >> ${ES_CFG_IN_NAS}
-    echo 'transport.port: 9300' >> ${ES_CFG_IN_NAS}
+    echo 'cluster.name: databackup' >>${ES_CFG_IN_NAS}
+    echo "node.name: ${NODE_NAME}" >>${ES_CFG_IN_NAS}
+    echo 'node.master: true' >>${ES_CFG_IN_NAS}
+    echo 'node.data: true' >>${ES_CFG_IN_NAS}
+    echo 'http.port: 9200' >>${ES_CFG_IN_NAS}
+    echo 'transport.port: 9300' >>${ES_CFG_IN_NAS}
+    echo "transport.host: $POD_IP" >>${ES_CFG_IN_NAS}
 
     # 用于集群发现其余节点
-    if [[ ${NODE_NAME} == ${MASTER_NODE} ]];then
+    if [[ ${NODE_NAME} == ${master_node} ]];then
       echo "discovery.seed_hosts: ['${standby_ip}:${ES_CLUSTER_PORT}', '${slave_ip}:${ES_CLUSTER_PORT}']" >> ${ES_CFG_IN_NAS}
-    elif [[ ${NODE_NAME} == ${STANDBY_NODE} ]];then
+    elif [[ ${NODE_NAME} == ${standby_node} ]];then
       echo "discovery.seed_hosts: ['${master_ip}:${ES_CLUSTER_PORT}', '${slave_ip}:${ES_CLUSTER_PORT}']" >> ${ES_CFG_IN_NAS}
     else
       echo "discovery.seed_hosts: ['${master_ip}:${ES_CLUSTER_PORT}', '${standby_ip}:${ES_CLUSTER_PORT}']" >> ${ES_CFG_IN_NAS}
@@ -126,16 +129,16 @@ if [[ "${cluster}" == "true" ]]; then
     fi
 
     # 初始主节点为第一个启动的节点
-    echo "cluster.initial_master_nodes: ${MASTER_NODE}" >> ${ES_CFG_IN_NAS}
+    echo "cluster.initial_master_nodes: ${master_node}" >> ${ES_CFG_IN_NAS}
 
     # 集群超时和重试机制
     echo 'discovery.zen.fd.ping_timeout: 10s' >> ${ES_CFG_IN_NAS}
     echo 'discovery.zen.fd.ping_retries: 3' >> ${ES_CFG_IN_NAS}
     echo 'discovery.zen.join_timeout: 120s' >> ${ES_CFG_IN_NAS}
 
-    log_info "Starting es cluster in node ${LISTEN_ADDRESS}."
+    log_info "Starting es cluster in node $POD_IP."
   else
-    log_error "Starting es cluster in node ${LISTEN_ADDRESS} failed."
+    log_error "Starting es cluster in node $POD_IP failed."
     exit 1
   fi
 else
@@ -159,6 +162,9 @@ sed -i "s/^-Xms.*/-Xms${ES_JVM_XMS}/g" ${JVM_OPT_IN_NAS}
 check_result "$?" "set Xms:${ES_JVM_XMS} for ${JVM_OPT_IN_NAS}"
 sed -i "s/^-Xmx.*/-Xmx${ES_JVM_XMX}/g" ${JVM_OPT_IN_NAS}
 check_result "$?" "set Xmx:${ES_JVM_XMX} for ${JVM_OPT_IN_NAS}"
+sed -i "s/^8:-XX:NumberOfGCLogFiles.*/8:-XX:NumberOfGCLogFiles=0/g" ${JVM_OPT_IN_NAS}
+check_result "$?" "set NumberOfGCLogFiles=0 for ${JVM_OPT_IN_NAS}"
+
 umask 027
 log_info "umask ends."
 

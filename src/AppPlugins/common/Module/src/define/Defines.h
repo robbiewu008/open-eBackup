@@ -37,6 +37,9 @@ static const int MAX_VALID_PORT = 65535;
 static const int MAX_TASKID_LEN = 60;
 static const int MAX_STRING_LEN = 512;
 static const double MAX_DPP_HBTIMEOUT = 180;  // 连续3分钟没有收到心跳ack则认定超时
+static const int PUT_HALTITEM_IN_POOL_TIME_LIMIT = 1000;    // 1000ms
+static const int CHECK_WORK_STATUS_MAX_TIMES = 10;
+static const int CHECK_WORK_STATUS_INTERVAL = 100;    // 100ms
 
 static const int HOST_TYPE_WINDOWS = 1;   // Windows
 static const int HOST_TYPE_REDHAT = 2;    // RedHat
@@ -194,7 +197,6 @@ static const std::string SIGN_BACKQUOTE = "`";
 static const std::string SIGN_EXCLAMATION = "!";
 static const std::string SIGN_DOLLAR = "$";
 static const std::string STR_BACKSLASH = "\\";
-
 // 日志文件名称
 static const std::string AGENT_LOG_NAME = "rdagent.log";
 static const std::string ROOT_EXEC_LOG_NAME = "rootexec.log";

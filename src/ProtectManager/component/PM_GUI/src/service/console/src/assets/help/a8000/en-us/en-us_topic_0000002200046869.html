@@ -1,0 +1,146 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Managing Availability Zones, Resource Sets, or Cloud Servers">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200132433.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200046869">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Managing Availability Zones, Resource Sets, or Cloud Servers</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200046869"></a><a name="EN-US_TOPIC_0000002200046869"></a>
+
+<h1 class="topictitle1">Managing Availability Zones, Resource Sets, or Cloud Servers</h1>
+<div><p>The <span>OceanProtect</span> allows you to modify, remove, activate, or disable protection for AZs, resource sets, or cloud servers. This section uses an AZ as an example to describe related operations. For resource sets or cloud servers, the operations are the same.</p>
+<p>You need to log in to the management page and choose <span class="uicontrol"><b><span id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002199964685_text4527517191713"><strong>Protection</strong></span> &gt; Cloud Platforms &gt; Alibaba Cloud</b></span>. On the <span class="uicontrol"><b>AZs</b></span> tab page, locate the target AZ.</p>
+<p><a href="#EN-US_TOPIC_0000002200046869__table24934294919">Table 1</a> describes the related operations.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200046869__table24934294919"></a><a name="table24934294919"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200046869__table24934294919" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Project protection plan operations</caption><colgroup><col style="width:14.44%"><col style="width:57.78%"><col style="width:27.779999999999998%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="14.44%" id="mcps1.3.4.2.4.1.1"><p>Operation</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="57.78%" id="mcps1.3.4.2.4.1.2"><p>Description</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="27.779999999999998%" id="mcps1.3.4.2.4.1.3"><p>Navigation Path</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>Modifying protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>You can modify a protection plan to associate a project with another SLA or modify information such as the host where the client is installed. After the modification, the next backup will be performed based on the new protection plan.</p>
+<p><strong>Note</strong></p>
+<ul><li id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_li16343131892419">The modification does not affect the protection job that is being executed. The modified protection plan will apply to the next protection period.</li><li id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_li10803202534614">Assume that a backup job has been executed and the protection is modified by replacing the SLA with copy verification disabled with an SLA with copy verification enabled. After protection modification, the first non-full backup job will be converted to a full backup job.</li><li id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_li4487145984212"><p id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_p94855141463"><a name="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_li4487145984212"></a><a name="en-us_topic_0000002200147037_li4487145984212"></a>Assume that a backup job has been executed and the SLA parameter <strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b1319715202119">Verify Copy</strong> associated with the resource is modified from being disabled to enabled. After the SLA parameter modification, the first non-full backup job will be converted to a full backup job during resource protection.</p>
+</li><li id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_li140522162517">If the protection policy in the SLA associated with a resource needs to be changed, you are advised to modify the current SLA on the <span class="uicontrol" id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_uicontrol10405524254"><b><span id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_text6405425255"><strong>Protection</strong></span> &gt; <span id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_text885333645815"><strong>Protection Policies</strong></span> &gt; <span id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_text164051025259"><strong>SLAs</strong></span></b></span> page, rather than associate the resource with another SLA through protection modification.<p id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_p34052272519">After you associate the resource with another SLA by modifying protection, if the copy of the original SLA still exists, the license capacity may be deducted repeatedly.</p>
+</li></ul>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Modify Protection</strong></span></b></span> in the row that contains the target AZ.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>Removing protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>You can remove protection for an AZ that no longer needs to be protected. After the removal, the system cannot execute protection jobs for the AZ. To protect the AZ again, you need to associate an SLA with the AZ again.</p>
+<p><strong>Note</strong></p>
+<p>If a protection job of the AZ is in progress, protection cannot be removed.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Remove Protection</strong></span></b></span> in the row that contains the target AZ.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>Performing manual backup</p>
+</td>
+<td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to perform a backup immediately.</p>
+<p><strong>Note</strong></p>
+<p>Copies generated by manual backup are retained for the duration defined in the SLA.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Manual Backup</strong></span></b></span> in the row that contains the target AZ.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>Activating protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to activate a disabled protection plan for an AZ. After the protection plan is activated, the system executes backup, archiving, or replication for the AZ based on the plan.</p>
+<p><strong>Note</strong></p>
+<p>This operation can be performed only for an AZ that has been associated with an SLA and is in the <span class="uicontrol"><b><span><strong>Unprotected</strong></span></b></span> status.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Activate Protection</strong></span></b></span> in the row that contains the target AZ.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>Disabling protection</p>
+</td>
+<td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>This operation enables you to disable the protection plan of an AZ for which periodic protection is not required. After the protection plan is disabled, the system does not execute automatic backup, archiving, or replication for the AZ.</p>
+<p><strong>Note</strong></p>
+<p>Disabling a protection plan does not affect ongoing protection jobs.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Disable Protection</strong></span></b></span> in the row that contains the target AZ.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>Adding a tag</p>
+</td>
+<td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b1495945913127">Scenario</strong></p>
+<p>This operation enables you to quickly filter and manage resources.</p>
+<div class="p"><strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b1722475517469">Note</strong><ul id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_ul2317155315456"><li id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_li1146056125117">The system administrator can add a maximum of 10,000 tags to a resource.</li><li id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_li1566072118516">A non-system administrator must have the permission of <strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b117498364161">Production resource management</strong> to add tags to resources.</li><li id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_li731725313453">A non-system administrator can add a maximum of five tags to a resource.</li></ul>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><div class="p">Choose <strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b1978220109564">More</strong> &gt; <strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b778271011563">Add Tag</strong>.<div class="note" id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_note164681316118"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_ul22969251338"><li id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_li142961925139">On the displayed <strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b171967427617">Add Tag</strong> dialog box, you can select existing tags or click <strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b1711194810818">Create</strong> to create a tag.</li><li id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_li135161927738">To modify or delete a tag, click <strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b17675195912164">Go to Tag Management</strong> on the <strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b13536183171711">Add Tag</strong> page to go to the <strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b1386161351713">Tag Management</strong> page.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>Removing a tag</p>
+</td>
+<td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b472911291311">Scenario</strong></p>
+<p>This operation enables you to remove the tag of a resource when it is no longer needed.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b6302131412560">More</strong> &gt; <strong id="EN-US_TOPIC_0000002200046869__en-us_topic_0000002200147037_b3303714165618">Remove Tag</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="14.44%" headers="mcps1.3.4.2.4.1.1 "><p>Scanning Alibaba Cloud AZs</p>
+</td>
+<td class="cellrowborder" valign="top" width="57.78%" headers="mcps1.3.4.2.4.1.2 "><p><strong>Scenario</strong></p>
+<p>The <span>OceanProtect</span> automatically scans AZs every hour. If any projects or cloud servers on the registered Alibaba Cloud platform change, the change will be automatically updated to the <span>OceanProtect</span> after the scan. This operation enables you to immediately update the changed information to the <span>OceanProtect</span>.</p>
+<p><strong>Note</strong></p>
+<p>If you do not select to apply an SLA to the newly created cloud server when creating a periodic backup job, the system will not associate the newly discovered cloud server with an SLA after the scan.</p>
+</td>
+<td class="cellrowborder" valign="top" width="27.779999999999998%" headers="mcps1.3.4.2.4.1.3 "><p>Choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Resource Scan</strong></span></b></span>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200132433.html">Alibaba Cloud Environment Information</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -40,9 +40,13 @@ std::string CNwareRequest::GetPort()
     return m_port;
 }
 
-bool CNwareRequest::BuildBody(std::string &body)
+bool CNwareRequest::BuildBody(const std::string &body)
 {
-    m_body = body;
+    if (body.empty()) {
+        m_body = "{}";
+    } else {
+        m_body = body;
+    }
     return true;
 }
 

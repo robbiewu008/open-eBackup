@@ -1,0 +1,53 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Constraints">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164625472.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200111789">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Constraints</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200111789"></a><a name="EN-US_TOPIC_0000002200111789"></a>
+
+<h1 class="topictitle1">Constraints</h1>
+<div><ul><li>Backup and restoration jobs cannot be executed for a resource at the same time.</li><li>Live mount and instant recovery are not supported.</li><li>If an expiration or deletion job is triggered for a copy, the copy cannot be used for replication, archive, and restoration jobs. </li><li>Nutanix VMs cannot be registered using the Prism Central (PC) platform. They can be registered only using the Prism Element (PE) platform.</li><li>For the OceanProtect X3000/X6000 Appliance, copies with more than 20 million files cannot be indexed. For the OceanProtect X8000/X9000 Appliance, copies with more than 50 million files cannot be indexed. For OceanProtect E1000, copies with more than 30 million files cannot be indexed.</li><li>The constraints on file-level restoration are as follows:<ul id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000001792387532_ul7776115717115"><li id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000001792387532_li117377572035">The supported OSs are Linux and Windows. Disk backup files in RAW and QCOW2 formats are supported. External disks that cannot generate backup files are not supported.</li><li id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000001792387532_li152815111217">The copy must contain the backup file of the disk where the OS resides. Otherwise, the mount point or disk drive information cannot be obtained, causing a mount failure. As a result, the directory and absolute path of a file cannot be obtained.</li><li id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_li1251917852210">The supported Linux file system types are ext2/3/4 and XFS, and the supported Windows file system types are NTFS, FAT, and FAT32.</li><li id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_li4816102918225">swap (Linux swap partition), BitLocker (Windows drive encryption), and ReFS (Windows recovery file system) cannot be parsed.</li><li id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_li2082113592217">One logical volume manager can correspond to multiple physical volumes. Logical volumes can be parsed only when the disks where multiple physical volumes reside are backed up.</li><li id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_li21659446233">For Linux:<ul id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_ul1653313431210"><li id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_li5158203225115">In Linux, only the file systems whose mount points are written into <strong id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_b98191758143014">fstab</strong> can be parsed. If the device bus type is virtio, only the file systems whose mount points are written into <strong id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_b3115131843215">fstab</strong> in UUID form can be parsed.</li><li id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_li2072741414211">File systems that are not mounted persistently cannot be parsed. Paths starting with <strong id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_b778993716163">/proc</strong>, <strong id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_b1552164041620">/sys</strong>, <strong id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_b1477211429165">/dev</strong>, <strong id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_b934334718169">/lib/udev/devices</strong>, and <strong id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_b161161352111611">/invisible</strong> are ignored and not parsed.</li></ul>
+</li><li id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_li599716375222">For Windows:<ul id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_ul19183152681211"><li id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_li118122811212">File systems can be parsed only when the disks or partitions where such file systems reside are mapped to a drive (for example, <strong id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_b1778617127468">C:\</strong>). If the drive mapping cannot be determined, the related file systems cannot be parsed. Removable disks (such as DVD ROM) are ignored and not parsed.</li><li id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_en-us_topic_0000002200007017_li62246171024">Spanned, mirrored, striped, and RAID 5 volumes cannot be parsed.</li></ul>
+</li><li id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_li8702452209">Only copies of a single OS can be parsed.</li><li id="EN-US_TOPIC_0000002200111789__en-us_topic_0000002200026129_li9484163713254">The number of files to be restored at a time cannot exceed 200,000.</li></ul>
+</li></ul>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164625472.html">Overview</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

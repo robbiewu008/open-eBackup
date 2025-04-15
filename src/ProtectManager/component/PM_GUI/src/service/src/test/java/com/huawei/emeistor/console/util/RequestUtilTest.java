@@ -121,6 +121,7 @@ public class RequestUtilTest {
         PowerMockito.when(request.getHeader(ConfigConstant.MEMBER_ESN)).thenReturn("test-esn");
         PowerMockito.when(request.getHeader(ConfigConstant.DME_AUTH_TOKEN)).thenReturn("dme-auth-token");
         PowerMockito.when(request.getHeader(ConfigConstant.DME_AZ)).thenReturn("dme-az");
+        PowerMockito.when(request.getHeader(ConfigConstant.DME_PROJECT_ID)).thenReturn("dme-project-id");
         PowerMockito.when(request.getHeader(ConfigConstant.REQUEST_ID)).thenReturn("request-id");
         PowerMockito.when(request.getHeader(ConfigConstant.CLUSTER_TYPE)).thenReturn("test-cluster-type");
         PowerMockito.when(request.getHeader(ConfigConstant.CLUSTER_ID)).thenReturn("cluster-id");
@@ -145,6 +146,7 @@ public class RequestUtilTest {
         Assert.assertEquals("test-esn", headers.getFirst(ConfigConstant.MEMBER_ESN));
         Assert.assertEquals("dme-auth-token", headers.getFirst(ConfigConstant.DME_AUTH_TOKEN));
         Assert.assertEquals("dme-az", headers.getFirst(ConfigConstant.DME_AZ));
+        Assert.assertEquals("dme-project-id", headers.getFirst(ConfigConstant.DME_PROJECT_ID));
         Assert.assertEquals("request-id", headers.getFirst(ConfigConstant.REQUEST_ID));
         Assert.assertEquals("test-cluster-type", headers.getFirst(ConfigConstant.CLUSTER_TYPE));
         Assert.assertEquals("cluster-id", headers.getFirst(ConfigConstant.CLUSTER_ID));

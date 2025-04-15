@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   Component,
@@ -27,25 +27,26 @@ import {
   DataMap,
   DataMapService,
   I18NService,
+  LANGUAGE,
   LiveMountPolicyApiService,
+  ResourceType,
   RetentionPolicy,
   SchedulePolicy,
-  LANGUAGE,
-  ResourceType
+  StorageUnitService
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   assign,
   difference,
   each,
   filter,
+  find,
   first,
   includes,
-  intersection,
   isEmpty,
   size,
   trim
 } from 'lodash';
-import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'aui-select-copy-data',
@@ -75,6 +76,8 @@ export class SelectCopyDataComponent implements OnInit {
   retentionPolicy = RetentionPolicy;
   schedulePolicy = SchedulePolicy;
   resourceType = ResourceType;
+  storageUnitOptions = [];
+
   @Input() activeIndex;
   @Input() componentData;
   @ViewChild('copyLocationPopover', { static: false }) copyLocationPopover;
@@ -102,6 +105,7 @@ export class SelectCopyDataComponent implements OnInit {
     private dataMapService: DataMapService,
     private copiesApiService: CopiesService,
     private messageboxService: MessageboxService,
+    private storageUnitService: StorageUnitService,
     private liveMountPolicyApiService: LiveMountPolicyApiService,
     public datePipe: DatePipe,
     public appUtilsService: AppUtilsService
@@ -110,6 +114,25 @@ export class SelectCopyDataComponent implements OnInit {
   ngOnInit() {
     this.initForm();
     this.getColumns();
+  }
+
+  getStorageUnit() {
+    this.storageUnitService
+      .queryBackUnitGET({
+        pageNo: 0,
+        pageSize: 200
+      })
+      .subscribe(res => {
+        this.storageUnitOptions = res.records.map(item => {
+          return assign(item, {
+            deviceType:
+              item.deviceType === 'BasicDisk'
+                ? DataMap.poolStorageDeviceType.Server.value
+                : item.deviceType
+          });
+        });
+        this.getCopies();
+      });
   }
 
   initForm() {
@@ -145,7 +168,7 @@ export class SelectCopyDataComponent implements OnInit {
       },
       {
         key: 'generation',
-        label: this.i18n.get('explore_generation_label'),
+        label: this.i18n.get('protection_copy_generation_label'),
         resourceType: [
           DataMap.Resource_Type.oracle.value,
           DataMap.Resource_Type.virtualMachine.value,
@@ -267,7 +290,11 @@ export class SelectCopyDataComponent implements OnInit {
   }
 
   getTableData() {
-    this.getCopies();
+    if (this.appUtilsService.isDistributed) {
+      this.getStorageUnit();
+    } else {
+      this.getCopies();
+    }
     this.getPolicies();
   }
 
@@ -334,6 +361,13 @@ export class SelectCopyDataComponent implements OnInit {
       ) {
         assign(this.copyFilterParams, {
           generated_by: [DataMap.CopyData_generatedType.backup.value]
+        });
+      } else if (this.appUtilsService.isDistributed) {
+        assign(this.copyFilterParams, {
+          generated_by: [
+            DataMap.CopyData_generatedType.backup.value,
+            DataMap.CopyData_generatedType.liveMount.value
+          ]
         });
       } else {
         assign(this.copyFilterParams, {
@@ -406,7 +440,10 @@ export class SelectCopyDataComponent implements OnInit {
 
       if (
         includes(
-          [DataMap.Resource_Type.NASShare.value],
+          [
+            DataMap.Resource_Type.NASShare.value,
+            DataMap.Resource_Type.fileset.value
+          ],
           first(this.componentData.childResourceType)
         )
       ) {
@@ -419,25 +456,26 @@ export class SelectCopyDataComponent implements OnInit {
         });
       }
 
-      if (
-        includes(
-          [DataMap.Resource_Type.fileset.value],
-          first(this.componentData.childResourceType)
-        )
-      ) {
+      // E6000本地盘不支持挂载
+      if (this.appUtilsService.isDistributed) {
         each(res.items, item => {
-          const properties = JSON.parse(item.properties);
-
-          assign(item, {
-            disabled:
-              properties.format === DataMap.copyFormat.aggregate.value ||
-              item.generated_by ===
-                DataMap.CopyData_generatedType.liveMount.value
-          });
+          this.validStorageUnit(item);
         });
       }
       this.copyTableData = res.items;
     });
+  }
+
+  private validStorageUnit(item: any) {
+    if (
+      find(this.storageUnitOptions, {
+        name: item.storage_unit_name
+      })?.deviceType === DataMap.poolStorageDeviceType.Server.value
+    ) {
+      assign(item, {
+        disabled: true
+      });
+    }
   }
 
   getVersion(item) {

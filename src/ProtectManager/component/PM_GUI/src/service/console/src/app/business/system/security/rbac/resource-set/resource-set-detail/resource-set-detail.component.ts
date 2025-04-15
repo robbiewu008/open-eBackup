@@ -1,19 +1,20 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import {
   allAppType,
   ApplicationType,
+  ClientManagerApiService,
   DataMap,
   DataMapService,
   GlobalService,
@@ -34,6 +35,7 @@ import {
   isArray,
   isString,
   set,
+  size,
   some
 } from 'lodash';
 
@@ -77,6 +79,7 @@ export class ResourceSetDetailComponent implements OnInit {
   };
   singleLayerApp = allAppType.singleLayerApp;
   virtualCloudApp = allAppType.virtualCloudApp;
+  hasCopyData = false;
 
   noDataTip = this.i18n.get('system_resourceset_no_data_label');
 
@@ -86,6 +89,7 @@ export class ResourceSetDetailComponent implements OnInit {
     private dataMapService: DataMapService,
     private appUtilsService: AppUtilsService,
     private resourceSetService: ResourceSetApiService,
+    private clientManagerApiService: ClientManagerApiService,
     private protectedResourceApiService: ProtectedResourceApiService
   ) {}
 
@@ -95,7 +99,7 @@ export class ResourceSetDetailComponent implements OnInit {
 
   getResource() {
     this.resourceSetService
-      .QueryResourceSetTypeCount({
+      .queryResourceSetTypeCount({
         resourceSetId: this.data.uuid
       })
       .subscribe((res: any) => {
@@ -124,7 +128,17 @@ export class ResourceSetDetailComponent implements OnInit {
       protectionUrl: RouterUrl.ProtectionStorageDeviceInfo,
       copyUrl: RouterUrl.ProtectionStorageDeviceInfo,
       resType: DataMap.Resource_Type.NASFileSystem.value,
-      resourceSetType: ResourceSetType.StorageEquipment
+      resourceSetType: ResourceSetType.StorageEquipment,
+      jobTargetType: [
+        DataMap.Job_Target_Type.DoradoV7.value,
+        DataMap.Job_Target_Type.OceanStorDoradoV7.value,
+        DataMap.Job_Target_Type.OceanStorDorado_6_1_3.value,
+        DataMap.Job_Target_Type.OceanStor_6_1_3.value,
+        DataMap.Job_Target_Type.OceanStor_v5.value,
+        DataMap.Job_Target_Type.OceanStorPacific.value,
+        DataMap.Job_Target_Type.OceanStorDorado.value,
+        DataMap.Job_Target_Type.OceanProtect.value
+      ]
     });
     let otherApp = [
       ResourceSetType.Agent,
@@ -191,6 +205,9 @@ export class ResourceSetDetailComponent implements OnInit {
         });
       }
 
+      // 这三个虚拟化应用无法直接根据子资源类型来筛选数量，需要直接获取左树第一层的数量去减
+      this.parseVirtualAppNum(item);
+
       // openstack和hcs由于有visible这个的存在，全选会导致选上界面上不显示的域，所以需要获取后去掉数量
       if (
         !!item?.apps &&
@@ -208,12 +225,61 @@ export class ResourceSetDetailComponent implements OnInit {
       ) {
         this.getCloudAccurateNum(ResourceSetType.HCSStack);
       }
+
+      // 这几个应用有集群节点的概念，和该应用的另一子资源类型相同，所以需要实时获取
+      this.parseSpecialDatabaseNum(item);
     });
 
     this.allSelectedApps.push({
       label: this.i18n.get('common_copies_label'),
       type: 'copy'
     });
+  }
+
+  private parseSpecialDatabaseNum(item: any) {
+    if (!item?.apps) {
+      return;
+    }
+    each(
+      [
+        ResourceSetType.PostgreSQL,
+        ResourceSetType.Informix,
+        ResourceSetType.KingBase,
+        ResourceSetType.MySQL,
+        ResourceSetType.DB2
+      ],
+      appType => {
+        const tmpApp = find(item?.apps, { resourceSetType: appType });
+        if (!!tmpApp) {
+          item.num -= tmpApp.count;
+          tmpApp.count = 0;
+          defer(() => {
+            this.globalService.emitStore({
+              action: tmpApp.label,
+              state: true
+            });
+          });
+        }
+      }
+    );
+  }
+
+  private parseVirtualAppNum(item: any) {
+    each(
+      [
+        ResourceSetType.FusionCompute,
+        ResourceSetType.FusionOne,
+        ResourceSetType.HyperV
+      ],
+      appType => {
+        if (
+          !!item?.apps &&
+          some(item?.apps, val => appType === val.resourceSetType)
+        ) {
+          this.getCloudVirtualTopNum(appType);
+        }
+      }
+    );
   }
 
   parseNormalApp(res, allApp, key, appList, allNum) {
@@ -233,7 +299,9 @@ export class ResourceSetDetailComponent implements OnInit {
             [app.resourceSetType, ResourceSetType.StorageEquipment].includes(
               val.scopeModule
             ) &&
-            val.resourceSubType === app.resType &&
+            (val.resourceSubType === app.resType ||
+              (val.resourceSubType === DataMap.Resource_Type.ndmp.value &&
+                app.resourceSetType === ResourceSetType.NasFileSystem)) &&
             this.filterAgent(val)
         );
       } else if (app.resourceSetType === ResourceSetType.StorageEquipment) {
@@ -255,6 +323,11 @@ export class ResourceSetDetailComponent implements OnInit {
             (val.scopeModule === app.resourceSetType ||
               (val.scopeModule === ResourceSetType.FilesetTemplate &&
                 app.resourceSetType === ResourceSetType.Fileset)) &&
+            !(
+              this.virtualCloudApp.includes(app.slaId) &&
+              !!app.resourceSetKey &&
+              !app?.resourceSetKey.includes(val.resourceSubType)
+            ) &&
             this.filterAgent(val)
         );
       }
@@ -281,17 +354,71 @@ export class ResourceSetDetailComponent implements OnInit {
 
   parseOtherApp(res, allApp, key) {
     // 其他资源
-    let tmpApp = find(res, { scopeModule: allApp[key].type });
-    if (tmpApp) {
+    let tmpApp = filter(
+      res,
+      item =>
+        item.scopeModule === allApp[key].type ||
+        (item.scopeModule === ResourceSetType.ReportSubscription &&
+          allApp[key].type === ResourceSetType.Report)
+    );
+    if (!!tmpApp.length) {
       this.allSelectedApps.push({
         type: key,
-        num: tmpApp.resourceNum,
+        num: tmpApp.reduce((accumulator, { resourceNum }) => {
+          return accumulator + resourceNum;
+        }, 0),
         label: this.appNameMap[key]
       });
     }
   }
 
+  getCloudVirtualTopNum(resourceSetType) {
+    const tmpParams = { resourceSetId: this.data.uuid };
+    switch (resourceSetType) {
+      case ResourceSetType.HyperV:
+        assign(tmpParams, {
+          type: ResourceType.Virtualization,
+          subType: [
+            DataMap.Resource_Type.hyperVScvmm.value,
+            DataMap.Resource_Type.hyperVCluster.value,
+            DataMap.Resource_Type.hyperVHost.value
+          ]
+        });
+        break;
+      case ResourceSetType.FusionCompute:
+        assign(tmpParams, {
+          subType: ResourceType.FUSION_COMPUTE,
+          type: ResourceType.PLATFORM
+        });
+        break;
+      case ResourceSetType.FusionOne:
+        assign(tmpParams, {
+          subType: ResourceType.FUSION_ONE,
+          type: ResourceType.PLATFORM
+        });
+        break;
+    }
+    const extParams = {
+      conditions: JSON.stringify(tmpParams)
+    };
+    this.appUtilsService.getResourceByRecursion(
+      extParams,
+      params => this.protectedResourceApiService.ListResources(params),
+      resource => {
+        const tmpVirtualization = find(this.allSelectedApps, {
+          label: this.i18n.get('common_virtualization_label')
+        });
+        const tmpApp = find(tmpVirtualization.apps, {
+          resourceSetType: resourceSetType
+        });
+        tmpApp.count -= size(resource);
+        tmpVirtualization.num -= size(resource);
+      }
+    );
+  }
+
   getCloudAccurateNum(resourceSetType) {
+    // hcs和openstack有visible属性，但资源集父选子不会区分，所以需要手动获取去删除
     const params = {
       pageNo: 0,
       pageSize: 2000
@@ -308,7 +435,8 @@ export class ResourceSetDetailComponent implements OnInit {
     } else if (resourceSetType === ResourceSetType.HCSStack) {
       assign(defaultConditions, {
         subType: DataMap.Resource_Type.HCSTenant.value,
-        type: ResourceType.TENANT
+        type: ResourceType.TENANT,
+        resourceSetId: this.data.uuid
       });
     }
 
@@ -325,6 +453,27 @@ export class ResourceSetDetailComponent implements OnInit {
     });
   }
 
+  specialNumChange(e) {
+    // 有些应用可能需要单独获取一次实际数量，资源集父传子可能选中的数量不准确
+    let tmpApplication;
+    if (
+      [
+        ResourceSetType.PostgreSQL,
+        ResourceSetType.Informix,
+        ResourceSetType.KingBase,
+        ResourceSetType.MySQL,
+        ResourceSetType.DB2
+      ].includes(e.appType)
+    ) {
+      tmpApplication = find(this.allSelectedApps, {
+        label: this.i18n.get('common_database_label')
+      });
+    }
+    let tmpApp = find(tmpApplication.apps, { resourceSetType: e.appType });
+    tmpApp.count += e.num;
+    tmpApplication.num += e.num;
+  }
+
   nasNumChange(e) {
     // nas三兄弟从内而外更新数量数据，这里还要同步更新文件系统总数量
     let diffNum = 0;
@@ -337,9 +486,18 @@ export class ResourceSetDetailComponent implements OnInit {
     tmpFileSystem.num += diffNum;
   }
 
+  agentNumChange(e) {
+    // 会有跟随资源授权而授权的客户端，所以得直接查数量
+
+    let tmpClient = find(this.allSelectedApps, {
+      label: this.i18n.get('protection_client_label')
+    });
+    tmpClient.num = e.num;
+  }
+
   copyNumChange(e) {
     let tmpCopy = this.allSelectedApps[this.allSelectedApps.length - 1];
-    if (e === 0) {
+    if (e === 0 && !this.hasCopyData) {
       // 当没有副本时就不展示副本一栏了
       if (find(this.allSelectedApps, item => item.type === 'copy')) {
         this.allSelectedApps.pop();
@@ -347,6 +505,7 @@ export class ResourceSetDetailComponent implements OnInit {
     } else if (!tmpCopy?.num) {
       // 防止搜索等筛选条件干掉总数量
       tmpCopy.num = e;
+      this.hasCopyData = true;
     }
     this.isNoData = !this.allSelectedApps.length;
   }

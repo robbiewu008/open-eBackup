@@ -13,11 +13,6 @@
 package openbackup.data.access.framework.protection.common.util;
 
 import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
-import openbackup.system.base.common.model.job.Job;
-import openbackup.system.base.common.model.job.JobBo;
-import openbackup.system.base.common.utils.JSONObject;
-import openbackup.system.base.common.utils.VerifyUtil;
-import openbackup.system.base.common.utils.json.JsonUtil;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,6 +20,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import openbackup.system.base.common.model.job.Job;
+import openbackup.system.base.common.model.job.JobBo;
+import openbackup.system.base.common.utils.JSONObject;
+import openbackup.system.base.common.utils.VerifyUtil;
+import openbackup.system.base.common.utils.json.JsonUtil;
 
 import org.apache.logging.log4j.util.Strings;
 

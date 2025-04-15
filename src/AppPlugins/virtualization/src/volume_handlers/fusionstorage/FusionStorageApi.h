@@ -160,6 +160,7 @@ public:
      *  @return 错误码：0 成功，非0 失败
      */
     int32_t QuerySnapshot(const std::string &snapshotName, std::string &errDes);
+    int32_t QueryStoragePoolUsedRate(double &usedCapacityRate);
     int32_t RetryToQueryBitmap(BitmapVolumeInfo &info);
 
 private:
@@ -180,6 +181,8 @@ private:
     void SetQueryBitmapCmdParam(std::vector<Module::CmdParam> &cmdParam, const BitmapVolumeInfo &info);
     void SetCreateBitmapCmdParam(std::vector<Module::CmdParam> &cmdParam, const BitmapVolumeInfo &info);
     void SetDetachVolumeCmdParam(std::vector<Module::CmdParam> &cmdParam, const std::string &volumeName);
+    bool ExpandWaitTime(std::chrono::steady_clock::time_point &startTime, int32_t &expandTime,
+        const BitmapVolumeInfo &temp, const int32_t &createBitmapVolumeTimeOut);
 
 private:
     std::string m_fusionStorMgrIp;

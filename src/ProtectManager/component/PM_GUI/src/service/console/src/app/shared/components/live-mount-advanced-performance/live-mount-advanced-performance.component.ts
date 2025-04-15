@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -208,10 +208,21 @@ export class LiveMountAdvancedPerformanceComponent implements OnInit {
           this.baseUtilService.VALID.rangeValue(1, 999999999),
           this.validBurstBandWidth()
         ]);
+      if (this.formGroup.value.burst_bandwidth) {
+        this.formGroup
+          .get('burst_time')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.integer(),
+            this.baseUtilService.VALID.rangeValue(1, 999999999)
+          ]);
+      }
     } else {
       this.formGroup.get('burst_bandwidth').clearValidators();
+      this.formGroup.get('burst_time').clearValidators();
     }
     this.formGroup.get('burst_bandwidth').updateValueAndValidity();
+    this.formGroup.get('burst_time').updateValueAndValidity();
   }
 
   iopsMinChange() {
@@ -256,10 +267,21 @@ export class LiveMountAdvancedPerformanceComponent implements OnInit {
           this.baseUtilService.VALID.rangeValue(100, 999999999),
           this.validBurstIops()
         ]);
+      if (this.formGroup.value.burst_iops) {
+        this.formGroup
+          .get('burst_time')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.integer(),
+            this.baseUtilService.VALID.rangeValue(1, 999999999)
+          ]);
+      }
     } else {
       this.formGroup.get('burst_iops').clearValidators();
+      this.formGroup.get('burst_time').clearValidators();
     }
     this.formGroup.get('burst_iops').updateValueAndValidity();
+    this.formGroup.get('burst_time').updateValueAndValidity();
   }
 
   listenParamter() {
@@ -272,10 +294,9 @@ export class LiveMountAdvancedPerformanceComponent implements OnInit {
         }
         if (
           !(
-            (this.formGroup.value.iopsStatus &&
-              this.formGroup.value.burst_iops) ||
-            (this.formGroup.value.bindWidthStatus &&
-              this.formGroup.value.burst_bandwidth)
+            this.formGroup.value.iopsStatus &&
+            this.formGroup.value.burst_iops &&
+            this.formGroup.value.iopsBurst
           )
         ) {
           this.formGroup.get('burst_time').clearValidators();
@@ -321,9 +342,10 @@ export class LiveMountAdvancedPerformanceComponent implements OnInit {
         }
         if (
           (this.formGroup.value.iopsStatus &&
-            this.formGroup.value.burst_iops) ||
-          (this.formGroup.value.bindWidthStatus &&
-            this.formGroup.value.burst_bandwidth)
+            this.formGroup.value.burst_iops &&
+            this.formGroup.value.iopsBurst) ||
+          (this.formGroup.value.burst_bandwidth &&
+            this.formGroup.value.bindWidthBurst)
         ) {
           this.formGroup
             .get('burst_time')
@@ -347,10 +369,9 @@ export class LiveMountAdvancedPerformanceComponent implements OnInit {
         }
         if (
           !(
-            (this.formGroup.value.iopsStatus &&
-              this.formGroup.value.burst_iops) ||
-            (this.formGroup.value.bindWidthStatus &&
-              this.formGroup.value.burst_bandwidth)
+            this.formGroup.value.bindWidthStatus &&
+            this.formGroup.value.burst_bandwidth &&
+            this.formGroup.value.bindWidthBurst
           )
         ) {
           this.formGroup.get('burst_time').clearValidators();
@@ -395,10 +416,10 @@ export class LiveMountAdvancedPerformanceComponent implements OnInit {
           this.formGroup.get('burst_iops').updateValueAndValidity();
         }
         if (
-          (this.formGroup.value.iopsStatus &&
-            this.formGroup.value.burst_iops) ||
+          (this.formGroup.value.burst_iops && this.formGroup.value.iopsBurst) ||
           (this.formGroup.value.bindWidthStatus &&
-            this.formGroup.value.burst_bandwidth)
+            this.formGroup.value.burst_bandwidth &&
+            this.formGroup.value.bindWidthBurst)
         ) {
           this.formGroup
             .get('burst_time')
@@ -478,10 +499,7 @@ export class LiveMountAdvancedPerformanceComponent implements OnInit {
       .get('burst_bandwidth')
       .valueChanges.pipe(pairwise())
       .subscribe(res => {
-        if (
-          toString(res[0]) === toString(res[1]) ||
-          !this.formGroup.value.bindWidthBurst
-        ) {
+        if (toString(res[0]) === toString(res[1])) {
           return;
         }
         setTimeout(() => {
@@ -497,9 +515,11 @@ export class LiveMountAdvancedPerformanceComponent implements OnInit {
 
           if (
             (this.formGroup.value.iopsStatus &&
-              this.formGroup.value.burst_iops) ||
+              this.formGroup.value.burst_iops &&
+              this.formGroup.value.iopsBurst) ||
             (this.formGroup.value.bindWidthStatus &&
-              this.formGroup.value.burst_bandwidth)
+              this.formGroup.value.bindWidthBurst &&
+              res)
           ) {
             this.formGroup
               .get('burst_time')
@@ -577,10 +597,7 @@ export class LiveMountAdvancedPerformanceComponent implements OnInit {
         } else {
           this.updateIopsItems(res[1], 'burst');
         }
-        if (
-          toString(res[0]) === toString(res[1]) ||
-          !this.formGroup.value.iopsBurst
-        ) {
+        if (toString(res[0]) === toString(res[1])) {
           return;
         }
         setTimeout(() => {
@@ -595,9 +612,11 @@ export class LiveMountAdvancedPerformanceComponent implements OnInit {
 
           if (
             (this.formGroup.value.iopsStatus &&
-              this.formGroup.value.burst_iops) ||
+              res &&
+              this.formGroup.value.iopsBurst) ||
             (this.formGroup.value.bindWidthStatus &&
-              this.formGroup.value.burst_bandwidth)
+              this.formGroup.value.burst_bandwidth &&
+              this.formGroup.value.indWidthBurst)
           ) {
             this.formGroup
               .get('burst_time')

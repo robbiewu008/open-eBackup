@@ -1,0 +1,117 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤1：创建通用共享">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="commonshares_0011.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="commonshares_0012">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤1：创建通用共享</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="commonshares_0012"></a><a name="commonshares_0012"></a>
+
+<h1 class="topictitle1">步骤1：创建通用共享</h1>
+<div><p>执行通用共享资源保护前请先创建通用共享。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="commonshares_0012__zh-cn_topic_0000002199964685_uicontrol1103154941514">“<span id="commonshares_0012__zh-cn_topic_0000002199964685_text121031749181515">保护</span> &gt; 文件系统 &gt; 通用共享”</span>。</span></li><li><span>单击<span class="uicontrol">“<span>创建</span>”</span>，创建通用共享。</span><p><p>相关参数说明如<a href="#commonshares_0012__zh-cn_topic_0000001172683312_table635115223177">表1</a>。</p>
+
+<div class="tablenoborder"><a name="commonshares_0012__zh-cn_topic_0000001172683312_table635115223177"></a><a name="zh-cn_topic_0000001172683312_table635115223177"></a><table cellpadding="4" cellspacing="0" summary="" id="commonshares_0012__zh-cn_topic_0000001172683312_table635115223177" frame="border" border="1" rules="all"><caption><b>表1 </b>创建通用共享参数</caption><colgroup><col style="width:23.189999999999998%"><col style="width:76.81%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="23.189999999999998%" id="mcps1.3.2.2.2.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="76.81%" id="mcps1.3.2.2.2.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>资源名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>通用共享资源名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>文件系统名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p><span style="color:#282B33;">文件系统名称，系统将在DeviceManager界面创建该文件系统，用于存放备份数据。</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p>备份存储单元</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>对应备份集群节点。选择备份存储单元后，副本将存储至该存储单元。存储单元容量不足时，备份任务将会失败。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p>限速策略</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>备份任务平均每秒最大传输的数据量。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>共享协议</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>通用共享资源协议，支持设置NFS协议和CIFS协议。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>设置了CIFS协议后，如果已挂载到文件系统的用户或用户组已被删除，请手动解挂载该用户或用户组。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>共享路径</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>选择NFS协议时展示该参数，文件系统挂载的路径。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>共享客户端</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p><span style="color:#282B33;">选择NFS协议时展示该参数，输入共享客户端业务IP地址、共享客户端业务IP地址段或使用“*”表示全部共享客户端业务IP地址。IP地址支持IPv4、IPv6地址或者两者的混合IP地址。</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>共享名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>选择CIFS协议时展示该参数，自定义CIFS共享名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>选择CIFS协议时展示该参数，访问CIFS共享的用户类型。</p>
+<ul><li>Everyone</li><li>Windows本地认证用户</li><li>Windows本地认证用户组</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.189999999999998%" headers="mcps1.3.2.2.2.2.2.2.3.1.1 "><p><span>用户</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="76.81%" headers="mcps1.3.2.2.2.2.2.2.3.1.2 "><p>CIFS共享的用户类型选择为Windows本地认证用户或Windows本地认证用户组时展示该参数，请选择用户名或选择本地用户组。如果不存在需要的用户或用户组，请到DeviceManager管理界面创建。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
+</div>
+<p></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="commonshares_0011.html">备份通用共享资源数据</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

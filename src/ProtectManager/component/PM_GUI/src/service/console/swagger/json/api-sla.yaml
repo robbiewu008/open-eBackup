@@ -71,7 +71,7 @@ paths:
               auto_retry: true
               auto_retry_times: 3
               auto_retry_wait_minutes: 5
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,HyperDetect
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -82,62 +82,86 @@ paths:
       x-public-api: 'Y'
       x-sysadmin-role: 'Y'
       x-request-examples-url-1: /v1/slas
-      x-request-examples-text-1:
-        uuid: ''
-        name: needdetect-2
-        type: 1
-        application: CloudBackupFileSystem
-        policy_list:
-          - uuid: ''
-            name: 生产快照
-            type: backup
-            action: snapshot
-            retention:
-              retention_type: 2
-              retention_duration: 2
-              duration_unit: d
-            schedule:
-              trigger: 1
-              interval: 1
-              interval_unit: d
-              start_time: '2023-02-08'
-              window_start: '03:00:00'
-              window_end: '06:00:00'
-            ext_parameters:
-              auto_retry: true
-              auto_retry_times: 3
-              auto_retry_wait_minutes: 5
-              is_security_snap: true
-              need_detect: true
-              alarm_after_failure: true
-      x-request-examples-1:
-        uuid: ''
-        name: needdetect-2
-        type: 1
-        application: CloudBackupFileSystem
-        policy_list:
-          - uuid: ''
-            name: 生产快照
-            type: backup
-            action: snapshot
-            retention:
-              retention_type: 2
-              retention_duration: 2
-              duration_unit: d
-            schedule:
-              trigger: 1
-              interval: 1
-              interval_unit: d
-              start_time: '2023-02-08'
-              window_start: '03:00:00'
-              window_end: '06:00:00'
-            ext_parameters:
-              auto_retry: true
-              auto_retry_times: 3
-              auto_retry_wait_minutes: 5
-              is_security_snap: true
-              need_detect: true
-              alarm_after_failure: true
+      x-request-examples-text-1: |-
+        {
+          "uuid": "",
+          "name": "needdetect-2",
+          "type": 1,
+          "application": "CloudBackupFileSystem",
+          "policy_list": [
+            {
+              "uuid": "",
+              "name": "生产快照",
+              "type": "backup",
+              "action": "snapshot",
+              "retention": {
+                "retention_type": 2,
+                "retention_duration": 2,
+                "duration_unit": "d",
+                "worm_retention_duration": 1,
+                "worm_duration_unit": "d"
+              },
+              "schedule": {
+                "trigger": 1,
+                "interval": 1,
+                "interval_unit": "d",
+                "start_time": "2023-02-08",
+                "window_start": "03:00:00",
+                "window_end": "06:00:00"
+              },
+              "ext_parameters": {
+                "auto_retry": true,
+                "auto_retry_times": 3,
+                "auto_retry_wait_minutes": 5,
+                "is_security_snap": true,
+                "need_detect": true,
+                "alarm_after_failure": true,
+                "worm_switch": true,
+                "worm_validity_type": 2,
+              }
+            }
+          ]
+        }
+      x-request-examples-1: |-
+        {
+          "uuid": "",
+          "name": "needdetect-2",
+          "type": 1,
+          "application": "CloudBackupFileSystem",
+          "policy_list": [
+            {
+              "uuid": "",
+              "name": "生产快照",
+              "type": "backup",
+              "action": "snapshot",
+              "retention": {
+                "retention_type": 2,
+                "retention_duration": 2,
+                "duration_unit": "d",
+                "worm_retention_duration": 1,
+                "worm_duration_unit": "d"
+              },
+              "schedule": {
+                "trigger": 1,
+                "interval": 1,
+                "interval_unit": "d",
+                "start_time": "2023-02-08",
+                "window_start": "03:00:00",
+                "window_end": "06:00:00"
+              },
+              "ext_parameters": {
+                "auto_retry": true,
+                "auto_retry_times": 3,
+                "auto_retry_wait_minutes": 5,
+                "is_security_snap": true,
+                "need_detect": true,
+                "alarm_after_failure": true,
+                "worm_switch": true,
+                "worm_validity_type": 2,
+              }
+            }
+          ]
+        }
       tags:
         - sla-api
       operationId: createSLAUsingPOST
@@ -156,6 +180,11 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/SlaDto'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
       responses:
         '200':
           description: OK
@@ -183,7 +212,7 @@ paths:
       x-order: 0
     get:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -282,6 +311,23 @@ paths:
           description: 资源集ID
           type: string
           pattern: ^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$;
+        - name: isGetAssociatedCount
+          in: query
+          required: false
+          description: 是否获取关联资源数量
+          type: boolean
+          default: true
+          allowEmptyValue: true
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
+        - name: userName
+          in: query
+          required: false
+          description: 用户名称
+          type: string
       responses:
         '200':
           description: ''
@@ -306,7 +352,7 @@ paths:
       x-order: 1
     put:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,HyperDetect
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -332,6 +378,11 @@ paths:
           description: 修改SLA参数
           schema:
             $ref: '#/definitions/SlaDto'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
       responses:
         '200':
           description: OK
@@ -359,7 +410,7 @@ paths:
       x-order: 2
     delete:
       x-dr-role: 'N'
-      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,HyperDetect
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -385,6 +436,11 @@ paths:
           description: sla批量操作请求体
           schema:
             $ref: '#/definitions/SlaBatchRequest'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
       responses:
         '200':
           description: OK
@@ -414,7 +470,7 @@ paths:
   /v1/slas/{slaId}:
     get:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -440,6 +496,11 @@ paths:
           required: true
           type: string
           description: SLA的id
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
       responses:
         '200':
           description: SLA信息
@@ -464,7 +525,7 @@ paths:
       x-order: 5
     delete:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,HyperDetect
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -489,6 +550,11 @@ paths:
           required: true
           type: string
           description: SLA的id
+        - name: X-Auth-Token
+          in: header
+          required: false
+          description: Access token
+          type: string
       responses:
         '200':
           description: OK
@@ -566,6 +632,11 @@ paths:
           description: sla批量操作请求体
           schema:
             $ref: '#/definitions/SlaBatchRequest'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
       responses:
         '200':
           description: OK
@@ -620,6 +691,11 @@ paths:
           description: 修改SLA参数
           schema:
             $ref: '#/definitions/SlaDto'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
       responses:
         '200':
           description: OK
@@ -790,6 +866,11 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/SlaDto'
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
       responses:
         '200':
           description: OK
@@ -843,6 +924,11 @@ paths:
           required: true
           type: string
           description: SLA的id
+        - name: X-Auth-Token
+          in: header
+          required: false
+          description: Access token
+          type: string
       responses:
         '200':
           description: OK
@@ -871,7 +957,7 @@ paths:
   /v1/slas/active/{slaId}:
     post:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-product: OceanProtect E6000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -894,6 +980,11 @@ paths:
           description: SLA的Id
           minLength: 1
           maxLength: 64
+        - name: X-Auth-Token
+          in: header
+          required: true
+          description: Access token
+          type: string
       responses:
         '200':
           description: OK
@@ -921,7 +1012,7 @@ paths:
   /v1/slas/deactive/{slaId}:
     post:
       x-dr-role: 'N'
-      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000
+      x-product: OceanProtect E6000
       x-dm-role: 'N'
       x-impact-subsystem: 不影响
       x-access-port: 25081
@@ -944,6 +1035,11 @@ paths:
           description: SLA的Id
           minLength: 1
           maxLength: 64
+        - name: X-Auth-Token
+          in: header
+          required: false
+          description: Access token
+          type: string
       responses:
         '200':
           description: OK
@@ -1029,6 +1125,20 @@ definitions:
         type: integer
         format: int32
         description: 保留周期
+      worm_retention_duration:
+        type: integer
+        format: int32
+        description: worm保留时间
+        minimum: 1
+        maximum: 7300
+      worm_duration_unit:
+        type: string
+        description: worm保留时间单位类型[d/w/MO/y]
+        enum:
+          - d
+          - w
+          - MO
+          - 'y'
   ScheduleDto:
     type: object
     description: 策略调度信息
@@ -1245,62 +1355,3 @@ definitions:
         maxItems: 100
         items:
           type: string
-  HcsUserRegionName:
-    type: object
-    properties:
-      zh_cn:
-        type: string
-      en_us:
-        type: string
-  HcsUserRegion:
-    type: object
-    properties:
-      region_id:
-        type: string
-      region_status:
-        type: string
-      region_name:
-        $ref: '#/definitions/HcsUserRegionName'
-  HcsUserProjectInfo:
-    type: object
-    properties:
-      regions:
-        type: array
-        items:
-          $ref: '#/definitions/HcsUserRegion'
-      id:
-        type: string
-      name:
-        type: string
-      iam_project_name:
-        type: string
-      display_name:
-        type: string
-      description:
-        type: string
-      enabled:
-        type: boolean
-      domain_id:
-        type: string
-      tenant_id:
-        type: string
-      tenant_name:
-        type: string
-      level:
-        type: string
-      role_id:
-        type: string
-      role_name:
-        type: string
-      is_shared:
-        type: boolean
-  HcsProjectsPageResponse:
-    type: object
-    properties:
-      total:
-        type: integer
-        format: int32
-      projects:
-        type: array
-        items:
-          $ref: '#/definitions/HcsUserProjectInfo'

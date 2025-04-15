@@ -12,6 +12,7 @@
 #
 
 from enum import Enum
+from common.const import RpcParamKey
 from common.env_common import get_install_head_path
 
 
@@ -20,43 +21,52 @@ class GetIPConstant:
     LOCAL_HOST = "127.0.0.1"
 
 
-class RpcParamKey:
-    APPLICATION = "application"
-    TYPES = "types"
-    FULL_COPY = "full"
-    INCREMENT_COPY = "increment"
-    LOG_COPY = "log"
-    COPY_ID = "copyId"
-    INPUT_FILE_PREFFIX = "rpcInput"
-    OUTPUT_FILE_PREFFIX = "rpcOutput"
-    RPC_TOOL = f"{get_install_head_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/rpctool.sh"
-    # 输入参数文件目录
-    PARAM_FILE_PATH = f"{get_install_head_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/tmp"
-    # 输出结果文件目录
-    RESULT_PATH = f"{get_install_head_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/stmp"
-    DB_BIN_PATH = f'{get_install_head_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/'
-
-
 class SubJobName:
     MOUNT = "mountSubJob"
     EXEC_BACKUP = "execSubJob"
     EXEC_LOG_BACKUP = "execLogBackup"
     EXEC_COPY_BINLOG = "execCopyBinlog"
     EXEC_REPORT_DATA_SIZE = "execReportDataSize"
+    EXEC_MDS_BACKUP = "execMdsBackup"
+    EXEC_MDS_DIFF_BACKUP = "execMdsDiffBackup"
+    EXEC_MDS_BINLOG_BACKUP = "execMdsBinlogBackup"
+    EXEC_FLUSH_LOG = "execFlushLog"
+    EXEC_DATA_BACKUP = "execDataBackup"
+    EXEC_DIFF_BACKUP = "execDiffBackup"
+    EXEC_BINLOG_BACKUP = "execBinlogBackup"
+    EXEC_START_BINLOG_BACKUP = "execStartBinlogBackup"
+    EXEC_ACTIVE_BACKUP = "execActiveBackup"
+    EXEC_SEQUENCE_BACKUP = "execSequenceBackup"
+    EXEC_BINLOG_COPY = "execBinlogCopy"
+    QUERY_COPY = "queryCopy"
+    QUERY_SCAN_REOSITORIES = "queryScanRepositories"
 
 
-class RoleIniNameEnum:
+class ManagerPriority:
+    # 管理节点执行备份，恢复的优先级为降序排列，1为最高
+    priority = 1
+
+
+class RoleIniName:
     CLUSTERMANAGERINI = "clustermanager.ini"
     METADATASERVERINI = "metadataserver.ini"
     GTMINI = "gtm.ini"
     DBAGENTINI = "dbagent.ini"
 
 
-class RoleBackupDirEnum:
+class RoleIniSection:
+    CLUSTERMANAGER = "clustermanager"
+    METADATASERVER = "Metadataserver"
+    GTMINI = "seq"
+    DBAGENTINI = "backup_restore"
+
+
+class RoleBackupDir:
     CLUSTERMANAGER = "backup_root_directory"
     METADATASERVER = "metadata_backup_dir"
     GTM = "seq_backup_dir"
     DBAGENT = "backup_rootdir"
+    ACTIVE = "active_file_directory"
 
 
 class FormatCapacity(int, Enum):
@@ -72,6 +82,10 @@ class MountBindPath:
     DATA_FILE_PATH = "/mnt/databackup/GoldenDB-clusterInstance/data"
     META_FILE_PATH = "/mnt/databackup/GoldenDB-clusterInstance/meta"
     DB_BIN_PATH = f'{get_install_head_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/'
+    XTRABACKUP2 = f"{get_install_head_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/xtrabackup2"
+    MDS_PATH = f'{get_install_head_path()}/DataBackup/MDS_DATA'
+    MDS_CONF_PATH = "/home/goldendb/etc/my.cnf"
+    LIB_PATH = "/home/goldendb/zxmanager/lib/"
 
 
 class GoldenJsonConstant:
@@ -88,7 +102,7 @@ class ErrorCode(int, Enum):
     ERROR_DIFFERENT_TOPO = 1577209972
     # 数据库用户名不一致
     ERROR_DIFFERENT_USER = 1577209973
-    # 挂载路径失败
+    # 挂载路径失败，原因：内部错误导致挂载路径权限与请求有差异
     ERROR_MOUNT_PATH = 1577209974
     # 数据库状态异常
     ERR_DATABASE_STATUS = 1577210000
@@ -98,8 +112,6 @@ class ErrorCode(int, Enum):
     ERR_RESTORED = 1577210101
     # 不支持修改数据库名称
     ERROR_RENAME_DATABASE_NAME = 1577209901
-    # 某个服务未正常开启，返回参数 服务名称
-    ERROR_SERVICE_1577213479 = 1577213479
     # 数据库不存在，返回参数 数据库名称
     ERROR_DB_NOT_EXIST = 1577213477
     # 认证信息错误
@@ -109,7 +121,7 @@ class ErrorCode(int, Enum):
     DB_NODES_NOT_FULL_MATCH = 1677931026
     # 不能修改数据库为新的数据库
     ERR_RENAME_DATABASE = 1577213482
-    # 系统异常
+    # 系统异常，执行操作过程中，因系统异常，导致操作失败。无参数
     SYSTEM_ERROR = 1677929221
     # 不是所有数据库的服务都运行
     NOT_ALL_DB_SERVICE_RUNNING = 9
@@ -143,23 +155,20 @@ class ErrorCode(int, Enum):
     ERROR_NODE_TYPE = 1577209938
     # 校验分片结构不一致
     ERROR_GOLDENDB_STRUCTURE = 1577210032
-    # 内部错误
-    ERROR_INTERNAL = 0x5F025101  # 1593987329
+    # 内部错误，DMC进行调度过程中，由于rest操作、构造结构校验或数据库操作结果异常，导致调度操作失败。无参数
+    ERROR_INTERNAL = 1593987329  # 0x5F025101
     # 未配置实例级存储配置文件
     ERROR_STORAGE_CONFIG_FAIL = 1577213500
     # 实例存在异常
     ERROR_CLUSTER_ABNORMAL = 1577213501
-    # 执行备份/恢复命令失败
+    # 执行备份/恢复命令失败，执行命令（{0}）异常({1})
     EXEC_BACKUP_RECOVER_CMD_FAIL = 1577209989
     # GoldenDB不支持高版本往低版本恢复
     ERR_NEW_LOC_RST_VER_CONFLICT = 1677933074
-
-
-class SubJobPolicy(int, Enum):
-    LOCAL_NODE = 1,
-    EVERY_NODE_ONE_TIME = 2,
-    RETRY_OTHER_NODE_WHEN_FAILED = 3,
-    FIXED_NODE = 4
+    # 检查文件系统中副本异常
+    ERR_BKP_CHECK = 1677873258
+    # 用户密码错误
+    ERROR_LOGIN_INFO = 1577209986
 
 
 class GoldenSubJobName:
@@ -167,40 +176,25 @@ class GoldenSubJobName:
     SUB_CHECK = "sub_check"
     SUB_EXEC = "sub_exec"
     SUB_BINLOG_MERGE = "sub_binlog_merge"
-    SUB_BINLOG_MOUNT = "sub_binlog_mount"
+
+
+class V5SubJobStep:
+    RESTORE_OFF = "restore_off"
+    RESTORE_MANAGER = "restore_manager"
+    PREPARE_DATA = "prepare_data"
+    RESTORE_DATA = "restore_data"
+    RESTORE_LOG_DATA = "restore_log_data"
+    RESTORE_LOG_DATA_WITH_FIXED_TIME = "restore_log_data_with_fixed_time"
+    WRITE_MASTER_INFO = "write_master_info"
+    CHANGE_MASTER = "change_master"
+    RESTORE_SEQUENCE = "restore_sequence"
+    RESTORE_ACTIVE = "restore_active"
+    RESTORE_ON = "restore_on"
 
 
 class MasterSlavePolicy:
     MASTER = "master"
     SLAVE = "slave"
-
-
-class CommandReturnCode(Enum):
-    ERROR = -1
-    # plugin or proxy framework executes successfully
-    SUCCESS = 0
-    # plugin or proxy framework executes successfully, client need to perform this operation continue
-    CONTINUE = 100
-    # plugin or proxy framework is busy, client should perform this operation after a period of time
-    BUSY = 101
-    # an internal error occurred in the plugin or proxy framework
-    INTERNAL_ERROR = 200
-
-
-class NormalErr(int, Enum):
-    NO_ERR = 0
-    FALSE = -1
-    WAITING = -2
-
-
-class CMDResult(str, Enum):
-    """
-    执行命令的错误码
-    """
-    SUCCESS = "0"
-    FAILED = "1"
-    STORAGE_CONFIG_FAILED = "3"
-    CLUSTER_ABNORMAL = "84"
 
 
 class LogLevel(int, Enum):
@@ -213,14 +207,7 @@ class LogLevel(int, Enum):
 class GoldenDBPath:
     GoldenDB_FILESYSTEM_MOUNT_PATH = "/mnt/databackup/"
     GoldenDB_LINK_PATH = "/mnt/databackup/gbase"
-
-
-class GoldenDBCode(Enum):
-    """
-    返回给框架的code
-    """
-    SUCCESS = 0
-    FAILED = 200
+    XTRBACKUP_golden = "xtrabackup"
 
 
 class ClusterInfoStr:
@@ -236,6 +223,11 @@ class ClusterInfoStr:
     NODE_IP = "db ip:"
     NODE_PORT = "db ip:"
     NODE_ROLE = "db role:"
+    INSTANCE_TYPE = "instancetype:"
+    NODE_IP_V5 = "ip:"
+    NODE_PORT_V5 = "port:"
+    MASTER_NODE_IP_V5 = "master ip:"
+    MASTER_NODE_PORT_V5 = "master port:"
     SINGLE_GRP = "single group[0:NO,1:YES]"
 
 
@@ -271,8 +263,11 @@ class GoldenDBSupportVersion(str, Enum):
     """
     GoldenDB支持的版本
     """
+    VERSION_5_0_02 = "V5.0.02"
     VERSION_5_2 = "V5.2"
-    VERSION_6_1 = "V6.1"
+    VERSION_6_1_01 = "V6.1.01"
+    VERSION_6_1_02 = "V6.1.02"
+    VERSION_6_1_03 = "V6.1.03"
 
 
 class GoldenDBNodeStatus:
@@ -287,21 +282,6 @@ class GoldenDBNodeStatus:
     ABNORMAL = "8"
 
 
-class SubJobType(int, Enum):
-    PRE_SUB_JOB = 0
-    GENERATE_SUB_JOB = 1
-    BUSINESS_SUB_JOB = 2
-    POST_SUB_JOB = 3
-
-
-class ExecutePolicy(int, Enum):
-    ANY_NODE = 0
-    LOCAL_NODE = 1
-    EVERY_NODE_ONE_TIME = 2
-    RETRY_OTHER_NODE_WHEN_FAILED = 3
-    FIXED_NODE = 4
-
-
 class GoldenDBNodeService:
     """
     各个服务的列表
@@ -313,6 +293,9 @@ class GoldenDBNodeService:
         "managerNode": ZX_MANAGER_SERVICE_LIST, "dataNode": DATA_NODE_SERVICE_LIST,
         "gtmNode": ZX_GTM_SERVICE_LIST
     }
+    gtm_info = {'1': [{'gtmId': '1', 'gtmIp': '51.20.109.48', 'port': '6026', 'masterFlag': '1'},
+                      {'gtmId': '2', 'gtmIp': '51.20.109.49', 'port': '6026', 'masterFlag': '0'}]}
+    VALID_INFO = 'qjuOr3j8aA4I5dMWulImcw=='
 
 
 class GoldenDBMetaInfo:
@@ -426,6 +409,8 @@ class SqliteServiceField(Enum):
 
 class Report:
     REPORT_INTERVAL = 30
+    STS_CHECK_INTERVAL = 10
+    TIME_OUT = 3600 * 1200
 
 
 class LastCopyType:
@@ -435,3 +420,89 @@ class LastCopyType:
         3: [RpcParamKey.LOG_COPY],
         4: [RpcParamKey.FULL_COPY, RpcParamKey.INCREMENT_COPY, RpcParamKey.LOG_COPY]
     }
+
+
+class BackupStrategyPolicy:
+    FULL = "full"
+    INCREMENT = "inrc"
+
+
+class ErrCodeMessage:
+    """
+    GoldenDB返回错误
+    """
+    DBTOOL_MDS_BACKUP_CAN_NOT_USE = "Please use dbtool -cm -backup"
+
+
+class BackupResultMessage:
+    """
+    GoldenDB查询备份状态返回结果
+    """
+    BACKUP_IS_GOING = "backup is going"
+    BACKUP_IS_DONE = "[100%] OK"
+    BACKUP_NOT_EXIST = "no record"
+
+
+class DbtoolTaskStatus:
+    """
+    GoldenDB备份/恢复状态
+    """
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+class RestoreResultMessage:
+    """
+    GoldenDB查询恢复状态返回结果
+    """
+    RESTORE_IS_GOING = "restore is going"
+    RESTORE_IS_DONE = "OK"
+    # Fail to download file DBCluster_1/LOGICAL_BACKUP/Sequence/sequence_history.json
+    Sequence_history_NOT_EXIST = "sequence_history.json"
+
+
+class ErrPattern:
+    Select_Bkp_DB_Fail = "select backup db fail"
+    Auth_Check_Fail = "authentication check fail"
+
+
+class GoldendbLabel:
+    pre_check_sla = "goldendb_backup_pre_check_sla_failed_label"
+    active_tx_info_record_lost = "goldendb_active_tx_info_record_lost_label"
+
+
+class ActTxInfoConsts:
+    # 1: 标识符，标识这一行是活跃事务信息
+    active_tx_info = "1"
+    # 2: 标识符，标识这一行是集群中每个分片当时主DN节点的gtid位置信息
+    gtid_position = "2"
+    # 活跃事务信息最小长度为6
+    min_act_tx_info_len = 6
+    # 一致性时刻日期的索引
+    consistent_date_idx = 2
+    # 一致性时刻时间的索引
+    consistent_time_idx = 3
+
+
+class FileInfoDict:
+    file_info_dict = {
+        "active": {"ini_name": RoleIniName.CLUSTERMANAGERINI, "section": RoleIniSection.CLUSTERMANAGER,
+                   "field": RoleBackupDir.ACTIVE},
+        GoldenDBNodeType.GTM_NODE: {"ini_name": RoleIniName.GTMINI, "section": RoleIniSection.GTMINI,
+                                    "field": RoleBackupDir.GTM},
+        GoldenDBNodeType.DATA_NODE: {"ini_name": RoleIniName.DBAGENTINI, "section": RoleIniSection.DBAGENTINI,
+                                     "field": RoleBackupDir.DBAGENT},
+        GoldenDBNodeType.ZX_MANAGER_NODE: {"ini_name": RoleIniName.CLUSTERMANAGERINI,
+                                           "section": RoleIniSection.CLUSTERMANAGER,
+                                           "field": RoleBackupDir.CLUSTERMANAGER},
+    }
+
+
+class RepositoryDataTypeEnum(int, Enum):
+    META_REPOSITORY = 0
+    DATA_REPOSITORY = 1
+    CACHE_REPOSITORY = 2
+    LOG_REPOSITORY = 3
+    INDEX_REPOSITORY = 4
+    LOG_META_REPOSITORY = 5

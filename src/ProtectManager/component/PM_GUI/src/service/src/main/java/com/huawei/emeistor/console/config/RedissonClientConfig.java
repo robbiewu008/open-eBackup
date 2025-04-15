@@ -18,6 +18,7 @@ import com.huawei.emeistor.console.config.datasource.JSONArray;
 import com.huawei.emeistor.console.config.datasource.JSONObject;
 import com.huawei.emeistor.console.exterattack.ExterAttack;
 import com.huawei.emeistor.console.util.EncryptorRestClient;
+import com.huawei.emeistor.console.util.ExceptionUtil;
 import com.huawei.emeistor.console.util.VerifyUtil;
 
 import feign.FeignException;
@@ -26,7 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.Codec;
 import org.redisson.codec.FstCodec;
+import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.BaseConfig;
 import org.redisson.config.ClusterServersConfig;
 import org.redisson.config.Config;
@@ -44,10 +47,10 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * RedissonClient https config
@@ -103,15 +106,17 @@ public class RedissonClientConfig {
     private DataSourceConfigService dataSourceConfigService;
 
     /**
-     * 注册 RedissonClient
+     * 获取使用json编码的redissonClient
      *
-     * @return RedissonClient redisson客户端
-     * @throws MalformedURLException URL转换异常
-     * @throws InterruptedException 中断异常
+     * @return RedissonClient RedissonClient
+     * @throws InterruptedException URL转换异常
+     * @throws MalformedURLException 中断异常
      */
-    @Bean
-    @ExterAttack
-    public RedissonClient redissonClient() throws InterruptedException, MalformedURLException {
+    public RedissonClient redissonClientJsonCodec() throws InterruptedException, MalformedURLException {
+        return redissonClient(new JsonJacksonCodec());
+    }
+
+    private RedissonClient redissonClient(Codec codec) throws InterruptedException, MalformedURLException {
         String password;
         do {
             password = encryptorRestClient.getRedisAuthFromSecret();
@@ -121,13 +126,12 @@ public class RedissonClientConfig {
             }
         } while (StringUtils.isEmpty(password));
         Config config = new Config();
-        config.setCodec(new FstCodec());
+        config.setCodec(codec);
         config.setNettyThreads(nettyThreads);
         if (isCluster()) {
             log.info("redis server is cluster");
             ClusterServersConfig serversConfig = config.useClusterServers();
-            List<String> nodes = serverNodes.stream().map(this::convertServerAddress).collect(Collectors.toList());
-            serversConfig.setNodeAddresses(nodes);
+            serversConfig.setNodeAddresses(getNodeAddresses());
             setCommonConfig(serversConfig, password);
         } else {
             log.info("redis server is single instance");
@@ -136,6 +140,19 @@ public class RedissonClientConfig {
             setCommonConfig(serverConfig, password);
         }
         return Redisson.create(config);
+    }
+
+    /**
+     * 注册 RedissonClient
+     *
+     * @return RedissonClient redisson客户端
+     * @throws MalformedURLException URL转换异常
+     * @throws InterruptedException 中断异常
+     */
+    @Bean
+    @ExterAttack
+    public RedissonClient redissonClient() throws InterruptedException, MalformedURLException {
+        return redissonClient(new FstCodec());
     }
 
     private void setCommonConfig(BaseConfig<?> serverConfig, String password) throws MalformedURLException {
@@ -161,6 +178,19 @@ public class RedissonClientConfig {
             log.error("wrong with get redis auth info from system base");
         }
         return authInfo;
+    }
+
+    private List<String> getNodeAddresses() {
+        List<String> result = new ArrayList<>();
+        for (String nodeAddress : serverNodes) {
+            try {
+                String convertNodeAddress = convertServerAddress(nodeAddress);
+                result.add(convertNodeAddress);
+            } catch (Exception exception) {
+                log.error("Get address fail for: {}.", nodeAddress, ExceptionUtil.getErrorMessage(exception));
+            }
+        }
+        return result;
     }
 
     /**

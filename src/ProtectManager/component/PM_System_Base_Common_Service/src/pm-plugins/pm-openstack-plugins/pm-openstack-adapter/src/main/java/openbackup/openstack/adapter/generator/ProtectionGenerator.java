@@ -12,12 +12,12 @@
 */
 package openbackup.openstack.adapter.generator;
 
+import openbackup.openstack.protection.access.constant.OpenstackConstant;
+
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedObject;
 import openbackup.openstack.adapter.constants.OpenStackConstants;
 import openbackup.openstack.adapter.dto.OpenStackBackupJobDto;
 import openbackup.openstack.adapter.enums.OpenStackJobType;
-import openbackup.openstack.protection.access.constant.OpenstackConstant;
-
 import openbackup.system.base.sdk.resource.model.ProtectedObjectInfo;
 import openbackup.system.base.sdk.resource.model.ProtectionCreationDto;
 import openbackup.system.base.sdk.resource.model.ProtectionModifyDto;

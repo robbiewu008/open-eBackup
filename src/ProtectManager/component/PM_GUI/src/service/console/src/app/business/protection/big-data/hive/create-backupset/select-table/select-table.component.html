@@ -14,10 +14,19 @@
 <div class="aui-text-desc desc-mg">{{'protection_select_table_tip_label' | i18n}}</div>
 <lv-group [lvColumns]='["400px", "16px", "400px"]' lvRowGutter="4px">
     <div class="hive-all-table">
-        <div class="table-header">{{'protection_selectable_table_label' | i18n}}</div>
-        <lv-datatable [lvData]="allTableData" #lvAllTable [lvScroll]="{y: '620px'}" [lvPaginator]='pageA' lvSize="small"
-            lvSelectionMode='multiple' [lvSelection]='selectionData' lvCompareWith="uuid"
-            (lvSelectionChange)="selectionChange()">
+        <div class="custom-table-header">{{'protection_selectable_table_label' | i18n}}</div>
+        <lv-datatable
+          [lvData]="allTableData"
+          #lvAllTable
+          [lvScroll]="{y: '620px'}"
+          [lvPaginator]='pageA'
+          lvSize="small"
+          lvAsync = true
+          lvSelectionMode='multiple'
+          [lvSelection]='selectionData'
+          lvCompareWith="uuid"
+          (lvSelectionChange)="selectionChange()"
+        >
             <thead>
                 <tr>
                     <th lvShowCheckbox width='64px' [lvRowsData]='lvAllTable.renderData | selectable'>
@@ -35,11 +44,11 @@
                 </tr>
             </tbody>
         </lv-datatable>
-        <ng-container *ngIf="totalTable > 0">
-            <lv-paginator #pageA lvMode='simple' lvShowPageSizeOptions="false" class="table-paginator"
-                [lvPageSize]="pageSize" [lvPageIndex]="pageIndex" [lvTotal]="totalTable"
-                (lvPageChange)="pageChange($event)">
-            </lv-paginator>
+        <ng-container *ngIf="totalTable>0">
+          <lv-paginator #pageA lvMode='simple' lvShowPageSizeOptions="false"
+                        [lvPageSize]="pageSize" [lvPageIndex]="pageIndex" [lvTotal]="totalTable"
+                        (lvPageChange)="pageChange($event)">
+          </lv-paginator>
         </ng-container>
     </div>
     <div class="arrow-container">

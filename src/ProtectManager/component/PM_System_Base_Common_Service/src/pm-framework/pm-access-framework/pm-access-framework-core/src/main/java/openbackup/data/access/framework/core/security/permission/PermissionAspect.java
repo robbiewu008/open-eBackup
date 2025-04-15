@@ -13,7 +13,11 @@
 package openbackup.data.access.framework.core.security.permission;
 
 import static openbackup.system.base.common.aspect.OperationLogAspect.TOKEN_BO;
+import static openbackup.system.base.common.constants.Constants.Builtin.DEFAULT_BUILT_IN_ROLES_LIST;
 
+import com.huawei.oceanprotect.system.base.user.service.UserInternalService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.core.security.Evaluation;
 import openbackup.system.base.common.aspect.DomainBasedOwnershipVerifier;
@@ -24,14 +28,12 @@ import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.enums.UserTypeEnum;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.scurity.TokenVerificationService;
+import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.user.model.RolePo;
 import openbackup.system.base.security.download.DownloadRightsControl;
 import openbackup.system.base.security.permission.Permission;
 import openbackup.system.base.service.DeployTypeService;
-import com.huawei.oceanprotect.system.base.user.service.UserInternalService;
 import openbackup.system.base.util.DefaultRoleHelper;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -130,6 +132,9 @@ public class PermissionAspect {
             assignTokenAsRequestAttribute(tokenBo);
             return joinPoint.proceed();
         }
+        if (VerifyUtil.isEmpty(userBo.getDomainId())) {
+            userBo.setDomainId(userInternalService.getDomainIdByUserId(userBo.getId()));
+        }
         RolePo defaultRole = userInternalService.getDomainDefaultRoleSet(userBo.getDomainId());
         if (deployTypeService.isNotSupportRBACType()
             || permission.checkRolePermission()
@@ -154,7 +159,7 @@ public class PermissionAspect {
         for (UserTokenValidateService userTokenValidateService : userTokenValidateServices) {
             userTokenValidateService.validate(joinPoint, tokenBo);
         }
-        checkRoles(userBo, permission.roles(), isForceSkipAuditor(joinPoint));
+        checkRoles(userBo, permission.roles(), isForceSkipAuditor(joinPoint), permission.isEnableCustomRole());
         checkResources(joinPoint, userBo, permission.resources());
     }
 
@@ -168,7 +173,8 @@ public class PermissionAspect {
         throw new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "point get signature failed");
     }
 
-    private void checkRoles(TokenBo.UserBo userBo, String[] roles, boolean isForceSkipAuditor) {
+    private void checkRoles(TokenBo.UserBo userBo, String[] roles, boolean isForceSkipAuditor,
+        boolean isEnableCustomRole) {
         if (roles.length == 0) {
             return;
         }
@@ -183,6 +189,10 @@ public class PermissionAspect {
             }
         }
         if (Arrays.stream(roles).noneMatch(item -> Objects.equals(item, role))) {
+            if (isEnableCustomRole && !DEFAULT_BUILT_IN_ROLES_LIST.contains(role)) {
+                log.info("User-defined roles are not verified.");
+                return;
+            }
             throw new LegoCheckedException(CommonErrorCode.ACCESS_DENIED);
         }
     }

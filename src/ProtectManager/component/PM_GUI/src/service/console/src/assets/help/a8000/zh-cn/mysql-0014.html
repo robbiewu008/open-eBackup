@@ -1,0 +1,64 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤2：手动配置软连接">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="mysql-0012.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="documenttype" content="usermanual">
+<meta name="prodname" content="csbs">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="mysql-0014">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤2：手动配置软连接</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="mysql-0014"></a><a name="mysql-0014"></a>
+
+<h1 class="topictitle1">步骤2：手动配置软连接</h1>
+<div><p>在执行备份任务前，MariaDB/GreatSQL需要注册为系统服务，MySQL/MariaDB/GreatSQL需要为所有节点手动配置mysqlbinlog、mysqldump、mysqld、mysqladmin和mysql软连接。</p>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>登录<span>MySQL/MariaDB/GreatSQL</span>实例所在的主机。</span></li><li><span>执行<strong>systemctl status mysqld</strong>或<strong>service mysqld status</strong>命令，查看<span>MySQL/MariaDB/GreatSQL</span>实例运行状态。</span><p><ul><li>如果有运行状态回显，例如回显为<span class="uicontrol">“active(running)”</span>（不同的版本回显可能有差异），则表示MariaDB/GreatSQL已注册为系统服务，请继续执行<a href="#mysql-0014__li9580114917475">4</a>。</li><li>如果无运行状态回显，<ul><li>MySQL：请确保MySQL服务能够正常登录。</li><li>MariaDB/GreatSQL：请执行<strong>cp </strong><em>安装目录</em><strong>/mysql.server</strong><strong><em> </em>/etc/init.d/mysql</strong>命令，注册为系统服务，安装目录为MariaDB/GreatSQL的安装目录。</li></ul>
+</li></ul>
+</p></li><li><span>依次执行以下命令设置软连接。</span><p><pre class="screen">ln -sf <em>安装目录</em>/bin/mysqlbinlog /usr/bin/
+ln -sf <em>安装目录</em>/bin/mysql /usr/bin/
+ln -sf <em>安装目录</em>/bin/mysqldump /usr/bin/
+ln -sf 安<em>装目录</em>/bin/mysqld /usr/bin/
+ln -sf 安<em>装目录</em>/bin/mysqladmin /usr/bin/</pre>
+</p></li><li id="mysql-0014__li9580114917475"><a name="mysql-0014__li9580114917475"></a><a name="li9580114917475"></a><span>分别执行以下命令，查看是否已设置软连接，如果有版本号回显，则表示软连接设置成功。</span><p><pre class="screen">mysqlbinlog --version
+mysqldump --version
+mysqld --version
+mysql --version
+mysqladmin --version</pre>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="mysql-0012.html">备份MySQL/MariaDB/GreatSQL数据库</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

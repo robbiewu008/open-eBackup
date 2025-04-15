@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "plugins/DataPathProcessClient.h"
 #include "common/Log.h"
 #include "common/ErrorCode.h"
@@ -29,6 +41,9 @@ const mp_uint32 RETRY_TIMES = 3;                  // Retry timeout implementatio
 const mp_uint32 SYSTEM_PREALLOCATED_PORT = 1024;  // Max Number of ports reserved for system
 const mp_string INVALID_PROCESS_ID = "-1";
 const mp_int32 NOCONNECTED_SLEEP = 500;
+const mp_uint32 CHECK_RSP_SLEEP_TIME = 1000;
+// 10 min message have not been dispatch, release message
+const double MSG_TIMEOUT = 600;
 }
 
 DataPathProcessClient::DataPathProcessClient(mp_int32 serviceType, const mp_string &dpParam)
@@ -140,9 +155,6 @@ mp_int32 DataPathProcessClient::InitializeClient()
 mp_void DataPathProcessClient::SendDPMessage(
     const mp_string &taskId, CDppMessage *reqMsg, CDppMessage *&rspMsg, mp_uint32 timeout)
 {
-    static const mp_uint32 sleepTime = 1000;
-    // 10 min message have not been dispatch, release message
-    static const double timeoutMsg = 600;
     if (reqMsg == NULL || rspMsg != NULL) {
         ERRLOG("request message is NULL or response message isn't NULL, taskid=%s.", taskId.c_str());
         return;
@@ -156,10 +168,11 @@ mp_void DataPathProcessClient::SendDPMessage(
     while (timeout != 0) {
         if (!IsDataProcessStarted()) { // dp进程已经重启，不需要继续等待，直接返回
             ERRLOG("dataprocess does not exists.");
+            DiscardReqMsgQueue();
             break;
         }
 
-        CMpTime::DoSleep(sleepTime);
+        CMpTime::DoSleep(CHECK_RSP_SLEEP_TIME);
 
         CThreadAutoLock lock(&rspMsgMutext);
         mp_time nowTime;
@@ -180,7 +193,7 @@ mp_void DataPathProcessClient::SendDPMessage(
             }
 
             // message haven't been pop, delete it
-            if (CMpTime::Difftime(nowTime, (*it)->GetUpdateTime()) > timeoutMsg) {
+            if (CMpTime::Difftime(nowTime, (*it)->GetUpdateTime()) > MSG_TIMEOUT) {
                 WARNLOG("msg timeout, cmd=0x%x, seq=%llu.", (*it)->GetManageCmd(), (*it)->GetOrgSeqNo());
                 delete *it;
                 it = iter->second.erase(it);
@@ -420,19 +433,27 @@ mp_int32 DataPathProcessClient::EstablishClient()
         return MP_SUCCESS;
     }
 
-    if (MP_SUCCESS != InitializeClient()) {
-        ERRLOG("Init data process communication client failed, and will stop the data process service started!");
-
-        // stop data process service
-        if (MP_SUCCESS != EndDataProcessOnTimeout()) {
-            ERRLOG("Close data process service failed!");
-        } else {
-            INFOLOG("Close data process service successfully!");
+    static const mp_int32 retryMaxNum = 3;
+    static const mp_int32 sleepTime = 3000;
+    mp_int32 retryNum = 0;
+    mp_int32 bFlag = MP_FAILED;
+    while (retryNum++ < retryMaxNum) {
+        bFlag = InitializeClient();
+        if (bFlag != MP_SUCCESS) {
+            ERRLOG("Init data process communication client failed, retry times '%d'", retryNum);
+            CMpTime::DoSleep(sleepTime);
+            continue;
         }
-        return ERROR_AGENT_INTERNAL_ERROR;
+        return MP_SUCCESS;
     }
-
-    return MP_SUCCESS;
+    ERRLOG("Init data process communication client failed, and will stop the data process service started!");
+    // stop data process service
+    if (MP_SUCCESS != EndDataProcessOnTimeout()) {
+        ERRLOG("Close data process service failed!");
+    } else {
+        INFOLOG("Close data process service successfully!");
+    }
+    return ERROR_AGENT_INTERNAL_ERROR;
 }
 
 // ensure data process service is running
@@ -820,4 +841,21 @@ mp_uint64 DataPathProcessClient::GetSeqNo()
 {
     CThreadAutoLock lock(&seqNoMutext);
     return seqNum++;
+}
+
+mp_void DataPathProcessClient::DiscardReqMsgQueue()
+{
+    CThreadAutoLock lock(&reqMsgMutext);
+    while (requestMsgs.size() > 0) {
+        std::vector<CDppMessage *>::iterator iter = requestMsgs.begin();
+        CDppMessage *msg = *iter;
+        requestMsgs.erase(iter);
+
+        WARNLOG("Discard message, cmd:%u, seq=%llu.", msg->GetManageCmd(), msg->GetOrgSeqNo());
+
+        // need delete message
+        if (msg != nullptr) {
+            delete msg;
+        }
+    }
 }

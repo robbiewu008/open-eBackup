@@ -79,7 +79,7 @@ void SendReadlinkCb(int status, struct nfs_context *nfs, void *data, void *priva
         cbData = nullptr;
         return;
     }
-    if (IS_LIBNFS_RETRIABLE_ERROR(status)) {
+    if (IS_LIBNFS_NEED_RETRY(status)) {
         commonData->pktStats->Increment(PKT_TYPE::READLINK, PKT_COUNTER::FAILED, 1, PKT_ERROR::RETRIABLE_ERR);
         fileHandle.m_retryCnt++;
         if (fileHandle.m_retryCnt > DEFAULT_MAX_REQUEST_RETRY) {

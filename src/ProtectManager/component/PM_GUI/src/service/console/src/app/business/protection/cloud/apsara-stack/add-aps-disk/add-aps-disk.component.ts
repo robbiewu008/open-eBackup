@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
@@ -24,7 +24,8 @@ import {
   DataMap,
   DataMapService,
   I18NService,
-  ProtectedResourceApiService
+  ProtectedResourceApiService,
+  ResourceDetailType
 } from 'app/shared';
 import {
   ProTableComponent,
@@ -32,6 +33,7 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
   assign,
@@ -75,6 +77,7 @@ export class AddApsDiskComponent implements OnInit {
     private virtualScroll: VirtualScrollService,
     private dataMapService: DataMapService,
     private cdr: ChangeDetectorRef,
+    private appUtilsService: AppUtilsService,
     private protectedResourceApiService: ProtectedResourceApiService
   ) {}
 
@@ -128,8 +131,7 @@ export class AddApsDiskComponent implements OnInit {
       }
     ];
 
-    const col = cloneDeep(cols);
-    col.pop();
+    const col = cols.slice(0, cols.length - 1);
 
     const cols1: TableCols[] = [
       {
@@ -227,57 +229,14 @@ export class AddApsDiskComponent implements OnInit {
   }
 
   getResourceDetail() {
-    this.protectedResourceApiService
-      .ListResources({
-        pageNo: CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE,
-        queryDependency: true,
-        conditions: JSON.stringify({
-          uuid: this.data.rootUuid || this.data.root_uuid
-        })
-      })
-      .subscribe((res: any) => {
-        if (first(res.records)) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getDisk(agentsId);
-        }
-      });
-  }
-
-  getDisk(agentsId, recordsTemp?: any[], startPage?: number) {
-    const params = {
-      agentId: agentsId,
-      envId: this.data.rootUuid || this.data.root_uuid,
-      resourceIds: [this.data.uuid || this.data.root_uuid],
-      pageNo: startPage || 1,
-      pageSize: 200,
-      conditions: JSON.stringify({
-        resourceType: 'APS-disk',
-        uuid: this.data.uuid,
-        regionId: this.data.extendInfo.regionId
-      })
-    };
-
-    this.appService.ListResourcesDetails(params).subscribe(res => {
-      if (!recordsTemp) {
-        recordsTemp = [];
-      }
-      if (!isNumber(startPage)) {
-        startPage = 1;
-      }
-      recordsTemp = [...recordsTemp, ...res.records];
-      if (
-        startPage === Math.ceil(res.totalCount / 200) ||
-        res.totalCount === 0
-      ) {
+    this.appUtilsService
+      .getResourcesDetails(
+        this.data,
+        ResourceDetailType.apsDisk,
+        {},
+        { regionId: this.data.extendInfo.regionId }
+      )
+      .subscribe(recordsTemp => {
         each(recordsTemp, item => {
           assign(item, {
             size: item.extendInfo?.size,
@@ -291,11 +250,7 @@ export class AddApsDiskComponent implements OnInit {
           total: size(recordsTemp)
         };
         this.updateDiskData();
-        return;
-      }
-      startPage++;
-      this.getDisk(agentsId, recordsTemp, startPage);
-    });
+      });
   }
 
   clearSelected() {

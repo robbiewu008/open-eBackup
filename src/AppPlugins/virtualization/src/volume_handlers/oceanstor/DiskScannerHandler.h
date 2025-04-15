@@ -84,6 +84,9 @@ public:
     int32_t HextoDec(char* pDecStr, char* pHexStr, int iMaxLen);
     int32_t HexEncode(char cHex, int iStep, int& iDecNum);
     int32_t CalStep(int iStep) const;
+    int32_t DiscoveryIscsiTarget(const std::string &targetIP, std::string &iqnAddress);
+    int32_t LogOutTarget(const std::string &targetIp);
+    int32_t GetIscsiSessionStatus(std::vector<IscsiSessionStatus> &sessionStatusList);
     int32_t RunShellCmd(const std::string& cmd, const std::vector<std::string> &paramList,
         std::vector<std::string> &cmdOut);
     int32_t RunShellCmd(const std::string& cmd, const std::vector<std::string> &paramList,
@@ -99,6 +102,7 @@ public:
     int32_t GetIscsiDiskWwid(const std::string &diskLetter, std::string &diskWwn);
     // 扫描session
     void RescanDevice();
+    int32_t AddTypeIpRulePolicy(const std::string &targetIP, const std::string &targetType);
     int32_t AddIscsiLogicIpRoutePolicy(const std::string &targetIP);
 
 private:

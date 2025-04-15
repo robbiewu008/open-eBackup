@@ -87,7 +87,6 @@ private:
     std::thread m_thread;
     std::thread m_syncThread;
 
-    bool m_failed { false };
     bool m_threadDone { false };
     BackupPhaseStatus m_failReason = BackupPhaseStatus::FAILED;
 

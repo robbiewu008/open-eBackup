@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.restore.handler.v2;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.verify.service.CopyVerifyTaskManager;
 import openbackup.data.access.framework.protection.common.converters.JobDataConverter;
 import openbackup.data.access.framework.protection.handler.v2.UnifiedTaskCompleteHandler;
@@ -21,8 +22,6 @@ import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
 import openbackup.data.protection.access.provider.sdk.verify.CopyVerifyTask;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -63,7 +62,11 @@ public class UnifiedRestoreTaskCompleteHandler extends UnifiedTaskCompleteHandle
         if (isMainTaskComplete(taskId, restoreTask)) {
             log.info("Restore main task success, requestId={}, taskId={}.", requestId, taskId);
             restoreTaskManager.complete(restoreTask,
-                    JobDataConverter.convertToProviderJobStatus(taskCompleteMessage.getJobStatus()));
+                JobDataConverter.convertToProviderJobStatus(taskCompleteMessage.getJobStatus()));
+            if (restoreTask.getTargetObject() != null) {
+                restoreTaskService.recoverAlarmWhenRestoreSuccess(restoreTask.getTargetObject().getUuid(),
+                    restoreTask.getTargetObject().getName());
+            }
         } else {
             log.info("Restore sub verify task success, requestId={}, taskId={}.", requestId, taskId);
             copyVerifyTaskManager.complete(taskCompleteMessage, covertToVerifyTask(taskId, restoreTask));
@@ -79,6 +82,10 @@ public class UnifiedRestoreTaskCompleteHandler extends UnifiedTaskCompleteHandle
             log.info("Restore main task failed, requestId={}, taskId={}.", requestId, taskId);
             restoreTaskManager.complete(restoreTask,
                 JobDataConverter.convertToProviderJobStatus(taskCompleteMessage.getJobStatus()));
+            if (restoreTask.getTargetObject() != null) {
+                restoreTaskService.sendAlarmWhenRestoreFailed(restoreTask.getTargetObject().getUuid(),
+                    restoreTask.getTargetObject().getName());
+            }
         } else {
             log.info("Restore sub verify task failed, requestId={}, taskId={}.", requestId, taskId);
             copyVerifyTaskManager.complete(taskCompleteMessage, covertToVerifyTask(taskId, restoreTask));

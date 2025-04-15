@@ -59,25 +59,37 @@ RUN mkdir -p /img/agent/client/ \
     && echo "nobody  ALL=(root)      NOPASSWD:/usr/sbin/route del *" >> /etc/sudoers \
     && echo "nobody  ALL=(root)      NOPASSWD:/usr/bin/python3 /script/read_dorado_alarms_from_local.py *" >> /etc/sudoers \
     && echo "nobody  ALL=(root)      NOPASSWD:/usr/bin/python3 /script/update_hosts.py * *" >> /etc/sudoers \
+    && echo "nobody  ALL=(root)      NOPASSWD:/usr/bin/python3 /script/delete_hosts.py *" >> /etc/sudoers \
     && echo "nobody  ALL=(root)      NOPASSWD:/script/sync_time.sh" >> /etc/sudoers \
+    && echo "nobody  ALL=(root)      NOPASSWD:/script/change_dns.sh *" >> /etc/sudoers \
+    && echo "nobody  ALL=(root)      NOPASSWD:/script/check_internal_netplane.sh * *" >> /etc/sudoers \
     && mv "/app/change_permission.sh" "/script" \
+    && mv "/app/change_dns.sh" "/script" \
+    && mv "/app/check_internal_netplane.sh" "/script" \
     && mv "/app/curl_dorado_timezone.sh" "/script" \
     && mv "/app/mount_oper.sh" "/script" \
     && mv "/app/sync_time.sh" "/script" \
     && mv "/app/read_dorado_alarms_from_local.py" "/script" \
     && mv "/app/update_hosts.py" "/script" \
+    && mv "/app/delete_hosts.py" "/script" \
     && chmod 550 "/script/change_permission.sh" \
+    && chmod 550 "/script/change_dns.sh" \
+    && chmod 550 "/script/check_internal_netplane.sh" \
     && chmod 550 "/script/curl_dorado_timezone.sh" \
     && chmod 550 "/script/mount_oper.sh" \
     && chmod 550 "/script/sync_time.sh" \
     && chmod 550 "/script/read_dorado_alarms_from_local.py" \
     && chmod 550 "/script/update_hosts.py" \
+    && chmod 550 "/script/delete_hosts.py" \
     && chown root:root "/script/change_permission.sh" \
+    && chown root:root "/script/change_dns.sh" \
+    && chown root:root "/script/check_internal_netplane.sh" \
     && chown root:root "/script/curl_dorado_timezone.sh" \
     && chown root:root "/script/mount_oper.sh" \
     && chown root:root "/script/sync_time.sh" \
     && chown root:root "/script/read_dorado_alarms_from_local.py" \
-    && chown root:root "/script/update_hosts.py"
+    && chown root:root "/script/update_hosts.py" \
+    && chown root:root "/script/delete_hosts.py"
 
 RUN rpm -qa | grep ^libxcrypt-devel-[0-9] | xargs -i rpm -e {} --nodeps \
     && rpm -qa | grep ^glibc-devel-[0-9] | xargs -i rpm -e {} --nodeps \
@@ -90,7 +102,7 @@ RUN rpm -qa | grep ^libxcrypt-devel-[0-9] | xargs -i rpm -e {} --nodeps \
 
 RUN echo 'umask 0027' >> /etc/bashrc \
     && rm -rf /usr/bin/kmcdecrypt
-COPY --chown=99:99 DataProtect_1.6.RC2_client.zip      /img/agent/client/
+COPY --chown=99:99 DataProtect_*_client.zip      /img/agent/client/
 
 RUN chown nobody:nobody -R "/etc/timezone" \
     && chmod 640 "/app/conf/dpa.properties" \

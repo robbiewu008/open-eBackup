@@ -12,7 +12,7 @@
   -->
 
 <div class="aui-fullpage">
-    <div class="overview-tag">
+    <div class="overview-tag aui-gutter-column-md">
         <lv-group lvGutter="24px" class="title-group">
             <img src="assets/img/io_detection_brand.svg" class="logo">
             <lv-group lvGutter="8px" lvDirection='vertical'>
@@ -46,8 +46,8 @@
             </lv-group>
         </lv-group>
     </div>
-    <div class="aui-block aui-paginator-container">
-        <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+    <div class="aui-block aui-paginator-container custom-main-tab">
+        <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab" lvType="card">
             <lv-tab [lvTitle]="'common_file_systems_label' | i18n" [lvId]="'fileSystem'">
                 <ng-template lv-tab-lazy>
                     <aui-real-detection-file-system

@@ -11,38 +11,52 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<lv-form [formGroup]="formGroup" [ngClass]="{'formGroup': !data?.resourceId}" *ngIf="hasArchive">
-    <lv-form-item>
-        <lv-form-control>
-            <lv-group lvGutter="16px">
-                <p *ngIf="hasArchive">
-                    <label lv-checkbox formControlName="enable_security_archive">{{
-                        'explore_security_replication_archive_label' | i18n }}</label>
-                </p>
-            </lv-group>
-            <span class="aui-text-label">{{securityTip}}</span>
-        </lv-form-control>
-    </lv-form-item>
-    <lv-form-item *ngIf="!!formGroup.get('enable_security_archive').value && needWorm">
-        <lv-form-label lvRequired>
-            {{ 'operation_target_antiransomwarepolicy_label' | i18n }}
-            <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_security_archive_worm_tip_label' | i18n}}"
-                lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
-        </lv-form-label>
-        <lv-form-control>
-            <lv-group lvGutter="4px" *ngIf="!hasWorm">
-                <i lv-icon="aui-icon-job-status-fail" style="margin-right:4px"></i>
-                <span>{{ 'explore_no_worm_label' | i18n }}</span>
-                <span class="aui-link" (click)="jumpToWorm()">{{
-                    'explore_go_set_label' | i18n
-                    }}</span>
-            </lv-group>
-            <lv-group lvGutter="4px" *ngIf="hasWorm">
-                <span>{{ 'explore_has_worm_label' | i18n }}</span>
-                <span class="aui-link" (click)="jumpToWorm()">{{
-                    wormName
-                    }}</span>
-            </lv-group>
-        </lv-form-control>
-    </lv-form-item>
-</lv-form>
+<ng-container *ngIf="isDetail; else elseTemplate">
+    <lv-form *ngIf="_isBoolean(protectData?.enable_security_archive) && !isDistributed">
+        <lv-form-item>
+            <lv-form-label>
+                {{'explore_security_replication_archive_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                {{protectData?.enable_security_archive | textMap: 'Switch_Status'}}
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form>
+</ng-container>
+<ng-template #elseTemplate>
+    <lv-form [formGroup]="formGroup" [ngClass]="{'formGroup': !data?.resourceId}" *ngIf="hasArchive && !isDistributed">
+        <lv-form-item>
+            <lv-form-control>
+                <lv-group lvGutter="16px">
+                    <p *ngIf="hasArchive">
+                        <label lv-checkbox formControlName="enable_security_archive">{{
+                            'explore_security_replication_archive_label' | i18n }}</label>
+                    </p>
+                </lv-group>
+                <span class="aui-text-label">{{securityTip}}</span>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="!!formGroup.get('enable_security_archive').value && needWorm">
+            <lv-form-label lvRequired>
+                {{ 'operation_target_antiransomwarepolicy_label' | i18n }}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_security_archive_worm_tip_label' | i18n}}"
+                    lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control>
+                <lv-group lvGutter="4px" *ngIf="!hasWorm">
+                    <i lv-icon="aui-icon-job-status-fail" style="margin-right:4px"></i>
+                    <span>{{ 'explore_no_worm_label' | i18n }}</span>
+                    <span class="aui-link" (click)="jumpToWorm()">{{
+                        'explore_go_set_label' | i18n
+                        }}</span>
+                </lv-group>
+                <lv-group lvGutter="4px" *ngIf="hasWorm">
+                    <span>{{ 'explore_has_worm_label' | i18n }}</span>
+                    <span class="aui-link" (click)="jumpToWorm()">{{
+                        wormName
+                        }}</span>
+                </lv-group>
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form>
+</ng-template>

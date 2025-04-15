@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
@@ -80,7 +81,7 @@ public class GoldenDbClusterProviderTest {
         // when(mockGoldenDbService.getManageDbNode(new ProtectedEnvironment()))
         // .thenReturn(Collections.singletonList(node1));
 
-        when(mockGoldenDbService.singleConnectCheck(any(), any())).thenReturn(true);
+        when(mockGoldenDbService.singleConnectCheck(any(), any())).thenReturn(new AgentBaseDto());
 
         // browse
         Node node = new Node();

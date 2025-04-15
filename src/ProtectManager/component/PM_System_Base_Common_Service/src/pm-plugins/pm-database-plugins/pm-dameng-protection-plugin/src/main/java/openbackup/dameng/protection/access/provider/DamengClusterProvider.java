@@ -12,6 +12,7 @@
 */
 package openbackup.dameng.protection.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.util.EnvironmentParamCheckUtil;
 import openbackup.dameng.protection.access.constant.DamengConstant;
 import openbackup.dameng.protection.access.service.DamengService;
@@ -29,7 +30,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceConnectio
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.provider.DatabaseEnvironmentProvider;
-
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -38,8 +38,6 @@ import openbackup.system.base.common.utils.UUIDGenerator;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -234,7 +232,9 @@ public class DamengClusterProvider extends DatabaseEnvironmentProvider {
         updateRole(environment, nodeInfoList);
         ProtectedEnvironment newEnv = new ProtectedEnvironment();
         newEnv.setUuid(environment.getUuid());
-        newEnv.setExtendInfo(environment.getExtendInfo());
+        Map<String, String> extendInfo = new HashMap<>();
+        extendInfo.put(DamengConstant.NODES, environment.getExtendInfo().get(DamengConstant.NODES));
+        newEnv.setExtendInfo(extendInfo);
         resourceService.updateSourceDirectly(Collections.singletonList(newEnv));
         log.info("end DamengClusterProvider scan");
         return Collections.emptyList();
@@ -279,7 +279,9 @@ public class DamengClusterProvider extends DatabaseEnvironmentProvider {
         ProtectedEnvironment newEnv = new ProtectedEnvironment();
         newEnv.setUuid(environment.getUuid());
         newEnv.setLinkStatus(linkStatus);
-        newEnv.setExtendInfo(environment.getExtendInfo());
+        Map<String, String> extendInfo = new HashMap<>();
+        extendInfo.put(DamengConstant.NODES, environment.getExtendInfo().get(DamengConstant.NODES));
+        newEnv.setExtendInfo(extendInfo);
         resourceService.updateSourceDirectly(Collections.singletonList(newEnv));
         return linkStatus;
     }

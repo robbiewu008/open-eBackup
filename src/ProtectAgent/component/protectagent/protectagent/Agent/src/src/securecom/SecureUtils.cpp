@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include <vector>
 #include <iostream>
 #include "common/ErrorCode.h"
@@ -490,7 +502,7 @@ mp_void GetHostFromCert(const mp_string &certPath, mp_string &hostName)
             break;
         }
 
-        COMMLOG(OS_LOG_INFO, "subjectName:%s", pSubject);
+        COMMLOG(OS_LOG_DEBUG, "subjectName:%s", pSubject);
 
         mp_string tmpHost(pSubject);
         int index = tmpHost.find(CRT_USER_NAME);

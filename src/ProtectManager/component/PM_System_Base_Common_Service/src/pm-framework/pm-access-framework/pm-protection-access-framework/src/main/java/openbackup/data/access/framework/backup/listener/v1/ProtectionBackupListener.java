@@ -12,6 +12,12 @@
 */
 package openbackup.data.access.framework.backup.listener.v1;
 
+import com.huawei.oceanprotect.functionswitch.template.service.FunctionSwitchService;
+import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.system.base.user.service.UserInternalService;
+
+import jodd.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.backup.service.IBackupService;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
@@ -25,10 +31,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.sla.Policy;
 import openbackup.data.protection.access.provider.sdk.sla.Sla;
-import com.huawei.oceanprotect.functionswitch.template.service.FunctionSwitchService;
-import com.huawei.oceanprotect.job.sdk.JobService;
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.json.JsonUtil;
@@ -39,9 +41,6 @@ import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import jodd.util.StringUtil;
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
@@ -84,18 +83,21 @@ public class ProtectionBackupListener {
     private JobService jobService;
     private FunctionSwitchService functionSwitchService;
     private UserQuotaManager userQuotaManager;
+    private UserInternalService userInternalService;
 
     // 老框架已经支持资源类型列表
     @Value("${supported.resources.backup}")
     private List<String> supportedResources;
 
     public ProtectionBackupListener(ProviderManager providerManager, RedissonClient redissonClient,
-        IBackupService backupService, ResourceService resourceService, JobCenterRestApi jobCenterRestApi) {
+        IBackupService backupService, ResourceService resourceService, JobCenterRestApi jobCenterRestApi,
+        UserInternalService userInternalService) {
         this.providerManager = providerManager;
         this.redissonClient = redissonClient;
         this.backupService = backupService;
         this.resourceService = resourceService;
         this.jobCenterRestApi = jobCenterRestApi;
+        this.userInternalService = userInternalService;
     }
 
     @Autowired
@@ -130,14 +132,19 @@ public class ProtectionBackupListener {
             return;
         }
 
-        BackupObject backupObject = toBackupObject(consumerString);
+        Optional<BackupObject> backupObjectOpt = toBackupObject(consumerString);
+        if (!backupObjectOpt.isPresent()) {
+            log.error("Task is already be stopped or failed!");
+            return;
+        }
+        BackupObject backupObject = backupObjectOpt.get();
         if (!jobService.isJobPresent(backupObject.getRequestId())) {
             log.info("Job({}) not exist, no need to process", backupObject.getRequestId());
             return;
         }
         JobBo job = jobService.queryJob(backupObject.getRequestId());
-        // 异常场景kafka可能重复消费，如果进度大于5%说明已经下发给UBC，不再重复下发
-        if (job.getProgress() != null && job.getProgress() > JobProgress.DELIVER_JOB_PROGRESS) {
+        // 异常场景kafka可能重复消费，如果进度大于等于5%说明已经下发给UBC，不再重复下发
+        if (job.getProgress() != null && job.getProgress() >= JobProgress.DELIVER_JOB_PROGRESS) {
             log.info("Job({}) already finish this process, no need to reprocess", backupObject.getRequestId());
             return;
         }
@@ -179,7 +186,7 @@ public class ProtectionBackupListener {
     }
 
     @ExterAttack
-    private BackupObject toBackupObject(String consumerString) {
+    private Optional<BackupObject> toBackupObject(String consumerString) {
         // 从消息体中取出request_id
         Map map = JsonUtil.read(consumerString, Map.class);
         String requestId = String.valueOf(map.get("request_id"));
@@ -191,7 +198,7 @@ public class ProtectionBackupListener {
         // 从redis中读取转换为protectedObject
         String jsonStr = redis.get("protected_object");
         if (StringUtil.isEmpty(jsonStr)) {
-            throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR, "Task already be stopped or failed!");
+            return Optional.empty();
         }
         ProtectedObject protectedObject = JSONObject.toBean(jsonStr, ProtectedObject.class);
 
@@ -218,6 +225,6 @@ public class ProtectionBackupListener {
 
         Policy policy = JSONObject.fromObject(redis.get("policy")).toBean(Policy.class);
         backupObject.setPolicy(policy);
-        return backupObject;
+        return Optional.of(backupObject);
     }
 }

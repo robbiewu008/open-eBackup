@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -34,6 +34,7 @@ import {
   ProtectedEnvironmentApiService,
   ProtectedResourceApiService,
   RoleOperationMap,
+  SetTagType,
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -65,6 +66,7 @@ import { map } from 'rxjs/operators';
 import { AddStorageComponent } from './add-storage/add-storage.component';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
 import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
+import { GetLabelOptionsService } from '../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-storage-device-info',
@@ -82,6 +84,14 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
 
   groupCommon = GROUP_COMMON;
 
+  isNasSupportType = [
+    DataMap.Device_Storage_Type.DoradoV7.value,
+    DataMap.Device_Storage_Type.OceanStorDoradoV7.value,
+    DataMap.Device_Storage_Type.OceanStorDorado_6_1_3.value,
+    DataMap.Device_Storage_Type.OceanStor_6_1_3.value,
+    DataMap.Device_Storage_Type.OceanProtect.value
+  ];
+
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
   @ViewChild('resourceTagTpl', { static: true })
   resourceTagTpl: TemplateRef<any>;
@@ -97,6 +107,7 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
     private globalService: GlobalService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
+    private getLabelOptionsService: GetLabelOptionsService,
     private setResourceTagService: SetResourceTagService
   ) {}
 
@@ -173,7 +184,7 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_add_tag_label'),
         onClick: data => this.addTag(data)
@@ -185,7 +196,7 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_remove_tag_label'),
         onClick: data => this.removeTag(data)
@@ -235,6 +246,20 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
             .filter(item => {
               return item.value !== DataMap.Device_Storage_Type.Other.value;
             })
+            .filter(item => {
+              if (
+                includes(
+                  [
+                    DataMap.Deploy_Type.e6000.value,
+                    DataMap.Deploy_Type.decouple.value
+                  ],
+                  this.i18n.get('deploy_type')
+                )
+              ) {
+                return !includes(this.isNasSupportType, item.value);
+              }
+              return true;
+            })
         },
         cellRender: {
           type: 'status',
@@ -273,8 +298,11 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: true,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -330,6 +358,7 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable.setSelections([]);
@@ -342,6 +371,7 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable.setSelections([]);
@@ -366,9 +396,10 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
     if (!isEmpty(filters.conditions_v2)) {
       const conditionsTemp = JSON.parse(filters.conditions_v2);
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
@@ -395,6 +426,8 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
               wwn:
                 includes(
                   [
+                    DataMap.Device_Storage_Type.DoradoV7.value,
+                    DataMap.Device_Storage_Type.OceanStorDoradoV7.value,
                     DataMap.Device_Storage_Type.OceanStorDorado_6_1_3.value,
                     DataMap.Device_Storage_Type.OceanStor_6_1_3.value,
                     DataMap.Device_Storage_Type.OceanStor_v5.value,
@@ -477,19 +510,8 @@ export class StorageDeviceInfoComponent implements OnInit, AfterViewInit {
         lvContent: AddStorageComponent,
         lvOkDisabled: true,
         lvComponentParams: {
-          item
-        },
-        lvOk: modal => {
-          return new Promise(resolve => {
-            const content = modal.getContentComponent() as AddStorageComponent;
-            content.onOK().subscribe({
-              next: res => {
-                resolve(true);
-                this.dataTable.fetchData();
-              },
-              error: () => resolve(false)
-            });
-          });
+          item,
+          refresh: () => this.dataTable.fetchData()
         }
       })
     );

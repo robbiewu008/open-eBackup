@@ -89,7 +89,7 @@ echo PBI_NAME=${PBI_NAME}
 
 function main()
 {
-  copy_files
+  # copy_files
   if [ "${OPENSOURCE_BUILD}" == "Y" ];then
     if [ "${BUILD_MODULE}" == "system_dee" ];then
         export PKG_NAME="DataManager"

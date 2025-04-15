@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { ModalRef } from '@iux/live';
 import {
   FormGroup,
@@ -100,6 +100,12 @@ export class PostgreAddHostComponent implements OnInit {
           validators: [this.baseUtilService.VALID.required(), this.validPath()]
         }
       ),
+      archive_path: new FormControl(
+        isEmpty(this.item) ? '' : this.item.extendInfo?.archiveDir,
+        {
+          validators: [this.validArchivePath()]
+        }
+      ),
       pgPath: new FormControl(
         isEmpty(this.item) ? '' : this.item.extendInfo?.pgpoolClientPath,
         {
@@ -128,6 +134,33 @@ export class PostgreAddHostComponent implements OnInit {
     });
   }
 
+  validArchivePath(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (!trim(control.value)) {
+        return null;
+      }
+      const paths = control.value.split(',')?.filter(item => {
+        return !isEmpty(item);
+      });
+      if (paths.length !== uniq(paths).length) {
+        return { samePathError: { value: control.value } };
+      }
+
+      const regx = /^(\/[^\/]{1,2048})+\/?$|^\/$/;
+
+      if (
+        find(paths, path => {
+          return !regx.test(path);
+        }) ||
+        find(paths, path => {
+          return path.length > 1024;
+        })
+      ) {
+        return { pathError: { value: control.value } };
+      }
+    };
+  }
+
   validPath(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       if (!trim(control.value)) {
@@ -142,7 +175,8 @@ export class PostgreAddHostComponent implements OnInit {
 
       if (
         find(paths, path => {
-          return !CommonConsts.REGEX.templatLinuxPath.test(path);
+          const templateLinuxPath = /^(\/[^\/]{1,2048})+\/?$|^\/$/;
+          return !templateLinuxPath.test(path);
         }) ||
         find(paths, path => {
           return path.length > 1024;
@@ -183,6 +217,16 @@ export class PostgreAddHostComponent implements OnInit {
     });
   }
 
+  getArchiveDir() {
+    if (isEmpty(this.formGroup.value.archive_path)) {
+      return this.formGroup.value.archive_path;
+    } else {
+      return this.formGroup.value.archive_path.endsWith('/')
+        ? this.formGroup.value.archive_path
+        : this.formGroup.value.archive_path + '/';
+    }
+  }
+
   onOK(): Observable<void> {
     return new Observable<void>((observer: Observer<void>) => {
       if (this.formGroup.invalid) {
@@ -197,8 +241,9 @@ export class PostgreAddHostComponent implements OnInit {
         extendInfo: {
           hostId: this.formGroup.value.host,
           instancePort: this.formGroup.value.port,
-          clientPath: this.formGroup.value.client,
-          pgpoolClientPath: this.formGroup.value.pgPath,
+          clientPath: this.formGroup.value.client.replace(/\/?$/, ''),
+          archiveDir: this.getArchiveDir(),
+          pgpoolClientPath: this.formGroup.value.pgPath.replace(/\/?$/, ''),
           serviceIp: this.formGroup.value.business_ip,
           osUsername: this.osUsername,
           isTopInstance: InstanceType.NotTopinstance
@@ -212,9 +257,10 @@ export class PostgreAddHostComponent implements OnInit {
         port: this.formGroup.value.port,
         hostName: host?.name,
         ip: host?.endpoint,
-        client: this.formGroup.value.client,
+        client: this.formGroup.value.client.replace(/\/?$/, ''),
+        archive_path: this.getArchiveDir(),
         business_ip: this.formGroup.value.business_ip,
-        pgpoolClientPath: this.formGroup.value.pgPath
+        pgpoolClientPath: this.formGroup.value.pgPath.replace(/\/?$/, '')
       };
       observer.next();
       observer.complete();

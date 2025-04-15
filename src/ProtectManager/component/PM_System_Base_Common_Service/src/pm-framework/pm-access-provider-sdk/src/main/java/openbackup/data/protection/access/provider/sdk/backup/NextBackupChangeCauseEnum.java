@@ -45,7 +45,10 @@ public enum NextBackupChangeCauseEnum {
     SANCLIENT_ENABLED(5, "job_log_sanclient_enabled_first_backup_convert_full_label"),
 
     // SanClient场景，从开启转为关闭，需转全量
-    SANCLIENT_DISABLED(6, "job_log_sanclient_disabled_first_backup_convert_full_label");
+    SANCLIENT_DISABLED(6, "job_log_sanclient_disabled_first_backup_convert_full_label"),
+
+    // 由于上次备份任务失败，本次任务将执行全量备份
+    E6000_BACKUP_FAILED(7, "job_log_e6000_backup_failed_to_full_label");
 
     private final int index;
 

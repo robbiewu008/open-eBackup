@@ -12,11 +12,11 @@
 */
 package openbackup.data.access.framework.livemount.controller.livemount.model;
 
-import openbackup.data.access.framework.livemount.common.LiveMountOperateType;
-import openbackup.system.base.util.EnumUtil;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import openbackup.data.access.framework.livemount.common.LiveMountOperateType;
+import openbackup.system.base.util.EnumUtil;
 
 import java.util.Arrays;
 import java.util.Collections;

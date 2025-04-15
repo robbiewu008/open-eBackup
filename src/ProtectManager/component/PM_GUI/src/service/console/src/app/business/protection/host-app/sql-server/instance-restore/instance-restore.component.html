@@ -35,7 +35,13 @@
           </lv-radio>
           <lv-radio
             [lvValue]="restoreLocationType.NEW"
-            [lvDisabled]="!isFileLevelRestore || isFileLevelAndClusterRestore"
+            [lvDisabled]=" rowCopy.resource_sub_type ===
+        dataMap.Resource_Type.SQLServerClusterInstance.value|| isFileLevelAndClusterRestore"
+            [lv-tooltip]="
+              disableOriginLocation
+                ? ('protection_sqlserver_instance_new_restore_label' | i18n)
+                : ''
+            "
           >
             {{ 'common_restore_to_new_location_label' | i18n }}
           </lv-radio>
@@ -64,27 +70,43 @@
       >
       </lv-select>
     </lv-form-control>
-    <div class="aui-tips">
-      <i
-        lv-icon="lv-icon-status-info"
-        lvColorState="true"
-        class="type-icon"
-      ></i>
-      <span class="form-tips">{{
-        'protection_close_database_tip_label' | i18n
-      }}</span>
-    </div>
   </lv-form-item>
-  <ng-container
-    *ngIf="
-      formGroup.value.restoreTo === restoreLocationType.NEW &&
-      isFileLevelRestore &&
-      rowCopy.resource_sub_type !==
-        dataMap.Resource_Type.SQLServerInstance.value
-    "
-  >
+
+  <ng-container *ngIf="(formGroup.value.restoreTo === restoreLocationType.NEW)&&(rowCopy.resource_sub_type ===
+        dataMap.Resource_Type.SQLServerInstance.value)&&(!isFileLevelRestore)">
     <lv-form-item>
       <lv-form-label lvRequired>
+        {{ 'protection_target_instance_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-select
+          formControlName="instance"
+          [lvOptions]="instanceOptions"
+          lvValueKey="key"
+          lvShowFilter
+          lvFilterKey="label"
+          lvFilterMode="contains"
+        >
+        </lv-select>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <div class="aui-tips">
+    <i
+      lv-icon="lv-icon-status-info"
+      lvColorState="true"
+      class="type-icon"
+    ></i>
+    <span class="form-tips">{{
+        'protection_close_database_tip_label' | i18n
+      }}</span>
+  </div>
+  <ng-container
+    *ngIf="formGroup.value.restoreTo === restoreLocationType.NEW">
+    <lv-form-item>
+      <lv-form-label [lvRequired]="isFileLevelRestore &&
+      rowCopy.resource_sub_type !==
+        dataMap.Resource_Type.SQLServerInstance.value">
         {{ 'common_destination_path_label' | i18n }}
         <i
           lv-icon="aui-icon-help"

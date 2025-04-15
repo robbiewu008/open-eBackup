@@ -29,13 +29,14 @@ from common.util.scanner_utils import scan_dir_size
 from oracle.common.common import write_tmp_json_file
 from tdsql.common.const import TdsqlSubJobName, EnvName, TdsqlBackupStatus, \
     ErrorCode, LastCopyType, MySQLVersion, ConnectParam, JobInfo, InstanceConfigInfo, \
-    NodeInfo, BackupPath, TdsqlBackTypeConstant, BackupParam
+    NodeInfo, TdsqlBackTypeConstant, BackupParam
 from tdsql.common.safe_get_information import ResourceParam
 from tdsql.common.tdsql_common import output_execution_result_ex, report_job_details, \
     get_std_in_variable, write_file, delete_files_except, get_last_backup_time_and_id
 from tdsql.common.util import check_status, can_exec_backup, backup_tdsql, monitor, backup_log, \
     is_job_finished, report_message, get_nodelist, get_tdsql_status, init_node_data, exec_sqlite_sql, \
-    get_xtrabackup_tool_path, exec_sql
+    get_xtrabackup_tool_path, exec_sql, get_online_data_nodes, get_mysql_version_path, \
+    get_backup_pre_from_defaults_file_path, get_mysql_version_from_defaults_file_path
 from tdsql.handle.common.const import TDSQLReportLabel
 from tdsql.logger import log
 
@@ -61,12 +62,14 @@ class BackUp:
             "extendInfo", {})
         self._cluster_info_str = self._protect_obj_extend_info.get("clusterInstanceInfo")
         self._cluster_info_ = json.loads(self._cluster_info_str)
-        self.nodes = self._cluster_info_.get("groups", [])[0].get("dataNodes")
+        self._business_addr = self._protect_obj_extend_info.get("ossUrl", "")
+        self._set_id = self._cluster_info_.get("id")
+        self.nodes = get_online_data_nodes(self._cluster_info_.get("groups", [])[0].get("dataNodes"),
+                                           self._business_addr, self._set_id, "backup", self._pid)
         self._mysql_socket = self.nodes[0].get("socket", "")
         self._mysql_conf_path = self.nodes[0].get("defaultsFile", "")
         log.info(f"nodes: {self.nodes}")
-        self._set_id = self._cluster_info_.get("id")
-        self._business_addr = self._protect_obj_extend_info.get("ossUrl", "")
+        self._mysql_version = self.get_mysql_version()
         self._sub_job_name = ""
         self._cache_area = self.get_repository_path(json_param, RepositoryDataTypeEnum.CACHE_REPOSITORY)
         self._data_area = self.get_repository_path(json_param, RepositoryDataTypeEnum.DATA_REPOSITORY)
@@ -578,7 +581,6 @@ class BackUp:
             TdsqlSubJobName.SUB_EXEC: self.sub_job_exec,
             TdsqlSubJobName.SUB_BINLOG: self.sub_job_binlog,
             TdsqlSubJobName.SUB_FLUSH_LOG: self.sub_flush_log,
-            TdsqlSubJobName.SUB_RM_BINLOG: self.sub_rm_binlog
         }
         return sub_job_dict
 
@@ -721,20 +723,6 @@ class BackUp:
                 sub_job_array.append(sub_job)
                 break
 
-        # 如果开启了删除归档日志，所有节点执行rm binlog
-        if self.delete_archived_log == "true":
-            job_policy = SubJobPolicyEnum.FIXED_NODE.value
-            job_name = TdsqlSubJobName.SUB_RM_BINLOG
-            job_priority = SubJobPriorityEnum.JOB_PRIORITY_3
-            for node in nodes:
-                node_id = node.get("parentUuid", "")
-                endpoint = node.get("ip", "")
-                port = str(node.get("port"))
-                host = endpoint + ":" + port
-                job_info = f"{host}"
-                sub_job = self.build_sub_job(job_priority, job_policy, job_name, node_id, job_info)
-                sub_job_array.append(sub_job)
-
         log.info(f"gen_sub_job get sub_job_array: {sub_job_array}")
         log.info(f"step2-4 Sub-task splitting succeeded.sub-task num:{len(sub_job_array)}")
         output_execution_result_ex(file_path, sub_job_array)
@@ -744,7 +732,7 @@ class BackUp:
     def sub_flush_log(self):
         output = ""
         ip, port = self.fetch_current_host()
-        mysql_version = self._mysql_conf_path.split("/")[4]
+        mysql_version = self._mysql_version
         log.info(f"Exec sub_flush_logs, mysql_version: {mysql_version}")
         if mysql_version.startswith(MySQLVersion.MARIADB):
             connect_param = ConnectParam(socket='', ip=ip, port=port)
@@ -757,30 +745,6 @@ class BackUp:
             ret = False
         if not ret:
             log.error(f"Exec_sql failed. sql:flush logs ret:{ret} output is {output} "
-                      f"pid:{self._pid} jobId{self._job_id}")
-            return False
-        self.write_progress_file(SubJobStatusEnum.COMPLETED, 100)
-        return True
-
-    def sub_rm_binlog(self):
-        file_path = os.path.join(self._cache_area, f'copy_binlog_time_{self._job_id}')
-        copy_binlog_time = read_tmp_json_file(file_path).get('copy_binlog_time')
-        log.info(f"Exec sub_rm_binlog, copy_binlog_time: {copy_binlog_time}")
-        output = ""
-        ip, port = self.fetch_current_host()
-        mysql_version = self._mysql_conf_path.split("/")[4]
-        if mysql_version.startswith(MySQLVersion.MARIADB):
-            connect_param = ConnectParam(socket='', ip=ip, port=port)
-        else:
-            connect_param = ConnectParam(socket=self._mysql_socket, ip=ip, port=port)
-        try:
-            ret, output = exec_sql(self.user_name, self.user_pwd, connect_param,
-                                   f"purge binary logs before '{copy_binlog_time}'")
-        except Exception as exception_str:
-            log.error(f"sub_rm_binlog failed: {exception_str}")
-            ret = False
-        if not ret:
-            log.error(f"Exec_sql failed. sql:delete_backup_binlog ret:{ret} output is {output} "
                       f"pid:{self._pid} jobId{self._job_id}")
             return False
         self.write_progress_file(SubJobStatusEnum.COMPLETED, 100)
@@ -859,7 +823,9 @@ class BackUp:
         node = self.nodes[0]
         xtrabackup_tool_path = get_xtrabackup_tool_path(version)
         log.info(f"xtrabackup_tool_path {xtrabackup_tool_path}")
-        paths["backup_tools"] = os.path.join(BackupPath.BACKUP_PRE, port, version, xtrabackup_tool_path)
+        backup_pre = get_backup_pre_from_defaults_file_path(self._mysql_conf_path)
+        log.info(f"data_backup_paths backup_pre {backup_pre}")
+        paths["backup_tools"] = os.path.join(backup_pre, port, version, xtrabackup_tool_path)
         paths["cnf_path"] = node.get("defaultsFile")
         paths["backup_socket"] = node.get("socket")
         paths["backup_target"] = os.path.join(self._data_area, "tdsqlbackup", self._copy_id)
@@ -873,6 +839,16 @@ class BackUp:
             target_dir = os.path.join(self._data_area, "tdsqlbackup", self._copy_id, "incremental")
             paths["target_dir"] = target_dir
             last_copy_id_file = os.path.join(self._meta_area, "lastCopyId", "lastCopyId")
+            if not os.path.exists(last_copy_id_file):
+                log_detail = LogDetail(logInfo=TDSQLReportLabel.TDSQL_INSTANCE_INCREMENT_BACKUP_FAIL_LABEL,
+                                       logInfoParam=[self._sub_job_id],
+                                       logLevel=DBLogLevel.ERROR.value)
+                report_job_details(self._pid,
+                                   SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100,
+                                                 logDetail=[log_detail],
+                                                 taskStatus=SubJobStatusEnum.FAILED.value).dict(
+                                       by_alias=True))
+                log.error(f"last_copy_id_file {last_copy_id_file} not exist")
             last_copy_id = self.read_param_file(last_copy_id_file)
             paths["base_dir"] = os.path.join(self._data_area, "tdsqlbackup", last_copy_id, "full")
             log.info(f"lastCopyId: {last_copy_id}")
@@ -944,7 +920,7 @@ class BackUp:
         """
         for i in tdsql_body:
             instance_config_info = dict(i)
-            instance_config = InstanceConfigInfo(dbversion=self.fetch_version(),
+            instance_config = InstanceConfigInfo(dbversion=self._mysql_version,
                                                  machine=instance_config_info.get("machine", ""),
                                                  cpu=instance_config_info.get("cpu", ""),
                                                  memory=instance_config_info.get("memory", ""),
@@ -954,10 +930,10 @@ class BackUp:
 
     def fetch_version(self):
         ip, port = self.fetch_current_host()
+        version = ''
         for node in self.nodes:
             if node["ip"] == ip:
-                path = node["defaultsFile"]
-                version = path.split("/")[4]
+                version = self._mysql_version
         return version
 
     def report_copy_info(self, instance_config):
@@ -1009,7 +985,7 @@ class BackUp:
         json_copy = {
             "extendInfo": {
                 "copy_id": self._copy_id, "exec_node": exec_node, "backup_time": start_time,
-                "mysql_version": self.fetch_version(), "instance_config_info": instance_config.dict(by_alias=True)
+                "mysql_version": self._mysql_version, "instance_config_info": instance_config.dict(by_alias=True)
             }
         }
         copy_info = {"copy": json_copy, "jobId": self._job_id}
@@ -1023,7 +999,7 @@ class BackUp:
         :return:
         """
         log.info("Start to build_log_backup_copy_info")
-        mysql_version = self.fetch_version()
+        mysql_version = self._mysql_version
         out_put_info = {
             "extendInfo": {
                 "backupTime": start_time,
@@ -1041,7 +1017,8 @@ class BackUp:
                 "tabal_space_info": [],
                 "associatedCopies": last_copy_id,
                 "logDirName": self._log_area,
-                "mysql_version": mysql_version
+                "mysql_version": mysql_version,
+                "delete_archived_log": self.delete_archived_log
             }
         }
         log.info(f"build_log_backup_copy_info: {out_put_info}")
@@ -1067,7 +1044,7 @@ class BackUp:
         log.info("begin to get ip and port")
         ip, port = self.fetch_current_host()
         log.info("begin to get version")
-        version = self.fetch_version()
+        version = self._mysql_version
         log.info("begin to prepare data_backup_paths")
         data_backup_paths = self.data_backup_paths(port, version)
         nodes_info_file = os.path.join(self._meta_area, "nodesInfo", f"job_id_{self._job_id}")
@@ -1176,3 +1153,11 @@ class BackUp:
                 last_copy_info = self.get_last_copy_info(1)
         log.info(f"last copy info is {last_copy_info}")
         return last_copy_info
+
+    def get_mysql_version(self):
+        mysql_version = self._protect_obj_extend_info.get("mysql_version", "")
+        if not mysql_version:
+            mysql_version = get_mysql_version_path(self._business_addr, self._set_id, "backup", self._pid)
+        if not mysql_version:
+            mysql_version = get_mysql_version_from_defaults_file_path(self._mysql_conf_path)
+        return mysql_version

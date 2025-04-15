@@ -1,0 +1,23 @@
+{
+ "collection_info": {
+  "namespace": "oceanprotect",
+  "name": "ansible",
+  "version": "11.24.0",
+  "authors": [
+   "oceanprotect"
+  ],
+  "readme": "README.md",
+  "tags": [],
+  "description": "oceanprotect's Ansible collection to help perform common administrative tasks.",
+  "license": [
+   ""
+  ],
+  "license_file": null,
+  "dependencies": {},
+  "repository": "",
+  "documentation": "",
+  "homepage": "",
+  "issues": ""
+ },
+ "file_manifest_file": {}
+}

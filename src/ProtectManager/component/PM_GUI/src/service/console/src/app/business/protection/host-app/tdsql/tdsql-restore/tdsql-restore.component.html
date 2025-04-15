@@ -47,6 +47,7 @@
   <ng-container
     *ngIf="formGroup.get('restoreLocation').value === restoreLocationType.NEW"
   >
+  <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'target'"></aui-select-tag>
     <lv-form-item>
       <lv-form-label lvRequired>
         {{ 'common_target_to_cluster_label' | i18n }}
@@ -133,7 +134,7 @@
             <tr>
               <th>
             <span class="table-head-proxy">
-              {{ 'protection_proxy_host_label' | i18n }}
+              {{ 'protection_clients_label' | i18n }}
             </span>
               </th>
             </tr>

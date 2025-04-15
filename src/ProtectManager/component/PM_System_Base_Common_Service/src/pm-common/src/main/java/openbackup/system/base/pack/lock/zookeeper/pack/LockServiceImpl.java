@@ -12,6 +12,7 @@
 */
 package openbackup.system.base.pack.lock.zookeeper.pack;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.CommonUtil;
 import openbackup.system.base.pack.lock.Lock;
@@ -20,14 +21,12 @@ import openbackup.system.base.pack.lock.SQLLockService;
 import openbackup.system.base.pack.lock.zookeeper.zookeeper.ZookeeperService;
 import openbackup.system.base.security.exterattack.ExterAttack;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -86,6 +85,11 @@ public class LockServiceImpl implements LockService {
     public Lock createSQLDistributeLock(String key) {
         boolean isObtained = sqlLockService.createLock(key);
         return new SQLDistributeLock(key, isObtained, sqlLockService);
+    }
+
+    @Override
+    public void batchUnlockSqlLock(List<String> keyList) {
+        sqlLockService.batchUnlockSqlLock(keyList);
     }
 
     /**
@@ -191,9 +195,6 @@ public class LockServiceImpl implements LockService {
         public void lock() {
             try {
                 interProcessMutex.acquire();
-                Method getLockPath = interProcessMutex.getClass().getDeclaredMethod("getLockPath");
-                getLockPath.setAccessible(true);
-                log.info("lock path: {}", getLockPath.invoke(interProcessMutex));
             } catch (Exception e) {
                 throw LegoCheckedException.cast(e);
             }
@@ -369,8 +370,8 @@ public class LockServiceImpl implements LockService {
          */
         @Override
         public void unlock() {
-            LockAssert.endLock();
             sqlLockService.unLock(key);
+            LockAssert.endLock();
         }
     }
 }

@@ -46,6 +46,8 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -222,5 +224,73 @@ public class OpenstackBackupProviderTest {
         postBackupTask.setUserId(UUIDGenerator.getUUID());
         ReflectionTestUtils.invokeMethod(backupProvider, "deleteExcessCopies", postBackupTask);
         Mockito.verify(copyRestApi, Mockito.times(1)).deleteExcessCopies(anyString(), any());
+    }
+
+    /**
+     * 用例场景：测试当sla中高级配置中的生产存储剩余容量阈值，在备份参数中的值是否正确
+     * 前置条件：生产存储剩余容量阈值的范围为0-100
+     * 检查点：备份参数中的值正确
+     */
+    @Test
+    public void testFillAvailableCapacityThresholdShouldSuccess()
+        throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Class<OpenstackBackupProvider> providerClass = OpenstackBackupProvider.class;
+        BackupTask backupTask = new BackupTask();
+        backupTask.setTaskId("123");
+        TaskResource taskResource = new TaskResource();
+        taskResource.setUuid("456");
+        backupTask.setProtectObject(taskResource);
+        Map<String, String> advanceParams = new HashMap<>();
+        advanceParams.put("available_capacity_threshold", "10");
+        backupTask.setAdvanceParams(advanceParams);
+        Method privateMethod = providerClass.getDeclaredMethod("fillAvailableCapacityThreshold", BackupTask.class);
+        privateMethod.setAccessible(true);
+        privateMethod.invoke(backupProvider, backupTask);
+        Assert.assertEquals(backupTask.getAdvanceParams().get("available_capacity_threshold"), "10");
+    }
+
+    /**
+     * 用例场景：测试当sla中高级配置中的生产存储剩余容量阈值，在备份参数中的值是否正确
+     * 前置条件：生产存储剩余容量阈值的范围不为0-100
+     * 检查点：备份参数中的值为默认值20
+     */
+    @Test
+    public void testFillAvailableCapacityThresholdShouldSetTwenty()
+        throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Class<OpenstackBackupProvider> providerClass = OpenstackBackupProvider.class;
+        BackupTask backupTask = new BackupTask();
+        backupTask.setTaskId("123");
+        TaskResource taskResource = new TaskResource();
+        taskResource.setUuid("456");
+        backupTask.setProtectObject(taskResource);
+        Map<String, String> advanceParams = new HashMap<>();
+        advanceParams.put("available_capacity_threshold", "101");
+        backupTask.setAdvanceParams(advanceParams);
+        Method privateMethod = providerClass.getDeclaredMethod("fillAvailableCapacityThreshold", BackupTask.class);
+        privateMethod.setAccessible(true);
+        privateMethod.invoke(backupProvider, backupTask);
+        Assert.assertEquals(backupTask.getAdvanceParams().get("available_capacity_threshold"), "20");
+    }
+
+    /**
+     * 用例场景：测试当sla中高级配置中的生产存储剩余容量阈值，在备份参数中的值是否正确
+     * 前置条件：生产存储剩余容量阈值未填
+     * 检查点：备份参数中的值为默认值20
+     */
+    @Test
+    public void testFillAvailableCapacityThresholdShouldSetDefaultTwenty()
+        throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Class<OpenstackBackupProvider> providerClass = OpenstackBackupProvider.class;
+        BackupTask backupTask = new BackupTask();
+        backupTask.setTaskId("123");
+        TaskResource taskResource = new TaskResource();
+        taskResource.setUuid("456");
+        backupTask.setProtectObject(taskResource);
+        Map<String, String> advanceParams = new HashMap<>();
+        backupTask.setAdvanceParams(advanceParams);
+        Method privateMethod = providerClass.getDeclaredMethod("fillAvailableCapacityThreshold", BackupTask.class);
+        privateMethod.setAccessible(true);
+        privateMethod.invoke(backupProvider, backupTask);
+        Assert.assertEquals(backupTask.getAdvanceParams().get("available_capacity_threshold"), "20");
     }
 }

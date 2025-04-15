@@ -12,6 +12,11 @@
 */
 package openbackup.tidb.resources.access.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.Lists;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
@@ -42,12 +47,6 @@ import openbackup.system.base.util.StreamUtil;
 import openbackup.tidb.resources.access.constants.TidbConstants;
 import openbackup.tidb.resources.access.model.ClusterInfo;
 import openbackup.tidb.resources.access.service.TidbService;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.common.collect.Lists;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

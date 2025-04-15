@@ -22,14 +22,6 @@
   </lv-form-item>
   <lv-form-item>
     <lv-form-label>
-      {{ 'protection_management_control_endpoint_label' | i18n }}
-    </lv-form-label>
-    <lv-form-control [lvErrorTip]="endpointErrorTip">
-      <input lv-input type="text" formControlName="endpoint" />
-    </lv-form-control>
-  </lv-form-item>
-  <lv-form-item>
-    <lv-form-label>
       {{ 'protection_organization_ak_label' | i18n }}
     </lv-form-label>
     <lv-form-control [lvErrorTip]="maxLengthErrorTip">
@@ -58,15 +50,7 @@
   </lv-form-item>
   <lv-form-item>
     <lv-form-label>
-      {{ 'protection_region_id_label' | i18n }}
-    </lv-form-label>
-    <lv-form-control [lvErrorTip]="idErrorTip">
-      <input lv-input type="text" formControlName="regionId" />
-    </lv-form-control>
-  </lv-form-item>
-  <lv-form-item>
-    <lv-form-label>
-      {{ 'protection_proxy_host_label' | i18n }}
+      {{ 'protection_clients_label' | i18n }}
     </lv-form-label>
     <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
       <lv-select
@@ -95,7 +79,7 @@
     <lv-form-control [lvErrorTip]="rescanIntervalErrorTip">
       <lv-group [lvColumns]="['auto', '40px']">
         <input lv-input type="text" formControlName="rescanIntervalInSec" />
-        <span class="alin-right">{{ 'common_hour_label' | i18n }}</span>
+        <span class="alin-right">{{ 'common_hour_lower_label' | i18n }}</span>
       </lv-group>
     </lv-form-control>
   </lv-form-item>

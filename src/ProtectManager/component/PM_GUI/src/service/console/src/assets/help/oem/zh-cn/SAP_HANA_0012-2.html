@@ -1,0 +1,120 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="注册租户数据库">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="SAP_HANA_0012.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="SAP_HANA_0012-2">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>注册租户数据库</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="SAP_HANA_0012-2"></a><a name="SAP_HANA_0012-2"></a>
+  <h1 class="topictitle1">注册租户数据库</h1>
+  <div>
+   <p id="SAP_HANA_0012-2__p1867594910576">对SAP HANA数据库所包含的租户数据库进行备份前，需要将该租户数据库注册至<span id="SAP_HANA_0012-2__text1160184071317">本产品</span>。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="SAP_HANA_0012-2__zh-cn_topic_0000002199964685_uicontrol19391112102819">“保护 &gt; 数据库 &gt; 通用数据库”</span>。</span></li>
+     <li><span>单击<span class="uicontrol">“注册”</span>，注册租户数据库。租户数据库注册信息如<a href="#SAP_HANA_0012-2__table613227155112">表1</a>所示。</span><p></p>
+      <div class="tablenoborder">
+       <a name="SAP_HANA_0012-2__table613227155112"></a><a name="table613227155112"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="SAP_HANA_0012-2__table613227155112" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>租户数据库注册信息
+        </caption>
+        <colgroup>
+         <col style="width:25.629999999999995%">
+         <col style="width:74.37%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.2.2.2.2.1.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.2.2.2.2.1.2.3.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.3.1.1 "><p id="SAP_HANA_0012-2__sap_hana_0012-1_p156530655315">类型</p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.3.1.2 "><p>租户数据库部署类型，请选择<span class="uicontrol">“单机”</span>或<span class="uicontrol">“分布式集群”</span>。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.3.1.1 "><p id="SAP_HANA_0012-2__sap_hana_0012-1_p4129273510">数据库名称</p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.3.1.2 "><p>要保护的租户数据库名称，名称查询方式请参考<a href="SAP_HANA_0010.html">备份前准备</a>。</p> <p></p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.3.1.1 "><p id="SAP_HANA_0012-2__sap_hana_0012-1_p1112227105112">主机</p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.3.1.2 "><p>要保护的租户数据库所在的主机。</p> <p>如果数据库是集群部署，请选择该租户数据库分布的所有主机。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.3.1.1 "><p id="SAP_HANA_0012-2__sap_hana_0012-1_p79872125710">数据库类型</p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.3.1.2 "><p id="SAP_HANA_0012-2__sap_hana_0012-1_p698712126715">选择<span class="uicontrol" id="SAP_HANA_0012-2__sap_hana_0012-1_uicontrol14740163020715">“SAP HANA”</span>。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.3.1.1 "><p id="SAP_HANA_0012-2__sap_hana_0012-1_p1891512291301">认证模式</p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.3.1.2 "><p id="SAP_HANA_0012-2__sap_hana_0012-1_p199156291309">选择<span class="uicontrol" id="SAP_HANA_0012-2__sap_hana_0012-1_uicontrol1594510430303">“数据库认证”</span>。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.3.1.1 "><p id="SAP_HANA_0012-2__sap_hana_0012-1_p166446373111">数据库用户名</p></td>
+          <td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.3.1.2 "><p>访问要保护的租户数据库的用户名和密码。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.1.2.3.1.1 "><p id="SAP_HANA_0012-2__sap_hana_0012-1_p1561511114319">数据库密码</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.3.1.1 "><p id="SAP_HANA_0012-2__sap_hana_0012-1_p2596153412318">数据库其他认证信息</p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.3.1.2 ">
+           <div class="p">
+            使用系统数据库的用户名和密码、按如下格式进行配置：
+            <pre class="screen">systemDbUser=<em>系统数据库用户名</em>,systemDbPassword=<em>系统数据库密码</em></pre>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.2.2.1.2.3.1.1 "><p id="SAP_HANA_0012-2__sap_hana_0012-1_p437242163517">自定义参数</p></td>
+          <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.2.2.1.2.3.1.2 "><p id="SAP_HANA_0012-2__sap_hana_0012-1_p1585216167408">配置SAP HANA数据库的systemId以及SQL Port以确保注册成功。</p>
+           <ul id="SAP_HANA_0012-2__sap_hana_0012-1_ul95227322166">
+            <li id="SAP_HANA_0012-2__sap_hana_0012-1_li545083511615">systemId可在SAP HANA Studio上查询，如下所示：<p id="SAP_HANA_0012-2__sap_hana_0012-1_p24731593170"><a name="SAP_HANA_0012-2__sap_hana_0012-1_li545083511615"></a><a name="sap_hana_0012-1_li545083511615"></a><span><img id="SAP_HANA_0012-2__sap_hana_0012-1_image880850161814" src="zh-cn_image_0000002200069513.png"></span></p></li>
+            <li id="SAP_HANA_0012-2__sap_hana_0012-1_li1314222518189">SQL Port：系统数据库master节点的SQL Port，可在SAP HANA Studio上查询。<p id="SAP_HANA_0012-2__sap_hana_0012-1_p178972515181"><a name="SAP_HANA_0012-2__sap_hana_0012-1_li1314222518189"></a><a name="sap_hana_0012-1_li1314222518189"></a>单租户模式下，默认SQL Port为30015；多租户模式下，默认SQL Port为30013。</p></li>
+           </ul> <p id="SAP_HANA_0012-2__sap_hana_0012-1_p14549636183510">填写格式如下：</p> <pre class="screen" id="SAP_HANA_0012-2__sap_hana_0012-1_screen1155023683512">systemId=?,systemDbPort=?</pre> <p id="SAP_HANA_0012-2__sap_hana_0012-1_p484512142446">如：</p> <pre class="screen" id="SAP_HANA_0012-2__sap_hana_0012-1_screen8442163011449">systemId=D00,systemDbPort=30015</pre></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="SAP_HANA_0012.html">步骤1：注册SAP HANA数据库（File备份方式）</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

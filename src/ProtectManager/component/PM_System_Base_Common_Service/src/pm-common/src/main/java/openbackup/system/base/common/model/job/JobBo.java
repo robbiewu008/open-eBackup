@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.common.model.job;
 
-import openbackup.system.base.sdk.job.model.JobLogBo;
-
 import lombok.Data;
+import openbackup.system.base.sdk.job.model.JobLogBo;
 
 import java.util.List;
 

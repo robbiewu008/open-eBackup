@@ -6,9 +6,15 @@ LOG_PATH="/opt/OceanProtect/logs/${NODE_NAME}/infrastructure/gaussdb"
 GAUSSDB_PATH="/usr/local/gaussdb"
 HA_PATH="/usr/local/ha"
 HA_MARK_FILE="/usr/local/gaussdb/data/ha_started"
+G_NODE_MARK_FILE="/opt/third_data/ha/gaussdb_node"
 tokenFile=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
 rootCAFile="/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 buildMarkFile="/usr/local/gaussdb/data/build_completed.start"
+CLEAR_FLOAT_IP_YAML_FILE="/usr/local/gaussdb/clear-float-ip-job.yaml"
+CP_YAML_FILE="/opt/third_data/ha/clear-float-ip-job.yaml"
+CLEAR_FLOAT_IP_JOB_NAME="clear-float-ip-job"
+GAUSS_DATA="/usr/local/gaussdb/data"
+
 
 # 生成证书阶段/opt/OceanProtect/已修改为750,nobody:nobody
 if [ ! -d ${LOG_PATH} ];then
@@ -18,6 +24,7 @@ if [ ! -d ${LOG_PATH} ];then
         exit 1
     fi
 fi
+
 sudo /opt/script/change_permission.sh chown ${LOG_PATH}
 if [ "$?" != "0" ];then
     echo "chown ${LOG_PATH} failed"
@@ -50,7 +57,7 @@ DB_DATA_PATH="/opt/db_data/GaussDB_V5"
 DB_RAW_DATA_PATH="${GAUSSDB_PATH}/data"
 
 # 判断是否需要导入V1数据
-config_maps=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf)
+config_maps=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf follow@-H)
 is_exist=$(echo "${config_maps} " | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('gaussdbUpgrade'))")
 
 # 处理直接部署的场景
@@ -100,6 +107,12 @@ fi
 
 change_config()
 {
+    # 如果 GAUSSDB_LOG_QUERY 开启，打开数据库慢查询记录
+    if [ "$GAUSSDB_LOG_QUERY" = "on" ]; then
+        gs_guc reload -c log_min_duration_statement=1000 -c log_duration=on -D "$GAUSS_DATA"
+        log_info "Turned on slow query log successfully"
+    fi
+
     # 修改pg_csnlog大小配置
     sed -i "s/^#autovacuum_freeze_max_age.*/autovacuum_freeze_max_age = 200000000/g" ${DB_DATA_PATH}/postgresql.conf
     check_result "$?" "${LINENO} set autovacuum_freeze_max_age:200000000 for data/postgresql.conf"
@@ -118,13 +131,13 @@ change_config()
     sed -i "s/^shared_buffers.*/shared_buffers = ${GAUSSDB_SHARED_BUFFERS}/g" ${DB_DATA_PATH}/postgresql.conf
     check_result "$?" "${LINENO} set shared_buffers:${GAUSSDB_SHARED_BUFFERS} for data/postgresql.conf"
 
-    sed -i "s/^#work_mem.*/work_mem = ${GAUSSDB_WORK_MEM}/g" ${DB_DATA_PATH}/postgresql.conf
+    sed -i "s/^#\?work_mem.*/work_mem = ${GAUSSDB_WORK_MEM}/g" ${DB_DATA_PATH}/postgresql.conf
     check_result "$?" "${LINENO} set work_mem:${GAUSSDB_WORK_MEM} for data/postgresql.conf"
 
     sed -i "s/^wal_buffers.*/wal_buffers = ${GAUSSDB_WAL_BUFFERS}/g" ${DB_DATA_PATH}/postgresql.conf
     check_result "$?" "${LINENO} set wal_buffers:${GAUSSDB_WAL_BUFFERS} for data/postgresql.conf"
 
-    sed -i "s/^#wal_writer_delay.*/wal_writer_delay = ${WAL_WRITER_DELAY}/g" ${DB_DATA_PATH}/postgresql.conf
+    sed -i "s/^#\?wal_writer_delay.*/wal_writer_delay = ${WAL_WRITER_DELAY}/g" ${DB_DATA_PATH}/postgresql.conf
     check_result "$?" "${LINENO} set wal_writer_delay:${WAL_WRITER_DELAY} for data/postgresql.conf"
 
     sed -i "s/^log_filename.*/log_filename = 'postgresql.log'/g" ${DB_DATA_PATH}/postgresql.conf
@@ -168,6 +181,11 @@ change_config()
     sed -i "/^listen_addresses = .*/c\listen_addresses = '${LISTEN_ADDRESS}'" ${DB_DATA_PATH}/postgresql.conf
     check_result "$?" "${LINENO} sed listen_addresses:${LISTEN_ADDRESS} for data/postgresql.conf"
 
+    timezone=$(python -c "import time; tz=time.strftime('%z'); print(f\"{'-' if tz[0] == '+' else '+'}{tz[1:3]}:{tz[3:5]}\")")
+    if [[ -n "$timezone" ]] && [[ ${#timezone} == 6 ]]; then
+      sed -i "s/#\?log_timezone.*/log_timezone = '${timezone}'/g" ${DB_DATA_PATH}/postgresql.conf
+      check_result "$?" "${LINENO} sed log_timezone:${timezone} for data/postgresql.conf"
+    fi
 }
 
 change_config
@@ -212,7 +230,7 @@ check_result "$?" "${LINENO} chmod 700 data"
 
 CLUSTER_ROLE=""
 if [[ ${DEPLOY_TYPE} == "d0" || ${DEPLOY_TYPE} == "d1" || ${DEPLOY_TYPE} == "d2" || ${DEPLOY_TYPE} == "d6" ]]; then
-    config_maps=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/cluster-conf)
+    config_maps=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/cluster-conf follow@-H)
     is_exist=$(echo "${config_maps}" | python3 -c "import sys, json;print(json.load(sys.stdin).get('data',{}).get('CLUSTER_ROLE'))")
     CLUSTER_ROLE=${is_exist}
     if [ "${is_exist}" == "None" ];then
@@ -227,7 +245,7 @@ if [[ ${DEPLOY_TYPE} == "d0" || ${DEPLOY_TYPE} == "d1" || ${DEPLOY_TYPE} == "d2"
               --data "${PAYLOAD}" \
               https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/cluster-conf
             log_info "${LINENO} Start to check cluster conf"
-            config_maps=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/cluster-conf)
+            config_maps=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/cluster-conf follow@-H)
             is_exist=$(echo "${config_maps} " | python3 -c "import sys, json;print(json.load(sys.stdin).get('data',{}).get('CLUSTER_ROLE'))")
             if [ "${is_exist}" != "None" ];then
                 log_info "${LINENO} Succeed to add cluster conf"
@@ -239,9 +257,10 @@ if [[ ${DEPLOY_TYPE} == "d0" || ${DEPLOY_TYPE} == "d1" || ${DEPLOY_TYPE} == "d2"
     fi
 fi
 
-config_maps=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf)
+config_maps=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf follow@-H)
 is_exist=$(echo "${config_maps} " | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('rollbacking'))")
-ori_dir=${DB_RAW_DATA_PATH}/gaussdb_backup
+image_tag=${IMAGE_VERSION}
+ori_dir=${DB_RAW_DATA_PATH}/gaussdb_backup/${image_tag}
 dest_dir=${DB_RAW_DATA_PATH}
 # 备、成员升级失败不能回滚，否则会将主节点同步后的数据恢复，导致配置错乱
 if [ ! -z "${is_exist}" ] && [ "${is_exist}" != "None" ];then
@@ -258,7 +277,7 @@ if [ ! -z "${is_exist}" ] && [ "${is_exist}" != "None" ];then
           --data "${PAYLOAD}" \
           https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf
         log_info "${LINENO} Start to check gaussdb_rollback flag"
-        config_maps=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf)
+        config_maps=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf follow@-H)
         is_exist=$(echo "${config_maps} " | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('gaussdb_rollback'))")
         if [ ! -z "${is_exist}" ] && [ "${is_exist}" == "true" ];then
             log_info "${LINENO} Succeed to set gaussdb rollback flag"
@@ -269,12 +288,13 @@ if [ ! -z "${is_exist}" ] && [ "${is_exist}" != "None" ];then
     done
 
     # do gaussdb rollback
-    if [ -d "${DB_RAW_DATA_PATH}/gaussdb_backup" ] && [ "${CLUSTER_ROLE}" != "STANDBY" ] && [ "${CLUSTER_ROLE}" != "MEMBER" ];then
+    if [ -d "${DB_RAW_DATA_PATH}/gaussdb_backup/${image_tag}" ] && [ "${CLUSTER_ROLE}" != "STANDBY" ] && [ "${CLUSTER_ROLE}" != "MEMBER" ];then
         log_info "${LINENO} Start to rollback data"
         cd ${dest_dir}
         rm -rf `ls ${dest_dir} | grep -v gaussdb_backup | grep -v pg_log| xargs`
         cd ${ori_dir}
         cp -rpf `ls ${ori_dir} | grep -v gaussdb_backup | grep -v pg_log| xargs` ${dest_dir}
+        cd ${GAUSSDB_PATH}
         log_info "${LINENO} End to rollback data"
     fi
     # cancel roll back flag
@@ -289,7 +309,7 @@ if [ ! -z "${is_exist}" ] && [ "${is_exist}" != "None" ];then
           --data "${PAYLOAD}" \
           https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf
         log_info "${LINENO} Start to check recover flag"
-        config_maps=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf)
+        config_maps=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf follow@-H)
         is_exist=$(echo "${config_maps} " | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('rollbacking'))")
         if [ -z "${is_exist}" ];then
             log_info "${LINENO} Succeed to cancel recover flag"
@@ -313,7 +333,7 @@ if [ "${is_exist}" == "None" ];then
           --data "${PAYLOAD}" \
           https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf
         log_info "${LINENO} Start to check log level"
-        config_maps=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf)
+        config_maps=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf follow@-H)
         is_exist=$(echo "${config_maps} " | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('loglevel'))")
         if [ ! -z "${is_exist}" ] && [ "${is_exist}" != "None" ];then
             log_info "${LINENO} Succeed to add log level"
@@ -350,7 +370,7 @@ fi
 
 rotate_log() {
     while true; do
-        /usr/sbin/logrotate ${GAUSSDB_PATH}/logrotate_gaussdb.conf -v -s ${GAUSSDB_PATH}/data/pg_log/logrotate.status | tee -a ${GAUSSDB_PATH}/data/pg_log/logrotate.log 2>&1
+        /usr/sbin/logrotate ${GAUSSDB_PATH}/logrotate_gaussdb.conf  -s ${GAUSSDB_PATH}/data/pg_log/logrotate.status >> ${GAUSSDB_PATH}/data/pg_log/logrotate.log 2>&1
         sleep 60
     done
 }
@@ -381,36 +401,53 @@ function delete_k8s()
     https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/${type}/${type_info}
 }
 
+function remove_other_controller_float_ip()
+{
+    local last_node=`cat ${G_NODE_MARK_FILE}`
+    cat $CLEAR_FLOAT_IP_YAML_FILE > $CP_YAML_FILE
+    local count=0
+    while [ ${count} -lt 3 ]; do
+        # 切控则发起job清理浮动ip
+        if [ "$NODE_NAME" != $last_node ];then
+            log_info "${LINENO} Start to remove previous gaussdb float ip."
+            sed -i "s/\(values:\).*$/\1 [\"$last_node\"]/" $CP_YAML_FILE
+            sed -i "s/\(image:\).*$/\1 "gaussdb:$IMAGE_VERSION"/" $CP_YAML_FILE
+            create_job_result=$(curl --cacert ${rootCAFile} \
+            -X POST \
+            -H "Content-Type: application/yaml" \
+            -H "Authorization: Bearer $tokenFile" \
+            --data-binary "@$CP_YAML_FILE" \
+            https://${KUBERNETES_SERVICE_HOST}/apis/batch/v1/namespaces/dpa/jobs)
+            is_exist=$(echo "${create_job_result} " | python3 -c "import sys, json;print(json.load(sys.stdin)['metadata'].get('name'))")
+            # 失败重试3次
+            if [ "$is_exist" != $CLEAR_FLOAT_IP_JOB_NAME ];then
+                log_error "${LINENO} create remove float ip job failed. ${create_job_result}"
+                let count++
+            else
+                log_info "${LINENO} create remove float ip job success."
+                return 0
+            fi
+        # 未切控直接退出
+        else
+            return 0
+        fi
+    done
+    return 1
+}
+
 log_info "Starting gaussdb"
 if [[ ${DEPLOY_TYPE} == "d8" ]];then
-  config_maps=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/multicluster-conf)
-  check_tag=$(echo "${config_maps}" | python3 -c "import sys, json;print(json.load(sys.stdin).get('data',{}).get('CLUSTER'))")
-  if [ "${check_tag}" == "true" ];then
-    INIT_PAYLOAD="{\"data\":{\"GAUSSDB_CLUSTER\":\"false\",\"HA_PRIMARY\":\"\",\"HA_STANDBY\":\"\",\"OM_CLUSTER\":\"false\",\"ZK_CLUSTER\":\"false\",\"ES_CLUSTER\":\"false\",\"REDIS_CLUSTER\":\"false\"}}"
-    update_k8s "${INIT_PAYLOAD}" "configmaps" "multicluster-conf"
-    log_info "${LINENO} Set up multi-cluster initiation tag succeed"
-  fi
-
   if [[ "${CLUSTER}" == "TRUE" ]];then
-    config_maps=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/multicluster-conf)
-    check_tag=$(echo "${config_maps}" | python3 -c "import sys, json;print(json.load(sys.stdin).get('data',{}).get('GAUSSDB_CLUSTER'))")
-    if [ "${check_tag}" == "None" ];then
-      INIT_PAYLOAD="{\"data\":{\"GAUSSDB_CLUSTER\":\"false\",\"HA_PRIMARY\":\"\",\"HA_STANDBY\":\"\",\"OM_CLUSTER\":\"false\",\"ZK_CLUSTER\":\"false\",\"ES_CLUSTER\":\"false\",\"REDIS_CLUSTER\":\"false\"}}"
-      update_k8s "${INIT_PAYLOAD}" "configmaps" "multicluster-conf"
-      log_info "${LINENO} Set up multi-cluster initiation tag succeed"
+    config_maps=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl -f --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/multicluster-conf follow@-H)
+    if [ $? -ne 0 ]; then
+        log_error "Failed to get multi-cluster conf, exit code $?"
+        exit 1
     fi
-
     CHECK_CLUSTER=$(echo "${config_maps}" | python3 -c "import sys, json;print(json.load(sys.stdin).get('data',{}).get('GAUSSDB_CLUSTER'))")
     CHECK_PRIMARY=$(echo "${config_maps}" | python3 -c "import sys, json;print(json.load(sys.stdin).get('data',{}).get('HA_PRIMARY'))")
     CHECK_STANDBY=$(echo "${config_maps}" | python3 -c "import sys, json;print(json.load(sys.stdin).get('data',{}).get('HA_STANDBY'))")
-    NODE_NUMBER=$(echo "$NODE_NAME" | awk '{print substr($0,length,1)}')
 
     if [[ "${CHECK_CLUSTER}" == "false" ]];then
-      # GaussDB集群状态需要清除单机密钥文件
-      DELETE_PAYLOAD='[{ "op": "remove", "path": "/data/database.gaussdbUsername_V5" },{ "op": "remove", "path": "/data/database.gaussdbPassword_V5" }]'
-      delete_k8s "${DELETE_PAYLOAD}" "secrets" "common-secret"
-      log_info "${LINENO} Delete generaldb secret succeed"
-
       # 更新标记
       PAYLOAD="{\"data\":{\"GAUSSDB_CLUSTER\":\"true\"}}"
       update_k8s "${PAYLOAD}" "configmaps" "multicluster-conf"
@@ -418,13 +455,16 @@ if [[ ${DEPLOY_TYPE} == "d8" ]];then
 
       # 更新主节点标签以便区分k8s service
       PRIMARY_PAYLOAD="{\"metadata\":{\"labels\":{\"role\":\"primary\"}}}"
-      update_k8s "${PRIMARY_PAYLOAD}" "pods" "gaussdb-1"
+      update_k8s "${PRIMARY_PAYLOAD}" "pods" "gaussdb-0"
       log_info "${LINENO} Set up init gaussdb master role succeed"
+    fi
 
-      # 更新从节点标签以便区分k8s service
-      STANDBY_PAYLOAD="{\"metadata\":{\"labels\":{\"role\":\"standby\"}}}"
-      update_k8s "${STANDBY_PAYLOAD}" "pods" "gaussdb-0"
-      log_info "${LINENO} Set up gaussdb standby role succeed"
+    # 添加标记
+    if [ "${CHECK_CLUSTER}" == "None" ];then
+      INIT_PAYLOAD="{\"data\":{\"GAUSSDB_CLUSTER\":\"false\",\"HA_PRIMARY\":\"\",\"HA_STANDBY\":\"\",\"OM_CLUSTER\":\"false\",\"ZK_CLUSTER\":\"false\",\"ES_CLUSTER\":\"false\",\"REDIS_CLUSTER\":\"false\"}}"
+      update_k8s "${INIT_PAYLOAD}" "configmaps" "multicluster-conf"
+      sleep 5
+      log_info "${LINENO} Set up multi-cluster initiation tag succeed"
     fi
 
     if [[ "${CHECK_PRIMARY}" == "${NODE_NAME}" ]] && [[ -f ${HA_MARK_FILE} ]];then
@@ -432,18 +472,27 @@ if [[ ${DEPLOY_TYPE} == "d8" ]];then
       gs_ctl start -D /usr/local/gaussdb/data -M primary
       # 更新主节点标签以便区分k8s service
       ROLE_PAYLOAD="{\"metadata\":{\"labels\":{\"role\":\"primary\"}}}"
-      update_k8s "${ROLE_PAYLOAD}" "pods" "gaussdb-"${NODE_NUMBER}""
+      update_k8s "${ROLE_PAYLOAD}" "pods" "${POD_NAME}"
       log_info "${LINENO} Set up gaussdb master role succeed"
-    elif [[ "${CHECK_STANDBY}" == "${NODE_NAME}" ]];then
+    elif [[ -n "${CHECK_STANDBY}" ]];then
+      # 如果当前节点不是主节点，并且PRIMARY和STANDBY的值非空，组建过集群，则当前节点以Standby模式启动
       log_info "${LINENO} Start gaussdb with STANDBY"
       gs_ctl start -D /usr/local/gaussdb/data -M standby
       # 更新从节点标签以便区分k8s service
       ROLE_PAYLOAD="{\"metadata\":{\"labels\":{\"role\":\"standby\"}}}"
-      update_k8s "${ROLE_PAYLOAD}" "pods" "gaussdb-"${NODE_NUMBER}""
+      update_k8s "${ROLE_PAYLOAD}" "pods" "${POD_NAME}"
       log_info "${LINENO} Set up gaussdb standby role succeed"
     else
       log_info "${LINENO} Start gaussdb with NORMAL"
       gs_ctl start -D /usr/local/gaussdb/data
+      if [[ "${POD_NAME}" == "gaussdb-1" ]];then
+        (rotate_log &)
+
+        while true
+        do
+          tail -f /dev/null & wait ${!}
+        done
+      fi
     fi
   else
     log_info "${LINENO} Start gaussdb with NORMAL"
@@ -454,6 +503,10 @@ else
   if [ "${CLUSTER_ROLE}" == "PRIMARY" ] && [ -f ${HA_MARK_FILE} ];then
       log_info "${LINENO} Start gaussdb with PRIMARY"
       gs_ctl start -D /usr/local/gaussdb/data -M primary
+      remove_other_controller_float_ip
+      if [ $? -ne 0 ]; then
+          log_error "${LINENO} Remove float ip job create failed."
+      fi
   elif [ "${CLUSTER_ROLE}" == "STANDBY" ];then
       log_info "${LINENO} Start gaussdb with STANDBY"
       gs_ctl start -D /usr/local/gaussdb/data -M standby
@@ -492,11 +545,13 @@ if [ "${CLUSTER_ROLE}" == "STANDBY" ] && [ -f ${HA_MARK_FILE} ]; then
     done
 fi
 
+common_secert=$(curl --cacert ${rootCAFile} -X GET -H "Content-Type: application/strategic-merge-patch+json" -H "Authorization: Bearer ${tokenFile}" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret)
+remote_passwd_exist=$(echo $common_secert | python -c "import json, sys; print('true' if json.load(sys.stdin).get('data', {}).get('database.remotePassword_V5') else 'false')")
 # 检查是否已经创建gaussdbremote，已存在则不再创建
 username=$(gsql postgres -p 6432 -v ON_ERROR_STOP=on -Atc "select usename from pg_user where usename='gaussdbremote';")
 
 # ON_ERROR_STOP=on时，return 0代表sql执行成功
-if [ $? -eq 0 ] && [ "$username" != "gaussdbremote" ]; then
+if [ $? -eq 0 ] && [ "$username" != "gaussdbremote" ] && [ $remote_passwd_exist == "false" ]; then
     log_info "${LINENO} Start to create gaussdbremote"
     log_info "${LINENO} Username:${username}"
     # 生成随机密码,密码中至少包含三种字符
@@ -529,7 +584,7 @@ if [ $? -eq 0 ] && [ "$username" != "gaussdbremote" ]; then
           --data "${PAYLOAD}" \
           https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret
         log_info "${LINENO} Start to check gaussdbremote secret"
-        secrets=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret)
+        secrets=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret follow@-H)
         is_exist=$(echo "${secrets} " | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('database.remotePassword_V5'))")
         if [ ! -z "${is_exist}" ] && [ "${is_exist}" != "None" ];then
             log_info "${LINENO} Succeed to add gaussdbremote secret"
@@ -543,9 +598,9 @@ else
     log_info "${LINENO} Gaussdbremote already exists or sql execute faild"
 fi
 
-config_info=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf)
+config_info=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf follow@-H)
 cluster_tag=$(echo ${config_info} | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('clusterSync'))")
-secrets=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret)
+secrets=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret follow@-H)
 # 多集群数据迁移成员节点同步密钥
 if [ "${CLUSTER_ROLE}" == "MEMBER" ] && [ "${cluster_tag}" != "true" ]; then
     # 获取原数据库密码
@@ -564,7 +619,7 @@ if [ "${CLUSTER_ROLE}" == "MEMBER" ] && [ "${cluster_tag}" != "true" ]; then
               --data "${REMOTE_PAYLOAD}" \
               https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret
             log_info "${LINENO} Start to check gaussdbremote secret"
-            secrets=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret)
+            secrets=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret follow@-H)
             is_exist=$(echo "${secrets} " | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('database.remotePassword_V5'))")
             if [ ! -z "${is_exist}" ] && [ "${is_exist}" != "None" ];then
                 log_info "${LINENO} Succeed to add gaussdbremote secret"
@@ -584,7 +639,7 @@ if [ "${CLUSTER_ROLE}" == "MEMBER" ] && [ "${cluster_tag}" != "true" ]; then
               --data "${GENERAL_PAYLOAD}" \
               https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret
             log_info "${LINENO} Start to check gaussdbremote secret"
-            secrets=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret)
+            secrets=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret follow@-H)
             is_exist=$(echo "${secrets} " | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('database.gaussdbPassword_V5'))")
             if [ ! -z "${is_exist}" ] && [ "${is_exist}" != "None" ];then
                 log_info "${LINENO} Succeed to add generaldb secret"
@@ -619,10 +674,16 @@ fi
 GAUSSDB_PATH="/usr/local/gaussdb"
 DATASYNC_PATH="/opt/db_data/GaussDB_V5/GaussDB_T_1.9.0-DATASYNC/DataSync"
 
-config_info=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf)
+config_info=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf follow@-H)
 config_tag=$(echo ${config_info} | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('gaussdbUpgrade'))")
-secrets=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret)
+secrets=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret follow@-H)
 if [ "${config_tag}" != "true" ] && [ -n "$check_connection" ]; then
+    # 设置迁移标记
+    log_info "${LINENO} Start to add migrate tag"
+    PAYLOAD="{\"data\":{\"gaussdbMigrate\":\"true\"}}"
+    update_k8s "${PAYLOAD}" "configmaps" "common-conf"
+    log_info "${LINENO} Set up migrate tag succeed"
+
     generaldb_is_exist=$(echo $(gsql postgres -p 6432 -c "select usename from pg_user;" | grep "generaldb"))
     if [ -z "$generaldb_is_exist" ];then
         echo "start to create generaldb"
@@ -657,7 +718,7 @@ if [ "${config_tag}" != "true" ] && [ -n "$check_connection" ]; then
               --data "${PAYLOAD}" \
               https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret
             log_info "${LINENO} Start to check generaldb secret"
-            secrets=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret)
+            secrets=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret follow@-H)
             is_exist=$(echo "${secrets} " | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('database.gaussdbPassword_V5'))")
             if [ ! -z "${is_exist}" ] && [ "${is_exist}" != "None" ];then
                 log_info "${LINENO} Succeed to add generaldb secret"
@@ -685,7 +746,7 @@ if [ "${config_tag}" != "true" ] && [ -n "$check_connection" ]; then
                       --data "${REMOTE_PAYLOAD}" \
                       https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret
                     log_info "${LINENO} Start to check gaussdbremote secret"
-                    secrets=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret)
+                    secrets=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret follow@-H)
                     is_exist=$(echo "${secrets} " | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('database.remotePassword_V5'))")
                     if [ ! -z "${is_exist}" ] && [ "${is_exist}" != "None" ];then
                         log_info "${LINENO} Succeed to add gaussdbremote secret"
@@ -705,7 +766,7 @@ if [ "${config_tag}" != "true" ] && [ -n "$check_connection" ]; then
                       --data "${GENERAL_PAYLOAD}" \
                       https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret
                     log_info "${LINENO} Start to check gaussdbremote secret"
-                    secrets=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret)
+                    secrets=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/secrets/common-secret follow@-H)
                     is_exist=$(echo "${secrets} " | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('database.gaussdbPassword_V5'))")
                     if [ ! -z "${is_exist}" ] && [ "${is_exist}" != "None" ];then
                         log_info "${LINENO} Succeed to add generaldb secret"
@@ -786,9 +847,9 @@ if [ "${config_tag}" != "true" ] && [ -n "$check_connection" ]; then
         check_result "$?" "${LINENO} create replicationdb database"
 
         # 获取数据库ip
-        pod_info=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/pods)
+        pod_info=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/pods follow@-H)
         gaussdb_name=$(echo ${pod_info} | python3 -c "import sys, json, gaussdb_common;print(gaussdb_common.get_pod_name(json.load(sys.stdin)['items']))")
-        gaussdb_info=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/pods/${gaussdb_name})
+        gaussdb_info=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/pods/${gaussdb_name} follow@-H)
         gaussdb_ip=$(echo ${gaussdb_info} | python3 -c "import sys, json;print(json.load(sys.stdin)['status'].get('podIP'))")
         if [ "${gaussdb_ip}" != "None" ];then
             log_info "${LINENO} Succeed to get gaussdb pod ip"
@@ -797,9 +858,9 @@ if [ "${config_tag}" != "true" ] && [ -n "$check_connection" ]; then
             exit 1
         fi
 
-        # 交互式输入密码
+        # 输入密码
         type=2
-        expect auto_password_input.sh $GAUSSDB_PATH $DATASYNC_PATH $passwd $type
+        LD_PRELOAD=/usr/lib64/libSecurityStarter.so expect auto_password_input.sh $GAUSSDB_PATH $DATASYNC_PATH $passwd $type index@4
 
         # 写入参数至cfg.ini
         result=`python3 -c 'import gaussdb_common;print(gaussdb_common.write_import_cfg("'${gaussdb_ip}'"))'`
@@ -808,20 +869,6 @@ if [ "${config_tag}" != "true" ] && [ -n "$check_connection" ]; then
         echo "host  all  all  ${gaussdb_ip}/32  sha256" >> ${DB_DATA_PATH}/pg_hba.conf
         gs_ctl reload -D ${GAUSSDB_PATH}/data
         check_result "$?" "${LINENO} gs_ctl reload -D ${GAUSSDB_PATH}/data"
-
-        # 设置迁移标记
-        log_info "Start to add migrate tag"
-        PAYLOAD="{\"data\":{\"gaussdbMigrate\":\"true\"}}"
-        for i in {1..3}
-        do
-            curl --cacert ${rootCAFile} \
-              -X PATCH \
-              -H "Content-Type: application/strategic-merge-patch+json" \
-              -H "Authorization: Bearer ${tokenFile}" \
-              --data "${PAYLOAD}" \
-              https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf
-            log_info "${LINENO} Set up migrate tag succeed"
-        done
 
     else
         echo "generaldb already exists"
@@ -839,18 +886,10 @@ if [ "${config_tag}" != "true" ] && [ -n "$check_connection" ]; then
     cd -
 
     # 清除迁移标记
-    log_info "Start to modify migrate tag"
-    MESSAGE="{\"data\":{\"gaussdbMigrate\":\"false\"}}"
-    for i in {1..3}
-    do
-        curl --cacert ${rootCAFile} \
-          -X PATCH \
-          -H "Content-Type: application/strategic-merge-patch+json" \
-          -H "Authorization: Bearer ${tokenFile}" \
-          --data "${MESSAGE}" \
-          https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf
-        log_info "${LINENO} Revise migrate tag succeed"
-    done
+    log_info "${LINENO} Start to modify migrate tag"
+    PAYLOAD="{\"data\":{\"gaussdbMigrate\":\"false\"}}"
+    update_k8s "${PAYLOAD}" "configmaps" "common-conf"
+    log_info "${LINENO} Revise migrate tag succeed"
 
     # 迁移成功后清除PVC内的迁移工具和迁移数据
     rm -rf ${DB_DATA_PATH}/GaussDB_T_1.9.0-DATASYNC

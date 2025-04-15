@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.sdk.auth.model;
 
-import openbackup.system.base.sdk.auth.model.request.Scope;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.sdk.auth.model.request.Scope;
 
 /**
  * 获取hcs的token参数

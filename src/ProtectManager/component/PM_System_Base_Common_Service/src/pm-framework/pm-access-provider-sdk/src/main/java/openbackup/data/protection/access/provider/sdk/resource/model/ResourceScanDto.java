@@ -12,10 +12,9 @@
 */
 package openbackup.data.protection.access.provider.sdk.resource.model;
 
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 
 /**
  * 描述

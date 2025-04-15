@@ -1,0 +1,163 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="开启SFTP服务">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="admin-00261.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="admin-00262">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>开启SFTP服务</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="admin-00262"></a><a name="admin-00262"></a>
+
+<h1 class="topictitle1">开启SFTP服务</h1>
+<div><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p4418105261114"><span id="admin-00262__zh-cn_topic_0000002200070033_text73181542153312">OceanProtect</span>支持开启SFTP服务，为SFTP客户端提供存储空间。</p>
+<div class="section" id="admin-00262__zh-cn_topic_0000002200070033_section2381122285017"><h4 class="sectiontitle">注意事项</h4><ul id="admin-00262__zh-cn_topic_0000002200070033_ul7219126546"><li id="admin-00262__zh-cn_topic_0000002200070033_li116591722510">若端口上已存在IP地址，请确保填写的IP地址与其处于同一网段。</li></ul>
+<ul id="admin-00262__zh-cn_topic_0000002200070033_ul1365617142510"><li id="admin-00262__zh-cn_topic_0000002200070033_li0651217112520">首次开启SFTP服务可以设置WORM参数，若之前已经启用过SFTP服务，再次开启SFTP服务WORM参数也不支持配置。</li></ul>
+</div>
+<div class="section" id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_section794011366419"><h4 class="sectiontitle">操作步骤</h4><ol id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_zh-cn_topic_0000001123352597_ol61721291281"><li id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_zh-cn_topic_0000001123352597_li31809451213"><span>在导航栏上，选择<span class="uicontrol" id="admin-00262__zh-cn_topic_0000002200070033_uicontrol1145511130412">“系统 &gt; 设置 &gt; SFTP服务”</span>。</span></li><li id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_li1225141815444"><span>在<span class="uicontrol" id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_uicontrol3917164914314">“<span id="admin-00262__zh-cn_topic_0000002200070033_text1649821831020">SFTP服务</span>”</span>页签，单击右侧的<span><img id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_image1798515141986" src="zh-cn_image_0000002200155837.png"></span>，开启SFTP服务。</span><p><div class="p" id="admin-00262__zh-cn_topic_0000002200070033_p1215853911450">系统弹出<span class="uicontrol" id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_uicontrol17661133819110">“开启SFTP”</span>对话框。参考<a href="#admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_table671135219250">表1</a>配置相关参数。
+<div class="tablenoborder"><a name="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_table671135219250"></a><a name="zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_table671135219250"></a><table cellpadding="4" cellspacing="0" summary="" id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_table671135219250" frame="border" border="1" rules="all"><caption><b>表1 </b>SFTP参数说明</caption><colgroup><col style="width:16.82%"><col style="width:16.89%"><col style="width:66.29%"></colgroup><thead align="left"><tr id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_row871185212253"><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.2.2.1.3.2.4.1.1"><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p8711145292515">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.2.2.1.3.2.4.1.2"><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p1171112528256">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="admin-00262__zh-cn_topic_0000002200070033_row580213511509"><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p20802173585019"><span id="admin-00262__zh-cn_topic_0000002200070033_text134381023135318">IP地址类型</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.2 "><p id="admin-00262__zh-cn_topic_0000002200070033_p580293515501">支持选择“IPV4”或“IPV6”。</p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_row2071155212518"><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p15711175215251"><span id="admin-00262__zh-cn_topic_0000002200070033_text62112365711">IPv4地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.2 "><p id="admin-00262__zh-cn_topic_0000002200070033_p116105755314">当IP地址类型选择为IPV4时展示该参数。</p>
+<p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p37115523251">SFTP服务IP地址。</p>
+<p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p209611624195811">该IP地址和子网掩码用于<span style="color:#282B33;">SFTP客户端连接</span><span style="color:#282B33;" id="admin-00262__zh-cn_topic_0000002200070033_text181869771210">OceanProtect</span><span style="color:#282B33;">SFTP服务端，需确保与SFTP客户端网络连通，且不能和SFTP客户端网段中的IP冲突。</span></p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_row08691454132619"><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p0869165452610"><span id="admin-00262__zh-cn_topic_0000002200070033_text244295116711">子网掩码</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.2 "><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p8869185417265">IPV4地址的子网掩码。</p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_row127371451808"><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p077717148119"><span id="admin-00262__zh-cn_topic_0000002200070033_text020114511816">IPv6地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.2 "><p id="admin-00262__zh-cn_topic_0000002200070033_p2065512491527">当IP地址类型选择为IPV6时展示该参数。</p>
+<p id="admin-00262__zh-cn_topic_0000002200070033_p177774144111">SFTP服务IP地址。</p>
+<p id="admin-00262__zh-cn_topic_0000002200070033_p197771144110">该IP地址和前缀长度用于<span style="color:#282B33;">SFTP客户端连接</span><span style="color:#282B33;" id="admin-00262__zh-cn_topic_0000002200070033_text195590551351">OceanProtect</span><span style="color:#282B33;">SFTP服务端，需确保与SFTP客户端网络连通，且不能和SFTP客户端网段中的IP冲突。</span></p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_row15738145101"><td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p17481104711113"><span id="admin-00262__zh-cn_topic_0000002200070033_text19594171813810">前缀长度</span></p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.2 "><p id="admin-00262__zh-cn_topic_0000002200070033_p77381451402">IPV6地址的前缀长度。</p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_row211149125619"><td class="cellrowborder" rowspan="6" valign="top" width="16.82%" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p411119955611">配置业务端口</p>
+</td>
+<td class="cellrowborder" valign="top" width="16.89%" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p21111496565">是否使用VLAN</p>
+</td>
+<td class="cellrowborder" valign="top" width="66.29%" headers="mcps1.3.3.2.2.2.1.3.2.4.1.2 "><p id="admin-00262__zh-cn_topic_0000002200070033_p15111395564">默认不勾选。勾选前请确认业务已配置VLAN，勾选后，配置的业务端口会应用于VLAN。</p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_row12816351115610"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p1988316517">端口类型</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p1881619515566">支持选择“以太网端口”或“绑定端口”。</p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_row6651754235"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p1565145418313">端口选择</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p17656541935">勾选“是否使用VLAN”或端口类型选择“绑定端口”展示该参数，支持选择“创建新端口”或“复用当前已配置端口”。</p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_row106437395597"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p164093435119">可选端口</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p15812135551019">当前可选择的前端端口。</p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_row91505291514"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p1220286175118">已选端口</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p17958144515597">当前已选择的前端端口。</p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_row1532810397119"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p83286397116">VLAN ID</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p16328239151112">选择“创建新端口”后展示该参数。输入所使用的VLAN ID。</p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_row17420065582"><td class="cellrowborder" rowspan="5" valign="top" width="16.82%" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p642012625812">WORM</p>
+</td>
+<td class="cellrowborder" valign="top" width="16.89%" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_p524112416587">模式</p>
+</td>
+<td class="cellrowborder" valign="top" width="66.29%" headers="mcps1.3.3.2.2.2.1.3.2.4.1.2 "><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p28741024871">开启WORM后显示该参数。</p>
+<ul id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_ul7325515145118"><li id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_li7325161519515">法规遵从<p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p1338234265119"><a name="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_li7325161519515"></a><a name="zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_li7325161519515"></a>对于保护期内的文件，超级管理员、管理员和普通用户都不可以修改和删除。对于过期的文件，超级管理员、管理员和普通用户都不可以修改，但可以删除。</p>
+</li><li id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_li19325161545112">企业遵从<p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p4166948105114"><a name="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_li19325161545112"></a><a name="zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_li19325161545112"></a>对于保护期内的文件，管理员和普通用户都不可以修改和删除，特权用户才可以删除。对于过期的文件，超级管理员、管理员和普通用户都不可以修改，但可以删除。</p>
+</li></ul>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_row14241122415589"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p143321550124510">保护期</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p1440714181812">开启WORM后显示该参数。</p>
+<p id="admin-00262__zh-cn_topic_0000002200070033_p1658121011011"><span style="color:#494949;">设置文件保护时间</span>。取值范围：0~70年。</p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_row1056011350117"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p6332155014457">自动锁定</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p092821985">开启WORM后显示该参数。</p>
+<p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p6165153319459">启用该功能后，文件在设置的“锁定等待时长（小时）”内未被修改，则文件自动进入锁定状态。此时文件受到保护，只能读取，不可以修改、删除和重命名。</p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_row178485371119"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p6332950194512">锁定等待时长</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p96811625880">开启WORM后显示该参数。</p>
+<p id="admin-00262__zh-cn_topic_0000002200070033_p156331726103">文件在锁定等待时长内未被修改，则文件自动进入锁定状态，此时文件只能读取，不可以修改和删除。取值范围：1分钟~10年。</p>
+</td>
+</tr>
+<tr id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_row12778639913"><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p633375034517">自动删除</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.3.2.4.1.1 "><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p15256102818815">开启WORM后显示该参数。</p>
+<p id="admin-00262__zh-cn_topic_0000002200070033_p157929306010">启用后，系统将自动删除超过保护期的文件。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_li19616114245712"><span>单击<span class="uicontrol" id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_uicontrol8880124945718">“<span id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_text74413017173">确定</span>”</span>。</span></li></ol>
+</div>
+<div class="section" id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_zh-cn_topic_0000001123352597_zh-cn_topic_0171822298_section9223236"><h4 class="sectiontitle">后续处理</h4><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p194801138181317">在<span class="uicontrol" id="admin-00262__zh-cn_topic_0000002200070033_uicontrol62240524108">“SFTP服务”</span>页签，单击右侧的<span><img id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_image4996162320373" src="zh-cn_image_0000002200070229.png"></span>，在弹出的对话框中，单击<span class="uicontrol" id="admin-00262__zh-cn_topic_0000002200070033_uicontrol6375194771013">“确定”</span>，关闭SFTP服务。</p>
+<div class="note" id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_note16857511164"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="admin-00262__zh-cn_topic_0000002200070033_zh-cn_topic_0000001792505334_p1068585111166">关闭SFTP服务前，请确保当前没有SFTP用户使用SFTP服务进行文件传输，且所有的SFTP用户不再需要使用SFTP服务。</p>
+</div></div>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="admin-00261.html">管理SFTP服务（适用于1.6.0及后续版本）（适用于OceanProtect X系列备份一体机）</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

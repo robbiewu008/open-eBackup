@@ -3,8 +3,6 @@ add_library(host_index_obj
     ${CMAKE_CURRENT_SOURCE_DIR}/HostIndex.cpp
 )
 
-MESSAGE("MODULE_PATH : ${MODULE_ROOT_PATH}")
-
 target_include_directories(host_index_obj
     PRIVATE
     ${PLUGIN_FRAMEWORK_PATH}/inc/job/
@@ -18,8 +16,8 @@ target_include_directories(host_index_obj
     ${PLUGIN_SRC_PATH}
     ${PLUGIN_SRC_PATH}/common
     ${PLUGIN_SRC_PATH}/utils
-    ${MODULE_ROOT_PATH}/third_open_src/thrift_rel/include
-    ${MODULE_ROOT_PATH}/third_open_src/boost_rel/include
+    ${OPEN_SRC_PATH}/thrift_rel/include
+    ${OPEN_SRC_PATH}/boost_rel/include
     ${MODULE_ROOT_PATH}/src
     ${MODULE_ROOT_PATH}/src/libsmb_ctx
     ${PLUGIN_SCANNER_PATH}/interface

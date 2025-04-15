@@ -12,6 +12,9 @@
 */
 package openbackup.gaussdbt.protection.access.provider;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.NodeInfo;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
@@ -26,13 +29,11 @@ import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
 import openbackup.gaussdbt.protection.access.provider.constant.GaussDBTConstant;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.collections.MapUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -48,6 +49,9 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class GaussDBTBackupInterceptorProvider extends AbstractDbBackupInterceptor {
+    @Autowired
+    private DeployTypeService deployTypeService;
+
     @Override
     public BackupTask supplyBackupTask(BackupTask backupTask) {
         List<StorageRepository> repositories = backupTask.getRepositories();
@@ -70,6 +74,11 @@ public class GaussDBTBackupInterceptorProvider extends AbstractDbBackupIntercept
         advanceParams.put(GaussDBTConstant.MULTI_FILE_SYSTEM_KEY, GaussDBTConstant.FALSE);
         advanceParams.put(GaussDBTConstant.MOUNT_TYPE_KEY, MountTypeEnum.FULL_PATH_MOUNT.getMountType());
         advanceParams.put(DatabaseConstants.MULTI_POST_JOB, Boolean.TRUE.toString());
+        log.info("gaussDBT backup isPacific:{}", deployTypeService.isPacific());
+        if (deployTypeService.isPacific()) {
+            // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+            advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        }
         backupTask.setAdvanceParams(advanceParams);
 
         // 副本格式：0-快照格式 1-目录格式

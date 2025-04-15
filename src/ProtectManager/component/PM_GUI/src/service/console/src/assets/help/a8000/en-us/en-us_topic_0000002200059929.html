@@ -1,0 +1,231 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 3: Registering a TDSQL Database">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164818898.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200059929">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 3: Registering a TDSQL Database</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200059929"></a><a name="EN-US_TOPIC_0000002200059929"></a>
+
+<h1 class="topictitle1">Step 3: Registering a TDSQL Database</h1>
+<div><p>After the client is installed on the host where the TDSQL database resides, the <span>OceanProtect</span> automatically discovers the TDSQL database host. You need to register TDSQL clusters and instances of the host on the management page to protect them or use them as the restoration target.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><ul><li>The <span>OceanProtect</span> can back up non-distributed and distributed instances of a TDSQL database.</li><li><span>Unless otherwise specified, the operations in this section use TDSQL 10.3.22.1 as an example. The operations may vary depending on the actual version.</span></li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><p>All cluster nodes of the database must be registered. Data cannot be backed up on unregistered nodes, and as a result, user data at the restoration time point will be inconsistent.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Ensure that the client has been installed on the hosts where all OSS and Scheduler nodes in the TDSQL cluster and all data nodes of TDSQL instances are located.</li><li>Before registering a TDSQL instance, ensure that the TDSQL cluster has been registered.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Registering a Cluster</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200059929__en-us_topic_0000002199964685_uicontrol123821426193719"><b><span id="EN-US_TOPIC_0000002200059929__en-us_topic_0000002199964685_text3382726113718"><strong>Protection</strong></span> &gt; Databases &gt; TDSQL</b></span>.</span></li><li><span>On the TDSQL page, click the <span class="uicontrol"><b><span><strong>Cluster</strong></span></b></span> tab.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span>.</span></li><li><span>On the <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> page, customize a cluster name.</span></li><li><span>Add an OSS management node.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Before adding an OSS management node, ensure that the host where the TDSQL OSS node is located has been registered.</p>
+</div></div>
+<ol type="a"><li>Add an OSS management node. <a href="#EN-US_TOPIC_0000002200059929__table175361515103710">Table 1</a> describes the related parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200059929__table175361515103710"></a><a name="table175361515103710"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200059929__table175361515103710" frame="border" border="1" rules="all"><caption><b>Table 1 </b>OSS management node parameters</caption><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.5.2.5.2.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.5.2.5.2.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.1 "><p><span><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.2 "><p>Contact the database vendor to obtain the username and password for OSS interface authentication.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.1 "><p><span><strong>Password</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.1 "><p><strong>Client</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.2 "><p>Select the host where the OSS node to be added is located.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.1 "><p><span><strong>Service Plane IP Address</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.2 "><p>Log in to the TDSQL CHITU management console, and choose <span class="uicontrol" id="EN-US_TOPIC_0000002200059929__uicontrol8261152111504"><b>Dispatching and management system &gt; OSS-service monitoring</b></span> to view the host address.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.1 "><p><span><strong>Port</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.5.2.2.1.2.2.3.1.2 "><p>Port number used by the <span>OceanProtect</span> to communicate with the management zone of the host where the OSS node is located. You can obtain the port number from the <span class="uicontrol"><b>Dispatching and management system &gt; OSS-service monitoring</b></span> page of the TDSQL CHITU management console.</p>
+<p>The default port number is <strong>8080</strong>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Click <span class="uicontrol"><b>Add</b></span> to add all OSS nodes in the cluster.</li></ol>
+</p></li><li><span>Add a Scheduler node.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Before adding a Scheduler node, ensure that the host where the TDSQL Scheduler node is located has been registered.</p>
+</div></div>
+<ol type="a"><li>Add a Scheduler node. <a href="#EN-US_TOPIC_0000002200059929__table618554112506">Table 2</a> describes the related parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200059929__table618554112506"></a><a name="table618554112506"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200059929__table618554112506" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Scheduler node parameters</caption><colgroup><col style="width:50%"><col style="width:50%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.5.2.6.2.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.5.2.6.2.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.2.1.2.2.3.1.1 "><p><strong>Clients</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.2.1.2.2.3.1.2 "><p>Select the host where the Scheduler node to be added is located.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.2.1.2.2.3.1.1 "><p><span><strong>Service Plane IP Address</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.5.2.6.2.2.1.2.2.3.1.2 "><p>Use the IP address on the <span class="uicontrol"><b>Dispatching and management system &gt; Scheduler monitoring</b></span> of the TDSQL CHITU management console.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Click <span class="uicontrol"><b>Add</b></span> to add all Scheduler nodes in the cluster.</li></ol>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Registering a Non-Distributed Instance</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200059929__en-us_topic_0000002199964685_uicontrol123821426193719_1"><b><span id="EN-US_TOPIC_0000002200059929__en-us_topic_0000002199964685_text3382726113718_1"><strong>Protection</strong></span> &gt; Databases &gt; TDSQL</b></span>.</span></li><li id="EN-US_TOPIC_0000002200059929__en-us_topic_0000001311214069_li25181819389"><span>Click the <span class="uicontrol" id="EN-US_TOPIC_0000002200059929__en-us_topic_0000001311214069_uicontrol47381735103817"><b><span id="EN-US_TOPIC_0000002200059929__text1668605291117"><strong>Non-distributed Instances</strong></span></b></span> tab.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span>.</span></li><li><span>On the <span class="wintitle"><b><span><strong>Register</strong></span></b></span> page, register a non-distributed TDSQL instance. <a href="#EN-US_TOPIC_0000002200059929__en-us_topic_0000001311214069_table241515964115">Table 3</a> describes the related parameters.</span><p>
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200059929__en-us_topic_0000001311214069_table241515964115"></a><a name="en-us_topic_0000001311214069_table241515964115"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200059929__en-us_topic_0000001311214069_table241515964115" frame="border" border="1" rules="all"><caption><b>Table 3 </b>Instance registration information</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.6.2.4.2.1.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.6.2.4.2.1.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>Name of an instance, which can be customized.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><span><strong>Cluster</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>Select the cluster where the instance to be registered resides.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><strong>SETID</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>ID of the instance to be registered. Obtain the value from the <strong>Instance management</strong> page on the TDSQL CHITU management console.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><span><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>Enter the username and password created in <a href="en-us_topic_0000002200059925.html#EN-US_TOPIC_0000002200059925__li77041336572">1</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><span><strong>Password</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.4.2.1.2.3.1.1 "><p><span><strong>tdsqlsys_repl User Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.4.2.1.2.3.1.2 "><p>Contact the database vendor to obtain the value, or run the <strong>select * from mysql.slave_master_info</strong><strong>;</strong> command on the standby database node to obtain the value of <span class="parmname"><b>User_password</b></span> in the command output.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>Scan Data Node</strong></span></b></span>. The system automatically obtains the data node of the instance.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>You can also click <span class="uicontrol"><b><span><strong>Add</strong></span></b></span> in the <span class="wintitle"><b><span><strong>Data Nodes</strong></span></b></span> area to manually add data nodes.</p>
+</div></div>
+</p></li><li><span>Configure the data node. <a href="#EN-US_TOPIC_0000002200059929__table54551650193618">Table 4</a> describes the related parameters.</span><p>
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200059929__table54551650193618"></a><a name="table54551650193618"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200059929__table54551650193618" frame="border" border="1" rules="all"><caption><b>Table 4 </b>Data node configurations</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.6.2.6.2.1.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.6.2.6.2.1.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><span><strong>Hosts</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>Host where the data node is located.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><span><strong>Type</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>Data node type.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><span><strong>Parameter File Path</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>Enter the parameter file path of this node. You can log in to the data node where the instance resides and run the <strong>ps -ef | grep mysql | grep </strong><em>Instance port</em> command to obtain the path following <span class="parmvalue"><b>defaults-file</b></span>.</p>
+<div class="note" id="EN-US_TOPIC_0000002200059929__note195316305250"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002200059929__p0531123013256">Replace <em id="EN-US_TOPIC_0000002200059929__i182744371259">Instance port</em> with the actual value obtained from the <strong id="EN-US_TOPIC_0000002200059929__b16441825203016">DB monitoring</strong> page after selecting an instance on the <strong id="EN-US_TOPIC_0000002200059929__b136602019297">Instance management</strong> page of the TDSQL CHITU management console.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><span><strong>Socket File Path</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>Enter the socket file path of the node. You can log in to the data node where the instance resides and run the <strong>ps -ef | grep mysql | grep </strong><em>Instance port</em> command to obtain the path following <span class="parmvalue"><b>socket</b></span>.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002200059929__en-us_topic_0000002200059929_p0531123013256">Replace <em id="EN-US_TOPIC_0000002200059929__en-us_topic_0000002200059929_i182744371259">Instance port</em> with the actual value obtained from the <strong id="EN-US_TOPIC_0000002200059929__en-us_topic_0000002200059929_b16441825203016">DB monitoring</strong> page after selecting an instance on the <strong id="EN-US_TOPIC_0000002200059929__en-us_topic_0000002200059929_b136602019297">Instance management</strong> page of the TDSQL CHITU management console.</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><strong>Client</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>Select a backup client.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.6.2.6.2.1.2.3.1.1 "><p><span><strong>Priority</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.6.2.6.2.1.2.3.1.2 "><p>Set the priority for non-distributed instance backup.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Registering a Distributed Instance</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200059929__en-us_topic_0000002199964685_uicontrol123821426193719_2"><b><span id="EN-US_TOPIC_0000002200059929__en-us_topic_0000002199964685_text3382726113718_2"><strong>Protection</strong></span> &gt; Databases &gt; TDSQL</b></span>.</span></li><li><span>Click the <span class="uicontrol"><b><span><strong>Distributed Instances</strong></span></b></span> tab.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span>.</span></li><li><span>On the <span class="wintitle"><b><span><strong>Register</strong></span></b></span> page, register a distributed TDSQL instance. <a href="#EN-US_TOPIC_0000002200059929__table1326718391292">Table 5</a> describes the related parameters.</span><p>
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200059929__table1326718391292"></a><a name="table1326718391292"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200059929__table1326718391292" frame="border" border="1" rules="all"><caption><b>Table 5 </b>Instance registration information</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.7.2.4.2.1.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.7.2.4.2.1.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.7.2.4.2.1.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.7.2.4.2.1.2.3.1.2 "><p>Name of an instance, which can be customized.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.7.2.4.2.1.2.3.1.1 "><p><span><strong>Cluster</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.7.2.4.2.1.2.3.1.2 "><p>Select the cluster where the instance to be registered resides.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.7.2.4.2.1.2.3.1.1 "><p><strong>GroupID</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.7.2.4.2.1.2.3.1.2 "><p>Click <span><strong>Enter the GroupID of the distributed TDSQL instance</strong></span>. Obtain the value from the <strong>Instance management</strong> page on the CHITU management console. The value of <strong>Instance ID</strong> indicates <strong>GroupID</strong>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>Scan Data Node</strong></span></b></span>. The system automatically obtains the data node of the instance.</span></li><li><span>Select a backup client for the data node.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164818898.html">Backing Up a TDSQL Database</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

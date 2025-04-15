@@ -24,13 +24,14 @@ public:
     LvmSnapshotProvider(
         std::shared_ptr<DeviceMount> deviceMount, const std::string &jobId, const std::string& snapshotMountRoot);
     ~LvmSnapshotProvider() override {};
-    SnapshotResult CreateSnapshot(const std::string& filePath, bool isCrossVolume) override;
+    SnapshotResult CreateSnapshot(const std::string& filePath, bool isCrossVolume,
+        const std::string& snapshotPercent) override;
     SnapshotResult QuerySnapshot(const std::string& filePath) override;
     SnapshotDeleteResult DeleteAllSnapshots(const std::set<std::string>& snapshotInfos = {}) override;
     bool MountSnapshot(const std::string &volumeDevice, const std::string& mountPath) override;
     static bool DeleteSnapshotByVolume(const std::string& snapVolumeName);
     static std::shared_ptr<LvmSnapshot> CreateSnapshotByVolumeName(const std::string& snapshotMountRoot,
-        const std::string& snapTag, const std::string& volumeName, int& errorCode);
+        const std::string& snapTag, const std::string& volumeName, const std::string& snapshotPercent, int& errorCode);
     static std::string GetLvmPath(const std::string& volumeDeviceName);
 
 private:
@@ -44,7 +45,7 @@ private:
     bool GetLogicalVolume(const std::string& path,  bool isCrossVolume,
                            std::vector<LvmSnapshot> &volumeInfo);
     std::shared_ptr<LvmSnapshot> CreateSnapshotByVolume(const std::string &volumeName,
-        const std::string &volumePath, int& ret);
+        const std::string &volumePath, int& ret, const std::string &snapshotPercent);
     std::string ConvertSnapMountPath(const std::string& originalPath,
         const std::shared_ptr<LvmSnapshot>& snapshotInfo) const;
     std::string ConcatPath(const std::string& first, const std::string& second) const;

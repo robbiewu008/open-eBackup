@@ -21,7 +21,7 @@
         <card [cardInfo]="card" [class]="'card card' + card.index">
           <div class="header-slot" header [ngSwitch]="card.index">
             <ng-container *ngSwitchCase="1">
-              <lv-select [lvOptions]="clusterOption" [(ngModel)]="card.selectcluster"
+              <lv-select *ngIf="!appUtilsService.isDecouple" [lvOptions]="clusterOption" [(ngModel)]="card.selectcluster"
                 (ngModelChange)="refresh(card.name)" lvValueKey="value" lvSimple></lv-select>
 
               <lv-select [lvOptions]="missionOverviewTimeOption" [(ngModel)]="card.selectTime"
@@ -32,10 +32,11 @@
             <ng-container *ngSwitchCase="6">
               <lv-cascader class="ui-cascader" [lvOptions]="clusterNodesOption" lvShowTrigger="false"
                 [(ngModel)]="card.selectNode" (lvSelectionChange)="
-                  clusterNodesSelectionChange($event, 'performance')
+                  clusterNodesSelectionChange($event, 'performance',card)
                 ">
-                <span *ngIf="performanceSelectClusterNodes" class="cascader-label">{{ performanceSelectClusterNodes
-                  }}({{
+                <span *ngIf="performanceSelectClusterNodes" class="cascader-label">
+                  <span lv-overflow class="node-label-warp">{{ performanceSelectClusterNodes | nil}}</span>
+                   ({{
                   'common_home_node_name_label' | i18n
                   }})&nbsp;<svg width="16" height="16" style="fill:#808080">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lv-icon-list-unfold"></use>
@@ -50,14 +51,16 @@
             <ng-container *ngSwitchCase="7">
               <lv-cascader class="ui-cascader" [lvOptions]="clusterNodesOption" lvShowTrigger="false"
                 [(ngModel)]="card.selectNode" (lvSelectionChange)="
-                  clusterNodesSelectionChange($event, 'capacityDiction')
+                  clusterNodesSelectionChange($event, 'capacityDiction',card)
                 ">
-                <span *ngIf="capacityDictionSelectClusterNodes" class="cascader-label">{{
-                  capacityDictionSelectClusterNodes }}({{
-                  'common_home_node_name_label' | i18n
-                  }})&nbsp;<svg width="16" height="16" style="fill:#808080">
+                <span *ngIf="capacityDictionSelectClusterNodes" class="cascader-label">
+                    <span lv-overflow>
+                        {{ capacityDictionSelectClusterNodes|nil }}
+                    </span>({{'common_home_node_name_label' | i18n }})&nbsp;
+                    <svg width="16" height="16" style="fill:#808080">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lv-icon-list-unfold"></use>
-                  </svg></span>
+                  </svg>
+                </span>
               </lv-cascader>
             </ng-container>
 
@@ -72,6 +75,12 @@
                 (ngModelChange)="refresh('topFailedTasksResourceObjects')" lvValueKey="value" lvSimple
                 lvPosition="bottomRight" lvPanelClass="customize-panel"></lv-select>
             </ng-container>
+
+          <ng-container *ngSwitchCase="13">
+              <lv-select [lvOptions]="backupSoftWareTimeOption" [(ngModel)]="card.selectTime"
+                         (ngModelChange)="refresh('backupSoftwareManagement')" lvValueKey="value" lvSimple
+                         lvPosition="bottomRight" lvPanelClass="customize-panel"></lv-select>
+          </ng-container>
           </div>
 
           <ng-container [ngSwitch]="card.index">
@@ -89,6 +98,7 @@
               [cardInfo]="card"></top-failed-tasks-sla-protection-policy>
             <top-failed-tasks-resource-objects #topFailedTasksResourceObjects *ngSwitchCase="12"
               [cardInfo]="card"></top-failed-tasks-resource-objects>
+            <aui-backup-software-management #backupSoftwareManagement *ngSwitchCase="13" [cardInfo]="card"></aui-backup-software-management>
           </ng-container>
         </card>
       </ng-container>

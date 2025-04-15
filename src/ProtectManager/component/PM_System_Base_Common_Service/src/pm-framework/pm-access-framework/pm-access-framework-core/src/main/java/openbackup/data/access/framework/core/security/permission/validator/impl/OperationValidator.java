@@ -14,6 +14,12 @@ package openbackup.data.access.framework.core.security.permission.validator.impl
 
 import static openbackup.system.base.common.constants.Constants.Builtin.ONLY_IN_DOMAIN_RESOURCE_TYPE_LIST;
 
+import com.huawei.oceanprotect.sla.sdk.api.SlaQueryService;
+import com.huawei.oceanprotect.sla.sdk.dto.SlaPageRequest;
+
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.security.permission.AuthValidator;
 import openbackup.system.base.common.constants.AuthOperationEnum;
 import openbackup.system.base.common.constants.CommonErrorCode;
@@ -25,10 +31,6 @@ import openbackup.system.base.sdk.user.ResourceSetResourceServiceApi;
 import openbackup.system.base.sdk.user.enums.OperationTypeEnum;
 import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
 import openbackup.system.base.security.permission.Permission;
-
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,9 @@ public class OperationValidator implements AuthValidator {
 
     @Autowired
     private ResourceSetResourceServiceApi resourceSetResourceServiceApi;
+
+    @Autowired
+    private SlaQueryService slaQueryService;
 
     private final List<String> requiredTypeList = Arrays.asList(ResourceSetTypeEnum.JOB.getType(),
         ResourceSetTypeEnum.COPY.getType());
@@ -88,6 +93,10 @@ public class OperationValidator implements AuthValidator {
         }
         resourceIdList.forEach(resourceId -> {
             String type = permission.resourceSetType().getType();
+            // 对于内置的金银铜SLA 不需要校验权限 默认全授予
+            if (isPublicResource(type, resourceId)) {
+                return;
+            }
             // 判断该资源是否在当前用户域内
             String actualType = getResourceSetTypeByCurrentType(type, domainId, resourceId);
 
@@ -105,6 +114,17 @@ public class OperationValidator implements AuthValidator {
                     "Current user has no " + permission.operation() + "permission.");
             }
         });
+    }
+
+    private boolean isPublicResource(String type, String resourceId) {
+        // 当前只有sla类型的资源存在全局公共类型 不需要校验
+        if (ResourceSetTypeEnum.SLA.getType().equals(type)) {
+            SlaPageRequest pageRequest = new SlaPageRequest();
+            pageRequest.setIsGlobal(true);
+            List<String> slaIds = slaQueryService.filterSlaIds(pageRequest);
+            return slaIds.contains(resourceId);
+        }
+        return false;
     }
 
     private String getResourceSetTypeByCurrentType(String type, String domainId, String resourceId) {

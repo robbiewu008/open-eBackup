@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "taskmanager/externaljob/PluginAnyTimeRestore.h"
 #include <vector>
 #include "common/Log.h"
@@ -8,12 +20,9 @@ namespace {
     constexpr int32_t LOG_DIR_INDEX = 0;
     constexpr int32_t LOG_TIME_INDEX = 1;
     constexpr int32_t LOG_SCN_INDEX = 2;
-    constexpr int32_t TIME_INFO_SIZE = 2;
-    constexpr int32_t START_TIME_INDEX = 0;
-    constexpr int32_t END_TIME_INDEX = 1;
-    constexpr int32_t SCN_INFO_SIZE = 2;
-    constexpr int32_t START_SCN_INDEX = 0;
-    constexpr int32_t END_SCN_INDEX = 1;
+    constexpr int32_t TIME_SCN_INFO_SIZE = 2;
+    constexpr int32_t START_TIME_SCN_INDEX = 0;
+    constexpr int32_t END_TIME_SCN_INDEX = 1;
     constexpr int32_t LOG_INFO_MINI_SIZE = 2;
     constexpr int32_t LOG_INFO_MAX_SIZE = 3;
     constexpr int32_t TIME_RESTORE = 1;
@@ -21,6 +30,8 @@ namespace {
     constexpr int32_t PATH_INDEX = 1;
     constexpr int32_t PATH_SIZE = 3;
     constexpr int32_t NUM_TEN = 10;
+    constexpr int32_t BRACE_START = 1;
+    constexpr int32_t BRACE_END = 2;
     const mp_string ANYTIME_RESTORE_META_SUFFIX = ".meta";
     const mp_string KEY_EXTENDINFO = "extendInfo";
     const mp_string KEY_RESTORECOPYID = "restoreCopyId";
@@ -30,6 +41,7 @@ namespace {
     const mp_string KEY_REPOSITORIES = "repositories";
     const mp_string KEY_TYPE = "type";
     const mp_string KEY_PATH = "path";
+    const mp_string KEY_ASSOCIATE_COPIES = "associated_log_copies";
 }
 
 PluginAnyTimeRestore::PluginAnyTimeRestore()
@@ -44,90 +56,120 @@ PluginAnyTimeRestore::~PluginAnyTimeRestore()
 {
 }
 
+mp_string PluginAnyTimeRestore::GetAssociatedCopies(const Json::Value& jValueExtendinfo)
+{
+    mp_string associated_log_copies = "";
+    if (jValueExtendinfo.isMember(KEY_ASSOCIATE_COPIES)) {
+        Json::StreamWriterBuilder builder;
+        builder["indentation"] = "";
+        associated_log_copies = Json::writeString(builder, jValueExtendinfo[KEY_ASSOCIATE_COPIES]);
+        // 去除字符串中的空格
+        associated_log_copies.erase(std::remove(associated_log_copies.begin(), associated_log_copies.end(), ' '), associated_log_copies.end());
+        associated_log_copies.erase(std::remove(associated_log_copies.begin(), associated_log_copies.end(), '\"'), associated_log_copies.end());
+        if (associated_log_copies.front() == '{' && associated_log_copies.back() == '}') {
+        return associated_log_copies.substr(BRACE_START, associated_log_copies.length() - BRACE_END);
+        }
+    }
+    return associated_log_copies;
+}
+
 mp_int32 PluginAnyTimeRestore::ComputerAnyTimeRestoreLogPath(const Json::Value& jobParam,
     const std::vector<mp_string>& mountPoint, StorageRepository& stRep, Json::Value& jsonRep_new)
 {
     LOGGUARD("");
-    if (!jobParam.isObject() || !jobParam.isMember("extendInfo") || !jobParam["extendInfo"].isObject()) {
+    if (!jobParam.isObject() || !jobParam.isMember(KEY_EXTENDINFO) || !jobParam[KEY_EXTENDINFO].isObject()) {
         ERRLOG("Job param is not json object or have no extendInfo key.");
         return MP_FAILED;
     }
-    Json::Value jValueExtendinfo = jobParam["extendInfo"];
-    if (!jValueExtendinfo.isMember("restoreTimestamp") && !jValueExtendinfo.isMember("restoreScn")) {
+    Json::Value jValueExtendinfo = jobParam[KEY_EXTENDINFO];
+    if (!jValueExtendinfo.isMember(KEY_RESTORETIMESTAMP) && !jValueExtendinfo.isMember(KEY_RESTORESCN)) {
         ERRLOG("Job extendInfo have no restoreTimestamp and restoreScn.");
         return MP_FAILED;
     }
+
     GET_JSON_STRING(jobParam, "taskId", m_taskID);
-    auto extendValue = jobParam[KEY_EXTENDINFO];
-    GET_JSON_STRING(extendValue, KEY_RESTORECOPYID, m_restoreCopyid);
+    GET_JSON_STRING(jValueExtendinfo, KEY_RESTORECOPYID, m_restoreCopyid);
     mp_string restorePoint;
-    if (extendValue.isMember(KEY_RESTORETIMESTAMP)) {
+    if (jValueExtendinfo.isMember(KEY_RESTORETIMESTAMP)) {
         m_restoreType = TIME_RESTORE;
-        GET_JSON_STRING(extendValue, KEY_RESTORETIMESTAMP, restorePoint);
+        GET_JSON_STRING(jValueExtendinfo, KEY_RESTORETIMESTAMP, restorePoint);
         m_restorePoint = strtoull(restorePoint.c_str(), NULL, NUM_TEN);
-    } else if (extendValue.isMember(KEY_RESTORESCN)) {
+    } else if (jValueExtendinfo.isMember(KEY_RESTORESCN)) {
         m_restoreType = SCN_RESTORE;
-        GET_JSON_STRING(extendValue, KEY_RESTORESCN, restorePoint);
+        GET_JSON_STRING(jValueExtendinfo, KEY_RESTORESCN, restorePoint);
         m_restorePoint = strtoull(restorePoint.c_str(), NULL, NUM_TEN);
     } else {
         ERRLOG("Jobparam have not anytime restorekey ");
         return MP_FAILED;
     }
-    if (ComposeNewRepository(mountPoint, stRep, jsonRep_new) != MP_SUCCESS) {
+    // 获取associated_log_copies下发的日志副本信息
+    mp_string associated_log_copies = GetAssociatedCopies(jValueExtendinfo);
+    if (ComposeNewRepository(mountPoint, stRep, jsonRep_new, associated_log_copies) != MP_SUCCESS) {
         ERRLOG("Anytime restore compose new repository failed");
         return MP_FAILED;
     }
     return MP_SUCCESS;
 }
 
-mp_int32 PluginAnyTimeRestore::ParseRestoreMetaInfo(mp_string& metapath)
+void PluginAnyTimeRestore::GenerateMultiMap(bool is_metapath, std::vector<mp_string>& loginfo)
+{
+    Json::Value logjson;
+    logjson["dirname"] = loginfo[LOG_DIR_INDEX];
+    mp_string str = loginfo[LOG_TIME_INDEX];
+    std::vector<mp_string> timescninfo;
+    if (m_restoreType == SCN_RESTORE && is_metapath) {
+        str = loginfo[LOG_SCN_INDEX];
+    }
+    str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+    str.erase(std::remove(str.begin(), str.end(), '\"'), str.end());
+    CMpString::StrSplit(timescninfo, str, '~');
+    if (timescninfo.size() != TIME_SCN_INFO_SIZE) {
+        WARNLOG("Get restore meta log copy time or scn info failed.");
+        return;
+    }
+    if (m_restoreType == SCN_RESTORE) {
+        logjson["startscn"] = std::stol(timescninfo[START_TIME_SCN_INDEX]);
+        logjson["endscn"] = std::stol(timescninfo[END_TIME_SCN_INDEX]);
+        m_scnMultiMap.insert(std::make_pair(logjson["startscn"].asInt64(), logjson));
+    } else {
+        logjson["starttime"] = std::stol(timescninfo[START_TIME_SCN_INDEX]);
+        logjson["endtime"] = std::stol(timescninfo[END_TIME_SCN_INDEX]);
+        m_timeMultiMap.insert(std::make_pair(logjson["starttime"].asInt64(), logjson));
+    }
+}
+
+mp_int32 PluginAnyTimeRestore::ParseRestoreMetaInfo(mp_string& metapath, bool is_metapath)
 {
     LOGGUARD("");
     if (metapath.empty()) {
         ERRLOG("Restore metapath is empty");
         return MP_FAILED;
     }
+    mp_char splitCh = ';';
     std::vector<mp_string> vecLoglistInfo;
+    if (is_metapath) {
 #ifdef WIN32
-    CMpFile::ReadFile(metapath, vecLoglistInfo);
+        CMpFile::ReadFile(metapath, vecLoglistInfo);
 #else
-    CRootCaller rootCaller;
-    if (rootCaller.Exec((mp_int32)ROOT_COMMAND_CAT, metapath, &vecLoglistInfo) != MP_SUCCESS) {
-        ERRLOG("Get metadata info failed, path is %s", metapath.c_str());
-        return MP_FAILED;
-    }
+        CRootCaller rootCaller;
+        if (rootCaller.Exec((mp_int32)ROOT_COMMAND_CAT, metapath, &vecLoglistInfo) != MP_SUCCESS) {
+            ERRLOG("Get metadata info failed, path is %s", metapath.c_str());
+            return MP_FAILED;
+        }
 #endif
+    } else {
+        CMpString::StrSplit(vecLoglistInfo, metapath,  ',');
+        splitCh = ':';
+    }
+
     for (const auto& logdata : vecLoglistInfo) {
         std::vector<mp_string> loginfo;
-        CMpString::StrSplit(loginfo, logdata, ';');
+        CMpString::StrSplit(loginfo, logdata, splitCh);
         if (loginfo.size() < LOG_INFO_MINI_SIZE) {
             WARNLOG("Get restore meta log copy info failed loginfo size is %d", loginfo.size());
             continue;
         }
-        Json::Value logjson;
-        logjson["dirname"] = loginfo[LOG_DIR_INDEX];
-        if (m_restoreType == TIME_RESTORE) {
-            std::vector<mp_string> timeinfo;
-            CMpString::StrSplit(timeinfo, loginfo[LOG_TIME_INDEX], '~');
-            if (timeinfo.size() != TIME_INFO_SIZE) {
-                WARNLOG("Get restore meta log copy timeinfo failed.");
-                continue;
-            }
-            logjson["starttime"] = std::stol(timeinfo[START_TIME_INDEX]);
-            logjson["endtime"] = std::stol(timeinfo[END_TIME_INDEX]);
-            m_timeMultiMap.insert(std::make_pair(logjson["starttime"].asInt64(), logjson));
-        }
-        if (m_restoreType == SCN_RESTORE) {
-            std::vector<mp_string> scninfo;
-            CMpString::StrSplit(scninfo, loginfo[LOG_SCN_INDEX], '~');
-            if (scninfo.size() !=  SCN_INFO_SIZE) {
-                ERRLOG("Get restore meta log copy scn failed.");
-                continue;
-            }
-            logjson["startscn"] = std::stol(scninfo[START_SCN_INDEX]);
-            logjson["endscn"] = std::stol(scninfo[END_SCN_INDEX]);
-            m_scnMultiMap.insert(std::make_pair(logjson["startscn"].asInt64(), logjson));
-        }
+        GenerateMultiMap(is_metapath, loginfo);
     }
     return MP_SUCCESS;
 }
@@ -224,7 +266,7 @@ mp_int32 PluginAnyTimeRestore::GetSCNLogDirList(std::vector<mp_string>& logdirli
 }
 
 mp_int32 PluginAnyTimeRestore::ComposeNewRepository(const std::vector<mp_string>& mountPoint, StorageRepository& stRep,
-    Json::Value& jsonRep_new)
+    Json::Value& jsonRep_new, mp_string associateds)
 {
     LOGGUARD("");
 #ifdef WIN32
@@ -234,9 +276,17 @@ mp_int32 PluginAnyTimeRestore::ComposeNewRepository(const std::vector<mp_string>
 #else
     mp_string restoreMetaPath = mountPoint.front() + PATH_SEPARATOR + m_restoreCopyid + ANYTIME_RESTORE_META_SUFFIX;
 #endif
-    if (ParseRestoreMetaInfo(restoreMetaPath) != MP_SUCCESS) {
-        ERRLOG("Parse anytime resore meta info failed");
-        return MP_FAILED;
+    // 若ubc未下发日志副本信息 沿用原本实现 尝试解析.meta文件
+    if (associateds.empty()) {
+        if (ParseRestoreMetaInfo(restoreMetaPath) != MP_SUCCESS) {
+            ERRLOG("Parse anytime restore meta info failed");
+            return MP_FAILED;
+        }
+    } else {
+        if (ParseRestoreMetaInfo(associateds, false) != MP_SUCCESS) {
+            ERRLOG("Parse anytime restore meta info failed");
+            return MP_FAILED;
+        }
     }
     mp_int32 iRet = MP_FAILED;
     std::vector<mp_string> logDirlist;
@@ -249,6 +299,7 @@ mp_int32 PluginAnyTimeRestore::ComposeNewRepository(const std::vector<mp_string>
         ERRLOG("Get log dir list failed");
         return MP_FAILED;
     }
+    // 拼接每个日志副本在log仓的路径
     for (const auto &iter : logDirlist) {
         Json::Value logRepJson;
         StructToJson(stRep, logRepJson);

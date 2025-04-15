@@ -12,13 +12,12 @@
 */
 package openbackup.data.access.framework.livemount.controller.policy.request;
 
+import lombok.Data;
 import openbackup.data.access.framework.livemount.common.enums.CopyDataSelection;
 import openbackup.data.access.framework.livemount.common.enums.RetentionType;
 import openbackup.data.access.framework.livemount.common.enums.RetentionUnit;
 import openbackup.data.access.framework.livemount.common.enums.ScheduledType;
 import openbackup.data.access.framework.livemount.common.enums.ScheduledUnit;
-
-import lombok.Data;
 
 /**
  * 修改更新策略

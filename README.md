@@ -19,7 +19,7 @@ open-eBackup为主流数据库、虚拟化、文件系统、大数据等应用�
 
 **图 1**  open-eBackup产品架构<a name="fig18239127113916"></a>  
 
-![](figures/截图.png)
+![](figures/架构.png)
 
 **数据保护代理（ProtetectAgent\)**
 
@@ -49,7 +49,8 @@ open-eBackup为主流数据库、虚拟化、文件系统、大数据等应用�
 
 open-eBackup的业务流程主要集中在ProtectAgent、DataProtect Engine和DataMover Engine三个子系统内，在备份的过程中，调用关系如下图所示：
 
-![](figures/截图1.png)
+**图 1** <a name="fig185772943315"></a>  
+![](figures/zh-cn_image_0000002033879370.png "zh-cn_image_0000002033879370")
 
 ①** **DataProtect Engine发送创建存储库请求到DataMover Engine。
 
@@ -63,11 +64,17 @@ open-eBackup的业务流程主要集中在ProtectAgent、DataProtect Engine和Da
 
 ## 工程简介<a name="ZH-CN_TOPIC_0000001976511326"></a>
 
-open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI。
+open-eBackup工程中包含3个重要的目录：
 
--   REST\_API：存放open-eBackup备份软件的所有开源的源代码。
--   open-source-obligation：存放open-eBackup备份软件所有依赖的所有二进制文件，包含自研二进制和三方开源二进制文件。
--   GUI：存放open-eBackup备份软件所依赖的GUI的框架源码。
+-   build: 编译脚本入口，所有的编译构建从这里开始。
+-   doc: 文件目录，关于open-eBackup的相关文档都归档在这里。
+-   src: 代码所在路径，所有的开源代码都归档这里。
+    -   ProtectAgent： 数据保护客户端，负责抓取生产应用数据，并写入备份存储。或读取备份存储数据，写入生产应用。
+    -   AppPlugins: 应用备份插件，其中包含数据库备份插件、虚拟化备份插件、文件备份插件等。
+    -   ProtectManager: 数据保护管理引擎，负责配置策略、策略调度、副本管理、任务管理等。
+    -   DataMoverEngine: 数据移动引擎，负责管理备份存储、封装存储接口、副本复制、副本归档等。
+    -   Infrastructure\_OM：基础设施，负责基础能力管理，如：数据库管理、缓存管理、检索引擎管理、消息队列管理等。
+    -   DPAProduct: 构建脚本目录。
 
 # 编译指导<a name="ZH-CN_TOPIC_0000001976671066"></a>
 
@@ -94,6 +101,10 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
     open-eBackup引擎支持的操作系统（openEuler aarch64-bit）如下，建议open-eBackup引擎的编译操作系统与运行操作系统一致：
 
     -   OpenEuler-22.03-LTS\(aarch64\)
+
+    下载地址：
+
+    https://www.openeuler.org/en/download/archive/detail/?version=openEuler%2022.03%20LTS%20SP1
 
 1.  软件要求
 
@@ -136,7 +147,7 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 
 
 
-### 下载源码<a name="ZH-CN_TOPIC_0000002018517437"></a>
+### 准备源码及其依赖二进制<a name="ZH-CN_TOPIC_0000002018517437"></a>
 
 **操作步骤<a name="section582816517517"></a>**
 
@@ -156,47 +167,80 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 3.  执行以下命令下载open-eBackup引擎源码。
 
     ```
-    git clone https://gitee.com/openeuler/open-eBackup.git
+    git clone https://gitcode.com/eBackup/open-eBackup.git
     ```
 
-4.  创建open-eBackup-bin目录存放二进制文件。
+4.  下载open-eBackup-bin.tgz到当前目录并解压。
 
     ```
-    mkdir open-eBackup-bin
+    mkdir -p open-eBackup-bin
+    tar -zxvf open-eBackup-bin.tgz -C open-eBackup-bin
     ```
 
-    下载open-eBackup开放的二进制到open-eBackup-bin目录下。
+5.  Nodejs官网（https://nodejs.org/）下载适合您服务器的nodejs包，版本选择18.20.1，解压到open-eBackup-bin目录并重命名为nodejs
 
-5.  执行以下命令下载open-eBackup所依赖的GUI源码。
+    arm64版本参考如下地址
 
     ```
-    git clone https://gitee.com/openeuler/LiveUI.git
+    https://nodejs.org/dist/v18.20.1/node-v18.20.1-linux-arm64.tar.xz
+    tar -xvJf node-v18.20.1-linux-arm64.tar.xz
+    mv node-v18.20.1-linux-arm64 open-eBackup-bin/nodejs
     ```
-
-    按照LiveUI的指导编译LiveUI，生成二进制包@iux，并拷贝@iux包到open-eBackup-bin目录下。
 
 6.  下载openEuler到open-eBackup-bin目录下。
 
-    下载地址为：https://repo.openeuler.org/openEuler-22.03-LTS/docker\_img/aarch64/openEuler-docker.aarch64.tar.xz
+    下载地址为：
 
-    下载openGauss到open-eBackup-bin目录下。
+    ```
+    https://repo.openeuler.org/openEuler-22.03-LTS/docker_img/aarch64/openEuler-docker.aarch64.tar.xz
+    ```
 
-7.  下载地址为：[https://opengauss.obs.cn-south-1.myhuaweicloud.com/5.0.0/arm\_2203/openGauss-Lite-5.0.0-openEuler-aarch64.tar.gz](https://opengauss.obs.cn-south-1.myhuaweicloud.com/5.0.0/arm_2203/openGauss-Lite-5.0.0-openEuler-aarch64.tar.gz)
+7.  下载openGauss到open-eBackup-bin目录
+
+    下载地址为：
+
+    ```
+    https://opengauss.obs.cn-south-1.myhuaweicloud.com/5.0.0/arm_2203/openGauss-Lite-5.0.0-openEuler-aarch64.tar.gz
+    ```
+
 8.  下载openGauss-Server和openGauss-connector-python-psycopg2到open-eBackup-bin目录下。
 
-    openGuass-Server下载地址为：[https://gitee.com/opengauss/openGauss-server/repository/archive/v5.0.0](https://gitee.com/opengauss/openGauss-server/repository/archive/v5.0.0)
+    openGuass-Server下载地址为：
 
-    参考如下地址进行编译：[https://gitee.com/opengauss/openGauss-server\#%E4%BD%BF%E7%94%A8buildsh%E7%BC%96%E8%AF%91%E4%BB%A3%E7%A0%81](https://gitee.com/opengauss/openGauss-server#%E4%BD%BF%E7%94%A8buildsh%E7%BC%96%E8%AF%91%E4%BB%A3%E7%A0%81)
+    ```
+    https://gitee.com/opengauss/openGauss-server/repository/archive/v5.0.0
+    ```
 
-    openGauss-connector-python-psycopg2下载地址为：[https://gitee.com/opengauss/openGauss-connector-python-psycopg2/tree/v5.0.0](https://gitee.com/opengauss/openGauss-connector-python-psycopg2/tree/v5.0.0)
+    参考如下地址进行编译：
 
-    参考如下地址进行编译：[https://gitee.com/opengauss/openGauss-connector-python-psycopg2](https://gitee.com/opengauss/openGauss-connector-python-psycopg2)，生成openGauss-5.0.0-openEuler-aarch64-Python.tar.gz文件。将该文件拷贝到open-eBackup-bin目录下。
+    ```
+    https://gitee.com/opengauss/openGauss-server#%E4%BD%BF%E7%94%A8buildsh%E7%BC%96%E8%AF%91%E4%BB%A3%E7%A0%81
+    ```
+
+    openGauss-connector-python-psycopg2下载地址为：
+
+    ```
+    https://gitee.com/opengauss/openGauss-connector-python-psycopg2/tree/v5.0.0
+    ```
+
+    参考如下地址进行编译：
+
+    ```
+    https://gitee.com/opengauss/openGauss-connector-python-psycopg2
+    ```
+
+    生成openGauss-5.0.0-openEuler-aarch64-Python.tar.gz文件。将该文件拷贝到open-eBackup-bin目录下。
 
 ### 准备容器镜像<a name="ZH-CN_TOPIC_0000001982077300"></a>
 
 **操作步骤<a name="section5812195513530"></a>**
 
-1.  下载openEuler镜像，下载地址为：[https://mirrors.aliyun.com/openeuler/openEuler-22.03-LTS/docker\_img/aarch64/openEuler-docker.aarch64.tar.xz](https://mirrors.aliyun.com/openeuler/openEuler-22.03-LTS/docker_img/aarch64/openEuler-docker.aarch64.tar.xz)
+1.  下载openEuler镜像，下载地址为：
+
+    ```
+    https://mirrors.aliyun.com/openeuler/openEuler-22.03-LTS/docker_img/aarch64/openEuler-docker.aarch64.tar.xz
+    ```
+
 2.  导入基础镜像。
 
     ```
@@ -206,13 +250,13 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 3.  执行以下命令切换目录。
 
     ```
-    cd /open-eBackup/Infrastructure_OM/build/baseImage/dockerfiles/
+    cd /open-eBackup/open-eBackup/build
     ```
 
 4.  执行以下命令构建编译镜像。
 
     ```
-    docker build . -f compiler.dockerfile -t openeuler-22.03-lts:devel
+    sh build_compile_container.sh
     ```
 
 5.  执行以下命令查询编译镜像。
@@ -225,7 +269,7 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 
     ```
     REPOSITORY                                        TAG                 IMAGE ID            CREATED             SIZE
-    openeuler-22.03-lts                             devel               41ce54e25fdc        3 hours ago         1.22GB
+    open-ebackup                                     devel               41ce54e25fdc        3 hours ago         1.22GB
     ```
 
 ### 编译源码<a name="ZH-CN_TOPIC_0000001981917564"></a>
@@ -235,7 +279,7 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 1.  执行以下命令启动编译容器。
 
     ```
-    docker run -it --name open-ebackup -v /open-eBackup:/open-eBackup -v /var/run/docker.sock:/var/run/docker.sock -v /usr/local/bin/helm:/usr/bin/helm -v /usr/bin/docker:/usr/bin/docker openeuler-22.03-lts:devel /bin/bash
+    docker run -it --name open-ebackup -v /open-eBackup:/open-eBackup -v /var/run/docker.sock:/var/run/docker.sock -v /usr/local/bin/helm:/usr/bin/helm -v /usr/bin/docker:/usr/bin/docker open-ebackup:devel /bin/bash
     ```
 
 2.  在容器中执行以下命令切换路径。
@@ -247,8 +291,14 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 3.  执行以下命令进行代码编译。
 
     ```
-    sh package_open_source_final.sh
+    sh package_open_source_final.sh <workspace_dir> <code_path> <binary_path>
+    如：sh package_open_source_final.sh /open-eBackup /open-eBackup/open-eBackup /open-eBackup/open-eBackup-bin
     ```
+
+    >![](public_sys-resources/icon-note.gif) **说明：** 
+    >workspace\_dir: 编译的工作路径，是代码路径和二进制目录的根目录
+    >code\_path: 代码存放路径
+    >binary\_path: 二进制存放路径
 
     编译完成后会在dest目录下生成open-ebackup-1.0.zip和open-ebackup-agent-1.0.zip文件。
 
@@ -284,30 +334,30 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 
 1.  创建dpa命名空间
 
+    ```
     kubectl create namespace dpa
+    ```
 
 2.  创建临时安装目录
 
+    ```
     mdir -p /open-eBackup
+    ```
 
 3.  进入安装目录
 
+    ```
     cd /open-eBackup
+    ```
 
 4.  上传open-ebackup-1.0.zip到安装环境的/open-eBackup。
 5.  解压安装包
 
+    ```
     unzip open-ebackup-1.0.zip
+    ```
 
 ## 安装MasterServer<a name="ZH-CN_TOPIC_0000002025805753"></a>
-
-1.  上传open-ebackup-1.0.zip到安装环境。
-
-1.  解压安装包
-
-    ```
-    unzip open-ebackup-1.0.zip
-    ```
 
 1.  创建dpa命名空间
 
@@ -318,15 +368,20 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 2.  安装MasterServer
 
     ```
-    tar -zxvf open-eBackup_1.0_MasterServer_release.tgz
-    
+    tar -zxvf open-eBackup_1.6.RC2_MasterServer.tgz
     mkdir open-eBackup_MasterServer_image
-    tar -zxvf open-eBackup_MasterServer_image.tgz -C open-eBackup_MasterServer_image
-    isula load -i open-eBackup_MasterServer_image/open-eBackup_1.0_MasterServer.tar.xz
+    tar -zxvf open-eBackup_1.6.RC2_MasterServer.tgz -C open-eBackup_MasterServer_image
+    docker load -i open-eBackup_MasterServer_image/open-eBackup_1.6.RC2_MasterServer.tar.xz
+    
+    tar -zxvf open-eBackup_1.6.RC2_MediaServer.tgz
+    mkdir open-eBackup_MediaServer_image
+    tar -zxvf open-eBackup_1.6.RC2_MediaServer.tgz -C open-eBackup_MediaServer_image
+    docker load -i open-eBackup_MediaServer_image/open-eBackup_1.6.RC2_MediaServer.tar.xz
     
     mkdir open-eBackup_MasterServer_chart
     tar -zxvf open-eBackup_MasterServer_chart.tgz -C open-eBackup_MasterServer_chart
-    helm install master-server open-eBackup_MasterServer_chart --set global.gaussdbpwd=R2F1c3NkYl8xMjM= --set global.replicas=1 --set global.deploy_type=d10 -n dpa
+    tar -zxvf open-eBackup_MasterServer_chart/databackup-1.6.0-RC2.tgz -C open-eBackup_MasterServer_chart
+    helm install master-server open-eBackup_MasterServer_chart/databackup --set global.gaussdbpwd=R2F1c3NkYl8xMjM= --set global.replicas=1 --set global.deploy_type=d10 -n dpa
     ```
 
 3.  查看安装结果
@@ -346,15 +401,10 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 1.  安装MediaServer
 
     ```
-    tar -zxvf open-eBackup_1.0_MediaServer_release.tgz
-    
-    mkdir open-eBackup_MediaServer_image
-    tar -zxvf open-eBackup_MediaServer_image.tgz -C open-eBackup_MediaServer_image
-    isula load -i open-eBackup_MediaServer_image/open-eBackup_1.0_MediaServer.tar.xz
-    
     mkdir open-eBackup_MediaServer_chart
     tar -zxvf open-eBackup_MediaServer_chart.tgz -C open-eBackup_MediaServer_chart
-    helm install media-server open-eBackup_MediaServer_chart --set global.gaussdbpwd=R2F1c3NkYl8xMjM= --set global.replicas=1 --set global.deploy_type=d10 -n dpa
+    tar -zxvf open-eBackup_MediaServer_chart/databackup-1.6.0-RC2.tgz -C open-eBackup_MediaServer_chart
+    helm install media-server open-eBackup_MediaServer_chart/databackup --set global.gaussdbpwd=R2F1c3NkYl8xMjM= --set global.replicas=1 --set global.deploy_type=d10 -n dpa
     ```
 
 1.  查看安装结果
@@ -375,15 +425,13 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 1.  安装DataManager
 
     ```
-    tar -zxvf open-eBackup_1.0_DataManager_release.tgz
+    mkdir open-eBackup_DataManager_image
+    tar -zxvf open-eBackup_DataManagerServer_image.tgz -C open-eBackup_Manager_image
+    docker load -i open-eBackup_DataManager_image/open-eBackup_1.0_DataManager.tar.xz
     
-    mkdir open-eBackup_MediaServer_image
-    tar -zxvf open-eBackup_MediaServer_image.tgz -C open-eBackup_MediaServer_image
-    isula load -i open-eBackup_MediaServer_image/open-eBackup_1.0_MediaServer.tar.xz
-    
-    mkdir open-eBackup_MediaServer_chart
-    tar -zxvf open-eBackup_MediaServer_chart.tgz -C open-eBackup_MediaServer_chart
-    helm install data-manager open-eBackup_MediaServer_chart --set global.gaussdbpwd=R2F1c3NkYl8xMjM= --set global.replicas=1 --set global.deploy_type=d10 -n dpa
+    mkdir open-eBackup_DataManager_chart
+    tar -zxvf open-eBackup_DataManager_chart.tgz -C open-eBackup_DataManager_chart
+    helm install data-manager open-eBackup_DataManager_chart --set global.gaussdbpwd=R2F1c3NkYl8xMjM= --set global.replicas=1 --set global.deploy_type=d10 -n dpa
     ```
 
 2.  查看安装结果
@@ -403,19 +451,27 @@ open-eBackup工程有3个，分别是：REST\_API、open-source-obligation、GUI
 
 1.  卸载MasterServer
 
+    ```
     helm uninstall MasterServer  -n dp
+    ```
 
 2.  卸载DataManager
 
+    ```
     helm uninstall DataManager  -n dpa
+    ```
 
 3.  卸载MediaServer
 
+    ```
     helm uninstall MediaServer  -n dpa
+    ```
 
 4.  删除Namespace
 
+    ```
     kubectl delete namespace dpa
+    ```
 
 # 安装ProtectAgent软件<a name="ZH-CN_TOPIC_0000002025895257"></a>
 

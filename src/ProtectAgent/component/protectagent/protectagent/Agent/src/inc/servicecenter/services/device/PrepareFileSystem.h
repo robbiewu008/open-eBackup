@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef _PREPARE_FILE_SYSTEM_H
 #define _PREPARE_FILE_SYSTEM_H
 
@@ -12,8 +24,10 @@
 
 namespace AppProtect {
 #ifdef WIN32
-    const mp_string MOUNT_PUBLIC_PATH = "C:\\mnt\\databackup\\";
+    const mp_string MOUNT_PUBLIC_PATH = GetSystemDiskChangedPathInWin("C:\\mnt\\databackup\\");
 #else
+    // E6000设备即时挂载，需要扫描副本目录用于创建文件克隆，写入扫描结果时，需要提权到root执行
+    // root执行会校验目录，修改时需要同步修改ROOT_COMMAND_WRITE_SCAN_RESULT命令字的定义
     const mp_string MOUNT_PUBLIC_PATH = "/mnt/databackup/";
     const mp_string MOUNT_PUBLIC_PATH_PREFIX = "/mnt/";
 #endif
@@ -71,6 +85,7 @@ namespace AppProtect {
         mp_string pvcTaskId;
         mp_int32 pvcOSADAuthPort = 0;
         mp_int32 pvcOSADServerPort = 0;
+        mp_int32 taskType = 0; // Default taskType=UNDEFINE
     };
 
     struct MountNasKeyParam {
@@ -152,10 +167,12 @@ public:
 
     static bool IsMountChainGood(const mp_string& jobId);      // it is used when read or write fail
 private:
+    mp_string GetMountPublicPath();
     mp_string GenerateSubPath(const MountNasParam &mountNasParam);
     mp_string SplitFileClientMountPath(const mp_string &mountPath);
     mp_void GetMountPath(const MountNasParam &mountNasParam, const mp_string iterIp, mp_string &mountPath);
     mp_int32 CheckAndCreateDataturboLink(const mp_string &storageName, const MountNasParam &mountNasParam);
+    bool GetMountOption(const MountNasParam &mountNasParam, mp_string &mountOptionKey, mp_string &mountOption);
 
 #ifdef WIN32
     mp_int32 WinMountOperation(MountNasKeyParam& mountKeyParam, mp_string& mountPath);
@@ -195,7 +212,7 @@ private:
     static std::mutex m_mountFailIpMapMutex;
 
     void HandleAfterMountSuccess(const MountNasParam &mountNasParam);
-    void HandleAfterMountFail(const MountNasParam &mountNasParam, mp_int32 errCode);
+    void HandleAfterMountFail(const MountNasParam &mountNasParam, mp_int32 &errCode);
     void HandleAfterUMountSuccess(const mp_string& jobId, const mp_string& mountPath);
 
     static void JobAddMountChainInfo(const mp_string& jobId, const MountChainInfo& mountChainInfo);

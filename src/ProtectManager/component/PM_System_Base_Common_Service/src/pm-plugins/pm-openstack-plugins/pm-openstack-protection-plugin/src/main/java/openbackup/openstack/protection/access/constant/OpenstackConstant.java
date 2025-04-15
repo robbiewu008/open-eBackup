@@ -326,4 +326,14 @@ public class OpenstackConstant {
      * 扫描时的OpenStack的磁盘是否是新建磁盘
      */
     public static final String IS_NEW_DISK = "isNewDisk";
+
+    /**
+     * 生产存储剩余容量阈值
+     */
+    public static final String AVAILABLE_CAPACITY_THRESHOLD = "available_capacity_threshold";
+
+    /**
+     * appLabel Type OpenStack
+     */
+    public static final String APPLABEL_OPENSTACK = "\"appLabel\":\"OpenStack\"";
 }

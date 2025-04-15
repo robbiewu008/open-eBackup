@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.service.email;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.scurity.IBcmX509TrustHandler;
 import openbackup.system.base.common.utils.ExceptionUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.security.cert.CertificateException;
 

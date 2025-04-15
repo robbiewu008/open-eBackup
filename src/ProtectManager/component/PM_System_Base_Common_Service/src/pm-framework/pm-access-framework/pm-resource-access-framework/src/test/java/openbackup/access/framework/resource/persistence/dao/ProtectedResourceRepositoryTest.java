@@ -12,18 +12,22 @@
 */
 package openbackup.access.framework.resource.persistence.dao;
 
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import openbackup.access.framework.resource.persistence.dao.ProtectedEnvironmentExtendInfoMapper;
 import openbackup.access.framework.resource.persistence.dao.ProtectedResourceExtendInfoMapper;
 import openbackup.access.framework.resource.persistence.dao.ProtectedResourceMapper;
 import openbackup.access.framework.resource.persistence.dao.ProtectedResourceRepositoryImpl;
 import openbackup.access.framework.resource.persistence.model.ProtectedEnvironmentExtendInfoPo;
 import openbackup.access.framework.resource.persistence.model.ProtectedEnvironmentPo;
-import openbackup.data.access.framework.core.dao.ProtectedObjectMapper;
-import openbackup.data.access.framework.core.entity.ProtectedObjectPo;
 import openbackup.access.framework.resource.persistence.model.ProtectedResourceExtendInfoPo;
 import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
 import openbackup.access.framework.resource.provider.DefaultResourceProvider;
 import openbackup.access.framework.resource.service.ProtectedResourceRepository;
+import openbackup.data.access.framework.core.dao.ProtectedObjectMapper;
+import openbackup.data.access.framework.core.entity.ProtectedObjectPo;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceConstants;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceDeleteParams;
@@ -36,10 +40,6 @@ import openbackup.system.base.query.PageQueryService;
 import openbackup.system.base.query.SessionService;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.service.DeployTypeService;
-
-import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;

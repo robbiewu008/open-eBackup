@@ -33,6 +33,7 @@ int SendHardlinkRequest(FileHandle &fileHandle, SmbWriterCommonData *cbData);
 int SendUnlinkRequest(FileHandle &fileHandle, SmbWriterCommonData *cbData);
 int SendResetAttrRequest(FileHandle &fileHandle, SmbWriterCommonData *cbData);
 
+void SmbFruncateDstCb(struct smb2_context *smb2, int status, void *data, void *pRData);
 void SmbOpenDstCb(struct smb2_context *smb2, int status, void *data, SmbWriterCommonData *cbData);
 void HandleSmbOpenDstCbError(struct smb2_context *smb2, int status, SmbWriterCommonData *cbData);
 void SmbWriteCb(struct smb2_context *smb2, int status, void *data, SmbWriterCommonData *cbData);

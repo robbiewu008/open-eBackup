@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
@@ -27,7 +27,16 @@ import {
   TableData
 } from 'app/shared/components/pro-table';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { assign, defer, each, find, isArray, isEmpty } from 'lodash';
+import {
+  assign,
+  defer,
+  each,
+  find,
+  includes,
+  intersection,
+  isArray,
+  isEmpty
+} from 'lodash';
 
 @Component({
   selector: 'aui-add-drill-resource',
@@ -85,6 +94,11 @@ export class AddDrillResourceComponent implements OnInit {
             DataMap.Resource_Type.ExchangeDataBase.value
           ];
         }
+        if (res === 'saphana') {
+          this.selectedResoureType = [
+            DataMap.Resource_Type.saphanaDatabase.value
+          ];
+        }
         defer(() => this.dataTable.fetchData());
       }
       this.clearTable();
@@ -113,7 +127,7 @@ export class AddDrillResourceComponent implements OnInit {
       );
     });
     each(this.appUtilsService.getApplicationConfig().application, app => {
-      if (app.id !== 'exchange') {
+      if (!includes(['exchange', 'saphana'], app.id)) {
         return;
       }
       apps.push(
@@ -186,6 +200,25 @@ export class AddDrillResourceComponent implements OnInit {
     return conditions;
   }
 
+  needAddTopInstance(subTypeList: string[]): boolean {
+    return !isEmpty(
+      intersection(subTypeList, [
+        DataMap.Resource_Type.AntDBInstance.value,
+        DataMap.Resource_Type.AntDBClusterInstance.value,
+        DataMap.Resource_Type.Dameng_cluster.value,
+        DataMap.Resource_Type.Dameng_singleNode.value,
+        DataMap.Resource_Type.MySQLInstance.value,
+        DataMap.Resource_Type.MySQLClusterInstance.value,
+        DataMap.Resource_Type.PostgreSQLInstance.value,
+        DataMap.Resource_Type.PostgreSQLClusterInstance.value,
+        DataMap.Resource_Type.informixInstance.value,
+        DataMap.Resource_Type.informixClusterInstance.value,
+        DataMap.Resource_Type.KingBaseInstance.value,
+        DataMap.Resource_Type.KingBaseClusterInstance.value
+      ])
+    );
+  }
+
   getResource(filters) {
     if (isEmpty(this.selectedResoureType)) {
       return;
@@ -197,6 +230,13 @@ export class AddDrillResourceComponent implements OnInit {
         ? this.selectedResoureType
         : [this.selectedResoureType]
     };
+
+    // 一些应用需要加顶层资源标签
+    if (this.needAddTopInstance(params.subTypeList)) {
+      assign(params, {
+        isTopInstance: '1'
+      });
+    }
 
     if (!isEmpty(filters.conditions)) {
       const conditionsTemp = JSON.parse(filters.conditions);

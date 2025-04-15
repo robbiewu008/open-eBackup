@@ -39,53 +39,92 @@
 
 <div class="content" *ngIf="!isSearchRestore">
     <h2>{{'explore_object_need_restore_label' | i18n}}</h2>
+    <lv-alert *ngIf="incrementFileEmptyTips" lvType="info" [lvClosable]="false" class="list-view-mgt">
+        {{'protection_restore_object_set_incremental_empty_file_tip_label'|i18n}}
+    </lv-alert>
     <ng-container *ngTemplateOutlet="selectTableTpl">
     </ng-container>
 </div>
 
 <ng-template #selectTableTpl>
-    <lv-group class="upper-group bread-limit">
-        <lv-breadcrumb [lvItems]="items" [lvSeparator]="'/'" class="bread"></lv-breadcrumb>
-        <lv-search class="search-width" [(ngModel)]="name" (lvSearch)="searchObjectName($event)"
-            [lvFocus]="true" [lvPlaceHolder]="'explore_object_file_level_search_tip_label' | i18n"></lv-search>
-    </lv-group>
-    <lv-datatable [lvData]="currentFileData" #lvTable [lvScroll]="{ y: '420px' }" lvSize="small"
-        lvCompareWith="rootPath" lvSelectionMode="multiple" [lvSelection]="selectionData" [lvPaginator]="pageA"
-        (lvSelectionChange)="selectionChange($event, 'headSelect')" lvResize lvAsync>
-        <thead>
-            <tr>
-                <th lvShowCheckbox width="64px" [lvRowsData]="lvTable.renderData"></th>
-                <th>{{'common_name_label' | i18n}}</th>
-                <th>{{'common_size_label' | i18n}}</th>
-                <th>{{'protection_last_modifyed_label' | i18n}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let item of lvTable.renderData; trackBy:trackByRootPath">
-                <td width="64px">
-                    <label lv-checkbox [lvIndeterminate]="item.isHalfSelected" [(ngModel)]="item.selected"
-                        (ngModelChange)="checkChange($event, item)" style="margin-top:4px"></label>
-                </td>
-                <td>
-                    <lv-group lvGutter="8px" (click)="getChildren(item)">
-                        <i lv-icon="{{ item.icon }}" [lvColorState]="true"></i>
-                        <span lv-overflow style="width:200px"
-                            [ngClass]="{'aui-link': item.type !== restoreFileType.File}">{{item?.name}}</span>
+    <!-- 提供手动输入路径 -->
+    <lv-alert lvType="info" class="mgt-8">
+        {{'protection_manual_path_tip_label' | i18n}}
+    </lv-alert>
+    <lv-form class="aui-gutter-column-md">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_path_mode_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-radio-group [(ngModel)]="pathMode" [lvGroupName]="'group'" (ngModelChange)="pathModeChange()">
+                    <lv-group [lvGutter]="'20px'">
+                        <lv-radio [lvValue]="modeMap.fromTree">
+                            {{ 'protection_path_from_tree_label' | i18n }}
+                        </lv-radio>
+                        <lv-radio [lvValue]="modeMap.fromTag">
+                            {{ 'protection_path_from_input_label' | i18n }}
+                        </lv-radio>
                     </lv-group>
-                </td>
-                <td>
-                    <span *ngIf="item.type === restoreFileType.File">{{
-                        item.size
-                        | capacityCalculateLabel: '1.1-3':unitconst.BYTE:true
-                        }}</span>
-                </td>
-                <td>
-                    <span *ngIf="item.type === restoreFileType.File">{{item?.modifyTime | nil}}</span>
-                </td>
-            </tr>
-        </tbody>
-    </lv-datatable>
-    <lv-paginator #pageA [lvPageSize]="pageSize * 10" [lvTotal]="total" [lvPageIndex]="pageIndex"
-        (lvPageChange)="pageChange($event)" [lvShowPageSizeOptions]="false" [lvPageSizeOptions]="pageSizeOptions">
-    </lv-paginator>
+                </lv-radio-group>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="pathMode === modeMap.fromTag">
+            <lv-form-label lvRequired>
+                {{'protection_path_from_input_title_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_object_path_placeholder_tip_label' | i18n}}"
+                    lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control>
+                <aui-manual-input-path [rowCopy]="rowCopy"
+                    (pathChange)="inputPathChange($event)"></aui-manual-input-path>
+            </lv-form-control>
+        </lv-form-item>
+    </lv-form>
+    <ng-container *ngIf="pathMode === modeMap.fromTree">
+        <lv-group class="upper-group bread-limit">
+            <lv-breadcrumb [lvItems]="items" [lvSeparator]="'/'" class="bread"></lv-breadcrumb>
+            <lv-search class="search-width" [(ngModel)]="name" (lvSearch)="searchObjectName($event)" [lvFocus]="true"
+                [lvPlaceHolder]="'explore_object_file_level_search_tip_label' | i18n"></lv-search>
+        </lv-group>
+        <lv-datatable [lvData]="currentFileData" #lvTable [lvScroll]="{ y: '420px' }" lvSize="small"
+            lvCompareWith="rootPath" lvSelectionMode="multiple" [lvSelection]="selectionData" [lvPaginator]="pageA"
+            (lvSelectionChange)="selectionChange($event, 'headSelect')" lvResize lvAsync>
+            <thead>
+                <tr>
+                    <th lvShowCheckbox width="64px" [lvRowsData]="lvTable.renderData"></th>
+                    <th>{{'common_name_label' | i18n}}</th>
+                    <th>{{'common_size_label' | i18n}}</th>
+                    <th>{{'protection_last_modifyed_label' | i18n}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of lvTable.renderData; trackBy:trackByRootPath">
+                    <td width="64px">
+                        <label lv-checkbox [lvIndeterminate]="item.isHalfSelected" [(ngModel)]="item.selected"
+                            (ngModelChange)="checkChange($event, item)" style="margin-top:4px"></label>
+                    </td>
+                    <td>
+                        <lv-group lvGutter="8px" (click)="getChildren(item)">
+                            <i lv-icon="{{ item.icon }}" [lvColorState]="true"></i>
+                            <span lv-overflow style="width:200px"
+                                [ngClass]="{'aui-link': item.type !== restoreFileType.File}">{{item?.name}}</span>
+                        </lv-group>
+                    </td>
+                    <td>
+                        <span *ngIf="item.type === restoreFileType.File">{{
+                            item.size
+                            | capacityCalculateLabel: '1.1-3':unitconst.BYTE:true
+                            }}</span>
+                    </td>
+                    <td>
+                        <span *ngIf="item.type === restoreFileType.File">{{item?.modifyTime | nil}}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </lv-datatable>
+        <lv-paginator #pageA [lvPageSize]="pageSize * 10" [lvTotal]="total" [lvPageIndex]="pageIndex"
+            (lvPageChange)="pageChange($event)" [lvShowPageSizeOptions]="false" [lvPageSizeOptions]="pageSizeOptions">
+        </lv-paginator>
+    </ng-container>
 </ng-template>

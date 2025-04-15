@@ -45,25 +45,20 @@
 </ng-template>
 
 <ng-template #selectedTpl>
-    <lv-form>
-        <lv-form-item>
-            <lv-form-label>
-                <span class="aui-h3">
-                    {{ 'protection_selected_fileset_label' | i18n }}
-                </span>
-            </lv-form-label>
-            <lv-form-control>
-                <ng-container *ngIf="resourceType === protectResourceCategory.filesets">
-                    {{selectionData.length}}
-                </ng-container>
-                <ng-container *ngIf="resourceType !== protectResourceCategory.filesets">
-                    {{resourceData.name}}
-                </ng-container>
-            </lv-form-control>
-        </lv-form-item>
-    </lv-form>
+    <lv-group lvGutter="8px">
+        <span class="aui-h3">
+            {{ 'protection_selected_fileset_label' | i18n }}
+        </span>
+        <span>
+            <ng-container *ngIf="resourceType === protectResourceCategory.filesets">
+                {{selectionData.length}}
+            </ng-container>
+            <ng-container *ngIf="resourceType !== protectResourceCategory.filesets">
+                {{resourceData.name}}
+            </ng-container>
+        </span>
+    </lv-group>
 </ng-template>
-
 
 <ng-template #tabTotalTitleTpl>
     <div class="host-register-tabnav">

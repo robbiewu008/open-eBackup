@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -35,7 +35,11 @@ import {
   HCSHostInNormalStatus,
   Scene
 } from 'app/shared/consts';
-import { BaseUtilService, I18NService } from 'app/shared/services';
+import {
+  BaseUtilService,
+  I18NService,
+  WarningMessageService
+} from 'app/shared/services';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import {
   assign,
@@ -49,6 +53,7 @@ import {
   keys,
   now,
   reject,
+  some,
   uniq
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
@@ -65,8 +70,16 @@ export class TakeManualBackupComponent implements OnInit {
   formGroup: FormGroup;
   dataMap = DataMap;
   policyAction = PolicyAction;
+  disableDiffAction = false;
+  disableIncrementAction = false;
   disableLogAction = false;
   concurrentNumber = 10;
+  actionDisabledMap = new Map([
+    [PolicyAction.LOG, 'disableLogAction'],
+    [PolicyAction.INCREMENT, 'disableIncrementAction'],
+    [PolicyAction.DIFFERENCE, 'disableDiffAction']
+  ]);
+  isRHELHA = false;
   tipMap = {
     [PolicyAction.FULL]: this.i18n.get('common_full_backup_tips_label'),
     [PolicyAction.LOG]: this.i18n.get('common_log_backup_tips_label'),
@@ -138,7 +151,9 @@ export class TakeManualBackupComponent implements OnInit {
     [DataMap.Resource_Type.openStackProject.value]: this.specialActionConfig,
     [DataMap.Resource_Type.openStackCloudServer.value]: this
       .specialActionConfig,
-    [DataMap.Resource_Type.cNwareVm.value]: this.specialActionConfig
+    [DataMap.Resource_Type.cNwareVm.value]: this.specialActionConfig,
+    [DataMap.Resource_Type.hyperVVm.value]: this.specialActionConfig,
+    [DataMap.Resource_Type.nutanixVm.value]: this.specialActionConfig
   };
   actions = {
     ...this.specialActions,
@@ -217,6 +232,24 @@ export class TakeManualBackupComponent implements OnInit {
       }
     ],
     [DataMap.Resource_Type.oracleCluster.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
+      },
+      {
+        id: PolicyAction.INCREMENT,
+        label: this.i18n.get('common_incremental_backup_label')
+      },
+      {
+        id: PolicyAction.DIFFERENCE,
+        label: this.i18n.get('common_diff_backup_label')
+      },
+      {
+        id: PolicyAction.LOG,
+        label: this.i18n.get('common_log_backup_label')
+      }
+    ],
+    [DataMap.Resource_Type.oraclePDB.value]: [
       {
         id: PolicyAction.FULL,
         label: this.i18n.get('common_full_backup_label')
@@ -490,6 +523,26 @@ export class TakeManualBackupComponent implements OnInit {
         label: this.i18n.get('common_log_backup_label')
       }
     ],
+    [DataMap.Resource_Type.AntDBInstance.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
+      },
+      {
+        id: PolicyAction.LOG,
+        label: this.i18n.get('common_log_backup_label')
+      }
+    ],
+    [DataMap.Resource_Type.AntDBClusterInstance.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
+      },
+      {
+        id: PolicyAction.LOG,
+        label: this.i18n.get('common_log_backup_label')
+      }
+    ],
     [DataMap.Resource_Type.PostgreSQLInstance.value]: [
       {
         id: PolicyAction.FULL,
@@ -558,8 +611,8 @@ export class TakeManualBackupComponent implements OnInit {
         label: this.i18n.get('common_full_backup_label')
       },
       {
-        id: PolicyAction.INCREMENT,
-        label: this.i18n.get('common_incremental_backup_label')
+        id: PolicyAction.DIFFERENCE,
+        label: this.i18n.get('common_diff_backup_label')
       },
       {
         id: PolicyAction.LOG,
@@ -835,6 +888,46 @@ export class TakeManualBackupComponent implements OnInit {
         id: PolicyAction.LOG,
         label: this.i18n.get('common_log_backup_label')
       }
+    ],
+    [DataMap.Resource_Type.APSCloudServer.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
+      },
+      {
+        id: PolicyAction.INCREMENT,
+        label: this.i18n.get('common_permanent_backup_label')
+      }
+    ],
+    [DataMap.Resource_Type.APSResourceSet.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
+      },
+      {
+        id: PolicyAction.INCREMENT,
+        label: this.i18n.get('common_permanent_backup_label')
+      }
+    ],
+    [DataMap.Resource_Type.APSZone.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
+      },
+      {
+        id: PolicyAction.INCREMENT,
+        label: this.i18n.get('common_permanent_backup_label')
+      }
+    ],
+    [DataMap.Resource_Type.saponoracleDatabase.value]: [
+      {
+        id: PolicyAction.FULL,
+        label: this.i18n.get('common_full_backup_label')
+      },
+      {
+        id: PolicyAction.LOG,
+        label: this.i18n.get('common_log_backup_label')
+      }
     ]
   };
   maxlen = 550;
@@ -854,7 +947,8 @@ export class TakeManualBackupComponent implements OnInit {
     private projectedObjectApiService: ProjectedObjectApiService,
     private batchOperateService: BatchOperateService,
     private messageService: MessageService,
-    private clientManagerApiService: ClientManagerApiService
+    private clientManagerApiService: ClientManagerApiService,
+    public warningMessageService: WarningMessageService
   ) {}
 
   ngOnInit() {
@@ -874,6 +968,8 @@ export class TakeManualBackupComponent implements OnInit {
         : this.isBatched
         ? this.i18n.get('protection_copy_name_prefix_label')
         : this.i18n.get('protection_copy_name_label');
+    this.getDisabledDiffAction();
+    this.getDisabledIncrementalAction();
     this.getDisableLogAction();
     this.initForm();
     this.initItems();
@@ -931,6 +1027,35 @@ export class TakeManualBackupComponent implements OnInit {
     };
   }
 
+  goldenDBLogFilter(): boolean {
+    if (
+      !includes(
+        [DataMap.Resource_Type.goldendbInstance.value],
+        this.params.resource_type
+      )
+    ) {
+      return false;
+    }
+    if (isArray(this.params)) {
+      return !isEmpty(
+        find(
+          this.params,
+          param =>
+            compareVersion(
+              param.environment?.version?.replace(/V/gi, ''),
+              '6.1.01'
+            ) < 1
+        )
+      );
+    }
+    return (
+      compareVersion(
+        this.params?.environment?.version?.replace(/V/gi, ''),
+        '6.1.01'
+      ) < 1
+    );
+  }
+
   initItems() {
     if (
       includes(
@@ -981,6 +1106,17 @@ export class TakeManualBackupComponent implements OnInit {
     this.items =
       this.actions[this.params.resource_type] || this.basicActionConfig;
 
+    // GBase 8s数据库不支持日志备份
+    if (
+      [
+        DataMap.Resource_Type.informixClusterInstance.value,
+        DataMap.Resource_Type.informixInstance.value
+      ].includes(this.params.resource_type) &&
+      this.params?.databaseType === DataMap.informixDatabaseType.gbase.value
+    ) {
+      this.items = reject(this.items, item => item.id === PolicyAction.LOG);
+    }
+
     // openGauss数据库不是PanWeiDB的不支持日志备份
     if (
       this.params.resource_type ===
@@ -988,6 +1124,44 @@ export class TakeManualBackupComponent implements OnInit {
       !this.params?.extendInfo?.clusterVersion.includes('PanWeiDB')
     ) {
       this.items = reject(this.items, item => item.id === PolicyAction.LOG);
+    }
+
+    // DB2 RHEL HA集群不支持增量、差异
+    if (isArray(this.params)) {
+      if (
+        includes(
+          [DataMap.Resource_Type.dbTwoDatabase.value],
+          get(this.params, 'resource_type', '')
+        ) &&
+        some(
+          this.params,
+          item => item?.extendInfo.clusterType === DataMap.dbTwoType.rhel.value
+        )
+      ) {
+        this.isRHELHA = true;
+        this.items = reject(
+          this.items,
+          item =>
+            item.id === PolicyAction.INCREMENT ||
+            item.id === PolicyAction.DIFFERENCE
+        );
+      }
+    } else {
+      if (
+        includes(
+          [DataMap.Resource_Type.dbTwoDatabase.value],
+          this.params.resource_type
+        ) &&
+        this.params?.extendInfo.clusterType === DataMap.dbTwoType.rhel.value
+      ) {
+        this.isRHELHA = true;
+        this.items = reject(
+          this.items,
+          item =>
+            item.id === PolicyAction.INCREMENT ||
+            item.id === PolicyAction.DIFFERENCE
+        );
+      }
     }
 
     // Mysql EAPP集群不支持日志备份
@@ -1053,6 +1227,11 @@ export class TakeManualBackupComponent implements OnInit {
         label: this.i18n.get('common_incremental_backup_label')
       });
     }
+
+    // goldenDB 6.1.01及以下版本不支持日志备份
+    if (this.goldenDBLogFilter()) {
+      this.items = reject(this.items, item => item.id === PolicyAction.LOG);
+    }
   }
 
   // 判断当前版本是否支持添加存储资源
@@ -1078,10 +1257,7 @@ export class TakeManualBackupComponent implements OnInit {
         akOperationTips: false
       })
       .subscribe(res => {
-        if (res?.LogBackup) {
-          this.items = this.actions[this.params.resource_type];
-        } else {
-          // 若不支持就去除日志备份选项
+        if (!res?.LogBackup) {
           this.items = reject(this.items, item => item.id === PolicyAction.LOG);
         }
       });
@@ -1101,22 +1277,82 @@ export class TakeManualBackupComponent implements OnInit {
     }
     this.items.map(e => {
       if (!e.tips) {
-        return assign(e, { tips: this.tipMap[e.id] });
+        return assign(e, {
+          tips: this.specialTip(e)
+        });
       }
     });
   }
 
+  specialTip(e) {
+    if (
+      includes(
+        [DataMap.Resource_Type.ObjectSet.value],
+        this.params.resource_type
+      ) &&
+      e.id === PolicyAction.INCREMENT
+    ) {
+      return this.i18n.get('protection_object_sla_incremental_tip_label');
+    } else if (
+      includes(
+        [DataMap.Resource_Type.goldendbInstance.value],
+        this.params.resource_type
+      ) &&
+      e.id === PolicyAction.INCREMENT
+    ) {
+      return this.i18n.get('common_diff_backup_tips_label');
+    } else {
+      return this.tipMap[e.id];
+    }
+  }
+  getDisableActionByActionId(id) {
+    // 检查 id 是否存在于 Map 中
+    if (!this.actionDisabledMap.has(id)) {
+      return false;
+    }
+    return this[this.actionDisabledMap.get(id)];
+  }
+
+  getDisabledDiffAction() {
+    if (
+      includes(
+        [DataMap.Resource_Type.saphanaDatabase.value],
+        this.params.resource_type
+      )
+    ) {
+      this.disableDiffAction =
+        get(this.params, 'environment.extendInfo.enableLogBackup', 'false') ===
+        'false';
+    }
+  }
+
+  getDisabledIncrementalAction() {
+    if (
+      includes(
+        [DataMap.Resource_Type.saphanaDatabase.value],
+        this.params.resource_type
+      )
+    ) {
+      this.disableIncrementAction =
+        get(this.params, 'environment.extendInfo.enableLogBackup', 'false') ===
+        'false';
+    }
+  }
+
   getDisableLogAction() {
-    this.disableLogAction =
+    if (
       includes(
         [
           DataMap.Resource_Type.oracle.value,
           DataMap.Resource_Type.oracleCluster.value
         ],
         this.params.resource_type
-      ) &&
-      !isEmpty(this.params.policy_list) &&
-      isEmpty(find(this.params.policy_list, { action: PolicyAction.LOG }));
+      )
+    ) {
+      this.disableLogAction =
+        !isEmpty(this.params.policy_list) &&
+        isEmpty(find(this.params.policy_list, { action: PolicyAction.LOG }));
+    }
 
     // TiDB集群版本低于6.2的不支持日志备份
     if (
@@ -1127,6 +1363,17 @@ export class TakeManualBackupComponent implements OnInit {
       const originVersion = this.params.version.replace('v', '');
       this.disableLogAction =
         compareVersion(originVersion, targetVersion) === -1;
+    }
+
+    if (
+      includes(
+        [DataMap.Resource_Type.saphanaDatabase.value],
+        this.params.resource_type
+      )
+    ) {
+      this.disableLogAction =
+        get(this.params, 'environment.extendInfo.enableLogBackup', 'false') ===
+        'false';
     }
   }
 
@@ -1177,32 +1424,65 @@ export class TakeManualBackupComponent implements OnInit {
           resourceId: this.params.resource_id,
           body
         };
-        this.projectedObjectApiService
-          .manualBackupV1ProtectedObjectsResourceIdActionBackupPost(params)
-          .subscribe({
-            next: () => {
-              observer.next();
-              observer.complete();
+        if (
+          this.params.resource_type ===
+          DataMap.Resource_Type.ActiveDirectory.value
+        ) {
+          this.warningMessageService.create({
+            content: this.i18n.get('protection_ad_manual_backup_tip_label'),
+            onOK: () => {
+              this.dealBackup(observer, params);
             },
-            error: err => {
-              observer.error(err);
+            onCancel: () => {
+              observer.error(null);
               observer.complete();
             }
           });
+        } else {
+          this.dealBackup(observer, params);
+        }
       } else {
-        this.batchOperateService.selfGetResults(
-          item => {
-            return this.asyncAction(item);
-          },
-          this.params,
-          () => {
-            observer.next();
-            observer.complete();
-          },
-          '',
-          false,
-          this.concurrentNumber
-        );
+        if (
+          this.params.resource_type ===
+          DataMap.Resource_Type.ActiveDirectory.value
+        ) {
+          this.warningMessageService.create({
+            content: this.i18n.get('protection_ad_manual_backup_tip_label'),
+            onOK: () => {
+              this.batchOperateService.selfGetResults(
+                item => {
+                  return this.asyncAction(item);
+                },
+                this.params,
+                () => {
+                  observer.next();
+                  observer.complete();
+                },
+                '',
+                false,
+                this.concurrentNumber
+              );
+            },
+            onCancel: () => {
+              observer.error(null);
+              observer.complete();
+            }
+          });
+        } else {
+          this.batchOperateService.selfGetResults(
+            item => {
+              return this.asyncAction(item);
+            },
+            this.params,
+            () => {
+              observer.next();
+              observer.complete();
+            },
+            '',
+            false,
+            this.concurrentNumber
+          );
+        }
       }
     });
   }
@@ -1233,19 +1513,23 @@ export class TakeManualBackupComponent implements OnInit {
         akOperationTips: false,
         akDoException: false
       };
-      this.projectedObjectApiService
-        .manualBackupV1ProtectedObjectsResourceIdActionBackupPost(params)
-        .subscribe({
-          next: () => {
-            observer.next();
-            observer.complete();
-          },
-          error: err => {
-            observer.error(err);
-            observer.complete();
-          }
-        });
+      this.dealBackup(observer, params);
     });
+  }
+
+  dealBackup(observer, params) {
+    this.projectedObjectApiService
+      .manualBackupV1ProtectedObjectsResourceIdActionBackupPost(params)
+      .subscribe({
+        next: () => {
+          observer.next();
+          observer.complete();
+        },
+        error: err => {
+          observer.error(err);
+          observer.complete();
+        }
+      });
   }
 
   private getGeneralDbSupportBackupType() {

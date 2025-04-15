@@ -23,7 +23,8 @@ namespace Module {
     OceanstorNasNFS::~OceanstorNasNFS() {
     }
 
-    int OceanstorNasNFS::Bind(HostInfo &host, const std::string &shareId) {
+    int OceanstorNasNFS::Bind(HostInfo &host, const std::string &shareId)
+    {
         int iRet;
         DeviceDetails info;
         iRet = Query(info);
@@ -49,7 +50,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int OceanstorNasNFS::UnBind(HostInfo host, const std::string &shareId) {
+    int OceanstorNasNFS::UnBind(HostInfo host, const std::string &shareId)
+    {
         int iRet;
         DeviceDetails info;
         iRet = Query(info);
@@ -65,7 +67,8 @@ namespace Module {
         return DeleteNFSShareClient(host.hostIpList, std::to_string(info.deviceId));
     }
 
-    int OceanstorNasNFS::Query(DeviceDetails &info) {
+    int OceanstorNasNFS::Query(DeviceDetails &info)
+    {
         int iRet = QueryFileSystem(info);
         if (iRet != SUCCESS) {
             HCP_Log(ERR, OCEANSTOR_MODULE_NAME) << "Query filesystem failure! errorCode:" << iRet << HCPENDLOG;
@@ -74,7 +77,8 @@ namespace Module {
         return QueryNFSShare(info, fileSystemId);
     }
 
-    int OceanstorNasNFS::QueryFileSystem(DeviceDetails &info) {
+    int OceanstorNasNFS::QueryFileSystem(DeviceDetails &info)
+    {
         if (fileSystemName.empty() == true) {
             if (GetFsNameFromShareName() != SUCCESS) {
                 HCP_Log(ERR, OCEANSTOR_MODULE_NAME) << "Get FS name from Sharename Failed" << HCPENDLOG;
@@ -89,7 +93,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int OceanstorNasNFS::NFSShareAddClient(std::string name, int ID) {
+    int OceanstorNasNFS::NFSShareAddClient(std::string name, int ID)
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = "NFS_SHARE_AUTH_CLIENT";
@@ -116,7 +121,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int OceanstorNasNFS::QueryNFSShare(DeviceDetails &info, std::string fsId) {
+    int OceanstorNasNFS::QueryNFSShare(DeviceDetails &info, std::string fsId)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "NFSHARE?range=[0-100]&filter=FSID::" + fsId;
@@ -136,7 +142,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int OceanstorNasNFS::DeleteNFSShare(DeviceDetails info) {
+    int OceanstorNasNFS::DeleteNFSShare(DeviceDetails info)
+    {
         HttpRequest req;
         int iRet;
         req.method = "DELETE";
@@ -155,7 +162,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int OceanstorNasNFS::CreateShare() {
+    int OceanstorNasNFS::CreateShare()
+    {
         DeviceDetails info;
         int ret = QueryFileSystem(info);
         if (ret != SUCCESS) {
@@ -165,7 +173,8 @@ namespace Module {
         return CreateNFSShare(ResourceName, fileSystemId);
     }
 
-    int OceanstorNasNFS::CreateNFSShare(std::string fileSystemName, std::string FsId) {
+    int OceanstorNasNFS::CreateNFSShare(std::string fileSystemName, std::string FsId)
+    {
         DeviceDetails info;
         if (QueryNFSShare(info, FsId) == SUCCESS) {
             HCP_Log(INFO, OCEANSTOR_MODULE_NAME) << "NFS Share FileSystem has been exist." << HCPENDLOG;
@@ -197,7 +206,8 @@ namespace Module {
     }
 
 
-    int OceanstorNasNFS::Delete() {
+    int OceanstorNasNFS::Delete()
+    {
         DeviceDetails info;
         int iRet = QueryFileSystem(info);
         if (iRet != SUCCESS) {
@@ -230,7 +240,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int OceanstorNasNFS::DeleteShare() {
+    int OceanstorNasNFS::DeleteShare()
+    {
         DeviceDetails info;
         int iRet = QueryFileSystem(info);
         if (iRet != SUCCESS) {
@@ -251,7 +262,8 @@ namespace Module {
         return FAILED;
     }
 
-    std::unique_ptr <ControlDevice> OceanstorNasNFS::CreateClone(std::string volumeName, int &errorCode) {
+    std::unique_ptr <ControlDevice> OceanstorNasNFS::CreateClone(std::string volumeName, int &errorCode)
+    {
         DeviceDetails info;
         std::string cloneFsId;
         ControlDeviceInfo deviceInfo = {};
@@ -290,7 +302,8 @@ namespace Module {
         return cloneFileSystemObj;
     }
 
-    int OceanstorNasNFS::QueryNFSShareClient(const std::string shareId, std::vector<std::string> &iPList) {
+    int OceanstorNasNFS::QueryNFSShareClient(const std::string shareId, std::vector<std::string> &iPList)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "NFS_SHARE_AUTH_CLIENT?filter=PARENTID::" + shareId;
@@ -315,7 +328,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int OceanstorNasNFS::DeleteNFSShareClient(const std::vector<std::string> &iPList, const std::string shareId) {
+    int OceanstorNasNFS::DeleteNFSShareClient(const std::vector<std::string> &iPList, const std::string shareId)
+    {
         std::vector<std::string> nasShareIPList;
         int ret = QueryNFSShareClient(shareId, nasShareIPList);
         if (ret != SUCCESS && ret != OceanstorErrorCode::FILESYSTEMNOTEXIST) {
@@ -356,7 +370,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int OceanstorNasNFS::DeleteNFSShareClient(std::string shareClientId) {
+    int OceanstorNasNFS::DeleteNFSShareClient(std::string shareClientId)
+    {
         HttpRequest req;
         req.method = "DELETE";
         req.url = "NFS_SHARE_AUTH_CLIENT/" + shareClientId;
@@ -384,7 +399,8 @@ namespace Module {
         return path;
     }
 
-    int OceanstorNasNFS::GetFsNameFromShareName() {
+    int OceanstorNasNFS::GetFsNameFromShareName()
+    {
         if (vstoreId.empty()) {
             GetVstoreId();
         }
@@ -417,7 +433,8 @@ namespace Module {
     }
 
 
-    std::unique_ptr <ControlDevice> OceanstorNasNFS::CreateSnapshot(std::string SnapshotName, int &errorCode) {
+    std::unique_ptr <ControlDevice> OceanstorNasNFS::CreateSnapshot(std::string SnapshotName, int &errorCode)
+    {
         std::string id;
         ControlDeviceInfo deviceInfo;
         deviceInfo.deviceName = SnapshotName;
@@ -431,7 +448,8 @@ namespace Module {
 
         int ret = QuerySnapshot(SnapshotName, id);
         if (ret == SUCCESS) {
-            return std::make_unique<OceanstorNasSnapshot>(deviceInfo, fileSystemId, vstoreId, "/" + fileSystemName + "/");
+            return std::make_unique<OceanstorNasSnapshot>(deviceInfo,
+                fileSystemId, vstoreId, "/" + fileSystemName + "/");
         }
 
         HttpRequest req;
@@ -450,13 +468,15 @@ namespace Module {
         Json::Value data;
         int iRet = SendRequest(req, data, errorDes, errorCode, true);
         if (iRet == SUCCESS && errorCode == SUCCESS) {
-            return std::make_unique<OceanstorNasSnapshot>(deviceInfo, fileSystemId, vstoreId, "/" + fileSystemName + "/");
+            return std::make_unique<OceanstorNasSnapshot>(deviceInfo,
+                fileSystemId, vstoreId, "/" + fileSystemName + "/");
         } else {
             return nullptr;
         }
     }
 
-    void OceanstorNasNFS::ModifySpecialCharForURL(std::string &stringName) {
+    void OceanstorNasNFS::ModifySpecialCharForURL(std::string &stringName)
+    {
         HCP_Log(DEBUG, OCEANSTOR_MODULE_NAME) << stringName << HCPENDLOG;
         boost::replace_all(stringName, "%", "%25");
         boost::replace_all(stringName, " ", "%20");
@@ -471,7 +491,8 @@ namespace Module {
         return;
     }
 
-    void OceanstorNasNFS::ModifySpecialCharForFSNameCheck(std::string &stringName) {
+    void OceanstorNasNFS::ModifySpecialCharForFSNameCheck(std::string &stringName)
+    {
         HCP_Log(DEBUG, OCEANSTOR_MODULE_NAME) << stringName << HCPENDLOG;
         boost::replace_all(stringName, "&", "&amp;");
         boost::replace_all(stringName, "(", "&#40;");

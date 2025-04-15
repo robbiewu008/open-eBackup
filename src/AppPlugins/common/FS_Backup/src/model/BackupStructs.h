@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <unordered_set>
 #include "Backup.h"
+#include "EnumDefines.h"
 #ifdef _NAS
 #include "nfsc/libnfs.h"
 #include "smb2/libsmb2.h"
@@ -54,52 +55,6 @@ constexpr auto ENTRY_MODE_META_MODIFIED = "mm";
 
 #define IS_VALID_FILEHANDLE(fileHandle) (fileHandle.m_file != nullptr)
 
-enum class FileDescState {
-    INIT = 0,               /* 0 init */
-    LSTAT,                  /* 1 lstat req sent for the file to obtain the attributes */
-    SRC_OPENED,             /* 2 file is opened (at source) */
-    DST_OPENED,             /* 3 file is opened (at destination) */
-    PARTIAL_READED,         /* 4 file data read from src is in-progress, partially read */
-    READED,                 /* 5 file data read from src is completed, all blocks are read */
-    AGGREGATED,             /* 6 used in aggregate restore */
-    META_READED,            /* 7 File meta read from src is completed */
-    PARTIAL_WRITED,         /* 8 file data write to src is in-progress, partially written */
-    WRITED,                 /* 9 file data write to src is completed, all blocks are written */
-    META_WRITED,            /* 10 File metadata write to src is completed */
-    SRC_CLOSED,             /* 11 file is closed (at source) */
-    DST_CLOSED,             /* 12 file is closed (at destination) */
-    READ_OPEN_FAILED,       /* 13 file open at source is failed */
-    WRITE_OPEN_FAILED,      /* 14 file open at destination is failed */
-    LINK,                   /* 15 */
-    DIR_DEL,                /* 16 directory with same name as file, to be deleted */
-    DIR_DEL_RESTORE,        /* directory with same name as file, to be deleted. Comes in link delete flow of restore */
-    LINK_DEL,               /* 18 symlink/hardlink/failed file to be deleted */
-    LINK_DEL_FAILED,        /* 19 normal file to be deleted after copy failure */
-    LINK_DEL_FOR_RESTORE,   /* 20 non zero files in restore to be deleted */
-    READ_FAILED,            /* 21 file data read at source is failed */
-    WRITE_FAILED,           /* 22 file data write at destination is failed */
-    WRITE_SKIP,             /* 23 */
-    META_WRITE_FAILED,      /* 24 file metadata write at destination is failed */
-    REPLACE_DIR,            /* 25 need to remove the dir and send the fileHandle to copy again */
-    FILEHANDLE_INVALID,     /* 26 file handle became invalid, need to reopen */
-    END                     /* 27 end */
-};
-
-enum class LINK_TYPE {
-    SYM = 0,        // src -> protected share
-    HARD = 1,       // dst -> secondary share
-    REGULAR = 2,    // Create flow
-    DEVICE_TYPE = 3 // Mknod flow
-};
-
-enum class FileType { // 与 Module 中的enum class MetaType对应
-    NFS = 1,
-    CIFS,
-    UNIX,
-    WINDOWS,
-    OBJECT
-};
-
 struct ParentInfo {
     std::string dirName;
     std::string metaFileName;
@@ -121,6 +76,7 @@ union IOHandle {
 class BlockStats {
 public:
     std::atomic<uint32_t> m_totalCnt        {0};
+    std::atomic<uint32_t> m_totalErrCnt     {0};
     std::atomic<uint32_t> m_readReqCnt      {0};
     std::atomic<uint32_t> m_readRespCnt     {0};
     std::atomic<uint32_t> m_writeReqCnt     {0};
@@ -262,17 +218,20 @@ public:
     uint64_t m_ctime { 0 };               /* time of change */
     uint64_t m_btime { 0 };               /* time of birth */
     uint64_t m_metaFileOffset { 0 };
+    uint64_t m_xMetaFileOffset { 0 };
+    uint64_t m_aggregateFileOffset { 0 }; /* Offset of small file content inside the aggregate file */
     uint32_t m_uid { 0 };                 /* user ID of owner */
     uint32_t m_gid { 0 };                 /* group ID of owner */
     uint32_t m_nlink { 0 };               /* number of hard links */
     uint32_t m_fileAttr { 0 };
-    uint64_t m_aggregateFileOffset { 0 }; /* Offset of small file content inside the aggregate file */
+    uint32_t m_numOfStreams { 0 };
 
     uint32_t m_mode { 0 };                /* mode_t for Linux, Also used as reserved fields for Windows since 1.3.0 */
     FileType m_type { 0 };                /* 元数据类型：1.nfs 2.cifs 3.UNIX 4.Windows */
     uint16_t m_metaFileIndex { 0 };
+    uint16_t m_xMetaFileIndex { 0 };
     uint16_t m_metaFileReadLen { 0 };
-    
+
     std::string m_scannermode;            /* Mode to denote the change happened to file */
     std::string m_aclText;                /* Acl text stored nfsv3 acl/posix access acl/cifs security descriptor */
     std::string m_defaultAclText;         /* Acl text only store posix default acl */
@@ -325,6 +284,7 @@ public:
     BlockBuffer                 m_block             {};
     uint32_t                    m_retryCnt          { 0 };
     uint32_t                    m_errNum            { 0 };
+    std::string                 m_errMessage        {};
 
     bool operator< (const FileHandle & fileHandleObj) const
     {
@@ -567,7 +527,6 @@ public:
     {
         std::lock_guard<std::mutex> lk(m_mtx);
         m_failedInodeSet.insert(inode);
-        return;
     }
 
     bool CheckInodeFailed(uint64_t inode)

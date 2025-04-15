@@ -12,8 +12,9 @@
 */
 package openbackup.data.access.framework.restore.service;
 
-import openbackup.data.access.framework.core.common.enums.v2.RestoreTypeEnum;
 import com.huawei.oceanprotect.functionswitch.template.service.FunctionSwitchService;
+
+import openbackup.data.access.framework.core.common.enums.v2.RestoreTypeEnum;
 import openbackup.system.base.common.license.LicenseValidateService;
 import openbackup.system.base.sdk.license.enums.FunctionEnum;
 

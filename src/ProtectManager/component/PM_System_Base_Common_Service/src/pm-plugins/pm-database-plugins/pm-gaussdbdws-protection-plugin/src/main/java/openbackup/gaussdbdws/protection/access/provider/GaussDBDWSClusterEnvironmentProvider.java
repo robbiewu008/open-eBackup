@@ -12,6 +12,11 @@
 */
 package openbackup.gaussdbdws.protection.access.provider;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+
+import io.jsonwebtoken.lang.Collections;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.provider.UnifiedClusterResourceIntegrityChecker;
 import openbackup.access.framework.resource.util.EnvironmentParamCheckUtil;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
@@ -45,12 +50,6 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
-import io.jsonwebtoken.lang.Collections;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -155,7 +154,7 @@ public class GaussDBDWSClusterEnvironmentProvider extends DatabaseEnvironmentPro
         protectedResource.setType(ResourceTypeEnum.DATABASE.getType());
         protectedResource.setSubType(ResourceSubTypeEnum.GAUSSDB_DWS_DATABASE.getType());
         protectedResource.setUuid(UUID.nameUUIDFromBytes(
-            (environment.getUuid() + environment.getName() + database).getBytes(StandardCharsets.UTF_8)).toString());
+            (environment.getUuid() + database).getBytes(StandardCharsets.UTF_8)).toString());
         protectedResource.setVersion(environment.getVersion());
         protectedResource.setParentName(environment.getName());
         protectedResource.setParentUuid(environment.getUuid());
@@ -266,8 +265,8 @@ public class GaussDBDWSClusterEnvironmentProvider extends DatabaseEnvironmentPro
             .map(gaussDBBaseService::getEnvironmentById)
             .collect(Collectors.toList());
         clusterUuidList.forEach(uuid -> DwsValidator.checkExistUuid(hostUuidList, uuid));
-        clusterUuidList.addAll(hostUuidList);
         DwsValidator.checkDwsExistSameClusterOrHost(existingEnvironmentList, clusterUuidList);
+        DwsValidator.checkDwsExistSameHostAsCluster(existingEnvironmentList, hostUuidList);
     }
 
     private List<ProtectedResource> getAgentResourcesByKey(ProtectedEnvironment environment, String agentKey) {

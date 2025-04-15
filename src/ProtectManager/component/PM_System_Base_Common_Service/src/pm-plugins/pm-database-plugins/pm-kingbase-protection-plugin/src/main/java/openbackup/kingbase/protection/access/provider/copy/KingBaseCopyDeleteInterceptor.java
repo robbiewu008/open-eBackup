@@ -12,6 +12,7 @@
 */
 package openbackup.kingbase.protection.access.provider.copy;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.service.CopyService;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
@@ -22,8 +23,6 @@ import openbackup.database.base.plugin.interceptor.AbstractDbCopyDeleteIntercept
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

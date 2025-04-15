@@ -19,6 +19,8 @@
 #include "log/Log.h"
 #include <iostream>
 #include "common/Thread.h"
+#include "Utils.h"
+#include "VolumeCommonStruct.h"
 
 using namespace Module;
 using namespace FileSystemUtil;
@@ -32,11 +34,12 @@ namespace {
     const int TRYNUMES = 3;
     const int NUM60 = 60;
     constexpr int VOLUME_SEGMENT_SIZE = 2;
-    const string SUPPORT_LVM_FS[] = {
+    const string SUPPORT_VSS_FS[] = {
         "NTFS",
     };
     constexpr uint8_t SNAP_ERRNO_SPACELESS = 3;
     constexpr uint8_t SPACE_PERCENTAGE = 5;
+    const std::wstring WPATH_PREFIX = LR"(\\?\)";
 }
 
 VssSnapshotProvider::VssSnapshotProvider(
@@ -44,7 +47,8 @@ VssSnapshotProvider::VssSnapshotProvider(
     : deviceMount(deviceMount), jobId(jobId), m_snapshotMountRoot(snapshotMountRoot)
 {}
 
-SnapshotResult VssSnapshotProvider::CreateSnapshot(const std::string& filePath, bool isCrossVolume)
+SnapshotResult VssSnapshotProvider::CreateSnapshot(const std::string& filePath, bool isCrossVolume,
+    const std::string& snapshotPercent)
 {
     SnapshotResult snapshotResult;
     if (filePath.empty()) {
@@ -72,7 +76,7 @@ SnapshotResult VssSnapshotProvider::CreateSnapshot(const std::string& filePath, 
     for (const LvmSnapshot& volume : volumeInfo) {
         int ret = 0;
         std::shared_ptr<LvmSnapshot> snapshotPtr = CreateSnapshotByVolume(volume.m_oriDeviceVolume,
-            volume.m_oriDeviceMountPath, ret);
+            volume.m_oriDeviceMountPath, ret, snapshotPercent);
         if (ret == SNAP_ERRNO_SPACELESS) {
             string vgName = deviceMount->FindDevice(volume.m_oriDeviceMountPath)->mountPoint;
             ERRLOG("CreateSnapshotByVolume failed, lvm vg [%s] doesn't have enough space!", vgName.c_str());
@@ -190,9 +194,9 @@ bool VssSnapshotProvider::IsSupportSnapshot(const std::string& file, std::string
         return false;
     }
     bool isSupportVss = false;
-    int fsCnt = sizeof(SUPPORT_LVM_FS) / sizeof(SUPPORT_LVM_FS[0]);
+    int fsCnt = sizeof(SUPPORT_VSS_FS) / sizeof(SUPPORT_VSS_FS[0]);
     for (int i = 0; i < fsCnt; i++) {
-        if (fsDevice->fsType == SUPPORT_LVM_FS[i]) {
+        if (fsDevice->fsType == SUPPORT_VSS_FS[i]) {
             isSupportVss = true;
             break;
         }
@@ -261,7 +265,7 @@ bool VssSnapshotProvider::DeleteSnapshotByVolume(const std::string &snapVolumeNa
     return true;
 }
 
-bool VssSnapshotProvider::SpaceRemainRat(const std::string &path)
+bool VssSnapshotProvider::SpaceRemainRat(const std::string &path, const std::string& snapshotPercent)
 {
     ULARGE_INTEGER totalBytes;
     ULARGE_INTEGER freeBytes;
@@ -269,13 +273,18 @@ bool VssSnapshotProvider::SpaceRemainRat(const std::string &path)
         ERRLOG("Get disk free space failed of path:%s", path.c_str());
         return false;
     }
+    int spacePercent = Module::SafeStoi(snapshotPercent);
+    if (spacePercent <= 0) {
+        WARNLOG("Detect snapshot space percentage anomaly at %d percent, reset to 5 percent", spacePercent);
+        spacePercent = static_cast<int>(SPACE_PERCENTAGE);
+    }
     uint64_t per = freeBytes.QuadPart * 100 / totalBytes.QuadPart;
-    return per < SPACE_PERCENTAGE ? false : true;
+    return per < static_cast<uint64_t>(spacePercent) ? false : true;
 }
 
 // Determines whether a snapshot has been created, and returns the created snapshot.
 std::shared_ptr<LvmSnapshot> VssSnapshotProvider::CreateSnapshotByVolume(const std::string &volumeName,
-    const std::string &volumePath, int& ret)
+    const std::string &volumePath, int& ret, const std::string &snapshotPercent)
 {
     INFOLOG("CreateSnapshotByVolume,start create device volume: %s", volumePath.c_str());
     if (deviceVolumeSnapMap.count(volumeName) != 0) {
@@ -285,7 +294,7 @@ std::shared_ptr<LvmSnapshot> VssSnapshotProvider::CreateSnapshotByVolume(const s
         DBGLOG("%s is null", volumePath.c_str());
         return nullptr;
     }
-    if (!SpaceRemainRat(volumePath)) {
+    if (!SpaceRemainRat(volumePath, snapshotPercent)) {
         DBGLOG("volumePath %s space is not enough", volumePath.c_str());
         ret = SNAP_ERRNO_SPACELESS;
         return nullptr;
@@ -295,7 +304,7 @@ std::shared_ptr<LvmSnapshot> VssSnapshotProvider::CreateSnapshotByVolume(const s
     bool snapCreateRes = false;
     VssClient client;
     for (int i = NUM0; i < TRYNUMES; i++) {
-        snapRes = client.CreateSnapshots(volumePathList);
+        snapRes = client.CreateSnapshots(volumePathList, snapshotPercent);
         if (snapRes) {
             INFOLOG("Create Snapshot for %s success", volumePath.c_str());
             snapCreateRes = true;
@@ -318,7 +327,7 @@ std::shared_ptr<LvmSnapshot> VssSnapshotProvider::CreateSnapshotByVolume(const s
         append(volumeName).append("\\").append(driverLetter);
     HCP_Log(DEBUG, MODULE) << "mountPoint:" << mountPoint << HCPENDLOG;
     if (!std::filesystem::create_directories(mountPoint)) {
-        HCP_Log(ERROR, MODULE) << "create mountPoint Directory failed" << HCPENDLOG;
+        HCP_Log(WARN, MODULE) << "create mountPoint Directory failed" << HCPENDLOG;
     }
     std::string snapVolumeName = Utf16ToUtf8(client.GetSnapshotProperty(volumeId)
         .value().SnapshotDeviceObjectW()).append("\\");
@@ -368,7 +377,19 @@ std::string VssSnapshotProvider::GetRealPath(const std::string& path)
 
 bool VssSnapshotProvider::IsDir(const std::string& path)
 {
-    return std::filesystem::is_directory(path);
+    std::wstring wPath = FileSystemUtil::Utf8ToUtf16(path);
+    if (wPath.length() <= WPATH_PREFIX.length() || wPath.find(WPATH_PREFIX) != 0) {
+        wPath = WPATH_PREFIX + wPath;
+    }
+    auto result = FileSystemUtil::StatW(wPath);
+    if (result) {
+        if (result->IsDirectory()) {
+            DBGLOG("IsDir %s is directory", path.c_str());
+            return true;
+        }
+    }
+    DBGLOG("IsDir %s is not directory", path.c_str());
+    return false;
 }
 }
 #endif

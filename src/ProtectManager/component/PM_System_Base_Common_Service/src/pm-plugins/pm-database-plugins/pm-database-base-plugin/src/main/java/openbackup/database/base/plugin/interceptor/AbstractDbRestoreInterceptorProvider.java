@@ -12,6 +12,9 @@
 */
 package openbackup.database.base.plugin.interceptor;
 
+import com.google.common.collect.Maps;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.backup.NextBackupChangeCauseEnum;
 import openbackup.data.protection.access.provider.sdk.backup.NextBackupModifyReq;
@@ -23,15 +26,16 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceConnectio
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreInterceptorProvider;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
+import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.service.DeployTypeService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -54,10 +58,14 @@ public abstract class AbstractDbRestoreInterceptorProvider implements RestoreInt
     @Autowired
     private ResourceService resourceService;
 
+    @Autowired
+    private DeployTypeService deployTypeService;
+
     @Override
     public RestoreTask initialize(RestoreTask task) {
         // 检查连通性
         checkConnention(task);
+        setCopyRestoreNeedWritable(task);
         return supplyRestoreTask(task);
     }
 
@@ -69,7 +77,7 @@ public abstract class AbstractDbRestoreInterceptorProvider implements RestoreInt
             return;
         }
         NextBackupModifyReq nextBackupModifyReq = NextBackupModifyReq.build(findAssociatedResourcesToSetNextFull(task),
-                NextBackupChangeCauseEnum.RESTORE_SUCCESS_TO_FULL);
+            NextBackupChangeCauseEnum.RESTORE_SUCCESS_TO_FULL);
         resourceService.modifyNextBackup(nextBackupModifyReq, false);
     }
 
@@ -114,5 +122,19 @@ public abstract class AbstractDbRestoreInterceptorProvider implements RestoreInt
      */
     public RestoreTask supplyRestoreTask(RestoreTask task) {
         return task;
+    }
+
+    /**
+     * 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+     *
+     * @param task 恢复任务
+     */
+    protected void setCopyRestoreNeedWritable(RestoreTask task) {
+        if (deployTypeService.isPacific()) {
+            Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams())
+                .orElseGet(Maps::newHashMap);
+            advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+            task.setAdvanceParams(advanceParams);
+        }
     }
 }

@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.common.model.job;
 
-import openbackup.system.base.util.BeanTools;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import openbackup.system.base.util.BeanTools;
 
 /**
  * MultiClusterJobBo

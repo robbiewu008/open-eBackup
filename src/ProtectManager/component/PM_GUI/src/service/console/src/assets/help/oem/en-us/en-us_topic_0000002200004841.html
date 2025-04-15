@@ -1,0 +1,67 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="When ClickHouse and Redis Are Deployed Together, the Redis Node Is Offline or Backup or Restoration Fails Occasionally">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002199970449.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200004841">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>When ClickHouse and Redis Are Deployed Together, the Redis Node Is Offline or Backup or Restoration Fails Occasionally</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200004841"></a><a name="EN-US_TOPIC_0000002200004841"></a>
+  <h1 class="topictitle1">When ClickHouse and Redis Are Deployed Together, the Redis Node Is Offline or Backup or Restoration Fails Occasionally</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>When ClickHouse and Redis are deployed on the same MRS production node, the node is offline, or backup or restoration fails.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Cause</h4>
+    <p>When ClickHouse and Redis are deployed together, the Kerberos authentication principal configured for ClickHouse does not have permissions required for Redis backup and restoration.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Suggestion</h4>
+    <ol>
+     <li><span>Log in to the Redis node that is offline or where backup or restoration fails.</span></li>
+     <li><span>Run the <strong>cd <em>/opt</em>/DataBackup/ProtectClient/ProtectClient-E/slog/Plugins/GeneralDBPlugin/</strong> command. (Replace <em><strong>/opt</strong></em> in the command with the actual installation directory of the client.) Go to the log file directory and check whether the <span class="uicontrol"><b>redis.log</b></span> log file contains the following error information:</span><p></p><p><strong>DB::Exception</strong> <em>XXX</em><strong>: Not enough privileges.</strong></p> <p><em>XXX</em> indicates the name of the Kerbors authentication principal of ClickHouse.</p>
+      <ul>
+       <li>If such error information is contained, grant permissions required for Redis backup and restoration to the Kerbors authentication principal of ClickHouse.</li>
+       <li>If no such error information is displayed, collect logs and contact technical support engineers.</li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002199970449.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -15,6 +15,7 @@ package openbackup.redis.plugin.provider;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.provider.DatabaseResourceProvider;
 import openbackup.redis.plugin.constant.RedisConstant;
@@ -24,7 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The RedisResourceProvider
@@ -33,6 +40,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class RedisResourceProvider extends DatabaseResourceProvider {
+    private ResourceService resourceService;
+
     /**
      * Constructor
      *
@@ -41,6 +50,11 @@ public class RedisResourceProvider extends DatabaseResourceProvider {
      */
     public RedisResourceProvider(ProviderManager providerManager, PluginConfigManager pluginConfigManager) {
         super(providerManager, pluginConfigManager);
+    }
+
+    @Autowired
+    public void setResourceService(ResourceService resourceService) {
+        this.resourceService = resourceService;
     }
 
     @Override
@@ -61,5 +75,22 @@ public class RedisResourceProvider extends DatabaseResourceProvider {
     @Override
     public void beforeUpdate(ProtectedResource protectedResource) {
         beforeCreate(protectedResource);
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> children = resourceService.queryDependencyResources(true, DatabaseConstants.CHILDREN,
+            Collections.singletonList(resource.getUuid()));
+        for (ProtectedResource child : children) {
+            Map<String, List<ProtectedResource>> childDependencies = new HashMap<>();
+            List<ProtectedResource> agents = resourceService.queryDependencyResources(true, DatabaseConstants.AGENTS,
+                Collections.singletonList(child.getUuid()));
+            childDependencies.put(DatabaseConstants.AGENTS, agents);
+            child.setDependencies(childDependencies);
+        }
+        dependencies.put(DatabaseConstants.CHILDREN, children);
+        resource.setDependencies(dependencies);
+        return true;
     }
 }

@@ -19,7 +19,6 @@
 
 #ifdef __cplusplus
 extern "C" {
-
 typedef struct NdmpClientInterface_S {
     char *srcAuth;
     char *dstAuth;
@@ -70,7 +69,7 @@ typedef struct NdmpGetFhAddDir {
  
 typedef struct NdmpFileStats {
     unsigned long long node;
-    unsigned long long FhInfo;    
+    unsigned long long FhInfo;
     unsigned int pathLen;
     char *path;
     unsigned long invalid;
@@ -83,7 +82,7 @@ typedef struct NdmpFileStats {
     unsigned long group;
     unsigned long fattr;
     unsigned long long size;
-    unsigned long links;    
+    unsigned long links;
 } NdmpFileStats;
  
 typedef struct NdmpGetFhAddNode {
@@ -98,15 +97,15 @@ extern int NdmpClientAuth(NdmpClientInterface *interface);
 extern void InitLog(const char* fullLogPath, int logLevel, const char* rootPath = "");
 /* get fs info, all filesystem with logicIp(associate with tenentId) */
 extern int NdmpGetFsInfo(NdmpFsInfo* reply);
-/* start backup*/
+/* start backup */
 extern int NdmpStartBackup(NdmpClientInterface *interface);
 /* start restore */
 extern int NdmpStartRestore(NdmpClientInterface *interface);
-/* abort backup*/
+/* abort backup */
 extern int NdmpAbortBackup(NdmpClientInterface *interface);
 /* get stat */
 extern NdmpStat NdmpGetStatFunc();
-/* destroy ndmp resource*/
+/* destroy ndmp resource */
 extern void NdmpDestroy();
 }
 #endif

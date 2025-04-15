@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -27,6 +27,7 @@ import {
   DataMapService,
   I18NService
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { assign, isEmpty, isUndefined } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -62,7 +63,7 @@ export class AddTargetClusterComponent implements OnInit {
     required: this.requiredLabel
   };
   clusterNameErrorTip = assign({}, this.baseUtilService.requiredErrorTip, {
-    invalidName: this.i18n.get('common_cluster_name_invalid_label')
+    invalidName: this.i18n.get('common_target_cluster_name_invalid_label')
   });
 
   portErrorTip = assign({}, this.baseUtilService.requiredErrorTip, {
@@ -92,7 +93,8 @@ export class AddTargetClusterComponent implements OnInit {
     public cookieService: CookieService,
     public clusterApiService: ClustersApiService,
     public baseUtilService: BaseUtilService,
-    public dataMapService: DataMapService
+    public dataMapService: DataMapService,
+    public appUtilsService: AppUtilsService
   ) {}
 
   validLength(min, max): ValidatorFn {
@@ -127,7 +129,9 @@ export class AddTargetClusterComponent implements OnInit {
         {
           validators: [
             this.baseUtilService.VALID.required(),
-            this.baseUtilService.VALID.name(CommonConsts.REGEX.clusterName)
+            this.baseUtilService.VALID.name(
+              CommonConsts.REGEX.targetClusterName
+            )
           ],
           updateOn: 'change'
         }

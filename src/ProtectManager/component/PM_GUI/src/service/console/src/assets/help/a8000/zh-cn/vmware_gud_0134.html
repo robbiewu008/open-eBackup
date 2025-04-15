@@ -1,0 +1,56 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复虚拟机或磁盘时，恢复失败">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="vmware_gud_0115.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="vmware_gud_0134">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复虚拟机或磁盘时，恢复失败</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="vmware_gud_0134"></a><a name="vmware_gud_0134"></a>
+
+<h1 class="topictitle1">恢复虚拟机或磁盘时，恢复失败</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>虚拟机恢复或者磁盘恢复时，恢复任务失败。任务详情提示错误“恢复虚拟机磁盘失败”，日志中出现“Write failed, err: 'Unknown error'”错误。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>SAN传输模式恢复场景下，如果待恢复副本磁盘类型包含厚置备延迟置零或者精简置备磁盘，则可能出现写I/O错误。（详见VMware KB：<a href="https://kb.vmware.com/s/article/52193" target="_blank" rel="noopener noreferrer">https://kb.vmware.com/s/article/52193</a>）</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li><span>选择<span class="uicontrol" id="vmware_gud_0134__zh-cn_topic_0000002199964685_uicontrol1812933174613">“<span id="vmware_gud_0134__zh-cn_topic_0000002199964685_text0129103112462">数据利用</span> &gt; <span id="vmware_gud_0134__zh-cn_topic_0000002199964685_text81291431134613">副本数据</span> &gt; <span id="vmware_gud_0134__zh-cn_topic_0000002199964685_text860175510430">虚拟化</span> &gt; <span id="vmware_gud_0134__zh-cn_topic_0000002199964685_text8319371528">VMware</span>”</span>。</span></li><li><span>在<span class="wintitle">“副本”</span>页签，选择待恢复的副本。</span><p><ul><li>虚拟机恢复：选择“操作 &gt; 恢复”，在恢复界面打开<span class="uicontrol">“NBDSSL恢复”</span>开关。</li><li>磁盘恢复：勾选待恢复磁盘，单击“恢复”。在恢复界面打开<span class="uicontrol">“NBDSSL恢复”</span>开关。</li></ul>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>，启动恢复任务。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="vmware_gud_0115.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

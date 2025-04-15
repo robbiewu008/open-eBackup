@@ -109,7 +109,7 @@ public class ObjectStorageProviderTest {
         actionResult.setMessage("tenantid");
         PowerMockito.when(agentService.checkConnection(any(ProtectedEnvironment.class)))
             .thenReturn(new ActionResult[] {actionResult});
-        PowerMockito.when(resourceService.getResourceById(eq("storage_ObjectStorage_2_tenantid")))
+        PowerMockito.when(resourceService.getResourceById(eq("2_testak_8.40.97.140")))
             .thenReturn(Optional.empty());
 
         // run the test

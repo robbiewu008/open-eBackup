@@ -1,0 +1,61 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Performing a Detection Manually">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002165515188.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="00-OceanCyber 300 1.2.0 Online Help">
+<meta name="DC.Publisher" content="20250228">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002165355500">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Performing a Detection Manually</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002165355500"></a><a name="EN-US_TOPIC_0000002165355500"></a>
+
+<h1 class="topictitle1">Performing a Detection Manually</h1>
+<div id="body0000001647303838"><p id="EN-US_TOPIC_0000002165355500__p8060118">To execute a detection job immediately, you can perform manual detection.</p>
+<div class="section" id="EN-US_TOPIC_0000002165355500__section152793194419"><h4 class="sectiontitle">Precautions</h4><p id="EN-US_TOPIC_0000002165355500__p196131288443">In HyperMetro domain scenarios, the secondary file system does not support intelligent detection.</p>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002165355500__en-us_topic_0000001346322404_en-us_topic_0000001142022920_section348853001916"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002165355500__ol93331553183719"><li id="EN-US_TOPIC_0000002165355500__li18361042183716"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002165355500__uicontrol1352153873213"><b>Data Security &gt; Intelligent Detection</b></span>.</span></li><li id="EN-US_TOPIC_0000002165355500__li98301694720"><span>Click the <span id="EN-US_TOPIC_0000002165355500__text7822105224219"><strong>File Systems</strong></span> tab.</span></li><li id="EN-US_TOPIC_0000002165355500__li1414511249483"><span>In the row of the target file system, choose <span class="menucascade" id="EN-US_TOPIC_0000002165355500__menucascade188171919274"><b><span class="uicontrol" id="EN-US_TOPIC_0000002165355500__uicontrol187171942719"><span id="EN-US_TOPIC_0000002165355500__text0238424205218"><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002165355500__uicontrol239812204275"><span id="EN-US_TOPIC_0000002165355500__text18957123795220"><strong>Manually Detect</strong></span></span></b></span>.</span><p><div class="note" id="EN-US_TOPIC_0000002165355500__note10825550162513"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002165355500__p482513508257">You can also select multiple file systems and choose <span class="menucascade" id="EN-US_TOPIC_0000002165355500__menucascade5372186142612"><b><span class="uicontrol" id="EN-US_TOPIC_0000002165355500__uicontrol937215620267"><span id="EN-US_TOPIC_0000002165355500__text54657263529"><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002165355500__uicontrol237226182618"><span id="EN-US_TOPIC_0000002165355500__text1855644125219"><strong>Manually Detect</strong></span></span></b></span> in the upper part.</p>
+</div></div>
+</p></li><li id="EN-US_TOPIC_0000002165355500__li1825014422406"><span>Enter the snapshot name. If you do not set this parameter, the default snapshot name <strong id="EN-US_TOPIC_0000002165355500__b138781218164613">snapshot</strong><strong id="EN-US_TOPIC_0000002165355500__b1382631185813">_</strong><em id="EN-US_TOPIC_0000002165355500__i189717945816">Timestamp</em> is used.</span></li><li id="EN-US_TOPIC_0000002165355500__li0475826161716"><span>Configure the snapshot retention policy. Once the snapshot retention period ends, the system automatically deletes expired snapshots.</span></li><li id="EN-US_TOPIC_0000002165355500__li52696285211"><span>Set <span class="uicontrol" id="EN-US_TOPIC_0000002165355500__uicontrol19785484395"><b><span id="EN-US_TOPIC_0000002165355500__text109221073011"><strong>Backup Copy In-Depth Detection</strong></span></b></span>.</span><p><div class="p" id="EN-US_TOPIC_0000002165355500__p3986165015121">This parameter applies only to the file system of the OceanProtect Backup Storage device. After this function is enabled, the OceanCyber 300 Data Security Appliance performs in-depth parsing and detection on backup copy files in the backup storage to evaluate whether the original files (files on the backup production storage device) in the backup copy files are infected. If this function is enabled, the overall detection time may be extended.<div class="note" id="EN-US_TOPIC_0000002165355500__note0587455585"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul id="EN-US_TOPIC_0000002165355500__en-us_topic_0000001829819617_ul16617115054712"><li id="EN-US_TOPIC_0000002165355500__en-us_topic_0000001829819617_li13617185074717">After <span class="uicontrol" id="EN-US_TOPIC_0000002165355500__en-us_topic_0000001829819617_uicontrol1097720385913"><b><span id="EN-US_TOPIC_0000002165355500__en-us_topic_0000001829819617_text797712382095">Backup Copy In-Depth Detection</span></b></span> is enabled, you can adjust the sensitivity of the backup copy detection algorithm. If <strong id="EN-US_TOPIC_0000002165355500__b534464217407">Sensitivity</strong> is set to <strong id="EN-US_TOPIC_0000002165355500__b1234414220402">High</strong>, an alarm may be triggered when a small amount of data is encrypted or similar operations are performed, increasing the risk of misreports. <strong id="EN-US_TOPIC_0000002165355500__b991216387416">Medium</strong> sensitivity is recommended for service scenarios without special requirements.</li><li id="EN-US_TOPIC_0000002165355500__en-us_topic_0000001829819617_li4617155010477">The sensitivity adjustment of the backup copy detection algorithm takes effect only for VMs, databases, or Veeam-based host file backup copies.</li><li id="EN-US_TOPIC_0000002165355500__li1153216395578">You can use the backup software to check whether a protected object corresponding to the backup copy is infected by performing the following steps:<ol type="a" id="EN-US_TOPIC_0000002165355500__ol14147944155310"><li id="EN-US_TOPIC_0000002165355500__li14147114417539">On the OceanCyber management page, obtain the information about the corresponding backup job in the backup software based on the infected backup copy.<ol id="EN-US_TOPIC_0000002165355500__ol165704113436"><li id="EN-US_TOPIC_0000002165355500__li154231439104319">On the <span class="uicontrol" id="EN-US_TOPIC_0000002165355500__uicontrol881364874417"><b>Snapshot Management and Restoration</b></span> page, locate the row that contains the target resource and choose <span class="menucascade" id="EN-US_TOPIC_0000002165355500__menucascade2070617599516"><b><span class="uicontrol" id="EN-US_TOPIC_0000002165355500__uicontrol370685935114">More</span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002165355500__uicontrol1170610595515">Latest Detection Result</span></b></span>.</li><li id="EN-US_TOPIC_0000002165355500__li10441113155019">In the <span class="uicontrol" id="EN-US_TOPIC_0000002165355500__uicontrol1532762735216"><b>Protected Object List</b></span> area, click the name of a protected object to view <span class="uicontrol" id="EN-US_TOPIC_0000002165355500__uicontrol137142050185210"><b>Owning Backup Job</b></span>.<ul id="EN-US_TOPIC_0000002165355500__ul95751233195315"><li id="EN-US_TOPIC_0000002165355500__li28307353534">If Commvault is used as the backup software, <strong id="EN-US_TOPIC_0000002165355500__b44863764613">Job ID</strong> is displayed in this column, corresponding to <strong id="EN-US_TOPIC_0000002165355500__b15131163014461">Job ID</strong> in the backup software.</li><li id="EN-US_TOPIC_0000002165355500__li19447537195313">If NetBackup is used as the backup software, the policy of the backup job is displayed. You can locate the backup job in the backup software based on the policy, client name, and copy generation time.</li><li id="EN-US_TOPIC_0000002165355500__li25751533155314">If Veeam is used as the backup software, the backup job name is displayed in this column. You can locate the backup job in the backup software based on the backup job name, client name, and copy generation time.</li></ul>
+</li></ol>
+</li><li id="EN-US_TOPIC_0000002165355500__li7701142415458">On the target backup software page, identify the protected object and copy generation time based on the backup job information.</li><li id="EN-US_TOPIC_0000002165355500__li731463414454">Confirm the production storage and host information based on the protected object and copy generation time.</li><li id="EN-US_TOPIC_0000002165355500__li152568335470">Check whether the original data is infected on the production storage.</li></ol>
+</li></ul>
+</div></div>
+</div>
+</p></li><li id="EN-US_TOPIC_0000002165355500__li7581828111719"><span>Set <span class="uicontrol" id="EN-US_TOPIC_0000002165355500__en-us_topic_0000001829819617_uicontrol13661013894"><b><span id="EN-US_TOPIC_0000002165355500__en-us_topic_0000001829819617_text156661312913">Uninfected Snapshot Lock</span></b></span>. The <strong id="EN-US_TOPIC_0000002165355500__b07487912475"><span id="EN-US_TOPIC_0000002165355500__en-us_topic_0000001829819617_text266111316913">Uninfected Snapshot Lock</span></strong> parameter means that snapshots for which no ransomware file is detected will be locked. After this function is enabled, uninfected snapshots will change to secure snapshots, and the snapshot retention period will be prolonged. Modification or deletion is not allowed before the snapshots expire.</span></li><li id="EN-US_TOPIC_0000002165355500__li11268540173812"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002165355500__uicontrol16543198174919"><b><span id="EN-US_TOPIC_0000002165355500__text85437819494"><strong>OK</strong></span></b></span>.</span></li></ol>
+<p id="EN-US_TOPIC_0000002165355500__p277611244371"></p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002165515188.html">Performing Intelligent Detection</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

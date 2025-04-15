@@ -25,7 +25,7 @@ if [ "${BACKUPKSINFO}X" == "X" ]; then
   echo "modify ${name} failed, parameter is no exit"
   exit 1
 fi
-result=$(curl --cacert $KUBE_CACRT_PATH -X PATCH -H "Authorization: Bearer $TOKEN" $Host/api/v1/namespaces/${namespace}/configmaps/${name} -H "Content-Type: application/strategic-merge-patch+json" --data "{\"binaryData\":{\"backup.ks\": \"${BACKUPKSINFO}\"}}")
+result=$(LD_PRELOAD=/usr/lib64/libSecurityStarter.so curl --cacert $KUBE_CACRT_PATH -X PATCH -H "Authorization: Bearer $TOKEN" $Host/api/v1/namespaces/${namespace}/configmaps/${name} -H "Content-Type: application/strategic-merge-patch+json" --data "{\"binaryData\":{\"backup.ks\": \"${BACKUPKSINFO}\"}}" index@6)
 check_result=$(echo ${result} |grep "Failure")
 if [ -n "${check_result}" ]; then
     time=$(date "+%Y-%m-%d %H:%M:%S")}

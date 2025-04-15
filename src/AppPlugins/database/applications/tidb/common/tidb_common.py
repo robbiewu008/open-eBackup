@@ -19,13 +19,14 @@ import time
 import pymysql
 
 from common.cleaner import clear
-from common.common import check_path_legal, check_sql_cmd_param, check_command_injection
+from common.common import check_path_legal, check_sql_cmd_param, check_command_injection_exclude_quote
 from common.common import execute_cmd, output_execution_result_ex
-from common.const import CMDResult, SysData, ParamConstant
+from common.const import CMDResult, SysData, ParamConstant, ExecuteResultEnum
+from common.job_const import JobNameConst
 from common.util.check_utils import is_ip_address, is_port
 from common.util.checkout_user_utils import get_path_owner
 from tidb.common.const import TiDBSubType, RpcParamKey, TidbPath, ClusterRequiredHost, TiDBDataBaseFilter, \
-    TiDBResourceKeyName, TiDBTaskType, TiDBConst, MysqlTimeOut, ErrorCode, TiDBCode
+    TiDBResourceKeyName, TiDBConst, MysqlTimeOut, ErrorCode
 from tidb.logger import log
 
 
@@ -78,13 +79,13 @@ def get_env_variable(str_env_variable: str):
 
 
 def exec_mysql_sql(task_type, pid, sql_list, host, port):
-    if task_type == TiDBTaskType.BACUKUP:
+    if task_type == JobNameConst.BACKUP:
         user = get_env_variable(TiDBResourceKeyName.APPLICATION_AUTH_AUTHKEY_BKP + pid)
         pwd = get_env_variable(TiDBResourceKeyName.APPLICATION_AUTH_AUTHPWD_BKP + pid)
-    elif task_type == TiDBTaskType.RESTORE:
+    elif task_type == JobNameConst.RESTORE:
         user = get_env_variable(TiDBResourceKeyName.APPLICATION_AUTH_AUTHKEY_RST + pid)
         pwd = get_env_variable(TiDBResourceKeyName.APPLICATION_AUTH_AUTHPWD_RST + pid)
-    elif task_type == TiDBTaskType.RESOURCE:
+    elif task_type == JobNameConst.RESOURCE:
         user = get_env_variable(TiDBResourceKeyName.APPLICATION_AUTH_AUTHKEY + pid)
         pwd = get_env_variable(TiDBResourceKeyName.APPLICATION_AUTH_AUTHPWD + pid)
     else:
@@ -368,7 +369,7 @@ def get_backup_tso_validate(tiup_path, path):
     cmd = f"su - {get_path_owner(tiup_path)} -c '{br_cmd}'"
     ret, std_out, std_err = execute_cmd(cmd)
     if int(ret) != int(CMDResult.SUCCESS):
-        log.error(f'execute copy cmd failed, message: {std_out}, err: {std_err}')
+        log.error(f'execute get backup_tso cmd failed, message: {std_out}, err: {std_err}')
         return '', br_cmd, std_err
     return std_out.strip(), '', ''
 
@@ -404,7 +405,7 @@ def get_err_msg(err_msgs):
 
 def parse_tso_to_time(tiup_path, pd_id, ts):
     br_version = get_br_version(pd_id, tiup_path)
-    if check_command_injection(pd_id) or not check_params_valid(br_version, ts):
+    if check_command_injection_exclude_quote(pd_id) or not check_params_valid(br_version, ts):
         log.error(f"br_version: {br_version} or pd_id: {pd_id} or ts: {ts} is invalid")
         return '', '', ''
     ctl_cmd = f'{tiup_path} ctl:{br_version} pd -u http://{pd_id} tso {ts}'
@@ -508,7 +509,7 @@ def drop_db(pid, cluster_name, tiup_path, task_type, db):
     if not ret:
         log.error("Drop temporary db failed!")
         return False, ErrorCode.BKP_DB_TAB_NOT_EXIST
-    return True, TiDBCode.SUCCESS
+    return True, ExecuteResultEnum.SUCCESS.value
 
 
 def get_available_filename(file_parent_path, file_name):

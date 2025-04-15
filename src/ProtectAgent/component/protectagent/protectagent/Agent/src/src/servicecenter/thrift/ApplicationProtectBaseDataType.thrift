@@ -152,7 +152,9 @@ enum ExecutePolicy {
     /** retry at other node when one node failed */
     RETRY_OTHER_NODE_WHEN_FAILED = 3,
     /** sub job will executed at fixed node */
-    FIXED_NODE = 4
+    FIXED_NODE = 4,
+    /** set channel job will skip offline internal agent */
+    EVERY_NODE_ONE_TIME_SKIP_OFFLINE = 5
 }
 
 /** sub job struct, plugin will generate new job with this struct */
@@ -205,8 +207,12 @@ enum RepositoryProtocolType {
     BLOCK = 3,
     /** repository using local directory */
     LOCAL_DIR = 4,
+    /** native nfs */
+    NATIVE_NFS = 5,
+    /** native cifs */
+    NATIVE_CIFS = 6,
     /** repository using tape */
-    TAPE = 5,
+    TAPE = 7
 }
 
 /** backup copy type */
@@ -307,7 +313,9 @@ struct StorageRepository {
       *     }
       * }
       */
-    14:optional string extendInfo
+    14:optional string extendInfo,
+    /**Sub dir path need to be added to the mount path */
+    15:optional string subDirPath
 }
 
 /** storage snapshot information */
@@ -386,4 +394,40 @@ struct JobPermission {
     4:optional bool isMount,
     /** job permission extend information */
     5:optional string extendInfo
+}
+
+/** list resource result with page */
+struct ResourceResultByPage {
+    /** resource elements list */
+    1:required list<ApplicationResource> items,
+    /** current page no */
+    2:required i32 pageNo,
+    /** maximum number of elements in one page */
+    3:required i32 pageSize,
+    /** total page number */
+    4:required i32 pages,
+    /** total elements number */
+    5:required i32 total
+}
+/** result of command */
+struct CmdResult {
+    /** result of cmd */
+    1:required i32 result,
+    /** output of cmd */
+    2:required list<string> output
+}
+/** The path of the repository. */
+struct RepositoryPath {
+    /** The repository type of the Path */
+    1:required RepositoryDataType repositoryType,
+    /** The path of the repository needed to be scanned*/
+    2:required string scanPath
+}
+ 
+/** The path of the repositories needed to be scanned. */
+struct ScanRepositories {
+    /** The list of the repositories needed to be scanned*/
+    1:required list<RepositoryPath> scanRepoList
+    /** The path that will save the scann result*/
+    2:required string savePath
 }

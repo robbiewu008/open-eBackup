@@ -1,0 +1,180 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="关于SLA">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="hbase_00053.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="hbase_00054">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>关于SLA</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="hbase_00054"></a><a name="hbase_00054"></a>
+  <h1 class="topictitle1">关于SLA</h1>
+  <div>
+   <p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p450712339156">SLA（Service Level Agreement）是一组可配置的数据保护策略，策略中定义了数据保护和副本保留的规则。将这些策略关联至受保护环境，以实现对特定受保护环境的保护。</p>
+   <p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p0553222467">为简化数据保护配置任务，<span id="hbase_00054__zh-cn_topic_0000002164660734_text1398119317315">本产品</span>提供了3种系统预置SLA：Gold、Silver、Bronze，可供用户立即使用。如：用户可选择Gold SLA应用于任务关键型业务的数据保护，选择Bronze SLA应用于web服务器的数据保护。</p>
+   <p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p1479982113919">同时，为满足企业对各类受保护环境不同的数据保护诉求，<span id="hbase_00054__zh-cn_topic_0000002164660734_text087015321837">本产品</span>支持由用户自定义SLA。</p>
+   <div class="section" id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_section5197184061219">
+    <h4 class="sectiontitle">系统预置SLA</h4>
+    <p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p22352378191">系统预置了Gold、Silver和Bronze三种SLA，SLA中定义了备份任务的备份频率、副本保留时长以及备份时间窗口。</p>
+    <p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p48831228191910">预置SLA如<a href="#hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_table179754488191">表1</a>所示。</p>
+    <ul id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_ul54087306518">
+     <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_li6408193016518"><span id="hbase_00054__zh-cn_topic_0000002164660734_text2226185411285">备份频率</span>：首次执行时间及多长时间备份一次。</li>
+     <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_li1708102942019"><span id="hbase_00054__zh-cn_topic_0000002164660734_text383581416296">副本保留</span>：副本保留时长。</li>
+     <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_li969223218518"><span id="hbase_00054__zh-cn_topic_0000002164660734_text1639122312293">备份时间窗口</span>：可执行备份任务的时间范围，该范围以外的时间不会进行备份任务调度。</li>
+    </ul>
+    <div class="tablenoborder">
+     <a name="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_table179754488191"></a><a name="zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_table179754488191"></a>
+     <table cellpadding="4" cellspacing="0" summary="" id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_table179754488191" frame="border" border="1" rules="all">
+      <caption>
+       <b>表1 </b>系统预置SLA参数说明
+      </caption>
+      <colgroup>
+       <col style="width:24%">
+       <col style="width:76%">
+      </colgroup>
+      <thead align="left">
+       <tr id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_row1497564801916">
+        <th align="left" class="cellrowborder" valign="top" width="24%" id="mcps1.3.4.5.2.3.1.1"><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_p49751148121920">SLA</p></th>
+        <th align="left" class="cellrowborder" valign="top" width="76%" id="mcps1.3.4.5.2.3.1.2"><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_p19751648161918">SLA参数</p></th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_row13975104861916">
+        <td class="cellrowborder" valign="top" width="24%" headers="mcps1.3.4.5.2.3.1.1 "><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_p79751948131918">Gold</p></td>
+        <td class="cellrowborder" valign="top" width="76%" headers="mcps1.3.4.5.2.3.1.2 ">
+         <ul id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul636863217226">
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li113681332152219"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text313524974813">全量备份</span>
+           <ul id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul98681339192614">
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li037275620429"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text837365674218"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text4752195674813">备份频率</span></span>：从2021-04-20开始，每1天执行一次</li>
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li16868153952618"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text451241534912">副本保留</span>：1个月</li>
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li4416429267"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_text1826871163612"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text54161321104914">备份时间窗口</span></span>：00:30:00~次日00:30:00允许备份</li>
+           </ul></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li11580634152219"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text660816358497">增量备份</span>
+           <ul id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul8553103932718">
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li1912063864314"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text141201738204312"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text330415525493">备份频率</span></span>：从2021-04-20开始，每4小时执行一次</li>
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li17553143916271"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text7200152195011">副本保留</span>：1个月</li>
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li8208145142720"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_text17366162683614"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text1383221105010">备份时间窗口</span></span>：从01:00:00到次日01:00:00允许备份</li>
+           </ul></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_li152611382816">指定目标位置（仅1.6.0及后续版本存在此参数）<p id="hbase_00054__zh-cn_topic_0000002164660734_p11670168103016"><a name="hbase_00054__zh-cn_topic_0000002164660734_li152611382816"></a><a name="zh-cn_topic_0000002164660734_li152611382816"></a>系统通过智能均衡自动选择备份目标存储单元或存储单元组。</p></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_li9101152511305">任务超过时间窗告警（仅1.6.0及后续版本存在此参数）<p id="hbase_00054__zh-cn_topic_0000002164660734_p05091431163012"><a name="hbase_00054__zh-cn_topic_0000002164660734_li9101152511305"></a><a name="zh-cn_topic_0000002164660734_li9101152511305"></a>禁用</p></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li1770215191164">任务失败告警<p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_p530714331614"><a name="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li1770215191164"></a><a name="zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li1770215191164"></a>启用</p></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li5593153151610"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text1776115615507">失败后自动重试</span><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_p1514017286176">周期性备份任务失败后每5分钟重试1次，总共重试3次</p></li>
+         </ul></td>
+       </tr>
+       <tr id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_row119751748151919">
+        <td class="cellrowborder" valign="top" width="24%" headers="mcps1.3.4.5.2.3.1.1 "><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_p6975548111910">Silver</p></td>
+        <td class="cellrowborder" valign="top" width="76%" headers="mcps1.3.4.5.2.3.1.2 ">
+         <ul id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul17467846193010">
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li11467164603012"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text1981641819507">全量备份</span>
+           <ul id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul18467746153020">
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li122744134416"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text1760519220507"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text176051922185019">备份频率</span></span>：从2021-04-20开始，每1周执行一次</li>
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li54671246103014"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text156918273502">副本保留</span>：1个月</li>
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li124671746143011"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text1027615320505"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text132761932135018">备份时间窗口</span></span>：00:30:00~次日00:30:00允许备份</li>
+           </ul></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li1646715462303"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text24271836175016">增量备份</span>
+           <ul id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul204671046183020">
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li13272171464619"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text14301640195010"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text14430174019504">备份频率</span></span>：从2021-04-20开始，每1天执行一次</li>
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li564919593455"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text1631534445013">副本保留</span>：1个月</li>
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li64671546123014"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text28061147165014"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text380614735010">备份时间窗口</span></span>：从01:00:00到次日01:00:00允许备份</li>
+           </ul></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_li2537205323317">指定目标位置（仅1.6.0及后续版本存在此参数）<p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000002164660734_p11670168103016"><a name="hbase_00054__zh-cn_topic_0000002164660734_li2537205323317"></a><a name="zh-cn_topic_0000002164660734_li2537205323317"></a>系统通过智能均衡自动选择备份目标存储单元或存储单元组。</p></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li14252019152814">任务超过时间窗告警（仅1.6.0及后续版本存在此参数）<p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000002164660734_p05091431163012"><a name="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li14252019152814"></a><a name="zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li14252019152814"></a>禁用</p></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li126089301778">任务失败告警<p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_p530714331614"><a name="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li126089301778"></a><a name="zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li126089301778"></a>启用</p></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_li163601857359"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text1776115615507">失败后自动重试</span><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_p1514017286176">周期性备份任务失败后每5分钟重试1次，总共重试3次</p></li>
+         </ul></td>
+       </tr>
+       <tr id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_row11975154851913">
+        <td class="cellrowborder" valign="top" width="24%" headers="mcps1.3.4.5.2.3.1.1 "><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_p189758489191">Bronze</p></td>
+        <td class="cellrowborder" valign="top" width="76%" headers="mcps1.3.4.5.2.3.1.2 ">
+         <ul id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul5964164813305">
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li09641348103013"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text19844171117511">全量备份</span>
+           <ul id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul10964948183020">
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li196484813306"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_text42114620449"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text1044417176513"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text54441417185117">备份频率</span></span></span>：从2021-04-20开始，每30天执行一次</li>
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li1077310010479"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text0173112212519">副本保留</span>：3个月</li>
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li996494853011"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_text192374913440"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text681862625113"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text281892614510">备份时间窗口</span></span></span>：00:30:00~次日00:30:00允许备份</li>
+           </ul></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li169649482305"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text660516323517">增量备份</span>
+           <ul id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_ul1964114812303">
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_li4964204843011"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_zh-cn_topic_0000001089449281_text913113213458"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text172901138155116"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text4290838165110">备份频率</span></span></span>：从2021-04-20开始，每1周执行一次</li>
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li1620516487478"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text14791943195114">副本保留</span>：3个月</li>
+            <li id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_li1038565719471"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text927754325215"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text6277143175211">备份时间窗口</span></span>：从01:00:00到次日01:00:00允许备份</li>
+           </ul></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_li1767163993514">指定目标位置（仅1.6.0及后续版本存在此参数）<p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000002164660734_p11670168103016_1"><a name="hbase_00054__zh-cn_topic_0000002164660734_li1767163993514"></a><a name="zh-cn_topic_0000002164660734_li1767163993514"></a>系统通过智能均衡自动选择备份目标存储单元或存储单元组。</p></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_li1367243911359">任务超过时间窗告警（仅1.6.0及后续版本存在此参数）<p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000002164660734_p05091431163012_1"><a name="hbase_00054__zh-cn_topic_0000002164660734_li1367243911359"></a><a name="zh-cn_topic_0000002164660734_li1367243911359"></a>禁用</p></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_li3672193933516">任务失败告警<p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_p530714331614_1"><a name="hbase_00054__zh-cn_topic_0000002164660734_li3672193933516"></a><a name="zh-cn_topic_0000002164660734_li3672193933516"></a>启用</p></li>
+          <li id="hbase_00054__zh-cn_topic_0000002164660734_li12672153914354"><span id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_text1776115615507_1">失败后自动重试</span><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000002164660734_zh-cn_topic_0000001337708186_p1514017286176_1">周期性备份任务失败后每5分钟重试1次，总共重试3次</p></li>
+         </ul></td>
+       </tr>
+      </tbody>
+     </table>
+    </div>
+   </div>
+   <div class="section" id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_section1969174516230">
+    <h4 class="sectiontitle">自定义SLA</h4>
+    <p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p118482029286">用户可针对备份任务、复制任务自定义SLA。SLA中可定义任务的执行频率、时间窗口、副本保留时长等基本参数以及其他适配各类受保护资源的高级参数。</p>
+    <p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p1186264517237">各类任务的SLA说明如<a href="#hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_table171521524193513">表2</a>所示。</p>
+    <div class="tablenoborder">
+     <a name="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_table171521524193513"></a><a name="zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_table171521524193513"></a>
+     <table cellpadding="4" cellspacing="0" summary="" id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_table171521524193513" frame="border" border="1" rules="all">
+      <caption>
+       <b>表2 </b>自定义SLA
+      </caption>
+      <colgroup>
+       <col style="width:19.75%">
+       <col style="width:80.25%">
+      </colgroup>
+      <thead align="left">
+       <tr id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_row615222414352">
+        <th align="left" class="cellrowborder" valign="top" width="19.75%" id="mcps1.3.5.4.2.3.1.1"><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p5152182416356">SLA</p></th>
+        <th align="left" class="cellrowborder" valign="top" width="80.25%" id="mcps1.3.5.4.2.3.1.2"><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p7152162483518">说明</p></th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_row7152102483518">
+        <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.4.2.3.1.1 "><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p14152132413510">备份SLA</p></td>
+        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p2015222473514">定义备份任务的执行频率、备份副本保留时长等参数。</p></td>
+       </tr>
+       <tr id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_row61521124173515">
+        <td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.5.4.2.3.1.1 "><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p71523242356">复制SLA</p></td>
+        <td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.5.4.2.3.1.2 "><p id="hbase_00054__zh-cn_topic_0000002164660734_zh-cn_topic_0000001188593208_zh-cn_topic_0000001170622238_p1315215248355">指定备份副本复制到目标集群，并定义复制任务执行频率、复制副本保留时长等参数。</p></td>
+       </tr>
+      </tbody>
+     </table>
+    </div>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="hbase_00053.html">SLA</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

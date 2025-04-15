@@ -38,4 +38,8 @@
         where t1.policy_id = #{policyId}
     </select>
 
+    <select id="getAllCount" resultType="java.lang.Integer">
+        select count(1) from live_mount_policy
+    </select>
+
 </mapper>

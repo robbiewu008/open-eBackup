@@ -26,10 +26,11 @@ import pymysql
 from common.cleaner import clear
 from common.common import output_execution_result_ex, output_result_file, execute_cmd, invoke_rpc_tool_interface, \
     execute_cmd_list, touch_file, ismount_with_timeout, read_tmp_json_file
-from common.common_models import SubJobModel, SubJobDetails, CopyInfoRepModel, Copy, ReportCopyInfoModel, LogDetail
+from common.common_models import SubJobModel, SubJobDetails, CopyInfoRepModel, Copy, ReportCopyInfoModel, LogDetail, \
+    RepositoryPath, ScanRepositories
 from common.const import ParamConstant, SubJobPolicyEnum, SubJobPriorityEnum, BackupTypeEnum, ExecuteResultEnum, \
-    RepositoryDataTypeEnum, SubJobStatusEnum
-from common.util.exec_utils import su_exec_rm_cmd
+    RepositoryDataTypeEnum, SubJobStatusEnum, RepositoryNameEnum
+from common.util.exec_utils import su_exec_rm_cmd, exec_mkdir_cmd
 
 from oceanbase.common.const import OceanBaseSubJobName, SubJobType, OceanBaseCode, ActionResponse, ErrorCode, \
     OceanBaseBackupLevel, OceanBaseQueryStatus, OceanBaseSqlCmd, copyMetaFileName, CMDResult, RpcParamKey, \
@@ -103,15 +104,25 @@ class BackUp:
             if node.get("linkStatus", "") == ObclientStatus.ONLINE.value:
                 uuid = node.get("parentUuid", "")
                 obclient_uuid_list.append(uuid)
+        observer_list = cluster_info.get("obServerAgents", [])
+        observer_uuid_list = []
+        for node in observer_list:
+            if node.get("linkStatus", "") == ObclientStatus.ONLINE.value:
+                uuid = node.get("parentUuid", "")
+                observer_uuid_list.append(uuid)
         nodes = protect_env.get("nodes", [])
         obclient_node_list = []
         observer_node_list = []
-        for node in nodes:
-            uuid = node.get("id", "")
-            if uuid in obclient_uuid_list:
-                obclient_node_list.append(node)
-            else:
-                observer_node_list.append(node)
+        for uuid in obclient_uuid_list:
+            for node in nodes:
+                if uuid == node.get("id", ""):
+                    obclient_node_list.append(node)
+                    break
+        for uuid in observer_uuid_list:
+            for node in nodes:
+                if uuid == node.get("id", ""):
+                    observer_node_list.append(node)
+                    break
         return obclient_node_list, observer_node_list
 
     @staticmethod
@@ -135,6 +146,33 @@ class BackUp:
         log.info("agent list check successfully")
         response = ActionResponse(code=ExecuteResultEnum.SUCCESS)
         output_result_file(req_id, response.dict(by_alias=True))
+
+    def query_scan_repositories(self):
+        # E6000适配
+        log.info(f"Query scan repositories, job_id: {self._job_id}.")
+        if self._backup_type == BackupTypeEnum.LOG_BACKUP.value:
+            # log仓的meta区 /Database_{resource_id}_LogRepository_su{num}/{ip}/meta/{job_id}
+            meta_copy_path = os.path.join(os.path.dirname(self._log_area), RepositoryNameEnum.META, self._job_id)
+            # log仓的data区 /Database_{resource_id}_LogRepository_su{num}/{ip}/{job_id}
+            data_path = self._log_area
+            # /Database_{resource_id}_LogRepository_su{num}/{ip}
+            save_path = os.path.dirname(self._log_area)
+        else:
+            # meta/Database_{resource_id}_InnerDirectory_su{num}/source_policy_{job_id}/Context_Global_MD/{ip}
+            meta_copy_path = self._meta_area
+            # data/Database_{resource_id}_InnerDirectory_su{num}/source_policy_{job_id}/Context/{ip}
+            data_path = self._data_area
+            # meta/Database_{resource_id}_InnerDirectory_su{num}/source_policy_{job_id}/Context_Global_MD/{ip}
+            save_path = self._meta_area
+        if not os.path.exists(meta_copy_path):
+            exec_mkdir_cmd(meta_copy_path, mode=0x777)
+        log_meta_copy_repo = RepositoryPath(repositoryType=RepositoryDataTypeEnum.META_REPOSITORY.value,
+                                            scanPath=meta_copy_path)
+        log_data_repo = RepositoryPath(repositoryType=RepositoryDataTypeEnum.LOG_REPOSITORY.value,
+                                       scanPath=data_path)
+        scan_repos = ScanRepositories(scanRepoList=[log_data_repo, log_meta_copy_repo], savePath=save_path)
+        output_result_file(self._pid, scan_repos.dict(by_alias=True))
+        log.info(f"Query scan repos success, return result {scan_repos}, job id: {self._job_id}")
 
     @staticmethod
     def get_tenant_name_list(protect_object):
@@ -172,7 +210,7 @@ class BackUp:
         response.body_err = OceanBaseCode.FAILED.value
 
     @staticmethod
-    def backup_sql_cmd(cmd, tenant_id_list=None, bs_key=0, tenant_name_list="", backup_destination=""):
+    def backup_sql_cmd(cmd, tenant_id_list=None, bs_key=0, tenant_name_list="", backup_destination="", last_bs_key=0):
         if tenant_id_list is None:
             tenant_id_list = ["NONE", "NONE"]
         sql_dict = {
@@ -198,14 +236,14 @@ class BackUp:
             OceanBaseSqlCmd.UPDATE_LOG_ARCHIVE_INTERVAL:
                 "alter system set backup_dest_option='log_archive_checkpoint_interval=30s'",
             OceanBaseSqlCmd.QUERY_DATABASE_FOR_DISPLAY: f'select distinct tenant_name, database_name from '
-                                                        f'oceanbase.gv$table where '
+                                                        f'oceanbase.gv$table where table_type =3 and '
                                                         f'tenant_id in ({str(list(tenant_id_list[1:]))[1:-1]});',
             OceanBaseSqlCmd.QUERY_TABLE_FOR_DISPLAY: f'select tenant_name, database_name, table_name from '
-                                                     f'oceanbase.gv$table where '
-                                                     f'tenant_id in ({str(list(tenant_id_list[1:]))[1:-1]});',
+                                                     f'oceanbase.gv$table where  table_type =3 and '
+                                                     f'tenant_id in ({str(list(tenant_id_list[1:]))[1:-1]}) ;',
             OceanBaseSqlCmd.QUERY_OLD_BACKUP_SET: f"select distinct bs_key from oceanbase.CDB_OB_BACKUP_SET_DETAILS "
-                                                  f"where BACKUP_LEVEL='CLUSTER' "
-                                                  f"and STATUS='COMPLETED' and BS_KEY<{bs_key}"
+                                                  f"where BACKUP_LEVEL='CLUSTER' and STATUS='COMPLETED' "
+                                                  f"and BS_KEY<{bs_key} and BS_KEY>={last_bs_key}"
         }
         sql_str = sql_dict.get(cmd)
         log.info(f'sql_str : {sql_str}')
@@ -253,7 +291,7 @@ class BackUp:
                 cur.close()
                 conn.close()
                 return False, err
-            if OceanBaseQueryStatus.FAILED in output:
+            if OceanBaseQueryStatus.FAILED.value in str(output):
                 log.error(f"execute sql {sql_str} failed, output STATUS is {output} ")
                 cur.close()
                 conn.close()
@@ -391,6 +429,20 @@ class BackUp:
         log.info(f'timestamp, last_copy_id info:{timestamp, last_copy_id}')
         return timestamp, last_copy_id
 
+    @staticmethod
+    def exe_mount(data_remote_path, data_repo, mount_point):
+        remote_hosts = data_repo.get("remoteHost")
+        for remote_host in remote_hosts:
+            remote_ip = remote_host.get("ip")
+            mount_cmd_str = f"sudo mount -tnfs4 -o rw,nfsvers=4.1,sync,lookupcache=positive,hard,timeo=600," \
+                            f"wsize=1048576,rsize=1048576,namlen=255 {remote_ip}:{data_remote_path} {mount_point}"
+            return_code, out_info, err_info = execute_cmd(mount_cmd_str)
+            if return_code == CMDResult.SUCCESS:
+                break
+            else:
+                log.error(f"The execute mount cmd failed! ERROR_INFO : {err_info}")
+        return return_code
+
     def gen_sub_job(self):
         node_obclient_list, node_observer_list = self.get_obclient_and_observer_node_list(self._protect_env)
         if not node_obclient_list or not node_observer_list:
@@ -485,7 +537,6 @@ class BackUp:
             if repository.get("repositoryType", "") == RepositoryDataTypeEnum.DATA_REPOSITORY.value:
                 data_repo = repository
         data_remote_path = data_repo.get("remotePath", "")
-        remote_ip = data_repo.get("remoteHost")[0].get("ip")
         # 如果挂载点已经挂载data仓的remotePath：直接返回成功
         if check_mount(mount_point) and self.deal_mount(mount_point):
             return True
@@ -512,15 +563,11 @@ class BackUp:
         if return_code != CMDResult.SUCCESS or not os.path.exists(mount_point):
             log.error(f"The execute mkdir_local_dir_path cmd failed! ERROR_INFO : {err_info}")
             err_log_detail = LogDetail(logInfo=OceanBaseReportLabel.BACKUP_MKDIR_MOUNT_POINT_FAIL_LABEL,
-                                       logInfoParam=[local_ip],
-                                       logLevel=LogLevel.ERROR)
+                                       logInfoParam=[local_ip], logLevel=LogLevel.ERROR)
             raise LogDetailException(log_detail=err_log_detail)
         # 执行挂载命令
-        mount_cmd_str = f"sudo mount -tnfs4 -o rw,nfsvers=4.1,sync,lookupcache=positive,hard,timeo=600," \
-                        f"wsize=1048576,rsize=1048576,namlen=255 {remote_ip}:{data_remote_path} {mount_point}"
-        return_code, out_info, err_info = execute_cmd(mount_cmd_str)
+        return_code = self.exe_mount(data_remote_path, data_repo, mount_point)
         if return_code != CMDResult.SUCCESS:
-            log.error(f"The execute mount cmd failed! ERROR_INFO : {err_info}")
             err_log_detail = LogDetail(logInfo=OceanBaseReportLabel.BACKUP_MOUNT_FAIL_LABEL, logInfoParam=[local_ip],
                                        logLevel=LogLevel.ERROR)
             raise LogDetailException(log_detail=err_log_detail)
@@ -856,11 +903,19 @@ class BackUp:
             return
         if not self._backup_type == BackupTypeEnum.FULL_BACKUP:
             return
-        sql_str = self.backup_sql_cmd(cmd=OceanBaseSqlCmd.QUERY_OLD_BACKUP_SET, bs_key=self._bs_key)
+        # 去meta仓里看看，有没有记录上次的备份的最后的bs_key，如果没有就不去清
+        # 只清除我们自己备份的副本，客户别的备份我们不管，如果清理可能会一直报错
+        cluster_full_backup_bs_key_path = os.path.join(self._meta_area, "clusterFullBackupBskey")
+        if not os.path.exists(cluster_full_backup_bs_key_path):
+            return
+        last_bs_key = read_tmp_json_file(cluster_full_backup_bs_key_path).get("bs_key")
+        sql_str = self.backup_sql_cmd(cmd=OceanBaseSqlCmd.QUERY_OLD_BACKUP_SET, bs_key=self._bs_key,
+                                      last_bs_key=last_bs_key)
         ret, output = self.exec_oceanbase_sql(ip, port, sql_str, self._pid)
         if not ret or not output:
             log.warn("query old backup set ids failed")
             return
+        # 原来删除失败重试100次，根据现网观察，100次也成功不了，所以降低重试次数为5次
         for bs_key in output:
             backup_set_id = bs_key[0]
             clear_cnt = 1
@@ -868,8 +923,8 @@ class BackUp:
             clear_ret, output = self.exec_oceanbase_sql(ip, port, clear_sql, self._pid)
             time.sleep(15)
             while not clear_ret:
-                if clear_cnt > 100:
-                    log.error("clear backup set over 100 times")
+                if clear_cnt > 5:
+                    log.error("clear backup set over 5 times")
                     return
                 clear_cnt += 1
                 log.warn("wait last clear task finish")
@@ -899,7 +954,7 @@ class BackUp:
         elif backup_job_level == OceanBaseBackupLevel.BACKUP_TENANT_LEVEL:
             tenant_name_list_str = ','.join(self._tenant_name_list)
             backup_destination = os.path.join(self._data_area, self._copy_id)
-            cmd_str_list = [f"mkdir -p {backup_destination}", f"chown -R admin:admin {backup_destination}"]
+            cmd_str_list = [f"mkdir -p {backup_destination}", f"chown -R admin:admin {self._data_area}"]
             execute_cmd_list(cmd_str_list)
             sql_str = self.backup_sql_cmd(OceanBaseSqlCmd.TENANT_FULL_BACKUP,
                                           tenant_name_list=tenant_name_list_str,
@@ -924,6 +979,10 @@ class BackUp:
                                        logInfoParam=[str(output)], logLevel=LogLevel.ERROR)
             raise LogDetailException(log_detail=err_log_detail)
         self._bs_key = max(output)[-1]
+        if (backup_job_level == OceanBaseBackupLevel.BACKUP_CLUSTER_LEVEL and
+                self._backup_type == BackupTypeEnum.FULL_BACKUP.value):
+            cluster_full_backup_bs_key_path = os.path.join(self._cache_area, "clusterFullBackupBskey")
+            output_execution_result_ex(cluster_full_backup_bs_key_path, {"bs_key": self._bs_key})
         log.info(f'the bs_key for this backup is : {self._bs_key}')
         return True
 
@@ -1040,6 +1099,12 @@ class BackUp:
 
     def exec_backup_post_job(self):
         log.info('post job begins')
+        cluster_full_backup_bs_key_path = os.path.join(self._cache_area, "clusterFullBackupBskey")
+        if os.path.exists(cluster_full_backup_bs_key_path):
+            cluster_full_backup_bs_key = read_tmp_json_file(cluster_full_backup_bs_key_path)
+            os.remove(cluster_full_backup_bs_key_path)
+            cluster_full_backup_bs_key_path = os.path.join(self._meta_area, "clusterFullBackupBskey")
+            output_execution_result_ex(cluster_full_backup_bs_key_path, cluster_full_backup_bs_key)
         sqlite_file_path = os.path.join(self._meta_area, "sqlite_file")
         if not self.remove_tmp_file(sqlite_file_path):
             return False

@@ -12,12 +12,11 @@
 */
 package openbackup.database.base.plugin.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.HashMap;

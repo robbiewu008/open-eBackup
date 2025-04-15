@@ -136,6 +136,7 @@ size_t Win32FileSystemHandler::Write(const std::shared_ptr<uint8_t[]> &buf, size
 
 size_t Win32FileSystemHandler::Append(std::shared_ptr<uint8_t[]> buf, size_t count)
 {
+    ERRLOG("not realized, do not use this mothod");
     return SUCCESS;
 }
 
@@ -190,7 +191,7 @@ bool Win32FileSystemHandler::Flush(bool sync)
 
 bool Win32FileSystemHandler::Exists(const std::string &fileName)
 {
-    if (!std::filesystem::exists(fileName)) {
+    if (!std::filesystem::exists(std::filesystem::u8path(fileName))) {
         WARNLOG("File/Dir(%s) does not exist.", fileName.c_str());
         return false;
     }
@@ -209,11 +210,12 @@ bool Win32FileSystemHandler::Rename(const std::string &oldName, const std::strin
         return false;
     }
 
-    if (rename(oldName.c_str(), newName.c_str()) != 0) {
-        ERRLOG("rename failed: errno[%d]:[%s]", errno, strerror(errno));
+    try {
+        std::filesystem::rename(std::filesystem::u8path(oldName), std::filesystem::u8path(newName));
+    } catch (const std::filesystem::filesystem_error& e) {
+        ERRLOG("Win32FileSystemHandler rename failed: %s", e.what());
         return false;
     }
-
     return true;
 }
 
@@ -224,13 +226,13 @@ bool Win32FileSystemHandler::CopyFile(const std::string &srcName, const std::str
         return false;
     }
 
-    if (!std::filesystem::exists(srcName)) {
+    if (!std::filesystem::exists(std::filesystem::u8path(srcName))) {
         printf("The old file or path: %s not exists.", srcName.c_str());
         return false;
     }
 
-    std::filesystem::copy(srcName, destName, std::filesystem::copy_options::overwrite_existing
-                                            | std::filesystem::copy_options::recursive);
+    std::filesystem::copy(std::filesystem::u8path(srcName), std::filesystem::u8path(destName),
+        std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
     return true;
 }
 
@@ -241,7 +243,7 @@ bool Win32FileSystemHandler::IsDirectory(const std::string& path)
     if (compareRet == 0) {
         realPath = realPath + "/";
     }
-    if (!Module::CFile::DirExist(realPath.c_str())) {
+    if (!std::filesystem::is_directory(std::filesystem::u8path(realPath))) {
         WARNLOG("Dir(%s) does not exist.", realPath.c_str());
         return false;
     }
@@ -250,7 +252,7 @@ bool Win32FileSystemHandler::IsDirectory(const std::string& path)
 
 bool Win32FileSystemHandler::IsRegularFile(const std::string &fileName)
 {
-    return std::filesystem::is_regular_file(fileName);
+    return std::filesystem::is_regular_file(std::filesystem::u8path(fileName));
 }
 
 bool Win32FileSystemHandler::Remove(const std::string &fileName)
@@ -260,7 +262,7 @@ bool Win32FileSystemHandler::Remove(const std::string &fileName)
         return true;
     }
 
-    if (std::remove(fileName.c_str()) != 0) {
+    if (!(std::filesystem::remove(std::filesystem::u8path(fileName)))) {
         ERRLOG("Remove failed: errno[%d]:[%s]", errno, strerror(errno));
         return false;
     }
@@ -270,7 +272,7 @@ bool Win32FileSystemHandler::Remove(const std::string &fileName)
 
 bool Win32FileSystemHandler::RemoveAll(const std::string &dirName)
 {
-    return std::filesystem::remove_all(dirName);
+    return std::filesystem::remove_all(std::filesystem::u8path(dirName));
 }
 
 bool Win32FileSystemHandler::CreateDirectory(const std::string &dirName)
@@ -284,7 +286,7 @@ bool Win32FileSystemHandler::CreateDirectory(const std::string &dirName)
         DBGLOG("Check Direction(%s).", tmpDirection.c_str());
     }
     try {
-        if (!std::filesystem::create_directories(realDirection)) {
+        if (!std::filesystem::create_directories(std::filesystem::u8path(realDirection))) {
             DWORD errorCode  = GetLastError();
             ERRLOG("create dir(%s) failed: errno[%d].", realDirection.c_str(), errorCode);
             return errorCode == DIR_ALREADY_EXISTS;
@@ -298,6 +300,20 @@ bool Win32FileSystemHandler::CreateDirectory(const std::string &dirName)
 
 void Win32FileSystemHandler::GetFiles(std::string pathName, std::vector <std::string> &files)
 {
+    if (pathName.empty()) {
+        ERRLOG("pathName empty!.");
+        return;
+    }
+    if (!Exists(pathName)) {
+        ERRLOG("pathName (%s) not exist!.", pathName.c_str());
+        return;
+    }
+    std::filesystem::path path = pathName;
+    for (const auto& entry : std::filesystem::directory_iterator(path)) {
+        if (entry.is_regular_file()) { // 检查是否为普通文件
+            files.push_back(entry.path().filename().string());
+        }
+    }
     return;
 }
 }

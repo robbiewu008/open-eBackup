@@ -20,6 +20,9 @@ import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.util.IdUtil;
 
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.model.enums.CompressionMethod;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
@@ -209,6 +212,33 @@ public class FileZip implements FileCheckInterface {
         }
     }
 
+    /**
+     * 将指定文件压缩到指定目录中
+     *
+     * @param paths 压缩文件目录
+     * @param targetPath 目标目录位置
+     */
+    public static void zipFolders(List<String> paths, String targetPath) {
+        logger.debug("paths:{}", paths);
+        ZipParameters zipParameters = new ZipParameters();
+        zipParameters.setCompressionMethod(CompressionMethod.DEFLATE);
+        try (ZipFile targetFile = new ZipFile(targetPath)) {
+            for (String path : paths) {
+                File file = new File(path);
+                if (!file.exists()) {
+                    return;
+                }
+                if (file.isFile()) {
+                    targetFile.addFile(file);
+                } else {
+                    targetFile.addFolder(file);
+                }
+            }
+        } catch (IOException e) {
+            logger.error("zip file error", ExceptionUtil.getErrorMessage(e));
+        }
+    }
+
     private static long unzipEntryToFile(String outputDir, ZipInputStream zIn, ZipEntry entry, long totalSize)
         throws IOException {
         if (entry.getName().contains(FileUtil.DOUBLE_DOT_SLASH)) {
@@ -228,8 +258,6 @@ public class FileZip implements FileCheckInterface {
             long entrySize = len;
             calTotalSize = totalSize;
             while (len != LegoNumberConstant.NEGATIVE_ONE) {
-                bos.write(buf, 0, len);
-                len = zIn.read(buf);
                 entrySize += len;
                 calTotalSize += len;
                 if (entrySize >= GB_BYTE_NUM * 2L) {
@@ -240,6 +268,8 @@ public class FileZip implements FileCheckInterface {
                     logger.error("unzip fail, total size is too big, name: {}, size: {}", entry.getName(), totalSize);
                     throw new LegoCheckedException("zip file total size is too big.");
                 }
+                bos.write(buf, 0, len);
+                len = zIn.read(buf);
             }
         }
         return calTotalSize;

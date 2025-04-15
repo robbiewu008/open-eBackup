@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.protection.listener.v2;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.enums.DmcJobStatus;
 import openbackup.data.access.framework.core.common.enums.DmeJobStatusEnum;
@@ -22,8 +23,6 @@ import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.RedissonService;
 import openbackup.system.base.util.ProviderRegistry;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

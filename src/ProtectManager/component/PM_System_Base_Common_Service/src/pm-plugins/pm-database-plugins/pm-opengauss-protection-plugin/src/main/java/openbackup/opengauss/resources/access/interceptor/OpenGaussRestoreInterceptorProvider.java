@@ -12,6 +12,7 @@
 */
 package openbackup.opengauss.resources.access.interceptor;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
@@ -34,8 +35,6 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -90,6 +89,12 @@ public class OpenGaussRestoreInterceptorProvider extends AbstractDbRestoreInterc
 
         // 通过副本中的resourceType下发恢复到agent插件
         task.getTargetObject().setSubType(copy.getResourceSubType());
+
+        // 设置实例恢复支持写
+        log.info("Opengauss db set restore need writable is True");
+        Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElse(new HashMap<>());
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        task.setAdvanceParams(advanceParams);
         return task;
     }
 

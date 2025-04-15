@@ -11,7 +11,6 @@
 * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 */
 #include "Utils.h"
-// #include "ErrorCode.h"
 #include "securec.h"
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -65,6 +64,28 @@ long long SafeStoll(const std::string& str, long long defaultValue)
         return res;
     } catch (const std::exception& e) {
         ERRLOG("Invalid Argument for stoi: %s, ERR:%s", str.c_str(), e.what());
+        return defaultValue;
+    }
+}
+
+unsigned long long SafeStoUll(const std::string& str, unsigned long long defaultValue)
+{
+    try {
+        unsigned long long res = std::stoull(str);
+        return res;
+    } catch (const std::exception& e) {
+        ERRLOG("Invalid Argument for stoi: %s, ERR:%s", str.c_str(), e.what());
+        return defaultValue;
+    }
+}
+
+float SafeStof(const std::string& str, float defaultValue)
+{
+    try {
+        return std::stof(str);
+    } catch (const std::invalid_argument&) {
+        return defaultValue;
+    } catch (const std::out_of_range&) {
         return defaultValue;
     }
 }

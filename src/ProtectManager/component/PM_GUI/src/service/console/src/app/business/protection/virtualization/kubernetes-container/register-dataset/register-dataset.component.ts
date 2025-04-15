@@ -10,7 +10,7 @@
  * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
  * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
 import {
@@ -21,7 +21,16 @@ import {
   ProtectedResourceApiService
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { assign, each, find, isEmpty, map, reject, uniqueId } from 'lodash';
+import {
+  assign,
+  each,
+  find,
+  first,
+  isEmpty,
+  map,
+  reject,
+  uniqueId
+} from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -41,6 +50,8 @@ export class RegisterDatasetComponent implements OnInit {
   excludeLabels = [];
   prefixExKey = 'prefixExKey';
   prefixExValue = 'prefixExValue';
+
+  helpUrl: string;
 
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip,
@@ -64,6 +75,8 @@ export class RegisterDatasetComponent implements OnInit {
     invalidName: this.i18n.get('protection_labels_value_valid_label')
   };
 
+  @ViewChild('headerTpl', { static: true }) headerTpl: TemplateRef<any>;
+
   constructor(
     private modal: ModalRef,
     private fb: FormBuilder,
@@ -74,9 +87,26 @@ export class RegisterDatasetComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initModalHeader();
     this.initForm();
     this.getNamespace();
     this.updateForm();
+  }
+
+  initModalHeader() {
+    this.modal.setProperty({ lvHeader: this.headerTpl });
+  }
+
+  openHelp() {
+    const targetUrl = this.i18n.isEn
+      ? `/console/assets/help/${this.AppUtilsService.helpPkg}/en-us/index.html#en-us_topic_0000002199956329.html`
+      : `/console/assets/help/${this.AppUtilsService.helpPkg}/zh-cn/index.html#kubernetes_CSI_00028.html`;
+    if (this.AppUtilsService.isHcsUser) {
+      const herf: string = first(window.location.href.split('#'));
+      window.open(herf.replace('/console/', targetUrl), '_blank');
+    } else {
+      window.open(targetUrl, '_blank');
+    }
   }
 
   addIncludeLabels(key?: string, value?: string) {

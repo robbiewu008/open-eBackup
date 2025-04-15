@@ -19,7 +19,7 @@
 
 <ng-template #nameFilterTpl>
     <span class="name-filter-title" *ngIf="filterTitle" lv-overflow>{{filterTitle}}</span>
-    <input #nameFilterInput lv-input [(ngModel)]="nameFilterValue" class="name-filter-input" (keydown)="confirmName($event)" />
+    <input #nameFilterInput lv-input [(ngModel)]="nameFilterValue" class="name-filter-input" (keydown.enter)="confirmName($event)" />
     <div class="name-filter-operation">
         <button lv-button (click)="reset()">
             {{'common_reset_label' | i18n}}

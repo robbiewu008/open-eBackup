@@ -12,7 +12,7 @@
   -->
 
 <lv-form [formGroup]="formGroup" class="formGroup">
-  <lv-form-item *ngIf="data.sub_type === dataMap.Host_Proxy_Type.VMBackupAgent.value">
+  <lv-form-item>
     <lv-form-label>{{'common_auto_sync_host_name_label' | i18n}}
       <i lv-icon="aui-icon-help" [lv-tooltip]="autoSyncTipTpl"
          lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint"

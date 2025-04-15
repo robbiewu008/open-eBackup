@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { each, find, includes, isArray, isEmpty, isString, size } from 'lodash';
@@ -54,12 +54,46 @@ export class I18NService {
 
   SPECIAL_KEY = '1677931542';
 
+  REPLACE_KEY = ['job_status_success_label', 'job_status_fail_label'];
+
   get isEn() {
     return ['en-us'].includes(this.language);
   }
 
   constructor(private http: HttpClient, private cookie: CookieService) {
     this.initLanguage();
+  }
+
+  getQueryLanguage(): string {
+    // 查询参数
+    let queryLang: string;
+    let url = window.location.href.split('?')[0];
+    try {
+      const urlParams = window.location.href.split('?')[1];
+      const queryParams = urlParams ? urlParams.split('&') : [];
+      const paramsArr = [];
+      for (let index = 0; index < queryParams.length; index++) {
+        const query = queryParams[index].split('=');
+        if (query[0] === 'language') {
+          queryLang = query[1];
+        } else {
+          paramsArr.push(`${query[0]}=${query[1]}`);
+        }
+      }
+      if (!isEmpty(paramsArr)) {
+        url += `?${paramsArr.join('&')}`;
+      }
+    } catch (error) {
+      queryLang = '';
+    }
+    if (queryLang) {
+      window.location.href = url;
+      const returnLang = queryLang === 'en' ? 'en-us' : 'zh-cn';
+      this.cookie.set(this.languageKey, returnLang);
+      localStorage.setItem(this.languageKey, returnLang);
+      return returnLang;
+    }
+    return queryLang;
   }
 
   /**
@@ -69,14 +103,20 @@ export class I18NService {
   initLanguage() {
     // 英文浏览器英文环境是en
     let browserLanguage = navigator.language;
-    if (browserLanguage === 'en') {
+    if (browserLanguage !== 'zh-CN') {
       browserLanguage = 'en-us';
     }
     this.language = (
-      this.cookie.get(this.languageKey) ||
+      localStorage.getItem(this.languageKey) ||
       this.cookie.get(this.opLanguageKey) ||
       browserLanguage
     ).toLowerCase();
+
+    // url中携带的语言优先级最高
+    const urlQueryLang = this.getQueryLanguage();
+    if (urlQueryLang) {
+      this.language = urlQueryLang;
+    }
 
     if (this.supportLanguages.indexOf(this.language) === -1) {
       this.language = this.defaultLanguage;
@@ -90,6 +130,7 @@ export class I18NService {
   changeLanguage(language) {
     this.language = language;
     this.cookie.set(this.languageKey, this.language);
+    localStorage.setItem(this.languageKey, this.language);
     window.location.reload();
   }
 
@@ -214,6 +255,24 @@ export class I18NService {
 
     i18nStr += colon ? (this.language === 'zh-cn' ? '：' : ': ') : '';
 
+    // 替换指定key
+    i18nStr = i18nStr.replace(
+      new RegExp(this.REPLACE_KEY.join('|'), 'g'),
+      match => {
+        return includes(params, match) ? this.resource[match] || match : match;
+      }
+    );
+
+    // E6000屏蔽部分应用时修改词条
+    if (this.resource['deploy_type'] === DataMap.Deploy_Type.e6000.value) {
+      if (i18nStr.includes('/openGauss')) {
+        i18nStr = i18nStr.replace('/openGauss', '');
+      }
+      if (i18nStr.includes('Informix/')) {
+        i18nStr = i18nStr.replace('Informix/', '');
+      }
+    }
+
     return i18nStr;
   }
 
@@ -224,7 +283,6 @@ export class I18NService {
     const stringMap = {
       '<': '&lt;',
       '>': '&gt;',
-      '&': '&amp;',
       '"': '&quot;',
       "'": '&apos;'
     };

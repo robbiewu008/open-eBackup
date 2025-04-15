@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { Subject, Observable, Observer } from 'rxjs';
 import { MessageService, UploadFile } from '@iux/live';
@@ -22,6 +22,7 @@ import {
 } from 'app/shared';
 import { assign, get, isEmpty, size } from 'lodash';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 @Component({
   selector: 'aui-import-backup',
   templateUrl: './import-backup.component.html',
@@ -38,16 +39,35 @@ export class ImportBackupComponent implements OnInit {
     ...this.baseUtilService.requiredErrorTip,
     invalidMinLength: this.i18n.get('common_valid_minlength_label', [8])
   };
+  superDmPwdErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
+    invalidMinLength: this.i18n.get('common_valid_maxlength_label', [32])
+  };
+  passwordLabel = this.i18n.get('system_admin_user_password_label');
+  passwordTipLabel = this.i18n.get(
+    'system_verify_signature_admin_user_tip_label'
+  );
+  isSupportSignVerify =
+    this.appUtilsService.isDataBackup ||
+    this.appUtilsService.isDistributed ||
+    this.appUtilsService.isDecouple;
   constructor(
     public fb: FormBuilder,
     public i18n: I18NService,
     public messageService: MessageService,
     private sysbackupApiService: SysbackupApiService,
     public baseUtilService: BaseUtilService,
-    private warningMessageService: WarningMessageService
+    private warningMessageService: WarningMessageService,
+    public appUtilsService: AppUtilsService
   ) {}
 
   ngOnInit() {
+    if (this.appUtilsService.isDecouple) {
+      this.passwordLabel = this.i18n.get('system_root_user_password_label');
+      this.passwordTipLabel = this.i18n.get(
+        'system_verify_signature_root_user_tip_label'
+      );
+    }
     this.initForm();
     this.initFilters();
   }
@@ -56,7 +76,9 @@ export class ImportBackupComponent implements OnInit {
     this.formGroup = this.fb.group({
       password: new FormControl('', {
         updateOn: 'change'
-      })
+      }),
+      needSignVerify: new FormControl(true),
+      superDmPwd: new FormControl('')
     });
     // 只有备份软件需要password
     if (this.isCyberengine) {
@@ -72,7 +94,20 @@ export class ImportBackupComponent implements OnInit {
     this.listenForm();
   }
   listenForm() {
-    this.formGroup.get('password').statusChanges.subscribe(res => {
+    this.formGroup.get('needSignVerify').valueChanges.subscribe(res => {
+      if (!res) {
+        this.formGroup
+          .get('superDmPwd')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.maxLength(32)
+          ]);
+      } else {
+        this.formGroup.get('superDmPwd').clearValidators();
+      }
+      this.formGroup.get('superDmPwd').updateValueAndValidity();
+    });
+    this.formGroup.statusChanges.subscribe(res => {
       this.valid$.next(res === 'VALID' && !isEmpty(this.selectedFile));
     });
   }
@@ -155,6 +190,7 @@ export class ImportBackupComponent implements OnInit {
       },
       error: error => {
         if (
+          !this.isSupportSignVerify &&
           get(error, 'error.errorCode') === '1677934081' &&
           get(error, 'error.errorMessage') ===
             `The file verify signature failed.`
@@ -199,6 +235,16 @@ export class ImportBackupComponent implements OnInit {
               file: this.selectedFile.originFile,
               password: this.formGroup.get('password').value
             };
+            if (this.isSupportSignVerify) {
+              assign(params, {
+                needSignVerify: this.formGroup.value.needSignVerify
+              });
+              if (!this.formGroup.value.needSignVerify) {
+                assign(params, {
+                  superDmPwd: this.formGroup.value.superDmPwd
+                });
+              }
+            }
             this.uploadBackup(params, observer);
           },
           onCancel: () => {

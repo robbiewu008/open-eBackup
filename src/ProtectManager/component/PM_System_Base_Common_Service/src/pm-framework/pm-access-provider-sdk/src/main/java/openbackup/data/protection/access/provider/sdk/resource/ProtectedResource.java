@@ -12,10 +12,11 @@
 */
 package openbackup.data.protection.access.provider.sdk.resource;
 
-import openbackup.data.protection.access.provider.sdk.base.Authentication;
+import com.huawei.oceanprotect.system.base.label.entity.LabelVo;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import openbackup.data.protection.access.provider.sdk.base.Authentication;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -91,14 +92,14 @@ public class ProtectedResource extends ResourceBase {
      * 标签
      */
     @Getter
-    private List<Label> labelList;
+    private List<LabelVo> labelList;
 
     /**
      * 依赖
      */
     private Map<String, List<ProtectedResource>> dependencies;
 
-    public void setLabelList(List<Label> labelList) {
+    public void setLabelList(List<LabelVo> labelList) {
         this.labelList = labelList;
     }
 

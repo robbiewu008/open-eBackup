@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MessageService } from '@iux/live';
 import {
@@ -31,6 +31,7 @@ import {
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
+import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
@@ -41,15 +42,15 @@ import {
   first,
   includes,
   isEmpty,
+  isNil,
   isNumber
 } from 'lodash';
+import { Subject, takeUntil } from 'rxjs';
 import { EnvironmentInfoApsaraStackComponent } from '../../cloud/apsara-stack/environment-info-apsara-stack/environment-info-apsara-stack.component';
 import { RegisterApsaraStackComponent } from '../../cloud/apsara-stack/register-apsara-stack/register-apsara-stack.component';
+import { RegisterComponent as HyperVRegisterComponent } from '../hyper-v/register/register.component';
 import { RegisterVmComponent } from '../vmware/register-vm/register-vm.component';
 import { EnvironmentInfoComponent } from './environment-info/environment-info.component';
-import { RegisterComponent as HyperVRegisterComponent } from '../hyper-v/register/register.component';
-import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
-import { Subject, takeUntil } from 'rxjs';
 
 interface Tab {
   id: string;
@@ -300,8 +301,11 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
             subType: DataMap.Resource_Type.hyperVVm.value,
             label: this.i18n.get('common_virtual_machine_label'),
             hidden: false,
-            hiddenFn: () => {
-              return false;
+            hiddenFn: (node: any) => {
+              return (
+                node.subType === DataMap.Resource_Type.hyperVCluster.value &&
+                !!node?.parentUuid
+              ); // SCVMM下面的集群隐藏虚拟机页签
             },
             resourceTotal: 0
           },
@@ -318,6 +322,63 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
           }
         ];
         break;
+      case ResourceType.NUTANIX:
+        this.tabs = [
+          {
+            id: 'cluster',
+            subType: DataMap.Resource_Type.nutanixCluster.value,
+            label: this.i18n.get('common_clusters_label'),
+            hidden: false,
+            hiddenFn: (node: any) => {
+              return includes(
+                [
+                  DataMap.Resource_Type.nutanixHost.value,
+                  DataMap.Resource_Type.nutanixCluster.value
+                ],
+                node.subType
+              );
+            },
+            resourceTotal: 0
+          },
+          {
+            id: 'host',
+            subType: DataMap.Resource_Type.nutanixHost.value,
+            label: this.i18n.get('common_host_label'),
+            hidden: false,
+            hiddenFn: (node: any) => {
+              return includes(
+                [DataMap.Resource_Type.nutanixHost.value],
+                node.subType
+              );
+            },
+            resourceTotal: 0
+          },
+          {
+            id: 'vm',
+            subType: DataMap.Resource_Type.nutanixVm.value,
+            label: this.i18n.get('common_virtual_machine_label'),
+            hidden: false,
+            hiddenFn: (node: any) => {
+              return false;
+            },
+            resourceTotal: 0
+          },
+          {
+            id: 'group',
+            subType: DataMap.Resource_Type.vmGroup.value,
+            subUnitType: DataMap.Resource_Type.nutanixVm.value,
+            label: this.i18n.get('protection_vm_groups_label'),
+            hidden: false,
+            hiddenFn: (node: any) => {
+              return !includes(
+                [DataMap.Resource_Type.nutanix.value],
+                node.subType
+              );
+            },
+            resourceTotal: 0
+          }
+        ];
+        break;
       default:
         break;
     }
@@ -327,6 +388,7 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
   getRegisterModalExt(item) {
     switch (this.type) {
       case ResourceType.CNWARE:
+      case ResourceType.NUTANIX:
         return {
           lvWidth: this.i18n.isEn
             ? MODAL_COMMON.normalWidth + 150
@@ -335,7 +397,7 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
           lvComponentParams: {
             isModify: !isEmpty(item),
             treeSelection: this.treeSelection,
-            resourceType: ResourceType.CNWARE,
+            resourceType: this.type,
             item
           }
         };
@@ -380,7 +442,9 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
           lvOk: modal => {
             return new Promise(resolve => {
               const content = modal.getContentComponent();
-              if (this.type === ResourceType.CNWARE) {
+              if (
+                includes([ResourceType.CNWARE, ResourceType.NUTANIX], this.type)
+              ) {
                 (!isEmpty(item)
                   ? content.modify()
                   : content.create()
@@ -458,6 +522,7 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
     return !includes(
       [
         ResourceType.CNWARE,
+        ResourceType.NUTANIX,
         ResourceType.ApsaraStack,
         DataMap.Resource_Type.hyperVHost.value,
         DataMap.Resource_Type.hyperVScvmm.value,
@@ -468,7 +533,16 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
   }
 
   hiddenResourceScan(data) {
-    return includes([DataMap.CopyData_Backup_Type], data?.subType);
+    return (
+      includes(
+        [
+          DataMap.Resource_Type.hyperVHost.value,
+          DataMap.Resource_Type.hyperVCluster.value,
+          DataMap.Resource_Type.hyperVScvmm.value
+        ],
+        data?.subType
+      ) && !isNil(data.parentUuid)
+    );
   }
 
   initConfig() {
@@ -501,10 +575,10 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
             !data.length ||
             data[0].disableAuth ||
             this.disableBtn(first(data)) ||
-            !hasResourcePermission(first(data))
+            !hasResourcePermission(first(data)) ||
+            this.hiddenResourceScan(data[0])
           );
         },
-        displayCheck: ([data]) => this.hiddenResourceScan(data),
         permission: OperateItems.RescanVirtualizationPlatform,
         label: this.i18n.get('common_rescan_label'),
         onClick: () => {
@@ -566,7 +640,8 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
             !data.length ||
             data[0].disableAuth ||
             this.disableBtn(first(data)) ||
-            !hasResourcePermission(first(data))
+            !hasResourcePermission(first(data)) ||
+            this.hiddenResourceScan(data[0])
           );
         },
         permission: OperateItems.ModifyHCSTenant,
@@ -614,9 +689,10 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
   getConditions() {
     switch (this.type) {
       case ResourceType.CNWARE:
+      case ResourceType.NUTANIX:
         return {
           subType: this.type,
-          type: ResourceType.CNWARE
+          type: this.type
         };
       case ResourceType.ApsaraStack:
         return {
@@ -642,6 +718,7 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
   getResourceIcon(node) {
     switch (node.subType) {
       case ResourceType.CNWARE:
+      case ResourceType.NUTANIX:
         return node.linkStatus ===
           DataMap.resource_LinkStatus_Special.normal.value
           ? 'aui-icon-vCenter'
@@ -651,8 +728,10 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
       case DataMap.Resource_Type.cNwareHostPool:
         return 'aui-icon-dataCenter';
       case DataMap.Resource_Type.cNwareCluster.value:
+      case DataMap.Resource_Type.nutanixCluster.value:
         return 'aui-icon-cluster';
       case DataMap.Resource_Type.cNwareHost.value:
+      case DataMap.Resource_Type.nutanixHost.value:
         return 'aui-icon-host';
       case DataMap.Resource_Type.APSRegion.value:
         return 'aui-icon-hcs-region';
@@ -665,8 +744,14 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
           ? 'aui-cluster-online-16'
           : 'aui-cluster-offline-16';
       case DataMap.Resource_Type.hyperVHost.value:
-        return node.linkStatus ===
-          DataMap.resource_LinkStatus_Special.normal.value
+        return includes(
+          [
+            DataMap.hypervHostStatus.Up.value,
+            DataMap.hypervHostStatus.Ok.value
+          ],
+          node.extendInfo.status
+        ) ||
+          node.linkStatus === DataMap.resource_LinkStatus_Special.normal.value // 单主机有linkStatus，主机在集群下走extendInfo
           ? 'aui-host-online-16'
           : 'aui-host-offline-16';
       default:
@@ -678,6 +763,7 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
     return includes(
       [
         DataMap.Resource_Type.cNwareHost.value,
+        DataMap.Resource_Type.nutanixHost.value,
         DataMap.Resource_Type.APSZone.value,
         DataMap.Resource_Type.hyperVVm.value,
         DataMap.Resource_Type.hyperVHost.value
@@ -753,6 +839,12 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
               this.getExpandedChangeData(CommonConsts.PAGE_START, node);
             }
           });
+          if (this.type === ResourceType.NUTANIX) {
+            recordsTemp = recordsTemp.filter(
+              item =>
+                !includes([DataMap.Resource_Type.nutanixVm.value], item.subType)
+            );
+          }
           this.treeData = recordsTemp;
           if (this.treeData.length) {
             if (!this.treeSelection.length) {
@@ -766,6 +858,7 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
               });
             }
           }
+          this.showGuideTab();
           this.virtualScroll.getScrollParam(
             260,
             Page_Size_Options.Three,
@@ -795,7 +888,15 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
           return item.subType !== DataMap.Resource_Type.APSResourceSet.value;
         });
       }
-      res.records.forEach(item => {
+      res.records.forEach((item: any) => {
+        if (
+          item.subType === DataMap.Resource_Type.hyperVCluster.value &&
+          item.linkStatus === null &&
+          event.subType === DataMap.Resource_Type.hyperVScvmm.value
+        ) {
+          // SCVMM下面的集群没有linkstatus，集群使用SCVMM的状态
+          item.linkStatus = event.linkStatus;
+        }
         const node = {
           ...item,
           label: item.name,
@@ -813,7 +914,9 @@ export class VirtualizationBaseComponent implements OnInit, OnDestroy {
         if (node.expanded) {
           this.getExpandedChangeData(CommonConsts.PAGE_START, node);
         }
-        event.children.push(node);
+        if (!includes([DataMap.Resource_Type.nutanixVm.value], node.subType)) {
+          event.children.push(node);
+        }
       });
       startPage++;
       if (res.totalCount - startPage * CommonConsts.PAGE_SIZE * 10 > 0) {

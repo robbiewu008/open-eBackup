@@ -39,7 +39,8 @@ LvmSnapshotProvider::LvmSnapshotProvider(
     : deviceMount(deviceMount), jobId(jobId), m_snapshotMountRoot(snapshotMountRoot)
 {}
 
-SnapshotResult LvmSnapshotProvider::CreateSnapshot(const std::string& filePath, bool isCrossVolume)
+SnapshotResult LvmSnapshotProvider::CreateSnapshot(const std::string& filePath, bool isCrossVolume,
+    const std::string& snapshotPercent)
 {
     SnapshotResult snapshotResult;
     if (filePath.empty()) {
@@ -69,7 +70,7 @@ SnapshotResult LvmSnapshotProvider::CreateSnapshot(const std::string& filePath, 
     for (auto it = volumeInfo.begin(); it != volumeInfo.end(); ++it) {
         int ret = 0;
         std::shared_ptr<LvmSnapshot> snapshotPtr = CreateSnapshotByVolume((*it).m_oriDeviceVolume,
-            (*it).m_oriDeviceMountPath, ret);
+            (*it).m_oriDeviceMountPath, ret, snapshotPercent);
         if (ret == SNAP_ERRNO_SPACELESS) {
             size_t pos = (*it).m_oriDeviceVolume.find('/');
             string vgName = (*it).m_oriDeviceVolume.substr(0, pos);
@@ -320,7 +321,7 @@ bool LvmSnapshotProvider::DeleteSnapshotByVolume(const std::string &snapVolumeNa
 
 // Determines whether a snapshot has been created, and returns the created snapshot.
 std::shared_ptr<LvmSnapshot> LvmSnapshotProvider::CreateSnapshotByVolume(const std::string &volumeName,
-    const std::string &volumePath, int& ret)
+    const std::string &volumePath, int& ret, const std::string &snapshotPercent)
 {
     DBGLOG("CreateSnapshotByVolume, start create device volume: %s", volumeName.c_str());
     if (deviceVolumeSnapMap.count(volumeName) != 0) {
@@ -336,7 +337,8 @@ std::shared_ptr<LvmSnapshot> LvmSnapshotProvider::CreateSnapshotByVolume(const s
     paramList.push_back(mountPathPrefix);
     paramList.push_back(jobId); // snapTag
     paramList.push_back(volumePath); // Original volume mount directory
-    std::string cmd = "?/bin/lvmSnapshot.sh -cv '?' '?' '?' '?'";
+    paramList.push_back(snapshotPercent);  // snapshot size (%)
+    std::string cmd = "?/bin/lvmSnapshot.sh -cv '?' '?' '?' '?' '?'";
     ret = ExecShellCmd(cmd, paramList, output);
     if (ret != 0 || output.size() == 0) {
         ERRLOG("create lvm volume snapshot failed, volumeName: %s", volumeName.c_str());
@@ -354,11 +356,9 @@ std::shared_ptr<LvmSnapshot> LvmSnapshotProvider::CreateSnapshotByVolume(const s
     return snapShot;
 }
 
-std::shared_ptr<LvmSnapshot> LvmSnapshotProvider::CreateSnapshotByVolumeName(
-    const std::string& snapshotMountRoot, const std::string& snapTag, const std::string& volumeName, int& errorCode)
+std::shared_ptr<LvmSnapshot> LvmSnapshotProvider::CreateSnapshotByVolumeName(const std::string& snapshotMountRoot,
+    const std::string& snapTag, const std::string& volumeName, const std::string& snapshotPercent, int& errorCode)
 {
-    std::string snapshotPercent
-        = Module::ConfigReader::getString(FILE_PLUGIN_CONFIG_KEY, "LVM_SNAPSHOT_CAPACITY_PERCENT");
     std::string mountPathPrefix;
     mountPathPrefix.append(snapshotMountRoot).append("/").append(snapTag);
     std::vector<std::string> paramList;
@@ -369,7 +369,7 @@ std::shared_ptr<LvmSnapshot> LvmSnapshotProvider::CreateSnapshotByVolumeName(
     paramList.push_back(mountPathPrefix);
     paramList.push_back(snapTag); // snapTag
     paramList.push_back(volumeName); // 卷备份的卷可能没有被挂载，因此使用卷名作为挂载点
-    paramList.push_back(snapshotPercent);  // 默认快照百分比大小
+    paramList.push_back(snapshotPercent);  // 传入的快照百分比大小，默认为5
     std::string cmd = "?/bin/lvmSnapshot.sh -cv '?' '?' '?' '?' '?'";
     std::vector<std::string> output;
     errorCode = PluginUtils::RunShellCmd(cmd, paramList, output);

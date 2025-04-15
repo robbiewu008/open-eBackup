@@ -12,14 +12,13 @@
 */
 package openbackup.data.access.framework.livemount.common.model;
 
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
-import openbackup.system.base.common.model.livemount.LiveMountEntity;
-import openbackup.system.base.sdk.copy.model.Copy;
-
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Data;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.system.base.common.model.livemount.LiveMountEntity;
+import openbackup.system.base.sdk.copy.model.Copy;
 
 /**
  * Live Mount Execute Param

@@ -12,6 +12,9 @@
 */
 package openbackup.mysql.resources.access.provider;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.access.framework.core.manager.ProviderManager;
@@ -26,7 +29,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.service.InstanceResourceService;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.mysql.resources.access.common.MysqlConstants;
 import openbackup.mysql.resources.access.common.MysqlErrorCode;
 import openbackup.mysql.resources.access.service.MysqlBaseService;
@@ -37,11 +39,10 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -248,6 +249,16 @@ public class MysqlInstanceProvider implements ResourceProvider {
         // MySQL资源环境扫描不需要更新主机信息
         resourceFeature.setShouldUpdateDependencyHostInfoWhenScan(false);
         return resourceFeature;
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> agents = resourceService.queryDependencyResources(true, DatabaseConstants.AGENTS,
+                Collections.singletonList(resource.getUuid()));
+        dependencies.put(DatabaseConstants.AGENTS, agents);
+        resource.setDependencies(dependencies);
+        return true;
     }
 
     /**

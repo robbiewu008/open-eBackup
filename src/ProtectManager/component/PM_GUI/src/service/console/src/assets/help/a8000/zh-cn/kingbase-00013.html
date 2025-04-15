@@ -1,0 +1,71 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤1：开启归档模式">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="kingbase-00012.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="kingbase-00013">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤1：开启归档模式</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="kingbase-00013"></a><a name="kingbase-00013"></a>
+
+<h1 class="topictitle1">步骤1：开启归档模式</h1>
+<div><p id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_p1134163814529">在执行数据库备份前必须开启归档模式，否则将会导致备份失败。</p>
+<div class="section" id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_section15213181415318"><h4 class="sectiontitle">操作步骤</h4><ol id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_ol516055662416"><li id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_li716035617240">使用PuTTY，登录Kingbase数据库主机。</li><li id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_li14621131213268">创建存放归档日志（WAL日志）的路径，后续操作以“/mnt/server/archivedir/”路径为例。<pre class="screen" id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_screen156211512152614">mkdir -p<em id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_i166211312132615"> /mnt/server/archivedir/</em></pre>
+</li><li id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_li1281642882814">赋予数据库安装用户<strong id="kingbase-00013__zh-cn_topic_0000002087949550_b19986838132113">k</strong><strong id="kingbase-00013__zh-cn_topic_0000002087949550_b1986538102110">ingbase</strong>读写权限，后续操作均以数据库安装用户名<strong id="kingbase-00013__zh-cn_topic_0000002087949550_b203619516225">k</strong><strong id="kingbase-00013__zh-cn_topic_0000002087949550_b143610511221">ingbase</strong>为例。<pre class="screen" id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_screen481612814288">chmod 750 <em id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_i138161428172810">/mnt/server/archivedir/</em>
+chown kingbase:kingbase <em id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_i14816928182820">/mnt/server/archivedir/</em></pre>
+</li><li id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_li1725354622819">执行<strong id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_b1025313461280">su kingbase</strong>切换数据库安装用户<strong id="kingbase-00013__zh-cn_topic_0000002087949550_b1871123613816">kingbase</strong>，系统回显示例如下：<pre class="screen" id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_screen2025334619289">[root@localhost <font style="font-size:8pt" Face="Courier New" >~</font>]# su kingbase
+bash-4.1$ </pre>
+</li><li id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_li055635710288">执行以下命令，登录数据库，其中54321是默认端口号，test123是数据库用户名，test是数据库名，请根据实际替换。<pre class="screen" id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_screen10556157132811"><em id="kingbase-00013__zh-cn_topic_0000002087949550_i139266221549">/</em><em id="kingbase-00013__zh-cn_topic_0000002087949550_i272717468144">安装目录</em>/bin/ksql -p <em id="kingbase-00013__zh-cn_topic_0000002087949550_i18520125172">54321</em> -U <em id="kingbase-00013__zh-cn_topic_0000002087949550_i1714118817174">test123</em> <em id="kingbase-00013__zh-cn_topic_0000002087949550_i167151351716">test</em></pre>
+</li><li id="kingbase-00013__zh-cn_topic_0000002087949550_li149221537161910">输入数据库用户名<strong id="kingbase-00013__zh-cn_topic_0000002087949550_b1765212961812">test123</strong>的密码。</li><li id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_li149541783295">执行<strong id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_b1895418112914">show config_file</strong><strong id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_b1595414842918">;</strong>查询kingbase.conf文件所在路径，系统回显示例如下：<pre class="screen" id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_screen149544813295">test=# show config_file ;
+                    config_file                     
+----------------------------------------------------
+ /home/kingbase/cluster/kingbase/data/kingbase.conf
+(1 行记录)
+test=# </pre>
+</li><li id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_li17263199293">在键盘上按<span class="uicontrol" id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_uicontrol173011037123011">“Ctrl+d”</span>退出登录数据库安装用户<strong id="kingbase-00013__zh-cn_topic_0000002087949550_b868671318191">kingbase</strong>，进入Kingbase数据库主机。</li><li id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_li178718287297">进入kingbase.conf文件，这里以“/home/kingbase/cluster/kingbase/data/kingbase.conf”路径为例。<pre class="screen" id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_screen1178792816293">vi <em id="kingbase-00013__zh-cn_topic_0000002087949550_i1124357112017">/home/kingbase/cluster/kingbase/data/kingbase.conf</em></pre>
+</li><li id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_li380174213292">找到并修改kingbase.conf文件中的wal_level 、archive_mode和archive_command参数，如下所示：<pre class="screen" id="kingbase-00013__zh-cn_topic_0000002087949550_zh-cn_topic_0000001607842332_screen16801242122910">wal_level = replica                     # minimal, replica, or logical
+archive_mode = on               # enables archiving; off, on, or always
+archive_command = 'cp %p /mnt/server/archivedir/%f'          # command to use to archive a logfile segment</pre>
+</li><li id="kingbase-00013__zh-cn_topic_0000002087949550_li8651147195920">执行以下命令重新加载Kingbase配置。<pre class="screen" id="kingbase-00013__zh-cn_topic_0000002087949550_screen136421245111719">su - <em id="kingbase-00013__zh-cn_topic_0000002087949550_i97025132181">kingbase</em>
+<em id="kingbase-00013__zh-cn_topic_0000002087949550_i16119730195410">/</em><em id="kingbase-00013__zh-cn_topic_0000002087949550_i63632016151813">安装目录</em>/bin/sys_ctl reload -D /<em id="kingbase-00013__zh-cn_topic_0000002087949550_i5274030191816">数据目录</em>
+exit</pre>
+</li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="kingbase-00012.html">备份Kingbase实例</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

@@ -19,6 +19,8 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
 import openbackup.data.access.client.sdk.api.framework.agent.AgentUnifiedRestApi;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeUnifiedRestApi;
@@ -71,6 +73,9 @@ public class TdsqlServiceImplTest {
     @Mock
     private DmeUnifiedRestApi mockDmeUnifiedRestApi;
 
+    @Mock
+    private JobService jobService;
+
     private TdsqlServiceImpl tdsqlServiceImplUnderTest;
 
     private final String mockEndPoint = "999.999.999.999";
@@ -84,7 +89,7 @@ public class TdsqlServiceImplTest {
     @Before
     public void setUp() {
         tdsqlServiceImplUnderTest = new TdsqlServiceImpl(mockResourceService,
-            mockAgentUnifiedService, mockDmeUnifiedRestApi);
+            mockAgentUnifiedService, mockDmeUnifiedRestApi, jobService);
     }
 
     /**

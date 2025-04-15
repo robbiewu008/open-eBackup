@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -29,7 +29,8 @@ import {
   CAPACITY_UNIT,
   CommonConsts,
   DataMap,
-  RestoreFileType
+  RestoreFileType,
+  SYSTEM_TIME
 } from 'app/shared/consts';
 import { I18NService } from 'app/shared/services';
 import {
@@ -85,6 +86,15 @@ export class FileExplorerLevelRestoreComponent implements OnInit {
   name;
   isSearch = false; // 用于标明当前是否在搜索状态中
   isSearchRestore = false; // 用于标明是不是从全局检索点进来的恢复
+  incrementFileEmptyTips = false; // 增量副本备份前后数据没有变化时，界面会展示无数据
+  timeZone = SYSTEM_TIME.timeZone;
+
+  modeMap = {
+    fromTree: '1',
+    fromTag: '2'
+  };
+  pathMode = this.modeMap.fromTree;
+  manualInputPath = [];
 
   @ViewChild(ObjectRestoreComponent, { static: false })
   objectRestoreComponent: ObjectRestoreComponent;
@@ -129,6 +139,11 @@ export class FileExplorerLevelRestoreComponent implements OnInit {
     });
     this.cdr.detectChanges();
     this.getChildren(this.currentFileData[0], true);
+    this.incrementFileEmptyTips =
+      this.childResType === DataMap.Resource_Type.ObjectSet.value &&
+      [DataMap.CopyData_Backup_Type.incremental.value].includes(
+        this.rowCopy.source_copy_type
+      );
   }
 
   getCertainPath(item) {
@@ -332,7 +347,8 @@ export class FileExplorerLevelRestoreComponent implements OnInit {
         modifyTime:
           this.datePipe.transform(
             toNumber(val.modifyTime) * 1000,
-            'yyyy-MM-dd HH:mm:ss'
+            'yyyy-MM-dd HH:mm:ss',
+            this.timeZone
           ) || val.modifyTime
       });
       // 如果该数据之前获取过，把之前的状态同步给它
@@ -390,19 +406,13 @@ export class FileExplorerLevelRestoreComponent implements OnInit {
 
     // 如果是分页的话，检测该数据有没有，否则不覆盖
     if (!isEmpty(this.allFileData[this.currentPath])) {
-      if (
-        !find(res.records, file =>
-          find(
-            this.allFileData[this.currentPath],
-            val => val.rootPath === file.rootPath
-          )
-        )
-      ) {
-        this.allFileData[this.currentPath] = [
-          ...this.allFileData[this.currentPath],
-          ...res.records
-        ];
-      }
+      each(res.records, file => {
+        if (
+          !find(this.allFileData[this.currentPath], { rootPath: file.rootPath })
+        ) {
+          this.allFileData[this.currentPath].push(file);
+        }
+      });
     } else {
       set(this.allFileData, this.currentPath, res.records);
     }
@@ -617,8 +627,14 @@ export class FileExplorerLevelRestoreComponent implements OnInit {
 
   disableBtn() {
     this.modal.getInstance().lvOkDisabled =
-      (!this.selectionData.length && !this.isSearchRestore) ||
+      (this.getPathInvalid() && !this.isSearchRestore) ||
       this.objectRestoreComponent?.formGroup.invalid;
+  }
+
+  getPathInvalid(): boolean {
+    return this.pathMode === this.modeMap.fromTag
+      ? !size(this.manualInputPath)
+      : !this.selectionData.length;
   }
 
   getfileLevelRestoreTips() {
@@ -665,13 +681,29 @@ export class FileExplorerLevelRestoreComponent implements OnInit {
     );
   }
 
+  inputPathChange(path) {
+    this.manualInputPath = [...path];
+    this.disableBtn();
+  }
+
+  pathModeChange() {
+    this.manualInputPath = [];
+    this.disableBtn();
+  }
+
+  getRestorePath() {
+    return this.pathMode === this.modeMap.fromTag
+      ? this.manualInputPath
+      : this.getPath(cloneDeep(this.selectionData));
+  }
+
   getParams() {
     let params =
       this.objectRestoreComponent?.getTargetParams()?.requestParams || {};
     assign(params, {
       subObjects: this.isSearchRestore
         ? [this.rowCopy.searchRestorePath]
-        : this.getPath(cloneDeep(this.selectionData))
+        : this.getRestorePath()
     });
     return params;
   }

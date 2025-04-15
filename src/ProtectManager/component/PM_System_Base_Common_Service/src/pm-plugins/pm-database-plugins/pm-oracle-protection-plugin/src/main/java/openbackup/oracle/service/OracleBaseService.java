@@ -13,11 +13,19 @@
 package openbackup.oracle.service;
 
 import com.huawei.oceanprotect.client.resource.manager.service.dto.RequestBodyDTO;
+
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.ImmutableList;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentDetailDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppResource;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.FinalizeClearReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.ListResourceReq;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
@@ -54,12 +62,6 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
-
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.ImmutableList;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -466,5 +468,93 @@ public class OracleBaseService {
             .map(extendInfo -> extendInfo.get(DatabaseConstants.STORAGES))
             .map(storage -> JSONArray.toCollection(JSONArray.fromObject(storage), OracleStorage.class))
             .orElse(new ArrayList<>());
+    }
+
+    /**
+     * 清理生产环境日志文件
+     *
+     * @param resource 资源信息
+     * @param extendInfo 扩展字段
+     * @return AgentBaseDto
+     */
+    public AgentBaseDto deleteLogFromProductEnv(ProtectedResource resource, HashMap<String, String> extendInfo) {
+        // oracle日志备份，UBC入库后置任务，删除生产环境的日志
+        AgentBaseDto agentBaseDto = new AgentBaseDto();
+        ProtectedEnvironment agentEnv;
+        if (ResourceSubTypeEnum.ORACLE.getType().equals(resource.getSubType())) {
+            ProtectedEnvironment agent = getAgentBySingleInstanceUuid(resource.getUuid());
+            if (!String.valueOf(LinkStatusEnum.ONLINE.getStatus()).equals(agent.getLinkStatus())) {
+                agentBaseDto.setErrorCode(String.valueOf(CommonErrorCode.AGENT_NOT_EXIST));
+                return agentBaseDto;
+            }
+            agentEnv = agent;
+        } else {
+            List<ProtectedEnvironment> agents = getOracleClusterHosts(resource);
+            List<ProtectedEnvironment> onlineAgents = agents.stream()
+                .filter(agent -> String.valueOf(LinkStatusEnum.ONLINE.getStatus()).equals(agent.getLinkStatus()))
+                .collect(Collectors.toList());
+            if (onlineAgents.size() == 0) {
+                agentBaseDto.setErrorCode(String.valueOf(CommonErrorCode.AGENT_NOT_EXIST));
+                return agentBaseDto;
+            }
+            agentEnv = agents.get(0);
+            String agentId = agentEnv.getUuid();
+            extendInfo.put(OracleConstants.AGENT_ID, agentId);
+        }
+        log.info("finalize clear log, endpoint: {}, port:{}", agentEnv.getEndpoint(), agentEnv.getPort());
+        FinalizeClearReq finalizeClearReq = getFinalizeClearReq(resource, extendInfo);
+        agentBaseDto = agentUnifiedService.finalizeClear(agentEnv, resource.getSubType(), finalizeClearReq);
+        return agentBaseDto;
+    }
+
+    private FinalizeClearReq getFinalizeClearReq(ProtectedResource resource, HashMap<String, String> extendInfo) {
+        Application application = new Application();
+        application.setUuid(resource.getUuid());
+        application.setName(resource.getName());
+        application.setParentUuid(resource.getParentUuid());
+        application.setParentName(resource.getParentName());
+        application.setType(resource.getType());
+        application.setSubType(resource.getSubType());
+        application.setExtendInfo(resource.getExtendInfo());
+        application.setAuth(resource.getAuth());
+        AppEnv appEnv = new AppEnv();
+        return new FinalizeClearReq(appEnv, application, extendInfo);
+    }
+
+    /**
+     * 检查刷新pdb的信息
+     *
+     * @param resource    实例信息
+     * @param environment 环境信息
+     */
+    public void checkPdbInstanceActiveStandby(ProtectedResource resource, ProtectedEnvironment environment) {
+        // 调用Agent接口，获取集群状态信息
+        log.info("checkPdbInstanceActiveStandby ip: {}", environment.getEndpoint());
+        AppEnvResponse appEnvResponse = agentUnifiedService.getClusterInfo(resource, environment);
+        if (VerifyUtil.isEmpty(appEnvResponse) || VerifyUtil.isEmpty(appEnvResponse.getExtendInfo())) {
+            throw new DataProtectionAccessException(CommonErrorCode.WRONG_GET_DATABASE_INFORMATION,
+                    new String[]{}, "get oracle cluster error.");
+        }
+
+        log.info("oracle refresh pdb instance active standby success. ip: {}", environment.getEndpoint());
+        Map<String, String> envExtendInfo = appEnvResponse.getExtendInfo();
+        // 校验cdb pdb
+        if (OracleConstants.ERROR_ORACLE_DB_NOT_OPEN_CDB.equals(envExtendInfo.get(OracleConstants.PDB_STATUS))) {
+            throw new DataProtectionAccessException(CommonErrorCode.WRONG_GET_DATABASE_INFORMATION,
+                    new String[]{}, "The database is not open cdb.");
+        }
+        if (OracleConstants.ERROR_ORACLE_PDB_NOT_READ_WRITE.equals(envExtendInfo.get(OracleConstants.PDB_STATUS))) {
+            throw new DataProtectionAccessException(CommonErrorCode.WRONG_GET_DATABASE_INFORMATION,
+                    new String[]{}, "The status of pdb is not READ WRITE.");
+        }
+        if (!OracleConstants.SERVICE_RUNNING.equals(envExtendInfo.get(OracleConstants.STATUS))) {
+            throw new DataProtectionAccessException(CommonErrorCode.WRONG_GET_DATABASE_INFORMATION,
+                    new String[]{}, "oracle is not running.");
+        }
+
+        Map<String, String> resExtendInfo = resource.getExtendInfo();
+        resExtendInfo.put(OracleConstants.VERIFY_STATUS, "true");
+        resource.setVersion(envExtendInfo.get(DatabaseConstants.VERSION));
+        resource.setParentName(envExtendInfo.get(DatabaseConstants.INST_NAME));
     }
 }

@@ -1,17 +1,23 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidatorFn
+} from '@angular/forms';
 import { ModalRef } from '@iux/live';
 import {
   AppService,
@@ -27,7 +33,8 @@ import {
   RestoreApiV2Service,
   RestoreV2LocationType,
   RestoreV2Type,
-  VmFileReplaceStrategy
+  VmFileReplaceStrategy,
+  ResourceDetailType
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
@@ -41,6 +48,7 @@ import {
   isEmpty,
   isNumber,
   isString,
+  isUndefined,
   map,
   toNumber
 } from 'lodash';
@@ -71,6 +79,15 @@ export class ApsRestoreComponent implements OnInit {
   proxyOptions = [];
   diskData = [];
   newDiskData = [];
+  hasSystem = false; // 判断副本内是否包含系统盘
+  copySystemDisk;
+  needPassword = false;
+  isDisableOrigin = false;
+
+  passwordErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
+    invalidInput: this.i18n.get('common_invalid_input_label')
+  };
 
   @Input() rowCopy;
   @Input() childResType;
@@ -78,11 +95,11 @@ export class ApsRestoreComponent implements OnInit {
 
   constructor(
     public i18n: I18NService,
+    public baseUtilService: BaseUtilService,
     private fb: FormBuilder,
     private modal: ModalRef,
     private appService: AppService,
     private appUtilsService: AppUtilsService,
-    private baseUtilService: BaseUtilService,
     private restoreV2Service: RestoreApiV2Service,
     private capacityCalculateLabel: CapacityCalculateLabel,
     private protectedResourceApiService: ProtectedResourceApiService
@@ -94,6 +111,12 @@ export class ApsRestoreComponent implements OnInit {
       : {};
     const properties = JSON.parse(this.rowCopy.properties);
     this.verifyStatus = properties?.verifyStatus;
+    let needRestoreDisks = properties?.volList;
+    if (isEmpty(needRestoreDisks)) {
+      needRestoreDisks = properties.extendInfo?.volList || [];
+    }
+    this.copySystemDisk = find(needRestoreDisks, { bootable: 'system' });
+    this.hasSystem = !!this.copySystemDisk;
     this.initForm();
     this.getOldDiskData();
     this.initCopyVerifyDisableLabel();
@@ -126,6 +149,12 @@ export class ApsRestoreComponent implements OnInit {
         value: this.resourceData.name,
         disabled: true
       }),
+      password: new FormControl('', {
+        validators: [
+          this.validPassword(),
+          this.baseUtilService.VALID.required()
+        ]
+      }),
       targetOrg: new FormControl(
         { value: '', disabled: true },
         {
@@ -143,6 +172,22 @@ export class ApsRestoreComponent implements OnInit {
       restoreAutoPowerOn: new FormControl(false),
       copyVerify: new FormControl(false)
     });
+    this.formGroup.get('password').disable();
+    this.needPassword = false;
+
+    if (
+      includes(
+        [
+          DataMap.CopyData_generatedType.replicate.value,
+          DataMap.CopyData_generatedType.cascadedReplication.value
+        ],
+        this.rowCopy.generated_by
+      ) ||
+      this.rowCopy?.resource_status === DataMap.Resource_Status.notExist.value
+    ) {
+      this.formGroup.get('restoreLocation').setValue(RestoreV2LocationType.NEW);
+      this.isDisableOrigin = true;
+    }
 
     if (this.formGroup.value.restoreLocation === RestoreV2LocationType.ORIGIN) {
       this.formGroup.get('targetOrg').disable();
@@ -168,6 +213,8 @@ export class ApsRestoreComponent implements OnInit {
         this.formGroup.get('targetZone').enable();
         this.formGroup.get('server').enable();
       }
+      this.formGroup.get('password').clearValidators();
+      this.needPassword = false;
     });
 
     this.formGroup.get('targetOrg').valueChanges.subscribe(res => {
@@ -192,6 +239,20 @@ export class ApsRestoreComponent implements OnInit {
       }
       defer(() => this.getResourceDetail());
     });
+  }
+
+  validPassword(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (isUndefined(this.formGroup) || isEmpty(control.value)) {
+        return null;
+      }
+
+      const reg1 = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[()`~!@#$%^&*_\-+=|{}\[\]:;<>,.?/]).{8,30}$/;
+      if (!reg1.test(control.value)) {
+        return { invalidInput: { value: control.value } };
+      }
+      return null;
+    };
   }
 
   getOldDiskData() {
@@ -304,63 +365,14 @@ export class ApsRestoreComponent implements OnInit {
     } else {
       data = find(this.serverOptions, { uuid: this.formGroup.value.server });
     }
-    this.protectedResourceApiService
-      .ListResources({
-        pageNo: CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE,
-        queryDependency: true,
-        conditions: JSON.stringify({
-          uuid: data.rootUuid || data.root_uuid
-        })
-      })
-      .subscribe((res: any) => {
-        if (first(res.records)) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getDisk(agentsId);
-        }
-      });
-  }
-
-  getDisk(agentsId, recordsTemp?: any[], startPage?: number) {
-    let data;
-    if (this.formGroup.value.restoreLocation === RestoreV2LocationType.ORIGIN) {
-      data = this.resourceData;
-    } else {
-      data = find(this.serverOptions, { uuid: this.formGroup.value.server });
-    }
-    const params = {
-      agentId: agentsId,
-      envId: data.rootUuid || data.root_uuid,
-      resourceIds: [data.uuid || data.root_uuid],
-      pageNo: startPage || 1,
-      pageSize: 200,
-      conditions: JSON.stringify({
-        resourceType: 'APS-disk',
-        uuid: data.uuid,
-        regionId: data.extendInfo.regionId
-      })
-    };
-
-    this.appService.ListResourcesDetails(params).subscribe(res => {
-      if (!recordsTemp) {
-        recordsTemp = [];
-      }
-      if (!isNumber(startPage)) {
-        startPage = 1;
-      }
-      recordsTemp = [...recordsTemp, ...res.records];
-      if (
-        startPage === Math.ceil(res.totalCount / 200) ||
-        res.totalCount === 0
-      ) {
+    this.appUtilsService
+      .getResourcesDetails(
+        data,
+        ResourceDetailType.apsDisk,
+        {},
+        { regionId: data?.extendInfo?.regionId }
+      )
+      .subscribe(recordsTemp => {
         each(recordsTemp, item => {
           assign(item, {
             size: item.extendInfo?.size,
@@ -370,11 +382,23 @@ export class ApsRestoreComponent implements OnInit {
           });
         });
         this.newDiskData = recordsTemp;
-        return;
-      }
-      startPage++;
-      this.getDisk(agentsId, recordsTemp, startPage);
-    });
+        // 如果是新建磁盘，则判断恢复到的目标位置有没有系统盘，如果不是新建，则判断覆盖位置是否是系统盘
+        const tmpNewSystemDisk = find(this.newDiskData, {
+          uuid: this.copySystemDisk.uuid
+        });
+        if (
+          this.hasSystem &&
+          ((!!tmpNewSystemDisk && tmpNewSystemDisk.mode === 'true') ||
+            (!tmpNewSystemDisk &&
+              !find(this.newDiskData, item => item.mode === 'true')))
+        ) {
+          this.formGroup.get('password').enable();
+          this.needPassword = true;
+        } else {
+          this.formGroup.get('password').disable();
+          this.needPassword = false;
+        }
+      });
   }
 
   getProxyOptions() {
@@ -445,9 +469,7 @@ export class ApsRestoreComponent implements OnInit {
       },
       subObjects: map(this.diskData, item => {
         let curData;
-        if (
-          this.formGroup.value.restoreLocation === RestoreV2LocationType.ORIGIN
-        ) {
+        if (!!find(this.newDiskData, { uuid: item.uuid })) {
           curData = {
             id: item.uuid,
             size: toNumber(item.size),
@@ -459,6 +481,12 @@ export class ApsRestoreComponent implements OnInit {
             size: toNumber(item.size),
             isNewDisk: 'true'
           };
+        }
+
+        if (item.bootable === 'system' && this.needPassword) {
+          assign(curData, {
+            password: this.formGroup.get('password').value
+          });
         }
 
         return JSON.stringify({

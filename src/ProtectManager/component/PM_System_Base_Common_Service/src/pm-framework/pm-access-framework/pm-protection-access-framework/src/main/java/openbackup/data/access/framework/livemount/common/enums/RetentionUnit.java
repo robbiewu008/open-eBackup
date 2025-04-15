@@ -12,9 +12,9 @@
 */
 package openbackup.data.access.framework.livemount.common.enums;
 
-import openbackup.system.base.util.EnumUtil;
-
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import openbackup.system.base.util.EnumUtil;
 
 /**
  * 副本保留策略, 按固定时间的枚举单位定义

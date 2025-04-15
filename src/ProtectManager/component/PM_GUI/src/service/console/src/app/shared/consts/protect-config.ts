@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { NgModule } from '@angular/core';
 import { SelectCopyResourceComponent } from 'app/business/explore/copy-data/copy-resource-list/resource-replica-list/select-copy-resource/select-copy-resource.component';
 import { SelectCopyResourceModule } from 'app/business/explore/copy-data/copy-resource-list/resource-replica-list/select-copy-resource/select-copy-resource.module';
@@ -19,6 +19,7 @@ import { AdvancedParameterComponent as ActiveDirectoryAdvancedComponent } from '
 import { AdvancedParameterModule as ActiveDirectoryAdvancedModule } from 'app/business/protection/application/active-directory/advanced-parameter/advanced-parameter.module';
 import { SelectBackupSetListComponent as HBaseSelectBackupSetListComponent } from 'app/business/protection/big-data/hbase/backup-set/select-backup-set-list/select-backup-set-list.component';
 import { SelectBackupSetListModule as HBaseSelectBackupSetListModule } from 'app/business/protection/big-data/hbase/backup-set/select-backup-set-list/select-backup-set-list.module';
+import { AdvancedParameterComponent as HDFSAdvancedParameterComponent } from 'app/business/protection/big-data/hdfs/filesets/advanced-parameter/advanced-parameter.component';
 import { AdvancedParameterModule as HDFSAdvancedParameterModule } from 'app/business/protection/big-data/hdfs/filesets/advanced-parameter/advanced-parameter.module';
 import { SelectFilesetsListComponent as HDFSSelectFilesetsListComponent } from 'app/business/protection/big-data/hdfs/filesets/select-filesets-list/select-filesets-list.component';
 import { SelectFilesetsListModule as HDFSSelectFilesetsListModule } from 'app/business/protection/big-data/hdfs/filesets/select-filesets-list/select-filesets-list.module';
@@ -58,6 +59,8 @@ import { SelectDatabaseListModule as OracleSelectDatabaseListModule } from 'app/
 import { SelectInstanceDatabaseComponent as SQLServerSelectDatabaseComponent } from 'app/business/protection/host-app/sql-server/select-instance-database/select-instance-database.component';
 import { AdvancedParameterComponent as TDSQLAdvancedParameterComponent } from 'app/business/protection/host-app/tdsql/advanced-parameter/advanced-parameter.component';
 import { AdvancedParameterModule as TDSQLAdvancedParameterModule } from 'app/business/protection/host-app/tdsql/advanced-parameter/advanced-parameter.module';
+import { AdvancedParameterComponent as TDSQLDistributedAdvancedParameterComponent } from 'app/business/protection/host-app/tdsql/dirstibuted-instance/advanced-parameter/advanced-parameter.component';
+import { AdvancedParameterModule as TDSQLDistributedAdvancedParameterModule } from 'app/business/protection/host-app/tdsql/dirstibuted-instance/advanced-parameter/advanced-parameter.module';
 import { VolumeAdvancedParameterComponent } from 'app/business/protection/host-app/volume/volume-advanced-parameter/volume-advanced-parameter.component';
 import { SelectDoradoListComponent } from 'app/business/protection/storage/dorado-file-system/select-dorado-list/select-dorado-list.component';
 import { SelectDoradoListModule } from 'app/business/protection/storage/dorado-file-system/select-dorado-list/select-dorado-list.module';
@@ -86,7 +89,10 @@ import { SelectSlaComponent } from '../components/protect/select-sla/select-sla.
 import { SelectSlaModule } from '../components/protect/select-sla/select-sla.module';
 import { ReplicaAdvancedParameterComponent } from '../components/replica-advanced-parameter/replica-advanced-parameter.component';
 import { ReplicaAdvancedParameterModule } from '../components/replica-advanced-parameter/replica-advanced-parameter.module';
+import { AdvancedParameterComponent as GaussDBInstanceAdvancedParameterComponent } from 'app/business/protection/host-app/light-cloud-gaussdb/advanced-parameter/advanced-parameter.component';
 import { DataMap } from './data-map.config';
+import { AdvancedParameterComponent as TidbAdvancedParameterComponent } from '../../business/protection/host-app/tidb/advanced-parameter/advanced-parameter.component';
+import { AdvancedParameterModule as TidbAdvancedParameterModule } from '../../business/protection/host-app/tidb/advanced-parameter/advanced-parameter.module';
 
 const modules = [
   SelectSlaModule,
@@ -122,7 +128,9 @@ const modules = [
   ApsProtectSelectModule,
   AdvancedEmailModule,
   TDSQLAdvancedParameterModule,
-  ReplicaAdvancedParameterModule
+  ReplicaAdvancedParameterModule,
+  TDSQLDistributedAdvancedParameterModule,
+  TidbAdvancedParameterModule
 ];
 
 const BASIC_CONFIG = [
@@ -202,7 +210,10 @@ export const PROTECTION_CONFIG: any = {
       {
         component: SelectInstanceDatabaseComponent
       },
-      ...BASIC_CONFIG
+      ...BASIC_CONFIG,
+      {
+        component: TidbAdvancedParameterComponent
+      }
     ]
   },
   [DataMap.Resource_Type.tidbDatabase.value]: {
@@ -210,7 +221,21 @@ export const PROTECTION_CONFIG: any = {
       {
         component: SelectInstanceDatabaseComponent
       },
-      ...BASIC_CONFIG
+      ...BASIC_CONFIG,
+      {
+        component: TidbAdvancedParameterComponent
+      }
+    ]
+  },
+  [DataMap.Resource_Type.tidbTable.value]: {
+    steps: [
+      {
+        component: SelectInstanceDatabaseComponent
+      },
+      ...BASIC_CONFIG,
+      {
+        component: TidbAdvancedParameterComponent
+      }
     ]
   },
   [ProtectResourceCategory.GeneralDB]: {
@@ -342,6 +367,39 @@ export const PROTECTION_CONFIG: any = {
       }
     ]
   },
+  [DataMap.Resource_Type.nutanixVm.value]: {
+    steps: [
+      {
+        component: ProtectionObjectComponent
+      },
+      ...BASIC_CONFIG,
+      {
+        component: ProtectionAdvancedComponent
+      }
+    ]
+  },
+  [DataMap.Resource_Type.nutanixHost.value]: {
+    steps: [
+      {
+        component: ProtectionObjectComponent
+      },
+      ...BASIC_CONFIG,
+      {
+        component: ProtectionAdvancedComponent
+      }
+    ]
+  },
+  [DataMap.Resource_Type.nutanixCluster.value]: {
+    steps: [
+      {
+        component: ProtectionObjectComponent
+      },
+      ...BASIC_CONFIG,
+      {
+        component: ProtectionAdvancedComponent
+      }
+    ]
+  },
   [DataMap.Resource_Type.Project.value]: {
     steps: [
       {
@@ -443,7 +501,10 @@ export const PROTECTION_CONFIG: any = {
       {
         component: HDFSSelectFilesetsListComponent
       },
-      ...BASIC_CONFIG
+      ...BASIC_CONFIG,
+      {
+        component: HDFSAdvancedParameterComponent
+      }
     ]
   },
   [ProtectResourceCategory.HBase]: {
@@ -741,6 +802,17 @@ export const PROTECTION_CONFIG: any = {
       }
     ]
   },
+  [DataMap.Resource_Type.tdsqlDistributedInstance.value]: {
+    steps: [
+      {
+        component: SelectInstanceDatabaseComponent
+      },
+      ...BASIC_CONFIG,
+      {
+        component: TDSQLDistributedAdvancedParameterComponent
+      }
+    ]
+  },
   [DataMap.Resource_Type.hyperVHost.value]: {
     steps: [
       {
@@ -757,7 +829,10 @@ export const PROTECTION_CONFIG: any = {
       {
         component: ProtectionObjectComponent
       },
-      ...BASIC_CONFIG
+      ...BASIC_CONFIG,
+      {
+        component: ProtectionAdvancedComponent
+      }
     ]
   },
   [DataMap.Resource_Type.ndmp.value]: {
@@ -766,6 +841,17 @@ export const PROTECTION_CONFIG: any = {
       ...BASIC_CONFIG,
       {
         component: NasSharedAdvancedParameterComponent
+      }
+    ]
+  },
+  [DataMap.Resource_Type.lightCloudGaussdbInstance.value]: {
+    steps: [
+      {
+        component: SelectInstanceDatabaseComponent
+      },
+      ...BASIC_CONFIG,
+      {
+        component: GaussDBInstanceAdvancedParameterComponent
       }
     ]
   }

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -35,9 +35,13 @@ import {
   DataMapService,
   EXPORT_LOG_MAXMUM,
   extendSlaInfo,
+  getLabelList,
   getPermissionMenuItem,
   GlobalService,
+  GROUP_COMMON,
   I18NService,
+  isJson,
+  isRBACDPAdmin,
   MODAL_COMMON,
   MultiCluster,
   OperateItems,
@@ -45,13 +49,11 @@ import {
   PROTECTION_NAVIGATE_STATUS,
   ProtectResourceAction,
   ProtectResourceCategory,
-  RouterUrl,
-  WarningMessageService,
-  GROUP_COMMON,
-  isRBACDPAdmin,
+  RoleOperationAuth,
   RoleOperationMap,
-  getLabelList,
-  RoleOperationAuth
+  RouterUrl,
+  SetTagType,
+  WarningMessageService
 } from 'app/shared';
 import {
   ClientManagerApiService,
@@ -66,12 +68,14 @@ import {
   SwitchService
 } from 'app/shared/api/services';
 import { NumberToFixed } from 'app/shared/components/pro-core';
+import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { ProtectService } from 'app/shared/services/protect.service';
 import { RememberColumnsService } from 'app/shared/services/remember-columns.service';
 import { ResourceDetailService } from 'app/shared/services/resource-detail.service';
+import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
 import { SlaService } from 'app/shared/services/sla.service';
 import { TakeManualBackupService } from 'app/shared/services/take-manual-backup.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
@@ -92,6 +96,7 @@ import {
   isEmpty,
   isNil,
   isNumber,
+  isUndefined,
   join,
   map,
   map as _map,
@@ -100,10 +105,10 @@ import {
   set,
   size,
   some,
+  startsWith,
   toString,
   trim,
-  isUndefined,
-  startsWith
+  now
 } from 'lodash';
 import {
   combineLatest,
@@ -122,8 +127,6 @@ import { ModifyAzComponent } from './modify-az/modify-az.component';
 import { ModifyHostComponent } from './modify-host/modify-host.component';
 import { ModifyResourceComponent } from './modify-resource/modify-resource.component';
 import { UpdateAgentComponent } from './update-agent/update-agent.component';
-import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
-import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
 @Component({
   selector: 'aui-host',
   templateUrl: './host.component.html',
@@ -203,7 +206,8 @@ export class HostComponent implements OnInit, OnDestroy {
             DataMap.Os_Type.windows.value,
             DataMap.Os_Type.linux.value,
             DataMap.Os_Type.aix.value,
-            DataMap.Os_Type.solaris.value
+            DataMap.Os_Type.solaris.value,
+            DataMap.Os_Type.hpux.value
           ],
           item.value
         );
@@ -236,7 +240,7 @@ export class HostComponent implements OnInit, OnDestroy {
       isShow: this.hostTrustOpen
     },
     {
-      label: this.i18n.get('protection_sla_source_deduplication_label'),
+      label: this.i18n.get('common_source_deduplication_support_label'),
       key: 'src_deduption',
       isShow: false
     },
@@ -290,6 +294,15 @@ export class HostComponent implements OnInit, OnDestroy {
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [251])
   };
 
+  time = new Date();
+  year = this.time.getFullYear();
+  month =
+    this.time.getMonth() < 9
+      ? `0${this.time.getMonth() + 1}`
+      : this.time.getMonth() + 1;
+  date =
+    this.time.getDate() < 10 ? `0${this.time.getDate()}` : this.time.getDate();
+
   currentDetailItemUuid;
   hostListSub$: Subscription;
   destroy$ = new Subject();
@@ -308,6 +321,20 @@ export class HostComponent implements OnInit, OnDestroy {
 
   registerTipShow = false;
   helpUrl = '';
+
+  allValue = 'all';
+  upgradeValue = 'upgradeable';
+  showMode = this.allValue;
+  modeOps = [
+    {
+      value: this.allValue,
+      label: this.i18n.get('common_all_label')
+    },
+    {
+      value: this.upgradeValue,
+      label: this.i18n.get('common_to_be_upgrading_label')
+    }
+  ];
 
   @ViewChild(DatatableComponent, { static: false }) lvTable: DatatableComponent;
   @ViewChild('contentTpl', { static: false }) contentTpl: TemplateRef<any>;
@@ -395,6 +422,11 @@ export class HostComponent implements OnInit, OnDestroy {
     return false;
   }
 
+  changeMode(val) {
+    this.showMode = val;
+    this.getHosts();
+  }
+
   showRegisterTip() {
     if (
       USER_GUIDE_CACHE_DATA.active &&
@@ -430,7 +462,7 @@ export class HostComponent implements OnInit, OnDestroy {
   }
 
   removeSrcDeduption() {
-    if (this.appUtilsService.isDistributed) {
+    if (this.appUtilsService.isDistributed || this.isHcsUser) {
       this.columns = reject(this.columns, item => item.key === 'src_deduption');
     }
   }
@@ -570,7 +602,10 @@ export class HostComponent implements OnInit, OnDestroy {
           return true;
         },
         disableCheck: data => {
-          return !size(this.selection);
+          return (
+            !size(this.selection) ||
+            some(this.selection, v => !this.hasClientPermission(v))
+          );
         },
         label: this.i18n.get('common_add_tag_label'),
         onClick: () => this.addLabel(this.selection)
@@ -582,7 +617,10 @@ export class HostComponent implements OnInit, OnDestroy {
           return true;
         },
         disableCheck: data => {
-          return !size(this.selection);
+          return (
+            !size(this.selection) ||
+            some(this.selection, v => !this.hasClientPermission(v))
+          );
         },
         label: this.i18n.get('common_remove_tag_label'),
         onClick: () => this.removeLabel(this.selection)
@@ -595,6 +633,7 @@ export class HostComponent implements OnInit, OnDestroy {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data,
+      type: SetTagType.Agent,
       onOk: () => {
         this.selection = [];
         this.getHosts();
@@ -606,6 +645,7 @@ export class HostComponent implements OnInit, OnDestroy {
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data,
+      type: SetTagType.Agent,
       onOk: () => {
         this.selection = [];
         this.getHosts();
@@ -615,6 +655,19 @@ export class HostComponent implements OnInit, OnDestroy {
 
   refresh() {
     this.getHosts();
+  }
+
+  // 解决首次查询可更新字段没有，需要下一次查询才会显示更新图标
+  setAgentUpgradeable(hostInfo) {
+    const upgradeableHost = _map(hostInfo, 'uuid');
+    each(this.tableData, item => {
+      if (
+        isUndefined(item.extendInfo?.agentUpgradeable) &&
+        includes(upgradeableHost, item.uuid)
+      ) {
+        set(item.extendInfo, 'agentUpgradeable', '1');
+      }
+    });
   }
 
   getHosts(refreshData?) {
@@ -653,7 +706,8 @@ export class HostComponent implements OnInit, OnDestroy {
                   DataMap.Os_Type.windows.value,
                   DataMap.Os_Type.linux.value,
                   DataMap.Os_Type.aix.value,
-                  DataMap.Os_Type.solaris.value
+                  DataMap.Os_Type.solaris.value,
+                  DataMap.Os_Type.hpux.value
                 ],
                 item.value
               );
@@ -677,7 +731,7 @@ export class HostComponent implements OnInit, OnDestroy {
       this.hostListSub$.unsubscribe();
     }
     let manualRefresh = true;
-    this.hostListSub$ = timer(0, CommonConsts.TIME_INTERVAL)
+    this.hostListSub$ = timer(0, CommonConsts.TIME_INTERVAL_RESOURCE)
       .pipe(
         switchMap(index => {
           manualRefresh = !index;
@@ -689,17 +743,17 @@ export class HostComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe(res => {
-        each(res.records, item => {
+        each(res.records, (item: any) => {
           // 获取标签数据
           const { showList, hoverList } = getLabelList(item);
 
           const _trustworthiness = get(item, ['extendInfo', 'trustworthiness']);
           assign(item, {
             sub_type: item.subType,
-            protection_status: item['protectionStatus'],
-            link_status: +item['linkStatus'],
-            os_type: item['osType'],
-            authorized_user: item['authorizedUser'],
+            protection_status: item?.protectionStatus,
+            link_status: Number(item?.linkStatus),
+            os_type: item?.osType,
+            authorized_user: item?.authorizedUser,
             trustworthiness: isNil(_trustworthiness)
               ? false
               : JSON.parse(_trustworthiness),
@@ -744,7 +798,8 @@ export class HostComponent implements OnInit, OnDestroy {
               akLoading: false,
               akDoException: false
             })
-            .subscribe(() => {
+            .subscribe(res => {
+              this.setAgentUpgradeable(res);
               this.cdr.detectChanges();
             });
         }
@@ -784,6 +839,36 @@ export class HostComponent implements OnInit, OnDestroy {
       });
   }
 
+  getLinkStatus(item) {
+    // 临时赋值一个减少长度
+    const statusMap = DataMap.resource_LinkStatus_Special;
+    if (
+      !this.isMulti ||
+      ![
+        Number(statusMap.normal.value),
+        Number(statusMap.offline.value)
+      ].includes(item.link_status)
+    ) {
+      return item.link_status;
+    }
+
+    if (this.isMulti) {
+      const connection = item?.extendInfo?.connection_result;
+      const target = JSON.parse(connection || '{}');
+      if (isEmpty(target)) {
+        return item.link_status;
+      }
+
+      const isOnline = !!some(
+        target,
+        item => item.link_status === Number(statusMap.normal.value)
+      );
+      return isOnline
+        ? Number(statusMap.normal.value)
+        : Number(statusMap.offline.value);
+    }
+  }
+
   // 刷新资源详情
   refreshDetail(target, tableData) {
     if (find(tableData, { uuid: target.uuid })) {
@@ -818,22 +903,24 @@ export class HostComponent implements OnInit, OnDestroy {
     };
     assign(this.filterParams, {
       type: 'Host',
-      subType: !this.filterParams['subType']
+      subType: !this.filterParams?.subType
         ? [
             DataMap.Resource_Type.DBBackupAgent.value,
             DataMap.Resource_Type.VMBackupAgent.value,
             DataMap.Resource_Type.UBackupAgent.value,
             DataMap.Resource_Type.SBackupAgent.value
           ]
-        : this.filterParams['subType'],
+        : this.filterParams?.subType,
       scenario: '0',
       isCluster: false
     });
 
-    if (window['queryDBBackupAgentParams']) {
+    if (this.showMode === this.upgradeValue) {
       assign(this.filterParams, {
-        ...window['queryDBBackupAgentParams']
+        isUpGrade: '1'
       });
+    } else {
+      delete this.filterParams?.isUpGrade;
     }
 
     each(this.filterParams, (value, key) => {
@@ -858,7 +945,7 @@ export class HostComponent implements OnInit, OnDestroy {
           this.filterParams,
           'trustworthiness'
         );
-        delete this.filterParams['trustworthiness'];
+        delete this.filterParams?.trustworthiness;
       }
 
       assign(params, {
@@ -1027,15 +1114,7 @@ export class HostComponent implements OnInit, OnDestroy {
         id: 'modifyHost',
         label: this.i18n.get('protection_modify_host_label'),
         permission: OperateItems.ModifyHost,
-        disabled:
-          includes(
-            [
-              DataMap.Resource_Type.DWSBackupAgent.value,
-              DataMap.Resource_Type.UBackupAgent.value,
-              DataMap.Resource_Type.SBackupAgent.value
-            ],
-            data.sub_type
-          ) || !this.hasClientPermission(data),
+        disabled: !this.hasClientPermission(data),
         onClick: () => this.modifyHost(data)
       },
       {
@@ -1084,12 +1163,14 @@ export class HostComponent implements OnInit, OnDestroy {
         id: 'addLabel',
         permission: OperateItems.AddTag,
         label: this.i18n.get('common_add_tag_label'),
+        disabled: !this.hasClientPermission(data),
         onClick: () => this.addLabel([data])
       },
       {
         id: 'removeLabel',
         permission: OperateItems.RemoveTag,
         label: this.i18n.get('common_remove_tag_label'),
+        disabled: !this.hasClientPermission(data),
         onClick: () => this.removeLabel([data])
       }
     ];
@@ -1183,15 +1264,44 @@ export class HostComponent implements OnInit, OnDestroy {
     );
   }
 
+  findHostEsn(host): string {
+    let esn = '';
+    const connectIp = host?.extendInfo?.agent_connected_ip;
+    if (isJson(connectIp)) {
+      const ips = JSON.parse(connectIp);
+      esn = find(ips, ip => !isEmpty(ip.connectedIp))?.esn;
+    }
+    return esn;
+  }
+
+  getParamsEsn(data): string {
+    let esn: string;
+    if (isArray(data)) {
+      each(data, host => {
+        const findEsn = this.findHostEsn(host);
+        if (findEsn) {
+          esn = findEsn;
+          return false;
+        }
+      });
+    } else {
+      esn = this.findHostEsn(data);
+    }
+    return esn;
+  }
+
   exportLog(data) {
     this.formGroup = this.fb.group({
-      fileName: new FormControl('file_01', [
-        this.baseUtilService.VALID.name(
-          CommonConsts.REGEX.nameCombination,
-          false
-        ),
-        this.baseUtilService.VALID.maxLength(251)
-      ])
+      fileName: new FormControl(
+        `file_${this.year}${this.month}${this.date}_${now()}`,
+        [
+          this.baseUtilService.VALID.name(
+            CommonConsts.REGEX.nameCombination,
+            false
+          ),
+          this.baseUtilService.VALID.maxLength(251)
+        ]
+      )
     });
     this.drawModalService.create({
       lvHeader: this.i18n.get('common_export_log_label'),
@@ -1213,14 +1323,17 @@ export class HostComponent implements OnInit, OnDestroy {
         } else {
           request.params.agentIds.push(data.uuid);
         }
-        this.exportFilesApi
-          .CreateExportFile({
-            request,
-            akOperationTipsContent: this.i18n.get(
-              'common_export_files_result_label'
-            )
-          })
-          .subscribe(res => {});
+        const exportParams = {
+          request,
+          akOperationTipsContent: this.i18n.get(
+            'common_export_files_result_label'
+          )
+        };
+        const esn = this.getParamsEsn(data);
+        if (this.isMulti && esn) {
+          assign(exportParams, { memberEsn: esn });
+        }
+        this.exportFilesApi.CreateExportFile(exportParams).subscribe();
       }
     });
   }
@@ -1233,14 +1346,20 @@ export class HostComponent implements OnInit, OnDestroy {
     this.protectService.openProtectModal(type, action, {
       data: datas,
       width: 780,
-      onOK: () =>
-        this.getHosts(
-          !isArray(datas)
-            ? datas
-            : isArray(datas) && size(datas) === 1
-            ? datas[0]
-            : null
-        )
+      onOK: () => {
+        let params;
+        if (!isArray(datas)) {
+          params = datas;
+        } else {
+          if (isArray(datas) && size(datas) === 1) {
+            params = datas[0];
+          } else {
+            params = null;
+          }
+        }
+
+        this.getHosts(params);
+      }
     });
   }
 
@@ -1534,6 +1653,12 @@ export class HostComponent implements OnInit, OnDestroy {
     });
   }
 
+  SynchronizingConfigurations() {
+    this.clientManagerApiService
+      .updateAgentContainerFrontEndIpPUT({})
+      .subscribe();
+  }
+
   clientRegister() {
     this.router.navigateByUrl(RouterUrl.ProtectionHostAppHostRegister);
   }
@@ -1584,8 +1709,8 @@ export class HostComponent implements OnInit, OnDestroy {
     const trapParams = this.snmpApiService.getTrapConfigUsingGET({});
     const trapList = this.snmpApiService.queryTrapAddressListUsingGET({});
     combineLatest([trapParams, trapList]).subscribe(res => {
-      const trap1 = res[0],
-        trap2 = res[1];
+      const trap1 = res[0];
+      const trap2 = res[1];
       if (!trap1.version || !size(trap2)) {
         this.messageService.error(
           this.i18n.get('protection_trap_sync_failed_label'),
@@ -1727,8 +1852,9 @@ export class HostComponent implements OnInit, OnDestroy {
   }
 
   searchByLabel(label) {
+    label = label.map(e => e.value);
     assign(this.filterParams, {
-      labelName: trim(label)
+      labelList: label
     });
     this.getHosts();
   }
@@ -1818,9 +1944,7 @@ export class HostComponent implements OnInit, OnDestroy {
     ) {
       item.disabled = some(
         this.selection,
-        select =>
-          select.sub_type !== DataMap.Resource_Type.VMBackupAgent.value ||
-          !this.hasClientPermission(select)
+        select => !this.hasClientPermission(select)
       );
     } else if (item.id === 'addLabel') {
       item.disabled = !size(this.selection);

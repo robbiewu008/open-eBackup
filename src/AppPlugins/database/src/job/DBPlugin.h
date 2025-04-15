@@ -68,6 +68,10 @@ DBPLUGIN_API void AllowCheckCopySubJobInLocalNode(ActionResult& returnValue, con
     const AppProtect::SubJob& subJob);
 DBPLUGIN_API void RemoveProtect(ActionResult& returnValue,
     const ApplicationEnvironment& appEnv, const Application& application);
+DBPLUGIN_API void FinalizeClear(ActionResult& _return, const ApplicationEnvironment& appEnv,
+    const Application& application, const std::map<std::string, std::string>& extendInfo);
+DBPLUGIN_API void QueryScanRepositories(AppProtect::ScanRepositories& scanRepositories,
+    const AppProtect::BackupJob& job);
 #ifdef __cplusplus
 }
 #endif

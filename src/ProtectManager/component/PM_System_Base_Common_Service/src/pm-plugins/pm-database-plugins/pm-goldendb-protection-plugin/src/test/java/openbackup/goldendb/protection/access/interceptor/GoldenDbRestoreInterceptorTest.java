@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreModeEnum;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
@@ -53,10 +54,12 @@ public class GoldenDbRestoreInterceptorTest {
 
     private GoldenDbRestoreInterceptor goldenDbRestoreInterceptorUnderTest;
 
+    private AgentUnifiedService agentUnifiedService;
+
     @Before
     public void setUp() {
         goldenDbRestoreInterceptorUnderTest = new GoldenDbRestoreInterceptor(mockGoldenDbService, mockCopyRestApi,
-            new GoldenDBAgentProvider(mockGoldenDbService));
+            new GoldenDBAgentProvider(mockGoldenDbService), agentUnifiedService);
     }
 
     @Test

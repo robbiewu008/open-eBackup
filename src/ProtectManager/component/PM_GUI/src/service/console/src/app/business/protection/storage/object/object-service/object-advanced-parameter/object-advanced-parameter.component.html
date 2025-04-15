@@ -38,6 +38,15 @@
         </lv-form-label>
         <lv-form-control>
           <lv-switch formControlName="isBackupAcl"></lv-switch>
+          <lv-group *ngIf="formGroup.get('isBackupAcl').value">
+            <span>
+              <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon">
+              </i>
+              <span class="text-middle">
+                {{'explore_acl_backup_tip_label' |i18n}}
+              </span>
+            </span>
+          </lv-group>
         </lv-form-control>
       </lv-form-item>
       <lv-form-item  *ngIf="isHCS">
@@ -107,17 +116,6 @@
                     [lvDisabled]="isModified"
                   >
                     <lv-group>
-                      <lv-radio
-                        [lvViewType]="'button'"
-                        [lvValue]="dataMap.Small_File_Size.small.value"
-                        >{{ dataMap.Small_File_Size.small.label }}</lv-radio
-                      >
-                      <lv-radio
-                        [lvViewType]="'button'"
-                        [lvValue]="dataMap.Small_File_Size.normal.value"
-                      >
-                        {{ dataMap.Small_File_Size.normal.label }}</lv-radio
-                      >
                       <lv-radio
                         [lvViewType]="'button'"
                         [lvValue]="dataMap.Small_File_Size.large.value"

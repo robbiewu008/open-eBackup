@@ -18,7 +18,7 @@ from threading import Thread
 from common.cleaner import clear_repository_dir
 from common.common import execute_cmd_list_communicate
 from common.common import exter_attack
-from common.const import SubJobStatusEnum
+from common.const import SubJobStatusEnum, RpcParamKey
 from common.util.cmd_utils import cmd_format
 from common.util.exec_utils import exec_mkdir_cmd, exec_overwrite_file
 from common.util.scanner_utils import scan_dir_size
@@ -28,6 +28,7 @@ from mysql.src.common.error_code import MySQLErrorCode
 from mysql.src.common.execute_cmd import mysql_backup_files
 from mysql.src.common.parse_parafile import ReadFile
 from mysql.src.protect_mysql_base import MysqlBase
+from mysql.src.service.backup.backup_func import get_last_copy_info
 from mysql.src.utils.common_func import find_log_bin_path_dir, get_binlog_filenames
 
 
@@ -48,19 +49,31 @@ class MysqlBackupLog(MysqlBase):
         return timestamp
 
     def get_log_backup_extend_info(self, start_timestamp, end_timestamp):
+        log.info("start_timestamp: %s, end_timestamp: %s" % (start_timestamp, end_timestamp))
         # 构造日志副本信息中需要的字段
         # 判断如果起始时间超过首次全量备份时间，就截断
-        ret, first_backup_time = self.get_copy_info_last_backup_time_new()
-        log.info(f"first_backup_time:{first_backup_time},start_timestamp:{start_timestamp}")
-        if ret and start_timestamp < first_backup_time:
-            start_timestamp = first_backup_time
+        param_application = self._json_param.get(MySQLJsonConstant.JOB, {}).get(MySQLJsonConstant.PROTECTOBJECT)
+        out_info = get_last_copy_info(None, self._job_id, [RpcParamKey.LOG_COPY], application=param_application)
+        if out_info:
+            begin_time = int(out_info.get("extendInfo", {}).get("endTime", ""))
+            log.info(f"begin_time: {begin_time}, start_timestamp:{start_timestamp}")
+            if begin_time < start_timestamp:
+                begin_time = self.get_start_full_time(param_application)
+        else:
+            begin_time = self.get_start_full_time(param_application)
         json_dict = {
             "logDirName": "",
             "associatedCopies": [],
-            "beginTime": start_timestamp,
+            "beginTime": begin_time,
             "endTime": end_timestamp
         }
         return json_dict
+
+    def get_start_full_time(self, param_application):
+        out_info = get_last_copy_info(None, self._job_id, [RpcParamKey.FULL_COPY, RpcParamKey.INCREMENT_COPY,
+                                                           RpcParamKey.DIFF_COPY], application=param_application)
+        log.info(f"full_copy_out_info:{out_info}")
+        return int(out_info.get("extendInfo", {}).get("backupTime", ""))
 
     def get_log_start_time(self, bin_log_file):
         ret, output = self.get_bin_log_sql(bin_log_file)
@@ -142,8 +155,7 @@ class MysqlBackupLog(MysqlBase):
             return False
         log.info(f"Log time:{start_timestamp}--{end_timestamp}.{self.get_log_comm()}")
         # 获取上一个（全量、增量、差异、日志）副本的时间，与上一个副本时间做比较，校验日志是否连续
-        ret, last_backup_time = self.get_copy_info_last_backup_time_new()
-        json_extend_info = self.get_log_backup_extend_info(last_backup_time, end_timestamp)
+        json_extend_info = self.get_log_backup_extend_info(start_timestamp, end_timestamp)
         self.write_copy_info_log_backup(end_timestamp, json_extend_info)
         ret = self.write_log_flag_file()
         if not ret:

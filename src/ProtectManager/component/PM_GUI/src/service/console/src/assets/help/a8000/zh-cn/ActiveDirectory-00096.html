@@ -1,0 +1,326 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Active Directory回收站未开启场景下，对象属性恢复失败">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="ActiveDirectory-00084.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ActiveDirectory-00096">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Active Directory回收站未开启场景下，对象属性恢复失败</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ActiveDirectory-00096"></a><a name="ActiveDirectory-00096"></a>
+
+<h1 class="topictitle1">Active Directory回收站未开启场景下，对象属性恢复失败</h1>
+<div><p>Active Directory回收站未开启时，可能存在部分属性恢复失败的问题。手动修改属性会对系统和用户产生多种影响。</p>
+
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复失败的属性及修改属性的影响</caption><colgroup><col style="width:22.5%"><col style="width:41.510000000000005%"><col style="width:35.99%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="22.5%" id="mcps1.3.2.2.4.1.1"><p>属性</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="41.510000000000005%" id="mcps1.3.2.2.4.1.2"><p>说明</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="35.99%" id="mcps1.3.2.2.4.1.3"><p>影响</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>CN (Common Name)</p>
+</td>
+<td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>对象的常见名称，是对象RDN（相对唯一标识符）的一部分。</p>
+</td>
+<td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>修改该属性会导致对象的名称变化，可能会影响与该对象关联的应用程序或服务。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>memberof</p>
+</td>
+<td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>对象所属的组列表。</p>
+</td>
+<td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>如果对象所在的组未删除，那么该对象的memberof属性可以恢复成功。如果用户的memberof属性发生变化，可能会影响该用户的权限和访问控制。移除用户所在的组可能导致其失去权限。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>userParameters</p>
+</td>
+<td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>用户参数。</p>
+</td>
+<td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>修改该属性会影响用户体验或操作方式，需谨慎处理。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>member</p>
+</td>
+<td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>同memberof，对象所属的组列表。</p>
+</td>
+<td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>修改该属性会改变对象的成员关系。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>msExchWhenMailboxCreated</p>
+</td>
+<td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>Exchange邮箱创建的时间</p>
+</td>
+<td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>调整邮箱相关策略或数据迁移时修改该属性可能会影响后续操作的时间戳。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>mS-DS-CreatorSID</p>
+</td>
+<td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>存储的是创建对象的用户的SID，表示哪个用户或安全主体（如计算机账户）创建了该对象。</p>
+</td>
+<td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>该属性通常由系统自动管理，手动修改可能会导致对象的创建者信息不准确。这可能影响审计、权限管理等。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>userAccountControl</p>
+</td>
+<td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>用户账户管理。</p>
+</td>
+<td class="cellrowborder" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>修改该属性可以改变用户账户的行为，例如启用或禁用账户、设置密码过期策略、允许或禁止登录等。错误的设置可能会导致用户无法登录或账户被锁定。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="22.5%" headers="mcps1.3.2.2.4.1.1 "><p>badPasswordTime</p>
+</td>
+<td class="cellrowborder" valign="top" width="41.510000000000005%" headers="mcps1.3.2.2.4.1.2 "><p>记录用户最后一次输入错误密码的时间。</p>
+</td>
+<td class="cellrowborder" rowspan="41" valign="top" width="35.99%" headers="mcps1.3.2.2.4.1.3 "><p>属性由系统自动管理，不涉及影响。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>badPwdCount</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>记录用户连续输入错误密码的次数。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>CanonicalName</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的规范化名称，通常用于LDAP操作。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>Created</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象创建的时间。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>whenChanged</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象最后一次修改的时间</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>ObjectGuid</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的唯一全局标识符（GUID）</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>groupType</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>定义了组的类型，例如安全组或分发组。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>createTimeStamp</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的创建时间戳</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>Deleted</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>指示对象是否已被删除</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>DistinguishedName</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的全路径名称，用于唯一标识对象。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>dSCorePropagationData</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>用于复制的内部属性，记录了对象的复制元数据。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>instanceType</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的实例类型，用于区分不同的AD对象类型。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>ObjectGUID</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>同ObjectGuid，对象的唯一GUID。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>ou (OrganizationalUnit)</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象所在的组织单位。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>pwdLastSet</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>用户密码上次设置的时间。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>isDeleted</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>同Deleted，指示对象是否已被删除。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>LastKnownParent</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的最后一个已知父容器。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>lastLogoff</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>用户最后一次注销的时间。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>lastLogon</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>用户最后一次登录的时间。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>logonCount</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>用户登录次数。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>Modified</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的修改时间。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>whenCreated</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>同Created，对象的创建时间</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>modifyTimeStamp</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>同whenChanged，对象最后一次修改的时间。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>nTSecurityDescriptor</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的安全描述符。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>ObjectCategory</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的类别，用于定义对象的类型。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>PropertyNames</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的属性名称列表。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>objectSid</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的安全标识符（SID）。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>primaryGroupID</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>用户的主要组SID。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>PropertyCount</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象属性的数量。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>sAMAccountType</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>用户账户的类型。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>sDRightsEffective</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的权限效果</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>msNPAllowDialin</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>是否允许拨入</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>ProtectedFromAccidentalDeletion</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>是否防止意外删除。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>msDS-LastKnownRDN</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的最后一个已知RDN。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>uSNChanged</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>更新序列号，记录对象的修改次数。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>lockoutTime</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>账户锁定时间。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>Name</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>对象的名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>lastLogonTimestamp</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>用户最后一次登录的时间戳。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>msExchMailboxGuid</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Exchange邮箱的GUID。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>msExchMailboxSecurityDescriptor</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>Exchange邮箱的安全描述符。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.1 "><p>mDBUseDefaults</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.4.1.2 "><p>邮件数据库是否使用默认设置。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="ActiveDirectory-00096__li20516469345"><span>打开Active Directory Users and Computers。</span><p><ol type="a" id="ActiveDirectory-00096__ol1558811113511"><li id="ActiveDirectory-00096__li458811203511">使用Administrator用户登录远程主机。</li><li id="ActiveDirectory-00096__li749551033511">按Win + R。</li><li id="ActiveDirectory-00096__li11778132363511">输入<strong id="ActiveDirectory-00096__b1828713219211">dsa.msc</strong>后按Enter键。<p id="ActiveDirectory-00096__p579574016591"></p>
+</li></ol>
+</p></li><li><span>修改属性。</span><p><ol type="a"><li>找到需要修改的用户或组对象。</li><li>右键单击对象，选择“属性”。<p></p>
+</li><li>弹出的窗口中，单击“属性编辑”选项卡。<p></p>
+</li><li>双击需要修改的属性。</li><li>修改属性值后单击“确认”。<p></p>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="ActiveDirectory-00084.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

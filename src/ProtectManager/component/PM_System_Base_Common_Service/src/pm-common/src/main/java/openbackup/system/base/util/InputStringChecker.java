@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.util;
 
-import openbackup.system.base.common.validator.constants.RegexpConstants;
-
 import lombok.Data;
+import openbackup.system.base.common.validator.constants.RegexpConstants;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,36 +32,31 @@ public class InputStringChecker implements ConstraintValidator<CheckInputString,
     /**
      * 字符通用校验类型
      */
-    private static final String[] CHARACTERS_TYPE_COMMON = new String[] {
-        "&", "<", ">", "\"", "'", ":", "[", "]", "$", "(", ")", "%", "+", "/", "\\", "#", "`", "*", ",", "-", ";", "=",
-        "^", "|"
-    };
+    private static final String[] CHARACTERS_TYPE_COMMON = new String[]{"&", "<", ">", "\"", "'", ":", "[", "]", "$",
+            "(", ")", "%", "+", "/", "\\", "#", "`", "*", ",", "-", ";", "=", "^", "|"};
 
     /**
      * URL校验类型
      */
-    private static final String[] CHARACTERS_TYPE_URL = new String[] {
-        "<", ">", "\"", "'", "[", "]", "$", "(", ")", "+", "\\", "#", "`", "*", ",", ";", "^", "|"
-    };
+    private static final String[] CHARACTERS_TYPE_URL = new String[]{"<", ">", "\"", "'", "[", "]", "$", "(", ")", "+",
+            "\\", "#", "`", "*", ",", ";", "^", "|"};
 
     /**
      * name校验类型
      */
-    private static final String[] CHARACTERS_TYPE_NAME = new String[] {
-        "&", "<", ">", "\"", "'", ":", "$", "%", "\\", "#", "`", "*", ",", ";", "=", "^", "|"
-    };
+    private static final String[] CHARACTERS_TYPE_NAME = new String[]{"&", "<", ">", "\"", "'", ":", "$", "%", "\\",
+            "#", "`", "*", ",", ";", "=", "^", "|"};
 
     /**
      * 评论校验类型
      */
-    private static final String[] CHARACTERS_TYPE_REMARK = new String[] {
-        "&", "<", ">", "\"", "'", "[", "]", "$", "%", "+", "/", "\\", "#", "`", "*", ":", "=", "^", "|"
-    };
+    private static final String[] CHARACTERS_TYPE_REMARK = new String[]{"&", "<", ">", "\"", "'", "[", "]", "$", "%",
+            "+", "/", "\\", "#", "`", "*", ":", "=", "^", "|"};
 
     /**
      * 通用特殊字符校验类型
      */
-    private static final String[] CHARACTERS_TYPE_SPECIAL_COMMON = new String[] {"<", ">", "$", "#", "`", "*", "^"};
+    private static final String[] CHARACTERS_TYPE_SPECIAL_COMMON = new String[]{"<", ">", "$", "#", "`", "*", "^"};
 
     /**
      * 字符类型
@@ -199,4 +193,3 @@ public class InputStringChecker implements ConstraintValidator<CheckInputString,
         return true;
     }
 }
-

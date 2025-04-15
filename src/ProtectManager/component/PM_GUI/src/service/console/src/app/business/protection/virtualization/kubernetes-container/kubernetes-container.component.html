@@ -19,7 +19,7 @@
                     <aui-kubernetes-cluster [subType]="clusterSubType"></aui-kubernetes-cluster>
                 </ng-template>
             </lv-tab>
-            <lv-tab lvTitle="{{'protection_name_space_label' | i18n}}" lvId="namespace">
+            <lv-tab [lvTitle]="namespaceTitleTpl" lvId="namespace">
                 <ng-template lv-tab-lazy>
                     <aui-base-template [resourceSubType]="namespaceSubType" [extraConfig]="namespaceExtraConfig"
                         [columns]="namespaceColumns">
@@ -37,7 +37,18 @@
     </div>
 </div>
 
+<ng-template #namespaceTitleTpl>
+    <span>
+        {{'protection_name_space_label' | i18n}}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_kubernetes_namespace_tip_label' | i18n}}"
+            lvColorState='true' class="tab-tip"></i>
+    </span>
+</ng-template>
+
 <ng-template #titleTpl>
-    <span lv-tooltip="{{'protection_kubernetes_dataset_tip_label' | i18n}}">{{'protection_kubernetes_dataset_label' |
-        i18n}}</span>
+    <span>
+        {{'protection_kubernetes_dataset_label' | i18n}}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_kubernetes_dataset_tip_label' | i18n}}" lvColorState='true'
+            class="tab-tip"></i>
+    </span>
 </ng-template>

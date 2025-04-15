@@ -103,11 +103,12 @@ int HostDeleteWriter::WriteData(FileHandle& fileHandle)
     DBGLOG("Enter %sDeleteWriter WriteData: %s", OS_PLATFORM_NAME.c_str(), fileHandle.m_file->m_fileName.c_str());
     auto task = make_shared<OsPlatformServiceTask>(
         HostEvent::DELETE_ITEM, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write data (delete) task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
     return SUCCESS;
 }
 
@@ -135,17 +136,17 @@ bool HostDeleteWriter::IsComplete()
             "aggregateComplete %d writeQueueSize %llu timerSize %llu "
             "writeTaskProduce %llu writeTaskConsume %llu",
             m_controlInfo->m_aggregatePhaseComplete.load(), m_writeQueue->GetSize(),
-            m_timer.GetCount(), m_writeTaskProduce.load(), m_writeTaskConsume.load());
+            m_timer.GetCount(), m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load());
     }
     if (m_controlInfo->m_aggregatePhaseComplete &&
         m_writeQueue->Empty() &&
         (m_timer.GetCount() == 0) &&
-        (m_writeTaskProduce == m_writeTaskConsume)) {
+        (m_controlInfo->m_writeTaskProduce == m_controlInfo->m_writeTaskConsume)) {
         INFOLOG("DeleteWriter complete: "
             "aggregateComplete %d writeQueueSize %llu timerSize %llu "
             "writeTaskProduce %llu writeTaskConsume %llu",
             m_controlInfo->m_aggregatePhaseComplete.load(), m_writeQueue->GetSize(),
-            m_timer.GetCount(), m_writeTaskProduce.load(), m_writeTaskConsume.load());
+            m_timer.GetCount(), m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load());
         m_controlInfo->m_writePhaseComplete = true;
         return true;
     }
@@ -158,6 +159,9 @@ int64_t HostDeleteWriter::ProcessTimers()
     vector<FileHandle> fileHandles;
     int64_t delay = m_timer.GetExpiredEventAndTime(fileHandles);
     for (FileHandle& fh : fileHandles) {
+        if (IsAbort()) {
+            return 0;
+        }
         DBGLOG("Process timer %s", fh.m_file->m_fileName.c_str());
         FileDescState state = fh.m_file->GetDstState();
         if (state == FileDescState::INIT) {
@@ -208,7 +212,7 @@ void HostDeleteWriter::PollWriteTask()
             ERRLOG("task is nullptr");
             break;
         }
-        ++m_writeTaskConsume;
+        ++m_controlInfo->m_writeTaskConsume;
         if (task->m_result == SUCCESS) {
             HandleSuccessEvent(task);
         } else {
@@ -250,14 +254,24 @@ void HostDeleteWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskP
     DBGLOG("%s delete failed %s retry cnt %d",
         OS_PLATFORM_NAME.c_str(), fileHandle.m_file->m_fileName.c_str(), fileHandle.m_retryCnt);
 
-    if (fileHandle.m_retryCnt>= DEFAULT_ERROR_SINGLE_FILE_CNT ||
+    if (FSBackupUtils::IsStuck(m_controlInfo)) {
+        ERRLOG("set backup to failed due to stucked!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+        return;
+    }
+
+    if (fileHandle.m_retryCnt >= DEFAULT_ERROR_SINGLE_FILE_CNT ||
         taskPtr->IsCriticalError()) {
         FSBackupUtils::RecordFailureDetail(m_failureRecorder, taskPtr->m_errDetails);
 
         if (fileHandle.m_file->GetDstState() != FileDescState::WRITE_FAILED) {
             fileHandle.m_file->SetDstState(FileDescState::WRITE_FAILED);
-            fileHandle.m_errNum = taskPtr->m_errDetails.second;
-            m_failedList.emplace_back(fileHandle);
+            // 文件夹错误不进入错误队列
+            if (!fileHandle.m_file->IsFlagSet(IS_DIR)) {
+                fileHandle.m_errNum = taskPtr->m_errDetails.second;
+                m_failedList.emplace_back(fileHandle);
+            }
         }
         if (fileHandle.m_file->IsFlagSet(IS_DIR)) {
             ++m_deleteFailedDir;

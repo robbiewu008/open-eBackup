@@ -1,0 +1,81 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Enabling the Active Directory Recycle Bin">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200096209.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200096109">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Enabling the Active Directory Recycle Bin</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200096109"></a><a name="EN-US_TOPIC_0000002200096109"></a>
+  <h1 class="topictitle1">Step 1: Enabling the Active Directory Recycle Bin</h1>
+  <div>
+   <p>Before backup, enable the Active Directory Recycle Bin. Otherwise, some attributes may fail to be restored during object restoration.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Precautions</h4>
+    <ul>
+     <li>The Active Directory Recycle Bin cannot be disabled once enabled.</li>
+     <li>By default, deleted objects are retained for 180 days in the Active Directory Recycle Bin.</li>
+     <li>Enabling Active Directory Recycle Bin occupies storage space. Insufficient storage space may affect system running.</li>
+     <li>The Active Directory Recycle Bin is supported by Windows Server 2008 R2 and later versions.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <p>The following operations use Windows Server 2019 as an example.</p>
+    <ol>
+     <li><span>Log in to the remote host as <strong>Administrator</strong>.</span></li>
+     <li><span>Enter <strong>Active Directory Administrative Center</strong> in the search box.</span></li>
+     <li><span>Right-click <strong>Active Directory Administrative Center</strong> and choose <span class="uicontrol"><b>Run as administrator</b></span> from the shortcut menu.</span><p></p><p>The <strong>Active Directory Administrative Center</strong> window is displayed.</p> <p></p></li>
+     <li><span>In the navigation pane, choose <span class="uicontrol"><b>local</b></span>.</span></li>
+     <li><span>Click <strong>Enable Recycle Bin</strong> in the task bar on the right.</span><p></p><p>A dialog box is displayed, asking you to confirm whether to enable the Recycle Bin.</p> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b>Yes</b></span>.</span></li>
+     <li><span>Click <strong>OK</strong> in the dialog box that is displayed.</span></li>
+     <li><span>Click <span><img src="en-us_image_0000002164769706.png"></span> in the upper right corner.</span><p></p><p>If <strong>Enable Recycle Bin</strong> in the task bar on the right turns gray, the Recycle Bin has been enabled.</p> <p></p></li>
+     <li><strong>Optional: </strong><span>Change the default retention period for the Recycle Bin.</span><p></p>
+      <ol type="a">
+       <li>Enter <strong>Windows PowerShell</strong> in the search box.</li>
+       <li>Right-click <strong>Windows PowerShell</strong> and choose <span class="uicontrol"><b>Run as administrator</b></span> from the shortcut menu to enable Windows PowerShell.</li>
+       <li>Run the following command to query the domain controller name:<pre class="screen">$deletedObjectLifetime | Format-List *</pre> <p><span><img src="en-us_image_0000002200096297.png"></span></p></li>
+       <li>Run the following commands to change the retention period for the Recycle Bin. The domain controller name <strong>DC=TREE,DC=LONGEDC,DC=COM</strong> is used as an example.<pre class="screen">Set-ADObject -Identity "CN=Directory Service,CN=Windows NT,CN=Services,CN=Configuration,DC=<em>TREE</em>,DC=<em>LONGEDC</em>,DC=<em>COM</em>" -Partition "CN=Configuration, DC=<em>TREE</em>,DC=<em>LONGEDC</em>,DC=<em>COM</em>" -Replace:@{"tombstoneLifetime" = <em>365</em>}
+Set-ADObject -Identity "CN=Directory Service,CN=Windows NT,CN=Services,CN=Configuration,DC=<em>TREE</em>,DC=<em>LONGEDC</em>,DC=<em>COM</em>" -Partition "CN=Configuration, DC=<em>TREE</em>,DC=<em>LONGEDC</em>,DC=<em>COM</em>" -Replace:@{"msDS-DeletedObjectLifetime" = <em>365</em>}</pre></li>
+       <li>Open Command Prompt in Windows and run the following command to check whether the modification takes effect:<pre class="screen">dsquery * "CN=Directory Service,CN=Windows NT,CN=Services,CN=Configuration,DC=<em>TREE</em>,DC=<em>LONGEDC</em>,DC=<em>COM</em>" -scope base -attr tombstoneLifetime</pre> <p>If the number in the command output is the number of days after the modification, the modification takes effect.</p> <p><span><img src="en-us_image_0000002200010729.png"></span></p></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200096209.html">Backing Up Active Directory</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

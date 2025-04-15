@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   Component,
@@ -27,18 +27,19 @@ import {
   DataMap,
   GlobalService,
   I18NService,
-  Page_Size_Options,
   ProtectedResourceApiService,
   ResourceSetApiService,
   ResourceSetType,
   ResourceType,
-  Table_Size,
   VirtualResourceService
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
   assign,
+  cloneDeep,
+  defer,
+  differenceBy,
   each,
   filter,
   find,
@@ -46,10 +47,13 @@ import {
   includes,
   isEmpty,
   isNumber,
+  isUndefined,
   map,
-  set
+  set,
+  size,
+  some
 } from 'lodash';
-import { Observable, Subscription } from 'rxjs';
+import { forkJoin, Observable, Subscription } from 'rxjs';
 
 interface Tab {
   id: string;
@@ -76,12 +80,15 @@ export class VirtualCloudTemplateComponent
   @Input() isDetail;
   @Input() allSelect;
   @Output() allSelectChange = new EventEmitter<any>();
+  @Output() resourceGroupChange = new EventEmitter<any>();
 
   header = '';
   tabs: Tab[] = [];
   activeIndex = '';
   treeData = [];
   treeSelection = [];
+  treeOldSelection = []; // 用来对比然后从map里去除取消的选中项
+  treeNodeChecked;
   expandedNodeList = [];
   showSelect = false; // 回显子组件数据
 
@@ -101,6 +108,7 @@ export class VirtualCloudTemplateComponent
   };
 
   dataFetch$: Subscription = new Subscription();
+  syncData$: Subscription = new Subscription();
 
   constructor(
     public globalService: GlobalService,
@@ -127,6 +135,8 @@ export class VirtualCloudTemplateComponent
       set(this.allSelectionMap, this.appType, {
         isAllSelected: true
       });
+      this.treeSelection = cloneDeep(this.treeData);
+      this.treeSelectionChange();
     }
     if (
       !changes.allSelect?.currentValue &&
@@ -135,6 +145,9 @@ export class VirtualCloudTemplateComponent
       set(this.allSelectionMap, this.appType, {
         isAllSelected: false
       });
+      this.treeSelection = [];
+      this.treeSelectionChange();
+      set(this.allSelectionMap, this.appType, { data: [] });
     }
   }
 
@@ -148,13 +161,53 @@ export class VirtualCloudTemplateComponent
       .subscribe(res => {
         this.getTreeData();
       });
+
+    this.syncData$ = this.globalService
+      .getState(`${this.appType}syncData`)
+      .subscribe(res => {
+        // 右表里取消的，这里也需要取消
+        this.treeSelection = this.treeSelection.filter(
+          item =>
+            !isEmpty(this.allSelectionMap[this.appType]?.data) &&
+            find(this.allSelectionMap[this.appType].data, { uuid: item.uuid })
+        );
+        if (!isEmpty(this.allSelectionMap[this.appType]?.data)) {
+          this.syncSelectData();
+        }
+      });
+  }
+
+  syncSelectData(data?) {
+    // 同步右侧表格选中后，左树展示的选项也要选中
+    const tmpData = data ?? this.treeData;
+
+    // 右表里选中的，这里也需要选中
+    each(tmpData, item => {
+      if (
+        some(this.allSelectionMap[this.appType].data, { uuid: item.uuid }) &&
+        !some(this.treeSelection, { uuid: item.uuid })
+      ) {
+        this.treeSelection.push(item);
+        this.treeSelection = [...this.treeSelection];
+        this.treeOldSelection = cloneDeep(this.treeSelection);
+      }
+
+      if (item?.children && item.children.length) {
+        this.syncSelectData(item.children);
+      }
+    });
   }
 
   onChange() {
     this.treeSelection = [];
+    this.treeNodeChecked = null;
     this.treeData = [];
     this.expandedNodeList = [];
     this.ngOnInit();
+  }
+
+  groupChange(e) {
+    this.resourceGroupChange.emit(e);
   }
 
   selectChange() {
@@ -272,6 +325,7 @@ export class VirtualCloudTemplateComponent
         ];
         break;
       case ApplicationType.FusionCompute:
+      case ApplicationType.FusionOne:
         this.tabs = [
           {
             id: ResourceType.CLUSTER,
@@ -280,7 +334,7 @@ export class VirtualCloudTemplateComponent
             subType: DataMap.Resource_Type.fusionComputeCluster.value,
             hidden: false,
             hiddenFn: (node: any) => {
-              return false;
+              return !includes([ResourceType.PLATFORM], node.type);
             }
           },
           {
@@ -290,7 +344,10 @@ export class VirtualCloudTemplateComponent
             subType: DataMap.Job_Target_Type.FusionComputeHost.value,
             hidden: false,
             hiddenFn: (node: any) => {
-              return false;
+              return !includes(
+                [ResourceType.PLATFORM, ResourceType.CLUSTER],
+                node.type
+              );
             }
           },
           {
@@ -307,14 +364,13 @@ export class VirtualCloudTemplateComponent
             id: 'group',
             subType: DataMap.Resource_Type.vmGroup.value,
             subUnitType:
-              DataMap.Resource_Type.fusionComputeVirtualMachine.value,
+              this.resourceType === ApplicationType.FusionCompute
+                ? ResourceType.FUSION_COMPUTE
+                : ResourceType.FUSION_ONE,
             label: this.i18n.get('protection_vm_groups_label'),
             hidden: false,
             hiddenFn: (node: any) => {
-              return !includes(
-                [DataMap.Resource_Type.FusionCompute.value],
-                node.subType
-              );
+              return !includes([ResourceType.PLATFORM], node.type);
             },
             resourceTotal: 0
           }
@@ -329,7 +385,18 @@ export class VirtualCloudTemplateComponent
             subType: DataMap.Resource_Type.clusterComputeResource.value,
             hidden: false,
             hiddenFn: (node: any) => {
-              return false;
+              return (
+                includes(
+                  [
+                    DataMap.Resource_Type.virtualApp.value,
+                    DataMap.Resource_Type.resourcePool.value,
+                    DataMap.Resource_Type.vmwareEsx.value,
+                    DataMap.Resource_Type.vmwareEsxi.value
+                  ],
+                  node.subType
+                ) ||
+                includes([ResourceType.HOST, ResourceType.CLUSTER], node.type)
+              );
             }
           },
           {
@@ -339,7 +406,15 @@ export class VirtualCloudTemplateComponent
             subType: DataMap.Resource_Type.hostSystem.value,
             hidden: false,
             hiddenFn: (node: any) => {
-              return false;
+              return (
+                includes(
+                  [
+                    DataMap.Resource_Type.virtualApp.value,
+                    DataMap.Resource_Type.resourcePool.value
+                  ],
+                  node.subType
+                ) || includes([ResourceType.HOST], node.type)
+              );
             }
           },
           {
@@ -361,7 +436,7 @@ export class VirtualCloudTemplateComponent
             hiddenFn: (node: any) => {
               return !includes(
                 [DataMap.Resource_Type.vmwareVcenterServer.value],
-                node.subType
+                node?.subType
               );
             },
             resourceTotal: 0
@@ -418,6 +493,63 @@ export class VirtualCloudTemplateComponent
             hiddenFn: (node: any) => {
               return !includes(
                 [DataMap.Resource_Type.cNware.value],
+                node.subType
+              );
+            },
+            resourceTotal: 0
+          }
+        ];
+        break;
+      case ResourceType.NUTANIX:
+        this.tabs = [
+          {
+            id: 'cluster',
+            subType: DataMap.Resource_Type.nutanixCluster.value,
+            label: this.i18n.get('common_clusters_label'),
+            hidden: false,
+            hiddenFn: (node: any) => {
+              return includes(
+                [
+                  DataMap.Resource_Type.nutanixHost.value,
+                  DataMap.Resource_Type.nutanixCluster.value
+                ],
+                node.subType
+              );
+            },
+            resourceTotal: 0
+          },
+          {
+            id: 'host',
+            subType: DataMap.Resource_Type.nutanixHost.value,
+            label: this.i18n.get('common_host_label'),
+            hidden: false,
+            hiddenFn: (node: any) => {
+              return includes(
+                [DataMap.Resource_Type.nutanixHost.value],
+                node.subType
+              );
+            },
+            resourceTotal: 0
+          },
+          {
+            id: 'vm',
+            subType: DataMap.Resource_Type.nutanixVm.value,
+            label: this.i18n.get('common_virtual_machine_label'),
+            hidden: false,
+            hiddenFn: (node: any) => {
+              return false;
+            },
+            resourceTotal: 0
+          },
+          {
+            id: 'group',
+            subType: DataMap.Resource_Type.vmGroup.value,
+            subUnitType: DataMap.Resource_Type.nutanixVm.value,
+            label: this.i18n.get('protection_vm_groups_label'),
+            hidden: false,
+            hiddenFn: (node: any) => {
+              return !includes(
+                [DataMap.Resource_Type.nutanix.value],
                 node.subType
               );
             },
@@ -489,8 +621,15 @@ export class VirtualCloudTemplateComponent
             subType: DataMap.Resource_Type.hyperVCluster.value,
             label: this.i18n.get('common_cluster_label'),
             hidden: false,
-            hiddenFn: () => {
-              return false;
+            hiddenFn: (node: any) => {
+              // ScVMM 下面可能有集群 可能直接是主机，所以不需要隐藏cluster这一层
+              return includes(
+                [
+                  DataMap.Resource_Type.hyperVCluster.value,
+                  DataMap.Resource_Type.hyperVHost.value
+                ],
+                node?.subType
+              );
             },
             resourceTotal: 0
           },
@@ -500,7 +639,13 @@ export class VirtualCloudTemplateComponent
             label: this.i18n.get('common_host_label'),
             hidden: false,
             hiddenFn: (node: any) => {
-              return false;
+              return includes(
+                [
+                  DataMap.Resource_Type.hyperVVm.value,
+                  DataMap.Resource_Type.hyperVHost.value
+                ],
+                node?.subType
+              );
             },
             resourceTotal: 0
           },
@@ -509,8 +654,22 @@ export class VirtualCloudTemplateComponent
             subType: DataMap.Resource_Type.hyperVVm.value,
             label: this.i18n.get('common_virtual_machine_label'),
             hidden: false,
-            hiddenFn: () => {
-              return false;
+            hiddenFn: (node: any) => {
+              return (
+                node.subType === DataMap.Resource_Type.hyperVCluster.value &&
+                !!node?.parentUuid
+              );
+            },
+            resourceTotal: 0
+          },
+          {
+            id: 'group',
+            subType: DataMap.Resource_Type.vmGroup.value,
+            subUnitType: DataMap.Resource_Type.hyperVVm.value,
+            label: this.i18n.get('protection_vm_groups_label'),
+            hidden: false,
+            hiddenFn: (node: any) => {
+              return !!node?.parentUuid;
             },
             resourceTotal: 0
           }
@@ -525,9 +684,10 @@ export class VirtualCloudTemplateComponent
   getConditions() {
     switch (this.resourceType) {
       case ResourceType.CNWARE:
+      case ResourceType.NUTANIX:
         return {
           subType: this.resourceType,
-          type: ResourceType.CNWARE
+          type: this.resourceType
         };
       case ResourceType.ApsaraStack:
         return {
@@ -550,6 +710,11 @@ export class VirtualCloudTemplateComponent
       case ApplicationType.FusionCompute:
         return {
           subType: ResourceType.FUSION_COMPUTE,
+          type: ResourceType.PLATFORM
+        };
+      case ApplicationType.FusionOne:
+        return {
+          subType: ResourceType.FUSION_ONE,
           type: ResourceType.PLATFORM
         };
       case ApplicationType.HCSCloudHost:
@@ -610,23 +775,35 @@ export class VirtualCloudTemplateComponent
               link_status: node['linkStatus'],
               children: [],
               isLeaf: this.isLeaf(node),
+              rootNodeSubType: node.sub_type,
+              width: 170,
               expanded: this.getExpandedIndex(node.uuid) !== -1
             });
             if (node.expanded) {
               this.getExpandedChangeData(CommonConsts.PAGE_START, node);
             }
           });
+          if (this.resourceType === ResourceType.NUTANIX) {
+            recordsTemp = recordsTemp.filter(
+              item =>
+                !includes([DataMap.Resource_Type.nutanixVm.value], item.subType)
+            );
+          }
           this.treeData = recordsTemp;
           if (this.treeData.length) {
-            if (!this.treeSelection.length) {
-              this.treeSelection = [this.treeData[0]];
+            if (!this.treeNodeChecked) {
+              this.treeNodeChecked = this.treeData[0];
+              this.treeNodeCheck(this.treeNodeChecked);
+              this.nodeCheck({ node: this.treeData[0] }); // 初次选中时，lv-tree还未初始化，所以这里手动触发一次nodeCheck，去除不要的tab
             } else {
               this.treeData.forEach(node => {
-                if (node.uuid === this.treeSelection[0].uuid) {
-                  this.treeSelection = [node];
+                if (node.uuid === this.treeNodeChecked.uuid) {
+                  this.treeNodeChecked = node;
                 }
               });
             }
+            this.clearTreeNodeCheck(this.treeData);
+            this.treeData = [...this.treeData];
           }
           if (
             !!this.data &&
@@ -634,28 +811,47 @@ export class VirtualCloudTemplateComponent
             !this.isDetail
           ) {
             // 只有在修改场景时第一次进入组件会获取一次
-            this.getSelectedData();
+            this.getAllSelectedData();
+            this.getResourceGroupSelectedData();
           }
           if (
             [
               DataMap.Resource_Type.vmwareEsx.value,
               DataMap.Resource_Type.vmwareEsxi.value
-            ].includes(this.treeSelection[0].subType)
+            ].includes(this.treeNodeChecked.subType)
           ) {
             this.tabs[0].hidden = true;
             this.tabs[0].resourceTotal = 0;
             this.activeIndex = this.tabs[1].id;
           }
-          this.virtualScroll.getScrollParam(
-            260,
-            Page_Size_Options.Three,
-            Table_Size.Default,
-            'cnware-tree'
-          );
           return;
         }
         this.getTreeData(recordsTemp, startPage);
       });
+  }
+
+  getAllSelectedData() {
+    forkJoin([
+      this.getSelectedData(),
+      this.getResourceGroupSelectedData()
+    ]).subscribe(response => {
+      const [resourceData, resourceGroupData] = response;
+      set(this.allSelectionMap, this.appType, {
+        data: map(resourceData, item => {
+          return { uuid: item };
+        })
+      });
+      set(this.allSelectionMap, ResourceSetType.RESOURCE_GROUP, {
+        data: map(resourceGroupData, item => {
+          return { uuid: item, scopeType: this.appType };
+        })
+      });
+      this.showSelect = true;
+      if (!!size(resourceData)) {
+        this.syncModifySelectedData();
+      }
+      this.allSelectChange.emit();
+    });
   }
 
   getSelectedData() {
@@ -664,15 +860,34 @@ export class VirtualCloudTemplateComponent
       scopeModule: this.appType,
       type: 'RESOURCE'
     };
-    this.resourceSetService.QueryResourceObjectIdList(params).subscribe(res => {
-      set(this.allSelectionMap, this.appType, {
-        data: map(res, item => {
-          return { uuid: item };
-        })
-      });
-      this.showSelect = true;
-      this.allSelectChange.emit();
+    return this.resourceSetService.queryResourceObjectIdList(params);
+  }
+
+  getResourceGroupSelectedData() {
+    const params: any = {
+      resourceSetId: this.data[0].uuid,
+      scopeModule: this.appType,
+      type: ResourceSetType.RESOURCE_GROUP
+    };
+    return this.resourceSetService.queryResourceObjectIdList(params);
+  }
+
+  syncModifySelectedData(data?) {
+    // 用来同步修改时左树的选中
+    const tmpData = data ?? this.treeData;
+    each(tmpData, item => {
+      if (
+        some(this.allSelectionMap[this.appType].data, { uuid: item.uuid }) &&
+        !some(this.treeSelection, { uuid: item.uuid })
+      ) {
+        this.treeSelection.push(item);
+      }
+      if (item?.children && !!item.children.length) {
+        this.syncModifySelectedData(item.children);
+      }
     });
+    this.treeSelection = [...this.treeSelection];
+    this.treeOldSelection = cloneDeep(this.treeSelection);
   }
 
   getResourceIcon(node) {
@@ -682,7 +897,7 @@ export class VirtualCloudTemplateComponent
       });
       return nodeResource['icon'] + '';
     }
-    if (this.isFc) {
+    if (this.isFc || this.appType === ResourceSetType.FusionOne) {
       const nodeResource = find(
         DataMap.Resource_Type,
         item => item.value === node.type
@@ -697,6 +912,7 @@ export class VirtualCloudTemplateComponent
     }
     switch (node.subType) {
       case ResourceType.CNWARE:
+      case ResourceType.NUTANIX:
         return node.linkStatus ===
           DataMap.resource_LinkStatus_Special.normal.value
           ? 'aui-icon-vCenter'
@@ -706,8 +922,10 @@ export class VirtualCloudTemplateComponent
       case DataMap.Resource_Type.cNwareHostPool:
         return 'aui-icon-dataCenter';
       case DataMap.Resource_Type.cNwareCluster.value:
+      case DataMap.Resource_Type.nutanixCluster.value:
         return 'aui-icon-cluster';
       case DataMap.Resource_Type.cNwareHost.value:
+      case DataMap.Resource_Type.nutanixHost.value:
         return 'aui-icon-host';
       case DataMap.Resource_Type.APSRegion.value:
         return 'aui-icon-hcs-region';
@@ -720,8 +938,14 @@ export class VirtualCloudTemplateComponent
           ? 'aui-cluster-online-16'
           : 'aui-cluster-offline-16';
       case DataMap.Resource_Type.hyperVHost.value:
-        return node.linkStatus ===
-          DataMap.resource_LinkStatus_Special.normal.value
+        return includes(
+          [
+            DataMap.hypervHostStatus.Up.value,
+            DataMap.hypervHostStatus.Ok.value
+          ],
+          node.extendInfo.status
+        ) ||
+          node.linkStatus === DataMap.resource_LinkStatus_Special.normal.value // 单主机有linkStatus，主机在集群下走extendInfo
           ? 'aui-host-online-16'
           : 'aui-host-offline-16';
       case DataMap.Resource_Type.HCSRegion.value:
@@ -744,11 +968,87 @@ export class VirtualCloudTemplateComponent
     tab.resourceTotal = event?.total;
   }
 
-  beforeSelected = item => {
-    if (this.treeSelection[0]?.uuid === item.uuid) {
-      return false;
+  treeSelectionChange(e?) {
+    if (this.treeSelection.length < this.treeOldSelection.length) {
+      const diffData = differenceBy(
+        this.treeOldSelection,
+        this.treeSelection,
+        'uuid'
+      );
+      if (!isEmpty(this.allSelectionMap[this.appType]?.data)) {
+        this.allSelectionMap[this.appType].data = this.allSelectionMap[
+          this.appType
+        ].data.filter(item => item.uuid !== diffData[0].uuid);
+      }
     }
-  };
+    this.treeOldSelection = cloneDeep(this.treeSelection);
+
+    each(this.treeSelection, item => {
+      if (isEmpty(this.allSelectionMap[this.appType]?.data)) {
+        if (isUndefined(this.allSelectionMap[this.appType])) {
+          set(this.allSelectionMap, this.appType, {});
+        }
+        assign(this.allSelectionMap[this.appType], {
+          data: [item]
+        });
+      } else if (
+        !some(this.allSelectionMap[this.appType]?.data, { uuid: item.uuid })
+      ) {
+        this.allSelectionMap[this.appType].data.push(item);
+      }
+    });
+
+    // 触发父子关联选择
+    defer(() => {
+      this.globalService.emitStore({
+        action: `${this.appType}parentSelect`,
+        state: true
+      });
+    });
+    this.parentSelect();
+    this.globalService.emitStore({
+      action: `${this.appType}syncData`,
+      state: true
+    });
+    this.allSelectChange.emit();
+  }
+
+  parentSelect(data?) {
+    // 用于判断左树的父子选择关系
+    const tmpData = data ?? this.treeData;
+    each(tmpData, item => {
+      if (
+        (!isEmpty(this.allSelectionMap[this.appType]?.data) &&
+          find(
+            this.allSelectionMap[this.appType].data,
+            val =>
+              val.uuid === item?.parent_uuid ||
+              val.uuid === item?.environment_uuid ||
+              val.uuid === item?.parentUuid ||
+              val.uuid === item?.environment?.uuid
+          )) ||
+        !!this.allSelectionMap[this.appType]?.isAllSelected
+      ) {
+        item.disabled = true;
+        if (!some(this.treeSelection, { uuid: item.uuid })) {
+          this.treeSelection.push(item);
+        }
+        if (
+          !some(this.allSelectionMap[this.appType].data, { uuid: item.uuid })
+        ) {
+          this.allSelectionMap[this.appType].data.push(item);
+        }
+      } else {
+        item.disabled = false;
+      }
+      if (item?.children && !!item.children.length) {
+        this.parentSelect(item.children);
+      }
+    });
+    this.treeSelection = [...this.treeSelection];
+    this.treeOldSelection = cloneDeep(this.treeSelection);
+    this.treeData = [...this.treeData];
+  }
 
   nodeCheck(e) {
     each(this.tabs, tab => {
@@ -756,6 +1056,29 @@ export class VirtualCloudTemplateComponent
     });
     this.tabs = [...this.tabs];
     this.activeIndex = find(this.tabs, item => !item.hidden)?.id;
+  }
+
+  treeNodeCheck(item) {
+    if (this.treeNodeChecked.uuid === item.uuid) {
+      return;
+    }
+    item.checked = true;
+    this.treeNodeChecked = item;
+    each(this.tabs, tab => {
+      tab.hidden = tab.hiddenFn(item);
+    });
+    this.tabs = [...this.tabs];
+    this.activeIndex = find(this.tabs, item => !item.hidden)?.id;
+    this.clearTreeNodeCheck(this.treeData);
+  }
+
+  clearTreeNodeCheck(data) {
+    each(data, val => {
+      val.checked = val.uuid === this.treeNodeChecked.uuid;
+      if (val?.children.length) {
+        this.clearTreeNodeCheck(val.children);
+      }
+    });
   }
 
   getExpandedIndex(id) {
@@ -767,9 +1090,12 @@ export class VirtualCloudTemplateComponent
       includes(
         [
           DataMap.Resource_Type.cNwareHost.value,
+          DataMap.Resource_Type.nutanixHost.value,
           DataMap.Resource_Type.APSZone.value,
           DataMap.Resource_Type.HCSProject.value,
-          DataMap.Resource_Type.openStackProject.value
+          DataMap.Resource_Type.openStackProject.value,
+          DataMap.Resource_Type.hyperVVm.value,
+          DataMap.Resource_Type.hyperVHost.value
         ],
         node.subType
       ) ||
@@ -861,7 +1187,26 @@ export class VirtualCloudTemplateComponent
         });
       }
       res.records.forEach(item => {
+        if (
+          item.subType === DataMap.Resource_Type.hyperVCluster.value &&
+          item.linkStatus === null &&
+          event.subType === DataMap.Resource_Type.hyperVScvmm.value
+        ) {
+          // SCVMM下面的集群没有linkstatus，集群使用SCVMM的状态
+          item.linkStatus = event.linkStatus;
+        }
         if (item.type !== ResourceType.VM) {
+          const isParentSelected =
+            !isEmpty(this.allSelectionMap[this.appType]?.data) &&
+            !!find(
+              this.allSelectionMap[this.appType].data,
+              val =>
+                val.uuid === item?.parent_uuid ||
+                val.uuid === item?.environment_uuid ||
+                val.uuid === item?.parentUuid ||
+                val.uuid === item?.environment?.uuid
+            ) &&
+            !this.isDetail;
           const node = {
             ...item,
             label: item.name,
@@ -876,12 +1221,32 @@ export class VirtualCloudTemplateComponent
             isLeaf: this.isLeaf(item),
             expanded: this.getExpandedIndex(item.uuid) !== -1
           };
+          if (node.uuid === this.treeNodeChecked.uuid) {
+            node.checked = true;
+          }
+          if (
+            isParentSelected &&
+            !some(this.treeSelection, { uuid: item.uuid })
+          ) {
+            this.treeSelection.push(item);
+          }
           if (node.expanded) {
             this.getExpandedChangeData(CommonConsts.PAGE_START, node);
           }
-          event.children.push(node);
+          if (
+            !includes([DataMap.Resource_Type.nutanixVm.value], node.subType)
+          ) {
+            event.children.push(node);
+          }
         }
       });
+      if (!!this.data && !this.isDetail) {
+        this.syncModifySelectedData();
+      }
+      if (!this.isDetail) {
+        this.treeSelectionChange();
+      }
+
       startPage++;
       if (res.totalCount - startPage * CommonConsts.PAGE_SIZE * 10 > 0) {
         this.getExpandedChangeData(startPage, event);

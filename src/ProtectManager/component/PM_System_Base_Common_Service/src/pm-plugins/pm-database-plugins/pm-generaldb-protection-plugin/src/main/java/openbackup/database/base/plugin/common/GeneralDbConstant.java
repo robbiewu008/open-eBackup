@@ -128,6 +128,11 @@ public class GeneralDbConstant {
     public static final String EXTEND_ORIGIN_RESOURCE_KEY = "originProtectedResource";
 
     /**
+     * SAP HANA 数据库具体类型的展示名称
+     */
+    public static final String DATABASE_TYPE_DISPLAY_SAP_HANA = "SAP HANA";
+
+    /**
      * SAP HANA System ID key
      */
     public static final String SYSTEM_ID = "systemId";
@@ -136,6 +141,11 @@ public class GeneralDbConstant {
      * SAP HANA实例所有节点列表key
      */
     public static final String NODES = "nodes";
+
+    /**
+     * 通用数据库脚本 值 SAP HANA
+     */
+    public static final String EXTEND_SCRIPT_VAL_SAPHANA = "saphana";
 
     private GeneralDbConstant() {
     }

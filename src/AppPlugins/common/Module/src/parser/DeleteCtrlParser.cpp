@@ -14,9 +14,9 @@
 #define __STDC_FORMAT_MACROS
 #endif
 #include "DeleteCtrlParser.h"
+#include <cinttypes>
 #include "Log.h"
 #include "securec.h"
-#include <cinttypes>
 
 using namespace std;
 using namespace Module;
@@ -102,6 +102,8 @@ CTRL_FILE_RETCODE DeleteCtrlParser::ReadEntry(DeleteCtrlEntry &deleteEntry, stri
         boost::algorithm::split(lineContents, line, boost::is_any_of(","), boost::token_compress_off);
         if (ValidateEntry(lineContents, line) == CTRL_FILE_RETCODE::SUCCESS) {
             break;
+        } else if (HandleBreakLine(lineContents, line) == CTRL_FILE_RETCODE::SUCCESS) {
+            break;
         }
         line.clear();
         lineContents.clear();
@@ -120,6 +122,35 @@ CTRL_FILE_RETCODE DeleteCtrlParser::ReadEntry(DeleteCtrlEntry &deleteEntry, stri
     return CTRL_FILE_RETCODE::SUCCESS;
 }
 
+CTRL_FILE_RETCODE DeleteCtrlParser::HandleBreakLine(vector<string> &lineContents, std::string& ctlFileLine)
+{
+    std::string tmpLine {};
+    std::streampos currentPositon = m_readBuffer.tellg();
+    while (true) {
+        tmpLine.clear();
+        currentPositon = m_readBuffer.tellg();
+        getline(m_readBuffer, tmpLine);
+        // 读到正常的行，说明当前处理的数据为无效错误数据，把pos调整回原来的位置，返回失败
+        if (IsNormalEntry(lineContents, tmpLine)) {
+            m_readBuffer.seekg(currentPositon);
+            return CTRL_FILE_RETCODE::INVALID_CONTENT;
+        } else {
+            // 说明是截断的行，拼接并增加换行符
+            ctlFileLine = ctlFileLine + "\n" + tmpLine;
+            // 拼接后的得到有效的数据，返回成功，否则继续
+            if (IsNormalEntry(lineContents, ctlFileLine)) {
+                return CTRL_FILE_RETCODE::SUCCESS;
+            }
+        }
+    }
+}
+
+bool DeleteCtrlParser::IsNormalEntry(vector<string> &lineContents, const std::string& ctlFileLine) const
+{
+    boost::algorithm::split(lineContents, ctlFileLine, boost::is_any_of(","), boost::token_compress_off);
+    return ValidateEntry(lineContents, ctlFileLine) == CTRL_FILE_RETCODE::SUCCESS;
+}
+
 CTRL_FILE_RETCODE DeleteCtrlParser::WriteDirEntry(DeleteCtrlEntry &deleteEntry)
 {
     lock_guard<std::mutex> lk(m_lock);
@@ -135,7 +166,7 @@ CTRL_FILE_RETCODE DeleteCtrlParser::WriteDirEntry(DeleteCtrlEntry &deleteEntry)
         return CTRL_FILE_RETCODE::FAILED;
     }
 
-    int len = snprintf_s(m_writeCtrlLine, CTRL_WRITE_LINE_SIZE, CTRL_WRITE_LINE_SIZE, 
+    int len = snprintf_s(m_writeCtrlLine, CTRL_WRITE_LINE_SIZE, CTRL_WRITE_LINE_SIZE,
                         "d,%" PRIu32 ",%s,%d\n",
                         commaCount,
                         deleteEntry.m_absPath.c_str(),
@@ -349,7 +380,7 @@ CTRL_FILE_RETCODE DeleteCtrlParser::ValidateHeader()
     return CTRL_FILE_RETCODE::SUCCESS;
 }
 
-CTRL_FILE_RETCODE DeleteCtrlParser::ValidateEntry(vector<string> lineContents, string line)
+CTRL_FILE_RETCODE DeleteCtrlParser::ValidateEntry(const vector<string> &lineContents, const string &line) const
 {
     if (lineContents.empty() || line.empty()) {
         return CTRL_FILE_RETCODE::FAILED;
@@ -358,30 +389,30 @@ CTRL_FILE_RETCODE DeleteCtrlParser::ValidateEntry(vector<string> lineContents, s
 
     if (lineContents[CTRL_FILE_NUMBER_ZERO] == DELETECTRL_ENTRY_TYPE_DIR) {
         if (lineContentsVecSize < CTRL_FILE_OFFSET_4) {
-            HCP_Log(ERR, MODULE) << "Control Entry for dir has less columns. Line: "
+            HCP_Log(WARN, MODULE) << "Control Entry for dir has less columns. Line: "
                 << line << "File: " << m_fileName << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
         uint32_t commaCount = (uint32_t) atoi(lineContents[CTRL_FILE_NUMBER_ONE].c_str());
         if (lineContentsVecSize != (CTRL_FILE_OFFSET_4 + commaCount)) {
-            HCP_Log(ERR, MODULE) << "Control Entry for dir incorrect. Line: "
+            HCP_Log(WARN, MODULE) << "Control Entry for dir incorrect. Line: "
                 << line << "File: " << m_fileName << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
     } else if (lineContents[CTRL_FILE_NUMBER_ZERO] == DELETECTRL_ENTRY_TYPE_FILE) {
         if (lineContentsVecSize < CTRL_FILE_OFFSET_3) {
-            HCP_Log(ERR, MODULE) << "Control Entry for file has less columns. Line: "
+            HCP_Log(WARN, MODULE) << "Control Entry for file has less columns. Line: "
                 << line << "File: " << m_fileName << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
         uint32_t commaCount = (uint32_t) atoi(lineContents[CTRL_FILE_NUMBER_ONE].c_str());
         if (lineContentsVecSize != (CTRL_FILE_OFFSET_3 + commaCount)) {
-            HCP_Log(ERR, MODULE) << "Control Entry for file incorrect. Line: "
+            HCP_Log(WARN, MODULE) << "Control Entry for file incorrect. Line: "
                 << line << "File: " << m_fileName << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
     } else {
-        HCP_Log(ERR, MODULE) << "Control entry neither file nor dir. Line: " << line
+        HCP_Log(WARN, MODULE) << "Control entry neither file nor dir. Line: " << line
             << "File: " << m_fileName << HCPENDLOG;
         return CTRL_FILE_RETCODE::FAILED;
     }

@@ -11,7 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="aui-operation">
+<div class="aui-operation" *ngIf="!isResourceSet">
     <lv-group>
         <lv-pro-button-group
                 [config]="optsConfig"
@@ -40,6 +40,16 @@
         </lv-group>
     </lv-group>
 </div>
+<div class="aui-operation" *ngIf="!isDetail && isResourceSet">
+    <lv-group>
+        <lv-group lvGutter="8px">
+            <button lv-button (click)="allSelect(true)" [disabled]="allSelectDisabled">
+                {{buttonLabel}}
+            </button>
+        </lv-group>
+        <lv-group></lv-group>
+    </lv-group>
+  </div>
 <div class="list-container">
     <lv-pro-table
         #dataTable
@@ -90,14 +100,14 @@
 <!--上次执行时间-->
 <ng-template #preExecTimeTpl let-item>
   <span lv-overflow>
-    {{ item.preExecTime | date: 'yyyy-MM-dd HH:mm:ss' | nil }}
+    {{ item.preExecTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil }}
   </span>
 </ng-template>
 
 <!--下次执行时间-->
 <ng-template #nextExecTimeTpl let-item>
   <span lv-overflow>
-    {{ item.nextExecTime | date: 'yyyy-MM-dd HH:mm:ss' | nil }}
+    {{ item.nextExecTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil }}
   </span>
 </ng-template>
 

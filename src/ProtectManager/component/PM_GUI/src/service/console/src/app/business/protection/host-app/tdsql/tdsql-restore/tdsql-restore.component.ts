@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
@@ -20,6 +20,7 @@ import {
   CommonConsts,
   CopiesService,
   DataMap,
+  extendParams,
   I18NService,
   isJson,
   ProtectedEnvironmentApiService,
@@ -113,6 +114,11 @@ export class TdsqlRestoreComponent implements OnInit {
     this.getProxyOptions();
   }
 
+  updateTable(event?) {
+    // 根据筛选条件更新表格
+    this.getClusterOptions(null, null, event);
+  }
+
   initData() {
     this.resourceData = isString(this.rowCopy.resource_properties)
       ? JSON.parse(this.rowCopy.resource_properties)
@@ -120,8 +126,12 @@ export class TdsqlRestoreComponent implements OnInit {
     this.resourcePro = isString(this.rowCopy.properties)
       ? JSON.parse(this.rowCopy.properties || '{}')
       : {};
-    // 副本信息中携带mysql版本，用于和目标主机的进行比较
-    this.rowCopySqlVersion = get(this.resourcePro, 'mysql_version', '');
+    // 副本信息中携带mysql版本，用于和目标主机的进行比较。副本中获取不到时，从defaultsFile路径读取。
+    this.rowCopySqlVersion = get(
+      this.resourcePro,
+      'mysql_version',
+      this.getDefaultsFileFormDataNode(this.resourceData)
+    );
     this.rowCopyMachineInfo = get(this.resourcePro, 'instance_config_info', {});
     // 1.5版本的副本不会有这个字段，所以低版本需要屏蔽新建实例
     // 因为无法取到原机型配置信息
@@ -139,7 +149,7 @@ export class TdsqlRestoreComponent implements OnInit {
       );
       this.queryNearestFullCopy(latestDataCopyId).subscribe(res => {
         const copyInfo = res.items[0];
-        let resourcePro = isJson(copyInfo.properties)
+        let resourcePro = isJson(copyInfo?.properties)
           ? JSON.parse(copyInfo.properties || '{}')
           : {};
         this.rowCopyMachineInfo = get(resourcePro, 'instance_config_info', {});
@@ -478,21 +488,43 @@ export class TdsqlRestoreComponent implements OnInit {
   }
 
   disableTargetInstance(data) {
-    // d首个ataNodes中节点的defaultsFile用'/'分割，第5位就是数据库版本
+    const version = this.getDefaultsFileFormDataNode(data);
+    return this.rowCopySqlVersion !== version;
+  }
+
+  private getDefaultsFileFormDataNode(data): string {
     const instanceInfoStr = get(data, 'extendInfo.clusterInstanceInfo', '{}');
     const clusterGroups = get(JSON.parse(instanceInfoStr), 'groups', [])[0];
     const dataNode = get(clusterGroups, 'dataNodes', [])[0];
-    const version = get(dataNode, 'defaultsFile', '').split('/');
-    return this.rowCopySqlVersion !== version[4];
+    return this.getMysqlVersion(get(dataNode, 'defaultsFile', ''));
   }
 
-  getClusterOptions(recordsTemp?, startPage?) {
+  getMysqlVersion(path: string) {
+    const MYSQL_START = 'mysql-',
+      MARIADB_START = 'mariadb-',
+      PERCONA_START = 'percona-';
+    if (isEmpty(path)) {
+      return '';
+    }
+    return path
+      .split('/')
+      .find(
+        item =>
+          item.startsWith(MYSQL_START) ||
+          item.startsWith(MARIADB_START) ||
+          item.startsWith(PERCONA_START)
+      );
+  }
+
+  getClusterOptions(recordsTemp?, startPage?, labelParams?: any) {
+    const conditions = {
+      subType: [DataMap.Resource_Type.tdsqlCluster.value]
+    };
+    extendParams(conditions, labelParams);
     const params = {
       pageNo: startPage || CommonConsts.PAGE_START,
       pageSize: CommonConsts.PAGE_SIZE * 10,
-      conditions: JSON.stringify({
-        subType: [DataMap.Resource_Type.tdsqlCluster.value]
-      })
+      conditions: JSON.stringify(conditions)
     };
 
     this.protectedResourceApiService.ListResources(params).subscribe(res => {
@@ -523,7 +555,7 @@ export class TdsqlRestoreComponent implements OnInit {
         this.targetOptions = clusterArray;
         return;
       }
-      this.getClusterOptions(recordsTemp, startPage);
+      this.getClusterOptions(recordsTemp, startPage, labelParams);
     });
   }
 

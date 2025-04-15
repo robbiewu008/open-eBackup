@@ -54,8 +54,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.Normalizer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Objects;
 import java.util.Optional;
@@ -218,9 +216,8 @@ public class UserServiceImpl implements UserService {
         }
 
         // 塞入本次登录时间，本次登录IP
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_TIME);
-        Date date = new Date();
-        lastLoginInfo.put(LAST_LOGIN_TIME_KEY, dateFormat.format(date));
+        long timestamp = System.currentTimeMillis();
+        lastLoginInfo.put(LAST_LOGIN_TIME_KEY, String.valueOf(timestamp));
         lastLoginInfo.put(LAST_LOGIN_ZONE_KEY, token.getTimeZone());
         lastLoginInfo.put(LAST_LOGIN_IP_KEY, requestIp);
     }
@@ -281,7 +278,12 @@ public class UserServiceImpl implements UserService {
             SessionInfo session = sessionService.genSession(
                 sessionService.getUserCache(Objects.requireNonNull(token).getUserId()), secBo, token);
             setSamlLoginCookie(session, response);
-            response.sendRedirect(response.encodeRedirectURL("/console/#/home"));
+            String language = request.getParameter("language");
+            if (StringUtils.isNotEmpty(language)) {
+                response.sendRedirect(response.encodeRedirectURL("/console/#/home?language=" + language));
+            } else {
+                response.sendRedirect(response.encodeRedirectURL("/console/#/home"));
+            }
         } catch (RestClientException e) {
             log.error("saml login error", e);
             response.sendRedirect(response.encodeRedirectURL("/console/#/error-page?type=LoginLimiter"));

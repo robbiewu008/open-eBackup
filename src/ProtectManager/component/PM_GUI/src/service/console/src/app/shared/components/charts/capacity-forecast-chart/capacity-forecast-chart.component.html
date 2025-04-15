@@ -53,9 +53,6 @@
     <div id="forecast-chart"></div>
   </div>
   <div class="forecast-chart-no-data" *ngIf="isNoData">
-    <i lv-icon="aui-icon-no-data"></i>
-    <div class="no-data-label">
-      {{'common_no_data_label' | i18n}}
-    </div>
+    <lv-empty></lv-empty>
   </div>
 </div>

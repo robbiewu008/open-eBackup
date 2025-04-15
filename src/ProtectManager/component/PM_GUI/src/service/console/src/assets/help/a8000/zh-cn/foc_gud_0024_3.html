@@ -1,0 +1,59 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤2：配置复制网络路由信息">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="foc_gud_0024_1.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="foc_gud_0024_3">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤2：配置复制网络路由信息</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="foc_gud_0024_3"></a><a name="foc_gud_0024_3"></a>
+
+<h1 class="topictitle1">步骤2：配置复制网络路由信息</h1>
+<div id="body0000002167771204"><p id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_zh-cn_topic_0000001141960567_p413413105217">当复制节点的不同复制端口配置了相同网段的IP地址时，由于复制网络采用多IP组网，因此请参考本章节，为本端和远端存储系统所有复制节点的复制网口配置策略路由，以实现网络互通和数据均衡。否则，请跳过本章节。</p>
+<div class="section" id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_zh-cn_topic_0000001141960567_section134869549323"><h4 class="sectiontitle">操作步骤</h4><ol id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_zh-cn_topic_0000001141960567_ol14941294358"><li id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_zh-cn_topic_0000001141960567_li14689641183717"><span>分别登录本端存储系统和远端存储系统的DeviceManager管理界面。</span></li><li id="foc_gud_0024_3__zh-cn_topic_0000002164660650_lc07ffb8678c5446abb42e82ed2a4105a"><span>选择“集群 &gt; 网络 &gt; 端口和路由 &gt; 物理端口”。</span></li><li id="foc_gud_0024_3__zh-cn_topic_0000002164660650_lea60255cf59d4ab6ab001ae2210a911b"><span>选择复制节点的物理端口，单击“配置策略路由”。</span></li><li id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_li78661544175019"><span>在“配置策略路由”界面，配置所选物理端口IP地址所在的网关。</span></li><li id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_li14354184291817"><span>单击“确定”。</span></li><li id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_li1554616113187"><span>配置完成后，检查策略路由是否配置成功。</span><p><ol type="a" id="foc_gud_0024_3__zh-cn_topic_0000002164660650_ol116311136368"><li id="foc_gud_0024_3__zh-cn_topic_0000002164660650_li1263213113615">在“物理端口”界面，单击已配置策略路由端口的名称。</li><li id="foc_gud_0024_3__zh-cn_topic_0000002164660650_li06931914173612">在弹出的界面中选择“策略路由”页签，查看是否有已配置的策略路由。</li><li id="foc_gud_0024_3__zh-cn_topic_0000002164660650_li135241533163615">通过管理IP地址登录复制节点，输入<strong id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_b789232443512">minisystem</strong>命令进入minisystem视图，执行<strong id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_b679989105213">ping</strong>命令检查各网口是否能与远端复制平面正常通信。<div class="p" id="foc_gud_0024_3__zh-cn_topic_0000002164660650_p685353113352">示例：<pre class="screen" id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_screen207998985211">ping -I <em id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_i379969125215">192.168.10.31</em><em id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_i17991696526"> </em><em id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_i10799095528">XXX.XXX.XXX.XXX</em> 
+ping -I <em id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_i17993917527">192.168.10.32</em> <em id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_i17999925214">XXX.XXX.XXX.XXX</em> </pre>
+<div class="note" id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_note2079913985212"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_p2799394521">命令中的<em id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_i1379911975217">192.168.10.31</em>表示本端复制平面配置的复制业务IP地址，<em id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_i14799169105211">XXX.XXX.XXX.XXX</em>表示远端复制平面的复制业务IP地址。</p>
+</div></div>
+</div>
+<p id="foc_gud_0024_3__zh-cn_topic_0000002164660650_zh-cn_topic_0000001796207937_zh-cn_topic_0000001518134085_p179929195219">如果能正常接收到远端复制平面返回的数据，则说明策略路由配置生效；否则，请检查管理平面默认网关配置和复制平面的策略路由配置是否正确。</p>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="foc_gud_0024_1.html">复制FusionOne Compute虚拟机副本（适用于OceanProtect E6000备份一体机）</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

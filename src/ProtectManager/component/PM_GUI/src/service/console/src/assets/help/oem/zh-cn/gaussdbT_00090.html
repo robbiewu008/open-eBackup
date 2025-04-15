@@ -1,0 +1,78 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="备份任务子任务阶段出现“内部错误”">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="gaussdbT_00085.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="gaussdbT_00090">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>备份任务子任务阶段出现“内部错误”</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="gaussdbT_00090"></a><a name="gaussdbT_00090"></a>
+  <h1 class="topictitle1">备份任务子任务阶段出现“内部错误”</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">故障现象</h4>
+    <p>执行GaussDB T的增量/差异/日志备份操作时，任务失败，OceanProtect管理界面的任务详情中显示为“内部错误”。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>客户端所在主机的系统时间被多次更改，副本时间紊乱，导致系统查询最新副本出错。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <ol>
+     <li><span>登录备份失败的数据库主机，使用Roach工具执行一次全量备份。</span></li>
+     <li><span>备份成功后，使用Roach工具执行一次增量备份。</span><p></p>
+      <ul>
+       <li>如果备份失败，提示：未找到最新全量副本，请重新执行全量备份。请执行<a href="#gaussdbT_00090__li237226172110">3</a>。</li>
+       <li>如果备份失败，出现其他提示，请联系华为技术支持工程师协助解决。</li>
+      </ul> <p></p></li>
+     <li id="gaussdbT_00090__li237226172110"><a name="gaussdbT_00090__li237226172110"></a><a name="li237226172110"></a><span>检查所有GaussDB T主机时间是否一致。</span><p></p>
+      <ul>
+       <li>如果不一致，请修改主机时间，确保主机时间保持一致。</li>
+       <li>如果一致，请执行<a href="#gaussdbT_00090__li3919544132113">4</a>。</li>
+      </ul> <p></p></li>
+     <li id="gaussdbT_00090__li3919544132113"><a name="gaussdbT_00090__li3919544132113"></a><a name="li3919544132113"></a><span>找到所有之前产生的副本，使用Roach工具删除所有副本。</span></li>
+     <li><span>在OceanProtect管理界面上，重新手动执行一次全量备份，再手动执行一次增量备份。</span><p></p>
+      <ul>
+       <li>如果增量备份成功，处理结束。</li>
+       <li>如果增量备份失败，请联系华为技术支持工程师协助解决。</li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="gaussdbT_00085.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

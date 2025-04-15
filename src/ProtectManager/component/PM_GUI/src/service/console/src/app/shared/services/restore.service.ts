@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, Injectable, NgModule } from '@angular/core';
 import { MessageboxService } from '@iux/live';
@@ -38,6 +38,8 @@ import { CopyRestoreComponent } from 'app/business/protection/cloud/openstack/re
 import { CopyRestoreModule } from 'app/business/protection/cloud/openstack/restore/copy-restore/copy-restore.module';
 import { RestoreComponent } from 'app/business/protection/cloud/openstack/restore/restore.component';
 import { RestoreModule as OpenStackRestoreModule } from 'app/business/protection/cloud/openstack/restore/restore.module';
+import { RestoreComponent as AntDBRestoreComponent } from 'app/business/protection/database/ant-db/restore/restore.component';
+import { RestoreModule as AntDBRestoreModule } from 'app/business/protection/database/ant-db/restore/restore.module';
 import { ClickHouseRestoreComponent } from 'app/business/protection/host-app/click-house/copy-data/click-house-restore/click-house-restore.component';
 import { ClickHouseRestoreModule } from 'app/business/protection/host-app/click-house/copy-data/click-house-restore/click-house-restore.module';
 import { DamengClusterRestoreComponent } from 'app/business/protection/host-app/dameng/copy-data/dameng-cluster-restore/dameng-cluster-restore.component';
@@ -58,10 +60,10 @@ import { ClusterRestoreComponent as DWSClusterRestoreComponent } from 'app/busin
 import { ClusterRestoreModule as DWSClusterRestoreModule } from 'app/business/protection/host-app/gaussdb-dws/restore-cluster/restore-cluster.module';
 import { DatabaseRestoreComponent as DWSDatabaseRestoreComponent } from 'app/business/protection/host-app/gaussdb-dws/restore-database/restore-database.component';
 import { DatabaseRestoreModule as DWSDatabaseRestoreModule } from 'app/business/protection/host-app/gaussdb-dws/restore-database/restore-database.module';
-import { ModalRestoreComponent } from 'app/business/protection/host-app/gaussdb-dws/restore-modal/restore-modal.component';
-import { ModalRestoreModule } from 'app/business/protection/host-app/gaussdb-dws/restore-modal/restore-modal.module';
 import { TableRestoreComponent as DWSTableRestoreComponent } from 'app/business/protection/host-app/gaussdb-dws/restore-table/restore-table.component';
 import { TableRestoreModule as DWSTableRestoreModule } from 'app/business/protection/host-app/gaussdb-dws/restore-table/restore-table.module';
+import { TableLevelDwsRestoreComponent } from 'app/business/protection/host-app/gaussdb-dws/table-level-dws-restore/table-level-dws-restore.component';
+import { TableLevelDwsRestoreModule } from 'app/business/protection/host-app/gaussdb-dws/table-level-dws-restore/table-level-dws-restore.module';
 import { GaussdbRestoreComponent } from 'app/business/protection/host-app/gaussdb-for-opengauss/gaussdb-for-openguss-restore/gaussdb-restore.component';
 import { GaussdbRestoreModule } from 'app/business/protection/host-app/gaussdb-for-opengauss/gaussdb-for-openguss-restore/gaussdb-restore.module';
 import { GaussDBTRestoreComponent } from 'app/business/protection/host-app/gaussdb-t/copy-data/gaussdb-t-restore/gauss-t-restore.component';
@@ -86,6 +88,12 @@ import { DatabaseRestoreComponent } from 'app/business/protection/host-app/openg
 import { InstanceRestoreComponent } from 'app/business/protection/host-app/opengauss/base-template/copy-data/instance-restore/instance-restore.component';
 import { OracleRestoreComponent } from 'app/business/protection/host-app/oracle/database-list/copy-data/today/oracle-restore/oracle-restore.component';
 import { OracleRestoreModule } from 'app/business/protection/host-app/oracle/database-list/copy-data/today/oracle-restore/oracle-restore.module';
+import { OracleSingleFileRestoreComponent } from 'app/business/protection/host-app/oracle/database-list/restore/single-file-restore/oracle-single-file-restore.component';
+import { OracleSingleFileRestoreModule } from 'app/business/protection/host-app/oracle/database-list/restore/single-file-restore/oracle-single-file-restore.module';
+import { TableLevelRestoreComponent as OracleTableLevelRestoreComponent } from 'app/business/protection/host-app/oracle/database-list/restore/table-level-restore/table-level-restore.component';
+import { OracleTableLevelRestoreModule } from 'app/business/protection/host-app/oracle/database-list/restore/table-level-restore/table-level-restore.module';
+import { PdbSetRestoreComponent } from 'app/business/protection/host-app/oracle/pdb-set-list/pdb-set-restore/pdb-set-restore.component';
+import { PdbSetRestoreModule } from 'app/business/protection/host-app/oracle/pdb-set-list/pdb-set-restore/pdb-set-restore.module';
 import { PostgreSqlRestoreComponent } from 'app/business/protection/host-app/postgre-sql/instance-database/copy-data/postgre-sql-restore/postgre-sql-restore.component';
 import { PostgreSqlRestoreModule } from 'app/business/protection/host-app/postgre-sql/instance-database/copy-data/postgre-sql-restore/postgre-sql-restore.module';
 import { RedisRestoreComponent } from 'app/business/protection/host-app/redis/copy-data/redis-restore/redis-restore.component';
@@ -131,10 +139,6 @@ import { FileRestoreComponent } from 'app/business/protection/virtualization/vmw
 import { FileRestoreModule } from 'app/business/protection/virtualization/vmware/vm/copy-data/file-restore/file-restore.module';
 import { VmRestoreComponent } from 'app/business/protection/virtualization/vmware/vm/copy-data/vm-restore/vm-restore.component';
 import { VmRestoreModule } from 'app/business/protection/virtualization/vmware/vm/copy-data/vm-restore/vm-restore.module';
-import { OracleSingleFileRestoreComponent } from 'app/business/protection/host-app/oracle/database-list/restore/single-file-restore/oracle-single-file-restore.component';
-import { OracleSingleFileRestoreModule } from 'app/business/protection/host-app/oracle/database-list/restore/single-file-restore/oracle-single-file-restore.module';
-import { TableLevelRestoreComponent as OracleTableLevelRestoreComponent } from 'app/business/protection/host-app/oracle/database-list/restore/table-level-restore/table-level-restore.component';
-import { OracleTableLevelRestoreModule } from 'app/business/protection/host-app/oracle/database-list/restore/table-level-restore/table-level-restore.module';
 import {
   CookieService,
   I18NService,
@@ -149,6 +153,8 @@ import {
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { assign, defer, get, includes, isEmpty, isFunction } from 'lodash';
 import { combineLatest } from 'rxjs';
+import { SaponoracleRestoreComponent } from '../../business/protection/application/saponoracle/restore/saponoracle-restore.component';
+import { SaponoracleRestoreModule } from '../../business/protection/application/saponoracle/restore/saponoracle-restore.module';
 import { DoradoNasRestoreComponent } from '../components/dorado-nas-restore/dorado-nas-restore.component';
 import { DoradoNasRestoreModule } from '../components/dorado-nas-restore/dorado-nas-restore.module';
 import { FileExplorerLevelRestoreComponent } from '../components/file-explorer-level-restore/file-explorer-level-restore.component';
@@ -159,6 +165,7 @@ import { VmFileLevelRestoreComponent } from '../components/vm-file-level-restore
 import { VmFileLevelRestoreModule } from '../components/vm-file-level-restore/vm-file-level-restore.module';
 import { MESSAGE_BOX_ACTION } from '../consts';
 import { DataMap } from './../consts/data-map.config';
+import { AppUtilsService } from './app-utils.service';
 
 export interface RestoreParams {
   childResType: any; // 资源类型的字资源的分类，比如VM副本的恢复分为VM、disk、file
@@ -175,8 +182,9 @@ export interface RestoreParams {
 })
 export class RestoreService {
   private browserActionComponent = BrowserActionComponent;
-  private hanaRestoreTipsComponent = HanaRestoreTipsComponent;
+  private beforeIntoRestoreTipsComponent = BeforeIntoRestoreTipsComponent;
   constructor(
+    public appUtilsService: AppUtilsService,
     private drawModalService: DrawModalService,
     private i18n: I18NService,
     private cookieService: CookieService,
@@ -202,7 +210,7 @@ export class RestoreService {
             lvOkText: this.i18n.get('common_close_label'),
             lvWidth: MODAL_COMMON.smallWidth + 40,
             lvHeader: this.i18n.get('common_alarms_info_label'),
-            lvContent: this.hanaRestoreTipsComponent
+            lvContent: this.beforeIntoRestoreTipsComponent
           });
         }
       });
@@ -212,8 +220,7 @@ export class RestoreService {
         [
           DataMap.Resource_Type.MySQLDatabase.value,
           DataMap.Resource_Type.MySQLInstance.value,
-          DataMap.Resource_Type.MySQLClusterInstance.value,
-          DataMap.Resource_Type.saphanaDatabase.value
+          DataMap.Resource_Type.MySQLClusterInstance.value
         ],
         option.childResType
       )
@@ -229,6 +236,46 @@ export class RestoreService {
         });
       });
     }
+    if (
+      includes(
+        [
+          DataMap.Resource_Type.saphanaDatabase.value,
+          DataMap.Resource_Type.saponoracleDatabase.value
+        ],
+        option.childResType
+      )
+    ) {
+      defer(() => {
+        this.messageBox.info({
+          lvOkText: this.i18n.get('common_close_label'),
+          lvWidth: MODAL_COMMON.smallWidth,
+          lvHeader: this.i18n.get('common_alarms_info_label'),
+          lvContent: this.i18n.get(
+            'protection_saphana_instance_restore_tips_label'
+          )
+        });
+      });
+    }
+    if (
+      includes(
+        [DataMap.Resource_Type.ActiveDirectory.value],
+        option.childResType
+      ) &&
+      option.restoreType === RestoreType.CommonRestore
+    ) {
+      defer(() => {
+        this.messageBox.info({
+          lvOkText: this.i18n.get('common_close_label'),
+          lvWidth: MODAL_COMMON.smallWidth,
+          lvHeader: this.i18n.get('common_alarms_info_label'),
+          lvContent: this.beforeIntoRestoreTipsComponent,
+          lvComponentParams: {
+            data: option
+          }
+        });
+      });
+    }
+
     if (
       includes(
         [
@@ -254,6 +301,8 @@ export class RestoreService {
         [
           DataMap.Resource_Type.PostgreSQLInstance.value,
           DataMap.Resource_Type.PostgreSQLClusterInstance.value,
+          DataMap.Resource_Type.AntDBInstance.value,
+          DataMap.Resource_Type.AntDBClusterInstance.value,
           DataMap.Resource_Type.KingBaseInstance.value,
           DataMap.Resource_Type.KingBaseClusterInstance.value,
           DataMap.Resource_Type.MongodbSingleInstance.value,
@@ -398,6 +447,18 @@ export class RestoreService {
         assign(modalExtParams, {
           lvContent: LightCloudGaussdbRestoreComponent,
           lvWidth: MODAL_COMMON.normalWidth + 100
+        });
+        assign(option, {
+          restoreType: RestoreV2Type.CommonRestore
+        });
+        break;
+      case DataMap.Resource_Type.oraclePDB.value:
+        assign(modalExtParams, {
+          lvContent: PdbSetRestoreComponent,
+          lvWidth: this.i18n.isEn
+            ? MODAL_COMMON.largeWidth
+            : MODAL_COMMON.normalWidth + 200,
+          lvHeader: this.i18n.get('common_restore_label')
         });
         assign(option, {
           restoreType: RestoreV2Type.CommonRestore
@@ -612,6 +673,15 @@ export class RestoreService {
       case DataMap.Resource_Type.Redis.value:
         assign(modalExtParams, {
           lvContent: RedisRestoreComponent
+        });
+        assign(option, {
+          restoreType: RestoreV2Type.CommonRestore
+        });
+        break;
+      case DataMap.Resource_Type.AntDBInstance.value:
+      case DataMap.Resource_Type.AntDBClusterInstance.value:
+        assign(modalExtParams, {
+          lvContent: AntDBRestoreComponent
         });
         assign(option, {
           restoreType: RestoreV2Type.CommonRestore
@@ -867,6 +937,25 @@ export class RestoreService {
           restoreType: RestoreV2Type.CommonRestore
         });
         break;
+      case DataMap.Resource_Type.saponoracleDatabase.value:
+        assign(modalExtParams, {
+          lvContent: SaponoracleRestoreComponent,
+          lvWidth: MODAL_COMMON.normalWidth + 100
+        });
+        assign(option, {
+          restoreType: RestoreV2Type.CommonRestore
+        });
+        break;
+      case DataMap.Resource_Type.nutanixVm.value:
+        assign(modalExtParams, {
+          lvContent: CnwareRestoreComponent,
+          lvWidth: MODAL_COMMON.largeWidth + 100,
+          lvHeader: this.i18n.get('common_restore_label')
+        });
+        assign(option, {
+          restoreType: RestoreV2Type.CommonRestore
+        });
+        break;
     }
     this.drawModalService.create(
       assign(
@@ -1062,6 +1151,8 @@ export class RestoreService {
                 content.formGroup.updateValueAndValidity();
                 break;
               case DataMap.Resource_Type.cNwareVm.value:
+              case DataMap.Resource_Type.nutanixVm.value:
+              case DataMap.Resource_Type.lightCloudGaussdbInstance.value:
                 content.valid$?.subscribe(res => {
                   modalIns.lvOkDisabled = !res;
                 });
@@ -1087,6 +1178,8 @@ export class RestoreService {
                 break;
               case DataMap.Resource_Type.oracle.value:
               case DataMap.Resource_Type.oracleCluster.value:
+              case DataMap.Resource_Type.oraclePDB.value:
+              case DataMap.Resource_Type.ActiveDirectory.value:
                 if (option.restoreType === RestoreType.FileRestore) {
                   content.valid$.subscribe(res => {
                     modalIns.lvOkDisabled = res;
@@ -1313,6 +1406,19 @@ export class RestoreService {
                       }
                     });
                   } else {
+                    let isFileLevelRestore = false;
+                    if (
+                      includes(
+                        [
+                          DataMap.Resource_Type.oracle.value,
+                          DataMap.Resource_Type.oracleCluster.value
+                        ],
+                        option.copyData.resource_sub_type
+                      ) &&
+                      option.restoreType === RestoreType.FileRestore
+                    ) {
+                      isFileLevelRestore = true;
+                    }
                     this.messageBox.confirm({
                       lvHeader: this.i18n.get('common_restore_tips_label'),
                       lvDialogIcon: 'lv-icon-popup-danger-48',
@@ -1334,7 +1440,19 @@ export class RestoreService {
                         data: option,
                         port: targetPort,
                         clusterInfo: clusterName,
-                        version: version
+                        version: version,
+                        isFileRestore: isFileLevelRestore,
+                        isVolume:
+                          option.copyData.resource_sub_type ===
+                          DataMap.Resource_Type.volume.value
+                            ? content?.formGroup?.get('restorationType')
+                                .value ===
+                                DataMap.windowsVolumeBackupType.volume.value ||
+                              (!content.isWindows &&
+                                !content?.formGroup.get(
+                                  'enable_bare_metal_restore'
+                                ).value)
+                            : false
                       },
                       lvOk: () => {
                         content.restore().subscribe({
@@ -1449,14 +1567,48 @@ export class RestoreService {
           });
         },
         lvOk: modal => {
+          const content = modal.getContentComponent() as OracleSingleFileRestoreComponent;
+          const tips = this.i18n.get(
+            'protection_oracle_single_file_restore_tips_content_label'
+          );
           return new Promise(resolve => {
-            const content = modal.getContentComponent() as OracleSingleFileRestoreComponent;
-            content.onOK().subscribe({
-              next: () => {
-                resolve(true);
-              },
-              error: () => {
-                resolve(false);
+            this.drawModalService.create({
+              ...MODAL_COMMON.generateDrawerOptions(),
+              lvModalKey: 'copy-info-message',
+              ...{
+                lvType: 'dialog',
+                lvDialogIcon: 'lv-icon-popup-danger-48',
+                lvHeader: this.i18n.get(
+                  'protection_oracle_single_file_restore_tips_header_label'
+                ),
+                lvContent: this.browserActionComponent,
+                lvWidth: 500,
+                lvOkType: 'primary',
+                lvCancelType: 'default',
+                lvOkDisabled: false,
+                lvFocusButtonId: 'cancel',
+                lvCloseButtonDisplay: true,
+                lvComponentParams: {
+                  tips
+                },
+                lvOk: () => {
+                  content.onOK().subscribe({
+                    next: () => {
+                      resolve(true);
+                    },
+                    error: () => {
+                      resolve(false);
+                    }
+                  });
+                },
+                lvCancel: () => {
+                  resolve(false);
+                },
+                lvAfterClose: result => {
+                  if (result && result.trigger === MESSAGE_BOX_ACTION.close) {
+                    resolve(false);
+                  }
+                }
               }
             });
           });
@@ -1508,7 +1660,8 @@ export class RestoreService {
         DataMap.Resource_Type.openStackCloudServer.value,
         DataMap.Resource_Type.APSCloudServer.value,
         DataMap.Resource_Type.cNwareVm.value,
-        DataMap.Resource_Type.hyperVVm.value
+        DataMap.Resource_Type.hyperVVm.value,
+        DataMap.Resource_Type.nutanixVm.value
       ],
       option.childResType
     );
@@ -1517,7 +1670,7 @@ export class RestoreService {
         lvHeader:
           option.header || this.i18n.get('common_file_level_restore_label'),
         lvWidth: isVm
-          ? MODAL_COMMON.normalWidth + 200
+          ? MODAL_COMMON.largeModal
           : option.childResType === DataMap.Resource_Type.ObjectSet.value
           ? MODAL_COMMON.largeWidth
           : option.copyData.isSearchRestore
@@ -1529,6 +1682,12 @@ export class RestoreService {
           ? VmFileLevelRestoreComponent
           : option.childResType === DataMap.Resource_Type.ObjectSet.value
           ? FileExplorerLevelRestoreComponent
+          : [
+              DataMap.Resource_Type.DWS_Cluster.value,
+              DataMap.Resource_Type.DWS_Schema.value,
+              DataMap.Resource_Type.DWS_Table.value
+            ].includes(option.childResType)
+          ? TableLevelDwsRestoreComponent
           : FileLevelRestoreComponent,
         lvOkDisabled: true,
         lvComponentParams: {
@@ -1594,46 +1753,6 @@ export class RestoreService {
                 }
               });
             } else if (
-              content.targetParams?.restoreLocation ===
-                RestoreV2LocationType.NEW &&
-              includes(
-                [
-                  DataMap.Resource_Type.DWS_Cluster.value,
-                  DataMap.Resource_Type.DWS_Schema.value
-                ],
-                option.childResType
-              )
-            ) {
-              this.drawModalService.create({
-                lvHeader: this.i18n.get('explore_confirm_restore_label'),
-                lvContent: ModalRestoreComponent,
-                lvWidth: MODAL_COMMON.normalWidth,
-                lvComponentParams: {
-                  data: content.targetParams,
-                  path: content.originalSelection
-                },
-                lvOk: modal => {
-                  const content = modal.getContentComponent() as ModalRestoreComponent;
-                  content.onOK().subscribe({
-                    next: () => {
-                      resolve(true);
-                      if (isFunction(option.onOk)) {
-                        option.onOk();
-                      }
-                    },
-                    error: () => resolve(false)
-                  });
-                },
-                lvCancel: () => resolve(false),
-                lvAfterClose: result => {
-                  if (result && result.trigger === MESSAGE_BOX_ACTION.close) {
-                    resolve(false);
-                  }
-                }
-              });
-            } else if (
-              content.targetParams?.restoreLocation ===
-                RestoreV2LocationType.ORIGIN &&
               includes(
                 [
                   DataMap.Resource_Type.DWS_Cluster.value,
@@ -1644,9 +1763,10 @@ export class RestoreService {
               )
             ) {
               let tips = this.i18n.get(
-                isDatabaseApp(option.childResType)
+                option.childResType === DataMap.Resource_Type.DWS_Table.value ||
+                  !content.isRestoreNew
                   ? 'protection_database_filelevel_restore_tip_label'
-                  : 'protection_filelevel_restore_tip_label',
+                  : 'protection_dws_filelevel_restore_tip_label',
                 [content.getTargetPath().tips]
               );
               let targetPath;
@@ -1654,7 +1774,12 @@ export class RestoreService {
               this.messageBox.danger({
                 lvHeader: this.i18n.get('common_restore_tips_label'),
                 lvContent: this.browserActionComponent,
-                lvWidth: MODAL_COMMON.smallWidth + 50,
+                lvWidth:
+                  option.childResType ===
+                    DataMap.Resource_Type.DWS_Table.value ||
+                  !content.isRestoreNew
+                    ? MODAL_COMMON.smallWidth + 50
+                    : MODAL_COMMON.smallWidth + 100,
                 lvCancelType: 'default',
                 lvOkType: 'primary',
                 lvComponentParams: {
@@ -1709,6 +1834,11 @@ export class RestoreService {
               let tips = this.i18n.get(
                 isDatabaseApp(option.childResType)
                   ? 'protection_database_filelevel_restore_tip_label'
+                  : includes(
+                      [DataMap.Resource_Type.NASShare.value],
+                      option.childResType
+                    )
+                  ? 'common_nasshare_file_level_restore_to_location_tip_label'
                   : 'protection_filelevel_restore_tip_label',
                 [content.getTargetPath().tips]
               );
@@ -1734,7 +1864,8 @@ export class RestoreService {
                   targetPath: targetPath,
                   data: option,
                   tips: tips,
-                  isFileRestore: true
+                  isFileRestore: true,
+                  location: content.targetParams?.restoreLocation
                 },
                 lvOk: () => {
                   content.onOK().subscribe({
@@ -1793,11 +1924,11 @@ export class RestoreService {
     SQLServerRestoreModule,
     SQLServerInstanceRestoreModule,
     PostgreSqlRestoreModule,
+    AntDBRestoreModule,
     HCSStoreResourceModule,
     FusionComputeFileRestoreModule,
     FusionComputeDiskRestoreModule,
     KingBaseRestoreModule,
-    ModalRestoreModule,
     HCSRestoreModule,
     ClickHouseRestoreModule,
     MongoDBRestoreModule,
@@ -1830,9 +1961,12 @@ export class RestoreService {
     HypervDiskRestoreModule,
     HypervRestoreModule,
     SaphanaRestoreModule,
+    SaponoracleRestoreModule,
     FileExplorerLevelRestoreModule,
     OracleSingleFileRestoreModule,
-    OracleTableLevelRestoreModule
+    OracleTableLevelRestoreModule,
+    PdbSetRestoreModule,
+    TableLevelDwsRestoreModule
   ],
   providers: [RestoreService]
 })
@@ -1848,6 +1982,11 @@ export class RestoreModule {}
     >
       {{ cnwareDiskTip }}
     </div>
+    <div
+      *ngIf="isNdmp"
+      style="color: #f45c5e;position: relative;top: -15px"
+      [innerHTML]="ndmpWarn"
+    ></div>
     <div *ngIf="targetPath">
       <span style="color: #aaafbc; margin-right:15px;"
         >{{ locationLable }}
@@ -1868,13 +2007,26 @@ export class BrowserActionComponent {
   targetPath;
   location;
   data;
+  isVolume;
   port; // tdsql需要对端口进行判断
   clusterInfo; // oecanbase要特殊展示选中的租户
   locationLable = this.i18n.get('protection_restore_target_label');
   isCnwareDisk = false; // cnware磁盘恢复提示
   cnwareDiskTip = this.i18n.get('protection_cnware_disk_restore_tip_label');
-  constructor(private i18n: I18NService, private datePipe: DatePipe) {}
+  // ndmp提示
+  isNdmp = false;
+  ndmpWarn = this.i18n.get('protection_ndmp_file_restore_warn_label');
+  constructor(
+    private i18n: I18NService,
+    private datePipe: DatePipe,
+    public appUtilsService: AppUtilsService
+  ) {}
   ngOnInit(): void {
+    // NDMP新位置提示
+    this.isNdmp =
+      this.data?.childResType === DataMap.Resource_Type.ndmp.value &&
+      this.data?.restoreType === RestoreV2Type.FileRestore &&
+      this.location === RestoreV2LocationType.NEW;
     this.isCnwareDisk =
       this.data?.childResType === DataMap.Resource_Type.cNwareVm.value &&
       this.data?.copyData?.diskRestore === true;
@@ -1929,6 +2081,21 @@ export class BrowserActionComponent {
       if (this.data?.childResType === DataMap.Resource_Type.ClickHouse.value) {
         this.tips = this.i18n.get(
           'common_clickhouse_filelevel_restore_tips_label'
+        );
+      }
+      if (
+        includes(
+          [
+            DataMap.Resource_Type.oracleCluster.value,
+            DataMap.Resource_Type.oracle.value,
+            DataMap.Resource_Type.oraclePDB.value
+          ],
+          this.data?.childResType
+        )
+      ) {
+        this.tips = this.i18n.get(
+          'common_restore_to_location_tip_label',
+          restoreTips
         );
       }
       return;
@@ -2030,9 +2197,36 @@ export class BrowserActionComponent {
               this.data?.childResType
             )
           ? 'common_ndmp_restore_to_location_tip_label'
+          : includes(
+              [DataMap.Resource_Type.NASShare.value],
+              this.data?.childResType
+            )
+          ? 'common_nasshare_restore_to_location_tip_label'
+          : includes(
+              [DataMap.Resource_Type.volume.value],
+              this.data?.childResType
+            ) && this?.isVolume
+          ? 'common_volume_restore_to_location_tip_label'
           : 'common_restore_to_location_tip_label',
         restoreTips
       );
+      if (
+        this.appUtilsService.isDistributed &&
+        (isDatabaseApp(this.data?.childResType) ||
+          [
+            DataMap.Resource_Type.OceanBaseCluster.value,
+            DataMap.Resource_Type.OceanBaseTenant.value,
+            DataMap.Resource_Type.goldendbInstance.value
+          ].includes(this.data?.chilidResType)) &&
+        this.data?.copyData.generated_by ===
+          DataMap.CopyData_generatedType.replicate.value
+      ) {
+        this.tips =
+          this.tips +
+          `<br>${this.i18n.get(
+            'explore_distributed_restore_database_tip_label'
+          )}`;
+      }
     }
   }
 
@@ -2077,13 +2271,22 @@ export class BrowserActionModule {}
   styles: [],
   providers: [DatePipe]
 })
-export class HanaRestoreTipsComponent {
+export class BeforeIntoRestoreTipsComponent {
   tips = this.i18n.get('explore_hana_restore_info_label');
+  data;
   constructor(public i18n: I18NService) {}
-  ngOnInit() {}
+  ngOnInit() {
+    if (
+      this.data?.childResType === DataMap.Resource_Type.ActiveDirectory.value
+    ) {
+      this.tips = this.i18n.get(
+        'protection_active_directory_restore_tips_label'
+      );
+    }
+  }
 }
 @NgModule({
   imports: [CommonModule],
-  declarations: [HanaRestoreTipsComponent]
+  declarations: [BeforeIntoRestoreTipsComponent]
 })
 export class HanaRestoreTipsModule {}

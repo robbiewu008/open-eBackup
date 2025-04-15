@@ -88,6 +88,9 @@ public:
     std::shared_ptr<CNwareSession> GetLastCNwareSession();
     bool IsSessionRemain();
     void EraseSession(const std::tuple<std::string, std::string>& key);
+    void IncreaseRegistreCnt();
+    void DecreaseRegistreCnt();
+    bool NeedRelease();
 
 private:
     CNwareSessionCache() {}
@@ -97,6 +100,7 @@ private:
 private:
     static std::shared_ptr<CNwareSessionCache> m_instancePtr;
     static std::mutex m_cacheMutex;
+    int32_t m_useSessionNums {0};
     std::map<std::tuple<std::string, std::string>, std::shared_ptr<CNwareSession> >
         m_sessionCache = {};
 };

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
@@ -29,8 +29,8 @@ import { ModalRef, OptionItem } from '@iux/live';
 import {
   AppService,
   BaseUtilService,
-  CAPACITY_UNIT,
   CapacityCalculateLabel,
+  CAPACITY_UNIT,
   ClientManagerApiService,
   CommonConsts,
   CopiesService,
@@ -38,6 +38,7 @@ import {
   DataMap,
   DataMapService,
   disableOracleRestoreNewLocation,
+  extendParams,
   HostService,
   I18NService,
   MODAL_COMMON,
@@ -75,8 +76,7 @@ import {
   toLower,
   toString,
   trim,
-  uniq,
-  uniqBy
+  uniq
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -87,6 +87,7 @@ import { Observable, Observer } from 'rxjs';
   providers: [CapacityCalculateLabel]
 })
 export class OracleRestoreComponent implements OnInit {
+  isDrill;
   formGroup: FormGroup;
   targetHosts = [];
   targetHostOption = [];
@@ -162,6 +163,9 @@ export class OracleRestoreComponent implements OnInit {
 
   @ViewChild('tipTpl', { static: false }) tipTpl: TemplateRef<any>;
   @ViewChild('selectDiskTpl', { static: true }) selectDiskTpl: TemplateRef<any>;
+  @ViewChild('targetDiskThTpl', { static: true }) targetDiskThTpl: TemplateRef<
+    any
+  >;
   constructor(
     public fb: FormBuilder,
     private modal: ModalRef,
@@ -175,7 +179,7 @@ export class OracleRestoreComponent implements OnInit {
     private restoreV2Service: RestoreApiV2Service,
     private protectedResourceApiService: ProtectedResourceApiService,
     public capacityCalculateLabel: CapacityCalculateLabel,
-    private appUtilsService: AppUtilsService,
+    public appUtilsService: AppUtilsService,
     private clientManagerApiService: ClientManagerApiService,
     private cdr: ChangeDetectorRef,
     private copiesService: CopiesService,
@@ -188,6 +192,33 @@ export class OracleRestoreComponent implements OnInit {
     this.updateData();
     this.getHostLabel();
     this.getHosts();
+  }
+
+  updateDrillData() {
+    if (this.isDrill && !isEmpty(this.rowCopy?.drillRecoveryConfig)) {
+      const config = this.rowCopy?.drillRecoveryConfig;
+      this.formGroup.get('targetHost').setValue(config.targetEnv);
+      if (config.extendInfo?.RESTORE_PATH) {
+        this.formGroup
+          .get('destinationPath')
+          .setValue(config.extendInfo?.RESTORE_PATH);
+      }
+      if (config.extendInfo?.CHANNELS) {
+        this.formGroup.get('numberOfChannelOpen').setValue(true);
+        this.formGroup
+          .get('numberOfChannels')
+          .setValue(config.extendInfo?.CHANNELS);
+      }
+      this.formGroup
+        .get('power_on')
+        .setValue(config.extendInfo?.isStartDB === 1);
+    }
+  }
+
+  updateTable(event?) {
+    // 根据筛选条件更新表格
+    this.targetHostOption = [];
+    this.getHosts(null, null, event);
   }
 
   // 通过agent接口获取实时的磁盘信息
@@ -682,6 +713,7 @@ export class OracleRestoreComponent implements OnInit {
           {
             key: 'target_path',
             name: this.i18n.get('common_target_disk_label'),
+            thExtra: this.targetDiskThTpl,
             cellRender: this.selectDiskTpl
           }
         ]
@@ -719,22 +751,23 @@ export class OracleRestoreComponent implements OnInit {
         );
   }
 
-  getHosts(recordsTemp?, startPage?) {
+  getHosts(recordsTemp?, startPage?, labelParams?: any) {
+    const conditions = {
+      subType:
+        this.rowCopy.resource_sub_type === DataMap.Resource_Type.oracle.value
+          ? [DataMap.Resource_Type.oracle.value]
+          : [
+              DataMap.Resource_Type.oracle.value,
+              DataMap.Resource_Type.oracleCluster.value
+            ]
+    };
+    extendParams(conditions, labelParams);
     this.protectedResourceApiService
       .ListResources({
         pageSize: CommonConsts.PAGE_SIZE,
         pageNo: startPage || 0,
         queryDependency: true,
-        conditions: JSON.stringify({
-          subType:
-            this.rowCopy.resource_sub_type ===
-            DataMap.Resource_Type.oracle.value
-              ? [DataMap.Resource_Type.oracle.value]
-              : [
-                  DataMap.Resource_Type.oracle.value,
-                  DataMap.Resource_Type.oracleCluster.value
-                ]
-        })
+        conditions: JSON.stringify(conditions)
       })
       .subscribe(res => {
         if (!recordsTemp) {
@@ -749,7 +782,6 @@ export class OracleRestoreComponent implements OnInit {
           startPage === Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE) ||
           res.totalCount === 0
         ) {
-          recordsTemp = uniqBy(recordsTemp, 'rootUuid');
           // 过滤离线主机
           recordsTemp = filter(recordsTemp, item => {
             return (
@@ -757,11 +789,12 @@ export class OracleRestoreComponent implements OnInit {
               DataMap.resource_LinkStatus_Special.normal.value
             );
           });
-          // 过滤操作系统，不能跨操作系统恢复
+          // 不能跨操作系统，不能跨数据库版本恢复
           recordsTemp = filter(
             recordsTemp,
             item =>
-              item.environment?.osType === this.rowCopy.environment_os_type
+              item.environment?.osType === this.rowCopy.environment_os_type &&
+              item.version?.split('.')[0] === this.oldVersion?.split('.')[0]
           );
           this.targetHosts = recordsTemp;
           each(recordsTemp, item => {
@@ -769,15 +802,18 @@ export class OracleRestoreComponent implements OnInit {
               assign(item, {
                 isLeaf: true,
                 value: item.rootUuid || item.parentUuid,
-                label: `${item.environment?.name}(${item.environment?.endpoint})`,
+                label: `${item?.name}(${item.environment?.endpoint})`,
                 disabled: this.disableHost(item)
               })
             );
           });
+          if (!labelParams) {
+            this.updateDrillData();
+          }
           this.modal.getInstance().lvOkDisabled = this.formGroup.invalid;
           return;
         }
-        this.getHosts(recordsTemp, startPage);
+        this.getHosts(recordsTemp, startPage, labelParams);
       });
   }
 
@@ -961,6 +997,13 @@ export class OracleRestoreComponent implements OnInit {
     this.setValid();
   }
 
+  getDrillInstance() {
+    if (this.isDrill && this.rowCopy.drillRecoveryConfig) {
+      return JSON.parse(this.rowCopy.drillRecoveryConfig.extendInfo.instances);
+    }
+    return [];
+  }
+
   getDependenciesById(root_uuid) {
     this.instanceConfig.clear();
     const selectedHost = find(this.targetHostOption, { value: root_uuid });
@@ -980,18 +1023,23 @@ export class OracleRestoreComponent implements OnInit {
           rootUuid: selectedHost.rootUuid,
           endpoint: selectedHost.path,
           selectInstance: new FormControl(
-            '',
+            find(this.getDrillInstance(), { agent_id: selectedHost.rootUuid })
+              ?.src_instance_name || '',
             this.baseUtilService.VALID.required()
           ),
-          targetInstance: new FormControl('', {
-            validators: [
-              this.baseUtilService.VALID.name(
-                RegExp("^[^|;&$><`'@!+\\n]*$"),
-                false
-              ),
-              this.validRepeatInstance()
-            ]
-          })
+          targetInstance: new FormControl(
+            find(this.getDrillInstance(), { agent_id: selectedHost.rootUuid })
+              ?.instance_name || '',
+            {
+              validators: [
+                this.baseUtilService.VALID.name(
+                  RegExp("^[^|;&$><`'@!+\\n]*$"),
+                  false
+                ),
+                this.validRepeatInstance()
+              ]
+            }
+          )
         })
       );
       return;
@@ -1000,8 +1048,8 @@ export class OracleRestoreComponent implements OnInit {
       .ShowResource({
         resourceId: root_uuid
       })
-      .subscribe(
-        res => {
+      .subscribe({
+        next: res => {
           const dependencies = get(res, 'dependencies.agents', []);
           each(dependencies, item => {
             this.instanceConfig.push(
@@ -1009,26 +1057,33 @@ export class OracleRestoreComponent implements OnInit {
                 rootUuid: item.rootUuid,
                 endpoint: item.path,
                 selectInstance: new FormControl(
-                  '',
+                  find(this.getDrillInstance(), {
+                    agent_id: selectedHost.rootUuid
+                  })?.src_instance_name || '',
                   this.baseUtilService.VALID.required()
                 ),
-                targetInstance: new FormControl('', {
-                  validators: [
-                    this.baseUtilService.VALID.name(
-                      RegExp("^[^|;&$><`'@!+\\n]*$"),
-                      false
-                    ),
-                    this.validRepeatInstance()
-                  ]
-                })
+                targetInstance: new FormControl(
+                  find(this.getDrillInstance(), {
+                    agent_id: selectedHost.rootUuid
+                  })?.instance_name || '',
+                  {
+                    validators: [
+                      this.baseUtilService.VALID.name(
+                        RegExp("^[^|;&$><`'@!+\\n]*$"),
+                        false
+                      ),
+                      this.validRepeatInstance()
+                    ]
+                  }
+                )
               })
             );
           });
         },
-        err => {
+        error: err => {
           this.instanceConfig.clear();
         }
-      );
+      });
   }
 
   validRepeatInstance(): ValidatorFn {
@@ -1157,7 +1212,11 @@ export class OracleRestoreComponent implements OnInit {
           : ''
       }
     };
-    if (this.restoreType === RestoreV2Type.CommonRestore) {
+    // 非存储快照副本才支持启动数据库
+    if (
+      this.restoreType === RestoreV2Type.CommonRestore &&
+      !this.isSnapshotCopy
+    ) {
       set(
         params,
         'extendInfo.isStartDB',

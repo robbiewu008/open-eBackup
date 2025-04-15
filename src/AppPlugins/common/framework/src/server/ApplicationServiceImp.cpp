@@ -15,6 +15,8 @@
 #include "ApplicationProtectFramework_types.h"
 #include "AppService.h"
 #include "OpenLibMgr.h"
+#include "AsyncListJob.h"
+#include "JobExecution.h"
 #include "PluginTypes.h"
 #include "log/Log.h"
 #include "param_checker/ParamChecker.h"
@@ -27,6 +29,10 @@ namespace {
     const auto MODULE = "ApplicationServiceImp";
     const auto LIST_RESOURCE_REQUEST = "ListResourceRequest";
     constexpr int MAX_ERR_MSG_LEN = 256;
+    constexpr int CLEAR_CHAR = 0;
+    constexpr int DEFAULT_ERROR_CODE = -1;
+    constexpr int INVOKE_PLUGIN_SUCCESS = 0;
+    constexpr int INVOKE_PLUGIN_FAILED = -1;
 }
 
 using DiscoverApplicationsFun = void(std::vector<Application>& returnValue, const std::string& appType);
@@ -48,6 +54,8 @@ using DiscoverAppClusterFun = void(ApplicationEnvironment& returnEnv, const Appl
 using ListApplicationConfigFun = void(std::map<std::string, std::string>& resources, const std::string& script);
 using RemoveProtectFun = void(
         ActionResult& returnValue, const ApplicationEnvironment& appEnv, const Application& application);
+using FinalizeClearFun = void(ActionResult& returnValue, const ApplicationEnvironment& appEnv,
+    const Application& application, const std::map<std::string, std::string>& extendInfo);
 
 ApplicationServiceImp::ApplicationServiceImp()
 {}
@@ -136,6 +144,38 @@ EXTER_ATTACK void ApplicationServiceImp::ListApplicationResourceV2(
 
     ParamCheck("ListResourceRequest", StructToJson(request));
     fun(page, request);
+}
+
+EXTER_ATTACK void ApplicationServiceImp::AsyncListApplicationResource(
+    ActionResult& returnValue, const ListResourceRequest& request)
+{
+    HCP_Log(DEBUG, MODULE) << "Enter AsyncListApplicationResourceV2." << HCPENDLOG;
+    ParamCheck("ListResourceRequest", StructToJson(request));
+    std::shared_ptr<BasicJob> jobPtr = std::make_shared<AsyncListJob>(request);
+    if (jobPtr == nullptr || request.id.empty()) {
+        HCP_Log(ERR, MODULE) << "Get AsyncListApplicationResourceV2 id:" <<
+            request.id << " BasicJob failed" << HCPENDLOG;
+        AppProtectFrameworkException exception;
+        exception.code = -1;
+        exception.message = "AsyncListApplicationResourceV2 BasicJob nullptr error";
+        throw exception;
+    }
+    jobPtr->SetParentJobId(request.id);
+    jobPtr->SetJobId(request.id);
+    // 执行异步任务，创建线程，JobMgr纳入管理
+    HCP_Log(DEBUG, MODULE) << "Enter excute job" << HCPENDLOG;
+    common::jobmanager::JobExecution jobExecution;
+    int ret = jobExecution.ExecuteJob(returnValue, jobPtr, request.id, OperType::RESOURCE);
+    if (ret != Module::SUCCESS) {
+        returnValue.__set_code(INVOKE_PLUGIN_FAILED);
+        AppProtectFrameworkException exception;
+        exception.code = -1;
+        exception.message = "AsyncListApplicationResourceV2 BasicJob nullptr error";
+        throw exception;
+    }
+    returnValue.__set_code(INVOKE_PLUGIN_SUCCESS);  // 0 成功 ； 500 失败
+    HCP_Log(INFO, MODULE) << "Exit excute job success" HCPENDLOG;
+    return;
 }
 
 EXTER_ATTACK void ApplicationServiceImp::DiscoverHostCluster(ApplicationEnvironment& returnEnv,
@@ -227,4 +267,23 @@ EXTER_ATTACK void ApplicationServiceImp::RemoveProtect(ActionResult& returnValue
 
     ParamCheck({{"ApplicationEnvironment", StructToJson(appEnv)}, {"Application", StructToJson(application)}});
     fun(returnValue, appEnv, application);
+}
+
+EXTER_ATTACK void ApplicationServiceImp::FinalizeClear(ActionResult& _return, const ApplicationEnvironment& appEnv,
+    const Application& application, const std::map<std::string, std::string>& extendInfo)
+{
+    HCP_Log(INFO, MODULE) << "Enter FinalizeClear" << HCPENDLOG;
+    auto fun = OpenLibMgr::GetInstance().GetObj<FinalizeClearFun>("FinalizeClear");
+    if (fun == nullptr) {
+        // 初始化字符串数组为空
+        char errMsg[MAX_ERR_MSG_LEN] = {CLEAR_CHAR};
+        HCP_Log(ERR, MODULE) << "Get FinalizeClear function failed error" <<
+            Module::DlibError(errMsg, sizeof(errMsg)) << HCPENDLOG;
+        AppProtectPluginException exception;
+        // 未实现对应的函数 将错误码置为默认错误码
+        exception.code = DEFAULT_ERROR_CODE;
+        exception.message = "Invoke FinalizeClear error";
+        throw exception;
+    }
+    fun(_return, appEnv, application, extendInfo);
 }

@@ -11,7 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class='aui-gutter-column-lg'>
+<div class='aui-gutter-column-lg job-event-container'>
     <div class="aui-gutter-column-md">
         <h3>{{'common_events_label' | i18n}}</h3>
     </div>
@@ -60,5 +60,5 @@
 </ng-template>
 
 <ng-template #startTimeTpl let-item>
-    <span lv-overflow>{{(item.startTime | date:'yyyy/MM/dd HH:mm:ss':timeZone) | nil }}</span>
+    <span lv-overflow>{{(item.startTime | date:'yyyy/MM/dd HH:mm:ss':extTimeZone) | nil }}</span>
 </ng-template>

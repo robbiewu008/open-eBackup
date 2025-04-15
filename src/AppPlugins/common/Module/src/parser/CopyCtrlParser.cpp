@@ -14,9 +14,9 @@
 #define __STDC_FORMAT_MACROS
 #endif
 #include "CopyCtrlParser.h"
+#include <cinttypes>
 #include "securec.h"
 #include "Log.h"
-#include <cinttypes>
 
 using namespace std;
 using namespace Module;
@@ -101,11 +101,6 @@ CTRL_FILE_RETCODE CopyCtrlParser::ReadEntry(CopyCtrlFileEntry &fileEntry,
     vector<string> ctlFileLineSplit {};
     lock_guard<std::mutex> lk(m_lock);
 
-    if (!m_readFd.is_open()) {
-        HCP_Log(ERR, MODULE) << "Read failed as control file is not open: " << m_fileName << HCPENDLOG;
-        return CTRL_FILE_RETCODE::FAILED;
-    }
-
     do {
         getline(m_readBuffer, ctlFileLine);
         if (ctlFileLine.empty()) {
@@ -115,10 +110,8 @@ CTRL_FILE_RETCODE CopyCtrlParser::ReadEntry(CopyCtrlFileEntry &fileEntry,
         boost::algorithm::split(ctlFileLineSplit, ctlFileLine, boost::is_any_of(","), boost::token_compress_off);
         if (ValidateEntry(ctlFileLineSplit, ctlFileLine) == CTRL_FILE_RETCODE::SUCCESS) {
             break;
-        } else {
-            // 这里处理一种情况: 文件名中有字符导致换行， 与下一行一起读了返回
-            HandleBreakLine(ctlFileLine);
-            return ReadEntryWithLine(fileEntry, dirEntry, ctlFileLine);
+        } else if (HandleBreakLine(ctlFileLineSplit, ctlFileLine) == CTRL_FILE_RETCODE::SUCCESS) {
+            break;
         }
         ctlFileLine.clear();
         ctlFileLineSplit.clear();
@@ -133,7 +126,7 @@ CTRL_FILE_RETCODE CopyCtrlParser::ReadEntry(CopyCtrlFileEntry &fileEntry,
     return CTRL_FILE_RETCODE::SUCCESS;
 }
 
-void CopyCtrlParser::HandleBreakLine(std::string& ctlFileLine)
+CTRL_FILE_RETCODE CopyCtrlParser::HandleBreakLine(vector<string> &lineContents, std::string& ctlFileLine)
 {
     std::string tmpLine {};
     std::streampos currentPositon = m_readBuffer.tellg();
@@ -141,65 +134,25 @@ void CopyCtrlParser::HandleBreakLine(std::string& ctlFileLine)
         tmpLine.clear();
         currentPositon = m_readBuffer.tellg();
         getline(m_readBuffer, tmpLine);
-        if (tmpLine.empty()) {
-            return;
-        }
-        if (IsNormalEntry(tmpLine)) {
-            // 读到正常的行， 把pos调整回原来的位置
+        // 读到正常的行，说明当前处理的数据为无效错误数据，把pos调整回原来的位置，返回失败
+        if (IsNormalEntry(lineContents, tmpLine)) {
             m_readBuffer.seekg(currentPositon);
-            return;
+            return CTRL_FILE_RETCODE::INVALID_CONTENT;
         } else {
-            // 说明是截断的行
-            ctlFileLine += tmpLine;
+            // 说明是截断的行，拼接并增加换行符
+            ctlFileLine = ctlFileLine + "\n" + tmpLine;
+            // 拼接后的得到有效的数据，返回成功，否则继续
+            if (IsNormalEntry(lineContents, ctlFileLine)) {
+                return CTRL_FILE_RETCODE::SUCCESS;
+            }
         }
     }
-    return;
 }
 
-bool CopyCtrlParser::IsNormalEntry(const std::string& fileLine)
+bool CopyCtrlParser::IsNormalEntry(vector<string> &lineContents, const std::string& ctlFileLine) const
 {
-    if (fileLine.size() < NUMBER4) {
-        return false;
-    }
-    if (fileLine[0] != 'd' && fileLine[0] != 'f') {
-        return false;
-    }
-    if (fileLine[NUMBER1] != ',') {
-        return false;
-    }
-    std::string modeStr = fileLine.substr(NUMBER2, NUMBER2);
-    if (modeStr != CTRL_ENTRY_MODE_DATA_MODIFIED &&
-        modeStr != CTRL_ENTRY_MODE_META_MODIFIED &&
-        modeStr != CTRL_ENTRY_MODE_BOTH_MODIFIED &&
-        modeStr != CTRL_ENTRY_MODE_DATA_DELETED &&
-        modeStr != CTRL_ENTRY_MODE_ONLY_FILE_MODIFIED &&
-        modeStr != CTRL_ENTRY_MODE_NEW_FILE) {
-        return false;
-    }
-    return true;
-}
-
-CTRL_FILE_RETCODE CopyCtrlParser::ReadEntryWithLine(CopyCtrlFileEntry &fileEntry, CopyCtrlDirEntry &dirEntry,
-    const std::string& ctlFileLine)
-{
-    vector<string> ctlFileLineSplit {};
-    if (ctlFileLine.empty()) {
-        ERRLOG("entry empty");
-        return CTRL_FILE_RETCODE::FAILED;
-    }
-    boost::algorithm::split(ctlFileLineSplit, ctlFileLine, boost::is_any_of(","), boost::token_compress_off);
-    if (ValidateEntry(ctlFileLineSplit, ctlFileLine) != CTRL_FILE_RETCODE::SUCCESS) {
-        ERRLOG("invalid fileEntry: %s", ctlFileLine.c_str());
-        return CTRL_FILE_RETCODE::FAILED;
-    }
-
-    if (ctlFileLineSplit[CTRL_FILE_NUMBER_ZERO] == CTRL_ENTRY_TYPE_DIR) {
-        TranslateDirEntry(ctlFileLineSplit, dirEntry);
-    } else {
-        TranslateFileEntry(ctlFileLineSplit, fileEntry);
-    }
-
-    return CTRL_FILE_RETCODE::SUCCESS;
+    boost::algorithm::split(lineContents, ctlFileLine, boost::is_any_of(","), boost::token_compress_off);
+    return ValidateEntry(lineContents, ctlFileLine) == CTRL_FILE_RETCODE::SUCCESS;
 }
 
 void CopyCtrlParser::PrintCopyCtrlDirEntry(CopyCtrlDirEntry& dirEntry)
@@ -214,8 +167,11 @@ void CopyCtrlParser::PrintCopyCtrlDirEntry(CopyCtrlDirEntry& dirEntry)
 void CopyCtrlParser::PrintCopyCtrlFileEntry(CopyCtrlFileEntry& fileEntry)
 {
     DBGLOG("Write to ctrl file - %s", m_fileName.c_str());
-    DBGLOG("Write fileEntry - m_mode: %s, m_fileName: %s, m_metaFileName: %s, metaFileReadLen: %u, m_aclFlag: %u, metaFileOffset: %u, m_fileSize: %u, m_metaFileIndex: %u",
-        fileEntry.m_mode.c_str(), fileEntry.m_fileName.c_str(), fileEntry.m_metaFileName.c_str(), fileEntry.metaFileReadLen, fileEntry.m_aclFlag, fileEntry.metaFileOffset, fileEntry.m_fileSize, fileEntry.m_metaFileIndex);
+    DBGLOG("Write fileEntry - m_mode: %s, m_fileName: %s, m_metaFileName: %s,"
+        "metaFileReadLen: %u, m_aclFlag: %u, metaFileOffset: %u, m_fileSize: %u, m_metaFileIndex: %u",
+        fileEntry.m_mode.c_str(), fileEntry.m_fileName.c_str(), fileEntry.m_metaFileName.c_str(),
+        fileEntry.metaFileReadLen, fileEntry.m_aclFlag, fileEntry.metaFileOffset,
+        fileEntry.m_fileSize, fileEntry.m_metaFileIndex);
 }
 
 CTRL_FILE_RETCODE CopyCtrlParser::WriteDirEntry(CopyCtrlDirEntry &dirEntry)
@@ -502,7 +458,7 @@ string CopyCtrlParser::GetFileHeaderLine(uint32_t headerLine)
     return ctlHeaderLine;
 }
 
-CTRL_FILE_RETCODE CopyCtrlParser::ValidateEntry(vector<std::string> &fileContents, const std::string &line)
+CTRL_FILE_RETCODE CopyCtrlParser::ValidateEntry(const vector<std::string> &fileContents, const std::string &line) const
 {
     if (fileContents.empty()) {
         return CTRL_FILE_RETCODE::FAILED;
@@ -517,7 +473,7 @@ CTRL_FILE_RETCODE CopyCtrlParser::ValidateEntry(vector<std::string> &fileContent
             return CTRL_FILE_RETCODE::FAILED;
         }
     } else {
-        HCP_Log(ERR, MODULE) << "Control entry neither file nor dir. Line: " << line
+        HCP_Log(WARN, MODULE) << "Control entry neither file nor dir. Line: " << line
             << "File: " << m_fileName << HCPENDLOG;
         return CTRL_FILE_RETCODE::FAILED;
     }
@@ -525,30 +481,31 @@ CTRL_FILE_RETCODE CopyCtrlParser::ValidateEntry(vector<std::string> &fileContent
     return CTRL_FILE_RETCODE::SUCCESS;
 }
 
-CTRL_FILE_RETCODE CopyCtrlParser::ValidateDirEntry(vector<std::string> &lineContents, const std::string &line)
+CTRL_FILE_RETCODE CopyCtrlParser::ValidateDirEntry(const vector<std::string> &lineContents,
+    const std::string &line) const
 {
     uint32_t lineContentsVecSize = lineContents.size();
     uint32_t commaCount = (uint32_t)atoi(lineContents[CTRL_FILE_NUMBER_TWO].c_str());
 
     if (lineContents[CTRL_FILE_NUMBER_ONE] == CTRL_ENTRY_MODE_DATA_DELETED) {
         if (lineContentsVecSize < CTRL_FILE_OFFSET_5) {
-            HCP_Log(ERR, MODULE) << "Control Entry for dir has less columns. Line: "
+            HCP_Log(WARN, MODULE) << "Control Entry for dir has less columns. Line: "
                 << line << "File: " << m_fileName << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
         if (lineContentsVecSize != (commaCount + CTRL_FILE_OFFSET_5)) {
-            HCP_Log(ERR, MODULE) << "Control Entry for dir incorrect. Line: "
+            HCP_Log(WARN, MODULE) << "Control Entry for dir incorrect. Line: "
                 << line << "File: " << m_fileName << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
     } else {
         if (lineContentsVecSize < CTRL_FILE_OFFSET_9) {
-            HCP_Log(ERR, MODULE) << "Control Entry for dir has less columns. Line: "
+            HCP_Log(WARN, MODULE) << "Control Entry for dir has less columns. Line: "
                 << line << "File: " << m_fileName << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
         if (lineContentsVecSize != (commaCount + CTRL_FILE_OFFSET_9)) {
-            HCP_Log(ERR, MODULE) << "Control Entry for dir incorrect. Line: "
+            HCP_Log(WARN, MODULE) << "Control Entry for dir incorrect. Line: "
                 << line << "File: " << m_fileName << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
@@ -557,7 +514,8 @@ CTRL_FILE_RETCODE CopyCtrlParser::ValidateDirEntry(vector<std::string> &lineCont
     return CTRL_FILE_RETCODE::SUCCESS;
 }
 
-CTRL_FILE_RETCODE CopyCtrlParser::ValidateFileEntry(vector<std::string> &lineContents, const std::string &line)
+CTRL_FILE_RETCODE CopyCtrlParser::ValidateFileEntry(const vector<std::string> &lineContents,
+    const std::string &line) const
 {
     uint32_t lineContentsVecSize = lineContents.size();
     uint32_t commaCount = (uint32_t)atoi(lineContents[CTRL_FILE_NUMBER_TWO].c_str());

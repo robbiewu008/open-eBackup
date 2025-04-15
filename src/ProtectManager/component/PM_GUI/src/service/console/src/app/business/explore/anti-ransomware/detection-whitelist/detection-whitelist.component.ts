@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -34,7 +34,6 @@ import {
   TableData
 } from 'app/shared/components/pro-table';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
-import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
   assign,
   filter,
@@ -45,7 +44,6 @@ import {
   size,
   uniqBy
 } from 'lodash';
-import { AddBlockingRuleComponent } from '../blocking-rule-list/add-blocking-rule/add-blocking-rule.component';
 import { AssociateVstoreComponent } from '../blocking-rule-list/associate-vstore/associate-vstore.component';
 import { AddWhitelistRuleComponent } from './add-whitelist-rule/add-whitelist-rule.component';
 
@@ -68,7 +66,6 @@ export class DetectionWhitelistComponent implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef,
     private dataMapService: DataMapService,
     private drawModalService: DrawModalService,
-    private virtualScroll: VirtualScrollService,
     private warningMessageService: WarningMessageService,
     private whiteListManagementService: WhiteListManagementService
   ) {}
@@ -182,6 +179,7 @@ export class DetectionWhitelistComponent implements OnInit, AfterViewInit {
     ];
 
     this.tableConfig = {
+      filterTags: true,
       table: {
         compareWith: 'id',
         columns: cols,
@@ -190,10 +188,6 @@ export class DetectionWhitelistComponent implements OnInit, AfterViewInit {
           selectionMode: 'multiple',
           selectionTrigger: 'selector',
           showSelector: true
-        },
-        scroll: {
-          ...this.virtualScroll.scrollParam,
-          y: '65vh'
         },
         colDisplayControl: false,
         fetchData: (filter: Filters) => {

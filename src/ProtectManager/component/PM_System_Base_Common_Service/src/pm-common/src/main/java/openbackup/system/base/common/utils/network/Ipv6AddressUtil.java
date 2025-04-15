@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.common.utils.network;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,8 +134,7 @@ public final class Ipv6AddressUtil {
                 if (address == null) {
                     return false;
                 } else {
-                    return !address.isMulticastAddress()
-                            && !address.isLoopbackAddress()
+                    return !address.isMulticastAddress() && !address.isLoopbackAddress()
                             && !address.isAnyLocalAddress();
                 }
             } catch (UnknownHostException e) {

@@ -39,14 +39,6 @@
   cursor: pointer;
 }
 
-.aui-inner-search {
-  background: #000;
-}
-
-:host ::ng-deep .aui-inner-search .lv-input {
-  color: #fff;
-}
-
 .aui-menu-container {
   height: 64px;
   display: inline-flex;
@@ -54,7 +46,7 @@
 }
 
 .running-task-icon {
-  background: url('assets/img/task_running.gif') no-repeat;
+  background: url('assets/img/task_running_gray_gif.gif') no-repeat;
   height: 24px;
   width: 24px;
   margin-top: 6px;
@@ -63,7 +55,7 @@
 }
 
 .task-icon {
-  background: url('assets/img/task.svg') no-repeat;
+  background: url('assets/img/task_closed.svg') no-repeat;
   height: 24px;
   width: 24px;
   margin-top: 6px;
@@ -78,23 +70,6 @@
   background-position: -5px;
 }
 
-.top-help-container {
-  width: 150px;
-}
-
-.top-help-container tr {
-  cursor: pointer;
-  color: #6b707c;
-
-  :hover {
-    color: #fafbff;
-  }
-}
-
-.top-help-container td:first-child {
-  vertical-align: top;
-}
-
 .top-task-container {
   width: 380px;
 }
@@ -105,22 +80,6 @@
 
 .top-task-container td:first-child {
   vertical-align: top;
-}
-
-.top-task-name {
-  width: 280px;
-  color: #fafbff;
-  margin-left: 5px;
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.top-task-status {
-  width: 280px;
-  color: #9ea4b3;
-  font-size: 12px;
-  margin-left: 5px;
-  margin-bottom: 10px;
 }
 
 .top-task-header-title {
@@ -257,26 +216,32 @@
 }
 
 .no-data {
-  width: 100%;
   padding: 32px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+
+  .lv-group-column {
+    align-items: center !important;
+  }
 }
 
-.help-menu-container .help-menu-section {
-  padding: 0 0.15rem;
+.no-data-image {
+  width: 64px;
+  height: 72px;
 }
 
 .help-menu-container .help-menu-section .n-help-link,
 .help-menu-container .help-menu-section n-help-link {
   display: block;
   padding: 0.05rem 0;
-  color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
 }
 
 .help-menu-container .help-menu-section .n-help-link:hover,
 .help-menu-container .help-menu-section n-help-link:hover {
-  color: #fff;
+  color: var(--live-angular-color-primary-hover);
 }
 
 .n-help-link .help-wrapper {
@@ -315,10 +280,11 @@ span.source-conainer {
 }
 
 .clusters-container {
-  color: #6c7280;
+  color: var(--live-angular-color-text-hint);
   font-size: 16px;
   cursor: pointer;
   margin-left: 4px;
+  max-width: 150px;
 }
 
 ::ng-deep lv-layout.lv-layout-cross > lv-sider.aui-sider > div {
@@ -333,6 +299,16 @@ span.source-conainer {
   padding: 0.08rem 0.24rem;
   font-size: 0.16rem;
   line-height: 0.32rem;
+
+  .menu-icon-container {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    left: 8px;
+  }
 }
 
 .aui-logo {
@@ -449,20 +425,10 @@ span.source-conainer {
   border-radius: 0;
 }
 
-.menu-label {
-  color: #4d4d4d;
-}
-
-.global-search-collapsed {
-  cursor: pointer;
-  position: absolute;
-  left: calc(50% - 63px);
-}
-
 .global-search {
   cursor: pointer;
   position: absolute;
-  left: calc(50% - 191px);
+  left: calc(50% - 160px - 109px);
 }
 
 .hide-guide-bg {
@@ -478,4 +444,125 @@ span.source-conainer {
 
 .collapsed-container {
   line-height: 36px;
+}
+
+.cyber-home-header ::ng-deep {
+  div:first-child {
+    background-color: #1c1f24 !important;
+  }
+}
+
+.card-theme {
+  width: 56px;
+  height: 40px;
+}
+
+.theme-change-title {
+  font-size: 12px;
+  color: var(--live-angular-color-text-secondary);
+}
+
+.theme-group {
+  margin-top: 0.24rem;
+  align-items: center;
+}
+
+.menu-label {
+  color: var(--live-angular-color-text-hint);
+}
+
+.shortcut-op-container {
+  left: 0;
+}
+
+.new-comer-guidance-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: normal;
+}
+
+.new-comer-guidance-content-single {
+  font-weight: 400;
+}
+
+.new-comer-guidance-content {
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.new-comer-guidance-content-group {
+  padding: 8px 0;
+  i {
+    width: 24px;
+    height: 24px;
+  }
+  .bold-text {
+    font-weight: bold;
+  }
+  .icon-description {
+    display: inline-block;
+    height: 24px;
+    line-height: 24px;
+    margin-left: 4px;
+  }
+}
+
+.new-comer-guidance-footer-container {
+  padding-left: 32px;
+  justify-content: flex-end;
+  #endGuideBtn {
+    color: var(--live-angular-color-text-white) !important;
+    border: 1px solid var(--live-angular-color-text-white);
+    &:hover {
+      color: 1px solid var(--live-angular-color-text-white) !important;
+    }
+  }
+
+  #nextGuideBtn {
+    color: rgb(110, 110, 255);
+    background-color: var(--live-angular-color-text-white);
+    border: 1px solid var(--live-angular-color-text-white);
+  }
+}
+
+.custom-overlay {
+  content: '';
+  box-sizing: content-box;
+  position: absolute; /* 绝对定位 */
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 4px;
+  width: 0;
+  height: 0;
+  top: 0;
+  left: 0;
+  display: none;
+  z-index: 99999;
+  pointer-events: none; /* 防止影响原始元素的交互 */
+}
+
+.custom-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: inset 0 0 0 1px var(--new-comer-guidance-bg-color); /* 第一个边框，使用 inset 使其看起来像内边框 */
+  border-radius: 5px;
+  pointer-events: none; /* 防止伪元素影响交互 */
+}
+
+.custom-overlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 1px;
+  right: 1px;
+  bottom: 1px;
+  box-shadow: 0 0 0 3px rgba(110, 110, 255, 0.5); /* 第二个边框，使用 inset 和 rgba 调整透明度 */
+  border-radius: 5px;
+  pointer-events: none; /* 防止伪元素影响交互 */
 }

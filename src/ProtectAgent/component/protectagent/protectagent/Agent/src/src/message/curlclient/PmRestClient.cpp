@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "common/Log.h"
 #include "common/CMpTime.h"
 #include "common/Ip.h"
@@ -6,6 +18,7 @@
 #include "message/tcp/CSocket.h"
 
 #include "message/curlclient/PmRestClient.h"
+#include "host/ConnectivityManager.h"
 
 namespace {
     const mp_uint32 ONE_SECOND = 1 * 1000;  // 1000 ms
@@ -65,7 +78,7 @@ mp_int32 BaseRestClient::ReceiveCheckStatus(HttpResponse& httpResponse, HttpRequ
     mp_int32 iRet = MP_FAILED;
     if (httpResponse.statusCode == SC_OK) {
         DBGLOG("Send url:%s info success.", req.url.c_str());
-        iRet = MP_SUCCESS;
+        return MP_SUCCESS;
     }
     ERRLOG("Send key request(%s) fail, status code: %d.", req.url.c_str(), httpResponse.statusCode);
     return iRet;
@@ -116,7 +129,7 @@ mp_int32 PmRestClient::SendRequest(HttpReqCommonParam& httpParam, HttpResponse& 
         return MP_FAILED;
     }
 
-    pmIps = GetConnectIps(pmIps, pmPort);
+    pmIps = ConnectivityManager::GetInstance().GetConnectedIps(pmIps, CMpString::SafeStoi(pmPort));
     if (pmIps.size() == 0) {
         WARNLOG("pm ip list is empty, Perhaps it has not been set yet.");
         return MP_FAILED;
@@ -173,12 +186,12 @@ std::vector<std::string> PmRestClient::GetConnectIps(const std::vector<std::stri
         while (retryTimes < MAX_RETRY_TIMES) {
             if (httpClient->TestConnectivity(ip, port)) {
                 connectedIps.push_back(ip);
-                COMMLOG(OS_LOG_INFO, "Can cennect ip(%s).", ip.c_str());
+                COMMLOG(OS_LOG_INFO, "Can connect  ip(%s).", ip.c_str());
                 break;
             }
             retryTimes++;
             CMpTime::DoSleep(ONE_SECOND);
-            COMMLOG(OS_LOG_WARN, "Can not cennect ip(%s).", ip.c_str());
+            COMMLOG(OS_LOG_WARN, "Can not connect  ip(%s).", ip.c_str());
         }
     }
 

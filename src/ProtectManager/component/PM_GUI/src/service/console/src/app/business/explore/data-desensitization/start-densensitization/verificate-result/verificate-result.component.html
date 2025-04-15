@@ -38,7 +38,6 @@
 </ng-container>
 <ng-container *ngIf="!tableData.length">
     <div class="verificate-no-data aui-block">
-        <i lv-icon="aui-icon-no-data"></i>
-        <div class="no-data-label">{{'common_no_data_label' | i18n}}</div>
+        <lv-empty></lv-empty>
     </div>
 </ng-container>

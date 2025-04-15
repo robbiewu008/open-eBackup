@@ -12,6 +12,12 @@
 */
 package openbackup.gaussdb.protection.access.provider;
 
+import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterBasicService;
+import com.huawei.oceanprotect.repository.service.LocalStorageService;
+
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.validator.JsonSchemaValidator;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
@@ -24,11 +30,11 @@ import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.provider.DatabaseEnvironmentProvider;
 import openbackup.gaussdb.protection.access.constant.GaussDBConstant;
 import openbackup.gaussdb.protection.access.service.GaussDBService;
 import openbackup.gaussdb.protection.access.util.GaussDBValidator;
-import com.huawei.oceanprotect.repository.service.LocalStorageService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.VerifyUtil;
@@ -37,16 +43,13 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -76,6 +79,12 @@ public class GaussDBClusterEnvironmentProvider extends DatabaseEnvironmentProvid
 
     @Autowired
     private GaussDBAgentProvider gaussDBAgentProvider;
+
+    @Autowired
+    private ResourceService resourceService;
+
+    @Autowired
+    private ClusterBasicService clusterBasicService;
 
     /**
      * DatabaseResourceProvider
@@ -130,6 +139,12 @@ public class GaussDBClusterEnvironmentProvider extends DatabaseEnvironmentProvid
 
             // 校验注册集群是否重复并设置uuid
             generateUniqueUuid(environment, existingEnvironments);
+        } else {
+            // 修改项目时，更新实例的所属项目字段
+            log.info("start to modify parentName");
+            Map<String, Object> updateKv = new HashMap<>();
+            updateKv.put("parent_name", environment.getName());
+            resourceService.updateSubResource(Collections.singletonList(environment.getUuid()), updateKv);
         }
 
         // endpoint 适配sla
@@ -164,8 +179,9 @@ public class GaussDBClusterEnvironmentProvider extends DatabaseEnvironmentProvid
     }
 
     private void generateUniqueUuid(ProtectedEnvironment environment, List<ProtectedEnvironment> existingEnvironments) {
+        String currentClusterEsn = clusterBasicService.getCurrentClusterEsn();
         String hcsGaussDbClusterUuid = UUID.nameUUIDFromBytes(
-            (environment.getName() + environment.getSubType() + localStorageService.getStorageInfo().getEsn()).getBytes(
+            (environment.getName() + environment.getSubType() + currentClusterEsn).getBytes(
                 Charset.defaultCharset())).toString();
         environment.setUuid(hcsGaussDbClusterUuid);
         environment.setRootUuid(hcsGaussDbClusterUuid);

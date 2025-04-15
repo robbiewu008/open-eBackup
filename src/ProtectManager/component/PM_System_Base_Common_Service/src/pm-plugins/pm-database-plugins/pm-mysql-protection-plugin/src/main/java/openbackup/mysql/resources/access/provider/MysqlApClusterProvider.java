@@ -12,6 +12,7 @@
 */
 package openbackup.mysql.resources.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
@@ -20,8 +21,6 @@ import openbackup.mysql.resources.access.common.MysqlConstants;
 import openbackup.mysql.resources.access.common.MysqlErrorCode;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

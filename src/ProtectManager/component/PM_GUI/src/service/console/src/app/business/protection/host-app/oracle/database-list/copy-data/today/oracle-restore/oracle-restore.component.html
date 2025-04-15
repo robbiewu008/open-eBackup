@@ -12,11 +12,11 @@
   -->
 
 <p class="aui-text-help-sm aui-gutter-column-md">
-  {{'protection_oracle_restore_title_label' | i18n:[this.rowCopy?.name, oldVersion]}}
+  {{'protection_oracle_restore_title_label' | i18n:[rowCopy?.name || rowCopy?.resource_name, oldVersion]}}
 </p>
 <lv-form [formGroup]="formGroup" class="formGroup" [lvLabelColon]='false'>
   <!-- 普通恢复：目标存在在线的同名数据库会导致恢复失败 -->
-  <lv-form-item *ngIf="[_restoreV2Type.CommonRestore,_restoreV2Type.InstanceRestore].includes(restoreType)">
+  <lv-form-item *ngIf="[_restoreV2Type.CommonRestore,_restoreV2Type.InstanceRestore].includes(restoreType) && !isDrill">
     <lv-form-label lvRequired>
       {{'protection_restore_to_label' | i18n}}
       <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_oracle_recovery_desc_label' | i18n}}" lvTooltipTheme="light"
@@ -75,6 +75,8 @@
     </lv-form-item>
   </ng-container>
   <ng-container *ngIf='restoreLocationType.NEW === formGroup.value.restoreTo'>
+    <aui-select-tag class="select-tag" [formGroup]="formGroup" (updateTable)="updateTable($event)"
+      [targetKey]="'targetHost'" [isAgentTag]="true"></aui-select-tag>
     <lv-form-item>
       <lv-form-label lvRequired>
         {{(isCluster ? 'explore_target_host_cluster_label' : 'common_target_host_label') | i18n}}
@@ -181,6 +183,9 @@
         <span class="custom-collapse-title-text">{{'common_target_disk_label'|i18n}}</span>
       </lv-group>
       <lv-group lvDirection="vertical" lvGutter="10px">
+        <lv-alert lvType="info" [lvClosable]="false">
+          {{'protection_oracle_restore_asm_disk_alert_label'|i18n}}
+        </lv-alert>
         <ng-container *ngIf="showAlert">
           <lv-alert lvType="error">{{'protection_target_disk_not_enough_label' | i18n}}</lv-alert>
         </ng-container>
@@ -201,7 +206,7 @@
         <ng-container *ngIf="isSnapshotCopy">
           <lv-form-item>
             <lv-form-label>
-              {{'protection_proxy_host_label' | i18n}}
+              {{'protection_clients_label' | i18n}}
             </lv-form-label>
             <lv-form-control>
               <lv-select [lvOptions]="proxyHostOptions" formControlName="proxyHost" lvValueKey='value' lvMode="multiple"
@@ -253,14 +258,15 @@
             </lv-form-control>
           </lv-form-item>
         </ng-container>
-        <lv-form-item *ngIf="restoreType === _restoreV2Type.CommonRestore">
+        <!--存储层快照副本不支持启动数据库选项-->
+        <lv-form-item *ngIf="restoreType === _restoreV2Type.CommonRestore && !isSnapshotCopy">
           <lv-form-label>{{'explore_start_database_label' | i18n}}</lv-form-label>
           <lv-form-control>
             <lv-switch formControlName='power_on'>
             </lv-switch>
           </lv-form-control>
         </lv-form-item>
-        <lv-form-item>
+        <lv-form-item *ngIf="!isDrill">
           <lv-form-label>
             {{'protection_script_label' | i18n}}
             <i lv-icon="aui-icon-help" lvTooltipTheme="light" class="mgl-4"
@@ -323,7 +329,7 @@
         </lv-form-item>
         <ng-container
           *ngIf="restoreLocationType.NEW === formGroup.value.restoreTo && ![dataMap.CopyData_generatedType.import.value].includes(rowCopy.generated_by) && !isSnapshotCopy">
-          <aui-database-config [formGroup]="formGroup" [rowCopy]="rowCopy"></aui-database-config>
+          <aui-database-config [formGroup]="formGroup" [rowCopy]="rowCopy" [isDrill]="isDrill"></aui-database-config>
         </ng-container>
       </lv-collapse-panel>
     </lv-collapse>
@@ -387,8 +393,15 @@
   <div *ngIf="restoreLocationType.ORIGIN === formGroup.value.restoreTo">
     {{'protection_restore_tip_label' | i18n}}
   </div>
+  <div *ngIf="appUtilsService.isDistributed && rowCopy.generated_by===dataMap.CopyData_generatedType.replicate.value">
+    {{'explore_distributed_restore_database_tip_label' | i18n}}</div>
   <lv-group lvGutter='8px' class="mgt">
     <span class="taget-label">{{'protection_restore_target_label' | i18n}}</span>
     <span>{{restoreTargetLabel}}</span>
   </lv-group>
+</ng-template>
+
+<ng-template #targetDiskThTpl>
+  <i lv-icon="aui-icon-help" [lv-tooltip]="'protection_oracle_restore_target_disk_tips_label'|i18n"
+    lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
 </ng-template>

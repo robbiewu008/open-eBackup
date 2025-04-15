@@ -26,7 +26,7 @@ public:
     static ApiOperatorManager *GetInstance();
 
     virtual int32_t GetRestApiOperator(const ControlDeviceInfo &info, std::shared_ptr <ApiOperator> &spRestApi,
-                                       bool isGetFromCache = true);
+                                       bool isGetFromCache = true, bool isOpService = false);
 
     void GetLevelAndRoleID(const std::string& mode, std::string& level, std::string& roleId) const;
 private:

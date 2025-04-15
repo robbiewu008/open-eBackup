@@ -12,6 +12,7 @@
 */
 package openbackup.opengauss.resources.access.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
@@ -24,9 +25,8 @@ import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.asserts.PowerAssert;
+import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.util.StreamUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.List;
@@ -101,6 +101,7 @@ public class OpenGaussClusterUtil {
         List<ProtectedResource> resourceList = dependencies.get(DatabaseConstants.AGENTS);
         return resourceList.stream()
             .flatMap(StreamUtil.match(ProtectedEnvironment.class))
+            .filter(env -> LinkStatusEnum.ONLINE.getStatus().toString().equals(env.getLinkStatus()))
             .map(OpenGaussClusterUtil::applyAgentEndpoint)
             .collect(Collectors.toList());
     }

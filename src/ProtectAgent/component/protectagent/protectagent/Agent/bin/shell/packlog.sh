@@ -1,14 +1,16 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
+# 
+#  This file is a part of the open-eBackup project.
+#  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+#  If a copy of the MPL was not distributed with this file, You can obtain one at
+#  http://mozilla.org/MPL/2.0/.
+# 
+#  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+# 
+#  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+#  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+#  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 
 ###### Custom installation directory ######
@@ -41,6 +43,7 @@ NGINX_LOG_PATH="${AGENT_ROOT_PATH}/nginx/logs"
 AGENT_TMP_PATH="${AGENT_ROOT_PATH}/stmp"
 PLUGIN_LOG_PATH="${AGENT_ROOT_PATH}/log/Plugins"
 PLUGIN_SLOG_PATH="${AGENT_ROOT_PATH}/slog/Plugins"
+FILECLIENT_SLOG_PATH="${AGENT_ROOT_PATH}/slog/FileClientLog"
 LOG_FILE_NAME="${AGENT_LOG_PATH}/packlog.log"
 SYS_LOG_MAX_100MB=102400
 ARCHIVED_SYS_LOG_SIZE=10240
@@ -135,6 +138,7 @@ collectLogMain()
     mkdir "${AGENT_TMP_PATH}/${LOG_FOLDER}"
     mkdir "${AGENT_TMP_PATH}/${LOG_FOLDER}/nginx_log"
     mkdir "${AGENT_TMP_PATH}/${LOG_FOLDER}/agent_log"
+    mkdir "${AGENT_TMP_PATH}/${LOG_FOLDER}/fileclient_log"
     mkdir "${AGENT_TMP_PATH}/${LOG_FOLDER}/plugin_log"
     mkdir "${AGENT_TMP_PATH}/${LOG_FOLDER}/plugin_log/log"
     mkdir "${AGENT_TMP_PATH}/${LOG_FOLDER}/plugin_log/slog"
@@ -165,6 +169,10 @@ collectLogMain()
 
     if [ -d "${PLUGIN_SLOG_PATH}" ]; then
         CP -rf "${AGENT_ROOT_PATH}/slog/Plugins"/*Plugin "${AGENT_TMP_PATH}/${LOG_FOLDER}/plugin_log/slog"
+    fi
+
+    if [ -d "${FILECLIENT_SLOG_PATH}" ]; then
+        CP -r -p "${FILECLIENT_SLOG_PATH}"/*.log*  "${AGENT_TMP_PATH}/${LOG_FOLDER}/fileclient_log"
     fi
 
     collectSysLog

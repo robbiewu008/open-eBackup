@@ -1,0 +1,61 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="上传Kubernetes镜像压缩包至Kubernetes集群">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00021.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="kubernetes_CSI_00022">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>上传Kubernetes镜像压缩包至Kubernetes集群</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="kubernetes_CSI_00022"></a><a name="kubernetes_CSI_00022"></a>
+
+<h1 class="topictitle1">上传Kubernetes镜像压缩包至Kubernetes集群</h1>
+<div><p>本节以Kubernetes 1.23版本为例说明如何上传Kubernetes镜像压缩包至Kubernetes集群，不同版本操作可能略有差异。如果您有镜像仓库，也可上传镜像至镜像仓库。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><p id="kubernetes_CSI_00022__kubernetes_csi_00015_kubernetes_CSI_00012_p155091416131516">上传Kubernetes镜像压缩包前，请用户在<span id="kubernetes_CSI_00022__kubernetes_csi_00015_kubernetes_csi_00012_text157711162916">OceanProtect</span>管理界面上查询版本，再根据查询到的版本下载“OceanProtect_DataProtect<em id="kubernetes_CSI_00022__kubernetes_csi_00015_kubernetes_csi_00012_i820512012382">_X.X.X_</em>K8s_BackupImage.tgz”安装包，解压安装包后，获得对应的“k8s_backup_image_x86.tar”或“k8s_backup_image_arm64.tar”镜像压缩包。安装包通过以下方式获取。</p>
+<ul id="kubernetes_CSI_00022__kubernetes_csi_00015_kubernetes_CSI_00012_ul1470191016457"><li id="kubernetes_CSI_00022__kubernetes_csi_00015_kubernetes_CSI_00012_li12701151074511">企业用户：<a href="https://support.huawei.com/enterprise/zh/flash-storage/oceanprotect-databackup-pid-258115661/software/" target="_blank" rel="noopener noreferrer">点此前往</a></li><li id="kubernetes_CSI_00022__kubernetes_csi_00015_kubernetes_CSI_00012_li8194016184520">运营商用户：<a href="https://support.huawei.com/carrier/navi?coltype=software#col=software&amp;path=PBI1-21430725/PBI1-251363742/PBI1-250389226/PBI1-251366310/PBI1-258115661" target="_blank" rel="noopener noreferrer">点此前往</a></li></ul>
+<div class="note" id="kubernetes_CSI_00022__kubernetes_csi_00015_note6710171014395"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><div class="p" id="kubernetes_CSI_00022__kubernetes_csi_00015_p8557192519583">可通过以下方式查询版本。<ol id="kubernetes_CSI_00022__kubernetes_csi_00015_ol1134712489218"><li id="kubernetes_CSI_00022__kubernetes_csi_00015_li858118598213">单击右上角<span><img id="kubernetes_CSI_00022__kubernetes_csi_00015_image1458902641019" src="zh-cn_image_0000002204920450.png"></span>图标，选择“<span id="kubernetes_CSI_00022__kubernetes_csi_00015_text1501142871111">关于</span>”。<p id="kubernetes_CSI_00022__kubernetes_csi_00015_p99764566169">在弹框中“<span id="kubernetes_CSI_00022__kubernetes_csi_00015_text8170123961415">版本</span>”所在行显示出版本。</p>
+</li></ol>
+</div>
+</div></div>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="kubernetes_CSI_00022__li4531195619401"><a name="kubernetes_CSI_00022__li4531195619401"></a><a name="li4531195619401"></a><span>登录Kubernetes集群任一节点，并上传安装包至该集群节点。</span></li><li><span>进入安装包路径后，执行以下命令解压安装包，获得对应的“k8s_backup_image_x86.tar”或“k8s_backup_image_arm64.tar”镜像压缩包。</span><p><pre class="screen">tar -xvzf <em>OceanProtect_DataProtect</em><em>_X.X.X_</em><em>K8s_BackupImage.tgz</em></pre>
+</p></li><li id="kubernetes_CSI_00022__li164691476581"><a name="kubernetes_CSI_00022__li164691476581"></a><a name="li164691476581"></a><span>进入镜像压缩包路径后，执行以下命令上传镜像压缩包至Kubernetes集群节点，此处以k8s_backup_image_x86.tar镜像压缩包为例，ARM架构请上传相应的镜像压缩包。</span><p><pre class="screen">ctr -n k8s.io i import <em>k8s_backup_image_x86.tar</em> </pre>
+</p></li><li><span>重复执行<a href="#kubernetes_CSI_00022__li4531195619401">1</a>~<a href="#kubernetes_CSI_00022__li164691476581">3</a>的操作，将Kubernetes镜像压缩包上传至其他集群节点。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="kubernetes_CSI_00021.html">备份前准备（适用于原生Kubernetes）</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

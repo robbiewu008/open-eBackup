@@ -22,12 +22,9 @@
     <div class="aui-header-2">
       <h2>{{'common_backup_policy_label' | i18n}}</h2>
     </div>
-    <p class="aui-text-help-sm aui-gutter-column-md">
-      <lv-group [lvGutter]="'8px'">
-        <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
-        <span>{{'system_backup_tip_label' | i18n}}</span>
-      </lv-group>
-    </p>
+    <lv-alert lvType="info" [lvClosable]="false">
+        {{'system_backup_tip_label' | i18n}}
+    </lv-alert>
 
     <lv-form class="aui-gutter-column-xl">
       <lv-form-column>
@@ -56,11 +53,25 @@
           </lv-form-control>
         </lv-form-item>
       </lv-form-column>
+      <ng-container *ngIf="!isCyberengine && !isCloudBackup">
+        <lv-form-column lvWidth="20%" pmpermission pmOperation="ModifyingBackupPolicy">
+          <lv-form-item>
+            <lv-form-label>{{'system_enable_status_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+              <lv-switch [ngModel]="backupPolicySwitch" [lvControl]="true" [lvLoading]="loading"
+                (click)="updatePolicyStatus()" [lvDisabled]="_isEmpty(policyData?.destIp)">
+              </lv-switch>
+            </lv-form-control>
+          </lv-form-item>
+        </lv-form-column>
+      </ng-container>
     </lv-form>
 
     <div class="aui-operation">
       <lv-group [lvGutter]="groupCommon.middleRowGutter">
-        <button lv-button lvType='primary' (click)="policyConfig()" pmpermission pmOperation='ModifyingBackupPolicy'>
+        <button lv-button lvType='primary' (click)="policyConfig()" pmpermission pmOperation='ModifyingBackupPolicy'
+          [disabled]="!isCyberengine && !isCloudBackup && !_isEmpty(policyData?.destIp) && _isEmpty(policyData?.scheduleId)"
+          lv-tooltip="{{(!isCyberengine && !isCloudBackup && !_isEmpty(policyData?.destIp) && _isEmpty(policyData?.scheduleId) ? 'system_disable_backup_policy_tip_label' : '') | i18n}}">
           {{'common_backup_policy_label' | i18n}}
         </button>
         <lv-tooltip [lvContent]="manualBackupBtnTip">
@@ -106,7 +117,7 @@
               <td>
                 <ng-container [ngSwitch]="col.key">
                   <ng-container *ngSwitchCase="'backupTime'">
-                    {{item.backupTime | date: 'yyyy-MM-dd HH:mm:ss'}}
+                    {{item.backupTime | date: 'yyyy-MM-dd HH:mm:ss': timeZone}}
                   </ng-container>
                   <ng-container *ngSwitchCase="'backupType'">
                     {{item.backupType | textMap: 'System_Backup_Type'}}

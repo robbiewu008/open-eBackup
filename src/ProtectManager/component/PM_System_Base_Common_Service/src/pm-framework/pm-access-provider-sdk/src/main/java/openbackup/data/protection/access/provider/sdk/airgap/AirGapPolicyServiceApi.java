@@ -33,4 +33,11 @@ public interface AirGapPolicyServiceApi {
      * @return 策略id列表
      */
     List<String> getAirGapPolicyIdList();
+
+    /**
+     * 获取Air Gap所有的数量
+     *
+     * @return Air Gap的所有数量
+     */
+    Integer getAllCount();
 }

@@ -72,15 +72,32 @@
         <ng-container *ngIf="exterAgent && [deviceStorageType.ndmp.value].includes(formGroup.value.type)">
             <lv-form-item>
                 <lv-form-label lvRequired>
-                    {{'protection_proxy_host_label' | i18n}}
+                    {{'protection_clients_label' | i18n}}
                 </lv-form-label>
                 <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
-                    <aui-agent-select [lvOptions]="hostOptions" formControlName="proxyHost" lvValueKey="value" lvMode="multiple">
+                    <aui-agent-select [lvOptions]="hostOptions" formControlName="proxyHost" lvValueKey="value"
+                        lvMode="multiple">
                     </aui-agent-select>
                 </lv-form-control>
             </lv-form-item>
         </ng-container>
-        <lv-form-item>
+        <!-- 任务并发数 -->
+        <lv-form-item *ngIf="[
+                    deviceStorageType.DoradoV7.value,
+                    deviceStorageType.OceanStorDoradoV7.value,
+                    deviceStorageType.OceanStorDorado_6_1_3.value,
+                    deviceStorageType.OceanStor_6_1_3.value,
+                    deviceStorageType.OceanProtect.value,
+                    deviceStorageType.ndmp.value,
+                ].includes(formGroup.value.type)">
+            <lv-form-label lvRequired>
+                {{'protection_number_concurrent_task_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="taskErrorTip">
+                <input lv-input type="text" formControlName="taskNum" [placeholder]='placeholderLabel' />
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="formGroup.value.type !== deviceStorageType.ndmp.value">
             <lv-form-label>
                 {{'common_verify_cert_label'|i18n}}
             </lv-form-label>
@@ -118,4 +135,55 @@
             </lv-form-control>
         </lv-form-item>
     </ng-container>
+
+    <ng-container *ngIf="includes(isTestSevice, formGroup.value.type) && enableBtn && isTest">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_specify_relication_port_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-switch formControlName="isSelected">
+                </lv-switch>
+            </lv-form-control>
+            <lv-alert lvType="info" lvClosable="false">
+                {{'protection_specify_relication_port_tip_label' | i18n}}
+            </lv-alert>
+        </lv-form-item>
+        <ng-container *ngIf="formGroup.value.isSelected">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_select_replication_port_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control>
+                    <lv-select formControlName="selectedIp" [lvOptions]='replicaPortOptions' lvValueKey='value'
+                        lvMode="multiple" lvShowClear>
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="includes(isTestSevice, formGroup.value.type) && !isTest && isShow">
+        <h2 class="ip-header">{{'protection_selected_replication_port_label' | i18n}}</h2>
+        <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+    </ng-container>
+
 </lv-form>
+
+<ng-template #modalFooter>
+    <div class="lv-modal-btns">
+        <lv-group lvGutter="14px">
+            <button *ngIf="includes(isTestSevice, formGroup.value.type)" lv-button lvType="primary" (click)="test()"
+                [disabled]="!enableBtn" [lvLoading]="testLoading">
+                {{ 'common_test_label' | i18n }}
+            </button>
+            <button lv-button lvType="primary" (click)="onOK()"
+                [disabled]="(includes(isTestSevice, formGroup.value.type) && (!isTest || !enableBtn)) || (!includes(isTestSevice, formGroup.value.type) && !enableBtn)"
+                [lvLoading]="okLoading">
+                {{ 'common_ok_label' | i18n }}
+            </button>
+            <button lv-button (click)="cancle()">
+                {{ 'common_cancel_label' | i18n }}
+            </button>
+        </lv-group>
+    </div>
+</ng-template>

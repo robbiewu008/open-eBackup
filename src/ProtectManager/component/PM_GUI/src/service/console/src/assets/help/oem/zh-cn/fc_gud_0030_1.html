@@ -1,0 +1,107 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤5：创建远端设备管理员（适用于1.6.0及后续版本）">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="fc_gud_0024.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="fc_gud_0030_1">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤5：创建远端设备管理员（适用于1.6.0及后续版本）</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="fc_gud_0030_1"></a><a name="fc_gud_0030_1"></a>
+  <h1 class="topictitle1">步骤5：创建远端设备管理员<span id="zh-cn_topic_0000002164660666_ph1043315586551">（适用于1.6.0及后续版本）</span></h1>
+  <div id="body0000002008271350">
+   <p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p1976143411408">在复制的从端集群创建远端设备管理员，用于复制过程中对从端集群进行验证。</p>
+   <div class="section" id="fc_gud_0030_1__zh-cn_topic_0000002164660666_section2539113917248">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="fc_gud_0030_1__zh-cn_topic_0000002164660666_ol666545192420">
+     <li id="fc_gud_0030_1__zh-cn_topic_0000002164660666_zh-cn_topic_0000001092505479_li13830188165220"><span>登录复制从端集群的<span id="fc_gud_0030_1__zh-cn_topic_0000002164660666_text1496671015491">本产品</span>管理界面。</span></li>
+     <li id="fc_gud_0030_1__zh-cn_topic_0000002164660666_zh-cn_topic_0000001092505479_li1570821013536"><span>选择“系统 &gt; 安全 &gt; RBAC”。</span></li>
+     <li id="fc_gud_0030_1__zh-cn_topic_0000002164660666_li1348620371574"><span>在“用户”页签，单击<span class="uicontrol" id="fc_gud_0030_1__zh-cn_topic_0000002164660666_uicontrol8486133715576">“<span id="fc_gud_0030_1__zh-cn_topic_0000002164660666_text0486193710574">创建</span>”</span>。</span></li>
+     <li id="fc_gud_0030_1__zh-cn_topic_0000002164660666_li15799464290"><span>在打开的“用户基本信息”界面，参考<a href="#fc_gud_0030_1__zh-cn_topic_0000002164660666_table146051654173010">表1</a>设置基本信息，完成后单击“下一步”。</span><p></p>
+      <div class="tablenoborder">
+       <a name="fc_gud_0030_1__zh-cn_topic_0000002164660666_table146051654173010"></a><a name="zh-cn_topic_0000002164660666_table146051654173010"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="fc_gud_0030_1__zh-cn_topic_0000002164660666_table146051654173010" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>基本信息参数说明
+        </caption>
+        <colgroup>
+         <col style="width:40.93%">
+         <col style="width:59.07%">
+        </colgroup>
+        <thead align="left">
+         <tr id="fc_gud_0030_1__zh-cn_topic_0000002164660666_row1560535415303">
+          <th align="left" class="cellrowborder" valign="top" width="40.93%" id="mcps1.3.2.2.4.2.1.2.3.1.1"><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p560518547300">参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="59.07%" id="mcps1.3.2.2.4.2.1.2.3.1.2"><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p1605195418305">说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="fc_gud_0030_1__zh-cn_topic_0000002164660666_row518361118419">
+          <td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p618331184117">用户类型</p></td>
+          <td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p6183211114111">选择“本地用户”。</p></td>
+         </tr>
+         <tr id="fc_gud_0030_1__zh-cn_topic_0000002164660666_row76051154203011">
+          <td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p156051454113019">名称</p></td>
+          <td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p196051254183018">自定义用户名称。</p></td>
+         </tr>
+         <tr id="fc_gud_0030_1__zh-cn_topic_0000002164660666_row359718368413">
+          <td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p19597143610419">登录认证方式</p></td>
+          <td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p9561817134711">选择“登录密码”。</p></td>
+         </tr>
+         <tr id="fc_gud_0030_1__zh-cn_topic_0000002164660666_row11605195433015">
+          <td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p1660565410309">密码</p></td>
+          <td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p7605754153016">设置用户的密码。</p></td>
+         </tr>
+         <tr id="fc_gud_0030_1__zh-cn_topic_0000002164660666_row19605145412304">
+          <td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p18605165416301">确认密码</p></td>
+          <td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p260511541306">确认用户的密码。</p></td>
+         </tr>
+         <tr id="fc_gud_0030_1__zh-cn_topic_0000002164660666_row96054545308">
+          <td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p136055546308">角色</p></td>
+          <td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p6575171152415">在“名称”列选择“远端设备管理员”。</p></td>
+         </tr>
+         <tr id="fc_gud_0030_1__zh-cn_topic_0000002164660666_row126056541304">
+          <td class="cellrowborder" valign="top" width="40.93%" headers="mcps1.3.2.2.4.2.1.2.3.1.1 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p1560518547306">描述</p></td>
+          <td class="cellrowborder" valign="top" width="59.07%" headers="mcps1.3.2.2.4.2.1.2.3.1.2 "><p id="fc_gud_0030_1__zh-cn_topic_0000002164660666_p560513546306">可填写该用户的描述信息。</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li id="fc_gud_0030_1__zh-cn_topic_0000002164660666_li4503143713309"><span>在“总览”界面，确认用户信息无误后，单击“完成”。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="fc_gud_0024.html">复制FusionCompute虚拟机副本</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

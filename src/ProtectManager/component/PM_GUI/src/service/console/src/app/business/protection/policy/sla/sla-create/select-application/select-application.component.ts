@@ -1,16 +1,16 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, OnInit } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
 import {
@@ -25,7 +25,7 @@ import {
 import { BaseUtilService } from 'app/shared/services';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { ResourceCatalogsService } from 'app/shared/services/resource-catalogs.service';
-import { each, find, includes, toString, union } from 'lodash';
+import { each, entries, find, includes, toString, union } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
 import { CookieService } from 'app/shared/services/cookie.service';
 import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
@@ -56,7 +56,28 @@ export class SelectApplicationComponent implements OnInit {
     [DataMap.Deploy_Type.hyperdetect.value],
     this.i18n.get('deploy_type')
   );
-
+  isOceanProtect = !includes(
+    [
+      DataMap.Deploy_Type.cloudbackup2.value,
+      DataMap.Deploy_Type.cloudbackup.value,
+      DataMap.Deploy_Type.hyperdetect.value,
+      DataMap.Deploy_Type.cyberengine.value
+    ],
+    this.i18n.get('deploy_type')
+  );
+  allOptions = [];
+  searchData;
+  searchValue = '';
+  typeMap = {
+    appHost: 'appHostIcons',
+    bigData: 'bigDataIcons',
+    vm: 'vmIcons',
+    container: 'containerIcons',
+    cloud: 'cloudIcons',
+    storage: 'storageIcons',
+    application: 'applicationIcons',
+    copies: 'copiesIcons'
+  };
   constructor(
     public fb: FormBuilder,
     public i18n: I18NService,
@@ -64,7 +85,8 @@ export class SelectApplicationComponent implements OnInit {
     public cookieService: CookieService,
     public baseUtilService: BaseUtilService,
     public appUtilsService: AppUtilsService,
-    private resourceCatalogsService: ResourceCatalogsService
+    private resourceCatalogsService: ResourceCatalogsService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -136,15 +158,6 @@ export class SelectApplicationComponent implements OnInit {
             icon.id = icon.slaId;
             return includes(items, icon.slaId);
           });
-        // 由于不是独立的应用，在此新增NDMP SLA
-        this.storageIcons.splice(1, 0, {
-          id: ApplicationType.Ndmp,
-          slaId: ApplicationType.Ndmp,
-          label: this.i18n.get('protection_ndmp_protocol_label'),
-          prefix: 'N',
-          color: '#EBAA44'
-        });
-        this.storageIcons = [...this.storageIcons];
       }
       this.applicationIcons = this.appUtilsService
         .getApplicationConfig()
@@ -192,6 +205,7 @@ export class SelectApplicationComponent implements OnInit {
           ? this.applicationObj.value
           : ''
       });
+      this.updateSearchOptions();
     });
   }
 
@@ -397,6 +411,46 @@ export class SelectApplicationComponent implements OnInit {
     if (apps.length === 1) {
       return ['272px'];
     }
+  }
+
+  selectChange(res) {
+    // res是对象，value和label对等，选项是id
+    if (!toString(res)) {
+      return;
+    }
+    this.filterData(res.value);
+    this.clearForm(res.rejectKey); // 清空无关选项，给对应选项组赋值
+    this.formGroup.get(res.rejectKey).setValue(res.id);
+    this.formGroup.updateValueAndValidity();
+  }
+
+  updateSearchOptions() {
+    entries(this.typeMap).forEach(([type, key]) => {
+      this[key].forEach(e => {
+        e.rejectKey = type;
+        e.value = this.i18n.get(e.label);
+        this.allOptions.push(e);
+      });
+    });
+  }
+  change(val) {
+    // 输入框变化时的值，searchValue匹配变蓝字，定时过滤匹配内容
+    this.searchValue = val;
+    setTimeout(() => {
+      this.filterData(val);
+    }, 100);
+  }
+
+  filterData(val: string): void {
+    // 模糊搜索，不区分大小写
+    if (val) {
+      this.searchData = this.allOptions.filter(
+        item => item.value.toLowerCase().indexOf(val.toLowerCase()) !== -1
+      );
+    } else {
+      this.searchData = this.allOptions;
+    }
+    this.cdr.markForCheck();
   }
 
   showAppGuide(item): boolean {

@@ -1,20 +1,21 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
   Input,
   OnInit,
+  TemplateRef,
   ViewChild
 } from '@angular/core';
 import {
@@ -39,6 +40,8 @@ import {
   ResourceSetApiService,
   RoleApiService,
   SecurityApiService,
+  SpecialRoleIds,
+  StorageUserAuthService,
   UsersApiService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -56,16 +59,19 @@ import {
   defer,
   difference,
   each,
-  filter,
   find,
   first,
   includes,
   isUndefined,
   last,
   map,
+  size,
   trim,
+  uniqBy,
   upperCase
 } from 'lodash';
+import { combineLatest, finalize } from 'rxjs';
+import { RoleAuthTreeComponent } from '../../roles/role-detail/role-auth-tree/role-auth-tree.component';
 import { AddRoleComponent } from './add-role/add-role.component';
 
 @Component({
@@ -77,7 +83,7 @@ export class CreateUserComponent implements OnInit {
   @Input() openPage;
   @Input() data;
   stepIndex = 0;
-  step2Invalid = true;
+  step3Invalid = true;
   nextBtnDisabled = true;
 
   tableConfig: TableConfig;
@@ -86,6 +92,7 @@ export class CreateUserComponent implements OnInit {
     total: 0
   };
   selectionData = [];
+  unitAuthData = {};
   resourceSetMap = new Map();
   roleList = [];
 
@@ -114,6 +121,7 @@ export class CreateUserComponent implements OnInit {
   };
   nameToolTips = this.i18n.get('common_valid_username_label');
 
+  includes = includes;
   dataMap = DataMap;
   userTypeOptions = this.dataMapService
     .toArray('loginUserType')
@@ -124,7 +132,11 @@ export class CreateUserComponent implements OnInit {
     .filter(
       item =>
         !includes(
-          [DataMap.loginUserType.saml.value, DataMap.loginUserType.hcs.value],
+          [
+            DataMap.loginUserType.saml.value,
+            DataMap.loginUserType.hcs.value,
+            DataMap.loginUserType.dme.value
+          ],
           item.value
         )
     );
@@ -135,6 +147,19 @@ export class CreateUserComponent implements OnInit {
   notLoginRoleTypes = [
     DefaultRoles.rdAdmin.roleId,
     DefaultRoles.drAdmin.roleId
+  ];
+  isRoleAddable = false; // 用于表明能够添加更多角色
+  roleType = [
+    {
+      value: true,
+      label: this.i18n.get('system_default_role_label'),
+      isLeaf: true
+    },
+    {
+      value: false,
+      label: this.i18n.get('system_none_default_role_label'),
+      isLeaf: true
+    }
   ];
 
   isOceanProtect = !includes(
@@ -159,28 +184,36 @@ export class CreateUserComponent implements OnInit {
   );
 
   dynamicCodeHelp;
+  openStorageGroupTip;
 
+  @ViewChild('dpAdminTipTpl', { static: true }) dpAdminTipTpl;
+  @ViewChild('roleColTpl', { static: true }) roleColTpl: TemplateRef<any>;
+  @ViewChild('roleOptsTpl', { static: true }) roleOptsTpl: TemplateRef<any>;
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
 
   constructor(
-    public i18n: I18NService,
-    public drawModalService: DrawModalService,
     public router: Router,
     public fb: FormBuilder,
-    public cdr: ChangeDetectorRef,
-    public usersApiService: UsersApiService,
-    public roleApiService: RoleApiService,
+    public i18n: I18NService,
     public apiService: ApiService,
-    public baseUtilService: BaseUtilService,
+    public cdr: ChangeDetectorRef,
     public cookieService: CookieService,
+    public roleApiService: RoleApiService,
+    public appUtilsService: AppUtilsService,
+    public usersApiService: UsersApiService,
+    public baseUtilService: BaseUtilService,
+    public drawModalService: DrawModalService,
     private securityApiService: SecurityApiService,
     private sanitizer: DomSanitizer,
     private dataMapService: DataMapService,
     private resourceSetService: ResourceSetApiService,
-    public appUtilsService: AppUtilsService
+    private storageUserAuthService: StorageUserAuthService
   ) {
     this.dynamicCodeHelp = this.sanitizer.bypassSecurityTrustHtml(
       i18n.get('system_open_email_config_label')
+    );
+    this.openStorageGroupTip = this.sanitizer.bypassSecurityTrustHtml(
+      i18n.get('system_open_storage_group_tip_label')
     );
   }
 
@@ -195,19 +228,141 @@ export class CreateUserComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.data) {
+      this.userTypeOptions.push({
+        value: 'SAML',
+        label: 'system_saml_service_user_label',
+        isLeaf: true
+      });
+    }
     this.initConfig();
     this.initForm();
-    this.getSecuritPolicy();
-    if (this.data) {
-      this.getData();
+    this.getRoleList();
+    if (!this.data) {
+      this.tableData.data.push({
+        isDefaultRole: true,
+        disabled: true
+      });
+      this.getSecuritPolicy();
     }
+  }
+
+  getRoleList() {
+    this.appUtilsService.getResourceByRecursion(
+      null,
+      params => this.roleApiService.getUsingGET(params),
+      resource => {
+        this.roleOptions = resource.map(item => {
+          item.originRoleName = item.roleName;
+          item.isDefaultRole = false;
+          if (
+            this.formGroup.get('userType').value !==
+              DataMap.loginUserType.local.value &&
+            [
+              DataMap.defaultRoleName.rdAdmin.value,
+              DataMap.defaultRoleName.drAdmin.value
+            ].includes(item.roleName)
+          ) {
+            item.disabled = true;
+          }
+          if (item.is_default) {
+            item.roleName = this.dataMapService.getLabel(
+              'defaultRoleName',
+              item.roleName
+            );
+            item.roleDescription = this.dataMapService.getLabel(
+              'defaultRoleDescription',
+              item.roleDescription
+            );
+          } else {
+            // 升级场景会有自动创造的角色，使用词条做描述
+            item.roleDescription = this.i18n.get(item.roleDescription);
+          }
+          return assign(item, {
+            value: item.roleId,
+            label: item.roleName,
+            isLeaf: true
+          });
+        });
+        if (!!this.data) {
+          this.getData();
+        }
+      }
+    );
+  }
+
+  defaultRoleChange(e) {
+    // 这里要把原来的默认角色判断清掉
+    if (this.formGroup.get('roleId').value) {
+      const lastDefaultRole = find(this.roleOptions, {
+        roleId: this.formGroup.get('roleId').value
+      });
+      assign(lastDefaultRole, {
+        isDefaultRole: false,
+        disabled: false
+      });
+    }
+    const tmpRole = assign(find(this.roleOptions, { roleId: e }), {
+      isDefaultRole: true,
+      disabled: true
+    });
+    this.roleOptions = [...this.roleOptions];
+    this.isRoleAddable = !SpecialRoleIds.includes(tmpRole.roleId);
+    this.formGroup.get('roleId').setValue(tmpRole.roleId);
+    if (!this.data) {
+      this.tableData.data[0] = tmpRole;
+      // 默认角色可以选择非默认角色里面的角色，所以选择时要清掉下面重复的
+      this.tableData.data = uniqBy(this.tableData.data, 'roleId');
+    } else {
+      // 默认角色放第一个
+      const lastIndex = this.tableData.data.findIndex(
+        item => item.roleId === e
+      );
+      [this.tableData.data[0], this.tableData.data[lastIndex]] = [
+        tmpRole,
+        this.tableData.data[0]
+      ];
+    }
+    // 切换为其他内置角色则清空其他角色
+    if (!this.isRoleAddable) {
+      this.tableData = {
+        data: [cloneDeep(tmpRole)],
+        total: 1
+      };
+    } else {
+      this.tableData = {
+        data: cloneDeep(this.tableData.data),
+        total: size(this.tableData.data)
+      };
+    }
+
+    this.roleList = this.tableData.data;
+    this.updateResourceSetMapRole(this.tableData.data);
+    this.nextBtnDisabledCheck();
+  }
+
+  clearDefaultRole() {
+    // 只有在是灾备和远端有这个场景，所以不用考虑其他参数，重新初始化就行了
+    this.tableData.data = [
+      {
+        isDefaultRole: true,
+        disabled: true
+      }
+    ];
+    this.formGroup.get('roleId').setValue('');
   }
 
   getData() {
     this.formGroup.patchValue(this.data);
     this.formGroup.get('roleId').setValue(this.data.rolesSet[0]?.roleId);
+    this.isRoleAddable = !SpecialRoleIds.includes(
+      this.data.rolesSet[0]?.roleId
+    );
     this.getRoleData();
     this.getResourceData();
+    if (this.isRoleAddable) {
+      this.getStorageData();
+    }
   }
 
   private getRoleData() {
@@ -216,6 +371,7 @@ export class CreateUserComponent implements OnInit {
     let roleList = [];
     let total = 1;
     while (pageSize * pageNo < total) {
+      // 注意这里有超过200个角色的话就不能只放执行一次的东西在这里
       this.roleApiService
         .getUsingGET({
           pageNo: pageNo,
@@ -224,17 +380,25 @@ export class CreateUserComponent implements OnInit {
             userId: this.data.userId
           })
         })
-        .subscribe(res => {
+        .subscribe((res: any) => {
           this.roleDataProcess(res);
           const defaultRoleData = find(res.records, {
             roleId: this.formGroup.get('roleId').value
           });
           if (defaultRoleData) {
             defaultRoleData['disabled'] = true;
+            defaultRoleData.isDefaultRole = true;
           }
           total = res.totalCount;
           roleList = roleList.concat(res.records);
-          this.updateRoleList(roleList);
+          this.tableData = {
+            data: roleList,
+            total: roleList.length
+          };
+          if (defaultRoleData) {
+            this.defaultRoleChange(this.formGroup.get('roleId').value);
+          }
+          this.updateResourceSetMapRole(roleList);
         });
       pageNo++;
     }
@@ -252,12 +416,13 @@ export class CreateUserComponent implements OnInit {
           item['roleDescription']
         );
       }
+      item.isDefaultRole = false;
     });
   }
 
   private getResourceData() {
     this.resourceSetService
-      .QueryResourceSetByUserId({
+      .queryResourceSetByUserId({
         userId: this.data.userId
       })
       .subscribe((res: any) => {
@@ -277,6 +442,37 @@ export class CreateUserComponent implements OnInit {
       });
   }
 
+  getStorageData() {
+    this.resourceSetMap = new Map();
+    combineLatest(this.callStorageData(2), this.callStorageData(1)).subscribe(
+      res => {
+        this.resourceSetMap.set(
+          DataMap.storagePoolBackupStorageType.group.value,
+          res[0].records.map(item => {
+            return assign(item, {
+              uuid: item.storageId
+            });
+          })
+        );
+        this.resourceSetMap.set(
+          DataMap.storagePoolBackupStorageType.unit.value,
+          res[1].records.map(item => {
+            return assign(item, {
+              id: item.storageId
+            });
+          })
+        );
+      }
+    );
+  }
+
+  callStorageData(type) {
+    return this.storageUserAuthService.getStorageUserAuthRelationsByUserId({
+      userId: this.data.userId,
+      authType: type
+    });
+  }
+
   previous() {
     this.stepIndex--;
     this.nextBtnDisabledCheck();
@@ -287,39 +483,38 @@ export class CreateUserComponent implements OnInit {
     this.nextBtnDisabledCheck();
   }
 
-  nextBtnDisabledCheck(step2Invalid?) {
-    if (step2Invalid !== undefined) {
-      this.step2Invalid = step2Invalid;
+  nextBtnDisabledCheck(step3Invalid?) {
+    if (step3Invalid !== undefined) {
+      this.step3Invalid = step3Invalid;
     }
-    this.nextBtnDisabled =
-      this.stepIndex === 0
-        ? this.formGroup.status !== 'VALID'
-        : this.step2Invalid;
+    switch (this.stepIndex) {
+      case 0:
+        this.nextBtnDisabled = this.formGroup.status !== 'VALID';
+        break;
+      case 1:
+        this.nextBtnDisabled = false;
+        break;
+      default:
+        this.nextBtnDisabled = this.step3Invalid;
+        break;
+    }
   }
 
   initConfig() {
-    this.rolesOptsConfig = [
-      {
-        id: 'addRole',
-        type: 'primary',
-        label: this.i18n.get('common_add_label'),
-        onClick: () => {
-          this.addRole();
-        }
-      },
-      {
-        id: 'deleteRole',
-        label: this.i18n.get('common_delete_label'),
-        onClick: () => {
-          this.deleteRole();
-        },
-        disableCheck: data => !data.length
-      }
-    ];
     const cols: TableCols[] = [
       {
         key: 'roleName',
-        name: this.i18n.get('common_name_label')
+        name: this.i18n.get('common_name_label'),
+        width: 280,
+        cellRender: this.roleColTpl
+      },
+      {
+        key: 'isDefaultRole',
+        name: this.i18n.get('common_type_label'),
+        cellRender: {
+          type: 'status',
+          config: this.roleType
+        }
       },
       {
         key: 'userNum',
@@ -328,17 +523,19 @@ export class CreateUserComponent implements OnInit {
       {
         key: 'roleDescription',
         name: this.i18n.get('common_desc_label')
+      },
+      {
+        key: 'operation',
+        width: 130,
+        hidden: 'ignoring',
+        name: this.i18n.get('common_operation_label'),
+        cellRender: this.roleOptsTpl
       }
     ];
     this.tableConfig = {
       table: {
         compareWith: 'roleId',
         columns: cols,
-        rows: {
-          selectionMode: 'multiple',
-          selectionTrigger: 'selector',
-          showSelector: true
-        },
         selectionChange: selection => {
           this.selectionData = selection;
         }
@@ -374,7 +571,15 @@ export class CreateUserComponent implements OnInit {
         updateOn: 'change'
       }),
       confirmPassword: new FormControl('', {
-        validators: [this.validUserPasswordIsSame()],
+        validators: [
+          this.baseUtilService.VALID.password(
+            this.passLenVal,
+            this.passComplexVal,
+            this.maxLenVal
+          ),
+          this.validUserNamePwd(),
+          this.validConfirmPwdIsSame()
+        ],
         updateOn: 'change'
       }),
       roleId: new FormControl('', {
@@ -447,15 +652,48 @@ export class CreateUserComponent implements OnInit {
               this.validEmail()
             ]);
         }
+      } else if (
+        includes(
+          [
+            DataMap.loginUserType.ldap.value,
+            DataMap.loginUserType.ldapGroup.value
+          ],
+          res
+        )
+      ) {
+        this.formGroup.get('userPassword').clearValidators();
+        this.formGroup.get('confirmPassword').clearValidators();
+        if (
+          [
+            DataMap.defaultRoleName.rdAdmin.value,
+            DataMap.defaultRoleName.drAdmin.value
+          ].includes(this.tableData.data[0]?.originRoleName)
+        ) {
+          this.clearDefaultRole();
+        }
+        this.updateRoleList(this.tableData.data);
+        if (
+          this.formGroup.value.loginType === DataMap.loginMethod.password.value
+        ) {
+          this.formGroup.get('dynamicCodeEmail').clearValidators();
+        } else {
+          this.formGroup
+            .get('dynamicCodeEmail')
+            .setValidators([
+              this.baseUtilService.VALID.required(),
+              this.validEmail()
+            ]);
+        }
       } else {
         // 其他类型的用户不选远端和灾备角色
-        this.tableData.data = this.tableData.data.filter(
-          item =>
-            ![
-              DataMap.defaultRoleName.rdAdmin.value,
-              DataMap.defaultRoleName.drAdmin.value
-            ].includes(item?.originRoleName)
-        );
+        if (
+          [
+            DataMap.defaultRoleName.rdAdmin.value,
+            DataMap.defaultRoleName.drAdmin.value
+          ].includes(this.tableData.data[0]?.originRoleName)
+        ) {
+          this.clearDefaultRole();
+        }
         this.updateRoleList(this.tableData.data);
         this.formGroup.get('userPassword').clearValidators();
         this.formGroup.get('confirmPassword').clearValidators();
@@ -473,8 +711,10 @@ export class CreateUserComponent implements OnInit {
           res
         )
       ) {
-        this.roleOptions = filter(this.cacheRoleOptions, item => {
-          return !includes(this.notLoginRoleTypes, item.roleId);
+        this.roleOptions = map(this.roleOptions, item => {
+          return assign(item, {
+            disabled: includes(this.notLoginRoleTypes, item.roleId)
+          });
         });
         if (includes(this.notLoginRoleTypes, this.formGroup.value.roleId)) {
           this.formGroup.get('roleId').setValue('', { emitEvent: false });
@@ -500,8 +740,10 @@ export class CreateUserComponent implements OnInit {
           ])
         });
       } else if (res === DataMap.loginUserType.adfs.value) {
-        this.roleOptions = filter(this.cacheRoleOptions, item => {
-          return !includes(this.notLoginRoleTypes, item.roleId);
+        this.roleOptions = map(this.roleOptions, item => {
+          return assign(item, {
+            disabled: includes(this.notLoginRoleTypes, item.roleId)
+          });
         });
         if (includes(this.notLoginRoleTypes, this.formGroup.value.roleId)) {
           this.formGroup.get('roleId').setValue('', { emitEvent: false });
@@ -519,7 +761,11 @@ export class CreateUserComponent implements OnInit {
           [1, 254]
         );
       } else {
-        this.roleOptions = cloneDeep(this.cacheRoleOptions);
+        this.roleOptions = this.roleOptions.map(item => {
+          return assign(item, {
+            disabled: false
+          });
+        });
         this.formGroup
           .get('userName')
           .setValidators([
@@ -542,6 +788,21 @@ export class CreateUserComponent implements OnInit {
         });
       }
       this.formGroup.get('userName').updateValueAndValidity();
+      // saml这部分只有在修改用户的时候才会有，所以不会考虑其他情况
+      if (res === DataMap.loginUserType.saml.value) {
+        this.formGroup
+          .get('sessionLimit')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.integer(),
+            this.baseUtilService.VALID.rangeValue(1, 100)
+          ]);
+        this.sessionErrorTip.invalidRang = this.i18n.get(
+          'common_valid_rang_label',
+          [1, 100]
+        );
+        this.formGroup.get('sessionLimit').updateValueAndValidity();
+      }
     });
 
     this.formGroup.get('loginType').valueChanges.subscribe(res => {
@@ -574,7 +835,13 @@ export class CreateUserComponent implements OnInit {
           .setValidators([
             this.baseUtilService.VALID.required(),
             this.baseUtilService.VALID.integer(),
-            this.baseUtilService.VALID.rangeValue(1, 8)
+            this.baseUtilService.VALID.rangeValue(
+              1,
+              this.formGroup.get('userType').value ===
+                DataMap.loginUserType.saml.value
+                ? 100
+                : 8
+            )
           ]);
       } else {
         this.formGroup.get('sessionLimit').clearValidators();
@@ -613,19 +880,47 @@ export class CreateUserComponent implements OnInit {
   }
 
   getSecuritPolicy() {
-    this.securityApiService.getUsingGET1({}).subscribe(res => {
-      this.passLenVal = res.passLenVal;
-      this.passComplexVal = res.passComplexVal;
-      this.pwdComplexTipLabel = this.i18n.get('common_pwdtip_label', [
-        this.passLenVal,
-        64,
-        this.passComplexVal === 2
-          ? this.i18n.get('common_pwd_complex_label')
-          : '',
-        2,
-        this.i18n.get('common_pwdtip_five_six_label')
-      ]);
-    });
+    this.securityApiService
+      .getUsingGET1({})
+      .pipe(
+        finalize(() => {
+          this.formGroup
+            .get('userPassword')
+            .setValidators([
+              this.baseUtilService.VALID.password(
+                this.passLenVal,
+                this.passComplexVal,
+                this.maxLenVal
+              ),
+              this.validUserNamePwd(),
+              this.validConfirmPwdIsSame()
+            ]);
+          this.formGroup
+            .get('confirmPassword')
+            .setValidators([
+              this.baseUtilService.VALID.password(
+                this.passLenVal,
+                this.passComplexVal,
+                this.maxLenVal
+              ),
+              this.validUserNamePwd(),
+              this.validUserPasswordIsSame()
+            ]);
+        })
+      )
+      .subscribe(res => {
+        this.passLenVal = res.passLenVal;
+        this.passComplexVal = res.passComplexVal;
+        this.pwdComplexTipLabel = this.i18n.get('common_pwdtip_label', [
+          this.passLenVal,
+          64,
+          this.passComplexVal === 2
+            ? this.i18n.get('common_pwd_complex_label')
+            : '',
+          2,
+          this.i18n.get('common_pwdtip_five_six_label')
+        ]);
+      });
   }
 
   validUserNamePwd(): ValidatorFn {
@@ -726,7 +1021,7 @@ export class CreateUserComponent implements OnInit {
       lvComponentParams: {
         userType: this.formGroup.get('userType').value,
         selectionData: cloneDeep(this.tableData.data),
-        data: this.data
+        data: cloneDeep(this.tableData.data)
       },
       lvAfterOpen: modal => {
         const content = modal.getContentComponent() as AddRoleComponent;
@@ -747,10 +1042,18 @@ export class CreateUserComponent implements OnInit {
   updateRoleList(roleList) {
     this.roleList = roleList;
     this.tableData = {
-      data: roleList,
+      data: roleList.map(item => {
+        return assign(item, {
+          isDefaultRole: item?.isDefaultRole || false
+        });
+      }),
       total: roleList.length
     };
     // 根据roleId的差异，更新resourceSetMap
+    this.updateResourceSetMapRole(roleList);
+  }
+
+  private updateResourceSetMapRole(roleList: any) {
     const newRoleIdSet = new Set(map(roleList, 'roleId'));
     each(this.resourceSetMap.keys(), roleId => {
       if (!newRoleIdSet.has(roleId)) {
@@ -762,30 +1065,35 @@ export class CreateUserComponent implements OnInit {
         this.resourceSetMap.set(item.roleId, []);
       }
     });
-    this.updateRoleOptions();
   }
 
-  updateRoleOptions() {
-    const roleSet = [];
-    each(this.tableData.data, role => {
-      roleSet.push({
-        isLeaf: true,
-        key: role.roleId,
-        value: role.roleId,
-        label: role.roleName
-      });
-    });
-    this.roleOptions = roleSet;
-    this.cacheRoleOptions = cloneDeep(roleSet);
-    if (!find(roleSet, { value: this.formGroup.get('roleId').value })) {
-      this.formGroup.get('roleId').setValue('');
-    }
-  }
-
-  deleteRole() {
-    this.updateRoleList(difference(this.roleList, this.selectionData));
+  deleteRole(item?) {
+    this.updateRoleList(difference(this.roleList, item ?? this.selectionData));
     this.selectionData = [];
     this.dataTable.setSelections([]);
+  }
+
+  getRoleDetail(data) {
+    this.drawModalService.create(
+      assign({}, MODAL_COMMON.generateDrawerOptions(), {
+        lvModalKey: 'view-role-detail',
+        lvWidth: MODAL_COMMON.normalWidth,
+        lvHeader: data.roleName,
+        lvContent: RoleAuthTreeComponent,
+        lvComponentParams: {
+          data
+        },
+        lvFooter: [
+          {
+            id: 'close',
+            label: this.i18n.get('common_close_label'),
+            onClick: modal => {
+              modal.close();
+            }
+          }
+        ]
+      })
+    );
   }
 
   onOK() {
@@ -798,6 +1106,29 @@ export class CreateUserComponent implements OnInit {
         };
       })
     };
+
+    if (this.isRoleAddable) {
+      userParams.storageAuthArray = [
+        {
+          storageIds: map(
+            this.resourceSetMap.get(
+              DataMap.storagePoolBackupStorageType.group.value
+            ),
+            'uuid'
+          ),
+          authType: 2
+        },
+        {
+          storageIds: map(
+            this.resourceSetMap.get(
+              DataMap.storagePoolBackupStorageType.unit.value
+            ),
+            'id'
+          ),
+          authType: 1
+        }
+      ];
+    }
 
     if (userParams.sessionControl) {
       userParams.sessionLimit = parseInt(userParams.sessionLimit);

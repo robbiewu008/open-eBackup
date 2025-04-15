@@ -15,7 +15,8 @@
   <div class="aui-header-1">
     <h1>{{'system_rbac_label' | i18n}}</h1>
   </div>
-  <aui-rbac-overview-tag [title]="i18n.get('system_rbac_label')" [article]="i18n.get('system_rbac_tip_label')"></aui-rbac-overview-tag>
+  <aui-rbac-overview-tag [title]="i18n.get('system_rbac_label')"
+    [article]="i18n.get('system_rbac_tip_label')"></aui-rbac-overview-tag>
   <div class="aui-block aui-paginator-container" style="padding: 0;">
     <lv-tabs [(lvActiveIndex)]="tabActiveIndex" lvType="card">
       <lv-tab lvTitle="{{'common_users_label' | i18n}}" lvId="users">
@@ -28,7 +29,7 @@
           <aui-roles (openPage)="openPage($event)"></aui-roles>
         </ng-template>
       </lv-tab>
-      <lv-tab lv-tab-lazy lvTitle="{{'common_resource_set_label' | i18n}}" lvId="resourceSet" *ngIf="!isDPAdmin">
+      <lv-tab lv-tab-lazy [lvTitle]="resourceSetTitleTpl" lvId="resourceSet" *ngIf="!isDPAdmin">
         <ng-template lv-tab-lazy>
           <aui-resource-set (openPage)="openPage($event)"></aui-resource-set>
         </ng-template>
@@ -38,3 +39,9 @@
 </div>
 
 <ng-template *ngComponentOutlet="subComponent; inputs: subComponentContext"></ng-template>
+
+<ng-template #resourceSetTitleTpl>
+  <span>{{'common_resource_sets_label' | i18n}}</span>
+  <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_resourceset_desc_label' | i18n }}" lvTooltipTheme="light"
+    class="configform-constraint" lvColorState="true" style="margin-bottom:2px"></i>
+</ng-template>

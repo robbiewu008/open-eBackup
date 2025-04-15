@@ -12,32 +12,23 @@
 */
 package openbackup.data.access.framework.backup.service.impl;
 
-import static openbackup.data.access.framework.protection.common.util.JobExtendInfoUtil.getProtectedObjExtParam;
 import static openbackup.system.base.common.constants.ProtectObjectExtKeyConstant.FAILED_NODE_ESN;
 
-import openbackup.data.access.framework.backup.constant.BackupConstant;
-import openbackup.data.access.framework.copy.mng.service.CopyService;
-import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
 import com.huawei.oceanprotect.job.sdk.JobService;
 
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.framework.copy.mng.service.CopyService;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.model.PageListResponse;
 import openbackup.system.base.common.model.PagingParamRequest;
 import openbackup.system.base.common.model.SortingParamRequest;
 import openbackup.system.base.common.model.job.JobBo;
-import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.copy.CopyRestApi;
-import openbackup.system.base.sdk.copy.model.BasePage;
-import openbackup.system.base.sdk.copy.model.Copy;
-import openbackup.system.base.sdk.copy.model.CopyExtendType;
-import openbackup.system.base.sdk.copy.model.CopyStatus;
 import openbackup.system.base.sdk.job.model.JobLogBo;
 import openbackup.system.base.sdk.job.model.JobLogLevelEnum;
 import openbackup.system.base.sdk.resource.ProtectObjectRestApi;
 import openbackup.system.base.sdk.resource.model.ProtectionModifyDto;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,29 +70,8 @@ public class JobBackupPostProcessService {
      */
     public void onBackupJobSuccess(String jobId) {
         JobBo job = jobService.queryJob(jobId);
-        JSONObject protectedObjExtParam = getProtectedObjExtParam(job);
-        if (protectedObjExtParam != null
-                && protectedObjExtParam.containsKey(JobExtendInfoKeys.CHECK_POINT)
-                && protectedObjExtParam.getBoolean(JobExtendInfoKeys.CHECK_POINT)) {
-            log.info(
-                    "onBackupJobSuccess need delete invalid copies, jobId: {}, sourceId: {}", jobId, job.getSourceId());
-            int retryNum = protectedObjExtParam.containsKey(JobExtendInfoKeys.RETRY_NUM)
-                            ? protectedObjExtParam.getInt(JobExtendInfoKeys.RETRY_NUM)
-                            : BackupConstant.DEFAULT_CHECK_POINT_RETRY_NUM;
-            deletedInvalidCopies(job.getSourceId(), retryNum);
-        }
         deleteProtectObjectExtParam(job.getSourceId());
         log.info("Job({}) success, post process finished", jobId);
-    }
-
-    private void deletedInvalidCopies(String resourceId, int retryNum) {
-        BasePage<Copy> checkPointInvalidCopies =
-                copyService.queryCopiesByResourceIdAndStatusAndExtendType(
-                        resourceId, CopyStatus.INVALID.getValue(), CopyExtendType.CHECKPOINT.getValue(), retryNum);
-        List<Copy> deletedCopies = checkPointInvalidCopies.getItems();
-        for (Copy c : deletedCopies) {
-            copyRestApi.deleteCopy(c.getUuid(), null);
-        }
     }
 
     /**

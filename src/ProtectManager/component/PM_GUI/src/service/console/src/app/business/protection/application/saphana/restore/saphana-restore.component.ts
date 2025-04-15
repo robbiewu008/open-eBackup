@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
@@ -17,6 +17,7 @@ import {
   BaseUtilService,
   CommonConsts,
   DataMap,
+  extendParams,
   InstanceType,
   RestoreV2LocationType,
   RestoreV2Type,
@@ -33,8 +34,7 @@ import {
   find,
   isEmpty,
   isNumber,
-  isString,
-  set
+  isString
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -50,10 +50,11 @@ export class SaphanaRestoreComponent implements OnInit {
   formGroup: FormGroup;
   restoreLocationType = RestoreV2LocationType;
   fileReplaceStrategy = VmFileReplaceStrategy;
-
+  isLogCopy = false;
   @Input() rowCopy;
   @Input() childResType;
   @Input() restoreType;
+  isDrill;
 
   constructor(
     private fb: FormBuilder,
@@ -64,11 +65,17 @@ export class SaphanaRestoreComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initData();
+    this.initForm();
+    this.getInstanceOptions();
+  }
+
+  initData() {
     this.resourceData = isString(this.rowCopy.resource_properties)
       ? JSON.parse(this.rowCopy.resource_properties)
       : {};
-    this.initForm();
-    this.getInstanceOptions();
+    this.isLogCopy =
+      this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value;
   }
 
   initForm() {
@@ -89,7 +96,8 @@ export class SaphanaRestoreComponent implements OnInit {
         {
           validators: this.baseUtilService.VALID.required()
         }
-      )
+      ),
+      usingDelta: new FormControl(false)
     });
 
     this.listenForm();
@@ -174,14 +182,17 @@ export class SaphanaRestoreComponent implements OnInit {
     });
   }
 
-  getInstanceOptions(recordsTemp?, startPage?) {
+  getInstanceOptions(recordsTemp?, startPage?, labelParams?: any) {
+    const conditions = {
+      subType: [DataMap.Resource_Type.saphanaInstance.value],
+      isTopInstance: InstanceType.TopInstance
+    };
+    extendParams(conditions, labelParams);
+
     const params = {
       pageNo: startPage || CommonConsts.PAGE_START,
       pageSize: CommonConsts.PAGE_SIZE * 10,
-      conditions: JSON.stringify({
-        subType: [DataMap.Resource_Type.saphanaInstance.value],
-        isTopInstance: InstanceType.TopInstance
-      })
+      conditions: JSON.stringify(conditions)
     };
 
     this.protectedResourceApiService.ListResources(params).subscribe(res => {
@@ -210,9 +221,10 @@ export class SaphanaRestoreComponent implements OnInit {
           });
         });
         this.targetOptions = instanceArray;
+        this.updateDrillData();
         return;
       }
-      this.getInstanceOptions(recordsTemp, startPage);
+      this.getInstanceOptions(recordsTemp, startPage, labelParams);
     });
   }
 
@@ -234,10 +246,11 @@ export class SaphanaRestoreComponent implements OnInit {
           : this.formGroup.value.database
     };
 
-    if (this.rowCopy.backup_type === DataMap.CopyData_Backup_Type.log.value) {
+    if (this.isLogCopy) {
       assign(params, {
         extendInfo: {
-          restoreTimestamp: this.rowCopy.restoreTimeStamp
+          restoreTimestamp: this.rowCopy.restoreTimeStamp,
+          usingDelta: this.formGroup.get('usingDelta').value
         }
       });
     }
@@ -259,20 +272,33 @@ export class SaphanaRestoreComponent implements OnInit {
       const params = this.getParams();
       this.restoreV2Service
         .CreateRestoreTask({ CreateRestoreTaskRequestBody: params as any })
-        .subscribe(
-          res => {
+        .subscribe({
+          next: res => {
             observer.next();
             observer.complete();
           },
-          err => {
+          error: err => {
             observer.error(err);
             observer.complete();
           }
-        );
+        });
     });
   }
 
   disableOkBtn() {
     this.modal.getInstance().lvOkDisabled = this.formGroup.invalid;
+  }
+
+  updateTable(event?) {
+    // 根据筛选条件更新表格
+    this.getInstanceOptions(null, null, event);
+  }
+
+  updateDrillData() {
+    if (this.isDrill && !isEmpty(this.rowCopy?.drillRecoveryConfig)) {
+      const config = this.rowCopy?.drillRecoveryConfig;
+      this.formGroup.get('target').setValue(config.targetEnv);
+      this.formGroup.get('database').setValue(config.targetObject);
+    }
   }
 }

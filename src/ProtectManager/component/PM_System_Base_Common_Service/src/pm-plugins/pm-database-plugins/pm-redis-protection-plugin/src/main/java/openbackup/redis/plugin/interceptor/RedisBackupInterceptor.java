@@ -12,6 +12,10 @@
 */
 package openbackup.redis.plugin.interceptor;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+import com.huawei.oceanprotect.system.base.kerberos.service.KerberosService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
@@ -22,18 +26,14 @@ import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
 import openbackup.database.base.plugin.utils.AuthParamUtil;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.redis.plugin.constant.RedisConstant;
 import openbackup.redis.plugin.provider.RedisAgentProvider;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.json.JsonUtil;
-import com.huawei.oceanprotect.system.base.kerberos.service.KerberosService;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

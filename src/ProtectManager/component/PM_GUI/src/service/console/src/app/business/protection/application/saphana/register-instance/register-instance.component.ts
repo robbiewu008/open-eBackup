@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -56,8 +56,7 @@ export class RegisterInstanceComponent implements OnInit {
       return [
         DataMap.Detecting_During_Unit.second.value,
         DataMap.Detecting_During_Unit.minute.value,
-        DataMap.Detecting_During_Unit.hour.value,
-        DataMap.Detecting_During_Unit.day.value
+        DataMap.Detecting_During_Unit.hour.value
       ].includes(item.value);
     });
   dataMap = DataMap;
@@ -242,7 +241,6 @@ export class RegisterInstanceComponent implements OnInit {
   }
 
   getTimeRangeValid(val?) {
-    // 切换校验会有报错，待修改
     const ONE_MONTH = 30;
     const UNIT = val || this.formGroup.value.logBackupUnit;
     switch (UNIT) {
@@ -252,8 +250,8 @@ export class RegisterInstanceComponent implements OnInit {
         return this.baseUtilService.VALID.rangeValue(1, ONE_MONTH * 24 * 60);
       case DataMap.Detecting_During_Unit.hour.value:
         return this.baseUtilService.VALID.rangeValue(1, ONE_MONTH * 24);
-      case DataMap.Detecting_During_Unit.day.value:
-        return this.baseUtilService.VALID.rangeValue(1, ONE_MONTH);
+      default:
+        return this.baseUtilService.VALID.rangeValue(1, ONE_MONTH * 24);
     }
   }
 

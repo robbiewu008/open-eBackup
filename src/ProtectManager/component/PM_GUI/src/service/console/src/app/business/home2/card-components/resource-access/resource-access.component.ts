@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, Input } from '@angular/core';
 import { MenuItem } from '@iux/live';
 import {
@@ -32,7 +32,13 @@ import {
   isEmpty,
   reduce
 } from 'lodash';
-
+interface ResourceItem {
+  key: string;
+  label: string;
+  count: number;
+  subType: any[];
+  navigateParams?: RouterUrl[];
+}
 @Component({
   selector: 'resource-access',
   templateUrl: './resource-access.component.html',
@@ -72,67 +78,77 @@ export class ResourceAccessComponent implements OnInit {
   ngOnInit() {
     this.getAllCusterShow();
     this.getProtectionStatus();
-    this.resourceList = [
-      {
-        key: 'Database',
-        label: this.i18n.get('common_database_label'),
-        count: 0,
-        subType: [...this.appUtilsService.getApplicationConfig().database],
-        navigateParams: [RouterUrl.ProtectionHostAppOracle]
-      },
-      {
-        key: 'BigData',
-        label: this.i18n.get('common_bigdata_label'),
-        count: 0,
-        subType: [...this.appUtilsService.getApplicationConfig().bigData],
-        navigateParams: [RouterUrl.ProtectionHostAppClickHouse]
-      },
-      {
-        key: 'Virtualization',
-        label: this.i18n.get('common_virtualization_label'),
-        count: 0,
-        subType: [
-          ...this.appUtilsService.getApplicationConfig().virtualization
-        ],
-        navigateParams: [RouterUrl.ProtectionVirtualizationVmware]
-      },
-      {
-        key: 'Container',
-        label: this.i18n.get('common_container_label'),
-        count: 0,
-        subType: [...this.appUtilsService.getApplicationConfig().container],
-        navigateParams: [RouterUrl.ProtectionVirtualizationKubernetesContainer]
-      },
-      {
-        key: 'Cloud',
-        label: this.i18n.get('common_huawei_clouds_label'),
-        count: 0,
-        subType: [...this.appUtilsService.getApplicationConfig().cloud],
-        navigateParams: [RouterUrl.ProtectionCloudOpenstack]
-      },
-      {
-        key: 'Application',
-        label: this.i18n.get('common_application_label'),
-        count: 0,
-        subType: [...this.appUtilsService.getApplicationConfig().application],
-        navigateParams: [RouterUrl.ProtectionActiveDirectory]
-      },
-      {
-        key: 'FileSystem',
-        label: this.i18n.get('common_file_system_label'),
-        count: 0,
-        subType: [
-          ...this.appUtilsService.getApplicationConfig().fileService,
-          ...this.appUtilsService.getApplicationConfig().bareMetal
-        ],
-        navigateParams: [RouterUrl.ProtectionStorageDeviceInfo]
-      }
-    ];
+    this.prepareResourceList();
     this.formatResouceList();
   }
 
   handlePageChange({ pageIndex }) {
     this.curPage = pageIndex;
+  }
+
+  prepareResourceList() {
+    const resourceList: ResourceItem[] = [
+      {
+        key: 'Database',
+        label: this.i18n.get('common_database_label'),
+        count: 0,
+        subType: [...this.appUtilsService.getApplicationConfig().database]
+      },
+      {
+        key: 'BigData',
+        label: this.i18n.get('common_bigdata_label'),
+        count: 0,
+        subType: [...this.appUtilsService.getApplicationConfig().bigData]
+      },
+      {
+        key: 'Virtualization',
+        label: this.i18n.get('common_virtualization_label'),
+        count: 0,
+        subType: [...this.appUtilsService.getApplicationConfig().virtualization]
+      },
+      {
+        key: 'Container',
+        label: this.i18n.get('common_container_label'),
+        count: 0,
+        subType: [...this.appUtilsService.getApplicationConfig().container]
+      },
+      {
+        key: 'Cloud',
+        label: this.i18n.get('common_huawei_clouds_label'),
+        count: 0,
+        subType: [...this.appUtilsService.getApplicationConfig().cloud]
+      },
+      {
+        key: 'Application',
+        label: this.i18n.get('common_application_label'),
+        count: 0,
+        subType: [...this.appUtilsService.getApplicationConfig().application]
+      },
+      {
+        key: 'FileSystem',
+        label: this.i18n.get('common_file_system_label'),
+        count: 0,
+        subType: [...this.appUtilsService.getApplicationConfig().fileService]
+      }
+    ];
+
+    this.filterAndSetNavigateParams(resourceList);
+  }
+
+  filterAndSetNavigateParams(resourceList: ResourceItem[]) {
+    /*
+     * 1. 设置每个模块的navigateParams，默认跳转首个应用
+     * 2. 如果该模块下所有子应用被隐藏，该模块也应该隐藏
+     * */
+    this.resourceList = resourceList.filter((item: ResourceItem) => {
+      if (item.subType.length === 0) {
+        // 所有子应用都被隐藏，隐藏父模块。
+        return false;
+      }
+      // 设置跳转路由
+      item.navigateParams = [item.subType[0].protectionUrl];
+      return true;
+    });
   }
 
   getAllCusterShow() {

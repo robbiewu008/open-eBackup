@@ -95,6 +95,13 @@ public:
     int32_t DeleteSnapshot(const SnapshotInfo &snapshot) override;
     int32_t QuerySnapshotExists(SnapshotInfo &snapshot) override;
     int32_t GetSnapshotsOfVolume(const VolInfo &volInfo, std::vector<VolSnapInfo> &snapList) override;
+    int32_t ActiveSnapConsistency(const SnapshotInfo& snapshotInfo, int32_t &erroCode) override;
+    int32_t ActiveSnapInit();
+    virtual int32_t GetSnapshotProviderAuth(std::vector<std::string>& proAuth,
+        GetSnapshotRequest& request, const VolSnapInfo& volSnap);
+    int32_t FormActiveSnapRequest(ActiveSnapConsistencyRequest &actRequest,
+        const std::vector<std::string> &providerAuthList);
+    int32_t DeleteCommonSnapshot(const SnapshotInfo &snapshot);
     // meta and handle
     int32_t GetMachineMetadata(VMInfo &vmInfo) override;
     int32_t GetVolumesMetadata(const VMInfo &vmInfo,
@@ -165,11 +172,17 @@ protected:
     bool CheckIfPreHookDelete(const std::string &volId, const NewCreatedVolumeList &deleteFailVols);
     bool SaveDeleteFailVolumes(const std::string &file, NewCreatedVolumeList &deleteFailVols);
     void DeleteVolumes();
+    int32_t GetStorageLimit();
     virtual bool SendDeleteSnapshotMsg(const VolSnapInfo &volSnap);
+    bool ForceDeleteSnapshot(const VolSnapInfo &volSnap);
     virtual bool ConfirmIfSnapDeleted(const std::string &snapId, int retryTimes, int &curConsumeRetryTimes);
     virtual bool CheckIsConsistenSnapshot();
     virtual int32_t DoDeleteConsistencySnapshot(const SnapshotInfo &snapshot);
     virtual bool GetVolumeSnapshot(VolSnapInfo &volSnap);
+    virtual int32_t CheckBeforeCreateSnapshot(const std::vector<VolInfo> &volList);
+    bool checkStorageUsage(const Volume &volObj, const Pools &storagePools,
+        std::set<std::string> &storageCheck, int storageLimit);
+    int32_t GetAzWhenRestore(std::string &availabilityZone);
     virtual bool MatchVolumeName(const std::string &volumeName)
     {
         std::regex reg("^Backup_volume_.*$");
@@ -190,6 +203,7 @@ protected:
     bool m_initialized { false };
     std::shared_ptr<AppProtect::BackupJob> m_backupPara = nullptr;
     std::shared_ptr<AppProtect::RestoreJob> m_restorePara = nullptr;
+    std::shared_ptr<AppProtect::DelCopyJob> m_delCopyPara = nullptr;
     std::shared_ptr<VirtPlugin::CertManger> m_certMgr = nullptr;
     OpenStackPlugin::NovaClient m_novaClient;
     
@@ -287,7 +301,7 @@ private:
     bool ParseCreateSnapResponse(std::shared_ptr<CreateSnapshotResponse> createSnapRes, std::string &errCode);
     void FillUpVolSnapInfo(const VolInfo &volInfo, const SnapshotDetails &snapDetails, const std::string &snapshotStr,
         VolSnapInfo &volSnap);
-    bool CreateVolumeSnapshot(const VolInfo &volInfo, VolSnapInfo &volSnap, std::string &errCode);
+    virtual bool CreateVolumeSnapshot(const VolInfo &volInfo, VolSnapInfo &volSnap, std::string &errCode);
     virtual bool DoCreateSnapshot(const std::vector<VolInfo> &volList, SnapshotInfo &snapshot, std::string &errCode);
     int32_t BackUpAllVolumes(SnapshotInfo &snapshot, std::string &errCode);
     virtual bool CheckTargetVolume(const VolInfo &copyVolObj, const ApplicationResource &restoreVol);
@@ -299,7 +313,6 @@ private:
     bool DoCreateConsistencySnapshot(const std::vector<VolInfo> &volList,
         SnapshotInfo &snapshot, std::string &errCode);
     bool DoCreateCommonSnapshot(const std::vector<VolInfo> &volList, SnapshotInfo &snapshot, std::string &errCode);
-    int32_t DeleteCommonSnapshot(const SnapshotInfo &snapshot);
 };
 
 OPENSTACK_PLUGIN_NAMESPACE_END

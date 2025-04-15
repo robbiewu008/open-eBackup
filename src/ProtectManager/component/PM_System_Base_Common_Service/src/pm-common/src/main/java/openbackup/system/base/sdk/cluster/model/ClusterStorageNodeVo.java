@@ -13,6 +13,9 @@
 package openbackup.system.base.sdk.cluster.model;
 
 import lombok.Data;
+import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
+import openbackup.system.base.sdk.infrastructure.enums.InfrastructureEnums;
+import openbackup.system.base.sdk.infrastructure.model.beans.NodeDetail;
 
 /**
  * Storage nodes vo
@@ -46,4 +49,19 @@ public class ClusterStorageNodeVo {
 
     // 健康状态
     private String healthStatus;
+
+    /**
+     * 通过nodeDetail给自己的相关属性赋值
+     *
+     * @param nodeDetail nodeDetail
+     */
+    public void buildFromNodeDetail(NodeDetail nodeDetail) {
+        this.nodeId = nodeDetail.getNodeName();
+        this.nodeName = nodeDetail.getNodeName();
+        // nodeDetail中的ip都没有区分ipv4和ipv6
+        this.managementIPv4 = nodeDetail.getManagementAddress();
+        if (InfrastructureEnums.NodeStatusEnums.READY.getValue().equals(nodeDetail.getNodeStatus())) {
+            this.healthStatus = ClusterEnum.StorageStatusEnum.STATUS_RUNNING.getStatus();
+        }
+    }
 }

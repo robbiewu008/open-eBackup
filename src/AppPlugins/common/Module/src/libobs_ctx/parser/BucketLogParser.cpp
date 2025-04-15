@@ -20,12 +20,13 @@ using namespace Module;
 namespace {
 constexpr auto MODULE = "BUCKET_LOG_PARSER";
 const uint64_t MAX_OBJECT_LIST_FILE_NUM = 1000;
-}
-
 ObjectOperation GetObjectOperation(const std::string& fieldContent)
 {
     if (fieldContent.find("PUT") != std::string::npos) {
         return ObjectOperation::ADD_OR_MODIFY;
+    }
+    if (fieldContent.find("MULTI_OBJECT_DELETE") != std::string::npos) {
+        return ObjectOperation::DELETE;
     }
     if (fieldContent.find("POST") != std::string::npos) {
         return ObjectOperation::ADD_OR_MODIFY;
@@ -64,7 +65,7 @@ bool PacificParseBucketLogOneLine(const std::string& lineContent, BucketLogInfo&
 
     // 日志样例：
     // pacific:
-    // 0000018C954AE689E3C17345F28F0FA8 log-test [04/Feb/2024:07:32:51 +0000] 8.42.99.169
+    // 0000018C954AE689E3C17345F28F0FA8 log-test [04/Feb/2024:07:32:51 +0000] *.**.**.***
     // 0000018C954AE689E3C17345F28F0FA8 082a63bf170703197199000006021000 REST.PUT.ACL + % ceshi 测试.txt
     // "PUT /log-test/%2B%20%25%20ceshi%20%E6%B5%8B%E8%AF%95.txt?acl HTTP/1.1" 200 - - - 14258 12008 "-"
     // "obs-browser-plus/3.23.9" - -
@@ -125,7 +126,7 @@ bool HWParseBucketLogOneLine(const std::string& lineContent, BucketLogInfo& buck
 
     // 日志样例：
     // hcs:
-    // 85248fa9872945188723fe7068537565 bucket1 [03/Feb/2024:23:50:22 +0000] 22.2.159.33
+    // 85248fa9872945188723fe7068537565 bucket1 [03/Feb/2024:23:50:22 +0000] **.*.***.**
     // 85248fa9872945188723fe7068537565 0000018D71615D4F80058FBC87D5A7A6 REST.PUT.METADATA %2B+%25ceshi.txt
     // "PUT /bucket1/%2B%20%25ceshi.txt?metadata HTTP/1.1" 200 - - - 20 20 "-" "obs-browser-plus/3.22.9" - -
     // STANDARD - "-" f733150db0b849bba2554290869a124a
@@ -139,7 +140,7 @@ bool HWParseBucketLogOneLine(const std::string& lineContent, BucketLogInfo& buck
     std::vector<std::string> lineSplit;
     boost::algorithm::split(lineSplit, lineContent, boost::is_any_of(SEPARATOR), boost::token_compress_on);
     if (lineSplit.size() <= MAX_FIELD_ID) {
-        HCP_Log(ERR, MODULE) << "line split size is too small, size " << lineSplit.size() << HCPENDLOG;
+        HCP_Log(WARN, MODULE) << "The log file format cannot be identified, need skip: " << lineContent << HCPENDLOG;
         return false;
     }
 
@@ -171,6 +172,8 @@ std::map<StorageType, bucketLogLineParseFunc> parseFuncMap {
     {StorageType::PACIFIC, PacificParseBucketLogOneLine},
     {StorageType::HUAWEI, HWParseBucketLogOneLine}
 };
+}
+
 
 bool BucketLogParser::TraverseAllLogFiles()
 {
@@ -245,6 +248,11 @@ CTRL_FILE_RETCODE BucketLogParser::ReadFile()
             HCP_Log(ERR, MODULE) << "Read line failed for log file " << m_fileName << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
+        if (result == CTRL_FILE_RETCODE::INVALID_CONTENT) {
+            m_readBuffer.str("");
+            HCP_Log(WARN, MODULE) << "Invalid content for log file " << m_fileName << HCPENDLOG;
+            return CTRL_FILE_RETCODE::SUCCESS;
+        }
         if (result == CTRL_FILE_RETCODE::READ_EOF) {
             HCP_Log(INFO, MODULE) << "Read log file " << m_fileName << " finished" << HCPENDLOG;
             break;
@@ -276,7 +284,7 @@ CTRL_FILE_RETCODE BucketLogParser::ReadLine()
     if (!parseFuncMap[m_storageType](lineContent, bucketLogInfo)) {
         HCP_Log(ERR, MODULE) << "Parser bucket line failed, log file name " << m_fileName
             << ", line content " << lineContent << HCPENDLOG;
-        return CTRL_FILE_RETCODE::FAILED;
+        return CTRL_FILE_RETCODE::INVALID_CONTENT;
     }
     if (NeedSkip(bucketLogInfo)) {
         HCP_Log(DEBUG, MODULE) << "lineContent " << lineContent << " does not need backup" << HCPENDLOG;
@@ -300,10 +308,18 @@ bool BucketLogParser::NeedSkip(const BucketLogInfo& bucketLogInfo)
         HCP_Log(DEBUG, MODULE) << "Object name is empty" << HCPENDLOG;
         return true;
     }
+	
     if (bucketLogInfo.objectName == "-" && bucketLogInfo.objectTarget != ObjectTarget::OBJECT) {
         HCP_Log(DEBUG, MODULE) << "This action is object independent" << HCPENDLOG;
         return true;
     }
+
+    // 日志针对REST.POST.MULTI_OBJECT_DELETE，返回的对象名为-,无法获取该对象的元数据信息
+    if (bucketLogInfo.objectName == "-"  && bucketLogInfo.objectOperation == ObjectOperation::DELETE) {
+        HCP_Log(DEBUG, MODULE) << "This action is delete object" << HCPENDLOG;
+        return true;
+    }
+
     // http状态码以4或5开头表示调用失败
     if (bucketLogInfo.statusCode.find("4") == 0 || bucketLogInfo.statusCode.find("5") == 0) {
         HCP_Log(DEBUG, MODULE) << "Request is failed, status code " << bucketLogInfo.statusCode << HCPENDLOG;
@@ -320,7 +336,7 @@ bool BucketLogParser::FindObjectPrefix(const std::string& key, std::string& pref
         prefix = "";
         return true;
     }
-    
+
     for (const auto& objectPrefix : m_objectPrefixs) {
         if (key.find(objectPrefix) == 0) {
             HCP_Log(DEBUG, MODULE) << "Find prefix " << objectPrefix << HCPENDLOG;

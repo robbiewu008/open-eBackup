@@ -16,7 +16,7 @@
 #include <iostream>
 
 namespace Module {
-
+const int KILOBYTE = 1024;
 struct AuthInfo {
     std::string caFilePath;
     std::string certFilePath;

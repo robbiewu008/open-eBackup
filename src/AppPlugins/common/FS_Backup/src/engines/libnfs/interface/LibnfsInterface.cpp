@@ -296,12 +296,13 @@ int SendLinkDeleteRequest(FileHandle &fileHandle, NfsCommonData &commonData)
     return MP_SUCCESS;
 }
 
-int SendLinkDeleteRequestForRestore(FileHandle &fileHandle, NfsCommonData &commonData)
+int SendLinkDeleteRequestForRestore(FileHandle &fileHandle, struct nfsfh *nfsfh, NfsCommonData &commonData)
 {
     NfsLinkDeleteCbData *cbData = CreateLinkDeleteCbData(fileHandle, commonData);
     if (cbData == nullptr) {
         return MP_FAILED;
     }
+    cbData->nfsfh = nfsfh;
     if (SendNfsRequest(fileHandle, cbData, LibnfsEvent::LINK_DELETE_FOR_RESTORE) != MP_SUCCESS) {
         HandleSendWriterNfsRequestFailure(fileHandle, commonData);
         return MP_FAILED;
@@ -402,6 +403,12 @@ int LinkDelete(FileHandle &fileHandle, NfsCommonData &commonData, std::shared_pt
         if (fileHandle.m_file->GetDstState() == FileDescState::LINK_DEL_FAILED) {
             /* This is fileHandle for write of failed file. This is already closed and send for deletion.
              * So free the buffer and ignore further processing */
+            WARNLOG("remove link for file: %s, %llu", fileHandle.m_file->m_fileName.c_str(),
+                fileHandle.m_file->m_inode);
+            if (commonData.hardlinkMap != nullptr) {
+                commonData.hardlinkMap->RemoveLink(fileHandle);
+                commonData.hardlinkMap->RemoveElement(fileHandle.m_file->m_inode);
+            }
             blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
         } else {
             commonData.writeWaitQueue->Push(fileHandle);
@@ -417,7 +424,8 @@ int LinkDelete(FileHandle &fileHandle, NfsCommonData &commonData, std::shared_pt
     return SendLinkDeleteRequest(fileHandle, commonData);
 }
 
-int LinkDeleteForRestore(FileHandle &fileHandle, NfsCommonData &commonData)
+int LinkDeleteForRestore(FileHandle &fileHandle, NfsCommonData &commonData,
+    std::shared_ptr<FileHandleCache> fileHandleCache)
 {
     if (!IS_TO_BE_OPENED(fileHandle)) {
         commonData.writeWaitQueue->Push(fileHandle);
@@ -428,8 +436,12 @@ int LinkDeleteForRestore(FileHandle &fileHandle, NfsCommonData &commonData)
          * This doesn't have the target path stored in data buffer. Has to be ignored */
         return MP_SUCCESS;
     }
+    auto nfsfh = fileHandleCache->Get(fileHandle.m_file->m_dirName);
+    if (ProcessParentFh(fileHandle, commonData, nfsfh) != MP_SUCCESS) {
+        return MP_FAILED;
+    }
 
-    return SendLinkDeleteRequestForRestore(fileHandle, commonData);
+    return SendLinkDeleteRequestForRestore(fileHandle, nfsfh, commonData);
 }
 
 int DirectoryDelete(FileHandle &fileHandle, NfsCommonData &commonData)
@@ -533,8 +545,9 @@ void HandleSendWriterNfsRequestFailure(FileHandle &fileHandle, NfsCommonData &co
     if (IS_INCREMENT_FAIL_COUNT(fileHandle)) {
         FSBackupUtils::RecordFailureDetail(commonData.failureRecorder, fileHandle.m_file->m_fileName, EINVAL);
         commonData.controlInfo->m_noOfFilesFailed += fileHandle.m_file->m_originalFileCount;
-        ERRLOG("write file failed. %s, totalFailed: %llu", fileHandle.m_file->m_fileName.c_str(),
-            commonData.controlInfo->m_noOfFilesFailed.load());
+        ERRLOG("write file failed. %s, metaIndex: %u, metaOffset: %llu, totalFailed: %llu",
+            fileHandle.m_file->m_fileName.c_str(), fileHandle.m_file->m_metaFileIndex,
+            fileHandle.m_file->m_metaFileOffset, commonData.controlInfo->m_noOfFilesFailed.load());
     }
 
     if (!commonData.skipFailure) {

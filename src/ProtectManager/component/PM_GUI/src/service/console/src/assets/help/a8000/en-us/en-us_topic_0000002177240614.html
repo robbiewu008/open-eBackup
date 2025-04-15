@@ -1,0 +1,57 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="A VMware Restoration Job Fails, and a Message Indicating that the VM Fails to Be Created Is Displayed in the Job Details">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002177240614">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>A VMware Restoration Job Fails, and a Message Indicating that the VM Fails to Be Created Is Displayed in the Job Details</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002177240614"></a><a name="EN-US_TOPIC_0000002177240614"></a>
+
+<h1 class="topictitle1">A VMware Restoration Job Fails, and a Message Indicating that the VM Fails to Be Created Is Displayed in the Job Details</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>A VMware restoration job fails to be executed when the vSAN storage is selected as the target datastore for restoration. In the job details, a message is displayed indicating that the VM fails to be created.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Causes</h4><p>The default storage policy of the selected vSAN storage is incompatible with that of the VM.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Troubleshooting</h4><ol><li><span>Log in to the vCenter Server on a browser.</span><p><p id="EN-US_TOPIC_0000002177240614__en-us_topic_0000002200140637_p3458193034817">Login address: <strong id="EN-US_TOPIC_0000002177240614__en-us_topic_0000002200140637_b147597335312">https://</strong><em id="EN-US_TOPIC_0000002177240614__en-us_topic_0000002200140637_i1375953310313">vCenter Server IP address</em></p>
+</p></li><li><span>On the vCenter Server, find the vSAN storage selected during VMware restoration.</span></li><li><span>Select the corresponding vSAN storage in the directory tree and view the value of <span class="uicontrol"><b>Default Storage Policy</b></span> on the <span class="uicontrol"><b>Configure</b></span> tab page. If the value is <strong>vSAN Default Storage Policy</strong>, change it to <strong>Management Storage Policy - Single Node</strong>.</span></li></ol>
+<p></p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

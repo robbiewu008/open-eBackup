@@ -335,7 +335,7 @@ bool GetAppLibName()
         return false;
     }
     Json::Value plugin = jsLib["Plugin"];
-    for (int i = 0; i < plugin.size(); i++) {
+    for (unsigned int i = 0; i < plugin.size(); i++) {
         if (plugin[i].isObject() && plugin[i].isMember("PluginName") && plugin[i]["PluginName"].isString() &&
             plugin[i]["PluginName"].asString() == pluginName) {
             libNamePrefix = plugin[i]["LibName"].asString();
@@ -489,7 +489,6 @@ bool InitAgentSDK()
     }
     return true;
 }
-}
 
 bool StartThriftServer(const NasPluginStartParam& startParam)
 {
@@ -519,6 +518,7 @@ bool StartThriftServer(const NasPluginStartParam& startParam)
     }
     INFOLOG("Start plugin server and register to agent success");
     return true;
+}
 }
 
 // 1: log path 2: min port 3: max port 4: agent thrift server IP 5: agent thrift server port

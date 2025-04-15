@@ -34,7 +34,8 @@
 #include "securec.h"
 
 extern struct cmd_line_opts		opts;
-
+extern char*                       g_srcIp;
+extern NdmpConnection		g_srcConnection;
 /*
  * notifyConnected
  *   notify_connected request message handler.
@@ -132,10 +133,13 @@ notifyDataHalted(NdmpConnection connection, void *body)
 	    break;
     }
 
-    backend_msg.message = NDMP_NOTIFY_DATA_HALTED;
-    backend_msg.reason  = request->reason;
-    backend_msg.connection  = connection;
-    enqueue(backend_queue, &backend_msg);
+	if (request->reason == NDMP_DATA_HALT_SUCCESSFUL) {
+		INFOLOG("received halted request return success.");
+		set_ndmp_status(NDMP_STATUS_COMPLETED);
+	} else {
+		ERRLOG("%s: Connection halted: %s.", g_srcIp, backend_msg.text);
+		set_ndmp_status(NDMP_STATUS_CONNECTION_HALTED);
+	}
 
     return;
 }

@@ -13,9 +13,16 @@
 #ifndef APPLICATION_SERVICE_DATA_TYPE_H
 #define APPLICATION_SERVICE_DATA_TYPE_H
 #include <string>
+#include <locale>
+#include <codecvt>
 #include "Module/src/common/JsonHelper.h"
 #include "common/CleanMemPwd.h"
 namespace FilePlugin {
+    const int PARTITION_TYPE_SYSTEM = 1;    // 操作系统分区
+    const int PARTITION_TYPE_BOOT = 2;    // 启动分区
+    const int PARTITION_TYPE_RECOVERY = 3;    // 恢复分区
+    const int PARTITION_TYPE_DATA = 4;    // 数据分区
+
     struct NasShareExtendInfo {
         std::string ip;
         std::string kerberosId;
@@ -63,9 +70,95 @@ namespace FilePlugin {
         SERIAL_MEMBER_TO_SPECIFIED_NAME(volumeMountPoints, volumeMountPoints)
         END_SERIAL_MEMEBER
     };
+
+    struct FileDiskResourceInfo {
+        std::string diskId;
+        std::string diskName;
+        uint64_t diskSize;
+        BEGIN_SERIAL_MEMEBER
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(diskId, diskId)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(diskName, diskName)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(diskSize, diskSize)
+        END_SERIAL_MEMEBER
+    };
+
+#ifdef WIN32
+    
+    struct WinVolumeInfo {
+        bool isHealthy;
+        bool isQuery;
+        int partitionType;
+        uint32_t partitionNumber;
+        uint32_t volumeType;
+        ULONGLONG totalSize;
+        ULONGLONG freeSpace;
+        ULONGLONG partitionOffset;
+        ULONGLONG partitionLength;
+        std::wstring volumeName;
+        std::wstring label;
+        std::wstring fileSystem;
+        std::wstring volumeSerialNumber;
+        std::wstring driveType;
+        std::wstring driveLetter;
+        std::wstring drivePath;
+        std::wstring partitionName;
+        std::wstring partitionGuid;
+        std::wstring partitionNameType;
+        std::wstring isBackupable;
+    };
+    
+   
+    struct StringVolumeInfo {
+        bool isHealthy;
+        int partitionType;
+        uint32_t partitionNumber;
+        uint32_t volumeType;
+        ULONGLONG totalSize;
+        ULONGLONG freeSpace;
+        ULONGLONG partitionOffset;
+        ULONGLONG partitionLength;
+        std::string volumeName;
+        std::string label;
+        std::string fileSystem;
+        std::string volumeSerialNumber;
+        std::string driveType;
+        std::string driveLetter;
+        std::string displayName;
+        std::string drivePath;
+        std::string partitionName;
+        std::string partitionGuid;
+        std::string partitionNameType;
+        std::string isBackupable;
+        
+        BEGIN_SERIAL_MEMEBER
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(volumeName, volumeName)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(label, label)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(fileSystem, fileSystem)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(totalSize, totalSize)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(freeSpace, freeSpace)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(isHealthy, isHealthy)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(volumeSerialNumber, volumeSerialNumber)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(driveType, driveType)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(drivePath, drivePath)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(driveLetter, driveLetter)
+		SERIAL_MEMBER_TO_SPECIFIED_NAME(displayName, displayName)
+		SERIAL_MEMBER_TO_SPECIFIED_NAME(partitionName, partitionName)
+		SERIAL_MEMBER_TO_SPECIFIED_NAME(volumeType, volumeType)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(partitionType, partitionType)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(isBackupable, isBackupable)
+        END_SERIAL_MEMEBER
+    };
+#endif
+
     struct FileResourceInfo {
         int totalCount {0};   // 总共资源数量
+#ifdef __linux__
+        std::vector<NasShareResourceInfo> volumeResourceDetailVec;
+#elif defined(WIN32)
+        std::vector<StringVolumeInfo> volumeResourceDetailVec;
+#endif
         std::vector<NasShareResourceInfo> resourceDetailVec;
+        std::vector<FileDiskResourceInfo> diskResourceDetailVec;
     };
 
     struct NasShareAuthInfo {

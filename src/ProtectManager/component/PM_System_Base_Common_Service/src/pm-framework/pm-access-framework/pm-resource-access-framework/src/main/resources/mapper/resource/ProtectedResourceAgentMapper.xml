@@ -51,7 +51,7 @@
             <result column="value" property="value"/>
         </collection>
         <collection property="labelList" column="uuid"
-                    ofType="com.huawei.oceanprotect.system.base.label.entity.Label"
+                    ofType="com.huawei.oceanprotect.system.base.label.entity.LabelVo"
                     select="com.huawei.oceanprotect.system.base.label.dao.LabelServiceDao.getLabelsByResourceId">
             <id column="uuid" property="uuid"/>
             <result column="NAME" property="name"/>
@@ -91,6 +91,7 @@
                  left join t_host_agent_info po on po.uuid = r.uuid
                  left join t_label_r_resource_object as lr on lr.RESOURCE_OBJECT_ID = r.uuid
                  left join t_label as l on l.uuid = lr.LABEL_ID
+                 left join res_extend_info as rei on rei.resource_id = r.uuid
     </sql>
 
     <sql id="SelectResourceAndEnvironmentCountBase">
@@ -100,6 +101,7 @@
                  LEFT JOIN t_host_agent_info po ON po.uuid = r.uuid
                  LEFT JOIN t_label_r_resource_object as lr ON lr.RESOURCE_OBJECT_ID = r.uuid
                  LEFT JOIN t_label as l ON l.uuid = lr.LABEL_ID
+                 left join res_extend_info as rei on rei.resource_id = r.uuid
     </sql>
 
     <sql id="SelectScenarioNotOne">
@@ -107,7 +109,7 @@
     </sql>
 
     <sql id="SelectFilteredAgentResourceIdByScenario">
-        select distinct resource_id from RES_EXTEND_INFO
+        select resource_id from RES_EXTEND_INFO
         <where>
             <if test="filteredByPluginTypeIds != null and filteredByPluginTypeIds.size() > 0 ">
                 and resource_id in
@@ -122,7 +124,7 @@
     </sql>
 
     <sql id="SelectFilteredAgentResourceIdByScenarioZero">
-        select distinct resource_id from RES_EXTEND_INFO
+        select resource_id from RES_EXTEND_INFO
         <where>
             <!-- vmware无scenario字段，所以这里适配，将内置agentId查出来, 查外置指查非内置 -->
             resource_id not in (select resource_id from RES_EXTEND_INFO where key = 'scenario' and value = 1)
@@ -136,7 +138,7 @@
     </sql>
 
     <sql id="SelectFilteredAgentResourceIdByScenarioOne">
-        select distinct resource_id from RES_EXTEND_INFO
+        select resource_id from RES_EXTEND_INFO
         <where>
             key = 'scenario' and value = '1'
             <if test="filteredByPluginTypeIds != null and filteredByPluginTypeIds.size() > 0 ">
@@ -151,6 +153,9 @@
     <sql id="CommonFuzzyQuery">
         <if test="type != null and type != ''">
             AND r.type = #{type}
+        </if>
+        <if test="isUpGrade != null and isUpGrade != ''">
+            AND rei.key = 'agentUpgradeable' AND rei.value = #{isUpGrade}
         </if>
         <if test="subType != null and subType.size() > 0">
             AND sub_type in
@@ -190,11 +195,23 @@
         <if test="version != null and version != ''">
             AND r.version like #{version}
         </if>
-        <if test="labelName != null and labelName != ''">
-            AND UPPER(l.name) LIKE CONCAT('%', UPPER(#{labelName}), '%')
+        <if test="labelName != null and labelName != '' and userName != null and userName != ''">
+            AND UPPER(l.name) LIKE CONCAT('%', UPPER(#{labelName}), '%') AND l.BUILDER_NAME = #{userName}
         </if>
         <if test="authorizedUser != null and authorizedUser != ''">
             AND r.authorized_user like #{authorizedUser}
+        </if>
+        <if test="labelList != null and labelList.size() > 0">
+            AND r.uuid IN (
+            SELECT tlb.resource_object_id
+            FROM t_label_r_resource_object tlb
+            WHERE tlb.label_id IN
+            <foreach collection="labelList" item="label" open="(" separator="," close=")">
+                #{label}
+            </foreach>
+            GROUP BY tlb.resource_object_id
+            HAVING COUNT(DISTINCT tlb.label_id) = array_length(ARRAY[<foreach collection="labelList" item="label" separator="," >#{label}</foreach>], 1)
+            )
         </if>
     </sql>
 
@@ -287,7 +304,8 @@
              r.parent_name, r.parent_uuid, r.root_uuid, r.source_type, r.version,
              r.protection_status, r.user_id, r.authorized_user, r.auth, e.endpoint,
              e.port, e.user_name, e.password, e.link_status, e.location, e.os_type,
-             e.os_name, e.scan_interval, e.is_cluster, e.cert_name, e.time_zone
+             e.os_name, e.scan_interval, e.is_cluster, e.cert_name, e.time_zone,
+             po.mem_rate, po.cpu_rate
     </sql>
 
     <select id="queryAgentResourceList" parameterType="map"
@@ -305,6 +323,9 @@
     </select>
 
     <select id="querySharedAgentIds" resultType="java.lang.String">
-            select UUID from T_HOST_AGENT_INFO where IS_SHARED = true;
+            select UUID from T_HOST_AGENT_INFO where IS_SHARED = true
+    </select>
+    <select id="queryInternalAgentIds" resultType="java.lang.String">
+        select resource_id from RES_EXTEND_INFO where key = 'scenario' and value = 1
     </select>
 </mapper>

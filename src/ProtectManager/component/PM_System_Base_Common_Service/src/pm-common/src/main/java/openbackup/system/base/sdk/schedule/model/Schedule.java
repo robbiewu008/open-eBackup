@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.sdk.schedule.model;
 
-import openbackup.system.base.common.utils.JSONObject;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.common.utils.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -1,0 +1,87 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="主备域控制器场景恢复Active Directory的系统状态时，遇到同名对象（删除后重新创建的同名对象），新建的同名对象名称会加上乱码">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="ActiveDirectory-00084.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002230518277">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>主备域控制器场景恢复Active Directory的系统状态时，遇到同名对象（删除后重新创建的同名对象），新建的同名对象名称会加上乱码</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="ZH-CN_TOPIC_0000002230518277"></a><a name="ZH-CN_TOPIC_0000002230518277"></a>
+  <h1 class="topictitle1">主备域控制器场景恢复Active Directory的系统状态时，遇到同名对象（删除后重新创建的同名对象），新建的同名对象名称会加上乱码</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>如果用户在删除对象(A)后创建同名对象(A')，在系统级恢复时会导致复制冲突问题，进而导致新建的对象(A')被系统自动重命名为A'CNF:<em>GUID</em>的格式。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>该对象的DistinguishedName已存在。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">方法一：重命名同名对象(A'CNF:<em>GUID</em>)</h4>
+    <p>如需保留创建的同名对象(A'CNF:<em>GUID</em>)，请参见<a href="https://learn.microsoft.com/zh-cn/troubleshoot/windows-server/active-directory/rename-item-replication-collision" target="_blank" rel="noopener noreferrer">官方指导</a>重命名该对象。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">方法二：删除同名对象(A'CNF:<em>GUID</em>)</h4>
+    <p>如需删除创建的同名对象(A'CNF:<em>GUID</em>)，请在主域控制器恢复完成并进入正常模式后，建立主备域控制器的复制关系前删除。</p>
+    <div class="p">
+     您可在主域控制器上通过执行以下命令删除该对象，也可参见<a href="ActiveDirectory-00097.html">Active Directory进行对象级恢复时报错：该对象的DistinguishedName已存在</a>在任一备域控制器上删除该对象。
+     <pre class="screen">Import-Module ActiveDirectory
+# 获取主域控制器名称
+$CurrentDC = $env:COMPUTERNAME
+# 获取所有备域控制器的名称
+$DomainControllers = Get-ADDomainController -Filter * | Where-Object { $_.Name -ne $CurrentDC }
+# 获取并删除所有复制冲突的对象
+$CNFPattern = "CNF:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+foreach ($DC in $DomainControllers) {
+    $TargetDC = $DC.HostName
+    Write-Host "Processing Domain Controller: $TargetDC"
+  
+    Get-ADObject -Filter { Name -like "*CNF:*" } -Server $TargetDC |
+    Where-Object { $_.Name -match $CNFPattern } | ForEach-Object {
+        Write-Host "Found object: $($_.DistinguishedName) on $TargetDC"
+        
+        Remove-ADObject -Identity $_.DistinguishedName -Confirm:$false -Recursive -Server $TargetDC
+        Write-Host "Deleted object: $($_.DistinguishedName) from $TargetDC"
+    }
+}
+Write-Host "Replication conflicting objects on all other domain controllers have been cleared."</pre>
+    </div>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="ActiveDirectory-00084.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

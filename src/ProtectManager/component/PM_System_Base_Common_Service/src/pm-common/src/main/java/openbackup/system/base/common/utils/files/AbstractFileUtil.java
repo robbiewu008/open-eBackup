@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -188,6 +189,17 @@ public abstract class AbstractFileUtil {
      * 写文件
      *
      * @param dataList 需要写入文件的数据
+     * @param keepIndexSet 截取后需要保留的列号集合
+     */
+    public void writeFile(List<List<String>> dataList, Set<Integer> keepIndexSet) {
+        formatDataList(dataList);
+        writeToFile(dataList, keepIndexSet);
+    }
+
+    /**
+     * 写文件
+     *
+     * @param dataList 需要写入文件的数据
      */
     public void writeFile(List<List<String>> dataList) {
         formatDataList(dataList);
@@ -239,6 +251,14 @@ public abstract class AbstractFileUtil {
      * @param dataLst 需要写入文件的数据
      */
     protected abstract void writeToFile(List<List<String>> dataLst);
+
+    /**
+     * 写文件
+     *
+     * @param dataLst 需要写入文件的数据
+     * @param keepIndexSet 截取后需要保留的列号集合
+     */
+    protected abstract void writeToFile(List<List<String>> dataLst, Set<Integer> keepIndexSet);
 
     /**
      * 追加写文件内容

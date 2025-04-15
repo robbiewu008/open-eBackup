@@ -12,6 +12,11 @@
 */
 package openbackup.tidb.resources.access.provider;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.validator.JsonSchemaValidator;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
@@ -37,12 +42,6 @@ import openbackup.tidb.resources.access.constants.TidbConstants;
 import openbackup.tidb.resources.access.model.TidbCondition;
 import openbackup.tidb.resources.access.service.TidbService;
 import openbackup.tidb.resources.access.util.TidbUtil;
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;

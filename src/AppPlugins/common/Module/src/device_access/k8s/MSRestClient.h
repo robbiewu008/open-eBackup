@@ -15,6 +15,7 @@
 #include "json/json.h"
 #include <map>
 #include "common/Thread.h"
+#include "MSRestApi.h"
 
 // URL Method
 #define REST_URL_METHOD_GET                       "GET"
@@ -27,7 +28,7 @@
 #define HTTP_HEAD_IP_ROUTE                             "IP-Route"
 
 namespace Module {
-    class MSRestApi;
+    // class MSRestApi;
     static const char* HTTP_HEAD_AUTH_TOKEN             = "X-Auth-Token";
     static const char* HTTP_HEAD_X_FORWARDED_FOR        = "X-FORWARDED-FOR";
     static const char* HTTP_HEAD_SUBJECT_TOKEN_UPPER    = "HTTP_X_SUBJECT_TOKEN";
@@ -39,14 +40,16 @@ namespace Module {
 
 
     struct MSRestRequest {
-        MSRestRequest() {
+        MSRestRequest()
+        {
             retry = true;
             timeout = 0;
             isVerify = 0;
         }
 
         MSRestRequest(std::string IAMUrlValue, std::string userNameValue, std::string passwordValue,
-                      std::string httpMethodValue, std::string serviceUrlValue, std::string certValue) {
+                      std::string httpMethodValue, std::string serviceUrlValue, std::string certValue)
+        {
             IAMUrl = IAMUrlValue;
             userName = userNameValue;
             password = passwordValue;
@@ -60,7 +63,8 @@ namespace Module {
 
         MSRestRequest(std::string IAMUrlValue, std::string userNameValue, std::string passwordValue,
                       std::string httpMethodValue, std::string serviceUrlValue, std::string certValue,
-                      Json::Value body) {
+                      Json::Value body)
+        {
             IAMUrl = IAMUrlValue;
             userName = userNameValue;
             password = passwordValue;
@@ -120,9 +124,6 @@ namespace Module {
                 Json::Value &rsp,
                 std::string &errDesc, bool firstTime = true);
 
-//        static void BuildBaseRequest(MSRestRequest &req, const std::string method, const std::string api,
-//                                     const std::string params = "", const std::string cert = "");
-
         int LoginRequest(
                 const MSRestRequest &req, std::string *tokenID, Json::Value &rsp, std::string &errDesc, int &errorCode);
 
@@ -147,12 +148,14 @@ namespace Module {
 
         virtual ~MSRestCLient();
 
-        const std::string Token() {
+        const std::string Token()
+        {
             CThreadAutoLock tlock(&m_lockLoginToken);
             return m_token;
         }
 
-        void Token(const std::string inValue) {
+        void Token(const std::string inValue)
+        {
             CThreadAutoLock tlock(&m_lockLoginToken);
             m_token = inValue;
         }
@@ -162,11 +165,11 @@ namespace Module {
     private:
         std::map<std::string, MSRestApi *> m_restApis;
         thread_lock_t m_lockRestApi;
-        std::string m_token;    //Cache token
+        std::string m_token;    // Cache token
         thread_lock_t m_lockLoginToken;
         std::string m_iamAccessIP;
     };
 }
 
 
-#endif//_MS_REST_CLIENT_H_
+#endif

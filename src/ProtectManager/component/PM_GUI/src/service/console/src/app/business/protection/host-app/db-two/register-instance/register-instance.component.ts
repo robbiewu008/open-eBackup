@@ -1,17 +1,22 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup
+} from '@angular/forms';
 import {
   BaseUtilService,
   CommonConsts,
@@ -85,7 +90,8 @@ export class RegisterInstanceComponent implements OnInit {
 
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip,
-    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64])
+    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64]),
+    specialNameTip: this.i18n.get('common_valid_name_special_combination_label')
   };
   portErrorTip = {
     ...this.baseUtilService.rangeErrorTip,
@@ -167,8 +173,8 @@ export class RegisterInstanceComponent implements OnInit {
       type: new FormControl(DataMap.Instance_Type.single.value),
       name: new FormControl('', {
         validators: [
-          this.baseUtilService.VALID.name(),
-          this.baseUtilService.VALID.maxLength(64)
+          this.baseUtilService.VALID.required(),
+          this.nameSpecialValid()
         ]
       }),
       cluster: new FormControl(''),
@@ -202,7 +208,27 @@ export class RegisterInstanceComponent implements OnInit {
 
     this.watch();
   }
-
+  nameSpecialValid() {
+    return (control: AbstractControl): { [key: string]: { value: any } } => {
+      const value = control.value;
+      // 1、只能以字母、中文或_开头。
+      const reg1 = CommonConsts.REGEX.nameBegin;
+      if (!reg1.test(value)) {
+        return { invalidNameBegin: { value: control.value } };
+      }
+      // 2、由字母、数字、中文字符、和“_”组成。
+      const reg2 = /^[\u4e00-\u9fa5a-zA-Z_0-9]+$/;
+      if (!reg2.test(value)) {
+        return { specialNameTip: { value: control.value } };
+      }
+      // 3、长度范围是1到64位。
+      const reg3 = /^.{1,64}$/;
+      if (!reg3.test(value)) {
+        return { invalidNameLength: { value: control.value } };
+      }
+      return null;
+    };
+  }
   watch() {
     this.formGroup.get('type').valueChanges.subscribe(res => {
       if (res === DataMap.Instance_Type.single.value) {

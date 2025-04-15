@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.sdk.accesspoint.model;
 
-import openbackup.system.base.sdk.accesspoint.model.enums.InitNetworkResultCode;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import openbackup.system.base.sdk.accesspoint.model.enums.InitNetworkResultCode;
 
 import java.util.LinkedList;
 import java.util.List;

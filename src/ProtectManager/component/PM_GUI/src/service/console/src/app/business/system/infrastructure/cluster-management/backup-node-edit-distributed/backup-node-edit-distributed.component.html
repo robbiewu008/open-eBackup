@@ -33,7 +33,7 @@
 
 
 <lv-collapse [lvType]="'simple'">
-  <lv-collapse-panel lvTitle="{{'system_service_network_label' | i18n}}" [lvExpanded]="true">
+  <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="true">
     <lv-tabs [(lvActiveIndex)]="activeIndex" (lvActiveIndexChange)="selectIndexChange()" class="aui-tab">
       <lv-tab lvTitle="{{'common_backup_network_config_label' | i18n}}" lvId='backup'>
         <ng-template lv-tab-lazy>
@@ -53,3 +53,11 @@
     </lv-tabs>
   </lv-collapse-panel>
 </lv-collapse>
+
+<ng-template #titleTpl>
+  <span>{{'system_service_network_label' | i18n}}
+    <i lv-icon="aui-icon-help" lv-tooltip="{{'system_service_network_decouple_tip_label' | i18n}}"
+      lvTooltipTheme="light" lvColorState='true' lvTooltipPosition="right" style="margin-bottom:2px"
+      *ngIf="isDecouple"></i>
+  </span>
+</ng-template>

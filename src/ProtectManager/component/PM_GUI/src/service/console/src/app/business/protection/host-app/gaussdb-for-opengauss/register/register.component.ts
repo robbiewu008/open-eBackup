@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -34,7 +34,7 @@ import {
 } from 'app/shared';
 import { TableConfig } from 'app/shared/components/pro-table';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { each, filter, find, get, isNumber, map, set, size } from 'lodash';
+import { each, filter, find, get, isEmpty, map, size } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
 
 @Component({
@@ -82,6 +82,15 @@ export class RegisterComponent implements OnInit {
   pathErrorTip = {
     ...this.baseUtilService.requiredErrorTip,
     pathError: this.i18n.get('common_path_error_label')
+  };
+
+  errorKeyMap = {
+    name: 'name',
+    pmAddress: 'address',
+    businessAddr: 'businessAddress',
+    projectName: 'projectName',
+    projectId: 'projectId',
+    xbsaConfPath: 'xbsaConfPath'
   };
 
   @Input() rowData;
@@ -479,6 +488,15 @@ export class RegisterComponent implements OnInit {
     return params;
   }
 
+  setFormParamsError(err) {
+    const errorParams = err?.error?.parameters;
+    if (err?.error?.errorCode === '1677929220' && !isEmpty(errorParams)) {
+      each(errorParams, key => {
+        this.formGroup.get(this.errorKeyMap[key])?.setErrors({});
+      });
+    }
+  }
+
   onOK(): Observable<void> {
     return new Observable<void>((observer: Observer<void>) => {
       if (this.formGroup.invalid) {
@@ -491,31 +509,33 @@ export class RegisterComponent implements OnInit {
             envId: this.rowData.uuid,
             UpdateProtectedEnvironmentRequestBody: params
           })
-          .subscribe(
-            res => {
+          .subscribe({
+            next: res => {
               observer.next();
               observer.complete();
             },
-            err => {
+            error: err => {
+              this.setFormParamsError(err);
               observer.error(err);
               observer.complete();
             }
-          );
+          });
       } else {
         this.protectedEnvironmentApiService
           .RegisterProtectedEnviroment({
             RegisterProtectedEnviromentRequestBody: params
           })
-          .subscribe(
-            res => {
+          .subscribe({
+            next: res => {
               observer.next();
               observer.complete();
             },
-            err => {
+            error: err => {
+              this.setFormParamsError(err);
               observer.error(err);
               observer.complete();
             }
-          );
+          });
       }
     });
   }

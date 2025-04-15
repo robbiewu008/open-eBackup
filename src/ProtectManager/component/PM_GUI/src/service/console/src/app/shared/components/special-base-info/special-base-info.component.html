@@ -18,10 +18,10 @@
         <td>
           <div style="width: 48px;height: 48px;">
             <i lv-icon="aui-icon-summary-host" *ngIf="
-                i === 0 && [resourceType.FusionComputeCNA.value, resourceType.cNwareHost.value,resourceType.hyperVHost.value].includes(sourceType)
+                i === 0 && [resourceType.FusionComputeCNA.value, resourceType.cNwareHost.value, resourceType.nutanixHost.value, resourceType.hyperVHost.value].includes(sourceType)
               "></i>
             <i lv-icon="aui-sla-fc-cluster" *ngIf="
-                i === 0 && [resourceType.FusionComputeCluster.value, resourceType.cNwareCluster.value].includes(sourceType)
+                i === 0 && [resourceType.FusionComputeCluster.value, resourceType.cNwareCluster.value, resourceType.nutanixCluster.value].includes(sourceType)
               "></i>
             <i lv-icon="aui-icon-hcs-project" *ngIf="
                 i === 0 && (resourceType.Project.value === sourceType || resourceType.stackProject.value === sourceType || resourceType.ApsaraStack.value === sourceType)
@@ -55,6 +55,9 @@
                 </ng-container>
                 <ng-container *ngIf="sourceType === resourceType.hyperVHost.value">
                   <aui-status [value]="item.content" type="resource_LinkStatus_Special"></aui-status>
+                </ng-container>
+                <ng-container *ngIf="sourceType === resourceType.nutanixHost.value">
+                  <aui-status [value]="item.content" type="nutanixHostStatus"></aui-status>
                 </ng-container>
               </span>
               <span *ngIf="'protect_activation' === item.key">

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   EventEmitter,
@@ -22,7 +22,7 @@ import { DatatableComponent } from '@iux/live';
 import { CommonConsts, DataMap, I18NService, MODAL_COMMON } from 'app/shared';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { RememberColumnsService } from 'app/shared/services/remember-columns.service';
-import { assign, join, map } from 'lodash';
+import { assign, get, join, map } from 'lodash';
 import { RouteTableComponent } from '../route-table/route-table.component';
 
 @Component({
@@ -42,9 +42,9 @@ export class ConfigTableComponent implements OnInit {
   pageIndex = CommonConsts.PAGE_START;
   pageSizeOptions = CommonConsts.PAGE_SIZE_OPTIONS;
   columnStatus;
+  _get = get;
 
   @ViewChild('lvTable', { static: false }) lvTable: DatatableComponent;
-  @ViewChild('ipPopover', { static: false }) ipPopover;
 
   constructor(
     private i18n: I18NService,
@@ -61,7 +61,7 @@ export class ConfigTableComponent implements OnInit {
   getMtu(item) {
     switch (item.homePortType) {
       case DataMap.initHomePortType.ethernet.value:
-        return '--';
+        return item?.mtu || '--';
       case DataMap.initHomePortType.bonding.value:
         return item?.bondPort?.mtu || '--';
       case DataMap.initHomePortType.vlan.value:
@@ -78,6 +78,15 @@ export class ConfigTableComponent implements OnInit {
       case DataMap.initHomePortType.vlan.value:
         return item.vlan.portNameList.join(',');
     }
+  }
+
+  getMainPort(item) {
+    let failOverName = '';
+    if (item.currentPortName !== item.homePortName) {
+      failOverName = '/' + item.currentPortName;
+      item.isFailing = true;
+    }
+    return (item?.homePortName || '--') + failOverName;
   }
 
   getRoute(item) {
@@ -132,7 +141,6 @@ export class ConfigTableComponent implements OnInit {
 
   searchByIp(e, data) {
     data.isSearch = !!e;
-    this.ipPopover.hide();
     this.lvTable.filter({
       key: 'ip',
       value: e,

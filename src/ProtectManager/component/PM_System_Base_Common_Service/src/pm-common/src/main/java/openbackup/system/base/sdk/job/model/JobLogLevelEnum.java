@@ -12,11 +12,11 @@
 */
 package openbackup.system.base.sdk.job.model;
 
-import openbackup.system.base.util.EnumUtil;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.collect.ImmutableList;
+
+import openbackup.system.base.util.EnumUtil;
 
 import java.util.List;
 

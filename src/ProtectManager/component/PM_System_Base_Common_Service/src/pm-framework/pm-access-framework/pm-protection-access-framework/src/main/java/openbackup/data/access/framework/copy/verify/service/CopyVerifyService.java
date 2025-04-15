@@ -15,6 +15,10 @@ package openbackup.data.access.framework.copy.verify.service;
 import static openbackup.data.protection.access.provider.sdk.constants.RestoreTaskExtendInfoConstant.COPY_VERIFY_RANGE_END;
 import static openbackup.data.protection.access.provider.sdk.constants.RestoreTaskExtendInfoConstant.COPY_VERIFY_RANGE_START;
 
+import com.huawei.oceanprotect.job.dto.JobProgressRange;
+import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dme.CopyVerifyStatusEnum;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeUnifiedRestApi;
 import openbackup.data.access.framework.copy.mng.constant.CopyPropertiesKeyConstant;
@@ -27,7 +31,6 @@ import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnu
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
 import openbackup.data.protection.access.provider.sdk.util.AgentApiUtil;
 import openbackup.data.protection.access.provider.sdk.verify.CopyVerifyTask;
-import com.huawei.oceanprotect.job.dto.JobProgressRange;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.copy.model.Copy;
@@ -35,9 +38,6 @@ import openbackup.system.base.sdk.copy.model.CopyStatus;
 import openbackup.system.base.sdk.job.model.request.CreateJobRequest;
 import openbackup.system.base.sdk.lock.LockRequest;
 import openbackup.system.base.service.AvailableAgentManagementDomainService;
-import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

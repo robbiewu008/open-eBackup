@@ -13,6 +13,7 @@
 G_HA_SCRIPT_PATH=/usr/local/ha/script
 G_SUDO_SCRIPT_PATH=/opt/script
 G_SERVICE_NAME=$G_RESOURCE_NAME
+G_NODE_MARK_FILE="/opt/third_data/ha/gaussdb_node"
 
 if ! . "${G_HA_SCRIPT_PATH}/dbfunc.sh" ; then
     echo "[$(date)]ERROR: load ${G_HA_SCRIPT_PATH}/dbfunc.sh failure!"
@@ -292,7 +293,10 @@ do_start()
         do_start_double ; ret_val=$?
     fi
 
-    return $ret_val
+  # 启动完成后，记录gaussdb所在控制器至标记文件
+  echo $NODE_NAME >$G_NODE_MARK_FILE
+
+  return $ret_val
 }
 
 ######################################################################

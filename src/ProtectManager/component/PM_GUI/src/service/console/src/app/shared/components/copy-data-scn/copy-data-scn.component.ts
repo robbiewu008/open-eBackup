@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import {
@@ -25,6 +25,7 @@ import {
   I18NService,
   CookieService
 } from 'app/shared/services';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { RestoreService } from 'app/shared/services/restore.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { assign, size, first, each, includes } from 'lodash';
@@ -57,7 +58,8 @@ export class CopyDataScnComponent implements OnInit {
     private drawModalService: DrawModalService,
     private copiesApiService: CopiesService,
     private cookieService: CookieService,
-    private copyService: CopyService
+    private copyService: CopyService,
+    private appUtilService: AppUtilsService
   ) {}
 
   ngOnInit() {
@@ -96,7 +98,8 @@ export class CopyDataScnComponent implements OnInit {
           disabled: true,
           hidden:
             this.rowData.version?.substring(0, 2) === '11' ||
-            this.hideOracleOpt(),
+            this.hideOracleOpt() ||
+            this.appUtilService.isDistributed,
           onClick: () => {
             this.scnRestore(RestoreType.InstanceRestore);
           }

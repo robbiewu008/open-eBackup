@@ -14,14 +14,16 @@ package openbackup.system.base.ssh;
 
 import static openbackup.system.base.common.constants.IsmNumberConstant.ZERO;
 
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.exception.LegoCheckedException;
-import openbackup.system.base.common.utils.ExceptionUtil;
-import openbackup.system.base.common.utils.RetryTemplateUtil;
+import com.google.common.collect.Sets;
 
 import lombok.Cleanup;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.utils.ExceptionUtil;
+import openbackup.system.base.common.utils.RetryTemplateUtil;
+import openbackup.system.base.common.utils.VerifyUtil;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -122,7 +124,7 @@ public class SSHDClientSession implements AutoCloseable {
      * @throws AuthenticationException 认证异常
      */
     public static SSHDClientSession getInstance(SshUser sshUser)
-        throws SshException, SftpException, AuthenticationException {
+            throws SshException, SftpException, AuthenticationException {
         return getInstance(sshUser, DEFAULT_WAIT_TIME_FOR_AUTH_MS);
     }
 
@@ -137,7 +139,7 @@ public class SSHDClientSession implements AutoCloseable {
      * @throws AuthenticationException 认证异常
      */
     public static SSHDClientSession getInstance(SshUser sshUser, long waitTimeForAuth)
-        throws SshException, SftpException, AuthenticationException {
+            throws SshException, SftpException, AuthenticationException {
         sshUser.validate();
         SSHDClientSession session = new SSHDClientSession();
         session.waitTimeForAuthMS = waitTimeForAuth;
@@ -185,25 +187,31 @@ public class SSHDClientSession implements AutoCloseable {
 
     private SshClient initClient() {
         SshClient client = SshClient.setUpDefaultClient();
-        List<KeyExchangeFactory> factories = NamedFactory.setUpTransformedFactories(false, BuiltinDHFactories.VALUES,
-            ClientBuilder.DH2KEX);
-        client.setKeyExchangeFactories(factories);
-        PropertyResolverUtils.updateProperty(client, CoreModuleProperties.AUTH_TIMEOUT.getName(), 5000);
-        client.start();
+        initSshClient(client);
         return client;
+    }
+
+    private void initSshClient(SshClient client) {
+        List<KeyExchangeFactory> factories = NamedFactory.setUpTransformedFactories(false, BuiltinDHFactories.VALUES,
+                ClientBuilder.DH2KEX);
+        client.setKeyExchangeFactories(factories);
+        if (!VerifyUtil.isEmpty(sshUser.getMacTypeList())) {
+            client.setMacFactories(sshUser.getMacTypeList());
+        } else {
+            log.warn("Fail to set mac type list due to empty list.");
+        }
+        PropertyResolverUtils.updateProperty(client, CoreModuleProperties.AUTH_TIMEOUT.getName(),
+                DEFAULT_WAIT_TIME_FOR_AUTH_MS);
+        client.start();
     }
 
     private SshClient initProxyClient() {
         SshClient sshClient0 = ClientBuilder.builder().factory(JGitSshClient::new).build();
         if (sshClient0 instanceof JGitSshClient) {
             JGitSshClient client = (JGitSshClient) sshClient0;
-            List<KeyExchangeFactory> factories = NamedFactory.setUpTransformedFactories(false,
-                BuiltinDHFactories.VALUES, ClientBuilder.DH2KEX);
-            client.setKeyExchangeFactories(factories);
-            PropertyResolverUtils.updateProperty(client, CoreModuleProperties.AUTH_TIMEOUT.getName(), 5000);
-            client.start();
+            initSshClient(client);
             Proxy proxy = new Proxy(Proxy.Type.HTTP,
-                new InetSocketAddress(sshUser.getProxyHost(), sshUser.getProxyPort()));
+                    new InetSocketAddress(sshUser.getProxyHost(), sshUser.getProxyPort()));
             ProxyData proxyData = new ProxyData(proxy, sshUser.getUsername(), sshUser.getPassword().toCharArray());
             client.setProxyDatabase(remote -> proxyData);
             return client;
@@ -224,8 +232,7 @@ public class SSHDClientSession implements AutoCloseable {
     public void initSsh() throws IOException, AuthenticationException {
         RetryCallback<Object, Throwable> retryCallback = context -> {
             sshdSession = sshClient.connect(sshUser.getUsername(), sshUser.getIp(), sshUser.getPort())
-                .verify(waitTimeForAuthMS, TimeUnit.MILLISECONDS)
-                .getSession();
+                    .verify(waitTimeForAuthMS, TimeUnit.MILLISECONDS).getSession();
             sshdSession.addPasswordIdentity(sshUser.getPassword());
             sshdSession.auth().verify();
             if (!sshdSession.isAuthenticated()) {
@@ -237,7 +244,7 @@ public class SSHDClientSession implements AutoCloseable {
             throw new AuthenticationException("Authenticate Failed");
         };
         RetryTemplate retryTemplate = RetryTemplateUtil.fixedBackOffRetryTemplate(3, 1000L,
-            Collections.singletonMap(Exception.class, true));
+                Collections.singletonMap(Exception.class, true));
         try {
             retryTemplate.execute(retryCallback, recoveryCallback);
         } catch (Throwable throwable) {
@@ -259,8 +266,7 @@ public class SSHDClientSession implements AutoCloseable {
                 sftpSession = sshdSession;
             } else {
                 sftpSession = sshClient.connect(sshUser.getUsername(), sshUser.getIp(), sshUser.getSftpPort())
-                    .verify(waitTimeForAuthMS, TimeUnit.MILLISECONDS)
-                    .getSession();
+                        .verify(waitTimeForAuthMS, TimeUnit.MILLISECONDS).getSession();
                 sftpSession.addPasswordIdentity(sshUser.getPassword());
                 sftpSession.auth().verify();
                 if (!sftpSession.isAuthenticated()) {
@@ -280,7 +286,7 @@ public class SSHDClientSession implements AutoCloseable {
             return null;
         };
         RetryTemplate retryTemplate = RetryTemplateUtil.fixedBackOffRetryTemplate(3, 1000L,
-            Collections.singletonMap(Exception.class, true));
+                Collections.singletonMap(Exception.class, true));
         try {
             retryTemplate.execute(retryCallback, recoveryCallback);
         } catch (Throwable throwable) {
@@ -317,8 +323,8 @@ public class SSHDClientSession implements AutoCloseable {
         PtyChannelConfiguration ptyConfig = new PtyChannelConfiguration();
         String sudoCommand = sudoCommand(command);
         try (ChannelExec channel = sshdSession.createExecChannel(sudoCommand, ptyConfig, Collections.emptyMap());
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            ByteArrayOutputStream outputErr = new ByteArrayOutputStream()) {
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                ByteArrayOutputStream outputErr = new ByteArrayOutputStream()) {
             channel.setOut(output);
             channel.setErr(outputErr);
             channel.setUsePty(true);
@@ -329,12 +335,11 @@ public class SSHDClientSession implements AutoCloseable {
                 channel.getInvertedIn().flush();
             }
             channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED), Duration.ofSeconds(AGENT_INSTALL_OUT_TIME));
-            return output.toString()
-                .replaceAll("xxxxx", "")
-                .replaceAll(Boolean.FALSE.equals(sshUser.getIsScapeSudoPassword()) ? sshUser.getSuperPassword() : "",
-                    "")
-                .replaceAll(LINE_SEPARATOR, "")
-                .trim();
+            return output.toString().replaceAll("xxxxx", "")
+                    .replaceAll(
+                            Boolean.FALSE.equals(sshUser.getIsScapeSudoPassword()) ? sshUser.getSuperPassword() : "",
+                            "")
+                    .replaceAll(LINE_SEPARATOR, "").trim();
         }
     }
 
@@ -347,8 +352,8 @@ public class SSHDClientSession implements AutoCloseable {
      */
     public CmdExecRes checkCommand(String command) throws IOException {
         try (ChannelExec channel = sshdSession.createExecChannel(command);
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            ByteArrayOutputStream outputErr = new ByteArrayOutputStream()) {
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                ByteArrayOutputStream outputErr = new ByteArrayOutputStream()) {
             channel.setOut(output);
             channel.setErr(outputErr);
             channel.setUsePty(true);
@@ -369,8 +374,8 @@ public class SSHDClientSession implements AutoCloseable {
         log.info("command:{},isSuperUser:{}", command, sshUser.isSuperUser());
         if (sshUser.isSuperUser()) {
             try (ChannelExec channel = sshdSession.createExecChannel(command);
-                ByteArrayOutputStream output = new ByteArrayOutputStream();
-                ByteArrayOutputStream outputErr = new ByteArrayOutputStream()) {
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    ByteArrayOutputStream outputErr = new ByteArrayOutputStream()) {
                 channel.setOut(output);
                 channel.setErr(outputErr);
                 channel.setUsePty(true);
@@ -382,8 +387,8 @@ public class SSHDClientSession implements AutoCloseable {
             PtyChannelConfiguration ptyConfig = new PtyChannelConfiguration();
             String sudoCommand = sudoCommand(command);
             try (ChannelExec channel = sshdSession.createExecChannel(sudoCommand, ptyConfig, Collections.emptyMap());
-                ByteArrayOutputStream output = new ByteArrayOutputStream();
-                ByteArrayOutputStream outputErr = new ByteArrayOutputStream()) {
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    ByteArrayOutputStream outputErr = new ByteArrayOutputStream()) {
                 channel.setOut(output);
                 channel.setErr(outputErr);
                 channel.setUsePty(true);
@@ -416,14 +421,14 @@ public class SSHDClientSession implements AutoCloseable {
      * @return 执行结果
      * @throws IOException 异常
      */
-    public CmdExecRes execExitStatusForAgent(String ip, String command,
-        String param, boolean isRegister) throws IOException {
-        log.info("command:{},isSuperUser:{},params:{},isRegister:{}", command, sshUser.isSuperUser(),
-            param, isRegister);
+    public CmdExecRes execExitStatusForAgent(String ip, String command, String param, boolean isRegister)
+            throws IOException {
+        log.info("command:{},isSuperUser:{},params:{},isRegister:{}", command, sshUser.isSuperUser(), param,
+                isRegister);
         if (sshUser.isSuperUser()) {
             try (ChannelExec channel = sshdSession.createExecChannel(command);
-                ByteArrayOutputStream output = new ByteArrayOutputStream();
-                ByteArrayOutputStream outputErr = new ByteArrayOutputStream()) {
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    ByteArrayOutputStream outputErr = new ByteArrayOutputStream()) {
                 channel.setOut(output);
                 channel.setErr(outputErr);
                 channel.setUsePty(true);
@@ -435,14 +440,15 @@ public class SSHDClientSession implements AutoCloseable {
             PtyChannelConfiguration ptyConfig = new PtyChannelConfiguration();
             String sudoCommand = sudoCommand(command);
             try (ChannelExec channel = sshdSession.createExecChannel(sudoCommand, ptyConfig, Collections.emptyMap());
-                ByteArrayOutputStream output = new ByteArrayOutputStream();
-                ByteArrayOutputStream outputErr = new ByteArrayOutputStream()) {
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    ByteArrayOutputStream outputErr = new ByteArrayOutputStream()) {
                 channel.setOut(output);
                 channel.setErr(outputErr);
                 channel.setUsePty(true);
                 channel.open().verify(WAIT_TIME_FOR_CONNECTION_MS, TimeUnit.MILLISECONDS);
-                @Cleanup BufferedWriter bufferedWriter = new BufferedWriter(
-                    new OutputStreamWriter(channel.getInvertedIn(), StandardCharsets.UTF_8));
+                @Cleanup
+                BufferedWriter bufferedWriter = new BufferedWriter(
+                        new OutputStreamWriter(channel.getInvertedIn(), StandardCharsets.UTF_8));
                 if (Boolean.FALSE.equals(sshUser.getIsScapeSudoPassword())) {
                     log.info("Exec command without sudo pd,userName={}", sshUser.getUsername());
                     String pwd = sshUser.getSuperPassword().concat(LINE_SEPARATOR);
@@ -458,8 +464,8 @@ public class SSHDClientSession implements AutoCloseable {
         }
     }
 
-    private CmdExecRes getCmdExecRes(String ip, ChannelExec channel,
-        ByteArrayOutputStream outputErr, boolean isRegister) {
+    private CmdExecRes getCmdExecRes(String ip, ChannelExec channel, ByteArrayOutputStream outputErr,
+            boolean isRegister) {
         int correctRetryTimes = ZERO;
         // 非注册agent场景等待返回
         if (!isRegister) {
@@ -471,7 +477,7 @@ public class SSHDClientSession implements AutoCloseable {
             // 异常场景，反向注册成功但是通道尚未关闭
             if (agentRegisterService.isAgentOnline(ip) && !channel.isClosed()) {
                 channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED),
-                    Duration.ofMinutes(AGENT_INSTALL_BUFFERING_TIME));
+                        Duration.ofMinutes(AGENT_INSTALL_BUFFERING_TIME));
                 // 通道正常关闭
                 if (channel.getExitStatus() != null) {
                     return new CmdExecRes(channel.getExitStatus(), outputErr.toString());
@@ -504,7 +510,7 @@ public class SSHDClientSession implements AutoCloseable {
      * @throws SftpException sftpException
      */
     public void uploadFile(String local, String remote, Set<PosixFilePermission> filePermissions,
-        Set<PosixFilePermission> dirPermissions) throws SftpException {
+            Set<PosixFilePermission> dirPermissions) throws SftpException {
         try {
             validateSftpChannel();
             File file = new File(remote);
@@ -528,7 +534,7 @@ public class SSHDClientSession implements AutoCloseable {
             log.info("upload file success, file name :{}", remoteFilePath.getFileName());
         } catch (SftpException e) {
             log.error("upload file sftp error", ExceptionUtil.getErrorMessage(e));
-            throw e;
+            throw new LegoCheckedException(CommonErrorCode.CLIENT_REGISTER_FAILED, "insufficient user rights.");
         } catch (IOException e) {
             log.error("upload file error", ExceptionUtil.getErrorMessage(e));
             throw new LegoCheckedException(CommonErrorCode.OPERATION_FAILED, "upload file error.");
@@ -545,7 +551,7 @@ public class SSHDClientSession implements AutoCloseable {
      * @throws IOException 异常
      */
     public void uploadFileForce(String local, String remote, Set<PosixFilePermission> filePermissions,
-        Set<PosixFilePermission> dirPermissions) throws IOException {
+            Set<PosixFilePermission> dirPermissions) throws IOException {
         validateSftpChannel();
         if (!sshUser.isSuperUser()) {
             File file = new File(remote);
@@ -596,7 +602,6 @@ public class SSHDClientSession implements AutoCloseable {
         }
     }
 
-
     /**
      * 测试时校验文件夹权限
      *
@@ -608,7 +613,9 @@ public class SSHDClientSession implements AutoCloseable {
             validateSftpChannel();
             Path remoteParentPath = sftpFileSystem.getDefaultDir().resolve(remote);
             if (Files.notExists(remoteParentPath)) {
-                log.info("The file: {} not exist in sftp, no need to check permission.", remote);
+                Files.createDirectories(remoteParentPath);
+                Files.setPosixFilePermissions(remoteParentPath, Sets.newHashSet(PosixFilePermission.OWNER_EXECUTE,
+                        PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE));
                 return;
             }
             sftpClient.open(remote);

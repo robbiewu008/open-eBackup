@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
@@ -19,7 +19,7 @@ import {
   PipeTransform,
   ViewChild
 } from '@angular/core';
-import { MessageService, ModalRef } from '@iux/live';
+import { MessageService, ModalRef, PageConfig } from '@iux/live';
 import {
   CommonConsts,
   I18NService,
@@ -56,10 +56,11 @@ export class SelectTableComponent implements OnInit {
   @Input() selectedTableData;
   @Input() modifiedTables;
   pageIndex = CommonConsts.PAGE_START;
-  pageSize = CommonConsts.PAGE_SIZE * 5;
+  pageSize = CommonConsts.PAGE_SIZE_MAX;
   totalTable = 0;
   allTableData = [];
   selectionData = [];
+  tableName = '';
   @ViewChild('pageA', { static: false }) pageA;
   @ViewChild('pageS', { static: false }) pageS;
 
@@ -72,7 +73,10 @@ export class SelectTableComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getTables();
+    this.getTables({
+      pageIndex: CommonConsts.PAGE_START,
+      pageSize: CommonConsts.PAGE_SIZE_MAX
+    });
     this.disableOkBtn();
   }
 
@@ -88,10 +92,10 @@ export class SelectTableComponent implements OnInit {
     }
   }
 
-  getTables(recordsTemp?, startPage?) {
+  getTables(filter) {
     const params = {
-      pageNo: startPage || CommonConsts.PAGE_START + 1,
-      pageSize: CommonConsts.PAGE_SIZE * 10,
+      pageNo: filter.pageIndex + 1,
+      pageSize: filter.pageSize,
       envId: this.data?.clusterId,
       parentId: this.data.name,
       resourceType: 'HiveTable'
@@ -99,58 +103,42 @@ export class SelectTableComponent implements OnInit {
     this.protectedEnvironmentApiService
       .ListEnvironmentResource(params)
       .subscribe(res => {
-        if (!recordsTemp) {
-          recordsTemp = [];
-        }
-        if (!isNumber(startPage)) {
-          startPage = CommonConsts.PAGE_START + 1;
-        }
-        startPage++;
-        recordsTemp = [...recordsTemp, ...res.records];
-        if (
-          startPage ===
-            Math.ceil(res.totalCount / (CommonConsts.PAGE_SIZE * 10)) + 1 ||
-          res.totalCount === 0
-        ) {
-          this.allTableData = recordsTemp;
-          this.totalTable = recordsTemp.length;
-
-          if (this.modifiedTables.length) {
-            each(this.allTableData, item => {
-              if (find(this.modifiedTables, val => val === item.name)) {
-                assign(item.extendInfo, {
-                  isLocked: 'false'
-                });
-                assign(item, {
-                  disabled: false
-                });
-              } else {
-                assign(item, {
-                  disabled: item.extendInfo?.isLocked === 'true'
-                });
-              }
-            });
-          } else {
-            each(this.allTableData, item => {
+        this.allTableData = res.records;
+        this.totalTable = res.totalCount;
+        if (this.modifiedTables.length) {
+          each(this.allTableData, item => {
+            if (find(this.modifiedTables, val => val === item.name)) {
+              assign(item.extendInfo, {
+                isLocked: 'false'
+              });
+              assign(item, {
+                disabled: false
+              });
+            } else {
               assign(item, {
                 disabled: item.extendInfo?.isLocked === 'true'
               });
-            });
-          }
-          each(this.allTableData, item => {
-            if (find(this.selectedTableData, { name: item.name })) {
-              this.selectionData = [...this.selectionData, item];
             }
           });
-          return;
+        } else {
+          each(this.allTableData, item => {
+            assign(item, {
+              disabled: item.extendInfo?.isLocked === 'true'
+            });
+          });
         }
-        this.getTables(recordsTemp, startPage);
+        each(this.allTableData, item => {
+          if (find(this.selectedTableData, { name: item.name })) {
+            this.selectionData = [...this.selectionData, item];
+          }
+        });
       });
   }
 
-  pageChange(page) {
-    this.pageSize = page.pageSize;
-    this.pageIndex = page.pageIndex;
+  pageChange(filter: PageConfig) {
+    this.pageSize = filter.pageSize;
+    this.pageIndex = filter.pageIndex;
+    this.getTables(filter);
   }
 
   selectionChange() {

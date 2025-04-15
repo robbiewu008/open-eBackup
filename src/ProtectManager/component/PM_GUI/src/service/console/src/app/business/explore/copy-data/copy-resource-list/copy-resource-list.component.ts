@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from '@iux/live';
@@ -18,7 +18,9 @@ import {
   DataMap,
   GROUP_COMMON,
   WormStatusEnum,
-  hasCopyDeletePermission
+  hasCopyDeletePermission,
+  OperateItems,
+  CommonConsts
 } from 'app/shared';
 import { CopiesService } from 'app/shared/api/services';
 import { I18NService, WarningMessageService } from 'app/shared/services';
@@ -27,6 +29,7 @@ import {
   assign,
   cloneDeep,
   find,
+  get,
   includes,
   intersection,
   isNil,
@@ -102,15 +105,18 @@ export class CopyResourceListComponent implements OnInit {
       );
     });
     this.warningMessageService.create({
+      rowData: this.copyListComponent.selection,
+      actionId: OperateItems.DeletingCopy,
       content: this.i18n.get('common_copy_delete_label', [timeArr.join(',')]),
-      onOK: () => {
+      onOK: modal => {
         this.batchOperateService.selfGetResults(
           item => {
             return this.copiesApiService.deleteCopyV1CopiesCopyIdDelete({
               copyId: item.uuid,
               akDoException: false,
               akOperationTips: false,
-              akLoading: false
+              akLoading: false,
+              isForced: get(modal, 'contentInstance.forciblyDeleteCopy', null)
             });
           },
           map(cloneDeep(this.copyListComponent.selection), item => {
@@ -124,7 +130,10 @@ export class CopyResourceListComponent implements OnInit {
           }),
           () => {
             this.copyListComponent.getCopies();
-          }
+          },
+          '',
+          false,
+          CommonConsts.CONCURRENT_NUM
         );
       }
     });

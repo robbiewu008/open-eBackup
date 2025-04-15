@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef _AGENT_DEFINES_H_
 #define _AGENT_DEFINES_H_
 
@@ -14,7 +26,7 @@ static const mp_uint32 HTTP_TIME_OUT_ONE_MIN = 60;     // 60S
 static const mp_int32 MAX_FULL_PATH_LEN = 300;
 static const mp_int32 MAX_PATH_LEN = 260;
 static const mp_int32 MAX_FILE_NAME_LEN = 80;
-static const mp_int32 MAX_LINE_SIZE = 2048;
+static const mp_int32 MAX_LINE_SIZE = 20480;
 static const mp_int32 MAX_SINGED_INTEGER_VALUE = 2147483647;
 static const mp_uint32 MAX_UNSIGNED_INT_VALUE = 4294967295;
 static const mp_int32 MAX_HOSTNAME_LENGTH = 260;   // 主机名长度

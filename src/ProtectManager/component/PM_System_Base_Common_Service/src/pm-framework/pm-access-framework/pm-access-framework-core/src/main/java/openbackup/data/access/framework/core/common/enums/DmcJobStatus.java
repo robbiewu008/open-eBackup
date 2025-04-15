@@ -12,10 +12,9 @@
 */
 package openbackup.data.access.framework.core.common.enums;
 
+import lombok.Getter;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import lombok.Getter;
 
 /**
  * DMC Job状态枚举类

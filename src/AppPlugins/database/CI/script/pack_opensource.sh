@@ -449,14 +449,7 @@ download_and_pack_scanner() {
         fi
         # 拷贝依赖
         cp -rf ${ext_pkg_path}/SCANNER_TMP/Module/* ${OUTPUT_PKG_PATH}/lib
-
         return 0
-    fi
-
-    #下载FS_Scanner软件包
-    download_fscanner_pkg
-    if [ $? -ne 0 ]; then
-        return 1
     fi
     local ext_pkg_path=${PLUGINS_PATH}/opensrc_temp/FS_SCANNER
     if [ ! -f ${ext_pkg_path}/lib/libScanner.so ]; then
@@ -464,6 +457,7 @@ download_and_pack_scanner() {
         exit 1
     else
         cp -rf ${ext_pkg_path}/lib/libScanner.so ${OUTPUT_PKG_PATH}/lib
+        cp -rf ${ext_pkg_path}/Module/* ${OUTPUT_PKG_PATH}/lib
     fi
 }
 
@@ -508,6 +502,7 @@ download_and_pack_backup() {
         exit 1
     else
         cp -rf ${ext_pkg_path}/lib/libBackup.so ${OUTPUT_PKG_PATH}/lib
+        cp -rf ${ext_pkg_path}/Module/* ${OUTPUT_PKG_PATH}/lib
     fi
 }
 
@@ -529,7 +524,11 @@ copy_app_binary() {
     cp -rf $apps_path/* $script_dest_path
     rm -rf $script_dest_path/conf
     cp -rf $apps_path/conf/*  ${OUTPUT_PKG_PATH}/conf
-    cp -rf ${PLUGINS_PATH}/opensrc_temp/backint ${OUTPUT_PKG_PATH}/bin
+    if [ "${SYS_ARCH}" == "aarch64" ]; then
+        cp -rf ${PLUGINS_PATH}/opensrc_temp/backint/aarch64/backint ${OUTPUT_PKG_PATH}/bin
+    else
+        cp -rf ${PLUGINS_PATH}/opensrc_temp/backint/x86_64/backint ${OUTPUT_PKG_PATH}/bin
+    fi
     chmod -R 550 "$script_dest_path"
     rm -rf ${PLUGINS_PATH}/opensrc_temp
 }
@@ -540,6 +539,8 @@ execute_pack_script() {
         echo "Failed to execute framework pack script."
         exit 1
     fi
+    sh ${FRAMEWORK_PATH}/build/generate_full_pkg.sh GeneralDBPlugin
+    echo "execute pack script end"
 }
 
 download_xtrabackup_script() {

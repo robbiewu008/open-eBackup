@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BaseUtilService, I18NService } from 'app/shared';
@@ -74,7 +74,8 @@ export class ProtectionAdvanceComponent implements OnInit {
           this.baseUtilService.VALID.integer(),
           this.baseUtilService.VALID.rangeValue(10, 50)
         ]
-      })
+      }),
+      archive_res_auto_index: new FormControl(false)
     });
     this.formGroup.get('lvmPercentSlider').valueChanges.subscribe(res => {
       this.formGroup.get('lvmPercent').setValue(res, { emitEvent: false });
@@ -107,6 +108,11 @@ export class ProtectionAdvanceComponent implements OnInit {
         this.resourceData[0],
         'protectedObject.extParameters.create_lvm_percent',
         ''
+      ),
+      archive_res_auto_index: get(
+        this.resourceData[0],
+        'protectedObject.extParameters.archive_res_auto_index',
+        false
       )
     });
   }
@@ -122,7 +128,8 @@ export class ProtectionAdvanceComponent implements OnInit {
       : this.resourceData;
     return assign(resourceData, {
       ext_parameters: {
-        create_lvm_percent: Number(this.formGroup.value.lvmPercent)
+        create_lvm_percent: Number(this.formGroup.value.lvmPercent),
+        archive_res_auto_index: this.formGroup.value.archive_res_auto_index
       }
     });
   }

@@ -89,18 +89,18 @@ class MongoDBResource(MetaServiceWorker):
                 return ret, result, error_param
             ret, result, error_param = resource.check_bin_path(resource.url_arbiter)
             if not ret:
-                LOGGER.error("Resource check bin path fail, url: %s.", resource.url_arbiter)
+                LOGGER.error(f"Resource check bin path fail, url: {resource.url_arbiter}.")
                 return ret, result, error_param
             return True, MongoDBCode.SUCCESS.value, ""
         except DBAuthorizedError as e:
-            LOGGER.error("Not authorized on admin to connetct resource! Error: %s", e)
+            LOGGER.error(f"Not authorized on admin to connect resource! Error: {e}")
             return False, ErrorCode.USER_ROLE_PERMISSION_ERROR.value, "root clusterAdmin"
         except FileNotFoundError as ex:
-            LOGGER.error("Resource check bin path fail, Error: %s.", ex)
+            LOGGER.error(f"Resource check bin path fail, Error: {ex}.")
             return False, ErrorCode.INVALID_BIN_PATH.value, \
                 resource.url_arbiter + ",mongo/mongos/mongod/mongodump/mongorestre"
         except Exception as ex:
-            LOGGER.error("Query auth user failed, Error: %s, error type: %s", ex, type(ex))
+            LOGGER.error(f"Query auth user failed, Error: {ex}, error type: {type(ex)}")
             return False, ErrorCode.ERROR_PARAM.value, "Check application error."
 
     @exter_attack
@@ -128,7 +128,7 @@ class MongoDBResource(MetaServiceWorker):
         try:
             ret, result, error_param = self.auth_user(resource)
             if not ret:
-                LOGGER.error("Check node environment failed, PID: %s.", self.job_manager.pid)
+                LOGGER.error(f"Check node environment failed, PID: {self.job_manager.pid}.")
                 self._query_cluster_out["extendInfo"] = {"errorCode": result, "errorParam": error_param}
                 self.return_result = self._query_cluster_out
                 return self.update_result()
@@ -198,7 +198,7 @@ class MongoDBResource(MetaServiceWorker):
             single_type = self.param.param_dict.get("application", "").get("extendInfo", "").get("singleType", "")
             if shard_cluster_type != single_type:
                 self._query_cluster_out["extendInfo"] = {
-                    "errorCode": ErrorCode.ENV_CLUSTER_TYPE_ERROR.value,
+                    "errorCode": ErrorCode.CHECK_OPEN_OPLOG_ERROR.value,
                     "errorParam": resource.get_agent_host().split(":")[0],
                 }
                 self.return_result = self._query_cluster_out

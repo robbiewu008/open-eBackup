@@ -15,6 +15,7 @@ package openbackup.ndmp.protection.access.provider;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceFeature;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
+import openbackup.data.protection.access.provider.sdk.util.ProtectedResourceUtil;
 import openbackup.ndmp.protection.access.common.NdmpCommon;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
@@ -82,5 +83,19 @@ public class NdmpResourceProvider implements ResourceProvider {
         ResourceFeature resourceFeature = ResourceProvider.super.getResourceFeature();
         resourceFeature.setSupportedLanFree(false);
         return resourceFeature;
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        return true;
+    }
+
+
+    @Override
+    public void cleanUnmodifiableFieldsWhenUpdate(ProtectedResource resource) {
+        String parentName = resource.getParentName();
+        ProtectedResourceUtil.cleanUnmodifiableFields(resource);
+        // 存储设备名称可以修改
+        resource.setParentName(parentName);
     }
 }

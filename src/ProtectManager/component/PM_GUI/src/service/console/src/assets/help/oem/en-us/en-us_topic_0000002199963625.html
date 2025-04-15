@@ -1,0 +1,86 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="What Should I Do If the Oracle Environment Variable Configuration File Is Deleted?">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164757014.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002199963625">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>What Should I Do If the Oracle Environment Variable Configuration File Is Deleted?</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002199963625"></a><a name="EN-US_TOPIC_0000002199963625"></a>
+  <h1 class="topictitle1">What Should I Do If the Oracle Environment Variable Configuration File Is Deleted?</h1>
+  <div>
+   <p>If the environment variable configuration file (for example, <strong>.bash_profile</strong>) of the Oracle host is deleted by mistake, the host is displayed as offline on the management page, and database backup and restoration jobs fail.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Log in to the Oracle database host.</span><p></p><p id="EN-US_TOPIC_0000002199963625__en-us_topic_0000002164597286_p8360011829">Use PuTTY to log in to the Oracle database host and run the <strong id="EN-US_TOPIC_0000002199963625__en-us_topic_0000002164597286_b154915812148">su - oracle</strong> command to switch to user <strong id="EN-US_TOPIC_0000002199963625__en-us_topic_0000002164597286_b144975817148">oracle</strong>.</p> <p></p></li>
+     <li><span>Check whether the environment variable configuration file (for example, <strong>.bash_profile</strong>) exists.</span><p></p><p><strong>ll -al</strong></p>
+      <ul>
+       <li>If yes, check whether the environment variables are set correctly.</li>
+       <li>If no, create an environment variable configuration file and add the following environment variables to the file based on the site requirements:<pre class="screen">export PATH
+ORACLE_SID=<em>orcl;export ORACLE_SID</em>
+ORACLE_UNQNAME=<em>orcl;export ORACLE_UNQNAME</em>
+JAVA_HOME=<em>/usr/local/java; export JAVA_HOME</em>
+ORACLE_BASE<em>=/u01/app/oracle; export ORACLE_BASE</em>   #Oracle installation directory
+ORACLE_HOME=<em>$ORACLE_BASE/product/18.3.0/dbhome_1; export ORACLE_HOME</em>    #Oracle application directory
+ORACLE_TERM=<em>xterm; export ORACLE_TERM</em>
+NLS_DATE_FORMAT=<em>"YYYY:MM:DDHH24:MI:SS"; export NLS_DATE_FORMAT</em>
+#NLS_LANG=american_america.ZHS16GBK; export NLS_LANG
+export NLS_LANG=<em>AMERICAN_AMERICA.UTF8</em>
+TNS_ADMIN=<em>$ORACLE_HOME/network/admin; export TNS_ADMIN</em>
+ORA_NLS11=<em>$ORACLE_HOME/nls/data; export ORA_NLS11</em>
+PATH=<em>.:${JAVA_HOME}/bin:${PATH}:$HOME/bin:$ORACLE_HOME/bin:$ORA_CRS_HOME/bin</em>
+PATH=<em>${PATH}:/usr/bin:/bin:/usr/bin/X11:/usr/local/bin</em>
+export PATH
+LD_LIBRARY_PATH=<em>$ORACLE_HOME/lib</em>
+LD_LIBRARY_PATH=<em>${LD_LIBRARY_PATH}:$ORACLE_HOME/oracm/lib</em>
+LD_LIBRARY_PATH=<em>${LD_LIBRARY_PATH}:/lib:/usr/lib:/usr/local/lib</em>
+export LD_LIBRARY_PATH
+CLASSPATH=<em>$ORACLE_HOME/JRE</em>
+CLASSPATH=<em>${CLASSPATH}:$ORACLE_HOME/jlib</em>
+CLASSPATH=<em>${CLASSPATH}:$ORACLE_HOME/rdbms/jlib</em>
+CLASSPATH=<em>${CLASSPATH}:$ORACLE_HOME/network/jlib</em>
+export CLASSPATH
+THREADS_FLAG=<em>native; export THREADS_FLAG</em>
+export TEMP=<em>/tmp</em>
+export TMPDIR=<em>/tmp</em></pre></li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164757014.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

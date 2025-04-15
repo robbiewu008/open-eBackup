@@ -13,6 +13,8 @@
 package openbackup.data.access.framework.protection.service.archive;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterQueryService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.archive.ArchiveUnifiedRestApi;
 import openbackup.data.access.framework.copy.mng.constant.CopyResourcePropertiesConstant;
 import openbackup.data.access.framework.core.common.enums.DmcJobStatus;
@@ -33,8 +35,6 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyInfo;
 import openbackup.system.base.service.DeployTypeService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,10 +127,9 @@ public class ArchiveTaskManager {
         if (extParameters == null) {
             return;
         }
-        Boolean archiveResAutoIndex =
-            MapUtils.getBoolean(extParameters, CopyResourcePropertiesConstant.ARCHIVE_RES_AUTO_INDEX, null);
-        if (!VerifyUtil.isEmpty(archiveResAutoIndex)) {
-            archiveTask.addAdvanceParam(ArchiveTask.ENABLE_AUTO_INDEX, archiveResAutoIndex);
+        Boolean autoCreateIndex = getAutoCreateIndex(extParameters);
+        if (!VerifyUtil.isEmpty(autoCreateIndex)) {
+            archiveTask.addAdvanceParam(ArchiveTask.ENABLE_AUTO_INDEX, autoCreateIndex);
         }
         archiveTask.addAdvanceParam(ArchiveTask.ENABLE_SMALL_FILE_AGGREGATION,
                 MapUtils.getBoolean(extParameters,
@@ -143,6 +142,14 @@ public class ArchiveTaskManager {
                 MapUtils.getIntValue(extParameters,
                         CopyResourcePropertiesConstant.AGGREGATION_FILE_MAX_SIZE,
                         CopyResourcePropertiesConstant.DEFAULT_AGGREGATION_FILE_MAX_SIZE));
+    }
+
+    private Boolean getAutoCreateIndex(Map<String, Object> extParameters) {
+        Boolean archiveResAutoIndex = MapUtils.getBoolean(extParameters,
+            CopyResourcePropertiesConstant.ARCHIVE_RES_AUTO_INDEX, false);
+        Boolean tapeArchiveResAutoIndex = MapUtils.getBoolean(extParameters,
+            CopyResourcePropertiesConstant.TAPE_ARCHIVE_AUTO_INDEX, false);
+        return archiveResAutoIndex || tapeArchiveResAutoIndex;
     }
 
     private void fillParamsFromArchivePolicy(ArchiveTask archiveTask, String policyJsonString) {

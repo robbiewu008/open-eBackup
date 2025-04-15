@@ -1,4 +1,5 @@
 #!/bin/bash
+
 ########################################
 #  This file is part of the open-eBackup project.
 # Copyright (c) 2024 Huawei Technologies Co.,Ltd.
@@ -228,23 +229,20 @@ function unset_floatip()
 {
     log_info "[${FUNCNAME[0]},$LINENO] begin unset_floatIP !"
 
-    if [ $# -ne 4 ];then
+    if [[ ${DEPLOY_TYPE} == "d8" ]]; then
+        log_info "[${FUNCNAME[0]}(),$LINENO] no need to set float ip in databackup"
+        return 0
+    fi
+
+    if [ $# -ne 1 ];then
        return 1
     fi
 
-    local network_name=$1
-    local network_ip=$2
-    local route_table=$4
+    local network_ip=$1
 
-    ${G_IFCONFIG} | grep $1
+    ip_flag_check $network_ip
     if [ $? -ne 0 ];then
-       log_error "[${FUNCNAME[0]},$LINENO] Param error: $1"
-       return 1
-    fi
-
-    ip_flag_check $2
-    if [ $? -ne 0 ];then
-        log_error "[${FUNCNAME[0]},$LINENO] $2 is not valid ip."
+        log_error "[${FUNCNAME[0]},$LINENO] $network_ip is not valid ip."
         return 1
     fi
 
@@ -254,15 +252,18 @@ function unset_floatip()
         return 0
     fi
 
+    local network_name=`${G_IP} a 2> /dev/null | grep -n $network_ip | awk '{print $NF}' |cut -d ":" -f 1`
+    local route_table=`ip rule | grep "from ${network_ip} lookup" |  awk -F " " {'print $5'}`
+    local network_ip_mask=`${G_IP} addr 2> /dev/null | grep $network_ip | awk '{print $2}' | awk -F '/' '{print $2}'`
+
     if [ $G_IPV6 -eq 1 ]
     then
-        local network_ip_mask=$3
         ${G_IP} addr del "${network_ip}/${network_ip_mask}" dev ${network_name} 2> /dev/null
-        sudo ip rule del from $2
+        sudo ip rule del from $network_ip
         ${G_IP} route del local ${network_ip} dev ${network_name} scope host src ${network_ip} table ${route_table}
     else
         ${G_IP} -6 addr del "${network_ip}/64" dev ${network_name} 2> /dev/null
-        sudo ip -6 rule del from $2
+        sudo ip -6 rule del from $2=network_ip
         ${G_IP} -6 route del local ${network_ip} dev ${network_name} scope host src ${network_ip} table ${route_table}
     fi
     if [ $? -eq 0 ];then
@@ -334,9 +335,17 @@ function ha_config() {
             if [ -f "$HA_CERT_PATH/server.key" ]; then
                 cp -f $HA_CERT_PATH/server.key $HA_CERT_PATH/server.key.old
             fi
-            chown nobody:nobody $HA_CERT_PATH/*
+            chown nobody:nobody $HA_CERT_PATH -h -R
             # 创建根证书
-            local password=$(openssl rand -base64 8)
+            # 生成随机密码,密码中至少包含三种字符
+            while true; do
+                local password=$(openssl rand -base64 8)
+                if [[ $(echo "$password" | grep -c '[a-z]') -ge 1 && \
+                      $(echo "$password" | grep -c '[A-Z]') -ge 1 && \
+                      $(echo "$password" | grep -c '[0-9]') -ge 1 ]]; then
+                    break
+                fi
+            done
             res=$(su nobody -s /bin/bash -c "cd $HA_COM_SCRIPT_PATH;./gen-cert.sh --root-ca --country=CN --state=SC --city=CD --company=HuaWei --organize=OP --common-name=HA --email=abc@example.com --config=$OPENSSL_CNF" >/dev/null 2>&1<< EOF
 ${password}
 EOF
@@ -351,6 +360,7 @@ ${password}
 ${password}
 EOF
 )
+            unset password
             rm -f $OPENSSL_TMP_CNF
             rm -f $HA_CERT_PATH/server.csr
             rm -f $HA_CERT_PATH/root-ca.srl
@@ -388,12 +398,12 @@ EOF
                 cp -f $HA_CERT_PATH/tmp/server.crt.old $HA_CERT_PATH/server.crt.old
                 cp -f $HA_CERT_PATH/tmp/server.pem.old $HA_CERT_PATH/server.pem.old
                 cp -f $HA_CERT_PATH/tmp/server.key.old $HA_CERT_PATH/server.key.old
-                chown nobody:nobody $HA_CERT_PATH/*
+                chown nobody:nobody $HA_CERT_PATH -h -R
             fi
             rm -rf $HA_CERT_PATH/tmp
             local server_key=$(cat ${SERVER_KEY_FILE})
         fi
-        su nobody -s /bin/bash -c "$HA_CONF_CTL -S ssl=true,twoway=true,keypass=$server_key"
+        su nobody -s /bin/bash -c "LD_PRELOAD=/usr/lib64/libSecurityStarter.so $HA_CONF_CTL -S ssl=true,twoway=true,keypass=$server_key between@keypass="
         return $?
     elif [ "$type" == "remove_cert" ]; then
         # 删除HA后删除之前的证书
@@ -436,7 +446,7 @@ EOF
         if [ -f "$HA_CERT_PATH/server.key.old" ]; then
             mv -f $HA_CERT_PATH/server.key.old $HA_CERT_PATH/server.key
         fi
-        chown nobody:nobody $HA_CERT_PATH/*
+        chown nobody:nobody $HA_CERT_PATH/ -h -R
         local server_key=$(cat ${SERVER_KEY_FILE})
         su nobody -s /bin/bash -c "$HA_CONF_CTL -S ssl=true,twoway=true,keypass=$server_key"
         return $?

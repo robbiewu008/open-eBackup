@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.sdk.cluster.request;
 
-import openbackup.system.base.common.enums.AlarmLang;
-
 import lombok.Data;
+import openbackup.system.base.common.enums.AlarmLang;
 
 /**
  * 告警查询条件

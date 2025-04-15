@@ -1,0 +1,65 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="The Entire System Fails to Be Restored to A New Location. The Error Details Contain ErrorCode: 10300005.">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002199966825.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200001229">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>The Entire System Fails to Be Restored to A New Location. The Error Details Contain ErrorCode: 10300005.</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200001229"></a><a name="EN-US_TOPIC_0000002200001229"></a>
+
+<h1 class="topictitle1">The Entire System Fails to Be Restored to A New Location. The Error Details Contain ErrorCode: 10300005.</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>The FusionOne Compute VM fails to be restored to a new location, and the error details contain the following information: {"ErrorCode": "10300005", "ErrorDesc":"The entered parameter VM CPU limit is invalid. Please enter a valid value."}.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Cause</h4><p>A CPU maximum frequency is set for the backup VM, and the CPU frequency of the host where the backup VM resides is different from that of the host where the restoration target location resides. As a result, the lower limits of the CPU maximum frequency are different.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Method 1</h4><p>Set the <span class="uicontrol"><b><span><strong>Target Compute Location</strong></span></b></span> to which the FusionOne Compute VM is to be restored. Select the target host with the same CPU frequency as the host where the backup VM is located.</p>
+<p><strong>Procedure</strong></p>
+<ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200001229__en-us_topic_0000002199964685_uicontrol273952494719"><b>Explore &gt; Copy Data &gt; Virtualization &gt; FusionOne Compute</b></span>.</span></li><li><span>You can search for a copy by VM or copy. This section uses a VM as an example.</span><p><p id="EN-US_TOPIC_0000002200001229__en-us_topic_0000002164760194_p624620403810">On the <span class="wintitle" id="EN-US_TOPIC_0000002200001229__en-us_topic_0000002164760194_wintitle89091044143717"><b><span id="EN-US_TOPIC_0000002200001229__en-us_topic_0000002164760194_text10513419388"><strong>Resources</strong></span></b></span> tab page, search for the VM to be restored by its name, and click the VM name.</p>
+</p></li><li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002200001229__en-us_topic_0000002200001237_uicontrol1812414562220"><b><span id="EN-US_TOPIC_0000002200001229__en-us_topic_0000002200001237_text18993182162710"><strong>Copy Data</strong></span></b></span> and select the year, month, and day in sequence to locate the copy.</span><p><p id="EN-US_TOPIC_0000002200001229__en-us_topic_0000002200001237_p9918150182310">If <span><img id="EN-US_TOPIC_0000002200001229__en-us_topic_0000002200001237_image99531319193912" src="en-us_image_0000002164760354.png"></span> is displayed below a month or date, copies exist in the month or on the day.</p>
+</p></li><li><span>In the row of the target copy, choose <span class="uicontrol" id="EN-US_TOPIC_0000002200001229__en-us_topic_0000002200001237_uicontrol4705161613273"><b><span id="EN-US_TOPIC_0000002200001229__en-us_topic_0000002200001237_text04951528155216"><strong>More</strong></span> &gt; <span id="EN-US_TOPIC_0000002200001229__en-us_topic_0000002200001237_text2152153611315"><strong>Restore</strong></span></b></span>.</span></li><li><span>Restore the VM to the target host with the same CPU frequency.</span><p><ol type="a"><li>Select <span class="uicontrol"><b><span><strong>New location</strong></span></b></span> for restoring the VM.</li><li>Set the location information for restoring the VM to a new location. Select a target host with the same CPU frequency as the host where the backup VM resides as the <span class="uicontrol"><b><span><strong>Target Compute Location</strong></span></b></span>.</li><li>Set the remaining parameters as required.</li></ol>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Method 2</h4><p>In the FusionOne Compute management system, select the target host to create a VM, and use the disk restoration function to restore the disk.</p>
+<p><strong>Procedure</strong></p>
+<ol><li><span>Log in to FusionOne Compute.</span></li><li id="EN-US_TOPIC_0000002200001229__li15907755135718"><a name="EN-US_TOPIC_0000002200001229__li15907755135718"></a><a name="li15907755135718"></a><span>Create a VM on the FusionOne Compute management system. The VM is used to store the disk data of the FusionOne Compute VM to be restored.</span><p><ol type="a"><li>Select <span class="uicontrol"><b>Resource Pools</b></span>.</li><li>Click <strong>Create VM</strong>. Set the computing resource information and datastore information of the created VM to the target location of the FusionOne Compute VM to be restored.</li><li>Click <strong><span><strong>OK</strong></span></strong>.</li></ol>
+</p></li><li><span>Use the FusionOne Compute VM disk restoration function to restore the disk information to the VM created in <a href="#EN-US_TOPIC_0000002200001229__li15907755135718">2</a>. For details about how to restore a disk, see <a href="en-us_topic_0000002164760194.html">Restoring FusionOne Compute VM Disks</a>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002199966825.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

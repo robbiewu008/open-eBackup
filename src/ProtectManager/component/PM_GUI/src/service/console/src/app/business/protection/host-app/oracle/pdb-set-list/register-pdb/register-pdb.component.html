@@ -1,0 +1,81 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{'common_name_label'|i18n}}
+    </lv-form-label>
+    <lv-form-control [lvErrorTip]="nameErrorTip">
+      <input type="text" lv-input formControlName="name">
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item>
+    <lv-form-label lvRequired>
+      {{'common_database_label'|i18n}}
+    </lv-form-label>
+    <lv-form-control>
+        <aui-agent-select
+                [lvOptions]="databaseOptions"
+                formControlName="database"
+                lvValueKey="value"
+                lvShowClear
+                [isSimple]="true"
+                [isAgent]="false"
+        >
+        </aui-agent-select>
+    </lv-form-control>
+  </lv-form-item>
+
+  <lv-form-item *ngIf="isCluster">
+    <lv-form-label lvRequired>{{'protection_statefulset_node_label'|i18n}}</lv-form-label>
+    <lv-form-control>
+      <lv-select
+        [lvOptions]="instanceOptions"
+        lvValueKey="value" lvShowClear formControlName="host"
+        lvShowFilter lvFilterMode="contains" lvFilterKey="label">
+      </lv-select>
+    </lv-form-control>
+  </lv-form-item>
+</lv-form>
+
+  <h2 class="pdb-header">{{'protection_select_pdb_label'|i18n}}</h2>
+  <lv-transfer
+      #lvTransfer
+    class="customer-transfer"
+    lvDataKey="label"
+    [lvSourceColumns]="source.cols"
+    [lvSourceData]="source.data"
+    [lvSourceSelection]="source.selection"
+    [lvTargetColumns]="target.cols"
+    [lvTotal]="source.total"
+    [lvItemSize]="200"
+    [lvTitles]="['protection_available_pdb_label'|i18n,'protection_selected_pdb_label'|i18n]"
+    (lvChange)="selectionChange($event)"
+    [lvOperateTemplate]="[sourceOperateTpl, targetOperateTpl]"
+  ></lv-transfer>
+
+<ng-template #sourceOperateTpl let-data let-selecetd="selection" let-paginator="paginator" let-panel="panel">
+    <lv-group lvGutter="8px">
+        <button lv-button lvType="link" (click)="selectCurrentPage(selecetd, panel)">{{ 'protection_select_current_page_label'|i18n }}</button>
+        <button lv-button lvType="link" (click)="selectAll(data, panel)">{{ 'system_resourceset_all_select_label'|i18n }}</button>
+    </lv-group>
+</ng-template>
+
+<ng-template #targetOperateTpl let-data let-paginator="paginator" let-panel="panel">
+    <lv-group lvGutter="8px">
+        <button lv-button lvType="link" (click)="clearCurrentPage(panel)">{{ 'common_remove_current_page_label'|i18n }}</button>
+        <button lv-button lvType="link" (click)="clearAll(data, panel)">{{ 'common_remove_all_label'|i18n }}</button>
+    </lv-group>
+</ng-template>

@@ -12,6 +12,18 @@
   -->
 
 <lv-form [formGroup]="formGroup" class="formGroup">
+  <!-- 暂时屏蔽直接恢复 -->
+  <lv-form-item *ngIf="false">
+    <lv-form-label>{{
+      'protection_tape_all_restore_label' | i18n
+    }}</lv-form-label>
+    <lv-form-control>
+      <lv-switch
+        formControlName="isDirectRecovery"
+        [lvDisabled]="!tapeCopy"
+      ></lv-switch>
+    </lv-form-control>
+  </lv-form-item>
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'protection_restore_to_label' | i18n }}
@@ -94,9 +106,18 @@
               <lv-radio [lvValue]="'0'">{{
                 'explore_choose_exist_bucket_label' | i18n
               }}</lv-radio>
-              <lv-radio [lvValue]="'1'">{{
-                'explore_new_bucket_label' | i18n
-              }}</lv-radio>
+              <lv-radio [lvValue]="'1'"
+                >{{ 'explore_new_bucket_label' | i18n }}
+                <i
+                  lv-icon="aui-icon-help"
+                  lv-tooltip="{{
+                    'explore_object_bucket_hcs_rule_tip_label' | i18n
+                  }}"
+                  lvTooltipTheme="light"
+                  lvColorState="true"
+                  *ngIf="storageType === dataMap.objectStorageType.hcs.value"
+                ></i>
+              </lv-radio>
             </lv-group>
           </lv-radio-group>
           <ng-container *ngIf="formGroup.value?.bucketType === '0'">
@@ -120,7 +141,9 @@
             </lv-group>
           </ng-container>
           <ng-container *ngIf="formGroup.value?.bucketType === '1'">
-            <input lv-input type="text" formControlName="newBucket" />
+            <lv-form-control [lvErrorTip]="bucketErrorTip">
+              <input lv-input type="text" formControlName="newBucket" />
+            </lv-form-control>
           </ng-container>
         </ng-container>
       </lv-form-control>

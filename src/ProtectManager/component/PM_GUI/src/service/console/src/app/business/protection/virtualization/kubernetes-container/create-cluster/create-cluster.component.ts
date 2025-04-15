@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -121,26 +121,26 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
 
   configHelpHover() {
     const url1 = this.i18n.isEn
-      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000001839260265.html'
-      : '/console/assets/help/a8000/zh-cn/index.html#zh-cn_topic_0000001839260265.html';
+      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002199956493.html'
+      : '/console/assets/help/a8000/zh-cn/index.html#kubernetes_CSI_00013.html';
 
     const url2 = this.i18n.isEn
-      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000001917330525.html'
-      : '/console/assets/help/a8000/zh-cn/index.html#zh-cn_topic_0000001917330525.html';
+      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002164590142.html'
+      : '/console/assets/help/a8000/zh-cn/index.html#kubernetes_CSI_00016.html';
     this.appUtilsService.openSpecialHelp([url1, url2]);
   }
 
   tagHelpHover() {
     const url = this.i18n.isEn
-      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000001940484365.html'
-      : '/console/assets/help/a8000/zh-cn/index.html#zh-cn_topic_0000001940484365.html';
+      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002199990725.html'
+      : '/console/assets/help/a8000/zh-cn/index.html#kubernetes_CSI_00018.html';
     this.appUtilsService.openSpecialHelp(url);
   }
 
   tokenHelpHover() {
     const url = this.i18n.isEn
-      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000001839180449.html'
-      : '/console/assets/help/a8000/zh-cn/index.html#zh-cn_topic_0000001839180449.html';
+      ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002199990881.html'
+      : '/console/assets/help/a8000/zh-cn/index.html#kubernetes_CSI_00026.html';
     this.appUtilsService.openSpecialHelp(url);
   }
 
@@ -149,10 +149,15 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
       return;
     }
     let taskTimeout;
+    let consistentScriptTimeout;
     try {
       taskTimeout = JSON.parse(this.rowItem.extendInfo?.taskTimeout);
+      consistentScriptTimeout = JSON.parse(
+        this.rowItem.extendInfo?.consistentScriptTimeout
+      );
     } catch (error) {
       taskTimeout = {};
+      consistentScriptTimeout = {};
     }
     this.formGroup.patchValue({
       type: this.rowItem.auth?.authType,
@@ -166,7 +171,10 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
       timeoutDay: taskTimeout?.days ?? 1,
       timeoutHour: taskTimeout?.hours ?? 0,
       timeoutMin: taskTimeout?.minutes ?? 0,
-      timeoutSec: taskTimeout?.seconds ?? 0
+      timeoutSec: taskTimeout?.seconds ?? 0,
+      scriptTimeoutHour: consistentScriptTimeout?.hours ?? 1,
+      scriptTimeoutMin: consistentScriptTimeout?.minutes ?? 0,
+      scriptTimeoutSec: consistentScriptTimeout?.seconds ?? 0
     });
     if (
       isString(this.rowItem.extendInfo?.nodeSelector) &&
@@ -269,6 +277,9 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
       timeoutHour: new FormControl(0),
       timeoutMin: new FormControl(0),
       timeoutSec: new FormControl(0),
+      scriptTimeoutHour: new FormControl(1),
+      scriptTimeoutMin: new FormControl(0),
+      scriptTimeoutSec: new FormControl(0),
       cert: new FormControl(true),
       certData: new FormControl('')
     });
@@ -428,6 +439,11 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
           hours: Number(this.formGroup.value.timeoutHour),
           minutes: Number(this.formGroup.value.timeoutMin),
           seconds: Number(this.formGroup.value.timeoutSec)
+        }),
+        consistentScriptTimeout: JSON.stringify({
+          hours: Number(this.formGroup.value.scriptTimeoutHour),
+          minutes: Number(this.formGroup.value.scriptTimeoutMin),
+          seconds: Number(this.formGroup.value.scriptTimeoutSec)
         })
       }
     };
@@ -488,31 +504,31 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
             envId: this.rowItem.uuid,
             UpdateProtectedEnvironmentRequestBody: params
           })
-          .subscribe(
-            () => {
+          .subscribe({
+            next: () => {
               observer.next();
               observer.complete();
             },
-            err => {
+            error: err => {
               observer.error(err);
               observer.complete();
             }
-          );
+          });
       } else {
         this.protectedEnvironmentApiService
           .RegisterProtectedEnviroment({
             RegisterProtectedEnviromentRequestBody: params
           })
-          .subscribe(
-            () => {
+          .subscribe({
+            next: () => {
               observer.next();
               observer.complete();
             },
-            err => {
+            error: err => {
               observer.error(err);
               observer.complete();
             }
-          );
+          });
       }
     });
   }

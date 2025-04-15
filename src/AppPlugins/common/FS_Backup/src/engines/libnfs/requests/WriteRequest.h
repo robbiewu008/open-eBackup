@@ -28,6 +28,7 @@ NfsWriteCbData* CreateWriteCbData(FileHandle &fileHandle, NfsCommonData &commonD
     std::shared_ptr<BlockBufferMap> blockBufferMap);
 int SendWrite(FileHandle &fileHandle, NfsWriteCbData *cbData);
 void SendWriteCb(int status, struct nfs_context *nfs, void *data, void *privateData);
+void HandlePartlySuccess(NfsWriteCbData *cbData, FileHandle &fileHandle, int status, struct nfs_context *nfs);
 void HandleWriteFailure(NfsWriteCbData *cbData, FileHandle &fileHandle, int status, struct nfs_context *nfs);
 void WriteFailureHandling(NfsCommonData *commonData, int status, FileHandle &fileHandle);
 void SendFileSyncCb(int status, struct nfs_context *nfs, void *data, void *privateData);

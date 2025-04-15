@@ -737,6 +737,47 @@ std::shared_ptr<GetVolumeTypesResponse> CinderClient::GetVolumeTypes(GetVolumeTy
     return response;
 }
 
+std::shared_ptr<ActiveSnapConsistencyResponse> CinderClient::ActiveSnapConsistency(
+    ActiveSnapConsistencyRequest &request)
+{
+    RequestInfo reqInfo;
+    reqInfo.m_method = "POST";
+    reqInfo.m_resourcePath = "{endpoint}/os-hw_snapshots/active_snapshots";
+    std::string endpoint;
+    std::string tokenStr;
+    Defer _(nullptr, [&](...) { Module::CleanMemoryPwd(tokenStr); });
+    if (!GetTokenEndPoint(request, tokenStr, endpoint)) {
+        ERRLOG("Get token failed.");
+        return nullptr;
+    }
+    reqInfo.m_pathParams["endpoint"] = std::move(endpoint);
+    reqInfo.m_queryParams = {};
+    reqInfo.m_headerParams["Content-Type"] = "application/json";
+    reqInfo.m_headerParams["X-Auth-Token"] = std::move(tokenStr);
+    Json::Value volumeSnapshotsList;
+    for (const auto &snapProviderStr : request.GetSnapProviderLocationList()) {
+        Json::Value location;
+        location["snapshot_provider_location"] = snapProviderStr;
+        volumeSnapshotsList.append(location);
+    }
+    Json::Value reqBody;
+    Json::Value snapshots;
+    snapshots["volume_snapshots"] = volumeSnapshotsList;
+    snapshots["volume_id"] = request.GetVolUUID();
+    reqBody["snapshots"] = snapshots;
+    Json::FastWriter fastWriter;
+    reqInfo.m_body = fastWriter.write(reqBody);
+    reqInfo.m_auth = request.GetUserInfo();
+    std::shared_ptr<ActiveSnapConsistencyResponse> response = std::make_shared<ActiveSnapConsistencyResponse>();
+    if (CallApi(reqInfo, response, request) != VirtPlugin::SUCCESS) {
+        ERRLOG("Active snap consistency failed, errorCode: %d, errorString: %s",
+            response->GetErrCode(), response->GetErrString().c_str());
+        return nullptr;
+    }
+
+    return response;
+}
+
 std::shared_ptr<UpdateVolumeBootableResponse> CinderClient::UpdateVolumeBootable(UpdateVolumeBootableRequest &request)
 {
     std::string endpoint;
@@ -771,6 +812,38 @@ std::shared_ptr<UpdateVolumeBootableResponse> CinderClient::UpdateVolumeBootable
     if (CallApi(reqInfo, response, request) != VirtPlugin::SUCCESS) {
         ERRLOG("Cinder update volume bootable failed, errorCode: %d, errorString: %s",
             response->GetErrCode(), response->GetErrString().c_str());
+        return nullptr;
+    }
+    return response;
+}
+
+std::shared_ptr<GetPoolsResponse> CinderClient::GetProjectStoragePools(VolumeRequest &request)
+{
+    std::string endpoint;
+    std::string tokenStr;
+    Defer _(nullptr, [&](...) { Module::CleanMemoryPwd(tokenStr); });
+    if (!GetTokenEndPoint(request, tokenStr, endpoint)) {
+        return nullptr;
+    }
+    RequestInfo reqInfo;
+    reqInfo.m_method = "GET";
+    reqInfo.m_resourcePath = "{endpoint}/scheduler-stats/get_pools?detail=true";
+    reqInfo.m_pathParams["endpoint"] = std::move(endpoint);
+    reqInfo.m_queryParams = {};
+    reqInfo.m_headerParams["X-Auth-Token"] = std::move(tokenStr);
+    reqInfo.m_auth = request.GetUserInfo();
+    std::shared_ptr<GetPoolsResponse> response = std::make_shared<GetPoolsResponse>();
+    if (response == nullptr) {
+        ERRLOG("Create GetPoolsResponse pointer failed.");
+        return nullptr;
+    }
+    if (CallApi(reqInfo, response, request) != VirtPlugin::SUCCESS) {
+        ERRLOG("Cinder update volume bootable failed, errorCode: %d, errorString: %s",
+            response->GetErrCode(), response->GetErrString().c_str());
+        return nullptr;
+    }
+    if (!response->Serial()) {
+        ERRLOG("Cinder get pools serial failed.");
         return nullptr;
     }
     return response;

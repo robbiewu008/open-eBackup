@@ -29,7 +29,7 @@ struct BootItem {
 
 struct UpdateDomainBootRequest {
     uint32_t bootType = 0;
-    std::vector<BootItem> boots;
+    std::vector<BootItem> boots {};
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMEBER(bootType);
@@ -59,6 +59,17 @@ public:
 
     int32_t UpdateDomainBootRequestToJson()
     {
+        if (m_req.boots.empty()) {
+            Json::Value bodyJson;
+            // boots为null时，接口会卡住，因此为空时不传入该参数
+            bodyJson["bootType"] = m_req.bootType;
+            Json::Value bootArray(Json::arrayValue);
+            bodyJson["boots"] = bootArray;
+            Json::FastWriter writer;
+            m_body = writer.write(bodyJson);
+            INFOLOG("Boot info: %s.", WIPE_SENSITIVE(m_body).c_str());
+            return VirtPlugin::SUCCESS;
+        }
         if (!Module::JsonHelper::StructToJsonString(m_req, m_body)) {
             ERRLOG("Convert update domain boots req to json string failed!");
             return VirtPlugin::FAILED;

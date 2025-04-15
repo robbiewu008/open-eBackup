@@ -90,6 +90,7 @@ private:
     bool m_readOnly;
     std::string m_diskDevicePath;
     std::string m_errDesc;
+    int m_rereadTryTimes;
 };
 
 const unsigned int HCP_ERROR_SIZE = 1024;

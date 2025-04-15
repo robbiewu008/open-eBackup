@@ -37,6 +37,7 @@ public class ProtectionQueryServiceImpl implements ProtectionQueryService {
      * @param subType 资源子类型
      * @return 返回数量
      */
+    @Override
     public int countBySubTypeAndSlaName(String slaName, String userId, String subType) {
         return protectedObjectMapper.countBySubTypeAndSlaName(slaName, userId, subType);
     }

@@ -1,19 +1,22 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
+# 
+#  This file is a part of the open-eBackup project.
+#  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+#  If a copy of the MPL was not distributed with this file, You can obtain one at
+#  http://mozilla.org/MPL/2.0/.
+# 
+#  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+# 
+#  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+#  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+#  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 
 AGENT_ROOT_PATH=$1
 PID=$2
 PARAM_NUM=$3
+umask 0022
 . "${AGENT_ROOT_PATH}/sbin/agent_sbin_func.sh"
 LOG_FILE_NAME=${AGENT_ROOT_PATH}/slog/push_update_cert.log
 
@@ -183,6 +186,49 @@ ReplaceWithNewCerts()
     return 0
 }
 
+CheckCertReplaceCondition()
+{
+    CompareFileIdentity ${THRIFT_CERT_PATH}/server/ca.crt.pem ${THRIFT_CERT_PATH}/client/ca.crt.pem
+    if [ $? -eq 1 ]; then
+        Log "server.pem not same, replace failed."
+        return 1;
+    else
+        Log "server.pem replace success."
+    fi
+
+    CompareFileIdentity ${THRIFT_CERT_PATH}/server/client.crt.pem ${THRIFT_CERT_PATH}/client/client.crt.pem
+    if [ $? -eq 1 ]; then
+        Log "agentca.pem not same, replace failed."
+        return 1
+    else
+        Log "agentca.pem replace success."
+    fi
+
+    CompareFileIdentity ${THRIFT_CERT_PATH}/server/client.pem ${THRIFT_CERT_PATH}/client/client.pem
+    if [ $? -eq 1 ]; then
+        Log "server.key not same, replace failed."
+        return 1
+    else
+        Log "server.key replace success."
+    fi
+
+    Log "All certs have been replaced successfully."
+    return 0
+}
+
+CompareFileIdentity()
+{
+    FILE_NAME_1=$1
+    FILE_NAME_2=$2
+    md5sum1=$(md5sum ${FILE_NAME_1} | cut -d' ' -f1)
+    md5sum2=$(md5sum ${FILE_NAME_2} | cut -d' ' -f1)
+    if [ "${md5sum1}" = "${md5sum2}" ]; then
+        return 0
+    fi
+    return 1
+}
+
+
 RestartAgent()
 {
     SUExecCmd "${AGENT_ROOT_PATH}/bin/agent_stop.sh"
@@ -348,6 +394,8 @@ if [ $? -ne 0 ]; then
     RollbackCert
     exit 1
 fi
+
+CheckCertReplaceCondition
 
 if [ "${UPDATE_TYPE}" = "${UPDATE_AGENT_CHAIN}" ]; then
     UpdateSslHostName

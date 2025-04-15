@@ -12,10 +12,10 @@
 */
 package openbackup.access.framework.resource.persistence.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
 import openbackup.access.framework.resource.persistence.model.ProtectedEnvironmentPo;
 import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
-
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
@@ -47,9 +47,16 @@ public interface ProtectedResourceAgentMapper extends BaseMapper<ProtectedResour
     int queryAgentResourceCount(Map<String, Object> map);
 
     /**
-     * 查询共享Agent
+     * 查询共享Agent的uuid列表
      *
      * @return 资源列表
      */
     List<String> querySharedAgentIds();
+
+    /**
+     * 查询内置Agent的uuid列表
+     *
+     * @return 资源列表
+     */
+    List<String> queryInternalAgentIds();
 }

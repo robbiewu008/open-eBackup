@@ -12,9 +12,9 @@
 */
 package openbackup.access.framework.resource.persistence.dao;
 
-import openbackup.access.framework.resource.persistence.model.ResourceDesesitizationPo;
-
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import openbackup.access.framework.resource.persistence.model.ResourceDesesitizationPo;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;

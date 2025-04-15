@@ -62,8 +62,8 @@
           </div>
         </lv-form-control>
       </lv-form-item>
-    
-      <lv-form-item>
+
+      <lv-form-item *ngIf="!isDistributed">
         <lv-form-label>
           {{ 'system_parallel_data_storage_label' | i18n }}
         </lv-form-label>
@@ -76,7 +76,7 @@
           </div>
         </lv-form-control>
       </lv-form-item>
-    
+
       <lv-form-item>
         <lv-form-label>
           {{ 'system_storage_policy_label' | i18n }}

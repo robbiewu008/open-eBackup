@@ -1,4 +1,5 @@
 @echo off
+:: 
 ::  This file is a part of the open-eBackup project.
 ::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 ::  If a copy of the MPL was not distributed with this file, You can obtain one at
@@ -9,6 +10,7 @@
 ::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
 ::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 ::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+::
 setlocal EnableDelayedExpansion
 
 rem -----------------------------------------------
@@ -18,7 +20,9 @@ rem -----------------------------------------------
 cd /d "%~dp0"
 set CURRENT_PATH=%~dp0
 
+set WIN_SYSTEM_DISK=%WINDIR:~0,1%
 set DEFAULT_INSTALL_PATH=C:
+call :ChangeSystemDisk DEFAULT_INSTALL_PATH %DEFAULT_INSTALL_PATH:~1%
 set CUSTOM_INSTALL_PATH=
 set PRECISE_INSTALL_PATH=
 
@@ -57,11 +61,14 @@ set AGENT_OLD_LOG_PATH=\var\log\ProtectClient%Current_Time%
 
 rem ------------------------------- other conf --------------------------------
 set PLUGINS_DOMAIN_PATH=C:\Windows\System32\drivers\etc\hosts
+call :ChangeSystemDisk PLUGINS_DOMAIN_PATH %PLUGINS_DOMAIN_PATH:~1%
 set WORKING_USER=rdadmin
 set AGENT_HOSTSN_PATH=C:\Users\Default
+call :ChangeSystemDisk AGENT_HOSTSN_PATH %AGENT_HOSTSN_PATH:~1%
 set AGENT_SERVICE_PACKAGE=
 set DATATURBO_FUNC=%AGENT_BIN_PATH%\dataturbo_func.bat
 set IS_ENABLE_DATATURBO=false
+set InDomain=
 
 set /a BACKUP_SCENE=0
 set /a CPU_NUM_MIN=4
@@ -81,6 +88,7 @@ set /a ERR_ADNIMISTRATOR_PER_RETCODE=72
 set /a ERR_SERVICE_IS_EXIST=78
 set /a ERR_INSTALL_PATH_NOT_EXIST=100
 set /a ERR_DISK_FREE_ISLESS_4GB=18
+set /a ERR_DOMAIN_WORKINGUSER_NOT_EXIST=88
 set /a ERR_WORKINGUSER_EXIST=20
 set /a ERR_GET_INFO_FAILD=21
 set /a ERR_ADAPT_PKG=22
@@ -104,8 +112,9 @@ set LOGFILE_PATH=%CURRENT_PATH%install.log
 set IP_REX="^[0-9][0-9]*[.][0-9][0-9]*[.][0-9][0-9]*[.][0-9][0-9]*$"
 
 echo ********************************************************
-echo      Start the installation of DataBackup ProtectAgent     
+echo      Begin to install DataBackup ProtectAgent     
 echo ********************************************************
+
 rem -----------------adapting upgrade/push process-----------------
 if exist %LOGFILE_PATH% (
 	del /f /q %LOGFILE_PATH%
@@ -119,7 +128,7 @@ if "%~1" == "push" (
     set /a PUSH_INSTALL_VALUE=1
 	set CMD_PAUSE=
 )
-
+call :Log "Start install the agent mode=%~1, UPGRADE_VALUE=!UPGRADE_VALUE!, PUSH_INSTALL_VALUE=!PUSH_INSTALL_VALUE!."
 rem ------------Checking Administrator Permissions------------
 call :Log "Start check the running permission.."
 net.exe session 1>NUL 2>NUL && (
@@ -136,6 +145,7 @@ net.exe session 1>NUL 2>NUL && (
 rem ------------Check if agent have been installed------------
 rem version number:  1.2  and  1.3
 set OLD_VERSION_INSTALL_DIR=C:\OceanProtect\ProtectClient\ProtectClient-E
+call :ChangeSystemDisk OLD_VERSION_INSTALL_DIR %OLD_VERSION_INSTALL_DIR:~1%
 if exist %OLD_VERSION_INSTALL_DIR% (
     echo "The installation directory %OLD_VERSION_INSTALL_DIR% already exists. Please uninstall it before installation."
     call :Log "The installation directory %OLD_VERSION_INSTALL_DIR% already exists. Please uninstall it before installation."
@@ -146,6 +156,7 @@ if exist %OLD_VERSION_INSTALL_DIR% (
     exit /b %ERR_AGENT_PATH_IS_EXIST_RETCODE%
 )
 set OLD_VERSION_INSTALL_DIR=C:\DataBackup\ProtectClient\ProtectClient-E
+call :ChangeSystemDisk OLD_VERSION_INSTALL_DIR %OLD_VERSION_INSTALL_DIR:~1%
 if exist %OLD_VERSION_INSTALL_DIR% (
     echo "The installation directory %OLD_VERSION_INSTALL_DIR% already exists. Please uninstall it before installation."
     call :Log "The installation directory %OLD_VERSION_INSTALL_DIR% already exists. Please uninstall it before installation."
@@ -210,7 +221,7 @@ call :Log "Start checking the install user radmin."
 if "!UPGRADE_VALUE!" == "1" (
     echo The upgrade process does not require users and groups to be reset.
     call :Log "The upgrade process does not require users and groups to be reset"
-) else (
+) else if "%~1" == "push" (
     net user !WORKING_USER! 1>nul 2>nul
     if "!errorlevel!" == "0" (
         echo Agent working user !WORKING_USER! exist.
@@ -220,6 +231,13 @@ if "!UPGRADE_VALUE!" == "1" (
 		call :archivelogs
 		%CMD_PAUSE%
         exit /b %ERR_WORKINGUSER_EXIST%
+    )
+) else (
+    net user !WORKING_USER! 1>nul 2>nul
+    if "!errorlevel!" == "0" (
+        set InDomain=True
+        echo Agent working user !WORKING_USER! exist.
+        call :Log "Agent working user !WORKING_USER! exist, exit."
     )
 )
 
@@ -370,6 +388,12 @@ if not "%WIN_RELEASE_VERSION%" == "" (
     call "!AGENT_BIN_PATH!\xmlcfg.exe" write System win_version %WIN_RELEASE_VERSION%
 )
 
+rem -----------------record windows system disk value-----------------
+if not "%WIN_SYSTEM_DISK%" == "" (
+    call "!AGENT_BIN_PATH!\xmlcfg.exe" write System win_system_disk %WIN_SYSTEM_DISK%
+) 
+call :Log "WIN_SYSTEM_DISK=%WIN_SYSTEM_DISK%"
+
 rem -------------- Prepare manage script -----------------------
 copy /y "%CURRENT_PATH%start.bat" "%AGENT_MANAGER_PATH%" 1>nul 2>nul
 copy /y "%CURRENT_PATH%stop.bat" "%AGENT_MANAGER_PATH%" 1>nul 2>nul
@@ -428,7 +452,7 @@ if NOT "!UPGRADE_VALUE!" == "1" (
         echo  Check whether the host is an EIP node ^(y/n^):
         set /p eip_key= Your choice:
         if "!eip_key!" == "n" (
-            echo user choose close datatubo service.
+            echo the host is not an EIP node.
         ) else if "!eip_key!" == "y" (
             set IS_EIP=true
         ) else (
@@ -491,17 +515,30 @@ if NOT "%errorlevel%" == "0" (
 	exit /b %ERR_INSTALL_PLUGINS%
 )
 
-rem ---------------merge configration files--------------------
+rem ---------------upgrade conf files--------------------
 if "!UPGRADE_VALUE!" == "1" (
-    set OLD_CONF_FILE_PATH_FILEPLUGIN="!OLD_AGENT_BACKUP_PATH!\Plugins\FilePlugin\conf\hcpconf.ini"
-    set NEW_CONF_FILE_PATH_FILEPLUGIN="!PLUGIN_DIR!\FilePlugin\conf\hcpconf.ini"
-    call :MergeConfFile !OLD_CONF_FILE_PATH_FILEPLUGIN! !NEW_CONF_FILE_PATH_FILEPLUGIN!
-    if NOT "%errorlevel%" == "0" (
-	    call :LogError "Merge config file %NEW_CONF_FILE_PATH% failed."
-    ) else (
-        copy /y "!MERGINT_RES_FILE_NAME!" "!NEW_CONF_FILE_PATH_FILEPLUGIN!" 1>nul 2>nul
-        del -f -q !MERGINT_RES_FILE_NAME!
+    echo Begin to upgrade the backup DataBackup ProtectAgent Plugin conf.
+    call :Log "Upgrade: Begin to upgrade the backup DataBackup ProtectAgent Plugin conf."
+    set tmpPath=!cd!
+    cd !OLD_AGENT_BACKUP_PATH!\Plugins
+    call :Log "Upgrade: cd !OLD_AGENT_BACKUP_PATH!\Plugins."
+    for /f "delims=" %%d in ('dir /b /ad ^| findstr /i "Plugin"') do (
+        set pluginName=%%d
+        set oldPluginExistNow=
+        for /f "delims=" %%e in ('dir /b /ad "!PLUGIN_DIR!" ^| findstr /i "%%d"') do (
+            set oldPluginExistNow=%%e
+        )
+        if "!oldPluginExistNow!"=="" (
+            call :Log "%%d not used now."
+        ) else (
+            call :UpgradeJsonConf !pluginName!
+            call :MergeConfFile "!OLD_AGENT_BACKUP_PATH!\Plugins\!pluginName!\conf\hcpconf.ini" "!PLUGIN_DIR!\!pluginName!\conf\hcpconf.ini"
+        )
     )
+
+    cd !tmpPath!
+    call :Log "Upgrade: The backup DataBackup ProtectAgent Plugin conf has been upgraded."
+    echo The backup DataBackup ProtectAgent Plugin conf has been upgraded successfully.
 )
 
 rem -------------------excute install-----------------
@@ -738,17 +775,17 @@ rem 检查分布式场景
         call :Log "The Distributed Scenes do not support dataturbo."
         exit /b 0
     )
-    rem ---------------choose install datatubo-------------------
-    call :Log "choose install datatubo."
+    rem ---------------choose install dataturbo-------------------
+    call :Log "choose install dataturbo."
     if NOT "!UPGRADE_VALUE!" == "1" (
         if "!PUSH_INSTALL_VALUE!" == "0" (
-            echo  whether enable datatubo service ^(y/n^):
+            echo  whether enable dataturbo service ^(y/n^):
             set /p dataturbo_key= Your choice:
             if "!dataturbo_key!" == "n" (
-                echo user choose close datatubo service.
+                echo user choose close dataturbo service.
             ) else if "!dataturbo_key!" == "y" (
                 set IS_ENABLE_DATATURBO=true
-                echo user choose open datatubo service.
+                echo user choose open dataturbo service.
             ) else (
                 echo Please enter y or n.
                 %CMD_PAUSE%
@@ -763,7 +800,7 @@ rem 检查分布式场景
         call :Log "service close and not install dataturbo"
         exit /b 0
     ) else if "%IS_ENABLE_DATATURBO%"=="true" (
-        call %DATATURBO_FUNC% InstallDataTurbo "%CURRENT_PATH%install.log" "%CURRENT_PATH%" "!MODE!"
+        call %DATATURBO_FUNC% InstallDataTurbo "%CURRENT_PATH%install.log" "%CURRENT_PATH%" "!MODE!" >> "%CURRENT_PATH%install.log" 2>&1
 	    if NOT "!errorlevel!" == "0" (
 		    call :LogError "Install dataturbo failed." %ERR_INSTALL_DATATURBO%
 		    exit /b %ERR_INSTALL_DATATURBO_RETCODE%
@@ -911,7 +948,37 @@ exit /b 0
         exit /b 1
     )
     call "!AGENT_BIN_PATH!\agentcli.exe" mergefile !OLD_CONF_FILE_PATH! !NEW_CONF_FILE_PATH!
+    if NOT "%errorlevel%" == "0" (
+	    call :LogError "Merge config file %NEW_CONF_FILE_PATH% failed."
+    ) else (
+        copy /y "!MERGINT_RES_FILE_NAME!" "!NEW_CONF_FILE_PATH!" 1>nul 2>nul
+        del -f -q !MERGINT_RES_FILE_NAME!
+    )
+exit /b 0
 
+:UpgradeJsonConf
+    set PLUGIN_NAME=%~1
+    :: 遍历备份代理目录下Plugins中以 "plugin_attribute_" 开头的 .json 文件
+    for %%f in (!OLD_AGENT_BACKUP_PATH!\Plugins\!PLUGIN_NAME!\plugin_attribute_*.json) do (
+        set "OLD_PLUGIN_JSON_CONF_PATH=%%f"
+    )
+
+    for %%f in (!PLUGIN_DIR!\!PLUGIN_NAME!\plugin_attribute_*.json) do (
+        set "NEW_PLUGIN_JSON_CONF_PATH=%%f"
+    )
+
+    :: 检查是否找到文件
+    if defined OLD_PLUGIN_JSON_CONF_PATH if defined NEW_PLUGIN_JSON_CONF_PATH (
+        call :Log "Found file:!OLD_PLUGIN_JSON_CONF_PATH! and !NEW_PLUGIN_JSON_CONF_PATH!."
+        call "!AGENT_BIN_PATH!\agentcli.exe" upgradeJsonConf !OLD_PLUGIN_JSON_CONF_PATH! !NEW_PLUGIN_JSON_CONF_PATH!
+        if NOT "%errorlevel%" == "0" (
+	        call :LogError "Upgrade config file %NEW_PLUGIN_JSON_CONF_PATH% failed."
+            exit /b 1
+        )
+    ) else (
+        call :Log "No matching file found."
+        exit /b 1
+    )
 exit /b 0
 	
 :ExecuteInstallion
@@ -1053,7 +1120,7 @@ exit /b 0
         exit /b 1
     )
     if !ATTEMPT_LEFT! EQU 3 (
-        echo "You need to enter the installation path (directly press 'Enter' use default installation path C:)."
+        echo "You need to enter the installation path (directly press 'Enter' use default installation path %DEFAULT_INSTALL_PATH%)."
         set /p iPath="Please enter custom install path:"
     ) else (
         call :Log "The entered path(%iPath%) does not exist."
@@ -1062,8 +1129,8 @@ exit /b 0
         set /p iPath=
     )
     if not defined iPath (
-        echo "You directly press 'Enter', use default install path C:"
-        call :Log "You directly press 'Enter', use default install path C:"
+        echo "You directly press 'Enter', use default install path %DEFAULT_INSTALL_PATH%"
+        call :Log "You directly press 'Enter', use default install path %DEFAULT_INSTALL_PATH%"
         exit /b 0
     )
     if exist %iPath% (
@@ -1104,6 +1171,8 @@ exit /b 0
 			del /f /q "%AGENT_ROOT_PATH%\tmp\input_tmpcipherFile"
 		) else if "%~1" == "upgrade" (
 			for /f %%a in ('call "%AGENT_UPGRADE_OLD_PATH%\ProtectClient-E\bin\xmlcfg.exe" read Monitor nginx "ssl_key_password"') do set encrypted_password=%%a
+            for /f %%a in ('call "%AGENT_UPGRADE_OLD_PATH%\ProtectClient-E\bin\xmlcfg.exe" read System "working_user_passward"') do set working_password=%%a
+            call "!AGENT_BIN_PATH!\xmlcfg.exe" write System working_user_passward !working_password!
 		) else (
 		    call "!AGENT_BIN_PATH!\agentcli.exe" enckey cipherFile
 		    for /f "delims=" %%a in ('type !AGENT_ROOT_PATH!\tmp\input_tmpcipherFile') do set encrypted_password=%%a
@@ -1154,6 +1223,12 @@ exit /b 1
     ping 127.0.0.1 -n %~1> nul
     exit /b 0
 
+:ChangeSystemDisk
+    if not "%WIN_SYSTEM_DISK%" == "" (
+		set %~1=%WIN_SYSTEM_DISK%%~2
+	)
+    exit /b 0
+
 :Log
     echo %date:~0,10% %time:~0,8% [%username%] "%~1" >> "%CURRENT_PATH%install.log"
     exit /b 0
@@ -1170,24 +1245,24 @@ exit /b 1
 :archivelogs
     if exist "%LOGFILE_PATH%" (
 	    if exist "%AGENT_ERR_LOG_PATH%" (
-		    copy /y "%LOGFILE_PATH%" "%AGENT_ERR_LOG_PATH%" >nul
+		    copy /y "%LOGFILE_PATH%" "%AGENT_ERR_LOG_PATH%" >> "%CURRENT_PATH%install.log" 2>&1
 		)
-	    md "%AGENT_ERR_LOG_PATH%" 1>nul 2>nul
-		copy /y "%LOGFILE_PATH%" "%AGENT_ERR_LOG_PATH%" >nul
+	    md "%AGENT_ERR_LOG_PATH%" >> "%CURRENT_PATH%install.log" 2>&1
+		copy /y "%LOGFILE_PATH%" "%AGENT_ERR_LOG_PATH%" >> "%CURRENT_PATH%install.log" 2>&1
 	)
 	if not "!errorlevel!" == "0" (
 	    echo Copy error log failed.
 		exit /b %ERR_COPY_LOG%
 	)
-    del /q /f "%LOGFILE_PATH%" 1>nul 2>nul
+    del /q /f "%LOGFILE_PATH%" >> "%CURRENT_PATH%install.log" 2>&1
 	exit /b 0
 
 :clearlogs
     if exist "%AGENT_ERR_LOG_PATH%" (
         for /f %%i in ('dir /b "%AGENT_ERR_LOG_PATH%"') do set /a count+=1
         if !count! gtr 0 (
-            xcopy /e/h/k/x/o/q/y "%AGENT_ERR_LOG_PATH%\*" "%AGENT_OLD_LOG_PATH%\" > nul
-            del /f /s /q "%AGENT_ERR_LOG_PATH%\*.*" >nul 2>&1
+            xcopy /e/h/k/x/o/q/y "%AGENT_ERR_LOG_PATH%\*" "%AGENT_OLD_LOG_PATH%\" >> "%CURRENT_PATH%install.log" 2>&1
+            del /f /s /q "%AGENT_ERR_LOG_PATH%\*.*" >> "%CURRENT_PATH%install.log" 2>&1
         )
     )
 	exit /b 0

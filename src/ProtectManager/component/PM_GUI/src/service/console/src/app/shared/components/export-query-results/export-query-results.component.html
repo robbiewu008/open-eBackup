@@ -19,11 +19,9 @@
     </lv-group>
   </div>
   <div class="aui-block aui-paginator-container">
-    <div class="aui-header-2">
-      <span class="aui-text-help-sm">{{
-        (isDataBackup ? 'common_export_query_desc_label':'common_export_query_special_desc_label' )| i18n
-        }}</span>
-    </div>
+    <lv-alert lvType="info" [lvClosable]="false" *ngIf="!!exportQueryTips">
+      {{exportQueryTips}}
+    </lv-alert>
     <div class="aui-operation">
       <button lv-button [disabled]="disableBtn" (click)="batchDelete()">
         {{ 'common_delete_label' | i18n }}
@@ -51,9 +49,8 @@
                 *ngIf="!col.hidden" lvFilterCheckAll>
                 {{ col.label }}
                 <div lvCustom *ngIf="col.key === 'fileName'">
-                  <i #fileNamePopover="lvPopover" lv-icon="lv-icon-search" [lvColorState]="true"
-                    [ngClass]="{ active: !!fileName }" lv-popover [lvPopoverContent]="fileNameFilterTpl"
-                    lvPopoverTheme="light" lvPopoverPosition="bottom" lvPopoverTrigger="click"></i>
+                  <aui-custom-table-search (search)="searchByName($event)"
+                    [filterTitle]="fileName"></aui-custom-table-search>
                 </div>
               </th>
             </ng-container>
@@ -130,10 +127,6 @@
     </div>
   </div>
 </div>
-
-<ng-template #fileNameFilterTpl>
-  <lv-search [(ngModel)]="fileName" (lvSearch)="searchByName($event)" [lvFocus]="true"></lv-search>
-</ng-template>
 
 <ng-template #sizeTpl let-item>
   <span lv-overflow>

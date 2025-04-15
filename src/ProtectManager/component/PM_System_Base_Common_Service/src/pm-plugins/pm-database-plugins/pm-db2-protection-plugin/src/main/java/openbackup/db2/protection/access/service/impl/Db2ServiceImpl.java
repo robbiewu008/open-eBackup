@@ -12,8 +12,13 @@
 */
 package openbackup.db2.protection.access.service.impl;
 
+import com.google.common.collect.Lists;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.FinalizeClearReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.ListResourceV2Req;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
@@ -43,18 +48,15 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.StreamUtil;
-
-import com.google.common.collect.Lists;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -288,5 +290,49 @@ public class Db2ServiceImpl implements Db2Service {
         application.setUuid(database.getUuid());
         application.setSubType(ResourceSubTypeEnum.DB2.getType());
         return application;
+    }
+
+    /**
+     * 获取Agent环境信息
+     *
+     * @param envId 环境uuid
+     * @return Agent环境信息
+     */
+    public ProtectedEnvironment getEnvironmentById(String envId) {
+        return resourceService.getResourceById(envId)
+                .filter(env -> env instanceof ProtectedEnvironment)
+                .map(env -> (ProtectedEnvironment) env)
+                .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.RESOURCE_IS_NOT_EXIST,
+                        "Protected environment is not exists!"));
+    }
+
+    @Override
+    public void deleteLogFromProductEnv(ProtectedResource resource,
+                                        HashMap<String, String> extendInfo, String agent_id) {
+        log.info("deleteLogCopyFromProductEnv resource is {}", resource.getUuid());
+        if (StringUtils.equals(resource.getSubType(), ResourceSubTypeEnum.DB2_DATABASE.getType())) {
+            deleteLogClusterInstance(resource, extendInfo, agent_id);
+        }
+    }
+
+    private void deleteLogClusterInstance(ProtectedResource resource,
+                                          HashMap<String, String> extendInfo, String agent_id) {
+        // 根据id获取agent资源
+        ProtectedEnvironment agentEnvironment = getEnvironmentById(agent_id);
+        log.info("finalize deleteLogClusterInstance, agentEnvironment is {}", agentEnvironment);
+        if (agentEnvironment == null || StringUtils.equals(agentEnvironment.getLinkStatus(),
+                LinkStatusEnum.OFFLINE.getStatus().toString())) {
+            log.warn("agent {} not exist or is offline", resource.getUuid());
+            return;
+        }
+        Application application = new Application();
+        application.setName(resource.getName());
+        application.setUuid(resource.getUuid());
+        application.setSubType(ResourceSubTypeEnum.DB2_DATABASE.getType());
+        HashMap<String, String> appExtendInfo = new HashMap<>();
+        application.setExtendInfo(appExtendInfo);
+        AppEnv appEnv = new AppEnv();
+        FinalizeClearReq finalizeClearReq = new FinalizeClearReq(appEnv, application, extendInfo);
+        agentUnifiedService.finalizeClear(agentEnvironment, resource.getSubType(), finalizeClearReq);
     }
 }

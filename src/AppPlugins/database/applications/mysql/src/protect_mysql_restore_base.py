@@ -30,11 +30,12 @@ from mysql.src.common.execute_cmd import exec_sql, safe_get_environ, get_change_
     get_cluster_type_from_target_env
 from mysql.src.common.parse_parafile import ReadFile
 from mysql.src.protect_mysql_base import MysqlBase
-from mysql.src.utils.common_func import exec_mysql_sql_cmd, SQLParam, get_version_from_sql
+from mysql.src.utils.common_func import exec_mysql_sql_cmd, SQLParam, get_version_from_sql, \
+    find_log_bin_path_dir_from_cnf, find_default_my_cnf_path
 from mysql.src.utils.mysql_utils import MysqlUtils
 from mysql.src.utils.restore_func import parse_time_stamp, parse_xtrabackup_info, \
     convert_to_timestamp, convert_restore_binlog_files_str, get_bin_log_names, parse_log_meta, stop_slave, \
-    reset_slave_all
+    reset_slave_all, start_slave
 
 
 # coding=utf-8
@@ -320,17 +321,21 @@ class MysqlRestoreBase(MysqlBase):
             return False
         cmd_str = get_change_master_cmd(master_info)
         log.info(f"cmd_str:{cmd_str}")
-        exec_sql_param = self.generate_exec_sql_param()
-        exec_sql_param.sql_str = cmd_str
-        ret, output = exec_sql(exec_sql_param, self._data_path)
-        if not ret:
-            log.error(f"Exec_sql failed. sql:change master. ret:{ret} pid:{self._p_id} jobId{self._job_id}")
-            if MysqlExecSqlError.ERROR_ACCESS_DENINED in output:
-                self._error_code = MySQLErrorCode.RESTORE_CHECK_USER_FAILED
-            return False
-        if not self.start_slave():
-            log.error("Failed to start slave. jobId:%s", self._job_id)
-            return False
+        mysql_user, pass_str = self.pre_log_restore_param()
+        try:
+            sql_param = SQLParam(host=self._mysql_ip, port=self._mysql_port, user=mysql_user, passwd=pass_str)
+            sql_param.sql = cmd_str
+            ret, output = exec_mysql_sql_cmd(sql_param)
+            if not ret:
+                log.error(f"Exec_sql failed. sql:change master. ret:{ret} pid:{self._p_id} jobId{self._job_id}")
+                if MysqlExecSqlError.ERROR_ACCESS_DENINED in output:
+                    self._error_code = MySQLErrorCode.RESTORE_CHECK_USER_FAILED
+                return False
+            if not start_slave(sql_param):
+                log.error("Failed to start slave. jobId:%s", self._job_id)
+                return False
+        finally:
+            clear(pass_str)
         self.write_restore_step_info(MySQLRestoreStep.STOP_SLAVE)
         return True
 
@@ -382,7 +387,6 @@ class MysqlRestoreBase(MysqlBase):
             if not self._cache_path:
                 return False
             master_info_path = os.path.join(self._cache_path, "master_info.json")
-            log.info(f"master_info_parse_param:{master_info_parse_param}")
             exec_overwrite_file(master_info_path, master_info_parse_param)
             return True
         finally:
@@ -402,6 +406,15 @@ class MysqlRestoreBase(MysqlBase):
             return False
         self.write_restore_step_info(MySQLRestoreStep.OPERATE_MASTER_NODE)
         return True
+
+    def get_restore_binlog_dir(self):
+        ret, mysql_log_bin_dir = self.get_mysql_log_index_path()
+        if os.path.isabs(mysql_log_bin_dir):
+            if os.path.isdir(mysql_log_bin_dir):
+                return str(mysql_log_bin_dir)
+            return str(os.path.dirname(mysql_log_bin_dir))
+        else:
+            return find_log_bin_path_dir_from_cnf(self.my_cnf_path)
 
     def wait_mysql_ready(self):
         mysql_user, pass_str = self.pre_log_restore_param()

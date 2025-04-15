@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
@@ -152,7 +152,7 @@ export class CreateBackupsetComponent implements OnInit {
   getClusters(recordsTemp?, startPage?) {
     const params = {
       pageNo: startPage || CommonConsts.PAGE_START,
-      pageSize: CommonConsts.PAGE_SIZE,
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
       conditions: JSON.stringify({
         subType: DataMap.Resource_Type.Hive.value
       })
@@ -167,7 +167,7 @@ export class CreateBackupsetComponent implements OnInit {
       startPage++;
       recordsTemp = [...recordsTemp, ...res.records];
       if (
-        startPage === Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE) ||
+        startPage === Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE_MAX) ||
         res.totalCount === 0
       ) {
         const clusterArray = [];
@@ -223,7 +223,7 @@ export class CreateBackupsetComponent implements OnInit {
 
     const params = {
       pageNo: startPage || CommonConsts.PAGE_START + 1,
-      pageSize: CommonConsts.PAGE_SIZE,
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
       envId: clusterId,
       parentId: this.data?.uuid || '',
       resourceType: 'HiveDataBase'
@@ -241,7 +241,7 @@ export class CreateBackupsetComponent implements OnInit {
         recordsTemp = [...recordsTemp, ...res.records];
         if (
           startPage ===
-            Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE) + 1 ||
+            Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE_MAX) + 1 ||
           res.totalCount === 0
         ) {
           const clusterArray = [];
@@ -325,7 +325,7 @@ export class CreateBackupsetComponent implements OnInit {
   getClusterResource(node, startPage?: number) {
     const params = {
       pageNo: startPage || CommonConsts.PAGE_START + 1,
-      pageSize: CommonConsts.PAGE_SIZE * 10,
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
       envId: this.clusterUuid,
       parentId: node.extendInfo.path || '/',
       resourceType: 'HiveDirSet'
@@ -358,7 +358,8 @@ export class CreateBackupsetComponent implements OnInit {
             isMoreBtn: true,
             isLeaf: true,
             disabled: true,
-            startPage: Math.floor(size(node.children) / 200) + 1
+            startPage:
+              Math.floor(size(node.children) / CommonConsts.PAGE_SIZE_MAX) + 1
           };
           node.children = [...node.children, moreClickNode];
         }
@@ -369,7 +370,7 @@ export class CreateBackupsetComponent implements OnInit {
   getClusterResourceByPath(node, path, startPage?: number) {
     const params = {
       pageNo: startPage || CommonConsts.PAGE_START + 1,
-      pageSize: CommonConsts.PAGE_SIZE * 10,
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
       envId: this.clusterUuid,
       parentId: node.extendInfo.path || '/',
       resourceType: 'HiveDirSet'
@@ -402,7 +403,8 @@ export class CreateBackupsetComponent implements OnInit {
             isMoreBtn: true,
             isLeaf: true,
             disabled: true,
-            startPage: Math.floor(size(node.children) / 200) + 1
+            startPage:
+              Math.floor(size(node.children) / CommonConsts.PAGE_SIZE_MAX) + 1
           };
           node.children = [...node.children, moreClickNode];
         }

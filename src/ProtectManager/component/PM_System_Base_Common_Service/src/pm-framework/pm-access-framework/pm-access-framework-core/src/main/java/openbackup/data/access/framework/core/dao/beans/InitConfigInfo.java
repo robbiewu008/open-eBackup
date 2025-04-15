@@ -64,4 +64,16 @@ public class InitConfigInfo {
         this(initType, initValue);
         this.createTime = createTime;
     }
+
+    /**
+     * 三参构造函数
+     *
+     * @param initType 类型
+     * @param initValue 值
+     * @param esn esn号
+     */
+    public InitConfigInfo(String initType, String initValue, String esn) {
+        this(initType, initValue);
+        this.esn = esn;
+    }
 }

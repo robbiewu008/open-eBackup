@@ -50,7 +50,7 @@ public class GeneralDbResourceConnectionCheckerTest {
      */
     @Test
     public void collect_connectable_resources_can_success() {
-        GeneralDbResourceConnectionChecker checker = new GeneralDbResourceConnectionChecker(null, null);
+        GeneralDbResourceConnectionChecker checker = new GeneralDbResourceConnectionChecker(null, null, null);
 
         ProtectedEnvironment singleDb = TestConfHelper.mockInstance(false);
 
@@ -66,7 +66,7 @@ public class GeneralDbResourceConnectionCheckerTest {
      */
     @Test
     public void test_collectActionResults() {
-        GeneralDbResourceConnectionChecker checker = new GeneralDbResourceConnectionChecker(null, null);
+        GeneralDbResourceConnectionChecker checker = new GeneralDbResourceConnectionChecker(null, null, null);
         List<CheckReport<Object>> checkReportList = new ArrayList<>();
         CheckReport checkReport = PowerMockito.mock(CheckReport.class);
         checkReportList.add(checkReport);

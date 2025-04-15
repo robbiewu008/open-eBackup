@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "dataprocess/ioscheduler/Vmfs6IOEngine.h"
 #include "dataprocess/vmwarenative/Define.h"
 #include "common/Utils.h"
@@ -28,7 +40,7 @@ mp_int32 Vmfs6IOEngine::Open()
         return MP_FAILED;
     }
     m_file = Vmfs6IO::VmfsFile::Instance()->OpenFromBlkid(m_vmfs, Vmfs6IO::ino2blkid(m_ino));
-    if (m_file <= 0) {
+    if (m_file == nullptr) {
         COMMLOG(OS_LOG_ERROR, "Open file failed.");
         return MP_FAILED;
     }

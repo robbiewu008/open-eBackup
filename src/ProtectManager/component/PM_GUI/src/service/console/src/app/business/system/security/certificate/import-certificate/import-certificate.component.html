@@ -18,8 +18,8 @@
     <lv-form-item>
         <lv-form-label lvRequired>{{caCertificateFileLabel}}</lv-form-label>
         <lv-form-control>
-            <lv-upload lvAccept=".pem" lvShowUpload="false" (lvChange)="uploadCaChange($event)" [lvFilters]='filters1'>
-            </lv-upload>
+          <lv-upload  lvAccept='{{lvAcceptType}}' lvShowUpload="false" (lvChange)="uploadCaChange($event)" [lvFilters]='filters1'>
+          </lv-upload>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item *ngIf="internalFlag || communicationComponentFlag || redisComponentFlag">

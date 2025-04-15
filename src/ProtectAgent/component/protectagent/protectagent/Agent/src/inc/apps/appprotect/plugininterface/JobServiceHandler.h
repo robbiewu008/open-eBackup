@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef JOB_SERVICE_HANDLER_H_
 #define JOB_SERVICE_HANDLER_H_
 
@@ -16,6 +28,8 @@ public:
     EXTER_ATTACK virtual void AddNewJob(AppProtect::ActionResult& _return, const std::vector<AppProtect::SubJob>& job);
     EXTER_ATTACK virtual void ReportJobDetails(AppProtect::ActionResult& _return,
         const AppProtect::SubJobDetails& jobInfo);
+    EXTER_ATTACK virtual void ReportAsyncJobDetails(AppProtect::ActionResult& _return, const std::string &jobId,
+        mp_int32 code, const AppProtect::ResourceResultByPage& results);
     EXTER_ATTACK virtual void ReportCopyAdditionalInfo(
         AppProtect::ActionResult& _return, const std::string& jobId, const AppProtect::Copy& copy);
     EXTER_ATTACK virtual void ComputerFileLocationInMultiFileSystem(std::map<std::string, std::string>& _return,
@@ -32,6 +46,8 @@ public:
         const AppProtect::AlarmDetails& alarm);
     EXTER_ATTACK void AddIpWhiteList(AppProtect::ActionResult& _return, const std::string &jobId,
         const std::string &ipListStr);
+    EXTER_ATTACK void GetHcsToken(AppProtect::ApplicationEnvironment& env, const std::string &projectId,
+        const std::string &isWorkSpace);
 
 private:
     inline mp_void ThrowAppException(mp_int32 errCode, const mp_string& message)

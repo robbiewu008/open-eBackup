@@ -12,11 +12,10 @@
 */
 package openbackup.mysql.resources.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.copy.CapabilityProvider;
 import openbackup.data.protection.access.provider.sdk.enums.CopyFeatureEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

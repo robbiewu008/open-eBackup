@@ -54,6 +54,9 @@
                     <td>
                         <span lv-overflow>{{item.name}}</span>
                     </td>
+                    <td *ngIf="!i18n.isEn">
+                        <span lv-overflow>{{item.translatedName | nil}}</span>
+                    </td>
                     <td>
                         <span lv-overflow>{{item.create_method | textMap: 'Senesitization_Create_Method'}}</span>
                     </td>

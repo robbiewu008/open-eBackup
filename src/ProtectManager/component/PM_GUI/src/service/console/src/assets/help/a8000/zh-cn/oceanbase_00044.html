@@ -1,0 +1,105 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复OceanBase数据库">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="oceanbase_00041.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="oceanbase_00044">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复OceanBase数据库</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="oceanbase_00044"></a><a name="oceanbase_00044"></a>
+
+<h1 class="topictitle1">恢复OceanBase数据库</h1>
+<div><p>当需要对已备份的集群或租户集进行恢复时，可以参考本节恢复OceanBase资源至原位置或新位置。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li id="oceanbase_00044__li178221624154012">恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</li></ul>
+<ul><li id="oceanbase_00044__li3626128183014">首次恢复时需要确保OceanBase数据库<strong id="oceanbase_00044__b46493303116">restore_concurrency</strong>参数取值不为0，推荐取值10。</li><li id="oceanbase_00044__li944162885510">请确保在OceanBase数据库上已存在至少一个并且CPU、内存大于等于原租户的空闲资源池，若不存在则需要创建资源池，创建资源池具体操作请参考<a href="https://www.oceanbase.com/docs/enterprise-oceanbase-database-cn-10000000000355617" target="_blank" rel="noopener noreferrer">OceanBase官方文档</a>。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="oceanbase_00044__zh-cn_topic_0000001349067713_zh-cn_topic_0000001311215337_zh-cn_topic_0000001140163709_li0198134611381"><span>选择<span class="uicontrol" id="oceanbase_00044__zh-cn_topic_0000002199964685_uicontrol4958517162719">“<span id="oceanbase_00044__zh-cn_topic_0000002199964685_text695841713270">数据利用</span> &gt; <span id="oceanbase_00044__zh-cn_topic_0000002199964685_text1595819176270">副本数据</span> &gt; <span id="oceanbase_00044__zh-cn_topic_0000002199964685_text14787949194912">数据库</span> &gt; OceanBase”</span>。</span></li><li><span>您可以以OceanBase资源维度或以副本维度查找副本：</span><p><ul><li>在<span class="uicontrol">“<span>资源</span>”</span>页签，根据名称查找到需要恢复的集群或租户集，并单击名称。</li><li>在<span class="uicontrol">“<span>副本</span>”</span>页签，根据副本信息查找到要进行恢复的副本，在副本所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>恢复</span>”</span>。</li></ul>
+<p>以下以数据库资源维度为例说明相关操作。</p>
+</p></li><li><span>选择副本恢复的资源。</span></li><li><span>指定副本或指定时间点进行恢复。</span><p><div class="note" id="oceanbase_00044__note0129137113811"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="oceanbase_00044__oracle_gud_0083_p10749547154615">对于OceanProtect E6000备份一体机，使用复制副本执行恢复时，不支持在远端对该资源下的其他副本进行复制。</p>
+</div></div>
+<ul><li>指定副本恢复<ol type="a"><li>依次选择年、月、天找到副本。<p>当时间上显示<span><img src="zh-cn_image_0000002200046217.png"></span>，即表示该月、该天存在副本。</p>
+</li><li>在副本数据页面单击<span><img src="zh-cn_image_0000002164805184.png"></span>，单击需要恢复的副本所在行的<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"><span>恢复</span></span>”</span>。</li></ol>
+</li><li>指定时间点恢复<ol type="a"><li>依次选择年、月、天找到副本。<p>当时间上显示<span><img src="zh-cn_image_0000002200131781.png"></span>，即表示该月、该天存在副本。</p>
+</li><li>在副本数据页面单击<span><img src="zh-cn_image_0000002164645448.png"></span>，在时间轴上选择蓝色覆盖区域的副本，单击<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"><span>恢复</span></span>”</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="oceanbase_00044__oracle_gud_0083_ul75802612312"><li id="oceanbase_00044__oracle_gud_0083_li1497342618234">对于1.5.0版本，时间轴上最多仅展示100个副本，单击<span><img id="oceanbase_00044__oracle_gud_0083_image173544102299" src="zh-cn_image_0000002199963833.png"></span>可以查看所有副本。</li><li id="oceanbase_00044__oracle_gud_0083_li95818264231">执行时间点恢复时，由于管理界面无法获取恢复时所使用的副本信息，因此，在恢复任务和相关的事件页面，用户无法看到该恢复任务的副本信息。</li></ul>
+</div></div>
+</li></ol>
+</li></ul>
+</p></li><li><span>恢复OceanBase至原位置或新位置。</span><p><p>相关参数说明如<a href="#oceanbase_00044__zh-cn_topic_0000001263614142_table93951625101715">表1</a>所示。</p>
+
+<div class="tablenoborder"><a name="oceanbase_00044__zh-cn_topic_0000001263614142_table93951625101715"></a><a name="zh-cn_topic_0000001263614142_table93951625101715"></a><table cellpadding="4" cellspacing="0" summary="" id="oceanbase_00044__zh-cn_topic_0000001263614142_table93951625101715" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复OceanBase参数说明</caption><colgroup><col style="width:32.48%"><col style="width:67.52%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.48%" id="mcps1.3.3.2.5.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.52%" id="mcps1.3.3.2.5.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="32.48%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span>恢复至</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.52%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>或<span class="uicontrol">“<span>新位置</span>”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.48%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span>位置</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.52%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>时，默认显示恢复的位置。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.48%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p>标签</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p><span>仅1.6.0及后续版本支持此功能。</span></p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="67.52%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时展示该参数。</p>
+<p>可通过标签筛选数据库。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.48%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span>目标集群</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.52%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><p>当选择恢复至“<span>新位置</span>”时，可以选择需要恢复到的目标集群。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.48%" headers="mcps1.3.3.2.5.2.2.2.3.1.1 "><p><span>租户</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="67.52%" headers="mcps1.3.3.2.5.2.2.2.3.1.2 "><ul><li>当选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>时，需要选择空闲资源池。</li><li>当选择恢复至“<span>新位置</span>”时，需要设置新租户名，并选择空闲资源池。</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="oceanbase_00041.html">恢复</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

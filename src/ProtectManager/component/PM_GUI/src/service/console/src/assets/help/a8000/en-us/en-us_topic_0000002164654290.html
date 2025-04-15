@@ -1,0 +1,55 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Backup and Restoration of Large-Capacity VM Disks in NBD/NBDSSL Transmission Mode Fail">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164654290">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Backup and Restoration of Large-Capacity VM Disks in NBD/NBDSSL Transmission Mode Fail</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164654290"></a><a name="EN-US_TOPIC_0000002164654290"></a>
+
+<h1 class="topictitle1">Backup and Restoration of Large-Capacity VM Disks in NBD/NBDSSL Transmission Mode Fail</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>Backup or restoration of large-capacity (TB-level) VM disks in NBD/NBDSSL transmission mode fails, with an error message displayed, indicating that the client fails to back up or restore disks.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Causes</h4><p>In NBD/NBDSSL transmission mode, the network is used to transmit data. If the entire network transmission link times out or fluctuates, the read and write operations on production disks through the Virtual Disk Development Kit (VDDK) will fail, and backup or restoration cannot be retried in a short period of time.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Troubleshooting</h4><p>In NBD/NBDSSL transmission mode, the management network bandwidth is occupied and the transmission rate is low. Therefore, you are advised to use the SAN or hot-add transmission mode to back up and restore large-capacity (TB-level) disks.</p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

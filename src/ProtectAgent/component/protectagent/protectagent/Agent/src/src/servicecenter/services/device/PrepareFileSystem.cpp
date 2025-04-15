@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "servicecenter/services/device/PrepareFileSystem.h"
 
 #include "common/Log.h"
@@ -25,6 +37,7 @@ using namespace AppProtect;
 
 namespace {
     const mp_int32 CHECK_HOST_RETRY_TIMES = 3;
+    const mp_int32 DATATURBO_MAXIMUM_IPS = 16;
     const mp_int32 DEFAULT_EXIT_CODE = 1;
     const mp_int32 LINK_HASH_DIR_INDEX = 3;
     const mp_int32 FILECLIENT_MOUNT_POINT_5 = 5;
@@ -51,6 +64,40 @@ namespace {
         {MOUNT_PROTOCOL_CIFS, "445"},
         {MOUNT_PROTOCOL_DATATURBO, "12300"}
     };
+}
+
+mp_string PrepareFileSystem::GetMountPublicPath()
+{
+#ifdef WIN32
+    mp_string mountPublicPath = "";
+    if (CConfigXmlParser::GetInstance().GetValueString(CFG_MOUNT_SECTION,
+        CFG_WIN_MOUNT_PUBLIC_PATH, mountPublicPath) != MP_SUCCESS || mountPublicPath == "") {
+        WARNLOG("Failed to get CFG_WIN_MOUNT_PUBLIC_PATH.");
+        mountPublicPath = MOUNT_PUBLIC_PATH;
+    }
+    if (!mountPublicPath.empty() && mountPublicPath.back() != '\\') {
+        mountPublicPath += "\\";
+    }
+    INFOLOG("mountPublicPath from cfg file: %s.", mountPublicPath.c_str());
+    if (CMpFile::DirExist(mountPublicPath.c_str())) {
+        // 路径存在则直接使用
+        return mountPublicPath;
+    }
+    // 路径不存在，检查对应盘符是否存在，否则转为系统盘符再使用
+    mp_string targetDiskName = mountPublicPath.substr(0, 1);
+    targetDiskName = targetDiskName + ":\\";
+    if (CMpFile::DirExist(targetDiskName.c_str())) {
+        // 盘符存在则直接使用
+        return mountPublicPath;
+    }
+    // 盘符不存在，先修改为C盘并改为系统盘符后使用
+    mountPublicPath[0] = 'C';
+    mountPublicPath = GetSystemDiskChangedPathInWin(mountPublicPath);
+    INFOLOG("mountPublicPath is: %s.", mountPublicPath.c_str());
+    return mountPublicPath;
+#else
+    return MOUNT_PUBLIC_PATH;
+#endif
 }
 
 #ifdef WIN32
@@ -231,9 +278,9 @@ EXTER_ATTACK mp_int32 PrepareFileSystem::MountFileClientSystem(
         OSADServerPort = mountNasParam.pvcOSADServerPort;
     }
 
-    mp_string mountPath = MOUNT_PUBLIC_PATH + mountNasParam.appType + PATH_SEPARATOR + jobId;
+    mp_string mountPath = GetMountPublicPath() + mountNasParam.appType + PATH_SEPARATOR + jobId;
     CHECK_FAIL_EX(CheckParamValid(mountPath));
-    mp_string mountSuccPath = MOUNT_PUBLIC_PATH + mountNasParam.appType + PATH_SEPARATOR + jobId +
+    mp_string mountSuccPath = GetMountPublicPath() + mountNasParam.appType + PATH_SEPARATOR + jobId +
                               mountNasParam.storagePath;
     CHECK_FAIL_EX(CheckParamValid(mountSuccPath));
 
@@ -266,8 +313,7 @@ EXTER_ATTACK mp_int32 PrepareFileSystem::CheckAndCreateDataturboLink(const mp_st
     const MountNasParam &mountNasParam)
 {
     LOGGUARD("");
-    mp_int32 agentType = AppProtect::AppProtectJobHandler::GetInstance()->GetAgentType();
-    if (agentType == AGENT_INSTALL_TYPE_INTERNAL) {
+    if (StaticConfig::IsInnerAgent()) {
         ERRLOG("Inner agent don't support dataturbo.");
         return ERR_NOT_SUPPORT_DATA_TURBO;
     }
@@ -275,13 +321,30 @@ EXTER_ATTACK mp_int32 PrepareFileSystem::CheckAndCreateDataturboLink(const mp_st
         ERRLOG("File system %s have no valid ip.", storageName.c_str());
         return ERR_NOT_CONFIG_DATA_TURBO_LOGIC_PORT;
     }
-    mp_string ipList = CMpString::StrJoin(mountNasParam.vecDataturboIP, ",");
+
     ostringstream scriptParam;
     if (mountNasParam.isFcOn) {
         scriptParam << "storageName=" << storageName << NODE_COLON << "linkType=FC" << NODE_COLON
                     << "userName=" << mountNasParam.authKey << NODE_COLON << "password=" << mountNasParam.authPwd
                     << NODE_COLON << "dedupSwitch=" << (mountNasParam.isDeduptionOn ? "ON" : "OFF");
     } else {
+        std::vector<mp_string> connectableIP;
+        std::shared_ptr<IHttpClient> httpClient = IHttpClient::CreateNewClient();
+        if (httpClient == nullptr) {
+            COMMLOG(OS_LOG_ERROR, "HttpClient create failed.");
+            return ERR_NOT_CONFIG_DATA_TURBO_LOGIC_PORT;
+        }
+        for (const mp_string &ip : mountNasParam.vecDataturboIP) {
+            if (httpClient->TestConnectivity(ip, G_ProtocolTypePortMap[MOUNT_PROTOCOL_DATATURBO])) {
+                COMMLOG(OS_LOG_INFO, "Can connect ip(%s).", ip.c_str());
+                connectableIP.push_back(ip);
+            }
+            if (connectableIP.size() >= DATATURBO_MAXIMUM_IPS) {
+                COMMLOG(OS_LOG_INFO, "Dataturbo ip amount reached.");
+                break;
+            }
+        }
+        mp_string ipList = CMpString::StrJoin(connectableIP, ",");
         scriptParam << "storageName=" << storageName << NODE_COLON << "ipList=" << ipList << NODE_COLON
                     << "userName=" << mountNasParam.authKey << NODE_COLON << "password=" << mountNasParam.authPwd
                     << NODE_COLON << "dedupSwitch=ON";
@@ -326,7 +389,7 @@ EXTER_ATTACK mp_int32 PrepareFileSystem::MountDataturboFileSystem(
     }
     subPath = subPath.substr(subPath.find_first_of(":") + 1);
 
-    mp_string mountPath = MOUNT_PUBLIC_PATH + mountNasParam.appType + PATH_SEPARATOR + mountNasParam.jobID +
+    mp_string mountPath = GetMountPublicPath() + mountNasParam.appType + PATH_SEPARATOR + mountNasParam.jobID +
                           PATH_SEPARATOR + mountNasParam.repositoryType + mountNasParam.storagePath;
     if (!mountNasParam.isFcOn) {
         // 保证原有逻辑不变
@@ -371,7 +434,8 @@ mp_string PrepareFileSystem::GetNasMountScriptParama(const MountNasParam &mountN
         << "subPath=" << mountNasParam.subPath << NODE_COLON
         << "uid=" << mountNasParam.permit.uid << NODE_COLON << "gid=" << mountNasParam.permit.gid << NODE_COLON
         << "mode=" << mountNasParam.permit.mode << NODE_COLON
-        << "pluginName=" << mountNasParam.pluginName << NODE_COLON;
+        << "pluginName=" << mountNasParam.pluginName << NODE_COLON
+        << "jobID=" << mountNasParam.jobID << NODE_COLON;
     DBGLOG("Mount param is %s.", scriptParam.str().c_str());
     return scriptParam.str();
 }
@@ -396,12 +460,32 @@ mp_void PrepareFileSystem::GetMountPath(const MountNasParam &mountNasParam, cons
         return;
 #endif
     }
-    mountPath = MOUNT_PUBLIC_PATH + mountNasParam.appType + PATH_SEPARATOR + mountNasParam.jobID +
+    mountPath = GetMountPublicPath() + mountNasParam.appType + PATH_SEPARATOR + mountNasParam.jobID +
         PATH_SEPARATOR + mountNasParam.repositoryType + mountNasParam.storagePath + PATH_SEPARATOR + iterIp;
     if (!mountNasParam.isFullPath) {
-        mountPath = MOUNT_PUBLIC_PATH + mountNasParam.appType + PATH_SEPARATOR +
+        mountPath = GetMountPublicPath() + mountNasParam.appType + PATH_SEPARATOR +
             mountNasParam.jobID + PATH_SEPARATOR + mountNasParam.repositoryType + PATH_SEPARATOR + iterIp;
     }
+}
+
+bool PrepareFileSystem::GetMountOption(const MountNasParam &mountNasParam, mp_string &mountOptionKey,
+    mp_string &mountOption)
+{
+    DBGLOG("Get plugins mount param taskType=%d.", mountNasParam.taskType);
+    if ((MainJobType)mountNasParam.taskType == MainJobType::RESTORE_JOB) {
+        mountOption = ExternalPluginManager::GetInstance().GetParseManager()->GetMountRestoreParamByAppType(
+            mountNasParam.appType, mountOptionKey);
+    }
+    if (mountOption.empty()) {
+        mountOption = ExternalPluginManager::GetInstance().GetParseManager()->GetMountParamByAppType(
+            mountNasParam.appType, mountOptionKey);
+    }
+    if (!mountOption.empty()) {
+        INFOLOG("Get plugins mount param success, appType=%s, repoType=%s, mountParam=%s.",
+            mountNasParam.appType.c_str(), mountNasParam.repositoryType.c_str(), mountOption.c_str());
+        return true;
+    }
+    return false;
 }
 
 mp_int32 PrepareFileSystem::GetPluginDefinedMountOption(const MountNasParam &mountNasParam, mp_string &mountOption)
@@ -414,11 +498,7 @@ mp_int32 PrepareFileSystem::GetPluginDefinedMountOption(const MountNasParam &mou
     mountOptionKey = mountOptionKey + "_" + mountNasParam.repositoryType;
 #endif
     // 获取插件配置文件中的挂载参数
-    mountOption = ExternalPluginManager::GetInstance().GetParseManager()->GetMountParamByAppType(
-        mountNasParam.appType, mountOptionKey);
-    if (!mountOption.empty()) {
-        INFOLOG("Get plugins mount param success, appType=%s, repoType=%s, mountParam=%s.",
-            mountNasParam.appType.c_str(), mountNasParam.repositoryType.c_str(), mountOption.c_str());
+    if (GetMountOption(mountNasParam, mountOptionKey, mountOption)) {
         return MP_SUCCESS;
     }
     mountOptionKey =
@@ -428,11 +508,7 @@ mp_int32 PrepareFileSystem::GetPluginDefinedMountOption(const MountNasParam &mou
 #elif defined(SOLARIS)
     mountOptionKey = mountOptionKey + "_" + SOLARIS_SYS_NAME;
 #endif
-    mountOption = ExternalPluginManager::GetInstance().GetParseManager()->GetMountParamByAppType(
-        mountNasParam.appType, mountOptionKey);
-    if (!mountOption.empty()) {
-        INFOLOG("Get plugins mount param success, appType=%s, mountParam=%s.",
-            mountNasParam.appType.c_str(), mountOption.c_str());
+    if (GetMountOption(mountNasParam, mountOptionKey, mountOption)) {
         return MP_SUCCESS;
     }
     return MP_FAILED;
@@ -467,13 +543,6 @@ mp_int32 PrepareFileSystem::GetMountParam(const MountNasParam &mountNasParam, mp
     if (ret != MP_SUCCESS) {
         ERRLOG("No mount parameters available, apptype=%s.", mountNasParam.appType.c_str());
         return MP_FAILED;
-    }
-    // Non clone fs use ro mount
-    if (!mountNasParam.isCloneFsMount) {
-        mp_size pos = mountOption.find(MOUNT_MODE_READ_WRITE);
-        if (pos != std::string::npos) {
-            mountOption.replace(pos, MOUNT_MODE_READ_WRITE.size(), MOUNT_MODE_READ_ONLY);
-        }
     }
     INFOLOG("Get agent mount param success, appType=%s, option=%s.",
         mountNasParam.appType.c_str(), mountOption.c_str());
@@ -617,15 +686,6 @@ std::map<mp_string, mp_string> PrepareFileSystem::m_alreadyMountInfoMap;
 mp_int32 PrepareFileSystem::WinMountOperation(MountNasKeyParam& mountKeyParam, mp_string& mountPath)
 {
     INFOLOG("isInerSnapshot:%d, isCloneFsMount:%d.", mountKeyParam.isInerSnapshot, mountKeyParam.isCloneFsMount);
-    if (mountKeyParam.isInerSnapshot && !mountKeyParam.isCloneFsMount) {
-        mp_string newStr = CMpString::StrReplace(mountKeyParam.storagePath, "/", "\\");
-        while (newStr.size() > 0 && newStr.at(0) == '\\') {
-            newStr.erase(0, 1);
-        }
-        INFOLOG("Fomat is inner snapshot, use storagePath(%s), not storageName(%s).",
-            newStr.c_str(), mountKeyParam.storageName.c_str());
-        mountKeyParam.storageName = newStr;
-    }
     mp_string tempKey = GetWinMountScriptParama(mountKeyParam) + "StoragePath=" + mountKeyParam.storagePath;
 
     DBGLOG("start mount info(%s) mount.", tempKey.c_str());
@@ -688,11 +748,11 @@ mp_int32 PrepareFileSystem::WinMountOperationInner(const MountNasKeyParam &mount
 
 mp_string PrepareFileSystem::GetWinMountScriptParama(const MountNasKeyParam &mountKeyParam)
 {
-    mp_string linkPath = MOUNT_PUBLIC_PATH + mountKeyParam.appType + PATH_SEPARATOR + mountKeyParam.jobID +
+    mp_string linkPath = GetMountPublicPath() + mountKeyParam.appType + PATH_SEPARATOR + mountKeyParam.jobID +
         PATH_SEPARATOR + mountKeyParam.repositoryType + PATH_SEPARATOR + mountKeyParam.storageName;
     std::hash<std::string> strHash;
     mp_string hashLinkPath = std::to_string(strHash(linkPath));
-    m_linkPath = MOUNT_PUBLIC_PATH + hashLinkPath;
+    m_linkPath = GetMountPublicPath() + hashLinkPath;
     ostringstream scriptParam;
     scriptParam << "JobID=" << mountKeyParam.jobID << NODE_COLON
         << "OperationType=" << "mount" << NODE_COLON
@@ -869,8 +929,15 @@ mp_void PrepareFileSystem::SplitMountPath(const mp_string &strPath, std::map<mp_
     linkPath = mountInfoVec.front();
     vector<mp_string> linkDirVec;
     CMpString::StrSplitEx(linkDirVec, linkPath, PATH_SEPARATOR);
-    if (linkDirVec.size() > LINK_HASH_DIR_INDEX) {
-        linkPath = MOUNT_PUBLIC_PATH + linkDirVec[LINK_HASH_DIR_INDEX];
+    mp_string mountPublicPath = GetMountPublicPath();
+    mp_int32 separatorCount = 0;
+    for (auto ch : mountPublicPath) {
+        if (ch == '\\') {
+            separatorCount++;
+        }
+    }
+    if (linkDirVec.size() > separatorCount) {
+        linkPath = mountPublicPath + linkDirVec[separatorCount];
     }
     mapMountPath.insert(std::pair<mp_string, mp_string>(linkPath, mountInfoVec.back()));
 }
@@ -1008,9 +1075,11 @@ void PrepareFileSystem::HandleAfterMountSuccess(const MountNasParam &mountNasPar
     ReleaseMountFailIp(mountNasParam.ip);
 }
 
-void PrepareFileSystem::HandleAfterMountFail(const MountNasParam &mountNasParam, mp_int32 errCode)
+void PrepareFileSystem::HandleAfterMountFail(const MountNasParam &mountNasParam, mp_int32 &errCode)
 {
     AddMountFailIp(mountNasParam.ip);
+    // 防止在label中打印错误码 将错误码替换为对应ErrorCode
+    errCode = ERROR_MOUNT_SRICPT_FAILED;
 }
 
 void PrepareFileSystem::HandleAfterUMountSuccess(const mp_string& jobId, const mp_string& mountPath)

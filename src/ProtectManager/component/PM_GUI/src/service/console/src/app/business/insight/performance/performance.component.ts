@@ -1,16 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { InfoMessageService } from 'app/shared/services/info-message.service';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   Component,
@@ -20,46 +19,51 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
+import { MessageboxService } from '@iux/live';
 import {
-  CommonConsts,
-  I18NService,
-  WarningMessageService,
-  CapacityCalculateLabel,
   CAPACITY_UNIT,
+  CapacityCalculateLabel,
+  CommonConsts,
   CookieService,
-  RoleType,
   DataMap,
+  getAppTheme,
+  GlobalService,
+  I18NService,
+  isRBACDPAdmin,
   MODAL_COMMON,
-  isRBACDPAdmin
+  SYSTEM_TIME,
+  THEME_TRIGGER_ACTION,
+  ThemeEnum,
+  WarningMessageService
 } from 'app/shared';
 import {
   ClustersApiService,
   PerformanceApiDescService
 } from 'app/shared/api/services';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
+import { DrawModalService } from 'app/shared/services/draw-modal.service';
+import { InfoMessageService } from 'app/shared/services/info-message.service';
+import { SystemTimeService } from 'app/shared/services/system-time.service';
 import * as echarts from 'echarts';
 import {
+  assign,
+  defer,
   each,
   filter,
+  find,
   first,
+  flatten,
+  get,
+  includes,
   isEmpty,
   isNaN,
-  map,
-  zip,
-  find,
-  includes,
-  set,
   isUndefined,
-  get,
-  defer,
-  assign,
-  flatten
+  map,
+  set,
+  zip
 } from 'lodash';
-import { combineLatest, Subscription, timer } from 'rxjs';
-import { SystemTimeService } from 'app/shared/services/system-time.service';
-import { MessageboxService } from '@iux/live';
+import { combineLatest, Subject, Subscription, takeUntil, timer } from 'rxjs';
 import { MultiSettingComponent } from './multi-setting/multi-setting.component';
-import { DrawModalService } from 'app/shared/services/draw-modal.service';
-import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'aui-performance',
@@ -115,6 +119,8 @@ export class PerformanceComponent implements OnInit, OnDestroy {
   selectedNodeIp = '';
   staticsMode = 'avg';
   deviceOrStoragePoolModel = 'device';
+  capacityTabId = 'backup';
+  storagePoolHiddenChart = false;
   timeType = {
     lastMinute: 0,
     lastHour: 1,
@@ -126,7 +132,7 @@ export class PerformanceComponent implements OnInit, OnDestroy {
   startTime: number;
   endTime: number;
   isDeleteHistory = false;
-  hasRemoveHistoryData = true;
+  hasRemoveHistoryData;
   performanceMonitorLabel = this.i18n.get('insight_performance_monitor_label');
   maxLabel = this.i18n.get('common_max_label');
   avgLabel = this.i18n.get('common_avg_label');
@@ -138,6 +144,9 @@ export class PerformanceComponent implements OnInit, OnDestroy {
   noData = this.i18n.get('common_no_data_label');
   switchHelp = this.i18n.get('insight_performance_switch_help_label');
   switchOffContent = this.i18n.get('insight_performance_switch_off_label');
+  e1000ViewHelp = this.i18n.get(
+    'insight_decouple_performance_no_data_tip_label'
+  );
   isCloudbackup = includes(
     [
       DataMap.Deploy_Type.cloudbackup.value,
@@ -157,6 +166,7 @@ export class PerformanceComponent implements OnInit, OnDestroy {
   tipShow = false;
   chartConfigMap = new Map();
   chartInstanceMap = new Map();
+  destroy$ = new Subject();
 
   @ViewChild('tipContentTpl', { static: false }) tipContentTpl: TemplateRef<
     any
@@ -175,11 +185,14 @@ export class PerformanceComponent implements OnInit, OnDestroy {
     public capacityCalculateLabel: CapacityCalculateLabel,
     private cookieService: CookieService,
     private drawModalService: DrawModalService,
-    public appUtilsService: AppUtilsService
+    public appUtilsService: AppUtilsService,
+    private globalService: GlobalService
   ) {}
 
   ngOnDestroy() {
     this.performanceSub.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   onChange() {
@@ -188,6 +201,10 @@ export class PerformanceComponent implements OnInit, OnDestroy {
     this.selectedNodeIp = '';
     this.clusters = [];
     this.ngOnInit();
+  }
+
+  isThemeLight(): boolean {
+    return getAppTheme(this.i18n) === ThemeEnum.light;
   }
 
   // 关闭与开启性能监控按钮
@@ -273,7 +290,7 @@ export class PerformanceComponent implements OnInit, OnDestroy {
               if (this.isDataBackupOrDecouple) {
                 setTimeout(() => {
                   this.queryAllConfig();
-                }, 1000);
+                }, 2000);
               }
             });
         },
@@ -297,14 +314,39 @@ export class PerformanceComponent implements OnInit, OnDestroy {
   }
 
   toDateTime(ms) {
-    return this.datePipe.transform(ms, 'yyyy-MM-dd HH:mm:ss');
+    return this.datePipe.transform(
+      ms,
+      'yyyy-MM-dd HH:mm:ss',
+      SYSTEM_TIME.timeZone
+    );
+  }
+
+  lvTabChange(id) {
+    this.storagePoolHiddenChart =
+      this.deviceOrStoragePoolModel === 'storagePool';
+    this.capacityTabId = 'backup';
+    this.reloadView();
   }
 
   reloadView(mask = true) {
+    if (!this.showMonitor) {
+      if (this.hasRemoveHistoryData) {
+        this.chartInstanceMap?.forEach((item, key) => {
+          if (!item.isDisposed()) {
+            item.dispose();
+          }
+        });
+        this.chartInstanceMap?.clear();
+        return;
+      }
+    }
+
     this.systemTimeService.getSystemTime(false).subscribe(res => {
-      this.endTime = new Date(res.time).getTime();
+      this.endTime = this.appUtilsService.toSystemTimeLong(res.time);
       if (!this.endTime) {
-        this.endTime = new Date(res.time.replace(/-/g, '/')).getTime();
+        this.endTime = this.appUtilsService.toSystemTimeLong(
+          res.time.replace(/-/g, '/')
+        );
       }
       switch (this.timeSeleted) {
         case 0:
@@ -340,7 +382,9 @@ export class PerformanceComponent implements OnInit, OnDestroy {
     this.reloadView();
   }
 
-  deviceOrStoragePoolModelChange() {
+  deviceOrStoragePoolModelChange(id) {
+    this.storagePoolHiddenChart = id === 'storagePool';
+    this.capacityTabId = 'backup';
     this.reloadView();
   }
 
@@ -382,13 +426,38 @@ export class PerformanceComponent implements OnInit, OnDestroy {
     }
     let capacityChart = this.chartInstanceMap.get(dom);
     if (isEmpty(capacityChart)) {
-      capacityChart = echarts.init(
-        this.el.nativeElement.querySelector(`#${dom}`)
-      );
-      this.chartInstanceMap.set(dom, capacityChart);
+      // map里没取到不代表chart没有实例化
+      let chart = echarts.getInstanceByDom(node);
+      if (!chart) {
+        chart = echarts.init(this.el.nativeElement.querySelector(`#${dom}`));
+      }
+      this.chartInstanceMap.set(dom, chart);
+      capacityChart = chart;
+    } else {
+      this.resizeChart(capacityChart);
+    }
+    if (
+      [
+        'copy-latency-chart',
+        'copy-iops-chart',
+        'copy-nas-bindwidth-chart',
+        'copy-bindwidth-chart'
+      ].includes(dom)
+    ) {
+      if (!this.storagePoolHiddenChart) {
+        if (!capacityChart.isDisposed()) {
+          capacityChart.dispose();
+        }
+        capacityChart = echarts.init(
+          this.el.nativeElement.querySelector(`#${dom}`)
+        );
+        this.chartInstanceMap.set(dom, capacityChart);
+      }
     }
     window.addEventListener('resize', () => {
-      capacityChart.resize();
+      if (!capacityChart.isDisposed()) {
+        capacityChart.resize();
+      }
     });
     const xAxisData = [];
     xAxisDataTemp.forEach(item => {
@@ -494,7 +563,7 @@ export class PerformanceComponent implements OnInit, OnDestroy {
           style: {
             text: `${unit}`,
             textAlign: 'right',
-            fill: '#9EA4B3',
+            fill: this.isThemeLight() ? '#4D4D4D' : '#B3B3B3',
             width: 31,
             height: 14,
             fontSize: 12
@@ -507,13 +576,15 @@ export class PerformanceComponent implements OnInit, OnDestroy {
           type: 'line',
           z: 10,
           lineStyle: {
-            color: '#d7dae2'
+            color: this.isThemeLight() ? '#d9d9d9' : '#4D4D4D'
           }
         },
-        backgroundColor: '#6F6F6F',
-        extraCssText: 'border-radius: 0; padding: 12px 16px',
+        backgroundColor: this.isThemeLight() ? '#fff' : '#272933',
+        extraCssText: `border-radius: 0; padding: 12px 16px; border:1px solid ${
+          this.isThemeLight() ? '#fff' : '#272933'
+        }`,
         formatter: params => {
-          let tip = `<div style='font-size: 12px; color: #D4D9E6'>${this.toDateTime(
+          let tip = `<div style='font-size: 12px; color: #808080'>${this.toDateTime(
             params[0].axisValue
           )}</div>`;
           params.forEach(res => {
@@ -546,11 +617,11 @@ export class PerformanceComponent implements OnInit, OnDestroy {
                 value = this.getTipTitle(dom);
               }
             }
-            tip += `<div style='font-size: 12px; color: #D4D9E6; padding-right:10px;'>
+            tip += `<div style='font-size: 12px; color: #808080; padding-right:10px;'>
                   <span style='margin-right: 6px;display: inline-block;width: 8px;height:8px;border-radius:8px;background:${
                     res.color
                   }'></span>${value}
-                  <span style='font-size: 12px; color: #F7FAFF;'>${resData}<span>${
+                  <span style='font-size: 12px; color: #808080;'>${resData}<span>${
               !includes(
                 [
                   'bindwidth-chart',
@@ -618,12 +689,12 @@ export class PerformanceComponent implements OnInit, OnDestroy {
         axisLine: {
           show: true,
           lineStyle: {
-            color: '#E6EBF5',
-            width: 2
+            color: this.isThemeLight() ? '#E6E6E6' : '#262626',
+            width: 1
           }
         },
         axisLabel: {
-          color: '#9EA4B3',
+          color: this.isThemeLight() ? '#4D4D4D' : '#B3B3B3',
           formatter: params => {
             params = this.toDateTime(params);
             let newParamsName = '';
@@ -659,12 +730,12 @@ export class PerformanceComponent implements OnInit, OnDestroy {
             return item + '';
           },
           show: true,
-          color: '#9EA4B3'
+          color: this.isThemeLight() ? '#4D4D4D' : '#B3B3B3'
         },
         splitLine: {
           lineStyle: {
-            type: 'dashed',
-            color: '#E6EBF5',
+            type: 'solid',
+            color: this.isThemeLight() ? '#E6E6E6' : '#262626',
             width: 1
           }
         },
@@ -678,7 +749,7 @@ export class PerformanceComponent implements OnInit, OnDestroy {
         {
           data: dataArr,
           type: 'line',
-          color: '#6e94fa',
+          color: '#3388FF',
           showSymbol: dataArr.length === 1,
           itemStyle: {
             borderWidth: 3
@@ -712,7 +783,22 @@ export class PerformanceComponent implements OnInit, OnDestroy {
       set(capacityOption, 'series', storagePoolSeries);
     }
     // 第二个参数为true时，切换图表不会合并配置项
-    capacityChart.setOption(capacityOption, true);
+    capacityChart?.setOption(capacityOption, true);
+  }
+
+  private resizeChart(capacityChart) {
+    if (isEmpty(capacityChart) || capacityChart.isDisposed()) {
+      return;
+    }
+    const canvasHeight = capacityChart.getDom().firstChild.offsetHeight;
+    if (!canvasHeight) {
+      // 延迟resize
+      setTimeout(() => {
+        capacityChart.clear();
+        capacityChart?.resize();
+      }, 100);
+    }
+    // 这里也可以立即resize,出于性能考虑，只有在渲染异常时进行resize()
   }
 
   createChartWithData(res, data, dom, unit) {
@@ -728,7 +814,7 @@ export class PerformanceComponent implements OnInit, OnDestroy {
     }
   }
 
-  getPerformanceConfig() {
+  getPerformanceConfig(isModify = false) {
     const params = {
       memberEsn: this.currentCluster
     };
@@ -740,7 +826,12 @@ export class PerformanceComponent implements OnInit, OnDestroy {
     this.performanceApiService
       .getPerformanceConfigUsingGET(params)
       .subscribe(res => {
-        this.showMonitor = res === 'true';
+        this.showMonitor = isModify
+          ? find(this.configData, { esn: this.currentCluster }).open
+          : res.isPerformanceConfigOpen;
+        this.hasRemoveHistoryData = isModify
+          ? this.hasRemoveHistoryData
+          : res.hasRemoveHistoryData === 1;
         this.autoReload();
       });
   }
@@ -754,26 +845,28 @@ export class PerformanceComponent implements OnInit, OnDestroy {
   }
 
   processEchartData(res) {
-    this.hasRemoveHistoryData = false;
     this.showIops = true;
     this.showLatency = true;
     this.showBindwidth = true;
     this.showCopyIops = true;
     this.showCopyLatency = true;
-    this.showCopyBindwidth = true;
-    this.showNasBindwidth = true;
+    this.showCopyBindwidth = !this.storagePoolHiddenChart;
+    this.showNasBindwidth = !this.storagePoolHiddenChart;
+
+    // 备份/恢复：IOPS、I/O响应时间、带宽性能数据
     const iopsData = find(res, { indicator: 1 }) as any;
     const latencyData = find(res, { indicator: 2 }) as any;
     const bindwidthData = find(res, { indicator: 3 }) as any;
+
+    // 复制：I/O响应时间、IOPS、带宽性能数据
     const copyLatencyData = find(res, { indicator: 4 }) as any;
     const copyIopsData = find(res, { indicator: 5 }) as any;
     const copyBindwidthData = find(res, { indicator: 6 }) as any;
     const copyNasBindwidthData = find(res, { indicator: 7 }) as any;
 
+    // 重绘图表
     this.createChartWithData(res, iopsData, 'iops-chart', 'IO/s');
-    // 复制IOPS
-    this.createChartWithData(res, copyIopsData, 'copy-iops-chart', 'IO/s');
-
+    this.createChartWithData(res, bindwidthData, 'bindwidth-chart', 'KB');
     if (isEmpty(res) || isEmpty(latencyData)) {
       this.createChart([], [], 'latency-chart', []);
     } else {
@@ -801,50 +894,54 @@ export class PerformanceComponent implements OnInit, OnDestroy {
         'ms'
       );
     }
-    // 复制响应时间
-    if (isEmpty(res) || isEmpty(copyLatencyData)) {
-      this.createChart([], [], 'copy-latency-chart', 'us');
-    } else {
-      let indicatorValues = [];
-      // 如果是storagePool模式，indicatorValues数据结构不同
-      if (this.deviceOrStoragePoolModel === 'storagePool') {
-        indicatorValues = map(latencyData.indicatorValues || [], item => {
-          return {
-            name: item.name,
-            color: item.color,
-            values: map(item.values || [], dataItem => {
-              return isNaN(+dataItem) ? '-' : (+dataItem).toFixed(3);
-            })
-          };
-        });
+
+    if (!this.storagePoolHiddenChart) {
+      // 复制响应时间
+      if (isEmpty(res) || isEmpty(copyLatencyData)) {
+        this.createChart([], [], 'copy-latency-chart', 'us');
       } else {
-        indicatorValues = map(copyLatencyData.indicatorValues || [], item => {
-          return isNaN(+item) ? '-' : (+item).toFixed(3);
-        });
+        let indicatorValues = [];
+        // 如果是storagePool模式，indicatorValues数据结构不同
+        if (this.deviceOrStoragePoolModel === 'storagePool') {
+          indicatorValues = map(latencyData.indicatorValues || [], item => {
+            return {
+              name: item.name,
+              color: item.color,
+              values: map(item.values || [], dataItem => {
+                return isNaN(+dataItem) ? '-' : (+dataItem).toFixed(3);
+              })
+            };
+          });
+        } else {
+          indicatorValues = map(copyLatencyData.indicatorValues || [], item => {
+            return isNaN(+item) ? '-' : (+item).toFixed(3);
+          });
+        }
+        this.createChart(
+          copyLatencyData.timestamps || [],
+          indicatorValues,
+          'copy-latency-chart',
+          copyLatencyData.unit || 'us'
+        );
       }
-      this.createChart(
-        copyLatencyData.timestamps || [],
-        indicatorValues,
-        'copy-latency-chart',
-        copyLatencyData.unit || 'us'
+
+      // 复制IOPS
+      this.createChartWithData(res, copyIopsData, 'copy-iops-chart', 'IO/s');
+      // 复制带宽
+      this.createChartWithData(
+        res,
+        copyBindwidthData,
+        'copy-bindwidth-chart',
+        'KB'
+      );
+      // 复制接收带宽
+      this.createChartWithData(
+        res,
+        copyNasBindwidthData,
+        'copy-nas-bindwidth-chart',
+        'KB'
       );
     }
-
-    this.createChartWithData(res, bindwidthData, 'bindwidth-chart', 'KB');
-    // 复制带宽
-    this.createChartWithData(
-      res,
-      copyBindwidthData,
-      'copy-bindwidth-chart',
-      'KB'
-    );
-    // 复制接收带宽
-    this.createChartWithData(
-      res,
-      copyNasBindwidthData,
-      'copy-nas-bindwidth-chart',
-      'KB'
-    );
   }
 
   getMonitoringData(mask = true) {
@@ -955,6 +1052,9 @@ export class PerformanceComponent implements OnInit, OnDestroy {
         DataMap.Node_Status.offline.value,
         DataMap.Node_Status.deleting.value
       ];
+      res.records = res.records.filter(
+        item => item.deviceType !== DataMap.poolStorageDeviceType.Server.value
+      );
       res.records.sort((a, b) => {
         if (a.role !== b.role) {
           return b.role - a.role;
@@ -1020,6 +1120,12 @@ export class PerformanceComponent implements OnInit, OnDestroy {
     if (this.isDataBackupOrDecouple) {
       this.queryAllConfig();
     }
+    this.globalService
+      .getState(THEME_TRIGGER_ACTION)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.reloadView(true);
+      });
   }
 
   queryAllConfig(loading?) {
@@ -1060,7 +1166,8 @@ export class PerformanceComponent implements OnInit, OnDestroy {
         lvContent: MultiSettingComponent,
         lvComponentParams: {
           data: this.configData,
-          performanceSub: this.performanceSub
+          performanceSub: this.performanceSub,
+          updateLoad: options => this.updateLoad(options)
         },
         lvFooter: [
           {
@@ -1068,13 +1175,20 @@ export class PerformanceComponent implements OnInit, OnDestroy {
             label: this.i18n.get('common_close_label'),
             onClick: modal => {
               modal.close();
-              this.getPerformanceConfig();
-              this.queryAllConfig(false);
-              this.hasRemoveHistoryData = true;
             }
           }
         ]
       }
     });
+  }
+
+  updateLoad(options: any) {
+    this.hasRemoveHistoryData = isUndefined(options.hasRemoveHistoryData)
+      ? this.hasRemoveHistoryData
+      : options.hasRemoveHistoryData;
+    setTimeout(() => {
+      this.getPerformanceConfig(true);
+      this.queryAllConfig(false);
+    }, 3000);
   }
 }

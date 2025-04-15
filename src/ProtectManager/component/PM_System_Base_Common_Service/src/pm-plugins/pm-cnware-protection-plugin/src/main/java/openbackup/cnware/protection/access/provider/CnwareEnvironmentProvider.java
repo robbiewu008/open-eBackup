@@ -12,6 +12,14 @@
 */
 package openbackup.cnware.protection.access.provider;
 
+import com.huawei.oceanprotect.system.base.cert.common.constants.CertErrorCode;
+import com.huawei.oceanprotect.system.base.cert.util.CertFileUtil;
+import com.huawei.oceanprotect.system.base.cert.util.CertUtil;
+
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.cnware.protection.access.constant.CnwareConstant;
 import openbackup.cnware.protection.access.dto.ResourceScanParam;
@@ -30,10 +38,8 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceBase;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import com.huawei.oceanprotect.system.base.cert.common.constants.CertErrorCode;
-import com.huawei.oceanprotect.system.base.cert.util.CertFileUtil;
-import com.huawei.oceanprotect.system.base.cert.util.CertUtil;
 import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
@@ -43,11 +49,6 @@ import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.DefaultRoleHelper;
 import openbackup.system.base.util.OptionalUtil;
-
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -74,6 +75,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -138,7 +141,7 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
         checkAndPrepareParam(environment);
 
         // 获取agent环境信息列表
-        List<ProtectedEnvironment> agentEnvList = getAgentEnvrionment(environment);
+        List<ProtectedEnvironment> agentEnvList = getAgentEnvironment(environment);
 
         // 检查连通性
         checkConnectivity(environment, agentEnvList);
@@ -274,7 +277,7 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
         env.setExtendInfo(extendInfo);
     }
 
-    private List<ProtectedEnvironment> getAgentEnvrionment(ProtectedEnvironment environment) {
+    private List<ProtectedEnvironment> getAgentEnvironment(ProtectedEnvironment environment) {
         log.info("Start to get agent info of environment: {}", environment.getUuid());
         List<ProtectedResource> agents = environment.getDependencies().get(CnwareConstant.AGENTS);
         if (VerifyUtil.isEmpty(agents)) {
@@ -284,8 +287,8 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
         for (ProtectedResource agent : agents) {
             try {
                 ProtectedEnvironment agentEnv = cnwareCommonService.getEnvironmentById(agent.getUuid());
-                if (VerifyUtil.isEmpty(agents)) {
-                    throw new LegoCheckedException(CommonErrorCode.AGENT_NOT_EXIST, "Get agent enviroment failed.");
+                if (VerifyUtil.isEmpty(agentEnv)) {
+                    throw new LegoCheckedException(CommonErrorCode.AGENT_NOT_EXIST, "Get agent environment failed.");
                 }
                 agentsEnvList.add(agentEnv);
             } catch (LegoCheckedException e) {
@@ -371,7 +374,7 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
      */
     @Override
     public void validate(ProtectedEnvironment environment) {
-        List<ProtectedEnvironment> agentEnvList = getAgentEnvrionment(environment);
+        List<ProtectedEnvironment> agentEnvList = getAgentEnvironment(environment);
         checkConnectivity(environment, agentEnvList);
     }
 
@@ -465,6 +468,11 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
         List<ProtectedResource> cnwareVmResources = doScanResources(endpoint, Lists.newArrayList(),
             CnwareConstant.RES_TYPE_CNWARE_VM, environment);
 
+        // 扫描虚拟机tag信息
+        List<ProtectedResource> cnwareTagResources = doScanResources(endpoint, Lists.newArrayList(),
+            CnwareConstant.RES_TYPE_TAG, environment);
+        addCnwareTagIntoVmResources(cnwareVmResources, cnwareTagResources);
+
         List<ProtectedResource> resources = Lists.newArrayList();
         resources.addAll(cnwareHostPoolResources);
         resources.addAll(cnwareClusterResources);
@@ -474,6 +482,56 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
         resources = updateVmCountInClusterAndHost(resources);
         log.info("finish scan CNware environment, agentId:{}, envId:{}", endpoint.getId(), environment.getUuid());
         return resources;
+    }
+
+    private void addCnwareTagIntoVmResources(List<ProtectedResource> cnwareVmResources,
+        List<ProtectedResource> cnwareTagResources) {
+        if (cnwareVmResources.size() == 0 || cnwareTagResources.size() == 0) {
+            log.info("No need add tag info into cnware vm, vm size:{}, tag size:{}",
+                cnwareVmResources.size(), cnwareTagResources.size());
+            return;
+        }
+        for (ProtectedResource cnwareTagResource : cnwareTagResources) {
+            for (ProtectedResource cnwareVmResource : cnwareVmResources) {
+                updateTagsInExtendInfo(cnwareTagResource, cnwareVmResource);
+            }
+        }
+        log.info("Add tag info into cnware vm success, vm size:{}, tag size:{}",
+            cnwareVmResources.size(), cnwareTagResources.size());
+    }
+
+    private void updateTagsInExtendInfo(ProtectedResource cnwareTagResource, ProtectedResource cnwareVmResource) {
+        if (cnwareVmResource.getUuid().equals(cnwareTagResource.getUuid())
+            && cnwareVmResource.getName().equals(cnwareTagResource.getName())) {
+            String tags = cnwareTagResource.getExtendInfo().get(CnwareConstant.TAGS);
+            if (!VerifyUtil.isEmpty(tags)) {
+                String cnwareVmTags = decodeTags(tags);
+                Map<String, String> extendInfo = cnwareVmResource.getExtendInfo();
+                extendInfo.put(CnwareConstant.TAGS, cnwareVmTags);
+                cnwareVmResource.setExtendInfo(extendInfo);
+            }
+        }
+    }
+
+    private String decodeTags(String tags) {
+        Pattern pattern = CnwareConstant.UNICODE_REGEX;
+        Matcher matcher = pattern.matcher(tags);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            String hexStr = matcher.group(IsmNumberConstant.ONE);
+            try {
+                // 将十六进制字符串转换为整数再将整数转换为对应的Unicode字符
+                char ch = (char) Integer.parseInt(hexStr, IsmNumberConstant.SIXTTEEN);
+
+                // 将转换后的字符替换到结果中
+                matcher.appendReplacement(sb, String.valueOf(ch));
+            } catch (NumberFormatException e) {
+                // 未匹配到Unicode转义序列，将原始的十六进制字符串作为Unicode转义序列追加到StringBuffer对象
+                matcher.appendReplacement(sb, "\\u" + hexStr);
+            }
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 
     private List<ProtectedResource> doScanResources(Endpoint endpoint, List<Application> applications,
@@ -493,13 +551,13 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
         PageListResponse<ProtectedResource> response;
         List<ProtectedResource> scanResources = Lists.newArrayList();
         do {
+            page++;
             request.setPageNo(page);
             response = agentService.getDetailPageList(env.getSubType(), endpoint.getIp(), endpoint.getPort(), request);
             List<ProtectedResource> protectedResources = response.getRecords();
             if (CollectionUtils.isEmpty(protectedResources)) {
                 break;
             }
-            page++;
             scanResources.addAll(protectedResources);
 
             // 将最后一条记录id作为下次查询的标记
@@ -508,7 +566,7 @@ public class CnwareEnvironmentProvider implements EnvironmentProvider {
                     protectedResources.get(protectedResources.size() - 1).getUuid());
                 request.setConditions(JSON.toJSONString(conditions));
             }
-        } while (response.getRecords().size() == size);
+        } while (response.getTotalCount() >= size * page);
 
         // 根据uuid去重
         scanResources = scanResources.stream()

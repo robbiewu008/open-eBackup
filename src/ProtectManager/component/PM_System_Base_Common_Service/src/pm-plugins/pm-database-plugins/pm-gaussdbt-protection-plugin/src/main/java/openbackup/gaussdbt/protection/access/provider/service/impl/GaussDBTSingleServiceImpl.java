@@ -12,6 +12,7 @@
 */
 package openbackup.gaussdbt.protection.access.provider.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
@@ -39,8 +40,6 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 

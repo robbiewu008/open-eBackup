@@ -12,10 +12,10 @@
 */
 package openbackup.system.base.sdk.copy.model;
 
+import com.google.common.collect.ImmutableList;
+
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import com.google.common.collect.ImmutableList;
 
 import java.util.Arrays;
 import java.util.List;
@@ -76,16 +76,34 @@ public enum CopyGeneratedByEnum {
      */
     BY_REVERSE_REPLICATION("ReverseReplication");
 
-    private static final List<CopyGeneratedByEnum> RESTORE_CAN_STOP = Arrays.asList(CopyGeneratedByEnum.BY_BACKUP,
-        CopyGeneratedByEnum.BY_CLOUD_ARCHIVE, CopyGeneratedByEnum.BY_TAPE_ARCHIVE, CopyGeneratedByEnum.BY_REPLICATED,
-        CopyGeneratedByEnum.BY_LIVE_MOUNTE, CopyGeneratedByEnum.BY_IMPORTED);
+    /**
+     * 恢复是否可以停止
+     */
+    public static final List<String> RESTORE_CAN_STOP = ImmutableList.of(
+            CopyGeneratedByEnum.BY_BACKUP.value(),
+            CopyGeneratedByEnum.BY_CLOUD_ARCHIVE.value(),
+            CopyGeneratedByEnum.BY_TAPE_ARCHIVE.value(),
+            CopyGeneratedByEnum.BY_REPLICATED.value(),
+            CopyGeneratedByEnum.BY_LIVE_MOUNTE.value(),
+            CopyGeneratedByEnum.BY_IMPORTED.value()
+    );
 
     /**
      * 副本复制生成方式列表
      */
     public static final List<String> COPY_GENERATED_BY_REPLICATION = ImmutableList.of(
+            CopyGeneratedByEnum.BY_REPLICATED.value(),
+            CopyGeneratedByEnum.BY_CASCADED_REPLICATION.value(),
+            CopyGeneratedByEnum.BY_REVERSE_REPLICATION.value()
+    );
+
+    /**
+     * 副本复制备份和即时挂载生成方式列表
+     */
+    public static final List<String> COPY_GENERATED_BY_REPLICATION_AND_BACKUP_AND_LIVE_MOUNT = ImmutableList.of(
         CopyGeneratedByEnum.BY_REPLICATED.value(), CopyGeneratedByEnum.BY_CASCADED_REPLICATION.value(),
-        CopyGeneratedByEnum.BY_REVERSE_REPLICATION.value());
+        CopyGeneratedByEnum.BY_REVERSE_REPLICATION.value(), CopyGeneratedByEnum.BY_BACKUP.value(),
+        CopyGeneratedByEnum.BY_LIVE_MOUNTE.value());
 
     private final String generatedBy;
 
@@ -121,6 +139,16 @@ public enum CopyGeneratedByEnum {
      * @return 是否支持恢复任务停止
      */
     public boolean restoreCanStop() {
-        return RESTORE_CAN_STOP.contains(this);
+        return RESTORE_CAN_STOP.contains(this.value());
+    }
+
+    /**
+     * 副本生成类型是否支持恢复任务停止
+     *
+     * @param generatedBy 副本生成类型
+     * @return 是否支持恢复任务停止
+     */
+    public static boolean restoreCanStop(String generatedBy) {
+        return RESTORE_CAN_STOP.contains(generatedBy);
     }
 }

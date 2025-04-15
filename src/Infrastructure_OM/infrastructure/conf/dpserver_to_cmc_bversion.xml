@@ -11,7 +11,7 @@
         <isClear>N</isClear>
         <copies>
             <copy>
-                <source>*.tar.gz*</source>
+                <source>*.zip*</source>
                 <dest></dest>
             </copy>
         </copies>

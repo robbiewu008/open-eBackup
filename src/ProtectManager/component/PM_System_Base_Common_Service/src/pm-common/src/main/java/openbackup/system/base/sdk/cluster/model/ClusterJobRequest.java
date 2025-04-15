@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.sdk.cluster.model;
 
-import openbackup.system.base.sdk.job.model.JobTypeEnum;
-
 import lombok.Data;
+import openbackup.system.base.sdk.job.model.JobTypeEnum;
 
 /**
  * 查询集群任务请求体

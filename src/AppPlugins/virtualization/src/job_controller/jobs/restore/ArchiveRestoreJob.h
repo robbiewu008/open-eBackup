@@ -74,6 +74,7 @@ private:
     int GetCloudPathList();
     bool GetFileListFromS3();
 #ifndef WIN32
+    bool AddTypeIpRulePolicy(const std::string &targetIP, const std::string &targetType);
     bool AddArchiveIpRoutePolicy(const std::string &ip);
 #endif
     bool ProcessControlFile(const std::string& control);

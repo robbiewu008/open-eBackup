@@ -187,8 +187,11 @@ public class SessionServiceImpl implements SessionService {
             session.setCsrfToken(createNewCsrfToken());
             session.setClientSessionIp(RequestUtil.getClientIpAddress(request));
 
+            String csrfToken = session.getCsrfToken();
             // 保存到redis需要加密
             saveSession(session, secBo, userCache);
+
+            session.setCsrfToken(csrfToken);
             session.setSessionId(sessionId);
             session.setToken(token.getToken());
             return session;
@@ -254,10 +257,14 @@ public class SessionServiceImpl implements SessionService {
     @ExterAttack
     public void saveSession(SessionInfo session, SecurityPolicyBo secBo, UserCache userCache) {
         RBucket<String> rBucket = redissonClient.getBucket(session.getSessionId());
-
         // 加密token,不能明文存储在redis中
         String encryptToken = encryptorRestClient.encrypt(session.getToken()).getCiphertext();
         session.setToken(encryptToken);
+        // 和测试对齐 sessionId不需要加密 以防止后续调用加锁特殊字符错误
+        session.setSessionId(session.getSessionId());
+        // 加密csrfToken,不能明文存储在redis中
+        String encryptCsrfToken = encryptorRestClient.encrypt(session.getCsrfToken()).getCiphertext();
+        session.setCsrfToken(encryptCsrfToken);
         rBucket.set(JSONObject.toJSONString(session));
         rBucket.expire(secBo.getSessionTime(), TimeUnit.MINUTES);
 

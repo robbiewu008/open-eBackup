@@ -1,26 +1,20 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import { Router } from '@angular/router';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from '@iux/live';
 import {
+  CommonConsts,
   CookieService,
   DataMap,
   DataMapService,
@@ -32,6 +26,8 @@ import {
   ProtectedResourceApiService,
   RoleOperationMap,
   RoleType,
+  SYSTEM_TIME,
+  VirtualResourceService,
   WarningMessageService
 } from 'app/shared';
 import { AntiRansomwareInfectConfigApiService } from 'app/shared/api/services/anti-ransomware-infect-config-api.service';
@@ -45,12 +41,12 @@ import {
 } from 'app/shared/components/pro-table';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { ResourceDetailService } from 'app/shared/services/resource-detail.service';
-import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
   assign,
   cloneDeep,
   each,
   filter,
+  first,
   includes,
   isEmpty,
   isUndefined,
@@ -73,20 +69,19 @@ export class InfectedCopyLimitComponent implements OnInit, AfterViewInit {
   selectionData = [];
   tableConfig: TableConfig;
   tableData: TableData;
+  isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
 
   constructor(
-    private router: Router,
     private i18n: I18NService,
     private datePipe: DatePipe,
-    private cdr: ChangeDetectorRef,
     private cookieService: CookieService,
     private messageService: MessageService,
     private dataMapService: DataMapService,
     private drawModalService: DrawModalService,
-    private virtualScroll: VirtualScrollService,
     private detailService: ResourceDetailService,
     private warningMessageService: WarningMessageService,
+    private virtualResourceService: VirtualResourceService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private antiRansomwareInfectedCopyService: AntiRansomwareInfectConfigApiService
   ) {}
@@ -198,7 +193,17 @@ export class InfectedCopyLimitComponent implements OnInit, AfterViewInit {
           type: 'select',
           isMultiple: true,
           showCheckAll: true,
-          options: this.dataMapService.toArray('Detecting_Resource_Type')
+          options: this.dataMapService
+            .toArray('Detecting_Resource_Type')
+            .filter(item => {
+              if (this.isHcsUser) {
+                return !includes(
+                  [DataMap.Detecting_Resource_Type.openstackServer.value],
+                  item.value
+                );
+              }
+              return true;
+            })
         },
         cellRender: {
           type: 'status',
@@ -243,7 +248,7 @@ export class InfectedCopyLimitComponent implements OnInit, AfterViewInit {
       },
       {
         key: 'createTime',
-        name: this.i18n.get('common_create_time_label'),
+        name: this.i18n.get('common_created_time_label'),
         sort: true
       },
       {
@@ -327,7 +332,8 @@ export class InfectedCopyLimitComponent implements OnInit, AfterViewInit {
             operations: tmpOps.join(','),
             createTime: this.datePipe.transform(
               item.createTime,
-              'yyyy/MM/dd HH:mm:ss'
+              'yyyy/MM/dd HH:mm:ss',
+              SYSTEM_TIME.timeZone
             )
           });
         });
@@ -398,33 +404,54 @@ export class InfectedCopyLimitComponent implements OnInit, AfterViewInit {
     });
   }
 
+  openDetailWin(res, item) {
+    if (!item || isEmpty(item)) {
+      this.messageService.error(
+        this.i18n.get('common_resource_not_exist_label'),
+        {
+          lvShowCloseButton: true,
+          lvMessageKey: 'resNotExistMesageKey'
+        }
+      );
+      return;
+    }
+    if (
+      includes(
+        mapValues(this.drawModalService.modals, 'key'),
+        'slaDetailModalKey'
+      )
+    ) {
+      this.drawModalService.destroyModal('slaDetailModalKey');
+    }
+    if (
+      !includes(
+        [DataMap.Resource_Type.virtualMachine.value],
+        res.resourceSubType
+      )
+    ) {
+      extendSlaInfo(item);
+    }
+    this.detailService.openDetailModal(res.resourceSubType, {
+      data: assign(omit(cloneDeep(res), ['sla_id', 'sla_name']), item)
+    });
+  }
+
   getDetail(res) {
+    if (res.resourceSubType === DataMap.Resource_Type.virtualMachine.value) {
+      this.virtualResourceService
+        .queryResourcesV1VirtualResourceGet({
+          pageSize: CommonConsts.PAGE_SIZE,
+          pageNo: CommonConsts.PAGE_START,
+          conditions: JSON.stringify({
+            uuid: res.resourceId
+          })
+        })
+        .subscribe(vmRes => this.openDetailWin(res, first(vmRes.items)));
+      return;
+    }
     this.protectedResourceApiService
       .ShowResource({ resourceId: res.resourceId })
-      .subscribe(item => {
-        if (!item || isEmpty(item)) {
-          this.messageService.error(
-            this.i18n.get('common_resource_not_exist_label'),
-            {
-              lvShowCloseButton: true,
-              lvMessageKey: 'resNotExistMesageKey'
-            }
-          );
-          return;
-        }
-        if (
-          includes(
-            mapValues(this.drawModalService.modals, 'key'),
-            'slaDetailModalKey'
-          )
-        ) {
-          this.drawModalService.destroyModal('slaDetailModalKey');
-        }
-        extendSlaInfo(item);
-        this.detailService.openDetailModal(res.resourceSubType, {
-          data: assign(omit(cloneDeep(res), ['sla_id', 'sla_name']), item)
-        });
-      });
+      .subscribe(item => this.openDetailWin(res, item));
   }
 
   deleteLimit(data) {

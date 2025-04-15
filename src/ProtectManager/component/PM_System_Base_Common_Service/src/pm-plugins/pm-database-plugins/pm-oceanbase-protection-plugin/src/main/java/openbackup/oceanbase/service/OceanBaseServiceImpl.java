@@ -15,6 +15,12 @@ package openbackup.oceanbase.service;
 import com.huawei.oceanprotect.base.cluster.sdk.entity.TargetCluster;
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterBasicService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterQueryService;
+import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.system.base.sdk.devicemanager.openstorage.api.NfsServiceApi;
+
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CheckAppReq;
@@ -28,7 +34,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.oceanbase.common.constants.OBConstants;
 import openbackup.oceanbase.common.dto.OBAgentInfo;
 import openbackup.oceanbase.common.dto.OBClusterInfo;
@@ -39,17 +44,13 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.UserUtils;
 import openbackup.system.base.common.utils.json.JsonUtil;
-import com.huawei.oceanprotect.system.base.sdk.devicemanager.openstorage.api.NfsServiceApi;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -88,6 +89,9 @@ public class OceanBaseServiceImpl implements OceanBaseService {
 
     @Autowired
     private ClusterQueryService clusterQueryService;
+
+    @Autowired
+    private DeployTypeService deployTypeService;
 
     /**
      * 应用基本的Service有参构造方法
@@ -394,23 +398,25 @@ public class OceanBaseServiceImpl implements OceanBaseService {
 
     private void checkSupportNFSV41(String deviceId, String username) {
         log.info("CheckSupportNFSV4.1, deviceId:{}", deviceId);
+        long errorCode = CommonErrorCode.NFS_V41_SERVICE_NOT_OPEN;
+        if (deployTypeService.isPacific()) {
+            errorCode = CommonErrorCode.PACIFIC_NFS_V41_SERVICE_NOT_OPEN;
+        }
         Object response = nfsServiceApi.getNfsServiceConfig(deviceId, username);
         JSONObject responseObject = JSONObject.fromObject(response);
         if (responseObject.isEmpty()) {
             log.error("Check NFSV4.1 service error.");
-            throw new LegoCheckedException(CommonErrorCode.NFS_V41_SERVICE_NOT_OPEN, "Check NFSV4.1 service error.");
+            throw new LegoCheckedException(errorCode, "Check NFSV4.1 service error.");
         } else {
             JSONObject data = responseObject.getJSONObject("data");
             if (data.containsKey(SUPPORTV41)) {
                 if (!data.getBoolean(SUPPORTV41)) {
                     log.error("The config of NFSV4.1 service is false.");
-                    throw new LegoCheckedException(CommonErrorCode.NFS_V41_SERVICE_NOT_OPEN,
-                        "The config of NFSV4.1 service is false.");
+                    throw new LegoCheckedException(errorCode, "The config of NFSV4.1 service is false.");
                 }
             } else {
                 log.error("Check NFSV4.1 service error.");
-                throw new LegoCheckedException(CommonErrorCode.NFS_V41_SERVICE_NOT_OPEN,
-                    "Check NFSV4.1 service error.");
+                throw new LegoCheckedException(errorCode, "Check NFSV4.1 service error.");
             }
         }
     }

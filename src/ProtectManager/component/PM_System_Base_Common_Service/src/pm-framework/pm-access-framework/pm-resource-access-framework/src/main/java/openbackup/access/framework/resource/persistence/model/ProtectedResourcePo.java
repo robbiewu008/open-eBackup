@@ -12,15 +12,7 @@
 */
 package openbackup.access.framework.resource.persistence.model;
 
-import openbackup.data.access.framework.core.entity.ProtectedObjectPo;
-import openbackup.data.protection.access.provider.sdk.base.Authentication;
-import openbackup.data.protection.access.provider.sdk.resource.Label;
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedAgentExtend;
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedObject;
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
-import openbackup.data.protection.access.provider.sdk.resource.ResourceDesesitization;
-import openbackup.system.base.common.utils.JSONObject;
+import com.huawei.oceanprotect.system.base.label.entity.LabelVo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -28,6 +20,14 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.framework.core.entity.ProtectedObjectPo;
+import openbackup.data.protection.access.provider.sdk.base.Authentication;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedAgentExtend;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedObject;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceDesesitization;
+import openbackup.system.base.common.utils.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -148,7 +148,7 @@ public class ProtectedResourcePo {
      * 资源的标签列表
      */
     @TableField(exist = false)
-    private List<Label> labelList;
+    private List<LabelVo> labelList;
 
     /**
      * 保护对象信息
@@ -194,13 +194,14 @@ public class ProtectedResourcePo {
         return target;
     }
 
-    public List<Label> getLabelList() {
+    public List<LabelVo> getLabelList() {
         return labelList;
     }
 
-    public void setLabelList(List<Label> labelList) {
+    public void setLabelList(List<LabelVo> labelList) {
         this.labelList = labelList;
     }
+
     public String getUuid() {
         return uuid;
     }

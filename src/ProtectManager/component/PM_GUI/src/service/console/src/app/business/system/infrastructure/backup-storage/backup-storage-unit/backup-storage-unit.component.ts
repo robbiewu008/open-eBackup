@@ -1,20 +1,23 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
+  Input,
   OnInit,
+  Output,
   TemplateRef,
   ViewChild
 } from '@angular/core';
@@ -26,6 +29,7 @@ import {
   CookieService,
   DataMap,
   DataMapService,
+  DefaultRoles,
   getAccessibleViewList,
   getPermissionMenuItem,
   I18NService,
@@ -47,7 +51,19 @@ import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
-import { assign, cloneDeep, isEmpty, isUndefined, map, size } from 'lodash';
+import {
+  assign,
+  cloneDeep,
+  each,
+  filter,
+  find,
+  get,
+  isEmpty,
+  isUndefined,
+  map,
+  remove,
+  size
+} from 'lodash';
 import { CreateStorageUnitComponent } from '../create-storage-unit/create-storage-unit.component';
 import { BackupStorageUnitDetailComponent } from './backup-storage-unit-detail/backup-storage-unit-detail.component';
 
@@ -57,6 +73,12 @@ import { BackupStorageUnitDetailComponent } from './backup-storage-unit-detail/b
   styleUrls: ['./backup-storage-unit.component.less']
 })
 export class BackupStorageUnitComponent implements OnInit, AfterViewInit {
+  @Input() isRbac = false;
+  @Input() data;
+  @Input() resourceSetMap;
+  @Input() isGeneral = false;
+  @Input() isDetail = false;
+  @Output() rbacUnitSelectChange = new EventEmitter<any>();
   dataMap = DataMap;
   unitOptsConfig;
   unitItemOptConfig;
@@ -75,6 +97,12 @@ export class BackupStorageUnitComponent implements OnInit, AfterViewInit {
   health_Status = this.dataMapService.toArray('HealthStatus');
   isDistributed = this.appUtilsService.isDistributed;
   isDecouple = this.appUtilsService.isDecouple;
+  specialDefaultRoleIdList = [
+    DefaultRoles.rdAdmin.roleId,
+    DefaultRoles.drAdmin.roleId,
+    DefaultRoles.audit.roleId,
+    DefaultRoles.sysAdmin.roleId
+  ];
 
   poolStorageFilter = this.dataMapService
     .toArray('poolStorageDeviceType')
@@ -88,7 +116,8 @@ export class BackupStorageUnitComponent implements OnInit, AfterViewInit {
     .map(item => {
       return assign(item, {
         value:
-          item.value !== DataMap.poolStorageDeviceType.Server.value
+          item.value !== DataMap.poolStorageDeviceType.Server.value ||
+          this.isRbac
             ? item.value
             : 'BasicDisk'
       });
@@ -105,6 +134,13 @@ export class BackupStorageUnitComponent implements OnInit, AfterViewInit {
   @ViewChild('capacityTpl', { static: true }) capacityTpl: TemplateRef<any>;
   @ViewChild('thresholdTpl', { static: true }) thresholdTpl: TemplateRef<any>;
   @ViewChild('deviceTypeTPl', { static: true }) deviceTypeTPl: TemplateRef<any>;
+  @ViewChild('spaceReductionRateTPl', { static: true })
+  spaceReductionRateTPl: TemplateRef<any>;
+  @ViewChild('usedCapacityTPl', { static: true }) usedCapacityTPl: TemplateRef<
+    any
+  >;
+  @ViewChild('usedLogicCapacityTPl', { static: true })
+  usedLogicCapacityTPl: TemplateRef<any>;
   timeSub$: any;
   constructor(
     private i18n: I18NService,
@@ -126,13 +162,42 @@ export class BackupStorageUnitComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.dataTable.fetchData();
+    if (
+      !this.isGeneral &&
+      !(
+        this.isDetail &&
+        isEmpty(
+          this.resourceSetMap.get(
+            DataMap.storagePoolBackupStorageType.unit.value
+          )
+        )
+      )
+    ) {
+      this.dataTable.fetchData();
+    }
+    if (
+      this.isRbac &&
+      this.resourceSetMap.has(DataMap.storagePoolBackupStorageType.unit.value)
+    ) {
+      const tmpData = this.resourceSetMap.get(
+        DataMap.storagePoolBackupStorageType.unit.value
+      );
+      this.dataTable.setSelections(tmpData);
+      if (this.isGeneral) {
+        this.unitTableData = {
+          data: tmpData,
+          total: size(tmpData)
+        };
+      }
+    }
   }
 
   getData(filters: Filters, args) {
     const params = {
       pageNo: filters.paginator.pageIndex,
-      pageSize: filters.paginator.pageSize,
+      pageSize: this.isRbac
+        ? CommonConsts.PAGE_SIZE * 10
+        : filters.paginator.pageSize,
       akLoading:
         !isUndefined(args) && args.isAutoPolling ? !args.isAutoPolling : true
     };
@@ -162,23 +227,64 @@ export class BackupStorageUnitComponent implements OnInit, AfterViewInit {
       });
     }
     this.storageUnitService.queryBackUnitGET(params).subscribe(res => {
-      const newArr = [];
+      let newArr = [];
       res.records.map(item => {
+        const percent =
+          Math.round(
+            (Number(item.usedCapacity) / Number(item.totalCapacity)) * 10000
+          ) / 100;
+        let progressColor;
+        if (percent >= 95) {
+          progressColor = [[0, ColorConsts.ABNORMAL]];
+        } else if (percent > Number(item.threshold) && percent < 95) {
+          progressColor = [[0, ColorConsts.WARN]];
+        } else {
+          progressColor = this.progressBarColor;
+        }
+
         // 由于设备类型中服务器我们本地的数据值和下发的不一样，所以做个转化
         newArr.push(
           Object.assign(item, {
-            disabled: !!item.isAutoAdded,
+            disabled: !!item.isAutoAdded && !this.isRbac,
             deviceType:
               item.deviceType === 'BasicDisk'
                 ? DataMap.poolStorageDeviceType.Server.value
-                : item.deviceType
+                : item.deviceType,
+            capacity: percent,
+            progressBarColor: progressColor
           })
         );
       });
+      // 接口暂时没法直接过滤，所以一次性获取后前端过滤
+      if (this.isDetail) {
+        newArr = filter(newArr, item => {
+          return !!find(
+            this.resourceSetMap.get(
+              DataMap.storagePoolBackupStorageType.unit.value
+            ),
+            { id: item.id }
+          );
+        });
+      }
       this.unitTableData = {
         data: newArr,
         total: res.totalCount
       };
+      // rbac可能不会重新选取，那么所选项里面的数据需要更新，因为那个接口返回值不够多
+      if (
+        this.isRbac &&
+        this.resourceSetMap.has(DataMap.storagePoolBackupStorageType.unit.value)
+      ) {
+        each(
+          this.resourceSetMap.get(
+            DataMap.storagePoolBackupStorageType.unit.value
+          ),
+          item => {
+            const tmpData = find(res.records, { id: item.id });
+            assign(item, tmpData);
+          }
+        );
+      }
       this.cdr.detectChanges();
     });
   }
@@ -274,16 +380,18 @@ export class BackupStorageUnitComponent implements OnInit, AfterViewInit {
           type: 'search',
           filterMode: 'contains'
         },
-        cellRender: {
-          type: 'text',
-          config: {
-            id: 'outerClosable',
-            iconPos: 'flow-text',
-            click: data => {
-              this.getDetail(data);
+        cellRender: this.isRbac
+          ? null
+          : {
+              type: 'text',
+              config: {
+                id: 'outerClosable',
+                iconPos: 'flow-text',
+                click: data => {
+                  this.getDetail(data);
+                }
+              }
             }
-          }
-        }
       },
       {
         key: 'healthStatus',
@@ -349,9 +457,24 @@ export class BackupStorageUnitComponent implements OnInit, AfterViewInit {
         cellRender: this.capacityTpl
       },
       {
+        key: 'usedCapacity',
+        name: this.i18n.get('common_used_label'),
+        cellRender: this.usedCapacityTPl
+      },
+      {
         key: 'threshold',
         name: this.i18n.get('common_alarm_threshold_label'),
         cellRender: this.thresholdTpl
+      },
+      {
+        key: 'spaceReductionRate',
+        name: this.i18n.get('common_data_deduction_label'),
+        cellRender: this.spaceReductionRateTPl
+      },
+      {
+        key: 'usedLogicCapacity',
+        name: this.i18n.get('common_home_logical_usage_label'),
+        cellRender: this.usedLogicCapacityTPl
       },
       {
         key: 'operation',
@@ -367,24 +490,35 @@ export class BackupStorageUnitComponent implements OnInit, AfterViewInit {
       }
     ];
 
+    if (this.isRbac) {
+      remove(cols, { key: 'operation' });
+    }
+
     this.unitTableConfig = {
       table: {
+        async: !this.isRbac,
         compareWith: 'id',
         columns: cols,
-        rows: {
-          selectionMode: 'multiple',
-          selectionTrigger: 'selector',
-          showSelector: true
-        },
+        rows:
+          this.isGeneral || this.isDetail
+            ? null
+            : {
+                selectionMode: 'multiple',
+                selectionTrigger: 'selector',
+                showSelector: true
+              },
         scrollFixed: true,
         scroll: { x: '100%' },
-        autoPolling: CommonConsts.TIME_INTERVAL,
+        autoPolling: this.isRbac ? null : CommonConsts.TIME_INTERVAL,
         colDisplayControl: false,
         fetchData: (filter: Filters, args) => {
           this.getData(filter, args);
         },
         selectionChange: selection => {
           this.selectionData = selection;
+          if (this.isRbac) {
+            this.rbacUnitSelectChange.emit(selection);
+          }
         },
         trackByFn: (index, item) => {
           return item.id;
@@ -502,12 +636,15 @@ export class BackupStorageUnitComponent implements OnInit, AfterViewInit {
     }
 
     this.warningMessageService.create({
+      rowData: selectedArr,
+      actionId: OperateItems.DeleteBackupStorageUnit,
       content: this.i18n.get('system_backup_storage_delete_label', nameArr),
-      onOK: () => {
+      onOK: modal => {
         if (size(selectedArr) === 1) {
           this.storageUnitService
             .deleteBackupUnitDELETEResponse({
-              id: selectedArr[0].id
+              id: selectedArr[0].id,
+              isForceDelete: get(modal, 'contentInstance.forciblyDelete', null)
             })
             .subscribe(res => {
               this.selectionData = [];
@@ -522,7 +659,8 @@ export class BackupStorageUnitComponent implements OnInit, AfterViewInit {
               id: item.id,
               akDoException: false,
               akOperationTips: false,
-              akLoading: false
+              akLoading: false,
+              isForceDelete: get(modal, 'contentInstance.forciblyDelete', null)
             });
           },
           map(cloneDeep(this.selectionData), item => {

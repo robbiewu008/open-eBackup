@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.common.aspect;
 
-import openbackup.system.base.common.utils.ExceptionUtil;
-
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.utils.ExceptionUtil;
 
 import org.springframework.stereotype.Component;
 

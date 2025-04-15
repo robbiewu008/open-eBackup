@@ -97,6 +97,7 @@ target_link_libraries(virtualization_plugin
     openstack_engine
     cnware_engine
     apsara_stack_engine
+    nutanix_engine
 
     PUBLIC
     pluginsdk
@@ -140,6 +141,7 @@ target_link_libraries(virtualization_plugin
     openstack_engine
     cnware_engine
     apsara_stack_engine
+    nutanix_engine
 
     PUBLIC
     pluginsdk

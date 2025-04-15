@@ -1,0 +1,127 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="备份前准备">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="DWS_00016.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="DWS_00019">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>备份前准备</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="DWS_00019"></a><a name="DWS_00019"></a>
+  <h1 class="topictitle1">备份前准备</h1>
+  <div>
+   <ul>
+    <li>请参考<a href="#DWS_00019__zh-cn_topic_0000001514245785_table10744125193920">表1</a>提前准备注册GaussDB(DWS)集群时所需填写的相关信息。 
+     <div class="tablenoborder">
+      <a name="DWS_00019__zh-cn_topic_0000001514245785_table10744125193920"></a><a name="zh-cn_topic_0000001514245785_table10744125193920"></a>
+      <table cellpadding="4" cellspacing="0" summary="" id="DWS_00019__zh-cn_topic_0000001514245785_table10744125193920" frame="border" border="1" rules="all">
+       <caption>
+        <b>表1 </b>注册GaussDB(DWS)集群信息准备
+       </caption>
+       <colgroup>
+        <col style="width:15.989999999999998%">
+        <col style="width:53.83%">
+        <col style="width:30.18%">
+       </colgroup>
+       <thead align="left">
+        <tr>
+         <th align="left" class="cellrowborder" valign="top" width="15.989999999999998%" id="mcps1.3.1.1.2.2.4.1.1"><p>准备项</p></th>
+         <th align="left" class="cellrowborder" valign="top" width="53.83%" id="mcps1.3.1.1.2.2.4.1.2"><p>获取方式</p></th>
+         <th align="left" class="cellrowborder" valign="top" width="30.18%" id="mcps1.3.1.1.2.2.4.1.3"><p>数据使用章节</p></th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td class="cellrowborder" valign="top" width="15.989999999999998%" headers="mcps1.3.1.1.2.2.4.1.1 "><p>GaussDB(DWS)集群的系统用户名称</p></td>
+         <td class="cellrowborder" valign="top" width="53.83%" headers="mcps1.3.1.1.2.2.4.1.2 "><p>请联系GaussDB(DWS)集群管理员获取。</p></td>
+         <td class="cellrowborder" rowspan="2" valign="top" width="30.18%" headers="mcps1.3.1.1.2.2.4.1.3 "><p><a href="DWS_00024.html">步骤1：注册GaussDB(DWS)集群</a></p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" valign="top" headers="mcps1.3.1.1.2.2.4.1.1 "><p>环境变量文件路径</p></td>
+         <td class="cellrowborder" valign="top" headers="mcps1.3.1.1.2.2.4.1.2 "><p><span style="color:#1A1A1A;">集群用户的环境变量文件路径</span>，请联系GaussDB(DWS)集群管理员获取。</p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" valign="top" width="15.989999999999998%" headers="mcps1.3.1.1.2.2.4.1.1 "><p><span style="color:#4D4D4D;">备份元数据存储路径</span></p></td>
+         <td class="cellrowborder" valign="top" width="53.83%" headers="mcps1.3.1.1.2.2.4.1.2 "><p><span style="color:#1A1A1A;">一个集群节点上的目录，用于存储备份副本元数据。如果目录不存在，会自动创建。GaussDB(DWS)集群用户需要有该目录读写权限</span><sup style="color:#1A1A1A;">a</sup><span style="color:#1A1A1A;">。</span></p></td>
+         <td class="cellrowborder" valign="top" width="30.18%" headers="mcps1.3.1.1.2.2.4.1.3 "><p><a href="DWS_00029.html">步骤6：执行备份</a></p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" colspan="3" valign="top" headers="mcps1.3.1.1.2.2.4.1.1 mcps1.3.1.1.2.2.4.1.2 mcps1.3.1.1.2.2.4.1.3 "><p>a：该目录的大小，与<span style="color:#1A1A1A;">备份副本元数据</span>的大小、备份周期和副本保留天数相关。</p>
+          <ul>
+           <li id="DWS_00019__li1520271419164">建议为备份元数据存储路径至少预留20G磁盘空间。请勿配置为系统卷和生产业务卷，否则磁盘空间不足时会影响生产业务运行。</li>
+           <li id="DWS_00019__li836512573513"><a name="DWS_00019__li836512573513"></a><a name="li836512573513"></a>针对不同<span style="color:#4D4D4D;">的备份元数据存储路径，GaussDB(DWS)集群用户具有的权限也不同</span>（以GaussDB(DWS)集群用户是omm为例）：
+            <ul>
+             <li><span style="color:#1A1A1A;">若填写的路径为“/home/</span><em style="color:#1A1A1A;">GaussDB(DWS)集群用户</em><span style="color:#1A1A1A;">”下的路径（例如：/home/omm/backup）</span>，<span style="color:#1A1A1A;">GaussDB(DWS)集群用户</span>默认对该<span style="color:#1A1A1A;">路径具有读写权限</span>。</li>
+             <li><span style="color:#1A1A1A;">若填写的路径不是“/home/</span><em style="color:#1A1A1A;">GaussDB(DWS)集群用户</em><span style="color:#1A1A1A;">”下的路径（例如：/opt/abc/backup，/opt/omm/backup，/home/abc/backup）</span>，您需要确认GaussDB(DWS)集群用户是否对该路径具有读写权限。<p>为避免备份过程中因权限问题导致备份失败，该场景下，若您填写<span style="color:#1A1A1A;">的路径不存在，</span>建议您先手工创建对应路径并检查GaussDB(DWS)集群用户对该路径的读写权限。</p></li>
+            </ul> <p>GaussDB(DWS)集群用户对备份元数据存储路径是否有读写权限，可使用<strong>root</strong>用户登录GaussDB(DWS)节点，执行<strong>ls -ld</strong> <em>备份元数据存储路径</em>命令查看。如果没有读写权限，可执行<strong>sudo chown </strong><em>GaussDB(DWS)集群用户</em><strong>:</strong><em>GaussDB(DWS)集群用户 备份元数据存储路径</em>命令修改，并使用<strong>touch</strong>命令判断该路径是否能被访问和是否具有读写权限。</p> <p>以GaussDB(DWS)集群用户为“omm”、<span style="color:#4D4D4D;">备份元数据存储路径</span>为“/opt/abc/backup”为例：</p> <pre class="screen">ls -ld /opt/abc/backup</pre> <pre class="screen">sudo chown omm:omm /opt/abc/backup</pre> <pre class="screen">touch /opt/abc/backup/example.txt</pre> <p>若<strong>touch</strong>命令执行后结果为“Permission denied”，请检查并为“backup”上层路径的所有目录（/opt、/opt/abc）赋予GaussDB(DWS)集群用户可执行权限。</p></li>
+          </ul></td>
+        </tr>
+       </tbody>
+      </table>
+     </div></li>
+   </ul>
+   <ul>
+    <li>执行GaussDB(DWS)备份恢复前，需要将GaussDB(DWS)集群注册至<span>本产品</span>。在注册GaussDB(DWS)集群前，请按照实际需求修改所有安装了客户端的GaussDB(DWS)节点的配置文件。详细说明请参见<a href="DWS_00125.html">修改GaussDB(DWS)配置文件</a>。</li>
+    <li>请根据<a href="https://support.huawei.com/enterprise/zh/doc/EDOC1100385841?idPath=7919749|251366268|250389224|251366267|258115661" target="_blank" rel="noopener noreferrer">通信矩阵</a>，放开备份和恢复任务所需端口。</li>
+    <li id="DWS_00019__li234583920126">如果您需要开启<span id="DWS_00019__text205981614355">源端重删</span>：
+     <ul id="DWS_00019__ul17786162813185">
+      <li id="DWS_00019__li520316496179">请为<span id="DWS_00019__text1474071521713">本产品</span>创建<span class="uicontrol" id="DWS_00019__uicontrol4973155321312">“DataTurbo”</span>协议的逻辑端口，具体的操作步骤请参考<a href="DWS_00129-2.html">如何创建DataTurbo逻辑端口</a>。</li>
+      <li id="DWS_00019__li11369431540">请在所有部署了客户端的主机上配置业务平面IP地址与<span id="DWS_00019__text1047852143117">本产品</span>的全量映射关系。具体操作请参见<a href="DWS_00117.html">配置客户端与本产品的全量映射关系</a>。</li>
+     </ul>
+     <div class="note" id="DWS_00019__note96574176104">
+      <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+      <div class="notebody">
+       <p id="DWS_00019__zh-cn_topic_0000002164820434_p164111271351">本产品部分型号支持设置此参数，详细支持信息请参考技术支持网站发布的产品文档或咨询产品提供商。</p>
+      </div>
+     </div></li>
+    <li>对表集进行保护时：
+     <ul>
+      <li>请确保已经在客户端所在主机上成功启动GDS（在GaussDB(DWS)节点上启动GDS会占用生产环境资源，因此，建议在客户端所在主机上启动GDS）。
+       <ul>
+        <li id="DWS_00019__li13476034145011">启动GDS的操作请参见相应版本<a href="https://support.huawei.com/enterprise/zh/cloud-computing/hcs-dws-service-pid-251527524" target="_blank" rel="noopener noreferrer">《GaussDB(DWS) 产品文档》</a>中的<span class="uicontrol" id="DWS_00019__uicontrol92912017134817">“安装配置和启动GDS”</span>章节。</li>
+        <li id="DWS_00019__li1664134725011">启动GDS的参数中需要有(-d -p -t)这三个参数。每个GDS存放数据的目录不能相同，示例如下：<pre class="screen" id="DWS_00019__screen949817461541">/home/gds_user/bin/gds <strong id="DWS_00019__b526515126328">-d</strong><strong id="DWS_00019__b11486851163215"> </strong>/home/gds_user/input_data_1/ <strong id="DWS_00019__b14216182111329">-p</strong> 192.168.97.240:9001 -H 0/0 -l /home/gds_user/gds_log/gds_process1.log -D <strong id="DWS_00019__b19744132223213">-t</strong> 2
+/home/gds_user/bin/gds <strong id="DWS_00019__b4430814123212">-d</strong> /home/gds_user/input_data_2/ <strong id="DWS_00019__b8467192413218">-p</strong> 192.168.97.240:9002 -H 0/0 -l /home/gds_user/gds_log/gds_process2.log -D <strong id="DWS_00019__b76471726103212">-t</strong> 2
+/home/gds_user/bin/gds <strong id="DWS_00019__b1739771623220">-d</strong> /home/gds_user/input_data_3/ <strong id="DWS_00019__b7403125413321">-p</strong> 192.168.97.240:9003 -H 0/0 -l /home/gds_user/gds_log/gds_process3.log -D <strong id="DWS_00019__b427905633216">-t</strong> 2
+/home/gds_user/bin/gds <strong id="DWS_00019__b12459218193212">-d</strong> /home/gds_user/input_data_4/ <strong id="DWS_00019__b7818257113218">-p</strong> 192.168.97.240:9004 -H 0/0 -l /home/gds_user/gds_log/gds_process4.log -D <strong id="DWS_00019__b1211865911325">-t</strong> 2</pre></li>
+        <li id="DWS_00019__li533754020509">如果您在多个部署了客户端的主机上启动了GDS，系统会使用GDS个数最多的客户端所在主机进行备份。因此，建议您仅在一个部署了客户端的主机上以一个用户启动多个GDS，为达到最高性能，对于双控系统，启动GDS的数量推荐为备份存储单元数量的四倍，对于四控系统，启动GDS的数量推荐为备份存储单元数量的八倍。</li>
+        <li id="DWS_00019__li98601520162418">如果GaussDB(DWS)是沙箱部署场景，请在执行表集GDS备份前，参见<a href="DWS_00122.html">GDS运行在GaussDB(DWS)沙箱部署场景的注意事项</a>，将沙箱内的GDS配置目录映射至宿主机相应目录。</li>
+       </ul></li>
+      <li>表级恢复只支持恢复表集的表结构和数据，不支持恢复表关联的权限、索引、constraint、sequence、复合类型、view、function。若对集群中表集的上述参数做了修改，请在备份时手工获取对应参数的信息。您可以参考GaussDB(DWS)对应版本的<a href="https://support.huawei.com/enterprise/zh/cloud-computing/hcs-dws-service-pid-251527524" target="_blank" rel="noopener noreferrer">《产品文档》</a>获取相关的查询步骤。</li>
+     </ul></li>
+   </ul>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="DWS_00016.html">备份</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

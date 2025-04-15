@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MessageboxService, MessageService } from '@iux/live';
 import { FileDetailComponent } from 'app/business/search/file-list/file-detail/file-detail.component';
@@ -25,7 +25,8 @@ import {
   I18NService,
   MODAL_COMMON,
   NodeType,
-  RestoreType
+  RestoreType,
+  SYSTEM_TIME
 } from 'app/shared';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import {
@@ -88,6 +89,8 @@ export class CopyDataSearchComponent implements OnInit {
       label: this.i18n.get('common_number_of_index_copy_label')
     }
   ];
+
+  timeZone = SYSTEM_TIME.timeZone;
 
   @ViewChild('fileDownloadCompletedTpl', { static: true })
   fileDownloadCompletedTpl: TemplateRef<any>;
@@ -214,12 +217,8 @@ export class CopyDataSearchComponent implements OnInit {
       pageSize: this.pageSize
     };
 
-    if (!!this.orderBy) {
-      extend(params, { orderBy: this.orderBy });
-    }
-
-    if (!!this.orderType) {
-      extend(params, { orderType: this.orderType });
+    if (!!this.orderBy && !!this.orderType) {
+      extend(params, { sort: { [this.orderBy]: this.orderType } });
     }
 
     this.filterParams = {

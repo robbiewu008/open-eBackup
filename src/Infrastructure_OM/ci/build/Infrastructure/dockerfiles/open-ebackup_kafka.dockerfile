@@ -26,22 +26,16 @@ RUN mv "/opt/script/mount_oper.sh" "/opt" \
     && python3 -m compileall -b /opt/script/kmc/ \
     && find /opt/script/kmc/ -name "*.py" | xargs -i rm -rf '{}' \
     && chown -R 99:99 /opt/script/kmc/
+
 RUN echo "nobody   ALL=(ALL) NOPASSWD:/opt/mount_oper.sh" >> /etc/sudoers \
     && echo 'Defaults    env_keep += "NODE_NAME"' >> /etc/sudoers
-
-RUN rpm -qa | grep ^libxcrypt-devel-[0-9] | xargs -i rpm -e {} --nodeps \
-    && rpm -qa | grep ^glibc-devel-[0-9] | xargs -i rpm -e {} --nodeps \
-    && rpm -qa | grep ^binutils-devel-[0-9] | xargs -i rpm -e {} --nodeps \
-    && rpm -qa | grep ^binutils-extra-[0-9] | xargs -i rpm -e {} --nodeps \
-    && rpm -qa | grep ^binutils-[0-9] | xargs -i rpm -e {} --nodeps \
-    && rpm -qa | grep ^cpp-[0-9] | xargs -i rpm -e {} --nodeps \
-    && rpm -qa | grep ^make-[0-9] | xargs -i rpm -e {} --nodeps
 
 ENV PYTHONPATH=/opt/script
 
 USER 99
-RUN cd /opt/script/requirements \
-    && pip3 install *.whl \
+RUN pip3 install --no-cache-dir --user -i https://cmc.centralrepo.rnd.huawei.com/pypi/simple \
+    --trusted-host cmc.centralrepo.rnd.huawei.com --no-cache-dir \
+    -r /opt/script/requirements.txt
 
 USER root
 RUN rm -f /root/.config/pip/pip.conf

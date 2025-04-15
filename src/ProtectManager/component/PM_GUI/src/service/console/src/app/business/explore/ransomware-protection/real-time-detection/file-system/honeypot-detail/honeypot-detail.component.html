@@ -17,3 +17,7 @@
         <p lv-overflow>{{name}}</p>
     </ng-container>
 </ng-template>
+
+<ng-template #updateTimeTpl let-item>
+    <span lv-overflow>{{item.updateTime | date: 'yyyy/MM/dd HH:mm:ss':timeZone | nil}}</span>
+</ng-template>

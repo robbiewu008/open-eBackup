@@ -15,11 +15,12 @@ import json
 import os
 
 from common.common import execute_cmd, output_execution_result_ex
-from common.const import ParamConstant
+from common.const import ParamConstant, ExecuteResultEnum, CMDResult
 from common.exception.common_exception import ErrCodeException
+from common.job_const import JobNameConst
 from common.util.checkout_user_utils import get_path_owner
-from tidb.common.const import TiDBSubType, TiDBCode, ErrorCode, CMDResult, ClusterRequiredHost, TiDBResourceKeyName, \
-    TiDBConst, TiDBDataBaseFilter, TiDBTaskType
+from tidb.common.const import TiDBSubType, ErrorCode, ClusterRequiredHost, TiDBResourceKeyName, TiDBConst, \
+    TiDBDataBaseFilter
 from tidb.common.tidb_common import get_env_variable, output_result_file, write_error_to_result_file, exec_mysql_sql, \
     get_status_up_role_one_host, check_roles_up, check_paths_valid, check_params_valid
 from tidb.handle.resource.parse_params import ResourceParam
@@ -38,20 +39,20 @@ class TiDBResourceInfo:
     def handle_tiup(self):
         # 注册集群Step1：检查tiup节点
         log.info("Start to register cluster step 1")
-        body_err_code = TiDBCode.SUCCESS.value
-        err_code = TiDBCode.SUCCESS.value
+        body_err_code = ExecuteResultEnum.SUCCESS.value
+        err_code = ExecuteResultEnum.SUCCESS.value
         err_msg = "Check success!"
         log.info("Start to check tiup node")
         try:
             self.check_tiup()
         except ErrCodeException as err_code_ex:
             log.error(f"Check tiup node failed, err_code_ex: {err_code_ex}")
-            err_code = TiDBCode.FAILED.value
+            err_code = ExecuteResultEnum.INTERNAL_ERROR.value
             body_err_code = err_code_ex.error_code
             err_msg = err_code_ex.error_message
         except Exception as ex:
             log.error(f"Check tiup node failed,  ex: {ex}")
-            err_code = TiDBCode.FAILED.value
+            err_code = ExecuteResultEnum.INTERNAL_ERROR.value
             body_err_code = ErrorCode.ERR_INPUT_STRING
             err_msg = "exception occurs."
         finally:
@@ -60,7 +61,7 @@ class TiDBResourceInfo:
             report_dic = {"cluster_list": json.dumps([])}
             error_info = {"code": body_err_code, "bodyErr": err_code, "message": err_msg}
             write_error_to_result_file(self.pid, error_info, sub_type, report_dic)
-        if err_code == TiDBCode.FAILED.value:
+        if err_code == ExecuteResultEnum.INTERNAL_ERROR.value:
             return False
 
         # 获取集群列表
@@ -79,20 +80,20 @@ class TiDBResourceInfo:
     def handle_user(self):
         # 注册集群step3：校验tidb用户
         log.info("Start to register cluster step 3")
-        body_err_code = TiDBCode.SUCCESS.value
-        err_code = TiDBCode.SUCCESS.value
+        body_err_code = ExecuteResultEnum.SUCCESS.value
+        err_code = ExecuteResultEnum.SUCCESS.value
         err_msg = "Check success!"
         log.info("Start to check tidb user")
         try:
             self.check_tidb_user()
         except ErrCodeException as err_code_ex:
             log.error(f"Check user and password failed, err_code_ex: {err_code_ex}")
-            err_code = TiDBCode.FAILED.value
+            err_code = ExecuteResultEnum.INTERNAL_ERROR.value
             body_err_code = err_code_ex.error_code
             err_msg = err_code_ex.error_message
         except Exception as ex:
             log.error(f"Check user and password failed,  ex: {ex}")
-            err_code = TiDBCode.FAILED.value
+            err_code = ExecuteResultEnum.INTERNAL_ERROR.value
             body_err_code = ErrorCode.ERR_INPUT_STRING
             err_msg = "exception occurs."
         finally:
@@ -101,7 +102,7 @@ class TiDBResourceInfo:
             report_dic = {"cluster_list": json.dumps([])}
             error_info = {"code": body_err_code, "bodyErr": err_code, "message": err_msg}
             write_error_to_result_file(self.pid, error_info, sub_type, report_dic)
-        if err_code == TiDBCode.FAILED.value:
+        if err_code == ExecuteResultEnum.INTERNAL_ERROR.value:
             return False
         log.info("Start to check log path")
         return True
@@ -189,7 +190,7 @@ class TiDBResourceInfo:
             cluster_hosts = self.get_cluster_hosts(cluster_name)
         except ErrCodeException as err_code_ex:
             log.error(f"Get BR version failed, err_code_ex: {err_code_ex}")
-            err_code = TiDBCode.FAILED.value
+            err_code = ExecuteResultEnum.INTERNAL_ERROR.value
             body_err_code = err_code_ex.error_code
             err_msg = err_code_ex.error_message
             sub_type = TiDBSubType.SUBTYPE_CLUSTER
@@ -201,7 +202,7 @@ class TiDBResourceInfo:
             self.hosts_check(cluster_hosts)
         except ErrCodeException as err_code_ex:
             log.error(f"Host not up, err_code_ex: {err_code_ex}")
-            err_code = TiDBCode.FAILED.value
+            err_code = ExecuteResultEnum.INTERNAL_ERROR.value
             body_err_code = err_code_ex.error_code
             err_msg = err_code_ex.error_message
             sub_type = TiDBSubType.SUBTYPE_CLUSTER
@@ -230,6 +231,9 @@ class TiDBResourceInfo:
         if ret_code == CMDResult.FAILED.value:
             log.error(f"List hosts info for cluster {cluster_name}  failed. Error: {std_err}")
             return []
+        # 检查ctl
+        if not self.check_ctl(tiup_path, br_version):
+            raise ErrCodeException(ErrorCode.ERR_CHECK_CTL_VERSION, f"Check ctl component failed")
 
         hosts_info = std_out.split("\n")
         strip_line = 0
@@ -310,7 +314,7 @@ class TiDBResourceInfo:
         for priv_ip in priv_ips:
             cnt = 0
             priv_cmd = [f"show grants for '{user}'@'{priv_ip}';"]
-            ret, output = exec_mysql_sql(TiDBTaskType.RESOURCE, self.pid, priv_cmd, host, port)
+            ret, output = exec_mysql_sql(JobNameConst.RESOURCE, self.pid, priv_cmd, host, port)
             if TiDBConst.ALL_PRIVILEGE in str(output):
                 return True
             if not ret:
@@ -344,15 +348,15 @@ class TiDBResourceInfo:
         action_type, conditions = resource_param.get_register_info()
         cluster_name = conditions.get("clusterName", '')
         hosts_list = self.get_cluster_hosts(cluster_name)
-        body_err_code = TiDBCode.SUCCESS.value
-        err_code = TiDBCode.SUCCESS.value
+        body_err_code = ExecuteResultEnum.SUCCESS.value
+        err_code = ExecuteResultEnum.SUCCESS.value
         err_msg = "Check success!"
         log.info(f"Start to check hosts status for cluster {cluster_name}.")
         try:
             self.hosts_check(hosts_list)
         except ErrCodeException as err_code_ex:
             log.error(f"Check hosts status, err_code_ex: {err_code_ex}")
-            err_code = TiDBCode.FAILED.value
+            err_code = ExecuteResultEnum.INTERNAL_ERROR.value
             body_err_code = err_code_ex.error_code
             err_msg = err_code_ex.error_message
         finally:
@@ -360,7 +364,7 @@ class TiDBResourceInfo:
             report_dic = {"info_list": json.dumps([])}
             error_info = {"code": body_err_code, "bodyErr": err_code, "message": err_msg}
             write_error_to_result_file(self.pid, error_info, sub_type, report_dic)
-        if err_code == TiDBCode.FAILED.value:
+        if err_code == ExecuteResultEnum.INTERNAL_ERROR.value:
             return False
         return True
 
@@ -376,7 +380,7 @@ class TiDBResourceInfo:
         port = int(tidb_id[1])
 
         list_cmd = [f"show databases;"]
-        ret, output = exec_mysql_sql(TiDBTaskType.RESOURCE, self.pid, list_cmd, host, port)
+        ret, output = exec_mysql_sql(JobNameConst.RESOURCE, self.pid, list_cmd, host, port)
         if not ret:
             log.error("Get database list failed!")
             return []
@@ -412,10 +416,10 @@ class TiDBResourceInfo:
         down_role = ret_host.get("down")
         if down_role:
             if down_role in [ClusterRequiredHost.PD, ClusterRequiredHost.TIDB]:
-                err_code = TiDBCode.FAILED.value
+                err_code = ExecuteResultEnum.INTERNAL_ERROR.value
                 body_err_code = ErrorCode.CHECK_PD_TIDB_FAILED
             elif down_role in [ClusterRequiredHost.TIKV, ClusterRequiredHost.TIFLASH]:
-                err_code = TiDBCode.FAILED.value
+                err_code = ExecuteResultEnum.INTERNAL_ERROR.value
                 body_err_code = ErrorCode.TIKV_TIFLASH_DIFFERENT
             err_msg = f"{down_role} host down!"
             log.error(f"{down_role} host down!")
@@ -446,7 +450,7 @@ class TiDBResourceInfo:
             self.get_db()
         except ErrCodeException as err_code_ex:
             log.error(f"All tidb hosts down, get db failed, err_code_ex: {err_code_ex}")
-            err_code = TiDBCode.FAILED.value
+            err_code = ExecuteResultEnum.INTERNAL_ERROR.value
             body_err_code = err_code_ex.error_code
             err_msg = err_code_ex.error_message
             report_dic = {"database": json.dumps([])}
@@ -496,7 +500,7 @@ class TiDBResourceInfo:
             f"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=\"{db_name}\" "
             f"ORDER BY TABLE_NAME;"
         ]
-        ret, output = exec_mysql_sql(TiDBTaskType.RESOURCE, self.pid, tables_limit_cmd, host, port)
+        ret, output = exec_mysql_sql(JobNameConst.RESOURCE, self.pid, tables_limit_cmd, host, port)
         table_list = []
         if not ret:
             log.error(f"Get tables in database {db_name} failed!")
@@ -508,7 +512,7 @@ class TiDBResourceInfo:
         # 获取表的总数
         table_num = 0
         table_number_cmd = [f"SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=\"{db_name}\";"]
-        ret, output = exec_mysql_sql(TiDBTaskType.RESOURCE, self.pid, table_number_cmd, host, port)
+        ret, output = exec_mysql_sql(JobNameConst.RESOURCE, self.pid, table_number_cmd, host, port)
         if not ret:
             log.error(f"Get table num in database {db_name} failed!")
         else:
@@ -544,7 +548,7 @@ class TiDBResourceInfo:
             table_list = self.get_table(db_name)
         except ErrCodeException as err_code_ex:
             log.error(f"All tidb hosts down, get tables failed, err_code_ex: {err_code_ex}")
-            err_code = TiDBCode.FAILED.value
+            err_code = ExecuteResultEnum.INTERNAL_ERROR.value
             body_err_code = err_code_ex.error_code
             err_msg = err_code_ex.error_message
             sub_type = TiDBSubType.SUBTYPE_TABLE
@@ -652,14 +656,15 @@ class TiDBResourceInfo:
     def check_cluster(self):
         log.info("Start to check cluster")
         result_path = os.path.join(ParamConstant.RESULT_PATH, f"result{self.pid}")
-        body_err_code = TiDBCode.SUCCESS.value
-        err_code = TiDBCode.SUCCESS.value
+        body_err_code = ExecuteResultEnum.SUCCESS.value
+        err_code = ExecuteResultEnum.SUCCESS.value
         err_msg = "Check success!"
         # 检查tiup
         ret_tiup = self.handle_tiup()
         if not ret_tiup:
             TiDBResourceInfo.write_error_param_to_result_file(result_path, ErrorCode.CHECK_TIUP_FAILED.value,
-                                                              TiDBCode.FAILED.value, "Check Tiup Failed!")
+                                                              ExecuteResultEnum.INTERNAL_ERROR.value,
+                                                              "Check Tiup Failed!")
             return False
         # 检查集群是否存在
         ret_cluster = self.check_cluster_exist()
@@ -671,20 +676,23 @@ class TiDBResourceInfo:
         ret_cluster_hosts = self.check_pd_tidb_status()
         if not ret_cluster_hosts:
             TiDBResourceInfo.write_error_param_to_result_file(result_path, ErrorCode.CHECK_PD_TIDB_FAILED.value,
-                                                              TiDBCode.FAILED.value, "Check pd、tidb Failed!")
+                                                              ExecuteResultEnum.INTERNAL_ERROR.value,
+                                                              "Check pd、tidb Failed!")
             return False
         # 检查集群tikv、tiflash扩缩容和在线状态
         ret_compare_hosts = self.handle_compare_cluter_hosts()
         if not ret_compare_hosts:
             TiDBResourceInfo.write_error_param_to_result_file(result_path, ErrorCode.TIKV_TIFLASH_DIFFERENT.value,
-                                                              TiDBCode.FAILED.value, "Check tikv、tiflash Failed!")
+                                                              ExecuteResultEnum.INTERNAL_ERROR.value,
+                                                              "Check tikv、tiflash Failed!")
             return False
         # 检查用户是否有备份权限
         try:
             self.check_tidb_user()
         except ErrCodeException as err_code_ex:
             TiDBResourceInfo.write_error_param_to_result_file(result_path, ErrorCode.TIDB_USER_PRIVILEGE_FAILED.value,
-                                                              TiDBCode.FAILED.value, "Check user Failed!")
+                                                              ExecuteResultEnum.INTERNAL_ERROR.value,
+                                                              "Check user Failed!")
             return False
         TiDBResourceInfo.write_error_param_to_result_file(result_path, err_code, body_err_code, err_msg)
         return True
@@ -692,8 +700,8 @@ class TiDBResourceInfo:
     def check_database(self):
         log.info("Start to check database")
         result_path = os.path.join(ParamConstant.RESULT_PATH, f"result{self.pid}")
-        body_err_code = TiDBCode.SUCCESS.value
-        err_code = TiDBCode.SUCCESS.value
+        body_err_code = ExecuteResultEnum.SUCCESS.value
+        err_code = ExecuteResultEnum.SUCCESS.value
         err_msg = "Check success!"
         db_name = self.get_db_name()
         ret_cluster = self.check_cluster()
@@ -705,7 +713,7 @@ class TiDBResourceInfo:
             return False
         if db_name not in db_list:
             log.error("db not exist!")
-            body_err_code = TiDBCode.FAILED.value
+            body_err_code = ExecuteResultEnum.INTERNAL_ERROR.value
             err_code = ErrorCode.TIDB_DB_NOT_EXIST.value
             err_msg = "Database not exist!"
             TiDBResourceInfo.write_error_param_to_result_file(result_path, err_code, body_err_code, err_msg)
@@ -730,7 +738,7 @@ class TiDBResourceInfo:
             f"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA=\"{db_name}\" "
             f"AND TABLE_NAME IN {tb_name_tuple};"
         ]
-        ret, output = exec_mysql_sql(TiDBTaskType.RESOURCE, self.pid, tables_exist_cmd, host, port)
+        ret, output = exec_mysql_sql(JobNameConst.RESOURCE, self.pid, tables_exist_cmd, host, port)
         if not ret:
             log.error(f"execute tables_exist_cmd {tables_exist_cmd} failed!")
             return False
@@ -745,8 +753,8 @@ class TiDBResourceInfo:
     def check_table(self):
         log.info("Start to check table")
         result_path = os.path.join(ParamConstant.RESULT_PATH, f"result{self.pid}")
-        body_err_code = TiDBCode.SUCCESS.value
-        err_code = TiDBCode.SUCCESS.value
+        body_err_code = ExecuteResultEnum.SUCCESS.value
+        err_code = ExecuteResultEnum.SUCCESS.value
         err_msg = "Check success!"
         table_name_list = self.get_table_name()
         log.info(table_name_list)
@@ -766,11 +774,20 @@ class TiDBResourceInfo:
         ret_check_table_list = self.check_table_list(host, port, db_name, table_name_list)
         if not ret_check_table_list:
             log.error("table not exist!")
-            body_err_code = TiDBCode.FAILED.value
+            body_err_code = ExecuteResultEnum.INTERNAL_ERROR.value
             err_code = ErrorCode.TIDB_TABLE_NOT_EXIST.value
             err_msg = "Table not exist!"
             TiDBResourceInfo.write_error_param_to_result_file(result_path, err_code, body_err_code, err_msg)
             return False
         TiDBResourceInfo.write_error_param_to_result_file(result_path, err_code, body_err_code, err_msg)
         log.info(f"Check table {table_name_list} success!")
+        return True
+
+    def check_ctl(self, tiup_path, br_version):
+        ctl_cmd = f"su - {get_path_owner(tiup_path)} -c '{tiup_path} ctl:{br_version.strip()} tikv -V'"
+        ret_code, std_out, std_err = execute_cmd(ctl_cmd)
+        if ret_code == CMDResult.FAILED.value:
+            log.error(f"Check ctl component {ctl_cmd} failed, pid: {self.pid}. Error: {std_err}")
+            return False
+        log.info(f"Check ctl component {ctl_cmd} success, pid: {self.pid}.")
         return True

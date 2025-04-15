@@ -12,10 +12,9 @@
 */
 package openbackup.data.protection.access.provider.sdk.resourcegroup.req;
 
-import openbackup.system.base.common.validator.constants.RegexpConstants;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.common.validator.constants.RegexpConstants;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -49,10 +48,14 @@ public class CreateResourceGroupRequest {
     @NotNull
     private String sourceSubType;
 
-    @NotNull
     private List<String> resourceIds;
 
     @Length(min = 1, max = 64)
     @NotNull
     private String scopeResourceId;
+
+    @Length(min = 1, max = 64)
+    private String groupType;
+
+    private String extendStr;
 }

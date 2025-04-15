@@ -12,11 +12,11 @@
 */
 package openbackup.system.base.common.utils;
 
+import com.alibaba.fastjson.JSONObject;
+
 import openbackup.system.base.common.aspect.StringProperties;
 import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.common.exception.EmeiStorDefaultExceptionHandler;
-
-import com.alibaba.fastjson.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;

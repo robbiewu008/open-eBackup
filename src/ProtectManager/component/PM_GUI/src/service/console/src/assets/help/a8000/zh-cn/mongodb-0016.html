@@ -1,0 +1,67 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤5：执行备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="mongodb-0011.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="mongodb-0016">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤5：执行备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="mongodb-0016"></a><a name="mongodb-0016"></a>
+
+<h1 class="topictitle1">步骤5：执行备份</h1>
+<div><p>执行备份前将需要保护的资源关联到指定SLA，系统将对这些资源按照SLA进行保护，并根据SLA周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><p>手动备份产生的副本保留时长按照SLA中的定义进行保留。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="mongodb-0016__zh-cn_topic_0000002199964685_uicontrol9332164373910">“<span id="mongodb-0016__zh-cn_topic_0000002199964685_text11332943123919">保护</span> &gt; 大数据 &gt; MongoDB”</span>。</span></li><li><span>选择需要保护的实例，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p><p>您也可以勾选多个实例进行批量保护。</p>
+</p></li><li><span>（可选）在<span class="uicontrol">“高级配置”</span>区域<span style="color:#282B33;">设置备份任务中创建快照逻辑卷所需空间在原逻辑卷中的占比。</span></span></li><li><span>（可选）在<span class="uicontrol">“高级配置”</span>区域<span style="color:#282B33;">设置备份任务中开启</span><span class="uicontrol" style="color:#282B33;">“对象存储归档副本文件级自动索引”</span><span style="color:#282B33;">。</span></span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>索引需要占用备份存储空间，当系统中的索引文件总数超过10亿时，请按照《故障处理》中的“创建副本索引失败”章节进行处理。</li><li>需要备份元数据时请开启<span class="uicontrol" style="color:#282B33;">“对象存储归档副本文件级自动索引”</span>。</li></ul>
+</div></div>
+</p></li><li><span>选择SLA。</span><p><div class="p" id="mongodb-0016__zh-cn_topic_0000002200146973_p16181740836">您也可以单击<span class="uicontrol" id="mongodb-0016__zh-cn_topic_0000002200146973_uicontrol744210206420">“<span id="mongodb-0016__zh-cn_topic_0000002200146973_text1873812341015">创建</span>”</span>，创建新的SLA。<div class="note" id="mongodb-0016__zh-cn_topic_0000002200146973_note25947145710"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="mongodb-0016__zh-cn_topic_0000002200146973_p125947145711"><span id="mongodb-0016__zh-cn_topic_0000002200146973_ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
+</div></div>
+</div>
+</p></li><li><span>在<span class="uicontrol">“<span>高级配置</span>”</span>中配置创建逻辑卷空间比例参数。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p><span style="color:#282B33;">备份任务中创建快照逻辑卷所需空间在原逻辑卷中的占比，请确保原逻辑卷中空闲空间的占比大于该值。</span></p>
+</div></div>
+</p></li><li><span>单击<span class="uicontrol" id="mongodb-0016__zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p><p id="mongodb-0016__zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p>
+</p></li><li><span>执行手动备份。</span><p><p>当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
+<ol type="a"><li>在需要备份的实例所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。</li><li>设置手动备份产生的副本名称。</li><li>如果您不设置，系统默认设置副本名称为：backup_时间戳。</li><li>选择保护策略：全量备份或日志备份。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>MongoDB未开启Oplog不支持日志备份。</li><li><span>对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></li></ul>
+</div></div>
+</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="mongodb-0011.html">备份MongoDB数据库</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

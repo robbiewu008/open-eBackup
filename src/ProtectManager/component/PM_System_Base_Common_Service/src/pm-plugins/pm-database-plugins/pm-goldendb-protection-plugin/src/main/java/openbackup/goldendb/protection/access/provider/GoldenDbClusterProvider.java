@@ -12,6 +12,10 @@
 */
 package openbackup.goldendb.protection.access.provider;
 
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.ListResourceV2Req;
@@ -42,10 +46,6 @@ import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.BeanTools;
 
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -55,6 +55,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -136,8 +137,7 @@ public class GoldenDbClusterProvider extends DatabaseEnvironmentProvider {
         // 检查注册的管理节点是否属于同一个集群（browse内部校验）
         BrowseEnvironmentResourceConditions conditions = new BrowseEnvironmentResourceConditions();
         conditions.setResourceType(ResourceSubTypeEnum.GOLDENDB_CLUSTER.getType());
-        String version = Optional
-            .ofNullable(
+        String version = Optional.ofNullable(
                 browse(environment, conditions).getRecords().get(0).getExtendInfo().get(GoldenDbConstant.VERSION))
             .orElse("0.0.0");
         if (version.compareTo(GoldenDbConstant.LOWEST_VERSION) < 0) {
@@ -152,8 +152,8 @@ public class GoldenDbClusterProvider extends DatabaseEnvironmentProvider {
 
     private void checkManagerNodeParam(ProtectedEnvironment environment) {
         log.info("start check manageNode");
-        List<Node> manageDbNodes =
-            Optional.ofNullable(goldenDbService.getManageDbNode(environment)).orElse(new ArrayList<>());
+        List<Node> manageDbNodes = Optional.ofNullable(goldenDbService.getManageDbNode(environment))
+            .orElse(new ArrayList<>());
         manageDbNodes.forEach(manageDbNode -> {
             if (!StringUtils.isNotBlank(manageDbNode.getNodeType()) || !StringUtils.isNotBlank(manageDbNode.getOsUser())
                 || !StringUtils.isNotBlank(manageDbNode.getParentUuid())) {
@@ -198,16 +198,62 @@ public class GoldenDbClusterProvider extends DatabaseEnvironmentProvider {
      * @return boolean
      */
     private boolean checkConnect(ProtectedEnvironment environment) {
-        List<Node> manageDbNodes =
-            Optional.ofNullable(goldenDbService.getManageDbNode(environment)).orElse(Lists.newArrayList());
-        AtomicBoolean flag = new AtomicBoolean(true);
-        manageDbNodes.stream().forEach(node -> {
-            if (!goldenDbService.singleConnectCheck(BeanTools.copy(node, MysqlNode::new), environment)) {
-                log.error("Failed to verify the manageDbNode,osUser is {}", node.getOsUser());
-                flag.set(false);
+        List<Node> manageDbNodes = Optional.ofNullable(goldenDbService.getManageDbNode(environment))
+            .orElse(Lists.newArrayList());
+        AtomicBoolean flag = new AtomicBoolean(false);
+        for (Node manageDbNode : manageDbNodes) {
+            try {
+                AgentBaseDto agentBaseDto = goldenDbService.singleConnectCheck(
+                    BeanTools.copy(manageDbNode, MysqlNode::new), environment);
+                if (checkNode(manageDbNode, agentBaseDto, flag)) {
+                    break;
+                }
+            } catch (LegoCheckedException e) {
+                log.error("Failed to verify the manageDbNode, uuid is {}", manageDbNode.getParentUuid());
             }
-        });
+        }
         return flag.get();
+    }
+
+    /**
+     * 判断节点的状态
+     *
+     * @param manageDbNode manageDbNode
+     * @param agentBaseDto agentBaseDto
+     * @param flag flag
+     * @return boolean
+     */
+    private static boolean checkNode(Node manageDbNode, AgentBaseDto agentBaseDto, AtomicBoolean flag) {
+        if (agentBaseDto.isAgentBaseDtoReturnSuccess()) {
+            log.info("Success to verify the manageDbNode,osUser is {}", manageDbNode.getOsUser());
+            flag.set(true);
+        } else {
+            if (checkLogin(manageDbNode, agentBaseDto, flag)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断节点的用户名，密码是否正确
+     *
+     * @param manageDbNode manageDbNode
+     * @param agentBaseDto agentBaseDto
+     * @param flag flag
+     * @return boolean
+     */
+    private static boolean checkLogin(Node manageDbNode, AgentBaseDto agentBaseDto, AtomicBoolean flag) {
+        String errMsg = agentBaseDto.getErrorMessage();
+        Map errMsgMap = JsonUtil.read(errMsg, Map.class);
+        String bodyErr = String.valueOf(errMsgMap.get(GoldenDbConstant.AGENT_PLUGIN_BODY_ERR));
+        if (bodyErr.equals(Long.toString(GoldenDbConstant.LOGIN_FAILED))) {
+            log.error("Failed to verify node: {}, login failed as {}", manageDbNode.getParentUuid(),
+                manageDbNode.getOsUser());
+            flag.set(false);
+            return true;
+        }
+        return false;
     }
 
     // 看最后逻辑的修改
@@ -215,8 +261,8 @@ public class GoldenDbClusterProvider extends DatabaseEnvironmentProvider {
     public void validate(ProtectedEnvironment environment) {
         // 管理节点至少一台可用
         AtomicBoolean result = new AtomicBoolean(false);
-        List<Node> manageDbNodes =
-            Optional.ofNullable(goldenDbService.getManageDbNode(environment)).orElse(Lists.newArrayList());
+        List<Node> manageDbNodes = Optional.ofNullable(goldenDbService.getManageDbNode(environment))
+            .orElse(Lists.newArrayList());
         manageDbNodes.stream().forEach(node -> {
             if (goldenDbService.singleHealthCheck(BeanTools.copy(node, MysqlNode::new), environment)) {
                 log.info("success to verify the manageDbNode,osUser is {}", node.getOsUser());
@@ -240,8 +286,8 @@ public class GoldenDbClusterProvider extends DatabaseEnvironmentProvider {
      * @param environment environment
      */
     private void healthCheckAllInstance(ProtectedEnvironment environment) {
-        List<ProtectedResource> instances =
-            Optional.ofNullable(goldenDbService.getChildren(environment.getUuid())).orElseGet(ArrayList::new);
+        List<ProtectedResource> instances = Optional.ofNullable(goldenDbService.getChildren(environment.getUuid()))
+            .orElseGet(ArrayList::new);
         instances.forEach(instance -> {
             healthCheckInstance(instance);
         });
@@ -306,8 +352,8 @@ public class GoldenDbClusterProvider extends DatabaseEnvironmentProvider {
 
     private void setInstanceStatue(ProtectedEnvironment environment) {
         // 集群健康检查失败，所有的实例都设置为离线
-        List<ProtectedResource> children =
-            Optional.ofNullable(goldenDbService.getChildren(environment.getUuid())).orElseGet(ArrayList::new);
+        List<ProtectedResource> children = Optional.ofNullable(goldenDbService.getChildren(environment.getUuid()))
+            .orElseGet(ArrayList::new);
         children.forEach(it -> {
             goldenDbService.updateResourceLinkStatus(it.getUuid(), LinkStatusEnum.OFFLINE.getStatus().toString());
         });
@@ -333,31 +379,37 @@ public class GoldenDbClusterProvider extends DatabaseEnvironmentProvider {
      * @param manageDbNodes manageDbNodes
      * @return PageListResponse
      */
-    private PageListResponse<ProtectedResource>
-        getBrowseResult(BrowseEnvironmentResourceConditions environmentConditions, List<Node> manageDbNodes) {
+    private PageListResponse<ProtectedResource> getBrowseResult(
+        BrowseEnvironmentResourceConditions environmentConditions, List<Node> manageDbNodes) {
         List<String> uniqueIds = new ArrayList<>();
         AtomicReference<PageListResponse<ProtectedResource>> result = new AtomicReference<>(new PageListResponse<>());
-        manageDbNodes.forEach(node -> {
+        List<Node> errNodes = new ArrayList<>();
+        for (Node node : manageDbNodes) {
             ProtectedEnvironment agentEnvironment = goldenDbService.getEnvironmentById(node.getParentUuid());
             log.info("start to browse goldenDB,ip is {},resource type is {}, agentPort is {}",
                 agentEnvironment.getEndpoint(), environmentConditions.getResourceType(), agentEnvironment.getPort());
             result.set(agentUnifiedService.getDetailPageListNoRetry(environmentConditions.getResourceType(),
-                agentEnvironment.getEndpoint(), agentEnvironment.getPort(), getListResourceReq(agentEnvironment,
-                    environmentConditions.getPageNo(), environmentConditions.getPageSize(), node), false));
+                agentEnvironment.getEndpoint(), agentEnvironment.getPort(),
+                getListResourceReq(agentEnvironment, environmentConditions.getPageNo(),
+                    environmentConditions.getPageSize(), node), false));
             List<ProtectedResource> records = result.get().getRecords();
-            if (records.size() == 0) {
-                throw new LegoCheckedException(
-                    GoldenDbConstant.NODE_TYPE_MISMATCH, new String[] {GoldenDbConstant.MANAGE_TYPE,
-                        agentEnvironment.getEndpoint(), node.getOsUser(), node.getNodeType()},
-                    "browse compute node zero");
-            }
             String json = JsonUtil.json(records);
             String uniqueId = UUID.nameUUIDFromBytes(json.getBytes(Charset.defaultCharset())).toString();
             uniqueIds.add(uniqueId);
-        });
-        if (uniqueIds.stream().distinct().collect(Collectors.toList()).size() > 1) {
-            throw new LegoCheckedException(CommonErrorCode.AGENT_NOT_BELONG_TO_SAME_CLUSTER,
-                "The selected management nodes do not belong to the same cluster.");
+            if (records.size() == 0) {
+                log.error("Failed to verify node: {} ", node.getParentUuid());
+                errNodes.add(node);
+                continue;
+            }
+            break;
+        }
+        if (errNodes.size() == manageDbNodes.size()) {
+            Node errNode = errNodes.get(0);
+            ProtectedEnvironment errAgentEnvironment = goldenDbService.getEnvironmentById(errNode.getParentUuid());
+            throw new LegoCheckedException(GoldenDbConstant.NODE_TYPE_MISMATCH, new String[] {
+                GoldenDbConstant.MANAGE_TYPE, errAgentEnvironment.getEndpoint(), errNode.getOsUser(),
+                errNode.getNodeType()
+            }, "browse compute node zero");
         }
         return result.get();
     }

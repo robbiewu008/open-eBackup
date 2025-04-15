@@ -31,10 +31,13 @@ private:
     int ReadMeta(FileHandle& fileHandle) override;
     int ReadEmptyData(FileHandle& fileHandle);
     void ProcessReadEntries(FileHandle& fileHandle) override; /* state to event */
-    void HandleSuccessEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr);
+    void HandleSuccessEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr) override;
+    void HandleFailedEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr) override;
+    void PostOfHandleFailedEvent(FileHandle& fileHandle, std::shared_ptr<OsPlatformServiceTask> taskPtr);
     bool IsComplete() override;
     bool HandleAdsFile(FileHandle& fileHandle);
     void CloseOpenedHandle() override;
+    void PostFileFailCopiedOperation(const FileHandle& fileHandle);
 };
 
 #endif  // WIN32_COPY_READER_H

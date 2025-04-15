@@ -12,7 +12,7 @@
   -->
 
 <ng-container *ngIf="detailJobType.includes(job.type) && isOceanProtect && isShowTab">
-    <lv-tabs>
+    <lv-tabs class="job-content">
         <lv-tab lvTitle="{{'insight_job_info_label' | i18n}}">
             <ng-container *ngTemplateOutlet="jobContent"></ng-container>
         </lv-tab>
@@ -27,7 +27,7 @@
 
 <ng-template #jobContent>
     <ng-container *ngFor="let jobForm of _values(this.jobForms)">
-        <div class='aui-gutter-column-xxl'>
+        <div class='job-content aui-gutter-column-xxl'>
             <div class="aui-gutter-column-lg">
                 <h3>{{jobForm.title}}</h3>
             </div>
@@ -182,6 +182,17 @@
                                       }}
                                     </ng-template>
                                   </ng-container>
+                                <ng-container *ngSwitchCase="'jobId'">
+                                    <lv-group lvGutter="4px" class="copy-container">
+                                        <div lv-overflow class='value'>
+                                            {{item.value | nil}}
+                                        </div>
+                                        <i lv-icon="aui-icon-copy" class="copy-btn" (click)="copyJobId(item.value)"></i>
+                                    </lv-group>
+                                </ng-container>
+                                <ng-container *ngSwitchCase="'restoreTimestamp'">
+                                    <span lv-overflow>{{item.value | date : 'yyyy-MM-dd HH:mm:ss':timeZone}}</span>
+                                </ng-container>
                                 <ng-container *ngSwitchDefault>
                                     <div lv-overflow class='value'>
                                         {{item.value | nil}}

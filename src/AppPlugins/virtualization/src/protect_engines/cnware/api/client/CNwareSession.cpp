@@ -61,7 +61,28 @@ std::shared_ptr<CNwareSession> CNwareSessionCache::GetLastCNwareSession()
 void CNwareSessionCache::EraseSession(const std::tuple<std::string, std::string>& key)
 {
     std::lock_guard<std::mutex> lock(m_cacheMutex);
+    DBGLOG("Erase session(%s).", std::get<0>(key).c_str());
     m_sessionCache.erase(key);
     return;
+}
+
+void CNwareSessionCache::IncreaseRegistreCnt()
+{
+    std::lock_guard<std::mutex> lock(m_cacheMutex);
+    m_useSessionNums++;
+}
+void CNwareSessionCache::DecreaseRegistreCnt()
+{
+    std::lock_guard<std::mutex> lock(m_cacheMutex);
+    if (m_useSessionNums > 0) {
+        m_useSessionNums--;
+    }
+}
+
+bool CNwareSessionCache::NeedRelease()
+{
+    std::lock_guard<std::mutex> lock(m_cacheMutex);
+    INFOLOG("Use session num: %d.", m_useSessionNums);
+    return m_useSessionNums <= 0;
 }
 };

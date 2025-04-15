@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.sdk.resource.model;
 
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.exception.LegoCheckedException;
-
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonAlias;
 
 import lombok.Data;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.exception.LegoCheckedException;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -31,83 +31,145 @@
       <input lv-input type="text" formControlName="location" class="input-width"/>
     </lv-form-control>
   </lv-form-item>
+    <lv-alert lvType="info">
+        {{'protection_ad_manual_path_tip_label' | i18n}}
+    </lv-alert>
+    <lv-form-item>
+        <lv-form-label>
+            {{'protection_ad_path_mode_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-radio-group formControlName="objectMode">
+                <lv-group [lvGutter]="'20px'">
+                    <lv-radio [lvValue]="modeMap.fromTree">
+                        {{ 'protection_ad_path_from_tree_label' | i18n }}
+                    </lv-radio>
+                    <lv-radio [lvValue]="modeMap.fromInput">
+                        {{ 'protection_ad_path_from_input_label' | i18n }}
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </lv-form-control>
+    </lv-form-item>
 </lv-form>
 <!-- 选择对象 -->
-<div style="margin:16px 0">
-  <h2>{{'protection_select_objects_label'|i18n}}</h2>
-</div>
-<lv-group [lvColumns]="['40%','auto']" lvGutter="16px" style="align-items: flex-start">
-  <div class="table-border" style="height: 68vh">
-    <lv-tree
-      #lvTree
-      style="width: 425px;padding-left: 4px"
-      [lvData]="treeData"
-      lvCompareWith="uuid"
-      lvShowLine
-      lvShowCheckbox
-      lvVirtualScroll
-      lvSelectionMode="multiple"
-      (lvExpandedChange)="expandTreeNode($event)"
-      [(lvSelection)]="treeSelection"
-      (lvSelectionChange)="treeSelectionChange($event)"
-      lvShowContentIcon
-      [lvScroll]="{y:'68vh'}"
-      [lvNodeTemplate]="nodeTpl"
-      [lvTrackBy]="trackByUuid"
-    >
-    </lv-tree>
-  </div>
-  <ng-template #nodeTpl let-item>
-    <div style="width: 300px;" lv-overflow>
-      <span *ngIf="!item.isMoreBtn">
-        {{item.label}}
-      </span>
+<ng-container *ngIf="formGroup.get('objectMode').value === this.modeMap.fromTree else customInputTpl">
+    <div class="mgt-8 mgb-8"><h2>{{'protection_select_objects_label'|i18n}}</h2></div>
+    <div class="tree-table-container">
+        <div class="header-tab">
+            <lv-radio-group [(ngModel)]="pathView" [lvGroupName]="'path'" (ngModelChange)="tabChange()">
+                <lv-group lvGutter='14px'>
+                    <lv-radio [lvViewType]="'custom'" [lvValue]="'all'">
+                        <div>
+                            {{'protection_sla_optional_tooltip_step_label' | i18n}}
+                            <span class="num-tag" [ngClass]="{'tag-light': pathView === 'all'}">{{total}}</span>
+                        </div>
+                    </lv-radio>
+                    <div class="dash-line"></div>
+                    <lv-radio [lvViewType]="'custom'" [lvValue]="'selected'">
+                        <div>
+                            {{'common_selected_simple_label' | i18n}}
+                            <span class="num-tag"
+                                  [ngClass]="{'tag-light': pathView === 'selected'}">{{selectedTotal}}</span>
+                        </div>
+                    </lv-radio>
+                </lv-group>
+            </lv-radio-group>
+        </div>
+        <lv-group lvGutter='14px' class="search-path-container">
+            <lv-search (lvSearch)="searchName($event)" lvPlaceHolder="{{'common_name_label' | i18n}}"
+                       [(ngModel)]="searchKey"></lv-search>
+        </lv-group>
+        <lv-group class="tree-table" [lvColumns]='["270px", "auto"]'>
+            <div class="tree-container">
+                <lv-tree #tree lvCompareWith="absolutePath" lvVirtualScroll [lvScroll]="{y:'55vh'}" [lvData]="treeData" (lvExpandedChange)="expandedChange($event)"
+                         lvSelectionMode="single" [(lvSelection)]="treeSelection" (lvCheck)="pathNodeCheck($event)"
+                         [lvBeforeSelected]="beforeSelected" [lvNodeTemplate]='nodeTpl'
+                         [lvTrackBy]="treeTrackByPath"></lv-tree>
+                <ng-template #nodeTpl let-item>
+                    <div style="width: 160px;" lv-overflow [ngClass]="{'directory-color':!item.isLeaf}">
+                    <span *ngIf="!item.isMoreBtn">
+                        {{item.label}}
+                    </span>
+                    </div>
+                    <span class="aui-link" *ngIf="item.isMoreBtn"
+                          (click)="clickMoreFile($event, item)">{{item.label}}</span>
+                </ng-template>
+            </div>
+            <div class="table-container">
+                <ng-container *ngIf="pathView === 'all'; else elseTableTemplate">
+                    <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
+                </ng-container>
+                <ng-template #elseTableTemplate>
+                    <lv-pro-table #dataSelectTable [config]="selectTableConfig" [data]="selectTableData"></lv-pro-table>
+                </ng-template>
+            </div>
+        </lv-group>
     </div>
-    <span class="aui-link" *ngIf="item.isMoreBtn"
-          (click)="queryTreeData(item?.parent,item.startPage)">{{item.label}}</span>
-  </ng-template>
-  <lv-group lvGutter="10px" lvDirection="vertical" class="table-container">
-    <lv-group lvGutter="20px" class="tree-header" style="width: 100%">
-      <lv-search (lvSearch)="treeSearch($event)" style="width: 50%"></lv-search>
-      <span>{{'common_selected_num_label'|i18n:[tableData.length]}}</span>
-      <span
-        class="aui-link"
-        (click)="clearSelection()"
-      >{{ 'protection_clear_all_label' | i18n }}</span
-      >
-    </lv-group>
-    <lv-datatable
-      [lvData]="tableData"
-      #lvTable
-      style="height: 58vh;"
-      [lvPaginator]="page"
-      [lvScroll]='{y: "53vh"}'
-      lvVirtualScroll
-      class="table-border"
-      [lvVirtualTrackBy]="trackByUuid"
-      lvResize
-    >
-    <thead>
-      <tr>
-        <th lvCellKey="name">{{'common_name_label'|i18n}}</th>
-        <th [width]="i18n.isEn? '80px':'64px'">{{'common_operation_label'|i18n}}</th>
-      </tr>
-    </thead>
-      <tbody>
-        <ng-template lv-virtual-scroll let-item>
-          <tr>
-            <td>{{item.label}}</td>
-            <td width="64px">
-              <span
-                class="aui-link"
-                (click)="deleteItem($event,item)"
-              >{{ 'common_delete_label' | i18n }}</span
-              >
-            </td>
-          </tr>
-        </ng-template>
-      </tbody>
-    </lv-datatable>
-    <lv-paginator #page lvMode="simple" [lvPageSizeOptions]="pageSizeOptions" lvPageSize="200"></lv-paginator>
-  </lv-group>
-</lv-group>
+</ng-container>
+
+<ng-template #customInputTpl>
+    <lv-form-item>
+        <lv-form-label lvRequired class="object-name-label">
+            <lv-group lvGutter="4px">
+                {{'protection_ad_path_from_input_title_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_ad_path_placeholder_tip_label' | i18n}}"
+                   lvColorState='true'></i>
+            </lv-group>
+        </lv-form-label>
+        <lv-form-control>
+            <lv-form [formGroup]="formGroup" class="formGroup">
+                    <lv-form-item>
+                        <lv-form-control [lvErrorTip]="pathErrorTip">
+                        <lv-group lvGutter="8px" class="object-input-group">
+                            <input formControlName="objectPath" lv-input class="object-name-input" (keydown.enter)="add()"/>
+                            <lv-select [lvOptions]="objectTypeOptions" lvValueKey="value" formControlName="objectNameType"></lv-select>
+                            <button (click)="add()" lv-button [disabled]="formGroup.invalid">
+                                {{ 'common_add_label' | i18n }}
+                            </button>
+                            <button lv-button lv-popover [lvPopoverContent]="clearAllTpl" lvPopoverTrigger="click" lvPopoverTheme="light"
+                                    lvPopoverPosition="top" #clearAllPathPopover="lvPopover">
+                                {{ 'common_clear_all_extra_label' | i18n }}
+                            </button>
+                        </lv-group>
+                        </lv-form-control>
+                    </lv-form-item>
+            </lv-form>
+            <span class="mgt-8">
+                {{ 'protection_ad_path_from_input_title_label'|i18n }}: {{'common_type_label'|i18n}}
+            </span>
+            <lv-tag [(ngModel)]='customInputSelection' (lvRemove)="removeSingle($event)"></lv-tag>
+            <ng-template #clearAllTpl>
+                <div class="aui-gutter-column-md">{{'protection_ad_clear_path_tip_label' | i18n}}</div>
+                <div class="lv-modal-btns mgt-btns">
+                    <lv-group lvGutter='16px'>
+                        <button lv-button (click)='cancel()'>
+                            {{ 'common_cancel_label' | i18n }}
+                        </button>
+                        <button lv-button lvType='primary' (click)='clearAll()'>
+                            {{ 'common_ok_label' | i18n }}
+                        </button>
+                    </lv-group>
+                </div>
+            </ng-template>
+        </lv-form-control>
+    </lv-form-item>
+</ng-template>
+
+<ng-template #fileTpl let-item>
+    <span lv-overflow>
+        <i lv-icon="{{ item.contentToggleIcon }}" [lvColorState]="true"></i>
+        {{ item.name }}
+    </span>
+</ng-template>
+
+<ng-template #optTpl let-item>
+    <i lv-icon="lv-icon-close" [lvColorState]="true" (click)="deleteNode(item)"></i>
+</ng-template>
+
+
+<ng-template #directoryNameTpl let-item>
+  <span [ngClass]="{'directory-color':!item?.isLeaf}">
+    {{item.label|nil}}
+  </span>
+</ng-template>

@@ -96,9 +96,12 @@
         *ngIf="(![
           resourceResourceType.generalDatabase.value,
           resourceResourceType.oracle.value,
+          resourceResourceType.oraclePDB.value,
           resourceResourceType.GaussDB_T.value,
           resourceResourceType.gaussdbTSingle.value,
           resourceResourceType.MySQL.value,
+          resourceResourceType.AntDBInstance.value,
+          resourceResourceType.AntDBClusterInstance.value,
           resourceResourceType.PostgreSQLInstance.value,
           resourceResourceType.PostgreSQLClusterInstance.value,
           resourceResourceType.KingBaseInstance.value,
@@ -112,20 +115,19 @@
           resourceResourceType.dbTwoDatabase.value,
           resourceResourceType.lightCloudGaussdbInstance.value,
           resourceResourceType.gaussdbForOpengaussInstance.value,
-          resourceResourceType.informixInstance.value,
-          resourceResourceType.informixClusterInstance.value,
           resourceResourceType.tdsqlInstance.value,
           resourceResourceType.tdsqlDistributedInstance.value,
           resourceResourceType.OceanBaseCluster.value,
           resourceResourceType.OceanBaseTenant.value,
           resourceResourceType.tidbCluster.value,
-          resourceResourceType.ExchangeDataBase.value,
           resourceResourceType.ExchangeSingle.value,
           resourceResourceType.ExchangeGroup.value,
+          resourceResourceType.ExchangeDataBase.value,
           resourceResourceType.goldendbInstance.value,
           resourceResourceType.saphanaDatabase.value,
-          resourceResourceType.MongodbSingleInstance.value
-          ].includes(resType) || (rowData.subType === resourceResourceType.MySQLClusterInstance.value && rowData.extendInfo?.clusterType === dataMap.Mysql_Cluster_Type.eapp.value))&& !isOpenGaussPanweiDB">
+          resourceResourceType.MongodbSingleInstance.value,
+          resourceResourceType.saponoracleDatabase.value
+          ].includes(resType) || (rowData.subType === resourceResourceType.MySQLClusterInstance.value && rowData.extendInfo?.clusterType === dataMap.Mysql_Cluster_Type.eapp.value))&& !isOpenGaussPanweiDB && !isInformix">
         <ng-container *ngIf="isCyberEngine; else elseTemplate">
           <aui-cyber-snapshot-data [id]="id" [rowData]="rowData" [currentDate]="copyDataInDayView">
           </aui-cyber-snapshot-data>
@@ -140,9 +142,12 @@
         *ngIf="[
           resourceResourceType.generalDatabase.value,
           resourceResourceType.oracle.value,
+          resourceResourceType.oraclePDB.value,
           resourceResourceType.GaussDB_T.value,
           resourceResourceType.gaussdbTSingle.value,
           resourceResourceType.MySQL.value,
+          resourceResourceType.AntDBInstance.value,
+          resourceResourceType.AntDBClusterInstance.value,
           resourceResourceType.PostgreSQLInstance.value,
           resourceResourceType.PostgreSQLClusterInstance.value,
           resourceResourceType.KingBaseInstance.value,
@@ -156,20 +161,19 @@
           resourceResourceType.dbTwoDatabase.value,
           resourceResourceType.gaussdbForOpengaussInstance.value,
           resourceResourceType.lightCloudGaussdbInstance.value,
-          resourceResourceType.informixInstance.value,
-          resourceResourceType.informixClusterInstance.value,
           resourceResourceType.tdsqlInstance.value,
           resourceResourceType.tdsqlDistributedInstance.value,
           resourceResourceType.OceanBaseCluster.value,
           resourceResourceType.OceanBaseTenant.value,
           resourceResourceType.tidbCluster.value,
-          resourceResourceType.ExchangeDataBase.value,
           resourceResourceType.ExchangeSingle.value,
           resourceResourceType.ExchangeGroup.value,
+          resourceResourceType.ExchangeDataBase.value,
           resourceResourceType.goldendbInstance.value,
           resourceResourceType.saphanaDatabase.value,
-          resourceResourceType.MongodbSingleInstance.value
-          ].includes(resType) && !(rowData.subType === resourceResourceType.MySQLClusterInstance.value && rowData.extendInfo?.clusterType ===  dataMap.Mysql_Cluster_Type.eapp.value) || isOpenGaussPanweiDB">
+          resourceResourceType.MongodbSingleInstance.value,
+          resourceResourceType.saponoracleDatabase.value
+          ].includes(resType) && !(rowData.subType === resourceResourceType.MySQLClusterInstance.value && rowData.extendInfo?.clusterType ===  dataMap.Mysql_Cluster_Type.eapp.value) || isOpenGaussPanweiDB || isInformix">
         <aui-copy-data-dbtoday [id]="id" [rowData]="rowData" [currentDate]="copyDataInDayView" [resType]="resType">
         </aui-copy-data-dbtoday>
       </ng-container>

@@ -14,6 +14,8 @@ package openbackup.access.framework.resource.util;
 
 import static openbackup.system.base.common.utils.JSONObject.RAW_OBJ_MAPPER;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.system.base.common.constants.CommonErrorCode;
@@ -21,8 +23,6 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.HashMap;
 import java.util.List;

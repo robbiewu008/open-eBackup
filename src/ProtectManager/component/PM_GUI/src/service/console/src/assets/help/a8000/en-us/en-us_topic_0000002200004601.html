@@ -1,0 +1,246 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 4: Registering the Database of a PostgreSQL Cluster Instance">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200004613.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200004601">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 4: Registering the Database of a PostgreSQL Cluster Instance</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200004601"></a><a name="EN-US_TOPIC_0000002200004601"></a>
+
+<h1 class="topictitle1">Step 4: Registering the Database of a PostgreSQL Cluster Instance</h1>
+<div><div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Before registering a PostgreSQL cluster instance, ensure that each host in the cluster has been registered.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>All hosts in the cluster must have registered with the same database.</p>
+</div></div>
+<p>For details, see <a href="en-us_topic_0000002164603858.html">Step 3: Registering the Database of a Single PostgreSQL Instance</a>.</p>
+</li><li>Before registering an instance, check whether the owner of the <strong>bin/lib/share</strong> file in the database installation path is <strong>root</strong>. If the owner is <strong>root</strong>, set <strong>enable_root</strong> to <strong>1</strong> in the <strong>/opt/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/applications/postgresql/conf/switch.conf</strong> configuration file.</li><li>Before registering a database account, ensure that the account has the following minimum permissions. The configuration method is as follows. Account <strong>teste_bkp</strong> is used as an example.<ol><li>Login permissions: The database account must be used to log in the specified database during registration of databases in PostgreSQL cluster instances, backup, and restoration. Therefore, you must run the <strong>CREATE ROLE teste_bkp LOGIN PASSWORD 'teste_bkp'</strong><strong>;</strong> command so that the account has the basic login permissions. In addition, run the following commands to log in to the database and view the database version. In the commands, <em>/usr/local/pgsql/bin/psql</em> indicates the path of the <strong>psql</strong> script, <strong>-h</strong> indicates the IP address of the host where the database instance resides, and <strong>-p</strong> indicates the port number of the database instance.<pre class="screen">su - postgres
+su - postgres -c '<em id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_i7325132282020">/usr/local/pgsql/bin/psql</em> -h <em id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_i338515391176">Database IP address</em> -p <em id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_i1842183141616">Port number</em> -U <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b1263531512614">teste_bkp</strong> -d postgres' </pre>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_p11636396502">If the queried database version is earlier than 10.0, the database account must be <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b1720055433518">SUPERUSER</strong> and you do not need to perform <a href="en-us_topic_0000002164603858.html#EN-US_TOPIC_0000002164603858__li14737182342715">2</a> and <a href="en-us_topic_0000002164603858.html#EN-US_TOPIC_0000002164603858__li3687112632718">3</a>.</p>
+</div></div>
+</li><li>Permissions to read the configuration file: After logging in to the database, run the <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b549614151116">GRANT pg_read_all_settings TO teste_bkp;</strong> command to set the permissions.</li><li>Permissions to execute functions: To perform backup, you must have the execute permissions on the <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b154923194155">pg_backup_start</strong> and <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b19492111918158">pg_backup_stop</strong> functions. Grant the execute permissions on the functions as follows:<p id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_p710125393320">If the version queried in <a href="en-us_topic_0000002164603858.html#EN-US_TOPIC_0000002164603858__li1919772032716">1</a> is 15.0 or later, run the following commands to grant permissions:</p>
+<p id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_p3548204552719">(1) Granting permissions to execute the <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b192871132201810">pg_backup_start</strong> function: <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b828713281814">GRANT EXECUTE ON FUNCTION pg_backup_start TO teste_bkp;</strong></p>
+<p id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_p6581458122212">(2) Granting permissions to execute the <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b625125813177">pg_backup_stop</strong> function: <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b72921811134">GRANT EXECUTE ON FUNCTION pg_backup_stop TO teste_bkp;</strong></p>
+<p id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_p1381017559336">If the version is 9.6 or is later than 9.6 but earlier than 15.0, run the following commands to grant permissions:</p>
+<p id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_p11600185385218">(1) Granting permissions to execute the <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b18695148229">pg_backup_start</strong> function: <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b369515414227">GRANT EXECUTE ON FUNCTION pg_start_backup(text,boolean,boolean) TO teste_bkp;</strong></p>
+<p id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_p17600195335218">(2) Granting permissions to execute the <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b048612642217">pg_backup_stop</strong> function: <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b1548672612227">GRANT EXECUTE ON FUNCTION pg_stop_backup() TO teste_bkp;</strong></p>
+<p id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_p113810115324">If the version is earlier than 9.6, run the following commands to grant permissions:</p>
+<p id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_p1338151113210">(1) Granting permissions to execute the <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b1737175772216">pg_backup_start</strong> function: <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b10384578227">GRANT EXECUTE ON FUNCTION pg_start_backup(text,boolean)  TO teste_bkp;</strong></p>
+<p id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_p33831112327">(2) Granting permissions to execute the <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b1819901302314">pg_backup_stop</strong> function: <strong id="EN-US_TOPIC_0000002200004601__en-us_topic_0000002164603858_b12002134237">GRANT EXECUTE ON FUNCTION pg_stop_backup() TO teste_bkp;</strong></p>
+</li></ol>
+</li><li>Grant the login and streaming replication permissions to the database streaming replication user. The <strong>teste_bkp_repl</strong> account is used as an example to log in to the database. During restoration by the database streaming replication user, the standby node needs to synchronize data from the active node through the database streaming replication user. Therefore, you need to run the <strong>CREATE ROLE teste_bkp_repl LOGIN REPLICATION PASSWORD 'teste_bkp_repl';</strong> command to grant the login and streaming replication permissions to the database streaming replication user.</li><li>Before registering a PostgreSQL cluster, query the cluster type.<p><strong>Pgpool cluster</strong></p>
+<ol><li>Use PuTTY to log in to the PostgreSQL database host.</li><li>Run the <strong>ps -ef | grep pgpool</strong> command to check whether the cluster is a Pgpool cluster. If the command output contains fields related to <strong>pgpool</strong>, the current cluster is a Pgpool cluster. Otherwise, the current cluster is not a Pgpool cluster.<ul><li>For example, if the following command output is displayed, the current cluster is a Pgpool cluster.</li></ul>
+<p><span><img src="en-us_image_0000002164763674.png"></span></p>
+<ul><li>For example, if only the following information is displayed in the command output, the current cluster is not a Pgpool cluster.</li></ul>
+<p><span><img src="en-us_image_0000002199970273.png"></span></p>
+</li></ol>
+<p><strong>Patroni cluster</strong></p>
+<ol><li>Use PuTTY to log in to the PostgreSQL database host.</li><li>Run the <strong>ps -ef | grep patroni</strong> command to check whether the cluster is a Patroni cluster. If command output contains fields related to <strong>patroni</strong>, the current cluster is a Patroni cluster. Otherwise, the current cluster is not a Patroni cluster.<ul><li>For example, if the following command output is displayed, the current cluster is a Patroni cluster.</li></ul>
+<p><span><img src="en-us_image_0000002164603922.png"></span></p>
+<ul><li>For example, if only the following information is displayed in the command output, the current cluster is not a Patroni cluster.</li></ul>
+<p><span><img src="en-us_image_0000002200004685.png"></span></p>
+</li></ol>
+<p><strong>CLup cluster</strong></p>
+<ol><li>Use PuTTY to log in to the PostgreSQL database host.</li><li>Run the <strong>ps -ef | grep clup</strong> command to check whether the cluster is a CLup cluster. If the command output contains fields related to <strong>clup</strong>, the current cluster is a CLup cluster. Otherwise, the current cluster is not a CLup cluster.<ul><li>For example, if the following command output is displayed, the current cluster is a CLup cluster.<p><span><img src="en-us_image_0000002164603926.png"></span></p>
+</li><li>For example, if only the following information is displayed in the command output, the current cluster is not a CLup cluster.<p><span><img src="en-us_image_0000002200004681.png"></span></p>
+</li></ul>
+</li></ol>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>If the CLup management page cannot be opened (for example, because the host where the CLup Server node resides breaks down or the firewall of the host where the CLup Server node resides is not disabled), or the cluster status on the CLup management page is <strong>Offline</strong>, the CLup cluster instance that has been registered with the <span>OceanProtect</span> will be in <strong>Offline</strong> status. To restore the instance to the <strong>Online</strong> status to perform backup and other jobs, set the cluster status to <strong>Online</strong> on the CLup management page. Then, the status of the database instance on the OceanProtect WebUI is automatically changed to <strong>Online</strong>.</p>
+</div></div>
+</li><li>To access a database instance of a PostgreSQL cluster in CLup deployment mode, perform the following steps:<p>Method 1:</p>
+<ol><li id="EN-US_TOPIC_0000002200004601__li164317393534"><a name="EN-US_TOPIC_0000002200004601__li164317393534"></a><a name="li164317393534"></a>Log in to the CLup database management page and choose <strong>Instance</strong> &gt; <strong>Instance List</strong> to go to the <strong>DB Instance List</strong> page.<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>To log in to the CLup database management page:</p>
+<ul><li>Visit the URL: <strong>http://</strong><em>IP</em><em> address</em><strong>:8090</strong> (<em>IP address</em> indicates the IP address of the current host for a single-NIC host or the IP address selected during installation for a multi-NIC host).</li><li>Username: <strong>admin</strong> (<strong>admin</strong> by default. If the username is incorrect, obtain it from the database administrator.)</li><li>Password: <strong>cstech</strong> (<strong>cstech</strong> by default. If the password is incorrect, obtain it from the database administrator.)</li></ul>
+</div></div>
+</li><li>Select the corresponding instance and choose <span class="uicontrol"><b>More &gt; psql</b></span> to access the database instance. After login, the following page is displayed:<p><span><img src="en-us_image_0000002199970277.png"></span></p>
+</li></ol>
+<p>Method 2:</p>
+<ol><li>Use PuTTY to log in to the CLup Agent host.</li><li>Run the following command to log in to the database administrator page. In the command, <em>/usr/local/pgsql/bin/psql</em> indicates the <strong>psql</strong> script path. <strong>-h</strong> indicates the IP address of the host where the database instance resides. <strong>-p</strong> indicates the port number of the database instance. To obtain the values of <span class="uicontrol"><b>-h</b></span> and <span class="uicontrol"><b>-p</b></span>, obtain the corresponding values of <span class="uicontrol"><b>Host</b></span> and <span class="uicontrol"><b>Port</b></span> after login by referring to <a href="#EN-US_TOPIC_0000002200004601__li164317393534">1</a>.<pre class="screen">su - postgres -c '<em>/usr/local/pgsql/bin/psql</em> -U postgres -h <em>IP address </em> -d postgres -p <em>Port number</em>'    </pre>
+<p>If the login is successful, the following page is displayed:</p>
+<p><span><img src="en-us_image_0000002228033537.png"></span></p>
+</li></ol>
+</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Create a cluster.</span><p><ol type="a"><li>On the PostgreSQL page, click the <span class="uicontrol"><b>Cluster</b></span> tab.</li><li>Click <span class="uicontrol"><b>Register</b></span>.</li><li>Configure the cluster and its authentication information.<p><a href="#EN-US_TOPIC_0000002200004601__table415124821919">Table 1</a> describes related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200004601__table415124821919"></a><a name="table415124821919"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200004601__table415124821919" frame="border" border="1" rules="all"><caption><b>Table 1 </b>PostgreSQL cluster registration information</caption><colgroup><col style="width:28.03%"><col style="width:71.97%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="28.03%" id="mcps1.3.2.2.1.2.1.3.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="71.97%" id="mcps1.3.2.2.1.2.1.3.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="28.03%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.97%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>Enter a custom cluster name.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.03%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span><strong>Type</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.97%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>Select <span class="uicontrol"><b>Active/Standby Replication</b></span>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.03%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span><strong>Virtual IP Address</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.97%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>Virtual IP address that is unused and in the same network segment as the IP address of the host where the PostgreSQL instance resides.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ol><li>To obtain the virtual IP address of a Pgpool cluster, use PuTTY to log in to the PostgreSQL database host and view the <strong>delegate_IP</strong> field in the <strong>pgpool.conf</strong> file. For example, run the <strong>cat /usr/local/pgpool/etc/pgpool.conf | grep delegate_IP</strong> command to obtain the virtual IP address.<p><span><img src="en-us_image_0000002193082442.png"></span></p>
+</li><li>To obtain the virtual IP address of the Patroni cluster, use PuTTY to log in to the PostgreSQL database host, view the callback script name in the Patroni configuration file, and view the <strong>VIP</strong> field of the callback script. For example, you can run the <strong>cat /etc/patroni/patroni_callback.sh</strong> <strong>| grep</strong> <strong>VIP</strong> command to obtain the <strong>VIP</strong> field of the callback script <strong>patroni_callback.sh</strong>.<p><span><img src="en-us_image_0000002192567316.png"></span></p>
+</li><li>To obtain the virtual IP address of a CLup cluster, log in to the CLup database management page, choose <strong>HA Cluster</strong> &gt; <strong>HA Management</strong>, and obtain the corresponding <strong>VIP</strong> field.</li></ol>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.03%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span><strong>Nodes</strong></span>/<strong>Cluster Node</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.97%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>Select the host required for deploying the PostgreSQL cluster instance. If the cluster type is <strong>CLup</strong>, the selected node indicates the node where the CLup Agent is located.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.03%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><span><strong>Cluster Type</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.97%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>Available options are <strong>Pgpool</strong>, <strong>Patroni</strong>, and <strong>CLup</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.03%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.1 "><p><strong>CLup Server Nodes</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.97%" headers="mcps1.3.2.2.1.2.1.3.2.2.3.1.2 "><p>This parameter is required when <strong>Cluster Type</strong> is set to <strong>CLup</strong>. This parameter indicates the management node of the CLUP cluster.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Click <span class="uicontrol"><b>OK</b></span>.</li></ol>
+</p></li><li><span>Register the database of a cluster instance.</span><p><ol type="a"><li>On the PostgreSQL page, click the <span class="uicontrol"><b>Instance</b></span> tab.</li><li>Click <span class="uicontrol"><b>Register</b></span>.</li><li>Set <span class="uicontrol"><b><span><strong>Type</strong></span></b></span> to <span class="uicontrol"><b><span><strong>Cluster instance</strong></span></b></span>.</li><li>Configure the database instance and its authentication information.<p><a href="#EN-US_TOPIC_0000002200004601__table12398130131217">Table 2</a> describes related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200004601__table12398130131217"></a><a name="table12398130131217"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200004601__table12398130131217" frame="border" border="1" rules="all"><caption><b>Table 2 </b>PostgreSQL cluster instance registration information</caption><colgroup><col style="width:28.01%"><col style="width:71.99%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="28.01%" id="mcps1.3.2.2.2.2.1.4.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="71.99%" id="mcps1.3.2.2.2.2.1.4.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>Custom username for installing the database.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span><strong>Cluster</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>Select the cluster where the database to be registered resides.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>Name of the OS user who runs the database. The default username is <strong>postgres</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span><strong>Pgpool Port</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>This parameter is not displayed when a Patroni or CLup cluster is selected.</p>
+<p>Port used by the Pgpool service to listen on TCP/IP connections. The default port number is <strong>9999</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span><strong>Database Username</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>Name of the database administrator. Obtain the value from the database administrator.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span><strong>Database Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>Password of the database administrator. Obtain the value from the database administrator.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span><strong>Database Stream Replication Username</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>Username used for database streaming replication. Obtain the value from the database administrator.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="28.01%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.1 "><p><span><strong>Database Stream Replication Password</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="71.99%" headers="mcps1.3.2.2.2.2.1.4.2.2.3.1.2 "><p>User password used for database streaming replication. Obtain the value from the database administrator.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Click <strong>Add</strong>. In the displayed <strong>Add</strong> dialog box, add all nodes of the cluster instance.<p><a href="#EN-US_TOPIC_0000002200004601__en-us_topic_0000001311214069_table241515964115">Table 3</a> describes related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200004601__en-us_topic_0000001311214069_table241515964115"></a><a name="en-us_topic_0000001311214069_table241515964115"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200004601__en-us_topic_0000001311214069_table241515964115" frame="border" border="1" rules="all"><caption><b>Table 3 </b>Node information of a cluster instance</caption><colgroup><col style="width:17.2%"><col style="width:82.8%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="17.2%" id="mcps1.3.2.2.2.2.1.5.4.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="82.8%" id="mcps1.3.2.2.2.2.1.5.4.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="17.2%" headers="mcps1.3.2.2.2.2.1.5.4.2.3.1.1 "><p><span><strong>Hosts</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="82.8%" headers="mcps1.3.2.2.2.2.1.5.4.2.3.1.2 "><p>Host node in the cluster.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="17.2%" headers="mcps1.3.2.2.2.2.1.5.4.2.3.1.1 "><p><span><strong>Database Installation Path</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="82.8%" headers="mcps1.3.2.2.2.2.1.5.4.2.3.1.2 "><p>Installation path of the database to be registered. You can use PuTTY to log in to the PostgreSQL database host and run the <strong>ps -ef | grep postgres</strong> command to query it, as shown in the following figure.</p>
+<p><span><img src="en-us_image_0000002228376781.png"></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="17.2%" headers="mcps1.3.2.2.2.2.1.5.4.2.3.1.1 "><p><strong>Full Path of Patroni Configuration File</strong></p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>This parameter is displayed only in 1.6.0 and later versions.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="82.8%" headers="mcps1.3.2.2.2.2.1.5.4.2.3.1.2 "><p>Path of the configuration file that records the Patroni cluster account, password, and ETCD information, that is, the installation path of the <strong>patroni.yml</strong> file. You can use PuTTY to log in to the PostgreSQL database host and run the <strong>ps -ef | grep patroni</strong> command to query the path, as shown in the following figure.</p>
+<p><span><img src="en-us_image_0000002193220926.png"></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="17.2%" headers="mcps1.3.2.2.2.2.1.5.4.2.3.1.1 "><p><span><strong>Pgpool Installation Path</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="82.8%" headers="mcps1.3.2.2.2.2.1.5.4.2.3.1.2 "><p>Installation path of the Pgpool service. You can use PuTTY to log in to the PostgreSQL database host and run the <strong>ps -ef | grep pgpool</strong> command to query it, as shown in the following figure.</p>
+<p><span><img src="en-us_image_0000002193227046.png"></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="17.2%" headers="mcps1.3.2.2.2.2.1.5.4.2.3.1.1 "><p><span><strong>Service Plane IP Address</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="82.8%" headers="mcps1.3.2.2.2.2.1.5.4.2.3.1.2 "><p>IP address of the host for the database service to receive TCP/IP connections, that is, the IP address of the host registered with the <span>OceanProtect</span>. Obtain it from the database administrator.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="17.2%" headers="mcps1.3.2.2.2.2.1.5.4.2.3.1.1 "><p><span><strong>Database Port</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="82.8%" headers="mcps1.3.2.2.2.2.1.5.4.2.3.1.2 "><p>Port used by the database service to listen on TCP/IP connections. The default port number is <strong>5432</strong>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Select the registered instance name of each cluster member in sequence.</li><li>Click <span class="uicontrol"><b>OK</b></span>.</li></ol>
+</p></li></ol>
+</div>
+<p></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200004613.html">Backing Up PostgreSQL</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

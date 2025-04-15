@@ -24,9 +24,12 @@
             </lv-group>
         </lv-group>
     </div>
-    <section class="content-section-column">
-        <lv-tabs [lvType]="'panel'" [(lvActiveIndex)]="activeId" (lvActiveIndexChange)="checked($event)">
-            <lv-tab *ngFor="let app of subApp; let i = index" [lvTitle]="tabTitle" [lvDropdownLabel]="dropdownTpl"
+    <section class="content-section-column" lv-popover [lvPopoverClosable]="false" [lvPopoverContent]="tabTipContent"
+        lvPopoverPosition="bottomRight" lvPopoverTrigger="customize" lvPopoverClassName="tabPopoverClass"
+        [(lvPopoverVisible)]="tabTipShow" (lvPopoverExternalTrigger)="tabExternalTrigger()">
+        <lv-tabs #appTabs [lvType]="'panel'" [(lvActiveIndex)]="activeId" (lvActiveIndexChange)="checked($event)"
+            [lvTabDropdownContent]="customDropdown">
+            <lv-tab *ngFor="let app of subApp; let i = index" [lvTitle]="tabTitle" [lvDropdownLabel]="app.label"
                 [lvId]="app.id">
                 <ng-template #tabTitle>
                     <div class="tab-header" [ngClass]="{'max-width': subApp.length < 3, 'min-width':subApp.length >= 3}"
@@ -51,19 +54,42 @@
                         <div class="count-label" *ngIf="!['livemount','anti'].includes(routerType)">{{app.count}}</div>
                     </div>
                 </ng-template>
-                <!-- 右侧更多展开 -->
-                <ng-template #dropdownTpl>
-                    <lv-group lvGutter='8px' class="app-more-titile-group">
-                        <div class="app-logo-container" [style.backgroundColor]="app.color">
-                            {{app.prefix}}
-                        </div>
-                        <lv-group>
-                            <span>{{app.label}}</span>
-                            <span>({{app.count}})</span>
-                        </lv-group>
-                    </lv-group>
-                </ng-template>
             </lv-tab>
         </lv-tabs>
     </section>
+    <!-- 右侧更多展开 -->
+    <ng-template #customDropdown let-key let-val="dropdownMenu">
+        <div class="custom-box">
+            <div class="custom-item" *ngFor="let item of val" (click)="moreAppClick(item)"
+                (mouseenter)="hoveredItem = getMoreApp(item)" (mouseleave)="hoveredItem = null">
+                <lv-group lvGutter='4px' class="app-more-titile-group">
+                    <div class="app-logo-container" [style.backgroundColor]="getMoreAppColor(item)">
+                        {{getMoreAppPrefix(item)}}
+                    </div>
+                    <lv-group>
+                        <span class="app-more-label-warp" lv-overflow>
+                            {{item.label}}
+                        </span>
+                        <span class="app-more-count-warp" lv-overflow
+                            *ngIf="!['livemount','anti'].includes(routerType)">
+                            ({{getMoreAppCount(item)}})
+                        </span>
+                    </lv-group>
+                    <i [lv-icon]="backToTopIcon(getMoreApp(item))" class="backToTopIcon"
+                        [lv-tooltip]="toTopIconToolTip(getMoreApp(item))"
+                        (click)="iconBackToTopClicked($event, getMoreApp(item))"></i>
+                </lv-group>
+            </div>
+        </div>
+    </ng-template>
 </div>
+
+<ng-template #tabTipContent>
+    <p [innerHTML]="tabTipMessage" class="aui-gutter-column-md"></p>
+    <lv-group class="tab-popover-group">
+        <p><label lv-checkbox [(ngModel)]='hideNextTip'>{{"common_don't_show_again_label" | i18n}}</label></p>
+        <button lv-button (click)="closeTabTip()" class="close-button">
+            {{'common_close_label' | i18n}}
+        </button>
+    </lv-group>
+</ng-template>

@@ -1,0 +1,119 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="创建文件系统">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="nas_s_0097.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="nas_s_0100">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>创建文件系统</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="nas_s_0100"></a><a name="nas_s_0100"></a>
+  <h1 class="topictitle1">创建文件系统</h1>
+  <div>
+   <p>首次将NAS共享恢复到本机位置时，需要先创建文件系统。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>配置文件系统名称。</span><p></p><p>名称默认以<strong>Restore_</strong>为前缀。</p> <p></p></li>
+     <li><span>配置共享方式。</span><p></p><p>参数说明如<a href="#nas_s_0100__table89615043315">表1</a>所示。</p> <p>您可以同时设置NFS共享和CIFS共享。</p>
+      <div class="tablenoborder">
+       <a name="nas_s_0100__table89615043315"></a><a name="table89615043315"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="nas_s_0100__table89615043315" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>共享方式参数说明
+        </caption>
+        <colgroup>
+         <col style="width:16.439999999999998%">
+         <col style="width:20.72%">
+         <col style="width:62.839999999999996%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.2.2.3.2.4.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.2.2.3.2.4.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" rowspan="2" valign="top" width="16.439999999999998%" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p>NFS</p></td>
+          <td class="cellrowborder" valign="top" width="20.72%" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p><span>共享路径</span></p></td>
+          <td class="cellrowborder" valign="top" width="62.839999999999996%" headers="mcps1.3.2.2.2.2.3.2.4.1.2 "><p>访问文件系统的共享路径，该路径名称与文件系统名称相同，不可修改。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p><span>客户端</span></p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.3.2.4.1.1 ">
+           <div class="p">
+            访问文件系统的客户端信息。
+            <ul id="nas_s_0100__nas_s_0066_ul10853114216166">
+             <li id="nas_s_0100__nas_s_0066_li141781311161"><span style="color:#282B33;">支持输入共享客户端IP地址、共享客户端IP地址段或使用“*”表示全部共享客户端IP地址。</span></li>
+             <li id="nas_s_0100__nas_s_0066_li717813151615"><span style="color:#282B33;">IP地址支持IPv4、IPv6地址或者两者的混合IP地址。</span></li>
+             <li id="nas_s_0100__nas_s_0066_li2178531151612"><span style="color:#282B33;">您可以同时输入多个IP地址或IP地址段，以英文分号、空格或回车键隔开。示例：192.168.0.10;192.168.0.0/24;*。</span></li>
+            </ul>
+           </div></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" rowspan="3" valign="top" width="16.439999999999998%" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p>CIFS</p></td>
+          <td class="cellrowborder" valign="top" width="20.72%" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p><span>共享名称</span></p></td>
+          <td class="cellrowborder" valign="top" width="62.839999999999996%" headers="mcps1.3.2.2.2.2.3.2.4.1.2 "><p>访问文件系统的共享名称。</p> <p>默认共享名称为Restore_<em>时间戳</em>，您可以修改。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p><span>类型</span></p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p>访问CIFS共享的用户类型。</p>
+           <ul id="nas_s_0100__ul35301947103614">
+            <li id="nas_s_0100__li115301547103614"><span id="nas_s_0100__text11836124163210">Everyone</span></li>
+            <li id="nas_s_0100__li1853094715369"><span id="nas_s_0100__text12625493210">Windows本地认证用户</span></li>
+            <li id="nas_s_0100__li58994343227"><span id="nas_s_0100__text1018841611228">Windows本地认证用户组</span></li>
+           </ul></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p><span>用户</span></p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.2.2.3.2.4.1.1 "><p>访问CIFS共享的用户名。</p> <p id="nas_s_0100__p862510421222">当“<span id="nas_s_0100__text66251842152215">类型</span>”为“<span id="nas_s_0100__text1862524232215">Windows本地认证用户</span>”或“<span id="nas_s_0100__text462474214224">Windows本地认证用户组</span>”时，需要配置该参数。</p> <p id="nas_s_0100__p7841427394">如果您需要的用户/用户组不存在，请进入DeviceManager界面创建。登录DeviceManager界面的操作请参见<a href="nas_s_dm.html">登录DeviceManager管理界面</a>。</p>
+           <ul>
+            <li>对于本产品，请执行以下操作：
+             <ol type="a">
+              <li>在导航栏选择“服务 &gt; 文件服务 &gt; 认证用户 &gt; Windows用户”，在“本地认证用户”或“本地认证用户组”页签中创建用户或用户组。</li>
+             </ol></li>
+           </ul></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li><span>单击“<span>确定</span>”。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="nas_s_0097.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

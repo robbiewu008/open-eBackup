@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   Component,
@@ -35,9 +35,8 @@ import {
   TableData
 } from 'app/shared/components/pro-table';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
-import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
-import { DetectionRepicasListComponent } from '../../resource-statistic/detection-repicas-list/detection-repicas-list.component';
 import { assign, isEmpty, isUndefined, size, trim } from 'lodash';
+import { DetectionRepicasListComponent } from '../../resource-statistic/detection-repicas-list/detection-repicas-list.component';
 
 @Component({
   selector: 'aui-base-detection-table',
@@ -83,7 +82,15 @@ export class BaseDetectionTableComponent implements OnInit, AfterViewInit {
     };
 
     if (!isEmpty(filters.conditions)) {
+      const conditionsTemp = JSON.parse(filters.conditions);
+      if (isUndefined(conditionsTemp.name)) {
+        this.name = '';
+      } else {
+        this.name = conditionsTemp.name;
+      }
       assign(params, { conditions: filters.conditions });
+    } else {
+      this.name = '';
     }
 
     if (!!size(filters.sort)) {
@@ -173,6 +180,7 @@ export class BaseDetectionTableComponent implements OnInit, AfterViewInit {
     ];
 
     this.tableConfig = {
+      filterTags: true,
       table: {
         autoPolling: CommonConsts.TIME_INTERVAL,
         compareWith: 'resource_id',
@@ -280,18 +288,11 @@ export class BaseDetectionTableComponent implements OnInit, AfterViewInit {
   }
 
   search(value) {
-    assign(this.dataTable.filterMap, {
-      filters: trim(value)
-        ? [
-            {
-              filterMode: 'contains',
-              caseSensitive: false,
-              key: 'name',
-              value: [trim(value)]
-            }
-          ]
-        : []
+    this.dataTable.filterChange({
+      filterMode: 'contains',
+      caseSensitive: false,
+      key: 'name',
+      value: [trim(value)]
     });
-    this.dataTable.fetchData();
   }
 }

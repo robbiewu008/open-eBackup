@@ -1,0 +1,69 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤1：检查并安装VMware Tools">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="vmware_gud_0018.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="vmware_gud_0019">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤1：检查并安装VMware Tools</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="vmware_gud_0019"></a><a name="vmware_gud_0019"></a>
+  <h1 class="topictitle1">步骤1：检查并安装VMware Tools</h1>
+  <div>
+   <p id="vmware_gud_0019__zh-cn_topic_0000001656861689_p9906477612">执行应用一致性备份时，需要在受保护虚拟机或目标虚拟机安装VMware Tools。以下以vSphere Client 8.0版本为例进行说明。</p>
+   <div class="section" id="vmware_gud_0019__zh-cn_topic_0000001656861689_section207951333741">
+    <h4 class="sectiontitle">背景信息</h4>
+    <p id="vmware_gud_0019__zh-cn_topic_0000001656861689_p1933383516410">当存在以下场景时需要为VMware虚拟机安装VMware Tools：</p>
+   </div>
+   <ul id="vmware_gud_0019__zh-cn_topic_0000001656861689_ul174487351031">
+    <li id="vmware_gud_0019__zh-cn_topic_0000001656861689_li24541939933">如果需要执行应用一致性备份，那么要为受保护的VMware虚拟机安装VMware Tools。</li>
+   </ul>
+   <div class="section" id="vmware_gud_0019__zh-cn_topic_0000001656861689_section116317914548">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="vmware_gud_0019__zh-cn_topic_0000001656861689_ol116538545515">
+     <li id="vmware_gud_0019__zh-cn_topic_0000001656861689_li2024144995218"><span>使用浏览器，登录vCenter Server或ESXi。</span><p></p><p id="vmware_gud_0019__zh-cn_topic_0000001656861689_p14208857125212">登录地址：<strong id="vmware_gud_0019__zh-cn_topic_0000001656861689_b3208205755214">https://</strong><em id="vmware_gud_0019__zh-cn_topic_0000001656861689_i1750152611591">vCenter Server或ESXi的管理IP地址</em></p> <p></p></li>
+     <li id="vmware_gud_0019__zh-cn_topic_0000001656861689_li1684173195916"><span>展开左侧导航栏，查看所有已创建的虚拟机。</span></li>
+     <li id="vmware_gud_0019__zh-cn_topic_0000001656861689_li1616715451540"><span>在虚拟机列表中，找到需要执行应用一致性备份的虚拟机，单击该虚拟机的名称。</span></li>
+     <li id="vmware_gud_0019__zh-cn_topic_0000001656861689_li4536165031019"><span>在虚拟机详情页面，查看是否已安装10.2及以上版本的VMware Tools。<span id="vmware_gud_0019__zh-cn_topic_0000001656861689_ph1853719421136">如果未安装或为10.2之前的版本，请参考<a href="https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/tools/12-5-0/vmware-tools-administration-12-5-0/introduction-to-vmware-tools.html" target="_blank" rel="noopener noreferrer">VMware Tools文档</a>安装或升级VMware Tools。</span></span><p></p>
+      <ul id="vmware_gud_0019__zh-cn_topic_0000001656861689_ul39551712172819">
+       <li id="vmware_gud_0019__zh-cn_topic_0000001656861689_li43772045172816">如果登录vCenter Server，请在“虚拟机详细信息”区域中查看。</li>
+       <li id="vmware_gud_0019__zh-cn_topic_0000001656861689_li13955191292815">如果登录ESXi，请在“一般信息”区域中查看。</li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="vmware_gud_0018.html">备份VMware虚拟机</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

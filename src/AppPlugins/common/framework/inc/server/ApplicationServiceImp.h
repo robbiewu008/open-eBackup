@@ -78,6 +78,18 @@ public:
         AppProtect::ResourceResultByPage& page, const AppProtect::ListResourceRequest& request) override;
     /**
     * Function description
+    *     query application information
+    * Parameters
+    *     request : ListResourceRequest struct （can be find in thrift file）
+    * Return value
+    *     returnValue return value
+    *
+    * @param request
+    */
+    EXTER_ATTACK void AsyncListApplicationResource(
+        ActionResult& returnValue, const AppProtect::ListResourceRequest& request);
+    /**
+    * Function description
     *     query host cluster information
     * Parameters
     *     appEnv : application environment information which is cluster member
@@ -146,6 +158,9 @@ public:
     */
     EXTER_ATTACK virtual void RemoveProtect(ActionResult& returnValue,
         const ApplicationEnvironment& appEnv, const Application& application) override;
+
+    EXTER_ATTACK virtual void FinalizeClear(ActionResult& _return, const AppProtect::ApplicationEnvironment& appEnv,
+        const AppProtect::Application& application, const std::map<std::string, std::string>& extendInfo) override;
 };
 
 #endif // _APPLICATION_SERVICE_IMP_H_

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   Input,
@@ -55,6 +55,7 @@ import {
   includes,
   isEmpty,
   isFunction,
+  isNil,
   isNumber,
   isUndefined,
   last,
@@ -75,19 +76,21 @@ import {
 export class RegisterClusterComponent implements OnInit {
   @Input() data;
   formGroup: FormGroup;
-  clusterAuthType = DataMap.HDFS_Clusters_Auth_Type;
+  clusterAuthType = DataMap.ElasticSearch_Clusters_Auth_Type;
   isTest = false;
   enableBtn = false;
   testLoading = false;
   okLoading = false;
   selectFile;
   fileFilters = [];
-
+  certificationTips = this.i18n.get(
+    'protection_es_kerberos_certificate_tips_label'
+  );
   kerberosOptions = [];
   proxyHostOptions = [];
 
   authOptions = this.dataMapService
-    .toArray('HDFS_Clusters_Auth_Type')
+    .toArray('ElasticSearch_Clusters_Auth_Type')
     .map(item => {
       item['isLeaf'] = true;
       return item;
@@ -153,10 +156,10 @@ export class RegisterClusterComponent implements OnInit {
     this.enableBtn = !this.formGroup.invalid;
 
     if (
-      (this.formGroup.value.loginMode === this.clusterAuthType.system.value &&
+      (this.formGroup.value.loginMode === this.clusterAuthType.xpack.value &&
         !!this.formGroup.value.username &&
         !this.formGroup.value.password) ||
-      (this.formGroup.value.loginMode === this.clusterAuthType.system.value &&
+      (this.formGroup.value.loginMode === this.clusterAuthType.xpack.value &&
         !this.formGroup.value.username &&
         !!this.formGroup.value.password)
     ) {
@@ -211,7 +214,13 @@ export class RegisterClusterComponent implements OnInit {
       if (res === '') {
         return;
       }
-      if (res === DataMap.HDFS_Clusters_Auth_Type.system.value) {
+      // 统一清除校验
+      this.formGroup.get('username').clearValidators();
+      this.formGroup.get('password').clearValidators();
+      if (res === this.clusterAuthType.xpack.value) {
+        this.certificationTips = this.i18n.get(
+          'protection_es_xpack_certificate_tips_label'
+        );
         this.formGroup
           .get('username')
           .setValidators([
@@ -222,12 +231,13 @@ export class RegisterClusterComponent implements OnInit {
           .get('password')
           .setValidators([this.baseUtilService.VALID.maxLength(64)]);
         this.formGroup.get('kerberosId').clearValidators();
-      } else {
+      } else if (res === this.clusterAuthType.kerberos.value) {
+        this.certificationTips = this.i18n.get(
+          'protection_es_kerberos_certificate_tips_label'
+        );
         this.formGroup
           .get('kerberosId')
           .setValidators([this.baseUtilService.VALID.required()]);
-        this.formGroup.get('username').clearValidators();
-        this.formGroup.get('password').clearValidators();
       }
       this.formGroup.get('username').markAsTouched();
       this.formGroup.get('username').updateValueAndValidity();
@@ -243,7 +253,9 @@ export class RegisterClusterComponent implements OnInit {
         serverLink: this.data.extendInfo?.ElasticSearchAddress,
         loginMode: this.data.auth.authType,
         kerberosId: this.data.extendInfo?.kerberosId,
-        username: this.data.auth.authKey.split('@')[0],
+        username: isNil(this.data.auth.authKey)
+          ? this.data.auth.authKey
+          : this.data.auth.authKey.split('@')[0],
         agents: this.data.extendInfo?.agents.split(';'),
         pathUser: this.data.extendInfo?.ElasticSearchUser,
         pathAttr: this.data.extendInfo?.ElasticSearchGroup,
@@ -446,8 +458,16 @@ export class RegisterClusterComponent implements OnInit {
     if (size(this.selectFile)) {
       set(params, 'extendInfo.certificate', this.selectFile);
     }
+    if (
+      !size(this.selectFile) &&
+      !!this.data.uuid &&
+      this.formGroup.value.loginMode === this.clusterAuthType.xpack.value
+    ) {
+      // 没有证书，修改场景，默认塞空字符串
+      set(params, 'extendInfo.certificate', '');
+    }
 
-    if (this.formGroup.value.loginMode === this.clusterAuthType.system.value) {
+    if (this.formGroup.value.loginMode === this.clusterAuthType.xpack.value) {
       delete params.extendInfo.kerberosId;
       if (this.formGroup.value.username && this.formGroup.value.password) {
         set(params, 'auth.authKey', this.formGroup.value.username);

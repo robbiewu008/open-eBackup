@@ -21,7 +21,7 @@
         </lv-form-control>
     </lv-form-item>
     <h2 class="mgt-50 aui-gutter-column-lg">{{'explore_detection_policy_config_label' | i18n}}</h2>
-    <lv-tabs formArrayName="backupTeams" [lvType]="'card'" [lvTabBarExtraContent]="extraTpl" lvClosable
+    <lv-tabs  formArrayName="backupTeams" [lvType]="'underline'" [lvTabBarExtraContent]="extraTpl" lvClosable
         [(lvActiveIndex)]="activeIndex" (lvTabRemove)="removeBackupTeam($event)">
         <lv-tab *ngFor="let item of formGroup.get('backupTeams')?.controls; let teamIndex = index"
             [formGroupName]="teamIndex"
@@ -46,7 +46,7 @@
                             lvColorState='true'></i>
                     </lv-form-label>
                     <lv-form-control>
-                        <lv-switch formControlName="is_backup_detect_enable"></lv-switch>
+                        <lv-switch formControlName="is_backup_detect_enable" class="aui-gutter-column-md"></lv-switch>
                         <!-- 敏感度调节 -->
                         <ng-container *ngIf="item.get('is_backup_detect_enable').value">
                             <aui-detect-upper-bound [formGroup]="item"></aui-detect-upper-bound>
@@ -70,26 +70,28 @@
             </ng-container>
             <h3 class="aui-gutter-column-md mgt-30">{{'explore_ransomware_detection_snapshot_label' | i18n}}</h3>
             <div class="policy-container">
-                <lv-radio-group formControlName="trigger_action" [lvGroupName]="'group'" class="mgl-24">
-                    <lv-group [lvGutter]="'24px'">
-                        <lv-radio [lvValue]="triggerType.year">
-                            {{'common_by_year_label' | i18n}}
-                        </lv-radio>
-                        <lv-radio [lvValue]="triggerType.month">
-                            {{'common_by_month_label' | i18n}}
-                        </lv-radio>
-                        <lv-radio [lvValue]="triggerType.week">
-                            {{'common_by_week_label' | i18n}}
-                        </lv-radio>
-                        <lv-radio [lvValue]="triggerType.day">
-                            {{'common_by_day_label' | i18n}}
-                        </lv-radio>
-                        <lv-radio [lvValue]="triggerType.hour">
-                            {{'common_by_hour_label' | i18n}}
-                        </lv-radio>
-                    </lv-group>
-                </lv-radio-group>
-                <div class="date-container mgt-10">
+                <div class="policy-action-container">
+                    <lv-radio-group formControlName="trigger_action" [lvGroupName]="'group'" class="mgl-16">
+                        <lv-group [lvGutter]="'24px'">
+                            <lv-radio [lvValue]="triggerType.year">
+                                {{'common_by_year_label' | i18n}}
+                            </lv-radio>
+                            <lv-radio [lvValue]="triggerType.month">
+                                {{'common_by_month_label' | i18n}}
+                            </lv-radio>
+                            <lv-radio [lvValue]="triggerType.week">
+                                {{'common_by_week_label' | i18n}}
+                            </lv-radio>
+                            <lv-radio [lvValue]="triggerType.day">
+                                {{'common_by_day_label' | i18n}}
+                            </lv-radio>
+                            <lv-radio [lvValue]="triggerType.hour">
+                                {{'common_by_hour_label' | i18n}}
+                            </lv-radio>
+                        </lv-group>
+                    </lv-radio-group>
+                </div>
+                <div class="date-container">
                     <lv-group class="aui-gutter-column-lg">
                         <!-- 按小时/天 -->
                         <ng-container
@@ -106,7 +108,7 @@
                             <lv-group>
                                 <lv-form-label>{{'common_every_label' | i18n}}</lv-form-label>
                                 <lv-form-control [lvErrorTip]="intervalErrorTip" class="groupInControl">
-                                    <lv-group class="lv-group-flex-start">
+                                    <lv-group class="lv-group-flex-center">
                                         <input lv-input type="text" formControlName="interval" class="interval"
                                             placeholder="{{item.get('trigger_action').value === triggerType.day ? '1~365' : '1~23'}}" />
                                         <lv-form-label>
@@ -137,7 +139,7 @@
                         <ng-container *ngIf="item.get('trigger_action').value === triggerType.month">
                             <lv-group>
                                 <lv-form-label>{{'common_every_month_label' | i18n}}</lv-form-label>
-                                <lv-group lvGutter="8px" class="lv-group-flex-start">
+                                <lv-group lvGutter="8px" class="lv-group-flex-center">
                                     <lv-select [lvOptions]="daysOfMonthOptions" formControlName="days_of_month_type"
                                         lvValueKey="value" class="day-of-month-type"></lv-select>
                                     <ng-container
@@ -149,9 +151,9 @@
                                                 readonly="readonly" lvPopoverPosition="bottom" lvPopoverTrigger="click"
                                                 lvPopoverShowArrow="false" lvPopoverBackdrop="true"
                                                 lvPopoverMaskTransparent="true" lvPopoverClassName="customer-popover"
-                                                lvDisabled>
-                                                <input lv-input formControlName="days_of_month"
-                                                    placeholder="{{'protection_select_date_label'|i18n}}" />
+                                                lvDisabled class="custom-input-group">
+                                                <input lv-input formControlName="days_of_month" lv-overflow
+                                                    placeholder="{{'protection_select_date_label'|i18n}}" class="input-width"/>
                                             </lv-input-group>
                                         </lv-form-control>
                                         <ng-template #suffixTpl>
@@ -203,7 +205,7 @@
                         <lv-group>
                             <lv-form-label>{{'explore_snapshot_retention_label' | i18n}}</lv-form-label>
                             <lv-form-control [lvErrorTip]="retentionErrorTip" class="groupInControl">
-                                <lv-group lvGutter="8px" class="lv-group-flex-start">
+                                <lv-group lvGutter="8px" class="lv-group-flex-center">
                                     <input lv-input formControlName="retention_duration" type="text"
                                         placeholder="{{item.get('duration_unit').value=='d'?'1~365':item.get('duration_unit').value=='w'?'1~54':item.get('duration_unit').value=='MO'?'1~24':item.get('duration_unit').value=='p' ? '':'1~10'}}"
                                         class="retention" />
@@ -215,7 +217,7 @@
                         </lv-group>
                     </lv-group>
                     <!-- 备份时间段 -->
-                    <lv-group class="lv-group-flex-start">
+                    <lv-group class="lv-group-flex-center">
                         <lv-form-label>{{'common_from_label' | i18n}}</lv-form-label>
                         <lv-form-control [lvErrorTip]="windowStartTimeErrorTip">
                             <lv-time-picker formControlName="window_start" lvPlaceholder="HH:mm:ss" class="start-time">
@@ -232,9 +234,9 @@
             </div>
         </lv-tab>
     </lv-tabs>
-    <div class="dashed-line aui-gutter-column-lg mgt-30"></div>
+    <div class="aui-gutter-column-lg"></div>
     <!-- 高级配置 -->
-    <lv-collapse [lvType]="'simple'">
+    <lv-collapse [lvType]="'simple'" class="mgt-24">
         <lv-collapse-panel [lvTitle]="'common_advanced_label'|i18n" [lvExpanded]="false">
             <lv-form-item>
                 <lv-form-label>
@@ -258,9 +260,9 @@
                                 {{'common_retry_times_label' | i18n}}
                             </lv-form-label>
                             <lv-form-control [lvErrorTip]="retryTimesErrorTip" class="groupInControl">
-                                <lv-group lvGutter='8px' class="lv-group-flex-start">
+                                <lv-group lvGutter='8px' class="lv-group-flex-center">
                                     <lv-group>
-                                        <input lv-input formControlName="auto_retry_times" type="text" lvSize="small"
+                                        <input lv-input formControlName="auto_retry_times" type="text"
                                             placeholder="1~5" class="backup-for-text" />
                                     </lv-group>
                                     <lv-group>
@@ -276,10 +278,10 @@
                                 {{'common_waiting_time_label' | i18n}}
                             </lv-form-label>
                             <lv-form-control [lvErrorTip]="waitTimesErrorTip" class="groupInControl">
-                                <lv-group lvGutter='8px' class="lv-group-flex-start">
+                                <lv-group lvGutter='8px' class="lv-group-flex-center">
                                     <lv-group>
                                         <input lv-input formControlName="auto_retry_wait_minutes" type="text"
-                                            lvSize="small" placeholder="1~30" class="backup-for-text" />
+                                            placeholder="1~30" class="backup-for-text" />
                                     </lv-group>
                                     <lv-group>
                                         <span class="configform-constraint">

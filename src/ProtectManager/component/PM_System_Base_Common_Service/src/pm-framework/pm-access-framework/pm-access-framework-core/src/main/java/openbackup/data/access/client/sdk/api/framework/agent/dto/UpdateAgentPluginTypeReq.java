@@ -51,4 +51,9 @@ public class UpdateAgentPluginTypeReq {
      * 安装包大小(kb)
      */
     private long newPackageSize;
+
+    /**
+     * 安装命令
+     */
+    private String packageType;
 }

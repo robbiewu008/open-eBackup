@@ -72,6 +72,14 @@
   <span lv-overflow> {{item.sapHanaDbDeployType | textMap:'saphanaDatabaseDeployType'}}</span>
 </ng-template>
 
+<ng-template #tpopsVersionTpl let-item>
+  <span lv-overflow> {{item.extendInfo?.tpopsVersion | nil}}</span>
+</ng-template>
+
+<ng-template #directoryTpl let-item>
+  <span lv-overflow> {{item.extendInfo?.directory | nil}}</span>
+</ng-template>
+
 <ng-template #resourceTagTpl let-item>
   <ng-container *ngIf="item?.labelList?.length; else emptyTpl">
     <lv-tag [ngModel]="item?.showLabelList" [lv-tooltip]="TagTpl"></lv-tag>
@@ -79,6 +87,14 @@
       <lv-tag [ngModel]="item?.hoverLabelList"></lv-tag>
     </ng-template>
   </ng-container>
+</ng-template>
+
+<ng-template #specialVersionTpl let-item>
+ <span lv-overflow>
+     {{item?.mysql_version | nil}}
+     <i *ngIf="!!item?.incompatibleVersion" lv-icon="aui-icon-help" lv-tooltip="{{'protection_tdsql_mysql_version_incompatible_version_label' | i18n}}"
+        lvTooltipTheme="light" class="configform-constraint lv-operation-menu-text-icon" lvColorState='true'></i>
+ </span>
 </ng-template>
 
 <ng-template #emptyTpl>

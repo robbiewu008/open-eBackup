@@ -64,8 +64,6 @@ private:
     std::shared_ptr<Module::JobScheduler> m_jsPtr;
     std::shared_ptr<ArchiveRestoreAdvanceParams> m_srcAdvParams;
     std::shared_ptr<HostBackupAdvanceParams> m_dstAdvParams;
-    std::atomic<uint64_t> m_readTaskProduce { 0 };
-    std::atomic<uint64_t> m_readTaskConsume { 0 };
 
     ArchiveServiceParams m_params; // params used in ArchiveServiceTask
     std::shared_ptr<ArchiveClientBase> m_archiveClient { nullptr };

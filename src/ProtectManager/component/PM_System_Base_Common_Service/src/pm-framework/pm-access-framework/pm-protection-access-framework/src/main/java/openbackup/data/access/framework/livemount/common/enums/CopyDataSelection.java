@@ -12,11 +12,11 @@
 */
 package openbackup.data.access.framework.livemount.common.enums;
 
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.exception.LegoCheckedException;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.exception.LegoCheckedException;
 
 /**
  * 副本选择策略枚举定义

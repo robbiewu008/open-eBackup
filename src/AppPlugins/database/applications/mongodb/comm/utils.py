@@ -23,7 +23,7 @@ from json import JSONDecodeError
 import pwd
 
 from common.common import check_command_injection, retry_when_exception, \
-    read_tmp_json_file, output_execution_result, execute_cmd, output_execution_result_ex
+    read_tmp_json_file, execute_cmd
 from common.const import RpcToolInterface, SysData, RpcParamKey, CMDResult
 from common.util.exec_utils import exec_overwrite_file, su_exec_rm_cmd
 from mongodb.comm.const import MongoRoles, ParamField
@@ -103,7 +103,6 @@ def expansion(list_value):
 
 
 def rpc_tool_with_lock(job_id, interface, report_info):
-
     timestamp = time.time()
     unique_id = f"{job_id}_{timestamp}"
     input_file_path = os.path.join(RpcParamKey.PARAM_FILE_PATH, RpcParamKey.INPUT_FILE_PREFFIX + unique_id)

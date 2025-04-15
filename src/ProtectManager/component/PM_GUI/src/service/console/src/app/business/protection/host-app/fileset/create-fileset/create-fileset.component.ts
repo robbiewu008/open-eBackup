@@ -1,16 +1,22 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -22,9 +28,9 @@ import {
   BaseUtilService,
   CommonConsts,
   DataMapService,
+  getMultiHostOps,
   I18NService,
-  MultiCluster,
-  getMultiHostOps
+  MultiCluster
 } from 'app/shared';
 import {
   EnvironmentsService,
@@ -39,16 +45,18 @@ import {
   RestoreFileType
 } from 'app/shared/consts';
 import {
-  USER_GUIDE_CACHE_DATA,
-  cacheGuideResource
+  cacheGuideResource,
+  USER_GUIDE_CACHE_DATA
 } from 'app/shared/consts/guide-config';
 import {
   assign,
   cloneDeep,
+  defer,
   each,
   endsWith,
   filter,
   find,
+  get,
   includes,
   isArray,
   isEmpty,
@@ -56,12 +64,12 @@ import {
   map,
   omit,
   reject,
+  set,
   size,
   startsWith,
-  union,
-  unionBy,
   trim,
-  set
+  union,
+  unionBy
 } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
 
@@ -92,8 +100,19 @@ export class CreateFilesetComponent implements OnInit {
   dataMap = DataMap;
   selectHost;
   treeLabel;
-  @ViewChild('page', { static: false }) page;
+  systemFile = [
+    '/boot',
+    '/etc',
+    '/root',
+    '/var',
+    '/usr',
+    '/bin',
+    '/sbin',
+    '/lib',
+    '/lib64'
+  ];
 
+  @ViewChild('page', { static: false }) page;
   @ViewChild('resourceFilter', { static: false }) filterComponent;
   @ViewChild(TreeComponent, { static: false }) lvTree: TreeComponent;
   @ViewChild('namePopover', { static: false }) namePopover;
@@ -101,6 +120,7 @@ export class CreateFilesetComponent implements OnInit {
   constructor(
     public i18n: I18NService,
     public fb: FormBuilder,
+    private cdr: ChangeDetectorRef,
     private messageService: MessageService,
     public baseUtilService: BaseUtilService,
     public hostApiService: HostService,
@@ -120,7 +140,12 @@ export class CreateFilesetComponent implements OnInit {
           : '',
         Validators.required
       ),
-      name: new FormControl(this.rowItem ? this.rowItem.name : '')
+      name: new FormControl(this.rowItem ? this.rowItem.name : ''),
+      is_OS_backup: new FormControl(
+        this.rowItem
+          ? get(this.rowItem.extendInfo, 'is_OS_backup', 'false') === 'true'
+          : false
+      )
     });
     if (this.sub_type === DataMap.Resource_Type.fileset.value) {
       this.formGroup
@@ -137,6 +162,9 @@ export class CreateFilesetComponent implements OnInit {
         invalidName: this.i18n.get('protection_fileset_name_vaild_label'),
         invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [256])
       };
+      this.formGroup.get('is_OS_backup').valueChanges.subscribe(res => {
+        this.dealOsBackup(res);
+      });
     } else {
       this.formGroup
         .get('name')
@@ -155,10 +183,60 @@ export class CreateFilesetComponent implements OnInit {
       );
       this.selectionPath = map(this.copyRowItemPaths, value => {
         return {
-          path: value
+          path: value,
+          disabled: !!find(this.systemFile, val => startsWith(value, val))
         };
       });
     }
+  }
+
+  private dealOsBackup(res: any) {
+    if (!isEmpty(this.filesData)) {
+      defer(() => {
+        this.setSystemFileDisabled(this.filesData, res);
+      });
+    }
+    defer(() => this.validPath());
+  }
+
+  setSystemFileDisabled(data, state, parentDisabled = false) {
+    // 操作系统打开或关闭后设置操作系统目录和文件的置灰和已选状态
+    each(data, item => {
+      // 打开开关后如果是父亲置灰或者路径在操作系统目录路径下就置灰并且选中
+      // 下面有逻辑去取消已选父下面的已选子
+      if (
+        (includes(this.systemFile, item?.extendInfo?.path) || parentDisabled) &&
+        state &&
+        !item?.isMoreBtn
+      ) {
+        item.disabled = true;
+        if (
+          !find(
+            this.fileSelection,
+            val => val?.extendInfo?.path === item?.extendInfo?.path
+          )
+        ) {
+          this.fileSelection.push(item);
+        }
+      }
+
+      // 取消的时候如果原本是置灰的，就去去掉
+      if (!state && item.disabled && !item?.isMoreBtn) {
+        this.fileSelection = filter(
+          this.fileSelection,
+          val => val?.extendInfo?.path !== item?.extendInfo?.path
+        );
+        item.disabled = item.pathDisabled;
+      }
+
+      // 有子级就往下传递这个置灰逻辑
+      if (!isEmpty(item?.children)) {
+        this.setSystemFileDisabled(item.children, state, item.disabled);
+      }
+    });
+    this.selectionChange();
+    this.filesData = [...this.filesData];
+    this.cdr.detectChanges();
   }
 
   selectionChange() {
@@ -174,13 +252,15 @@ export class CreateFilesetComponent implements OnInit {
     if (this.rowItem) {
       const paths = this.getPath(this.fileSelection);
       this.fileValid$.next(
-        size(union(paths, this.copyRowItemPaths)) > 0 &&
+        (size(union(paths, this.copyRowItemPaths)) > 0 ||
+          this.formGroup.get('is_OS_backup').value) &&
           size(union(paths, this.copyRowItemPaths)) <=
             (this.sub_type === DataMap.Resource_Type.HDFS.value ? 256 : 64)
       );
     } else {
       this.fileValid$.next(
-        size(this.fileSelection) > 0 &&
+        (size(this.fileSelection) > 0 ||
+          this.formGroup.get('is_OS_backup').value) &&
           size(this.getPath(this.fileSelection)) <=
             (this.sub_type === DataMap.Resource_Type.HDFS.value ? 256 : 64)
       );
@@ -192,9 +272,19 @@ export class CreateFilesetComponent implements OnInit {
     if (this.rowItem) {
       paths = union(paths, this.copyRowItemPaths);
     }
+    // 只要根节点没被选而且开启了操作系统备份，就得加上操作系统目录
+    if (
+      this.formGroup.get('is_OS_backup').value &&
+      !find(paths, item => item === '/')
+    ) {
+      paths = union(paths, this.systemFile);
+    }
     this.selectionPath = map(paths, value => {
       return {
-        path: value
+        path: value,
+        disabled:
+          !!find(this.systemFile, val => val === value) &&
+          this.formGroup.get('is_OS_backup').value
       };
     });
   }
@@ -213,9 +303,11 @@ export class CreateFilesetComponent implements OnInit {
     // 移除子节点
     if (currentNode && !isEmpty(currentNode.children)) {
       this.fileSelection = reject(this.fileSelection, v => {
-        return includes(
-          map(currentNode.children, 'extendInfo.path'),
-          v.extendInfo?.path
+        return (
+          includes(
+            map(currentNode.children, 'extendInfo.path'),
+            v.extendInfo?.path
+          ) && !v?.disabled
         );
       });
     }
@@ -227,6 +319,10 @@ export class CreateFilesetComponent implements OnInit {
     if (this.rowItem) {
       this.setNodeIndeterminate(this.filesData);
       this.filesData = [...this.filesData];
+    }
+    // 如果手动删除右侧的根节点选中则需要触发一次系统目录的加入
+    if (this.formGroup.get('is_OS_backup').value) {
+      this.getSelectionPath();
     }
     this.validPath();
     if (
@@ -293,6 +389,7 @@ export class CreateFilesetComponent implements OnInit {
           this.setNodeIndeterminate(element.children);
         }
       });
+      this.cdr.detectChanges();
     }
   }
 
@@ -325,9 +422,8 @@ export class CreateFilesetComponent implements OnInit {
     array.push({
       key: item.uuid,
       value: item.uuid,
-      label: !isEmpty(item.environment?.endpoint)
-        ? `${item.environment?.name}(${item.environment?.endpoint})`
-        : item.environment?.name,
+      label: `${item.environment?.name}(${item.environment?.extendInfo
+        ?.subNetFixedIp || item.environment?.endpoint})`,
       os_type: item.environment?.osType,
       parentUuid: item.parentUuid,
       isLeaf: true
@@ -340,7 +436,9 @@ export class CreateFilesetComponent implements OnInit {
     if (this.rowItem) {
       this.filesData = [
         {
-          label: `${this.rowItem.environment?.name}(${this.rowItem.environment?.endpoint})`,
+          label: `${this.rowItem.environment?.name}(${this.rowItem.environment
+            ?.extendInfo?.subNetFixedIp ||
+            this.rowItem.environment?.endpoint})`,
           uuid: this.rowItem.environment?.uuid,
           contentToggleIcon: 'aui-icon-host',
           children: [],
@@ -398,9 +496,8 @@ export class CreateFilesetComponent implements OnInit {
             hostArr.push({
               key: item.uuid,
               value: item.uuid,
-              label: !isEmpty(item.environment?.endpoint)
-                ? `${item.environment?.name}(${item.environment?.endpoint})`
-                : item.environment?.name,
+              label: `${item.environment?.name}(${item.environment?.extendInfo
+                ?.subNetFixedIp || item.environment?.endpoint})`,
               os_type: item.environment?.osType,
               parentUuid: item.parentUuid,
               installPath: trim(item.environment?.extendInfo?.install_path),
@@ -521,6 +618,9 @@ export class CreateFilesetComponent implements OnInit {
         })
       );
       this.osType = this.selectHost?.os_type;
+      if (this.osType !== DataMap.Os_Type.linux.value) {
+        this.formGroup.get('is_OS_backup').setValue(false);
+      }
     }
     this.getFiles();
   }
@@ -598,7 +698,8 @@ export class CreateFilesetComponent implements OnInit {
           } else {
             diablePath = selectHostPath + '/DataBackup';
           }
-          item.disabled = startsWith(item?.extendInfo?.path, diablePath);
+          item.pathDisabled = startsWith(item?.extendInfo?.path, diablePath);
+          item.disabled = item.pathDisabled || node.disabled;
 
           if (
             !isEmpty(this.rowItem) &&
@@ -649,6 +750,11 @@ export class CreateFilesetComponent implements OnInit {
           this.fileSelection = [...this.fileSelection, ...res.records];
         }
         this.fileSelection = [...this.fileSelection];
+        // 获取数据时触发一次操作系统备份的置灰逻辑
+        this.setSystemFileDisabled(
+          this.filesData,
+          this.formGroup.get('is_OS_backup').value
+        );
       });
   }
 
@@ -828,7 +934,14 @@ export class CreateFilesetComponent implements OnInit {
 
   createFileset(): Observable<void> {
     return new Observable<void>((observer: Observer<void>) => {
-      const paths = this.getPath(this.fileSelection);
+      let paths = this.getPath(this.fileSelection);
+      if (
+        isEmpty(this.fileSelection) &&
+        this.formGroup.get('is_OS_backup').value
+      ) {
+        // 如果不开选择能下发就说明是开了操作系统备份或者是修改，直接把操作系统目录加进去
+        paths = cloneDeep(this.systemFile);
+      }
       this.filterComponent.collectParams();
       const CreateResourceRequestBody = {
         name: this.formGroup.value.name,
@@ -841,7 +954,8 @@ export class CreateFilesetComponent implements OnInit {
               return { name: path };
             })
           ),
-          filters: JSON.stringify(this.filterParams)
+          filters: JSON.stringify(this.filterParams),
+          is_OS_backup: this.formGroup.get('is_OS_backup').value
         }
       };
       this.protectedResourceApiService
@@ -914,8 +1028,13 @@ export class CreateFilesetComponent implements OnInit {
     if (node.parent) {
       this.fileSelection = reject(this.fileSelection, item => {
         return (
-          item.extendInfo?.path === node.parent.extendInfo?.path ||
-          item?.disabled
+          (item.extendInfo?.path === node.parent.extendInfo?.path ||
+            item?.pathDisabled) &&
+          !(
+            this.formGroup.get('is_OS_backup').value &&
+            item.disabled &&
+            !item?.pathDisabled
+          )
         );
       });
       if (find(node.parent?.children, { isMoreBtn: true })) {
@@ -925,7 +1044,7 @@ export class CreateFilesetComponent implements OnInit {
       }
       if (this.rowItem) {
         this.copyRowItemPaths = reject(this.copyRowItemPaths, item => {
-          return item === node.parent.extendInfo?.path;
+          return item === node.parent.extendInfo?.path && !item?.disabled;
         });
       }
       this.excludeParentFileSelection(node.parent);
@@ -946,9 +1065,11 @@ export class CreateFilesetComponent implements OnInit {
         );
       } else {
         this.fileSelection = reject(this.fileSelection, item => {
-          return includes(
-            map(node.children, 'extendInfo.path'),
-            item.extendInfo?.path
+          return (
+            includes(
+              map(node.children, 'extendInfo.path'),
+              item.extendInfo?.path
+            ) && !item?.disabled
           );
         });
       }
@@ -1031,6 +1152,13 @@ export class CreateFilesetComponent implements OnInit {
   modifyFileset(): Observable<void> {
     return new Observable<void>((observer: Observer<void>) => {
       let paths = this.getPath(this.fileSelection);
+      if (
+        isEmpty(this.fileSelection) &&
+        this.formGroup.get('is_OS_backup').value
+      ) {
+        // 如果不开选择能下发就说明是开了操作系统备份或者是修改，直接把操作系统目录加进去
+        paths = cloneDeep(this.systemFile);
+      }
       paths = union(paths, this.copyRowItemPaths);
       this.filterComponent.collectParams();
       const UpdateResourceRequestBody = {
@@ -1046,7 +1174,8 @@ export class CreateFilesetComponent implements OnInit {
             })
           ),
           filters: JSON.stringify(this.filterParams),
-          templateId: ''
+          templateId: '',
+          is_OS_backup: this.formGroup.get('is_OS_backup').value
         }
       };
       this.protectedResourceApiService
@@ -1128,9 +1257,15 @@ export class CreateFilesetComponent implements OnInit {
   }
 
   resetSelection() {
-    this.selectionPath = [];
-    this.fileSelection = [];
-    this.copyRowItemPaths = [];
+    // 置灰的说明是操作系统备份导致的disabled，所以不能去掉
+    this.selectionPath = filter(this.selectionPath, item => item?.disabled);
+    this.fileSelection = filter(this.fileSelection, item => item?.disabled);
+    this.copyRowItemPaths = filter(
+      this.copyRowItemPaths,
+      item =>
+        !!find(this.systemFile, val => val === item) &&
+        this.formGroup.get('is_OS_backup').value
+    );
     this.selectionChange();
   }
 

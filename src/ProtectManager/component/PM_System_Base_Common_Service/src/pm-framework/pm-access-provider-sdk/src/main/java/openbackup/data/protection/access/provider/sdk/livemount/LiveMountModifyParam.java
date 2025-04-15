@@ -15,6 +15,7 @@ package openbackup.data.protection.access.provider.sdk.livemount;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.common.model.storage.BackupStorage;
 
 /**
  * Live Mount Modify Param
@@ -22,6 +23,8 @@ import lombok.Data;
  */
 @Data
 public class LiveMountModifyParam {
+    private String mountedCopyId;
+
     @JsonProperty("BACKUPID")
     private String backupId;
 
@@ -30,4 +33,7 @@ public class LiveMountModifyParam {
 
     @JsonProperty("APPTYPE")
     private String appType;
+
+    @JsonProperty("BackupStorage")
+    private BackupStorage backupStorage;
 }

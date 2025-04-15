@@ -12,6 +12,10 @@
 */
 package openbackup.data.access.framework.livemount.service;
 
+import com.huawei.oceanprotect.system.base.sdk.devicemanager.openstorage.entity.CreateWindowsUserResponse;
+import com.huawei.oceanprotect.system.base.sdk.devicemanager.openstorage.entity.QueryWindowsUserResponse;
+import com.huawei.oceanprotect.system.base.sdk.devicemanager.openstorage.entity.WindowsUserParam;
+
 import openbackup.data.access.framework.livemount.common.model.LiveMountModel;
 import openbackup.data.access.framework.livemount.common.model.LiveMountObject;
 import openbackup.data.access.framework.livemount.common.model.UnmountExtendParam;
@@ -357,6 +361,33 @@ public interface LiveMountService {
      * @return uuids
      */
     List<String> createLiveMountCommon(LiveMountObject liveMountObject);
+
+    /**
+     * create windows user
+     *
+     * @param windowsUserParam windowsUserParam
+     * @return result
+     */
+    CreateWindowsUserResponse createHcsCifsUser(WindowsUserParam windowsUserParam);
+
+    /**
+     * query windows user
+     *
+     * @param windowsUsername 用户名
+     * @param vstoreId 租户id
+     * @param accountName 账户名
+     * @return result
+     */
+    QueryWindowsUserResponse queryHcsCifsUser(String windowsUsername, String vstoreId, String accountName);
+
+    /**
+     * delete windows user
+     *
+     * @param windowsUsername 用户名
+     * @param vstoreId 租户id
+     * @param accountName 账户名
+     */
+    void deleteHcsCifsUser(String windowsUsername, String vstoreId, String accountName);
 
     /**
      * check live mount copy

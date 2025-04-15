@@ -12,6 +12,7 @@
 */
 package openbackup.mysql.resources.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.agent.DataBaseAgentSelector;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
@@ -24,8 +25,6 @@ import openbackup.mysql.resources.access.enums.MysqlResourceSubTypeEnum;
 import openbackup.mysql.resources.access.enums.MysqlRoleEnum;
 import openbackup.mysql.resources.access.service.MysqlBaseService;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

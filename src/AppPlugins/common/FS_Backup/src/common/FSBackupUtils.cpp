@@ -31,6 +31,7 @@
 
 #include "log/Log.h"
 #include "ParserStructs.h"
+#include "BackupConstants.h"
 
 #ifdef WIN32
 #include <filesystem>
@@ -143,7 +144,7 @@ void FSBackupUtils::RecurseCreateDirectory(const std::string& path)
 #ifdef WIN32
     DWORD errorCode = 0;
     if (!FS_Backup::Win32BackupEngineUtils::CreateDirectoryRecursively(path, "", errorCode)) {
-        ERRLOG("failed to create windows directory: %s, errorCode: %u", path.c_str(), errorCode);
+        WARNLOG("failed to create windows directory: %s, errorCode: %u", path.c_str(), errorCode);
     }
 #else
     if (path.empty() || path[0] != '/') {
@@ -164,10 +165,10 @@ bool FSBackupUtils::RemoveDir(const std::string& path)
 #ifdef WIN32
     return FS_Backup::Win32BackupEngineUtils::RemovePath(path);
 #else
-    if (!boost::filesystem::exists(path)) {
-        return true;
-    }
     try {
+        if (!boost::filesystem::exists(path)) {
+            return true;
+        }
         boost::filesystem::remove_all(path);
     } catch (const boost::filesystem::filesystem_error &e) {
         ERRLOG("remove_all() exeption: %s, path: %s", e.code().message().c_str(), path.c_str());
@@ -201,10 +202,10 @@ bool FSBackupUtils::RemoveFile(const std::string& path)
     DBGLOG("remove file:%s", path.c_str());
     return FS_Backup::Win32BackupEngineUtils::RemovePath(path);
 #else
-    if (!boost::filesystem::exists(path)) {
-        return true;
-    }
     try {
+        if (!boost::filesystem::exists(path)) {
+            return true;
+        }
         boost::filesystem::remove(path);
     } catch (const boost::filesystem::filesystem_error &e) {
         ERRLOG("remove() exeption: %s, path: %s", e.code().message().c_str(), path.c_str());
@@ -339,6 +340,26 @@ std::string FSBackupUtils::GetDateTimeString(uint64_t timeValue)
     return "";
 }
 
+bool FSBackupUtils::IsStuck(std::shared_ptr<BackupControlInfo> controlInfo)
+{
+    auto curTime = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(curTime - controlInfo->m_lastRecordTime);
+
+    if (duration.count() >= TIME_OF_SET_FAILED) {
+        if (controlInfo->m_noOfFilesCopied.load() != controlInfo->m_lastCopyFileNum.load() ||
+            (controlInfo->m_noOfFilesCopied + controlInfo->m_noOfFilesFailed + controlInfo->m_skipFileCnt +
+            controlInfo->m_noOfFilesWriteSkip == controlInfo->m_noOfFilesToBackup)) {
+            controlInfo->m_lastRecordTime = curTime;
+            controlInfo->m_lastFailedFileNum =  controlInfo->m_noOfFilesFailed.load();
+            controlInfo->m_lastCopyFileNum = controlInfo->m_noOfFilesCopied.load();
+            controlInfo->m_lastFailedDirNum = controlInfo->m_noOfDirFailed.load();
+            return false;
+        }
+        return true;
+    }
+    return false;
+}
+
 #ifndef WIN32
 mode_t FSBackupUtils::GetUmask()
 {
@@ -466,7 +487,7 @@ void FSBackupUtils::SetServerNotReachableErrorCode(const BackupType &backupType,
             failReason = BackupPhaseStatus::FAILED_PROT_SERVER_NOTREACHABLE;
         }
     }
-    ERRLOG("Server check error reason set failReason = %u", failReason);
+    WARNLOG("Server check error reason set failReason = %u", failReason);
 }
 
 BackupPhaseStatus FSBackupUtils::GetReaderStatus(
@@ -663,4 +684,12 @@ void FSBackupUtils::MemoryTrim()
 #if !defined(WIN32) && !defined(SOLARIS) && !defined(_AIX)
     malloc_trim(0);
 #endif
+}
+
+std::string FSBackupUtils::LowerCase(const std::string& path)
+{
+    std::string lowerPath = path;
+    std::transform(lowerPath.begin(), lowerPath.end(), lowerPath.begin(),
+        [](unsigned char c) { return ::tolower(c); });
+    return lowerPath;
 }

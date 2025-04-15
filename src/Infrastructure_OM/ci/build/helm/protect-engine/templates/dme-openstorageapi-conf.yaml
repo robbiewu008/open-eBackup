@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dme-osa-conf
+  namespace: dpa
+data:
+  OSA_REST_TIMEOUT: "120"
+  OSA_REST_CONCURRENT: "20"
+  OSA_K8S_TIMEOUT: "60"
+  OSA_PING_TIMEOUT: "3"
+  OSA_CURL_TIMEOUT: "3"

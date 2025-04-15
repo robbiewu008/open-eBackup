@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "dataprocess/datapath/VMwareNativeDataPathImpl.h"
 #include <map>
 #include <iostream>
@@ -46,6 +58,9 @@ const std::unordered_map<mp_uint32, std::string> TRANSPORT_MODE_MAP = {
 {VMWAREDEF::TRANSPORT_MODE_HOT_ADD, "hotadd"},
 {VMWAREDEF::TRANSPORT_MODE_NBDSSL, "nbdssl"}
 };
+const mp_string TMP_VMWARE_DIR = "/tmp/vmware-root";
+const mp_int32 ROOT_UID = 0;
+const mp_int32 ROOT_GID = 0;
 }  // namespace
 
 VMwareNativeDataPathImpl::VMwareNativeDataPathImpl() : m_reader(nullptr), m_writer(nullptr)
@@ -184,7 +199,7 @@ mp_int32 VMwareNativeDataPathImpl::VMwareNativeVddkCleanup(Json::Value &bodyMsg)
         return MP_FAILED;
     }
     VMwareDiskLib::GetInstance()->SetVddkLibPathAndVersion(strVddkLibPath,
-        std::stoi(m_vmProtectionParams.pmInfo.strVersion.substr(0, 1)),
+        CMpString::SafeStoi(m_vmProtectionParams.pmInfo.strVersion.substr(0, 1), 0),
         VMWAREDEF::VMWARE_VDDK_MINJOR_VERSION,
         m_vmProtectionParams.pmInfo.strVersion);
 
@@ -870,6 +885,30 @@ mp_int32 VMwareNativeDataPathImpl::ParseVolumeParams(Json::Value &msg)
     return MP_SUCCESS;
 }
 
+void VMwareNativeDataPathImpl::CheckVmwareTmpDir()
+{
+    if (m_systemVirt != VIRTUAL_MACHINE) {
+        DBGLOG("No need to check tmp dir for non-vmware machine.");
+        return;
+    }
+    if (!CMpFile::DirExist(TMP_VMWARE_DIR.c_str())) {
+        if (CMpFile::CreateDir(TMP_VMWARE_DIR.c_str()) != MP_SUCCESS) {
+            ERRLOG("Create tmp dir for vmware failed!");
+            return;
+        }
+        mp_int32 gid = ROOT_GID;
+        if (ChownFile(TMP_VMWARE_DIR, ROOT_UID, gid) != MP_SUCCESS) {
+            ERRLOG("Chown tmp dir for vmware failed!");
+            return;
+        }
+        if (ChmodFile(TMP_VMWARE_DIR, S_IRUSR | S_IWUSR | S_IXUSR) != MP_SUCCESS) {
+            ERRLOG("Chmod tmp dir for vmware failed!");
+            return;
+        }
+    }
+    INFOLOG("Create tmp dir for vmware success!");
+}
+
 void VMwareNativeDataPathImpl::GetTransportMode(const bool &enableAdvanced, mp_string &transportMode)
 {
     std::string supportTransModeList = VMwareDiskLib::GetInstance()->ListTransportModes();
@@ -887,6 +926,7 @@ void VMwareNativeDataPathImpl::GetTransportMode(const bool &enableAdvanced, mp_s
             transportMode = "san:hotadd:" + transportMode;
         }
     }
+    CheckVmwareTmpDir();
 }
 
 mp_int32 VMwareNativeDataPathImpl::TryToOpenDisk(
@@ -2494,8 +2534,18 @@ void VMwareNativeDataPathImpl::DoRmVmUuidFile(Json::Value &msgBody)
 {
     Json::Value body = msgBody[MANAGECMD_KEY_BODY];
     if (body.isObject() && body.isMember(EXT_CMD_PROTECT_VM_UUID) && body[EXT_CMD_PROTECT_VM_UUID].isString()) {
-        std::string uuid = "/tmp/vmware-root/";
-        uuid += body[EXT_CMD_PROTECT_VM_UUID].asString();
+        std::string uuid = "/tmp/vmware-root";
+        struct stat buf;
+        mp_int32 ret = lstat(uuid.c_str(), &buf);
+        if (ret != MP_SUCCESS) {
+            ERRLOG("Get file stat failed! filePath(%s),errno=%d", uuid.c_str(), errno);
+            return;
+        }
+        if (S_ISLNK(buf.st_mode)) { // safe check:link file not permitted.
+            ERRLOG("File is link file! filePath(%s)", uuid.c_str());
+            return;
+        }
+        uuid += "/" + body[EXT_CMD_PROTECT_VM_UUID].asString();
         uuid = uuid + "-" + m_vmProtectionParams.vmInfo.strVmRef;
         if (CheckPathParm(uuid) != MP_SUCCESS) {
             WARNLOG("Invalid file path %s, skip remove", uuid.c_str());
@@ -2536,7 +2586,7 @@ mp_int32 VMwareNativeDataPathImpl::InitVddkLib(Json::Value &msgBody, mp_bool &is
     }
     // 2. connect to vcenter using vddk
     VMwareDiskLib::GetInstance()->SetVddkLibPathAndVersion(strVddkLibPath,
-        std::stoi(m_vmProtectionParams.pmInfo.strVersion.substr(0, 1)),
+        CMpString::SafeStoi(m_vmProtectionParams.pmInfo.strVersion.substr(0, 1), 0),
         VMWAREDEF::VMWARE_VDDK_MINJOR_VERSION,
         m_vmProtectionParams.pmInfo.strVersion);
     if (!(VMwareDiskLib::GetInstance()->Init())) {

@@ -22,6 +22,8 @@
   </lv-group>
   <lv-group [lvGutter]="groupCommon.middleRowGutter">
     <lv-search
+      class="input-width"
+      [ngClass]="{'input-width-en':i18n.isEn}"
       [lvFocus]="true"
       lvPlaceHolder="{{ 'common_search_airgap_name_label' | i18n }}"
       (lvSearch)="search($event)"

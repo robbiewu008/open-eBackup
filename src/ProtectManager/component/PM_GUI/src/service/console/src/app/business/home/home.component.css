@@ -6,17 +6,8 @@
   padding-right: 24px;
 }
 
-.aui-overview > ul {
-  list-style: none;
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-  justify-content: space-between;
-}
-
-.aui-overview > ui > li {
-  width: 25%;
+.home-group-container {
+  align-items: flex-start !important;
 }
 
 .home-block-container {
@@ -53,8 +44,9 @@
 }
 
 .system-forecast-no-data i {
-  width: 240px;
-  height: 240px;
+  margin-top: 64px;
+  width: 72px;
+  height: 72px;
 }
 
 .no-data-label {

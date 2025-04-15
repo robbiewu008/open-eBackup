@@ -12,14 +12,13 @@
 */
 package openbackup.system.base.sdk.auth.model;
 
-import openbackup.system.base.common.constants.DataView;
-import openbackup.system.base.common.enums.AccessControlEnum;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.common.constants.DataView;
+import openbackup.system.base.common.enums.AccessControlEnum;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

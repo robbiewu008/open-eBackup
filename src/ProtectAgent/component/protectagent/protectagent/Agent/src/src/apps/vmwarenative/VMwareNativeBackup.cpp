@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "apps/vmwarenative/VMwareNativeBackup.h"
 #include "apps/vmwarenative/VMwareDef.h"
 
@@ -65,6 +77,7 @@ constexpr mp_uint32 MAX_PORTS_NUM = 65535;
 const mp_string PARAM_NAS_OVER_FC_STR = "accessNASOverFC";
 const mp_string DEFAULT_NAS_MNT_POINT_PREFIX = "/opt/advbackup/vmware/data/";
 const mp_string DORADO_NAS_SNAP_PATH = "/.snapshot/";
+const mp_string AGENT_RESTART_RETRY_TIMELIMIT_MIN = "30";
 }  // namespace
 
 VMwareNativeBackup::VMwareNativeBackup()
@@ -498,7 +511,7 @@ mp_bool VMwareNativeBackup::AgentRestartRecently()
             CMpString::StrSplit(vecCMDReturn, strRunningTime, ':');
 
             // 停止进程的过程可能发生在vmware给agent发送查询消息时，超时时间20min, 检查20min内是否重启
-            if (vecCMDReturn.size() > 1 && vecCMDReturn[0] <= "20") {
+            if (vecCMDReturn.size() > 1 && vecCMDReturn[0] <= AGENT_RESTART_RETRY_TIMELIMIT_MIN) {
                 return true;
             }
         }
@@ -537,6 +550,12 @@ mp_int32 VMwareNativeBackup::PrepareAfsBitmap(
             iRet);
         strError = "Unabel to set storage protocol.";
         return iRet;
+    }
+
+    iRet = SetDiskTypeForTask(taskId, jsonMsgBody);
+    if (iRet != MP_SUCCESS) {
+        WARNLOG("Unabel to SetDiskTypeForTask. task id: '%s' from request message body, iRet=%d.",
+                taskId.c_str(), iRet);
     }
 
     std::string jsonRepStr;

@@ -12,19 +12,19 @@
 */
 package openbackup.openstack.protection.access.provider;
 
+import openbackup.openstack.protection.access.dto.ResourceScanParam;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceExtendInfoService;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import openbackup.openstack.protection.access.dto.ResourceScanParam;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.OptionalUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -74,6 +74,11 @@ public class OpenstackProjectResourceProvider implements ResourceProvider {
     @Override
     public boolean applicable(ProtectedResource resource) {
         return ResourceSubTypeEnum.OPENSTACK_PROJECT.equalsSubType(resource.getSubType());
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        return true;
     }
 
     @Override

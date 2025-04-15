@@ -12,6 +12,8 @@
 */
 package openbackup.cnware.protection.access.constant;
 
+import java.util.regex.Pattern;
+
 /**
  * CNware插件常量
  *
@@ -40,7 +42,7 @@ public class CnwareConstant {
     /**
      * 查询资源分页大小
      */
-    public static final int PAGE_SIZE = 1000;
+    public static final int PAGE_SIZE = 200;
 
     /**
      * -1
@@ -198,6 +200,16 @@ public class CnwareConstant {
     public static final String RES_TYPE_CNWARE_DISK = "CNwareDisk";
 
     /**
+     * 扫描时的资源类型
+     */
+    public static final String RES_TYPE_TAG = "Tag";
+
+    /**
+     * tags
+     */
+    public static final String TAGS = "tags";
+
+    /**
      * 集群、主机下的虚拟机数量
      */
     public static final String VM_NUMBER = "vmNumber";
@@ -306,4 +318,14 @@ public class CnwareConstant {
      * 域名正则
      */
     public static final String DOMAIN_REGEX = "^[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$";
+
+    /**
+     * Unicode 转义序列解码正则
+     */
+    public static final Pattern UNICODE_REGEX = Pattern.compile("\\\\u([0-9a-fA-F]{4})");
+
+    /**
+     * 生产存储剩余容量阈值
+     */
+    public static final String AVAILABLE_CAPACITY_THRESHOLD = "available_capacity_threshold";
 }

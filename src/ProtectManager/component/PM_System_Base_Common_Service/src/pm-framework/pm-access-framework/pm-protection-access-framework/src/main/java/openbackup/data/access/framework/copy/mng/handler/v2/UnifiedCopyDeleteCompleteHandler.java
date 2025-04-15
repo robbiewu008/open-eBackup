@@ -12,6 +12,10 @@
 */
 package openbackup.data.access.framework.copy.mng.handler.v2;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.system.base.label.service.LabelService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.index.service.impl.UnifiedCopyIndexService;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
@@ -23,7 +27,6 @@ import openbackup.data.access.framework.protection.handler.v2.UnifiedTaskComplet
 import openbackup.data.access.framework.protection.service.quota.UserQuotaManager;
 import openbackup.data.protection.access.provider.sdk.copy.CopyDeleteInterceptor;
 import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.common.msg.NotifyManager;
 import openbackup.system.base.common.utils.ExceptionUtil;
@@ -39,8 +42,7 @@ import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.JobStopParam;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.RecoveryCallback;
 import org.springframework.retry.RetryCallback;
@@ -78,6 +80,9 @@ public class UnifiedCopyDeleteCompleteHandler extends UnifiedTaskCompleteHandler
 
     private ProviderManager providerManager;
 
+    @Autowired
+    private LabelService labelService;
+
     public UnifiedCopyDeleteCompleteHandler(NotifyManager notifyManager, CopyRestApi copyRestApi, JobService jobService,
         UnifiedCopyIndexService unifiedCopyIndexService, JobCenterRestApi jobCenterRestApi) {
         this.notifyManager = notifyManager;
@@ -105,7 +110,7 @@ public class UnifiedCopyDeleteCompleteHandler extends UnifiedTaskCompleteHandler
      */
     @Override
     public void onTaskCompleteSuccess(TaskCompleteMessageBo taskMessage) {
-        processTaskComplete(taskMessage);
+        processTaskComplete(taskMessage, true);
     }
 
     /**
@@ -116,10 +121,10 @@ public class UnifiedCopyDeleteCompleteHandler extends UnifiedTaskCompleteHandler
     @Override
     public void onTaskCompleteFailed(TaskCompleteMessageBo taskMessage) {
         // 失败的逻辑在副本模块已做处理，本次仅先做接口适配
-        processTaskComplete(taskMessage);
+        processTaskComplete(taskMessage, false);
     }
 
-    private void processTaskComplete(TaskCompleteMessageBo taskMessage) {
+    private void processTaskComplete(TaskCompleteMessageBo taskMessage, boolean isSuccess) {
         updateTaskCanStop(taskMessage);
         JSONObject extendsInfo = JSONObject.fromObject(taskMessage.getExtendsInfo());
 
@@ -144,6 +149,22 @@ public class UnifiedCopyDeleteCompleteHandler extends UnifiedTaskCompleteHandler
         }
         // 向dee发送删除副本的索引通知消息
         String requestId = taskMessage.getJobRequestId();
+        postProcessOtherService(taskMessage, copy, jobId, requestId);
+        if (isSuccess) {
+            // 副本删除成功，减少用户已使用配额
+            userQuotaManager.decreaseUsedQuota(jobId, copy);
+            // 删除标签关联关系(一样的逻辑抽象出来比较好)
+            labelService.deleteByResourceObjectIdsAndLabelIds(Collections.singletonList(copy.getUuid()),
+                StringUtils.EMPTY);
+        }
+        // 发送删除任务完成消息
+        sendCopyDeleteCompletedMessage(requestId);
+
+        // 删除与全量副本相关联日志副本
+        deleteRelativeCopies(extendsInfo, requestId);
+    }
+
+    private void postProcessOtherService(TaskCompleteMessageBo taskMessage, Copy copy, String jobId, String requestId) {
         try {
             deleteCopyIndex(taskMessage, requestId);
         } catch (Throwable throwable) {
@@ -159,21 +180,6 @@ public class UnifiedCopyDeleteCompleteHandler extends UnifiedTaskCompleteHandler
                 e.getMessage());
             log.error(message, e);
         }
-        // 副本删除成功，减少用户已使用配额
-        userQuotaManager.decreaseUsedQuota(jobId, copy);
-
-        // 发送删除任务完成消息
-        sendCopyDeleteCompletedMessage(requestId);
-
-        // 查询与全量副本相关联的所有日志副本，删除全量时，日志副本需要一并删除
-        List<String> copyList = queryRelativeCopies(extendsInfo);
-        log.debug("Query relative copy list, requestId: {}", requestId);
-        // 如果没有与全量相关联的副本则退出
-        if (copyList.isEmpty()) {
-            return;
-        }
-        // 删除与全量副本相关联日志副本
-        deleteRelativeCopies(copyList, requestId);
     }
 
     private void copyDeletePostProcess(Copy copy, TaskCompleteMessageBo taskMessage) {
@@ -230,7 +236,14 @@ public class UnifiedCopyDeleteCompleteHandler extends UnifiedTaskCompleteHandler
         jobService.updateJob(jobId, updateJobRequest);
     }
 
-    private void deleteRelativeCopies(List<String> deletableCopyList, String requestId) {
+    private void deleteRelativeCopies(JSONObject extendsInfo, String requestId) {
+        // 查询与全量副本相关联的所有日志副本，删除全量时，日志副本需要一并删除
+        List<String> deletableCopyList = queryRelativeCopies(extendsInfo);
+        log.debug("Query relative copy list, requestId: {}", requestId);
+        // 如果没有与全量相关联的副本则退出
+        if (deletableCopyList.isEmpty()) {
+            return;
+        }
         // 全量副本删除时，记录相关副本的展示时间，展示在日志中
         recordRelativeCopiesDeleteLog(requestId, deletableCopyList);
         // 针对每个副本更新用户配额

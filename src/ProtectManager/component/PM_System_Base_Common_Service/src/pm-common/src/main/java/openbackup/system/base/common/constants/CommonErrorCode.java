@@ -83,6 +83,16 @@ public final class CommonErrorCode {
     public static final long USER_OR_STORAGE_UNIT_NOT_EXIST = 1677930077L;
 
     /**
+     * 执行取消存储单元授权时，由于用户资源绑定的SLA中有策略关联到存储单元，操作失败。
+     */
+    public static final long USER_RESOURCE_SLA_POLICY_RELATED_TO_STORAGE = 1677930089L;
+
+    /**
+     * 执行取消存储单元授权时，由于用户SLA中有策略关联到存储单元，操作失败。
+     */
+    public static final long USER_SLA_POLICY_RELATED_TO_STORAGE = 1677930090L;
+
+    /**
      * UNKNOWN_USER
      */
     public static final long UNKNOWN_USER = 1677929477L;
@@ -221,6 +231,11 @@ public final class CommonErrorCode {
     public static final long ACCESS_DENIED = 1677929497L;
 
     /**
+     * HCS用户登录时 因为当前用户在HCS中没有读写权限 登录被拒绝
+     */
+    public static final long ONLY_HAVE_READ_PERMISSION = 1677752072L;
+
+    /**
      * SLA_ACCESS_DENIED
      */
     public static final long SLA_ACCESS_DENIED = 1677931532L;
@@ -321,6 +336,11 @@ public final class CommonErrorCode {
      * 公用的数量超过限制
      */
     public static final long NUMBER_LIMIT = 1677929225L;
+
+    /**
+     * 错误场景：执行日志导出操作，由于存在导出中的任务，操作失败。
+     */
+    public static final long EXIST_EXPORTING_JOB = 1677936641L;
 
     /**
      * 原因：存在正在运行的告警转储任务，无法修改。
@@ -1309,6 +1329,13 @@ public final class CommonErrorCode {
     public static final long SLA_NOT_SUPPORT_BACKUP_POLICY = 1677931542L;
 
     /**
+     * 错误场景：执行修改SLA策略操作时，由于该SLA绑定的资源类型不支持对应的归档/复制策略，操作失败。
+     * 原因：该SLA绑定的（{0}）资源类型不支持（{1}）策略。
+     * 建议：请移除（{1}）策略后重试。
+     */
+    public static final long SLA_NOT_SUPPORT_ARCHIVING_REPLICATION_POLICY = 1677931557L;
+
+    /**
      * 错误场景：执行注册Kubernetes集群操作时，由于配置文件有误或者集群状态异常，操作失败。
      * 原因：配置文件有误或者集群状态异常。
      * 建议：请修改配置文件或检查Kubernetes集群状态后重试。
@@ -1480,6 +1507,12 @@ public final class CommonErrorCode {
      * 建议：请登录Devicemanager，选择“设置 > 文件服务 > NFS服务”，启用NFSv4.1服务。
      */
     public static final long NFS_V41_SERVICE_NOT_OPEN = 1677931379L;
+
+    /**
+     * 原因：DeviceManager未开启NFSv4.1服务。
+     * 建议：请登录Devicemanager，选择“设置 > 共享设置 > NFS服务”，启用NFSv4.1服务。
+     */
+    public static final long PACIFIC_NFS_V41_SERVICE_NOT_OPEN = 1677931482L;
 
     /**
      * 原因：开启并行数据存储且在线备份存储单元数量低于系统下限（{0}）。
@@ -1777,6 +1810,156 @@ public final class CommonErrorCode {
      * 原因：本地盘不支持即时挂载，操作失败
      */
     public static final long LIVE_MOUNT_NOT_SUPPORT_BASIC_DISK = 1677932814L;
+
+    /**
+     * 原因：未指定证书。
+     * 建议：请指定证书后重试，或者使用http协议。
+     */
+    public static final long NO_CERTIFICATE_PROVIDED = 1677930293L;
+
+    /**
+     * 错误场景：执行添加备份存储设备时，由于仅支持OceanProtect X3000/X6000/X8000 1.5.0及以上版本的存储设备，所以操作失败。
+     * 原因：仅支持OceanProtect X3000/X6000/X8000 1.5.0及以上版本的存储设备。
+     * 建议：请更换OceanProtect X3000/X6000/X8000 1.5.0及以上版本的存储设备。
+     */
+    public static final long TARGET_CLUSTER_NOT_SUPPORT = 1677930086L;
+
+    /**
+     * 连接LDAP失败错误
+     */
+    public static final long CONNECT_LDAP_SERVER_FAILED = 1677929481L;
+
+    /**
+     * 错误场景：执行测试连接LDAP服务操作时，由于域名解析失败，操作失败。
+     * 原因：域名（{0}）解析失败。
+     * 建议：请前往DeviceManager设置DNS域名服务器，并确保DNS服务器上已配置域名（{0}）。
+     */
+    public static final long DOMAIN_NAME_RESOLVED_FAILED = 1677935647L;
+
+    /**
+     * ADFS链接网络超时
+     */
+    public static final long CONNECT_ADFS_SERVER_TIMEOUT = 1677935652L;
+
+    /**
+     * SLA POLICY不存在
+     */
+    public static final long SLA_POLICY_NOT_EXIST = 1677931554L;
+
+    /**
+     * 错误场景：执行SLA操作时，由于WORM保留时间大于副本保留时间，操作失败。
+     * 原因：WORM保留时间大于副本保留时间。
+     * 建议：请检查WORM保留时间是否小于等于副本保留时间。
+     */
+    public static final long WORM_RETENTION_TIME_ERROR = 1677929523L;
+
+    /**
+     * 错误场景：执行SLA操作时，由于WORM保留时间大于20年或7300天，操作失败。
+     * 原因：WORM保留时间大于20年或7300天。
+     * 建议：请检查WORM保留时间是否小于等于20年或7300天。
+     */
+    public static final long WORM_TIME_EXCEEDS_MAX_TIME_ERROR = 1677929524L;
+
+    /**
+     * 错误场景：执行WORM设置操作时，由于当前WORM有效时间小于以前WORM设置时间，操作失败。
+     * 原因：WORM过期时间小于以前WORM设置时间。
+     * 建议：请检查WORM有效时间是否大于等于以前WORM设置时间。
+     */
+    public static final long MODIFY_WORM_VALIDITY_TIME_LESS_THAN_EXIST_TIME_ERROR = 1677932055L;
+
+    /**
+     * 错误场景：执行修改WORM设置操作时，由于当前设置WORM过期时间大于之前副本过期时间，操作失败。
+     * 原因：当前WORM过期时间大于之前副本过期时间。
+     * 建议：请检查当前WORM设置时间是否小于等于副本过期时间。
+     */
+    public static final long MODIFY_WORM_VALIDITY_TIME_EXCEEDS_COPY_RETENTION_TIME_ERROR = 1677932056L;
+
+    /**
+     * 错误场景：执行修改副本过期时间操作时，由于副本过期时间小于WORM过期时间，操作失败。
+     * 原因：副本过期时间小于WORM过期时间。
+     * 建议：请检查副本过期时间是否大于等于WORM过期时间。
+     */
+    public static final long COPY_RETENTION_TIME_ERROR = 1677933348L;
+
+    /**
+     * 错误场景：执行保护操作时，由于该资源对应WORM策略已开启且选中SLA的WORM设置也开启，操作失败。
+     * 原因：该资源的WORM策略和SLA中WORM设置不能同时开启。
+     * 建议：请取消防勒索中的WORM设置开关或取消选择SLA中的WORM设置开关。
+     */
+    public static final long BOTH_SLA_WORM_AND_ANTI_RANSOMWARE_WORM_TURN_ON = 1677932057L;
+
+    /**
+     * 错误场景：执行SLA操作时，由于复制策略中副本保留时间小于WORM的保留时间，操作失败。
+     * 原因：复制策略中副本保留时间小于WORM的保留时间。
+     * 建议：请检查复制策略中副本保留时间是否大于等于WORM的保留时间。
+     */
+    public static final long COPY_RETENTION_TIME_LESS_THAN_WORM_RETENTION_TIME_ERROR = 1677931553L;
+
+    /**
+     * 错误场景：执行SLA操作时，由于复制策略中副本保留时间小于WORM的保留时间，操作失败。
+     * 原因：复制策略中副本保留时间小于WORM的保留时间。
+     * 建议：请检查复制策略中副本保留时间是否大于等于WORM的保留时间。
+     */
+    public static final long BASIC_DISK_NOT_SUPPORT_WORM_AND_ANTI = 1677931555L;
+
+    /**
+     * 错误场景：在代理主机上创建安装目录时，由于用户权限不足、磁盘空间不足或者文件系统只读等原因，操作失败。
+     * 原因：用户权限不足、磁盘空间不足或者文件系统只读等。
+     * 建议：请在“ProtectAgent安装指南”中搜索“安装目录”进行处理。
+     */
+    public static final long CLIENT_REGISTER_FAILED = 1677873409L;
+
+    /**
+     * 错误场景：执行更换资源所属用户时，由于所修改用户配额不足，操作失败。
+     * 原因：当前用户的用户类型为（{0}），该用户的（{1}）配额不足导致操作失败。
+     * 建议：具体操作请参见“管理员指南”中的“设置配额”章节。
+     */
+    public static final long USER_QUOTA_NOT_ENOUGH = 1677931479L;
+
+    /**
+     * 错误场景：执行更换资源所属用户时，由于待更换的用户不是数据保护管理员，操作失败。
+     * 原因：待更换的用户不是数据保护管理员。
+     * 建议：选择其他用户后重试。
+     */
+    public static final long USER_NOT_DP_ADMIN = 1677931480L;
+
+    /**
+     * 请求超时错误码
+     */
+    public static final long REQUEST_TIMEOUT = 1677929226L;
+
+    /**
+     * 错误场景：执行创建端口时，选择端口类型是绑定端口，由于填写绑定端口名称在底座已存在，创建失败。
+     * 原因：创建的绑定端口名称在底座已存在，创建失败。
+     * 建议：请重新输入绑定端口名称后重试。
+     */
+    public static final long ERROR_BOND_PORT_NAME = 1677929525L;
+
+    /**
+     * 动态口令邮件发送失败
+     */
+    public static final long SEND_EMAIL_DYNAMIC_PWD_FAILED = 1677936128L;
+
+    /**
+     * 错误场景：执行注册受保护PDB集操作时，由于该受保护PDB集内存在已经注册的PDB，操作失败。
+     * 原因：存在已经被注册的PDB:（{0}）。
+     * 建议：请选择未被注册的PDB。
+     */
+    public static final long PROTECTED_PDB_REPEATED = 1677747713L;
+
+    /**
+     * 错误场景：执行创建端口操作时，选择端口类型是绑定端口，由于选择的以太网口已被其它绑定端口占用，创建失败。
+     * 原因：绑定端口({0})选择的以太网端口已被其它绑定端口占用。
+     * 建议：请选择其它未被占用的以太网端口后重试。
+     */
+    public static final long ERROR_DIFFERENT_BOND_PORT_NAME = 1677929526L;
+
+    /**
+     * 错误场景：创建/修改SLA时，域内复制的存储id与备份策略的存储id相同，报错。
+     * 原因：域内复制的存储id与备份策略的存储id不能相同。
+     * 建议：请修改域内复制策略或备份策略的存储单元。
+     */
+    public static final long ERROR_BACKUP_REP_SAME_STORAGEID = 1677749250L;
 
     private CommonErrorCode() {
     }

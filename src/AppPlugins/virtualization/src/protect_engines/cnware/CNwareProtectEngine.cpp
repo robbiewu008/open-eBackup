@@ -18,6 +18,7 @@
 #include <vector>
 #include <algorithm>
 #include <common/JsonHelper.h>
+#include "common/Utils.h"
 #include "CNwareProtectEngine.h"
 
 using namespace VirtPlugin;
@@ -28,6 +29,8 @@ const std::string MODULE = "CNwareProtectEngine";
 const int64_t INIT_FAILED = 200;
 const int64_t UNAUTH_ERROR_CODE = 1007;
 const int64_t UNAUTH_LOCKED_CODE = 1008;
+const int64_t UNAUTH_931ERROR_CODE = 1877; // 931版本登录失败错误码
+const int64_t UNAUTH_CERT_CODE = 1869;   // 931版本验证码失败错误码
 const int64_t CERT_ERROR_CODE = 60;
 const int CN_COLOUM_LENTH = 3;
 const int RETRY_TIMES = 3;
@@ -54,13 +57,23 @@ const int32_t PROTOCAL_NFS_CIFS = 3;
 const std::string RESTORE_LOCATION_ORIGINAL = "original";
 const std::string RESTORE_LOCATION_NEW = "new";
 const std::string CURRENT_BOOT_DISK = "YES";
+const std::string STATUS_BEGINNING_RUNNING = "0\%2C1";
+const std::string VERSION_KYLIN_CHANGED = "9.3.0";
+const std::string KYLIN_OS_VERSION_9_3 = "银河麒麟高级服务器版V10（aarch64）";
+const std::string KYLIN_OS_VERSION_OLD = "麒麟V10";
+const std::string OTHER_OS_VERSION = "其他操作系统（aarch64）";
+const int RESTORE_OS_VERSION = 1;
+const int PAGE_1 = 1;
 const int NUM_2 = 2;
 const int NUM_100 = 100;
 const int CNWARE_VM_NAME_LIMIT = 128;
 std::vector<int64_t> AUTH_FALED_CODE = {
     1003, // UNAUTH_ERROR_USER
     1007, // UNAUTH_ERROR_CODE
-    1008 // UNAUTH_LOCKED_CODE
+    1008, // UNAUTH_LOCKED_CODE
+    1869, // UNAUTH_CERT_CODE
+    1877, // UNAUTH_931ERROR_CODE
+    1873  // UNAUTH_931USER_CODE
 };
 std::map<std::string, int32_t> DISK_BUS_MAP = {
     {"virtio", 1},
@@ -85,7 +98,7 @@ std::map<int32_t, std::string> HOST_STATUS_MAP = {
 
 namespace CNwarePlugin {
 
-bool CNwareProtectEngine::Init()
+bool CNwareProtectEngine::Init(const bool &idFlag)
 {
     if (m_cnwareClient == nullptr) {
         m_cnwareClient = std::make_shared<CNwareClient>(m_appEnv.auth);
@@ -100,8 +113,30 @@ bool CNwareProtectEngine::Init()
         ERRLOG("Parse Cert failed! Taskid: %s", m_appEnv.id.c_str());
         return false;
     }
-    m_domainId = Utils::GetProxyHostId(true);
+    if (idFlag) {
+        m_domainId = Utils::GetProxyHostId(true);
+    }
     return (m_cnwareClient != nullptr);
+}
+
+bool CNwareProtectEngine::AppInitClient(int64_t& errorCode, std::string &errorDes)
+{
+    if (m_cnwareClient == nullptr) {
+        ERRLOG("CNware Client nullptr! Taskid: %s", m_appEnv.id.c_str());
+        return false;
+    }
+    if (m_cnwareClient->InitCNwareClient(m_appEnv) != SUCCESS) {
+        ERRLOG("Build login body failed! Taskid: %s", m_appEnv.id.c_str());
+        errorCode = INIT_CLIENT_FAILED;
+        return false;
+    }
+    CNwareRequest req;
+    SetCommonInfo(req);
+    if (m_cnwareClient->CheckAuth(req, errorCode, errorDes) != SUCCESS) {
+        ERRLOG("Login client failed! Taskid: %s", m_appEnv.id.c_str());
+        return false;
+    }
+    return true;
 }
 
 bool CNwareProtectEngine::InitClient(int64_t& errorCode, std::string &errorDes)
@@ -117,9 +152,14 @@ bool CNwareProtectEngine::InitClient(int64_t& errorCode, std::string &errorDes)
     }
     CNwareRequest req;
     SetCommonInfo(req);
-    if (m_cnwareClient->GetSessionAndlogin(req, errorCode, errorDes) != SUCCESS) {
+    RequestInfo requestInfo;
+    if (m_cnwareClient->GetSessionAndlogin(req, requestInfo, errorCode, errorDes) != SUCCESS) {
         ERRLOG("Login client failed! Taskid: %s", m_appEnv.id.c_str());
         return false;
+    }
+    int32_t pageNum = Module::ConfigReader::getInt("CNwareConfig", "RequestPageNums");
+    if (pageNum > 0) {
+        m_cnwareClient->SetPageSize(pageNum);
     }
     return true;
 }
@@ -161,7 +201,7 @@ void CNwareProtectEngine::CheckApplication(ActionResult &returnValue, const Appl
     SetAppEnv(appEnv);
     int64_t errorCode(0);
     std::vector<std::string> params {};
-    if (!Init()) {
+    if (!Init(false)) {
         ERRLOG("Init CNware engine failed! Taskid: %s", appEnv.id.c_str());
         errorCode = CNWARE_ERR_PARAM;
         params.emplace_back("");
@@ -172,7 +212,7 @@ void CNwareProtectEngine::CheckApplication(ActionResult &returnValue, const Appl
     }
     std::string errorDes;
 
-    if (!InitClient(errorCode, errorDes)) {
+    if (!AppInitClient(errorCode, errorDes)) {
         if (std::find(AUTH_FALED_CODE.begin(), AUTH_FALED_CODE.end(), errorCode) != AUTH_FALED_CODE.end()) {
             if (errorCode == UNAUTH_ERROR_CODE || errorCode == UNAUTH_LOCKED_CODE) {
                 errorDes.erase(errorDes.size() - CN_COLOUM_LENTH);
@@ -211,28 +251,31 @@ void CNwareProtectEngine::DiscoverAppCluster(ApplicationEnvironment& returnEnv,
     const ApplicationEnvironment& appEnv, const Application& application)
 {
     SetAppEnv(appEnv);
-    int64_t errorCode(0);
-    if (!Init()) {
-        ERRLOG("Init CNware engine failed! Taskid: %s", appEnv.id.c_str());
-        return;
-    }
+    int64_t errorCode(FAILED);
     std::string errorDes;
-    if (!InitClient(errorCode, errorDes)) {
-        ERRLOG("InitClient failed, errorcode= %d, Des: %s! Taskid: %s", errorCode,
-            errorDes, appEnv.id.c_str());
-        return;
+    if (!Init(false)) {
+        ERRLOG("Init CNware engine failed! Taskid: %s", appEnv.id.c_str());
+        errorCode = INIT_CLIENT_FAILED;
+        ThrowPluginException(errorCode);
+    }
+    if (m_cnwareClient == nullptr || m_cnwareClient->InitCNwareClient(m_appEnv) != SUCCESS) {
+        ERRLOG("Build login body failed! Taskid: %s", m_appEnv.id.c_str());
+        errorCode = INIT_CLIENT_FAILED;
+        ThrowPluginException(errorCode);
     }
     CNwareRequest request;
     SetCommonInfo(request);
-    int32_t iret;
-    if (m_cnwareClient == nullptr) {
-        ERRLOG("CNwareClient failed! Taskid: %s", appEnv.id.c_str());
-        return;
+    RequestInfo requestInfo;
+    m_cnwareClient->ForceLogOut(request);
+    if (m_cnwareClient->GetSessionAndlogin(request, requestInfo, errorCode, errorDes) != SUCCESS) {
+        ERRLOG("Login client failed! Taskid: %s", m_appEnv.id.c_str());
+        ThrowPluginException(errorCode);
     }
-    iret = m_cnwareClient->GetVersionInfo(request, returnEnv);
+    int32_t iret = m_cnwareClient->GetVersionInfo(request, returnEnv);
     if (iret != SUCCESS) {
         ERRLOG("DiscoverAppCluster failed! Taskid: %s", appEnv.id.c_str());
-        return;
+        errorDes = "Get CNware VersionInfo failed.";
+        ThrowPluginException(errorCode, errorDes);
     }
     returnEnv.__set_id(appEnv.id);
     returnEnv.__set_name(appEnv.name);
@@ -252,7 +295,7 @@ void CNwareProtectEngine::ListApplicationResourceV2(ResourceResultByPage& page, 
 {
     SetAppEnv(request.appEnv);
     int64_t errorCode(0);
-    if (!Init()) {
+    if (!Init(false)) {
         ERRLOG("Init CNware engine failed! Subtype: %s", request.appEnv.subType.c_str());
         return;
     }
@@ -274,6 +317,26 @@ void CNwareProtectEngine::ListApplicationResourceV2(ResourceResultByPage& page, 
         return;
     }
     return;
+}
+
+int32_t CNwareProtectEngine::GetCNwareVersion(std::string &version)
+{
+    CNwareRequest req;
+    SetCommonInfo(req);
+    std::shared_ptr<ResponseModel> response = m_cnwareClient->GetVersionInfo(req);
+ 
+    if (response->GetStatusCode() != static_cast<uint32_t>(Module::SC_OK)) {
+        ERRLOG("Request VersionInfo return failed. Task id: %s", m_taskId.c_str());
+        return FAILED;
+    }
+    CNwareVersionInfo resBody;
+    if (!Module::JsonHelper::JsonStringToStruct(response->GetBody(), resBody)) {
+        ERRLOG("Transfer CNwareVersionInfo failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    version = std::move(resBody.m_productVersion);
+    INFOLOG("CNware version is %s", version.c_str());
+    return SUCCESS;
 }
 
 bool CNwareProtectEngine::CheckCNwareVersion()
@@ -347,7 +410,8 @@ bool CNwareProtectEngine::InitJobPara()
         m_appEnv = m_backupPara->protectEnv;
         m_application = m_backupPara->protectObject;
         m_subObjects = m_backupPara->protectSubObject;
-    } else if (m_jobHandle->GetJobType() == JobType::RESTORE) {
+    } else if (m_jobHandle->GetJobType() == JobType::RESTORE ||
+        m_jobHandle->GetJobType() == JobType::INSTANT_RESTORE) {
         if (!InitRestoreJobPara(jobInfo)) {
             ERRLOG("Init restore job parameter failed. %s", m_taskId.c_str());
             return false;
@@ -613,7 +677,7 @@ bool CNwareProtectEngine::ListDev(std::vector<std::string> &devList)
         Module::CmdParam(Module::SCRIPT_CMD_NAME, agentHomedir + SUDO_DISK_TOOL_PATH),
         "scan_dev"
     };
-    if (Module::RunCommand("sudo", cmdParam, cmdOut) != 0) {
+    if (Utils::CallAgentExecCmd(cmdParam, cmdOut) != 0) {
         ERRLOG("lsblk command is not enable.");
         return false;
     }
@@ -672,6 +736,20 @@ bool CNwareProtectEngine::DoDeleteVolume(const std::string &volId)
     return true;
 }
 
+void CNwareProtectEngine::FinishLastTaskCache()
+{
+    InitRepoHandler();
+    std::string LastTaskFile = m_cacheRepoPath + VIRT_PLUGIN_LAST_TASK_INFO;
+    std::string taskId;
+    if (Utils::ReadFile(m_cacheRepoHandler, LastTaskFile, taskId) !=
+        SUCCESS) {
+        ERRLOG("Read LastTaskFile failed.");
+    }
+    if (!taskId.empty()) {
+        CheckTaskStatus(taskId);
+    }
+    return;
+}
 
 int CNwareProtectEngine::PreHook(const ExecHookParam &para)
 {
@@ -684,7 +762,7 @@ int CNwareProtectEngine::PreHook(const ExecHookParam &para)
         ERRLOG("InitLiveMountJobPara, %s", m_taskId.c_str());
         return FAILED;
     }
-
+    FinishLastTaskCache();
     if (para.stage == JobStage::EXECUTE_SUB_JOB) {
         m_reportParam = {
             "virtual_plugin_restore_job_execute_subjob_start_label",
@@ -732,6 +810,7 @@ void CNwareProtectEngine::SetCNwareVMInfo2VMInfo(const CNwareVMInfo &cnVmInfo, V
     vmInfo.m_uuid = cnVmInfo.m_id;
     vmInfo.m_name = cnVmInfo.m_name;
     vmInfo.m_location = cnVmInfo.m_hostId;
+    vmInfo.m_bootType = std::to_string(cnVmInfo.m_bootType);
     if (!GetHostName(cnVmInfo.m_hostId, vmInfo.m_locationName)) {
         ERRLOG("Do not find host name, use id(%s). %s", cnVmInfo.m_hostId.c_str(), m_taskId.c_str());
         vmInfo.m_locationName = cnVmInfo.m_hostId;
@@ -1128,7 +1207,7 @@ int32_t CNwareProtectEngine::DeleteCephSnapshot(const std::string &cephSnapFlag)
         ERRLOG("DelCephSnapshots(%s) failed.", cephSnapFlag.c_str());
         return FAILED;
     }
-    WARNLOG("Delete ceph snapshot %s, res:%s.", cephSnapFlag.c_str(), response->GetBody().c_str());
+    WARNLOG("Delete ceph snapshot %s, res:%s.", cephSnapFlag.c_str(), WIPE_SENSITIVE(response->GetBody()).c_str());
     if (response->GetBody() == "success" || response->GetBody() == "notFound") {
         return SUCCESS;
     }
@@ -1311,13 +1390,13 @@ int32_t CNwareProtectEngine::DoCreateVolume(const VolInfo &backupVol, const std:
             return FAILED;
         }
     }
-    // 恢复时使用virtio临时挂载执行任务，RestoreVolMeatadata接口会更新bus类型
+    // 恢复时使用virtio临时挂载执行任务，挂载回原虚拟机时使用原盘的类型
     diskBody.bus = CNWARE_ATTACH_VOLUME_BUS_VIRTIO;
     diskBody.cache = diskInfo.m_cache;
     diskBody.capacity = backupVol.m_volSizeInBytes;
     diskBody.poolName = storage.m_name;
     diskBody.volName = newVol.m_name;
-    diskBody.type = diskInfo.m_driverType;
+    diskBody.type = GetStorageDriverType(pool.m_type, diskInfo.m_driverType);
     diskBody.preallocation = GetStoragePreallocation(
         pool.m_type, diskInfo.m_preallocation, newVol.m_name);
     diskBody.ioHangTimeout = diskInfo.m_ioHangTimeout;
@@ -1338,6 +1417,18 @@ int32_t CNwareProtectEngine::DoCreateVolume(const VolInfo &backupVol, const std:
     }
     INFOLOG("Create volume %s success, %s.", newVol.m_uuid.c_str(), m_taskId.c_str());
     return SUCCESS;
+}
+
+int32_t CNwareProtectEngine::GetStorageDriverType(const int32_t &poolType,
+    const int32_t &originType)
+{
+    DBGLOG("Get poolType: %d, originType: %d", poolType, originType);
+    if (poolType == static_cast<int32_t>(PoolType::Distribute)) {
+        WARNLOG("The storage pool type is NAS, the DriverType setting is ignored and set to OFF. %s",
+            m_taskId.c_str());
+        return static_cast<int32_t>(DriverType::RAW);
+    }
+    return originType;
 }
 
 std::string CNwareProtectEngine::GetStoragePreallocation(const int32_t &poolType,
@@ -1419,6 +1510,8 @@ bool CNwareProtectEngine::ParseVolume(const DomainDiskDevicesResp &item, VolInfo
     newVol.m_volSizeInBytes = item.m_capacity;
     newVol.m_volumeType = std::to_string(item.m_cache);
     newVol.m_location = item.m_sourceFile;
+    newVol.m_provisionType = item.m_preallocation;
+    newVol.m_format = item.m_driverType;
     newVol.m_vmMoRef = m_domainId;
     newVol.m_newCreate = true;
     DomainDiskDevicesResp tmp = item;
@@ -1576,8 +1669,7 @@ int32_t CNwareProtectEngine::DoAttachVolume(const VolInfo &volObj)
         return FAILED;
     }
     reqDisk.preallocation = GetPreallocation(volObj, diskInfo);
-    // 恢复使用virtio临时挂载执行任务，RestoreVolMeatadata接口会更新bus类型（AttachVolume接口只有恢复会调用）
-    reqDisk.bus = CNWARE_ATTACH_VOLUME_BUS_VIRTIO;
+    reqDisk.bus = diskInfo.m_busType;
     reqDisk.cache = diskInfo.m_cache;
     reqDisk.ioHangTimeout = diskInfo.m_ioHangTimeout;
     reqDisk.shareable = diskInfo.m_shareable;
@@ -1622,6 +1714,7 @@ int32_t CNwareProtectEngine::FormatCreateMachineParam(VMInfo &vmInfo, AddDomainR
         return FAILED;
     }
     ConfigDomainInfo(cwVmInfo, domainInfo);
+    SetOsVersion(domainInfo);
     if (m_application.subType == "CNwareHost") {
         domainInfo.mHostId = m_application.id;
     } else if (m_application.subType == "CNwareVm") {
@@ -1641,6 +1734,30 @@ int32_t CNwareProtectEngine::FormatCreateMachineParam(VMInfo &vmInfo, AddDomainR
     }
 
     return SUCCESS;
+}
+
+void CNwareProtectEngine::SetOsVersion(AddDomainRequest &domainInfo)
+{
+    std::string version;
+    if (GetCNwareVersion(version) != SUCCESS || !Utils::CompareVersion(version, VERSION_KYLIN_CHANGED)) {
+        ERRLOG("Get CNware version failed or version no need to fix. %s", m_jobId.c_str());
+        return;
+    }
+    if (Module::ConfigReader::getInt("CNwareConfig", "RestoreOsVersion") !=
+        RESTORE_OS_VERSION) {
+        WARNLOG("Not restore os version, will change osversion to %s.", OTHER_OS_VERSION.c_str());
+        domainInfo.mOsVersion = OTHER_OS_VERSION;
+        return;
+    }
+    DBGLOG("Kylin os-version(%s) and new type(%s).", domainInfo.mOsVersion.c_str(),
+        KYLIN_OS_VERSION_9_3.c_str());
+    if (domainInfo.mOsVersion.find(KYLIN_OS_VERSION_OLD) != std::string::npos) {
+        INFOLOG("Change kylin os-version(%s) to new type(%s).", domainInfo.mOsVersion.c_str(),
+            KYLIN_OS_VERSION_9_3.c_str());
+        domainInfo.mOsVersion = KYLIN_OS_VERSION_9_3;
+        return;
+    }
+    return;
 }
 
 void CNwareProtectEngine::ConfigDomainInfo(const CNwareVMInfo &cwVmInfo, AddDomainRequest &domainInfo)
@@ -1758,10 +1875,11 @@ int32_t CNwareProtectEngine::FormatDomainDiskDev(VMInfo &vmInfo, AddDomainReques
         diskDevReq.mOldVol = volPair.m_targetVol.m_name;
         diskDevReq.mOldPool = volPair.m_targetVol.m_datastore.m_name;
         diskDevReq.mPreallocation = (
-            std::stoi(volPair.m_targetVol.m_datastore.m_type) == static_cast<int>(PoolType::NAS) ||
-            std::stoi(volPair.m_targetVol.m_datastore.m_type) == static_cast<int>(PoolType::Distribute)) ?
+            Module::SafeStoi(volPair.m_targetVol.m_datastore.m_type) == static_cast<int>(PoolType::NAS) ||
+            Module::SafeStoi(volPair.m_targetVol.m_datastore.m_type) == static_cast<int>(PoolType::Distribute)) ?
             PREALLOCATION_OFF : diskDev.m_preallocation;
-        diskDevReq.mType = diskDev.m_driverType;
+        diskDevReq.mType = Module::SafeStoi(volPair.m_targetVol.m_datastore.m_type) ==
+            static_cast<int32_t>(PoolType::Distribute) ? static_cast<int32_t>(DriverType::RAW) : diskDev.m_driverType;
         diskDevReq.mShareable = diskDev.m_shareable;
         diskDevReq.mSource = static_cast<int>(VolSource::OLD_DISK);
         domainInfo.mDiskDevices.emplace_back(diskDevReq);
@@ -1849,7 +1967,7 @@ bool CNwareProtectEngine::ModifyVMDevBoots(const DomainListResponse &domainInfo,
     if (!ModifyDevBoots(domainInfo.id, UpdateReq)) {
         ERRLOG("Fail to modify vm(%s) dev boots, %s", vmInfo.m_uuid.c_str(), m_jobId.c_str());
     }
-    INFOLOG("Modify vm boot order success, first boot device(%s)", vmInfo.m_volList.front().m_uuid.c_str());
+    INFOLOG("Modify vm boot order success, first boot device.");
     return true;
 }
 
@@ -1866,7 +1984,10 @@ bool CNwareProtectEngine::ModifyVMDevBootsForDiskRestore()
         ERRLOG("Get new vm machine info failed.");
         return false;
     }
-
+    if (vmInfo.m_volList.empty()) {
+        WARNLOG("No volume info in target vm info file.");
+        return true;
+    }
     // 按照引导顺序升序排序
     std::sort(vmInfo.m_volList.begin(), vmInfo.m_volList.end(), [](auto volX, auto volY)->bool {
         return (std::stoi(volX.m_bootable) < std::stoi(volY.m_bootable));
@@ -1884,7 +2005,7 @@ bool CNwareProtectEngine::ModifyVMDevBootsForDiskRestore()
         ERRLOG("Fail to modify vm(%s) dev boots, %s", vmInfo.m_uuid.c_str(), m_jobId.c_str());
         return false;
     }
-    INFOLOG("Modify vm boot order success, first boot device(%s)", vmInfo.m_volList.front().m_uuid.c_str());
+    INFOLOG("Modify vm boot order success, first boot device.");
     return true;
 }
 
@@ -1916,7 +2037,7 @@ bool CNwareProtectEngine::ModifyLiveDevBoots(const DomainListResponse &domainInf
     if (!ModifyDevBoots(domainInfo.id, UpdateReq)) {
         ERRLOG("Fail to modify vm(%s) dev boots, %s", vmInfo.m_uuid.c_str(), m_jobId.c_str());
     }
-    INFOLOG("Modify vm boot order success, first boot device(%s)", vmInfo.m_volList.front().m_uuid.c_str());
+    INFOLOG("Modify vm boot order success, first boot device");
     return true;
 }
 
@@ -2018,6 +2139,71 @@ int32_t CNwareProtectEngine::AddBridgeInterface(const std::string &vmId,
     return SUCCESS;
 }
 
+void CNwareProtectEngine::WaitVMTaskEmpty(const std::string &domainId)
+{
+    if (m_cnwareClient == nullptr) {
+        ERRLOG("WaitVMTaskEmpty cnwareClient nullptr! Job id: %s", m_jobId.c_str());
+        return;
+    }
+    CNwareRequest req;
+    SetCommonInfo(req);
+    std::shared_ptr<QueryVMTaskResponse> response = std::make_shared<QueryVMTaskResponse>();
+    int wait_time = 0;
+    do {
+        sleep(COMMON_WAIT_TIME_3S);
+        wait_time += COMMON_WAIT_TIME_3S;
+        response = m_cnwareClient->QueryVMTasks(req, domainId, STATUS_BEGINNING_RUNNING, PAGE_1, NUM_100);
+        if (response == nullptr) {
+            ERRLOG("WaitVMTaskEmpty failed! domain id: %s.", domainId.c_str());
+            return;
+        }
+        if (FIFTEEN_MIN_IN_SEC < wait_time) {
+            ERRLOG("WaitVMTaskEmpty timeout! domain id: %s.", domainId.c_str());
+            break;
+        }
+    } while (!response->GetVMTaskInfo().mData.empty());
+    INFOLOG("Task empty! domain id: %s.", domainId.c_str());
+    return;
+}
+
+int32_t CNwareProtectEngine::PostProcessCreateMachine(VMInfo &vmInfo)
+{
+    // 通过虚拟机名称查询新虚拟机信息
+    GetVMListRequest getVMListReq;
+    SetCommonInfo(getVMListReq);
+    getVMListReq.SetQueryName(vmInfo.m_name);
+    std::shared_ptr<GetVMListResponse> getVMListRsp = m_cnwareClient->GetVMList(getVMListReq);
+    if (getVMListRsp == nullptr) {
+        ERRLOG("Get vm %s info by name failed. %s", vmInfo.m_name.c_str(), m_jobId.c_str());
+        return FAILED;
+    }
+    DataResponse listRsp = getVMListRsp->GetVMList();
+    if (listRsp.data.empty()) {
+        ERRLOG("Get vm info by name failed, no info return.");
+        return FAILED;
+    }
+    DomainListResponse dInfo = listRsp.data[0];
+    
+    sleep(COMMON_WAIT_TIME_3S);
+    WaitVMTaskEmpty(dInfo.id);
+    if (!ModifyVMDevBoots(dInfo, vmInfo)) {
+        ERRLOG("Modify VM(%s) dev boots failed. %s", dInfo.id.c_str(), m_jobId.c_str());
+        return FAILED;
+    }
+    vmInfo.m_uuid = dInfo.id;
+    // 清除卷信息，查询新创建的卷重新赋值
+    vmInfo.m_volList.clear();
+
+    GetVMDiskInfoRequest reqVol;
+    SetCommonInfo(reqVol);
+    reqVol.SetDomainId(vmInfo.m_uuid);
+    std::shared_ptr<GetVMDiskInfoResponse> respVol = m_cnwareClient->GetVMDiskInfo(reqVol);
+    if (respVol == nullptr || !SetVolListInfo2VMInfo(respVol->GetInfo(), vmInfo)) {
+        ERRLOG("Get VM vol list info failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    return SUCCESS;
+}
 int32_t CNwareProtectEngine::DoCreateMachine(VMInfo &vmInfo,
     const AddDomainRequest &addDomainInfo, BuildNewVMRequest &createVmReq)
 {
@@ -2034,36 +2220,8 @@ int32_t CNwareProtectEngine::DoCreateMachine(VMInfo &vmInfo,
         ERRLOG("Create vm failed.");
         return FAILED;
     }
-
-    // 通过虚拟机名称查询新虚拟机信息
-    GetVMListRequest getVMListReq;
-    SetCommonInfo(getVMListReq);
-    getVMListReq.SetQueryName(vmInfo.m_name);
-    std::shared_ptr<GetVMListResponse> getVMListRsp = m_cnwareClient->GetVMList(getVMListReq);
-    if (getVMListRsp == nullptr) {
-        ERRLOG("Get vm %s info by name failed. %s", vmInfo.m_name.c_str(), m_jobId.c_str());
-        return FAILED;
-    }
-    DataResponse listRsp = getVMListRsp->GetVMList();
-    if (listRsp.data.empty()) {
-        ERRLOG("Get vm info by name failed, no info return.");
-        return FAILED;
-    }
-    DomainListResponse dInfo = listRsp.data[0];
-    if (!ModifyVMDevBoots(dInfo, vmInfo)) {
-        ERRLOG("Modify VM(%s) dev boots failed. %s", dInfo.id.c_str(), m_jobId.c_str());
-        return FAILED;
-    }
-    vmInfo.m_uuid = dInfo.id;
-    // 清除卷信息，查询新创建的卷重新赋值
-    vmInfo.m_volList.clear();
-
-    GetVMDiskInfoRequest reqVol;
-    SetCommonInfo(reqVol);
-    reqVol.SetDomainId(vmInfo.m_uuid);
-    std::shared_ptr<GetVMDiskInfoResponse> respVol = m_cnwareClient->GetVMDiskInfo(reqVol);
-    if (respVol == nullptr || !SetVolListInfo2VMInfo(respVol->GetInfo(), vmInfo)) {
-        ERRLOG("Get VM vol list info failed, %s", m_taskId.c_str());
+    if (PostProcessCreateMachine(vmInfo) != SUCCESS) {
+        ERRLOG("PostProcessCreateMachine vm failed. %s.", m_jobId.c_str());
         return FAILED;
     }
     INFOLOG("Create vm %s id: %s success. %s", vmInfo.m_name.c_str(), vmInfo.m_uuid.c_str(), m_jobId.c_str());
@@ -2104,7 +2262,8 @@ int32_t CNwareProtectEngine::GetNewVMMachineInfo()
             return FAILED;
         }
         m_config = config;
-    } else if (m_jobHandle->GetJobType() == JobType::RESTORE) {
+    } else if (m_jobHandle->GetJobType() == JobType::RESTORE ||
+        m_jobHandle->GetJobType() == JobType::INSTANT_RESTORE) {
         INFOLOG("Enter GetJobType INSTANT_RESTORE: %d", static_cast<int32_t>(m_jobHandle->GetJobType()));
         if (!m_jobAdvPara.isMember("vmName") || !m_jobAdvPara.isMember("powerState")) {
             ERRLOG("Convert INSTANT_RESTORE m_jobAdvPara failed, %s", m_taskId.c_str());
@@ -2406,6 +2565,7 @@ int32_t CNwareProtectEngine::GetTargetVolumeDatastoreParam(
             }
         }
         ERRLOG("No disk found from the copy.");
+        m_checkErrorCode = CNwareErrorCode::CNWARE_DISK_NOT_FOUND;
         return FAILED;
     }
 
@@ -2429,9 +2589,10 @@ int32_t CNwareProtectEngine::GetTargetVolumeDatastoreParam(
 
 int32_t CNwareProtectEngine::CheckVMNameUnique(const std::string &vmName)
 {
-    INFOLOG("Enter");
+    DBGLOG("Enter");
     if (m_restoreLevel == RestoreLevel::RESTORE_TYPE_VM ||
-        m_jobHandle->GetJobType() == JobType::LIVEMOUNT) {
+        m_jobHandle->GetJobType() == JobType::LIVEMOUNT ||
+        m_jobHandle->GetJobType() == JobType::INSTANT_RESTORE) {
         ApplicationLabelType labelParam;
         labelParam.label = CNWARE_VMNAME_CHECK_LABEL;
         labelParam.params = std::vector<std::string>{vmName};
@@ -2457,7 +2618,7 @@ int32_t CNwareProtectEngine::CheckVMNameUnique(const std::string &vmName)
             return FAILED;
         }
     }
-    INFOLOG("Check vm name unique success. %s", m_jobId.c_str());
+    DBGLOG("Check vm name(%s) unique success. %s", vmName.c_str(), m_jobId.c_str());
     return SUCCESS;
 }
 
@@ -2542,10 +2703,10 @@ bool CNwareProtectEngine::GetTargetStoragePoolListBackup(std::unordered_set<std:
     return true;
 }
 
-bool CNwareProtectEngine::CheckStorageUsage(const StoragePool &pool, const uint32_t &storageLimit)
+bool CNwareProtectEngine::CheckStorageUsage(const StoragePool &pool, const int32_t &storageLimit)
 {
     if ((double(pool.m_available) / double(pool.m_capacity)) * NUM_100 <
-        (double(NUM_100 - storageLimit))) {
+        (double(storageLimit))) {
         ERRLOG("storage pool(%s) usage is over limit(%d).", pool.m_name.c_str(), storageLimit);
         ApplicationLabelType resourceCheckLabel;
         resourceCheckLabel.level = JobLogLevel::TASK_LOG_ERROR;
@@ -2557,6 +2718,28 @@ bool CNwareProtectEngine::CheckStorageUsage(const StoragePool &pool, const uint3
     return true;
 }
 
+int32_t CNwareProtectEngine::GetStorageLimit()
+{
+    int32_t defaultStorageLimit = Module::ConfigReader::getInt("CNwareConfig", "StorageLimit");
+    if (m_backupPara != nullptr && !m_backupPara->extendInfo.empty()) {
+        Json::Value extendInfo;
+        if (!Module::JsonHelper::JsonStringToJsonValue(m_backupPara->extendInfo, extendInfo)) {
+            ERRLOG("Trans job extend info to json value failed");
+            return defaultStorageLimit;
+        }
+        if (extendInfo.isMember("available_capacity_threshold")) {
+            DBGLOG("Get available_capacity_threshold.");
+            int32_t capacity = extendInfo["available_capacity_threshold"].asString().empty() ?
+                defaultStorageLimit : Module::SafeStoi(extendInfo["available_capacity_threshold"].asString(),
+                defaultStorageLimit);
+            INFOLOG("Get available_capacity_threshold %d.", capacity);
+            return capacity;
+        }
+    }
+    ERRLOG("Get no backup ptr, return default.");
+    return defaultStorageLimit;
+}
+
 bool CNwareProtectEngine::CheckStorage()
 {
     std::unordered_set<std::string> poolList;
@@ -2564,7 +2747,7 @@ bool CNwareProtectEngine::CheckStorage()
         ERRLOG("Get target storage pool list Failed, %s", m_taskId.c_str());
         return false;
     }
-    uint32_t storageLimit = Module::ConfigReader::getUint("CNwareConfig", "StorageLimit");
+    int32_t storageLimit = GetStorageLimit();
     std::string unUsedPools {};
     for (auto poolId : poolList) {
         CNwareRequest req;
@@ -2720,6 +2903,30 @@ int32_t CNwareProtectEngine::DoDeleteMachine(const VMInfo &vmInfo)
 
 int32_t CNwareProtectEngine::RenameMachine(const VMInfo &vmInfo, const std::string &newName)
 {
+    if (newName.empty()) {
+        WARNLOG("Empty name, exit. %s", m_jobId.c_str());
+        return FAILED;
+    }
+    CNwareRequest req;
+    SetCommonInfo(req);
+    {
+        Json::Value baseInfo;
+        baseInfo["name"] = newName;
+        Json::FastWriter writer;
+        std::string bodyStr = writer.write(baseInfo);
+        req.BuildBody(bodyStr);
+    }
+    std::shared_ptr<CNwareResponse> response = m_cnwareClient->ModifyBaseInfo(req, newName, vmInfo.m_uuid);
+    if (response == nullptr) {
+        ERRLOG("RenameMachine(%s) failed. %s", newName.c_str(), m_jobId.c_str());
+        return FAILED;
+    }
+    if (!CheckTaskStatus(response->GetTaskId())) {
+        ERRLOG("Query RenameMachine task status failed. %s", m_jobId.c_str());
+        return FAILED;
+    }
+    INFOLOG("RenameMachine vm %s to %s success. %s", vmInfo.m_name.c_str(),
+        newName.c_str(), m_jobId.c_str());
     return SUCCESS;
 }
 
@@ -2732,9 +2939,11 @@ int32_t CNwareProtectEngine::PowerOnMachine(const VMInfo &vmInfo)
     m_reportParam.label = "";
     m_reportArgs = {};
     ApplicationLabelType labelParam;
-    labelParam.label = CNWARE_POWERON_MACHINE_LABEL;
-    labelParam.params = std::vector<std::string>{vmInfo.m_name};
-    ReportJobDetail(labelParam);
+    if (!vmInfo.m_name.empty()) {
+        labelParam.label = CNWARE_POWERON_MACHINE_LABEL;
+        labelParam.params = std::vector<std::string>{vmInfo.m_name};
+        ReportJobDetail(labelParam);
+    }
 
     if (DoPowerOnMachine(vmInfo) != SUCCESS) {
         labelParam.level = JobLogLevel::TASK_LOG_ERROR;
@@ -2849,6 +3058,7 @@ int32_t CNwareProtectEngine::AllowBackupSubJobInLocalNode(const AppProtect::Back
 
 int32_t CNwareProtectEngine::AllowRestoreInLocalNode(const RestoreJob &job, int32_t &errorCode)
 {
+    m_checkErrorCode = CNwareErrorCode::ALLOW_COMMON_ERROR;
     if (CheckProtectEnvConn(job.targetEnv, job.targetObject.id, errorCode) != SUCCESS) {
         ERRLOG("Failed to check protect environment, taskId: %s", m_taskId.c_str());
         errorCode = CHECK_CNWARE_CONNECT_FAILED;
@@ -2872,7 +3082,7 @@ int32_t CNwareProtectEngine::AllowRestoreInLocalNode(const RestoreJob &job, int3
     }
     if (CheckStoragePoolRestore(job.restoreSubObjects) != SUCCESS) {
         ERRLOG("CheckStoragePoolRestore failed, %s", m_taskId.c_str());
-        errorCode = CNWARE_STORAGEPOOL_NOTAVAILABLE_ERROR;
+        errorCode = m_isSetArgs ? CNWARE_STORAGEPOOL_NOTAVAILABLE_ERROR : m_checkErrorCode;
         return FAILED;
     }
     return SUCCESS;

@@ -66,4 +66,24 @@ public class OpenGaussConstants {
      * OpenGauss注册集群上限值
      */
     public static final int OPENGAUSS_CLUSTER_MAX_COUNT = 2000;
+
+    /**
+     * 资源扫描时间间隔
+     */
+    public static final int OPENGAUSS_SCAN_INTERVAL = 300;
+
+    /**
+     * 分布式
+     */
+    public static final int DISTRIBUTED = 4;
+
+    /**
+     * 是否删除关联副本
+     */
+    public static final String IS_DELETE_RELATIVE_COPIES = "is_delete_relative_copies";
+
+    /**
+     * 实例状态
+     */
+    public static final String INSTANCE_STATE = "instanceState";
 }

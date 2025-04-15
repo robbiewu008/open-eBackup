@@ -26,7 +26,35 @@ rules:
     verbs: ["list", "watch"]
   - apiGroups: ["*"]
     resources: ["configmaps"]
-    resourceNames: ["cluster-conf", "common-conf", "dataenableengine-conf", "dee-common-conf", "digital-version-conf", "dme-ubc-conf", "inf-common-conf", "infrastructure-conf", "kmc-conf", "kmc-store-conf", "protect-engine-conf", "protect-manager-conf", "protectengine-e-conf", "network-conf", "dme-openstorageapi-conf", "infrastructure-init-conf", "multicluster-conf"]
+    resourceNames:
+    - cluster-conf
+    - common-conf
+    - dataenableengine-conf
+    - dee-common-conf
+    - digital-version-conf
+    - dme-ubc-conf
+    - inf-common-conf
+    - infrastructure-conf
+    - kmc-conf
+    - kmc-store-conf
+    - protect-engine-conf
+    - protect-manager-conf
+    - protectengine-e-conf
+    - network-conf
+    - dme-openstorageapi-conf
+    - infrastructure-init-conf
+    - multicluster-conf
+    - vmware-conf
+    - pm-variable-parameter-conf
+    - replication-conf
+    - archive-conf
+    - dee-anti-ransomware-conf
+    - dee-base-parser-conf
+    - dee-db-anonymization-conf
+    - dee-indexer-conf
+    - dme-osa-conf
+    - obs-conf
+    - nas-conf
     verbs: ["get", "create", "patch"]
   - apiGroups: ["*"]
     resources: ["configmaps"]

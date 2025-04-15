@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   Component,
@@ -49,6 +49,7 @@ export class CopyDataComponent implements OnInit {
   @Input() resType;
 
   pointTime = new Date('2020/02/14 12:00:00');
+  isInformix = false; // Informix数据库只有Informix形态支持日志备份,GBase8s 不需要时间轴
   groupOptions = GROUP_COMMON;
   resourceResourceType = DataMap.Resource_Type;
   dataMap = DataMap;
@@ -95,7 +96,13 @@ export class CopyDataComponent implements OnInit {
       this.rowData.subType ===
         this.resourceResourceType.OpenGauss_instance.value &&
       this.rowData.extendInfo.clusterVersion.includes('PanWeiDB');
-
+    this.isInformix =
+      [
+        DataMap.Resource_Type.informixInstance.value,
+        DataMap.Resource_Type.informixClusterInstance.value
+      ].includes(this.resType) &&
+      this.rowData?.databaseType ===
+        DataMap.informixDatabaseType.informix.value;
     if (!this.rowData.datePickerMode) {
       this.getCopyData();
     }

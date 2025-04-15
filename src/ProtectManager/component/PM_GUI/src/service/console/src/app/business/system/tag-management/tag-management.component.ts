@@ -1,25 +1,33 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {
   CommonConsts,
+  CookieService,
   I18NService,
   LabelApiService,
   MODAL_COMMON,
   OperateItems,
   WarningMessageService,
-  getPermissionMenuItem
+  getPermissionMenuItem,
+  RoleType,
+  SYSTEM_TIME
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
 import {
@@ -37,7 +45,8 @@ import {
   isEmpty,
   isUndefined,
   map,
-  size
+  size,
+  remove
 } from 'lodash';
 import { CreateTagComponent } from './create-tag/create-tag.component';
 
@@ -54,9 +63,11 @@ export class TagManagementComponent {
   selectionData = [];
   optItems = [];
   visible;
-  timeZone;
+  timeZone = SYSTEM_TIME.timeZone;
 
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
+  @ViewChild('createdTimeTpl', { static: true })
+  createdTimeTpl: TemplateRef<any>;
 
   constructor(
     private i18n: I18NService,
@@ -64,7 +75,8 @@ export class TagManagementComponent {
     private warningMessageService: WarningMessageService,
     private drawModalService: DrawModalService,
     private labelApiService: LabelApiService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public cookieService: CookieService
   ) {}
 
   ngOnInit(): void {
@@ -88,7 +100,7 @@ export class TagManagementComponent {
         label: this.i18n.get('common_create_label'),
         displayCheck: data => {
           // 用于预置标签
-          return true;
+          return this.cookieService.role !== RoleType.Auditor;
         },
         onClick: data => this.createTag()
       },
@@ -105,6 +117,9 @@ export class TagManagementComponent {
               })
             ) !== size(data) || !size(data)
           );
+        },
+        displayCheck: data => {
+          return this.cookieService.role !== RoleType.Auditor;
         },
         onClick: data => this.deleteTag(this.selectionData)
       }
@@ -130,8 +145,9 @@ export class TagManagementComponent {
         name: this.i18n.get('common_create_user_label')
       },
       {
-        key: 'createTime',
-        name: this.i18n.get('common_create_time_label')
+        key: 'createdTime',
+        name: this.i18n.get('common_create_time_label'),
+        cellRender: this.createdTimeTpl
       },
       {
         key: 'operation',
@@ -167,12 +183,17 @@ export class TagManagementComponent {
         }
       }
     ];
-
+    if (this.cookieService.role === RoleType.Auditor) {
+      remove(cols, { key: 'operation' });
+    }
     this.tableConfig = {
       table: {
         autoPolling: CommonConsts.TIME_INTERVAL,
         compareWith: 'uuid',
-        columns: cols,
+        columns:
+          this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE
+            ? cols.filter(v => v.key !== 'builderName')
+            : cols,
         rows: {
           selectionMode: 'multiple',
           selectionTrigger: 'selector',
@@ -216,10 +237,6 @@ export class TagManagementComponent {
       const newArr = res?.records.map(item => {
         return {
           ...item,
-          createTime: this.datePipe.transform(
-            item.createdTime,
-            'yyyy/MM/dd HH:mm:ss'
-          ),
           disabled: !item.isBuilt
         };
       });

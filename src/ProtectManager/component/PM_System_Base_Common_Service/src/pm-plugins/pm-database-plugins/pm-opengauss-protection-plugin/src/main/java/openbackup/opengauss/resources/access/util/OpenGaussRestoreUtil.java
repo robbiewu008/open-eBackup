@@ -12,16 +12,15 @@
 */
 package openbackup.opengauss.resources.access.util;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.NodeInfo;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.opengauss.resources.access.constants.OpenGaussConstants;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.json.JsonUtil;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.HashMap;

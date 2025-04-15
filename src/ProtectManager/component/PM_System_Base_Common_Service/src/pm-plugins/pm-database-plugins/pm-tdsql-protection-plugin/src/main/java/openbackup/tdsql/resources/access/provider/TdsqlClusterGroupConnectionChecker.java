@@ -12,6 +12,10 @@
 */
 package openbackup.tdsql.resources.access.provider;
 
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.access.framework.resource.service.provider.UnifiedResourceConnectionChecker;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
@@ -37,11 +41,6 @@ import openbackup.tdsql.resources.access.dto.cluster.OssNode;
 import openbackup.tdsql.resources.access.dto.cluster.TdsqlCluster;
 import openbackup.tdsql.resources.access.dto.instance.TdsqlGroup;
 import openbackup.tdsql.resources.access.service.TdsqlService;
-
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -238,6 +237,7 @@ public class TdsqlClusterGroupConnectionChecker extends UnifiedResourceConnectio
         Map<String, String> extendInfo = resource.getExtendInfo();
         TdsqlGroup tdsqlGroup = JsonUtil.read(extendInfo.get(TdsqlConstant.CLUSTER_GROUP_INFO),
             TdsqlGroup.class);
+        String mysqlVersion = extendInfo.get(TdsqlConstant.MYSQL_VERSION);
 
         AtomicBoolean isInstanceOnline = new AtomicBoolean(true);
         if (!getCheckResult(checkReportList)) {
@@ -251,6 +251,7 @@ public class TdsqlClusterGroupConnectionChecker extends UnifiedResourceConnectio
             ? LinkStatusEnum.ONLINE.getStatus().toString()
             : LinkStatusEnum.OFFLINE.getStatus().toString());
         updateResource.setExtendInfoByKey(TdsqlConstant.CLUSTER_GROUP_INFO, JsonUtil.json(tdsqlGroup));
+        updateResource.setExtendInfoByKey(TdsqlConstant.MYSQL_VERSION, mysqlVersion);
 
         resourceService.updateSourceDirectly(Lists.newArrayList(updateResource));
         log.info("end update tdsql cluster group [{}] linkStatus", instanceUuid);

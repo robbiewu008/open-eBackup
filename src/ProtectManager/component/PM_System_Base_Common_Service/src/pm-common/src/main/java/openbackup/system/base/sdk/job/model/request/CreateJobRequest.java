@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.sdk.job.model.request;
 
+import lombok.Data;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
-
-import lombok.Data;
 
 import java.util.List;
 
@@ -147,4 +146,9 @@ public class CreateJobRequest {
      * 域id列表
      */
     private List<String> domainIdList;
+
+    /**
+     * 否是覆盖任务
+     */
+    private boolean isOverride = false;
 }

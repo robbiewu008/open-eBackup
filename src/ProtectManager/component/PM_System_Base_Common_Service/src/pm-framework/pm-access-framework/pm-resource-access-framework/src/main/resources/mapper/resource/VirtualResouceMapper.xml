@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="openbackup.access.framework.resource.persistence.dao.VirtualResourceMapper">
+    <resultMap id="VirtualResourceResultMap" type="openbackup.access.framework.resource.persistence.model.VirtualResourceExtendPo">
+        <id property="uuid" column="uuid"/>
+        <id property="vmIp" column="vm_ip"/>
+        <id property="envIp" column="env_ip"/>
+        <id property="linkStatus" column="link_status"/>
+        <id property="capacity" column="capacity"/>
+        <id property="freeSpace" column="free_space"/>
+        <id property="uncommitted" column="uncommitted"/>
+        <id property="moId" column="mo_id"/>
+        <id property="children" column="children"/>
+        <id property="isTemplate" column="is_template"/>
+        <id property="aliasType" column="alias_type"/>
+        <id property="aliasValue" column="alias_value"/>
+        <id property="osType" column="os_type"/>
+        <id property="tags" column="tags"/>
+        <id property="name" column="name"/>
+        <id property="path" column="path"/>
+        <id property="type" column="type"/>
+        <id property="subType" column="sub_type"/>
+        <id property="rootUuid" column="root_uuid"/>
+        <association property="protectedObject" javaType="openbackup.data.protection.access.provider.sdk.resource.ProtectedObject">
+            <id property="resourceId" column="resource_id"/>
+            <id property="slaId" column="sla_id"/>
+            <id property="resourceGroupId" column="resource_group_id"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="BaseResultMap"
+               type="openbackup.access.framework.resource.persistence.model.VirtualResourceResponsePo"
+               autoMapping="true">
+        <id column="uuid" property="uuid"/>
+        <result column="vm_ip" property="vmIp"/>
+        <result column="env_ip" property="envIp"/>
+        <result column="link_status" property="linkStatus"/>
+        <result column="capacity" property="capacity"/>
+        <result column="free_space" property="freeSpace"/>
+        <result column="uncommitted" property="uncommitted"/>
+        <result column="mo_id" property="moId"/>
+        <result column="children" property="children"/>
+        <result column="is_template" property="isTemplate"/>
+        <result column="alias_type" property="aliasType"/>
+        <result column="alias_value" property="aliasValue"/>
+        <result column="os_type" property="osType"/>
+        <result column="tags" property="tags"/>
+        <result column="instance_id" property="instanceId"/>
+        <result column="firmware" property="firmware"/>
+        <result column="name" property="name"/>
+        <result column="type" property="type"/>
+        <result column="user_id" property="userId"/>
+        <result column="authorized_user" property="authorizedUser"/>
+        <result column="sub_type" property="subType"/>
+        <result column="source_type" property="sourceType"/>
+        <result column="path" property="path"/>
+        <result column="parent_name" property="parentName"/>
+        <result column="parent_uuid" property="parentUuid"/>
+        <result column="root_uuid" property="rootUuid"/>
+        <result column="children_uuids" property="childrenUuids"/>
+        <result column="discriminator" property="discriminator"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="protection_status" property="protectionStatus"/>
+        <result column="version" property="version"/>
+        <result column="auth" property="auth"/>
+    </resultMap>
+    <select id="queryVirtualResource" resultMap="BaseResultMap">
+        select A.*, B.* from virtual_resource A LEFT JOIN resources B ON A.uuid = B.uuid
+                        where B.sub_type ='vim.VirtualMachine' and B.parent_uuid=#{uuid}
+    </select>
+
+    <select id="listAll" resultMap="VirtualResourceResultMap">
+        SELECT v.*, p.resource_id, p.sla_id, p.resource_group_id, r.name, r.path, r.type, r.sub_type, r.root_uuid
+        FROM virtual_resource v
+                 LEFT JOIN protected_object p ON v.uuid = p.resource_id
+                 LEFT JOIN resources r ON v.uuid = r.uuid
+        where r.sub_type='vim.VirtualMachine' and v.uuid NOT IN (SELECT source_id FROM t_resource_group_member where source_sub_type='vim.VirtualMachine')
+        <if test="path != null and path != ''">
+            AND r.path LIKE #{path}
+        </if>
+        <if test="scopeId != null and scopeId != ''">
+            AND r.root_uuid LIKE #{scopeId}
+        </if>
+    </select>
+</mapper>

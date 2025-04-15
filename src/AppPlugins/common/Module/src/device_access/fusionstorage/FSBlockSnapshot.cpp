@@ -13,7 +13,8 @@
 #include "device_access/fusionstorage/FSBlockSnapshot.h"
 #include "common/JsonUtils.h"
 namespace Module {
-    int FSBlockSnapshot::Query(DeviceDetails &info) {
+    int FSBlockSnapshot::Query(DeviceDetails &info)
+    {
         int status;
         const int forward = 2;
         int ret = QuerySnapshotEx(ResourceName, ResourceId, Wwn, status);
@@ -42,7 +43,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.create link clone volume with special snapshot
 */
-    std::unique_ptr <ControlDevice> FSBlockSnapshot::CreateClone(std::string volumeName, int &errorCode) {
+    std::unique_ptr <ControlDevice> FSBlockSnapshot::CreateClone(std::string volumeName, int &errorCode)
+    {
         unsigned long long size;
         unsigned long long usedSize;
         int id;
@@ -87,7 +89,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.delete snapshot by name
 */
-    int FSBlockSnapshot::Delete() {
+    int FSBlockSnapshot::Delete()
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start delete snapshot " << ResourceName << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -110,17 +113,20 @@ Description:
         }
     }
 
-    int FSBlockSnapshot::ExtendSize(unsigned long long size) {
+    int FSBlockSnapshot::ExtendSize(unsigned long long size)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "extend failed, snapshot not support." << HCPENDLOG;
         return FAILED;
     }
 
-    int FSBlockSnapshot::Revert(std::string SnapshotName) {
+    int FSBlockSnapshot::Revert(std::string SnapshotName)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "extend failed, snapshot not support." << HCPENDLOG;
         return FAILED;
     }
 
-    int FSBlockSnapshot::QuerySnapshotEx(std::string SnapshotName, int &id, std::string &WWN, int &status) {
+    int FSBlockSnapshot::QuerySnapshotEx(std::string SnapshotName, int &id, std::string &WWN, int &status)
+    {
         HCP_Log(INFO, FUSION_STORAGE_MODULE_NAME) << "Start query snapshot " << SnapshotName << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";

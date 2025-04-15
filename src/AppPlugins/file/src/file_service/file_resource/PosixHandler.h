@@ -34,15 +34,26 @@ public:
     void ListVolumeResource(
         FilePlugin::FileResourceInfo& resourceInfo,
         const FilePlugin::ListResourceParam& listResourceParam) override;
+    void ListDiskResource(
+        FilePlugin::FileResourceInfo& resourceInfo,
+        const FilePlugin::ListResourceParam& listResourceParam) override;
 
 private:
     std::string NormalizeDirectoryPath(std::string path);
+    void TransformResultForDisk(AppProtect::ResourceResultByPage& returnValue,
+        const FilePlugin::FileResourceInfo& resourceInfo) override;
+        
+    void TransformResultForVolume(
+        AppProtect::ResourceResultByPage& returnValue,
+        const FileResourceInfo& resourceInfo) override;
 
     void BrowseFolderByPage(
         FilePlugin::FileResourceInfo& resourceInfo,
         const std::string& parentPath,
         int pageNo,
         int pageSize);
+    bool GetTargetDiskInfo(FilePlugin::FileResourceInfo& resourceInfo);
+    uint64_t GetDiskSize(std::string diskSizeStr);
 };
 
 }

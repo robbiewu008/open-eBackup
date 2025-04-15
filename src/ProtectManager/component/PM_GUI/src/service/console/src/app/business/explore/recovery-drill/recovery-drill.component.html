@@ -64,8 +64,8 @@
                 <lv-group lvGutter="8px" class="drill-title-group">
                     <h2>{{ 'explore_drill_abnormal_result_label' | i18n:[abnormalResultTotal] }}</h2>
                     <a lvDropdownPanelClass="job-resource-dropdown" class="tittle" lv-dropdown
-                        [lvDropdownMenus]="joibOptions">
-                        {{ joibTimeText }}
+                        [lvDropdownMenus]="jobOptions">
+                        {{ jobTimeText }}
                         <i #lvDropdownTrigger lv-icon="lv-icon-triangle-down"></i></a>
                 </lv-group>
                 <div class="abnormal-table restore-lv-paginator-simple">
@@ -222,10 +222,10 @@
             </span>
             <span lv-overflow class="aui-text-label">
                 <ng-container *ngIf="_isEn">
-                    {{'protection_last_time_label' | i18n}}:{{item.startTime | date: 'yyyy-MM-dd HH:mm:ss' | nil}}
+                    {{'protection_last_time_label' | i18n}}:{{item.startTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil}}
                 </ng-container>
                 <ng-container *ngIf="!_isEn">
-                    {{'protection_last_time_label' | i18n}}：{{item.startTime | date: 'yyyy-MM-dd HH:mm:ss' | nil}}
+                    {{'protection_last_time_label' | i18n}}：{{item.startTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil}}
                 </ng-container>
             </span>
         </lv-group>
@@ -237,14 +237,13 @@
 </ng-template>
 
 <ng-template #recentJobStartTimeTpl let-item>
-    <span lv-overflow>{{item.nextExecuteTime | date: 'yyyy-MM-dd HH:mm:ss' | nil}}</span>
+    <span lv-overflow>{{item.nextExecuteTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil}}</span>
 </ng-template>
 
 
 <ng-template #elseNoDataTemplate>
     <div class="no-data">
-        <i lv-icon="lv-icon-no-data"></i>
-        <div class="no-data-label">{{'common_no_data_label' | i18n}}</div>
+        <lv-empty></lv-empty>
     </div>
 </ng-template>
 

@@ -39,10 +39,9 @@ class Snap:
         查询节点中的所有逻辑卷
         :return:
         """
-        ret, lvs_cont = self.cmd.show_lv_info()
+        ret, lvs_json = self.cmd.show_lv_info()
         if not ret:
             return []
-        lvs_json = json.loads(lvs_cont)
         report = lvs_json.get("report", [])
         if not report:
             return []
@@ -54,10 +53,9 @@ class Snap:
         查询节点中的所有卷组
         :return:
         """
-        ret, vgs_cont = self.cmd.show_vg_info()
+        ret, vgs_json = self.cmd.show_vg_info()
         if not ret:
             return []
-        vgs_json = json.loads(vgs_cont)
         report = vgs_json.get("report", [])
         for vg in report:
             if "vg" in vg:

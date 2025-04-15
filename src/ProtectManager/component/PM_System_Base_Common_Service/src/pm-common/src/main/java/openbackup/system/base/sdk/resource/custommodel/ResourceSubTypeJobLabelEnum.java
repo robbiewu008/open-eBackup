@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.sdk.resource.custommodel;
 
-import openbackup.system.base.common.utils.VerifyUtil;
-
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.utils.VerifyUtil;
 
 import org.apache.logging.log4j.util.Strings;
 

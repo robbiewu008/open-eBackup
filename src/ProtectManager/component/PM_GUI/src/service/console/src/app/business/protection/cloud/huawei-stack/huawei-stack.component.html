@@ -34,10 +34,11 @@
                 </div>
                 <div class="tree-container">
                     <ng-container *ngIf="treeData.length;else noDataTpl">
-                        <lv-tree lvCompareWith="uuid" [lvData]='treeData' [(lvSelection)]="treeSelection"
-                            lvSelectionMode='single' [lvBeforeSelected]="beforeSelected" (lvCheck)="nodeCheck($event)"
-                            lvShowContentIcon (lvExpandedChange)="expandedChange($event)" [lvNodeTemplate]='nodeTpl'
-                            [lvScroll]='virtualScroll.scrollParamMap["hcs-tree"]' lvVirtualScroll>
+                        <lv-tree lvCompareWith="uuid" lvSelectionAssociate="false" [lvData]='treeData'
+                            [(lvSelection)]="treeSelection" lvSelectionMode='single' [lvBeforeSelected]="beforeSelected"
+                            (lvCheck)="nodeCheck($event)" lvShowContentIcon (lvExpandedChange)="expandedChange($event)"
+                            [lvNodeTemplate]='nodeTpl' [lvScroll]='virtualScroll.scrollParamMap["hcs-tree"]'
+                            lvVirtualScroll>
                         </lv-tree>
                     </ng-container>
                 </div>
@@ -72,8 +73,7 @@
 
 <ng-template #noDataTpl>
     <div class="tree-no-data">
-        <i lv-icon="lv-icon-no-data"></i>
-        <div class="no-data-label">{{'protection_vm_tree_no_data_label'|i18n}}</div>
+        <lv-empty lvDescription="{{'protection_vm_tree_no_data_label' | i18n}}"></lv-empty>
     </div>
 </ng-template>
 

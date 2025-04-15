@@ -15,10 +15,9 @@ package openbackup.system.base.sdk.cluster.model.ha;
 import static openbackup.system.base.common.constants.IsmNumberConstant.FOUR;
 import static openbackup.system.base.common.constants.IsmNumberConstant.THIRTY_TWO;
 
+import lombok.Data;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.validator.constants.RegexpConstants;
-
-import lombok.Data;
 
 import java.util.List;
 

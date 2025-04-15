@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -17,7 +17,8 @@ import {
   SysbackupApiService,
   I18NService,
   WarningMessageService,
-  DataMap
+  DataMap,
+  SYSTEM_TIME
 } from 'app/shared';
 import { Observable, Observer } from 'rxjs';
 import { DatePipe } from '@angular/common';
@@ -64,7 +65,13 @@ export class BackupRestoreComponent implements OnInit {
           this.isCyberengine
             ? 'system_cyber_backup_restore_warn_label'
             : 'system_backup_restore_warn_label',
-          [this.datePipe.transform(this.data.backupTime, 'yyyy-MM-dd HH:mm:ss')]
+          [
+            this.datePipe.transform(
+              this.data.backupTime,
+              'yyyy-MM-dd HH:mm:ss',
+              SYSTEM_TIME.timeZone
+            )
+          ]
         ),
         onOK: () => {
           if (this.formGroup.invalid) {
@@ -76,16 +83,16 @@ export class BackupRestoreComponent implements OnInit {
             },
             imagesId: this.data.id
           };
-          this.sysbackupApiService.recoveryUsingPOST(params).subscribe(
-            () => {
+          this.sysbackupApiService.recoveryUsingPOST(params).subscribe({
+            next: () => {
               observer.next();
               observer.complete();
             },
-            error => {
+            error: error => {
               observer.error(error);
               observer.complete();
             }
-          );
+          });
         },
         onCancel: () => {
           observer.error(null);

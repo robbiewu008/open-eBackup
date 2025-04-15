@@ -32,4 +32,26 @@
             </lv-form-control>
         </lv-form-item>
     </ng-container>
+    <ng-container *ngIf="isSupportSignVerify">
+        <lv-form-item>
+            <lv-form-label>
+                {{'system_verify_signature_label' | i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-switch formControlName="needSignVerify"></lv-switch>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
+    <ng-container *ngIf="!formGroup.value.needSignVerify">
+        <lv-form-item>
+            <lv-form-label>
+                {{passwordLabel}}
+                <i lv-icon="aui-icon-help" [lv-tooltip]="passwordTipLabel"
+                    lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint" lvColorState='true'></i>
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="superDmPwdErrorTip">
+                <aui-inupt-with-eye formControlName="superDmPwd" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
 </lv-form>

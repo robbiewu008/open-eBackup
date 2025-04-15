@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -176,11 +176,15 @@ export class InstanceRegisterComponent implements OnInit {
     const url =
       this.formGroup.get('verifyScript').value === 'gbase8a'
         ? `/console/assets/help/a8000/${
-            this.i18n.isEn ? 'en-us/index.html#en-us' : 'zh-cn/index.html#zh-cn'
-          }_topic_0000001839142185.html`
+            this.i18n.isEn
+              ? 'en-us/index.html#en-us_topic_0000002164771390.html'
+              : 'zh-cn/index.html#GBase_8a_00011.html'
+          }`
         : `/console/assets/help/a8000/${
-            this.i18n.isEn ? 'en-us/index.html#en-us' : 'zh-cn/index.html#zh-cn'
-          }_topic_0000001839188557.html`;
+            this.i18n.isEn
+              ? 'en-us/index.html#en-us_topic_0000002200155025.html'
+              : 'zh-cn/index.html#SAP_HANA_0012.html'
+          }`;
     this.appUtilsService.openSpecialHelp(url);
   }
 
@@ -644,7 +648,7 @@ export class InstanceRegisterComponent implements OnInit {
       })
       .subscribe(res => {
         const result = res;
-        const scriptArray = [];
+        let scriptArray = [];
         const scripts = keys(result);
 
         each(scripts, item => {
@@ -660,6 +664,25 @@ export class InstanceRegisterComponent implements OnInit {
             supportType: get(result, `${item}.resource.auth.supportType`)
           });
         });
+        // gbase8a只有sharding一种模式，hana是另外三种模式
+        if (
+          this.formGroup.get('databaseType').value ===
+          DataMap.generalDbClusterType.sharding.value
+        ) {
+          scriptArray = filter(scriptArray, item => {
+            return item.value !== 'saphana';
+          });
+        } else {
+          scriptArray = filter(scriptArray, item => {
+            return item.value !== 'gbase8a';
+          });
+        }
+        // E6000不支持Gbase8a
+        if (this.appUtilsService.isDistributed) {
+          scriptArray = filter(scriptArray, item => {
+            return item.value !== 'gbase8a';
+          });
+        }
         this.scriptOptions = scriptArray;
 
         if (!isEmpty(this.item)) {

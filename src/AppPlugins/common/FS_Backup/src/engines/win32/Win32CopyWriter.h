@@ -30,7 +30,9 @@ public:
 private:
     /* Hint:: can be unified later */
     int WriteMeta(FileHandle& fileHandle) override;
+    int WriteSubStreams(FileHandle& fileHandle);
     void ProcessWriteEntries(FileHandle& fileHandle) override;
+    void ProcessWriteEntriesPart2(FileHandle& fileHandle);
     /* Hint:: can be unified later */
     void ProcessWriteData(FileHandle& fileHandle) override;
     bool IsComplete() override;
@@ -39,6 +41,8 @@ private:
     void PostFileSucceedCopiedOperation(const FileHandle& fileHandle);
     void PostFileFailCopiedOperation(const FileHandle& fileHandle);
     void CloseOpenedHandle() override;
+    void HandleSuccessEventCloseDst(FileHandle& fileHandle);
+    void HandleSuccessEventWriteMeta(FileHandle& fileHandle);
 };
 
 #endif  // WIN32_COPY_WRITER_H

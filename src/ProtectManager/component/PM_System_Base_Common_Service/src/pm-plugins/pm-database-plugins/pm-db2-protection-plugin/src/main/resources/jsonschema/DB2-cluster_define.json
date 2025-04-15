@@ -42,7 +42,8 @@
           "enum": [
             "dpf",
             "powerHA",
-            "hadr"
+            "hadr",
+            "rhelHA"
           ]
         }
       },

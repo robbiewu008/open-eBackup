@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   Component,
@@ -56,7 +56,9 @@ import {
   isUndefined,
   map,
   set,
-  size
+  size,
+  some,
+  tail
 } from 'lodash';
 import { Observable, Subscription } from 'rxjs';
 
@@ -69,6 +71,7 @@ export class BaseTableTemplateComponent
   implements OnInit, OnChanges, OnDestroy, AfterViewInit {
   @Input() subUnitType;
   @Input() subType: string;
+  @Input() treeNodeChecked: any;
   @Input() treeSelection: any;
   @Input() extParams;
   @Input() ID;
@@ -80,6 +83,7 @@ export class BaseTableTemplateComponent
   @Input() showSelect;
   @Output() updateTable = new EventEmitter();
   @Output() baseSelectChange = new EventEmitter<any>();
+  @Output() resourceGroupChange = new EventEmitter<any>();
 
   resType = DataMap.Resource_Type; // 本页面用到了非常多所以缩减长度
   tableConfig: TableConfig;
@@ -88,6 +92,7 @@ export class BaseTableTemplateComponent
   name: string;
   isVmware = false;
   isFc = false;
+  isFo = false;
   isHcs = false;
   isOpenstack = false;
   isVmGroup = false; // 资源组
@@ -103,6 +108,8 @@ export class BaseTableTemplateComponent
   groupTipTpl: TemplateRef<any>;
   @ViewChild('hypervStatusTpl', { static: true })
   hypervStatusTpl: TemplateRef<any>;
+  @ViewChild('nutanixStatusTpl', { static: true })
+  nutanixStatusTpl: TemplateRef<any>;
   @ViewChild('rhvVersionTpl', { static: true })
   rhvVersionTpl: TemplateRef<any>;
 
@@ -120,6 +127,7 @@ export class BaseTableTemplateComponent
   ngOnInit() {
     this.isVmware = this.appType === ResourceSetType.VMware;
     this.isFc = this.appType === ResourceSetType.FusionCompute;
+    this.isFo = this.appType === ResourceSetType.FusionOne;
     this.isHcs = this.appType === ResourceSetType.HCSStack;
     this.isOpenstack = this.appType === ResourceSetType.OpenStack;
     this.isVmGroup = this.subType === this.resType.vmGroup.value;
@@ -127,14 +135,17 @@ export class BaseTableTemplateComponent
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.treeSelection && this.isVmGroup) {
+    if (changes.treeNodeChecked && this.isVmGroup) {
       // 云平台的虚拟机组最初加载不出dataTable
       defer(() => {
+        this.dataTable.reinit();
         this.dataTable.stopPolling();
         this.dataTable.fetchData();
       });
     }
-    if (changes.treeSelection && this.dataTable && !this.isVmGroup) {
+
+    if (changes.treeNodeChecked && this.dataTable && !this.isVmGroup) {
+      this.dataTable.reinit();
       this.dataTable.stopPolling();
       this.dataTable.fetchData();
     }
@@ -179,6 +190,7 @@ export class BaseTableTemplateComponent
 
   ngAfterViewInit() {
     this.getFetchState();
+    this.dataTable.fetchData();
   }
 
   getFetchState() {
@@ -196,11 +208,31 @@ export class BaseTableTemplateComponent
     this.syncData$ = this.globalService
       .getState(`${this.appType}syncData`)
       .subscribe(res => {
-        this.selectionData = this.selectionData.filter(item =>
-          find(this.allSelectionMap[this.appType].data, { uuid: item.uuid })
-        );
-        this.dataTable.setSelections(cloneDeep(this.selectionData));
+        this.parseFetchData();
       });
+  }
+
+  private parseFetchData() {
+    let currentType = this.isVmGroup
+      ? ResourceSetType.RESOURCE_GROUP
+      : this.appType;
+    this.selectionData = this.selectionData.filter(item =>
+      find(this.allSelectionMap[currentType].data, { uuid: item.uuid })
+    );
+    if (!isEmpty(this.allSelectionMap[currentType]?.data)) {
+      each(this.tableData.data, item => {
+        if (
+          some(this.allSelectionMap[currentType].data, {
+            uuid: item.uuid
+          }) &&
+          !some(this.selectionData, { uuid: item.uuid })
+        ) {
+          this.selectionData.push(item);
+        }
+      });
+    }
+
+    this.dataTable.setSelections(cloneDeep(this.selectionData));
   }
 
   getSelectedData() {
@@ -209,12 +241,21 @@ export class BaseTableTemplateComponent
       scopeModule: this.appType,
       type: ResourceSetType.RESOURCE_GROUP
     };
-    this.resourceSetService.QueryResourceObjectIdList(params).subscribe(res => {
+    this.resourceSetService.queryResourceObjectIdList(params).subscribe(res => {
       set(this.allSelectionMap, ResourceSetType.RESOURCE_GROUP, {
         data: map(res, item => {
-          return { uuid: item };
+          return { uuid: item, scopeType: this.appType };
         })
       });
+      this.selectionData = cloneDeep(
+        this.allSelectionMap[ResourceSetType.RESOURCE_GROUP].data
+      );
+      // 资源组由于只用scopemodule来区分，放在一个大类里，所以每次修改时展开需要存入表去在下发的时候进行比较
+      if (!!this.selectionData.length) {
+        this.resourceGroupChange.emit(this.appType);
+      }
+      this.dataTable.setSelections(cloneDeep(this.selectionData));
+      this.baseSelectChange.emit();
     });
   }
 
@@ -427,13 +468,11 @@ export class BaseTableTemplateComponent
             });
             this.selectionData = selection;
           }
-          // 修改状态下需要在所有的selectionData都把取消的那个删掉，不然父子关联会有问题，导致selectionMap里面没有真正删除
-          if (!!this.data) {
-            this.globalService.emitStore({
-              action: `${this.appType}syncData`,
-              state: true
-            });
-          }
+          // 需要在所有的selectionData都把取消的那个删掉，不然父子关联会有问题，导致selectionMap里面没有真正删除,同时触发左树的数据选择同步
+          this.globalService.emitStore({
+            action: `${this.appType}syncData`,
+            state: true
+          });
           // 触发父子关联选择
           defer(() => {
             this.globalService.emitStore({
@@ -465,17 +504,23 @@ export class BaseTableTemplateComponent
       [this.resType.cNwareHost.value]: 'cnwareLinkStatus',
       [this.resType.APSCloudServer.value]: 'ApsaraStackStatus',
       [this.resType.hyperVVm.value]: 'hypervStatus',
-      [this.resType.hyperVHost.value]: 'resource_LinkStatus_Special',
+      [this.resType.hyperVHost.value]: 'hypervHostStatus',
       [this.resType.hostSystem.value]: 'resource_LinkStatus',
       [this.resType.virtualMachine.value]: 'vm_LinkStatus',
       [this.resType.fusionComputeVirtualMachine.value]: 'fcVMLinkStatus',
       [this.resType.HCSCloudHost.value]: 'HCS_Host_LinkStatus',
-      [this.resType.openStackCloudServer.value]: 'HCS_Host_LinkStatus'
+      [this.resType.openStackCloudServer.value]: 'HCS_Host_LinkStatus',
+      [this.resType.nutanixHost.value]: 'nutanixHostStatus',
+      [this.resType.nutanixVm.value]: 'nutanixVmStatus'
     };
     let specialTpl; // 处理特殊的cellRender
     switch (this.subType) {
       case this.resType.hyperVVm.value:
         specialTpl = this.hypervStatusTpl;
+        break;
+      case this.resType.nutanixHost.value:
+      case this.resType.nutanixVm.value:
+        specialTpl = this.nutanixStatusTpl;
         break;
       default:
         null;
@@ -497,24 +542,47 @@ export class BaseTableTemplateComponent
         options: this.dataMapService
           .toArray(statusMap[this.subType])
           .filter(item => {
-            return this.isFc
-              ? [
-                  DataMap.fcVMLinkStatus.running.value,
-                  DataMap.fcVMLinkStatus.stopped.value,
-                  DataMap.fcVMLinkStatus.unknown.value
-                ].includes(item.value)
-              : this.isOpenstack || this.isHcs
-              ? [
-                  DataMap.HCS_Host_LinkStatus.normal.value,
-                  DataMap.HCS_Host_LinkStatus.offline.value,
-                  DataMap.HCS_Host_LinkStatus.suspended.value,
-                  DataMap.HCS_Host_LinkStatus.error.value,
-                  DataMap.HCS_Host_LinkStatus.softDelete.value
-                ].includes(item.value)
-              : true;
+            return this.getFilterOps(item);
           })
       }
     };
+  }
+
+  getFilterOps(item) {
+    if (this.isFc || this.isFo) {
+      return [
+        DataMap.fcVMLinkStatus.running.value,
+        DataMap.fcVMLinkStatus.stopped.value,
+        DataMap.fcVMLinkStatus.unknown.value
+      ].includes(item.value);
+    }
+
+    if (this.isOpenstack || this.isHcs) {
+      return [
+        DataMap.HCS_Host_LinkStatus.normal.value,
+        DataMap.HCS_Host_LinkStatus.offline.value,
+        DataMap.HCS_Host_LinkStatus.suspended.value,
+        DataMap.HCS_Host_LinkStatus.error.value,
+        DataMap.HCS_Host_LinkStatus.softDelete.value
+      ].includes(item.value);
+    }
+
+    if (this.subType === this.resType.nutanixHost.value) {
+      return [
+        DataMap.nutanixHostStatus.normal.value,
+        DataMap.nutanixHostStatus.new.value
+      ].includes(item.value);
+    }
+
+    if (this.subType === this.resType.nutanixVm.value) {
+      return [
+        DataMap.nutanixVmStatus.on.value,
+        DataMap.nutanixVmStatus.off.value,
+        DataMap.nutanixVmStatus.unknown.value
+      ].includes(item.value);
+    }
+
+    return true;
   }
 
   getCols(cols: { [key: string]: TableCols }): TableCols[] {
@@ -522,8 +590,10 @@ export class BaseTableTemplateComponent
     const nameCols = [cols.uuid, cols.name];
     switch (this.subType) {
       case this.resType.cNwareCluster.value:
+      case DataMap.Resource_Type.nutanixCluster.value:
         return [...nameCols, cols.location, cols.sla, cols.protectionStatus];
       case this.resType.cNwareHost.value:
+      case DataMap.Resource_Type.nutanixHost.value:
         return [
           ...nameCols,
           cols.location,
@@ -532,6 +602,7 @@ export class BaseTableTemplateComponent
           cols.protectionStatus
         ];
       case this.resType.cNwareVm.value:
+      case DataMap.Resource_Type.nutanixVm.value:
         return [
           ...nameCols,
           cols.location,
@@ -596,6 +667,7 @@ export class BaseTableTemplateComponent
           cols.resourceGroupName
         ];
       case DataMap.Job_Target_Type.FusionComputeHost.value:
+      case DataMap.Job_Target_Type.FusionOneComputeHost.value:
       case this.resType.HCSProject.value:
       case this.resType.openStackProject.value:
         return [...nameCols, cols.location, ...baseClos];
@@ -628,21 +700,23 @@ export class BaseTableTemplateComponent
     const extParams = {};
     if (this.isVmGroup) {
       assign(extParams, {
-        path: this.treeSelection?.path,
-        scope_resource_id: this.treeSelection?.uuid
+        path: this.treeNodeChecked?.path,
+        scope_resource_id: this.treeNodeChecked?.uuid
       });
     }
 
     if (this.isVmware && !this.isVmGroup) {
       // VMware
-      return { path: this.treeSelection?.path + '/', type: this.ID };
+      return { path: this.treeNodeChecked?.path + '/', type: this.ID };
     }
 
-    if (this.isFc && !this.isVmGroup) {
+    if ((this.isFc || this.isFo) && !this.isVmGroup) {
       // FC
       return {
-        subType: ResourceType.FUSION_COMPUTE,
-        path: [['=~'], this.treeSelection.path],
+        subType: this.isFc
+          ? ResourceType.FUSION_COMPUTE
+          : ResourceType.FUSION_ONE,
+        path: [['=~'], this.treeNodeChecked.path],
         type: this.ID
       };
     }
@@ -656,7 +730,7 @@ export class BaseTableTemplateComponent
       }
       return assign(extParams, {
         subType: this.subType,
-        path: [['=~'], this.treeSelection.path + '/'],
+        path: [['=~'], this.treeNodeChecked.path + '/'],
         type: this.ID
       });
     }
@@ -672,36 +746,44 @@ export class BaseTableTemplateComponent
           visible: '1'
         });
       }
+      if (this.treeNodeChecked.type !== ResourceType.OpenStack) {
+        assign(extParams, {
+          path: [['=~'], this.treeNodeChecked?.path + '/']
+        });
+      }
       return assign(extParams, {
-        rootUuid: this.treeSelection?.rootUuid,
+        rootUuid: this.treeNodeChecked?.rootUuid,
         subType: [this.subType]
       });
     }
     if (
-      this.treeSelection?.rootUuid &&
+      this.treeNodeChecked?.rootUuid &&
       this.subType !== this.resType.vmGroup.value
     ) {
       assign(extParams, {
-        rootUuid: this.treeSelection?.rootUuid
+        rootUuid: this.treeNodeChecked?.rootUuid
       });
     }
 
     if (
       includes(
         [this.resType.APSZone.value, this.resType.APSRegion.value],
-        this.treeSelection?.subType
+        this.treeNodeChecked?.subType
       ) &&
       !this.isVmGroup
     ) {
       assign(extParams, {
-        path: [['=~'], this.treeSelection?.path + '/']
+        path: [['=~'], this.treeNodeChecked?.path + '/']
       });
     }
     if (
-      includes([this.resType.APSResourceSet.value], this.treeSelection?.subType)
+      includes(
+        [this.resType.APSResourceSet.value],
+        this.treeNodeChecked?.subType
+      )
     ) {
       assign(extParams, {
-        resourceSetName: this.treeSelection.name
+        resourceSetName: this.treeNodeChecked.name
       });
     }
     if (
@@ -709,21 +791,23 @@ export class BaseTableTemplateComponent
         [
           this.resType.cNwareCluster.value,
           this.resType.cNwareHost.value,
-          this.resType.cNwareHostPool.value
+          this.resType.cNwareHostPool.value,
+          this.resType.nutanixCluster.value,
+          this.resType.nutanixHost.value
         ],
-        this.treeSelection?.subType
+        this.treeNodeChecked?.subType
       ) &&
       !this.isVmGroup
     ) {
       assign(extParams, {
-        path: [['=~'], this.treeSelection?.path]
+        path: [['=~'], this.treeNodeChecked?.path]
       });
     }
     return extParams;
   }
 
   getData(filters: Filters, args: any) {
-    if (!this.treeSelection) {
+    if (!this.treeNodeChecked) {
       if (!isEmpty(this.tableData?.data)) {
         this.clearTable();
       }
@@ -747,7 +831,7 @@ export class BaseTableTemplateComponent
 
     if (this.isDetail) {
       // 详情加资源集id
-      if (this.isVmware) {
+      if (this.isVmware && !this.isVmGroup) {
         assign(defaultConditions, {
           resource_set_id: this.data[0].uuid
         });
@@ -807,6 +891,47 @@ export class BaseTableTemplateComponent
         });
         delete conditionsTemp.status;
       }
+      if (conditionsTemp.status) {
+        if (
+          includes(
+            conditionsTemp.status,
+            DataMap.nutanixHostStatus.new.value
+          ) &&
+          this.subType === DataMap.Resource_Type.nutanixHost.value
+        ) {
+          assign(conditionsTemp, {
+            status: [
+              ['in'],
+              ...tail(conditionsTemp.status),
+              DataMap.nutanixHostStatus.notDetachable.value,
+              DataMap.nutanixHostStatus.detachable.value
+            ]
+          });
+        }
+        if (
+          includes(
+            conditionsTemp.status,
+            DataMap.nutanixVmStatus.unknown.value
+          ) &&
+          this.subType === DataMap.Resource_Type.nutanixVm.value
+        ) {
+          assign(conditionsTemp, {
+            status: [
+              ['in'],
+              ...tail(conditionsTemp.status),
+              DataMap.nutanixVmStatus.paused.value,
+              DataMap.nutanixVmStatus.poweringOn.value,
+              DataMap.nutanixVmStatus.shuttingDown.value,
+              DataMap.nutanixVmStatus.poweringOff.value,
+              DataMap.nutanixVmStatus.suspending.value,
+              DataMap.nutanixVmStatus.suspended.value,
+              DataMap.nutanixVmStatus.resuming.value,
+              DataMap.nutanixVmStatus.resetting.value,
+              DataMap.nutanixVmStatus.mirgrating.value
+            ]
+          });
+        }
+      }
       assign(defaultConditions, conditionsTemp);
     }
 
@@ -865,6 +990,28 @@ export class BaseTableTemplateComponent
         total: res.totalCount
       };
 
+      // 云平台的服务器组不在第一层，如果修改的时候需要看有没有获取到，然后手动赋值
+      if (
+        !isEmpty(this.data) &&
+        !isEmpty(this.allSelectionMap[ResourceSetType.RESOURCE_GROUP]?.data) &&
+        [
+          ResourceSetType.HCSStack,
+          ResourceSetType.OpenStack,
+          ResourceSetType.ApsaraStack
+        ].includes(this.appType) &&
+        this.isVmGroup
+      ) {
+        this.selectionData = cloneDeep(
+          this.allSelectionMap[ResourceSetType.RESOURCE_GROUP].data
+        );
+        // 资源组由于只用scopemodule来区分，放在一个大类里，所以每次修改时展开需要存入表去在下发的时候进行比较
+        if (!!this.selectionData.length) {
+          this.resourceGroupChange.emit(this.appType);
+        }
+        this.dataTable.setSelections(cloneDeep(this.selectionData));
+        this.baseSelectChange.emit();
+      }
+
       // 如果父级被选中，则需要把子级选中并且置灰,父级被取消选中则取消置灰,全选状态下不考虑这个
       if (
         !isEmpty(this.allSelectionMap[this.appType]?.data) &&
@@ -908,7 +1055,10 @@ export class BaseTableTemplateComponent
       }
     });
     this.dataTable.setSelections(cloneDeep(this.selectionData));
-    this.parseSelected(currentType);
+    if (!isEmpty(this.allSelectionMap[currentType]?.data)) {
+      this.parseSelected(currentType);
+    }
+
     this.baseSelectChange.emit();
   }
 
@@ -917,6 +1067,8 @@ export class BaseTableTemplateComponent
       case this.resType.cNwareCluster.value:
       case this.resType.cNwareHost.value:
       case this.resType.cNwareVm.value:
+      case DataMap.Resource_Type.nutanixCluster.value:
+      case DataMap.Resource_Type.nutanixHost.value:
         assign(item, JSON.parse(item.extendInfo?.details));
         break;
       case this.resType.APSCloudServer.value:
@@ -929,7 +1081,7 @@ export class BaseTableTemplateComponent
         break;
       case this.resType.hyperVHost.value:
         assign(item, {
-          status: item?.linkStatus ?? '0'
+          status: item.extendInfo?.status
         });
         break;
       case this.resType.HCSTenant.value:

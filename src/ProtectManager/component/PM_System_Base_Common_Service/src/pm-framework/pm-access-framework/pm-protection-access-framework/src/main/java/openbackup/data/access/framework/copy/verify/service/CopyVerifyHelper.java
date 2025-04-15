@@ -12,6 +12,9 @@
 */
 package openbackup.data.access.framework.copy.verify.service;
 
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dme.CopyVerifyStatusEnum;
 import openbackup.data.access.framework.copy.mng.constant.CopyPropertiesKeyConstant;
 import openbackup.data.access.framework.copy.verify.constant.CopyVerifyTaskErrorCode;
@@ -30,10 +33,6 @@ import openbackup.system.base.sdk.job.model.request.JobMessage;
 import openbackup.system.base.sdk.lock.LockRequest;
 import openbackup.system.base.sdk.lock.LockResource;
 import openbackup.system.base.sdk.lock.LockTypeEnum;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.util.Assert;
 

@@ -12,57 +12,55 @@
 */
 #ifndef MODULE_THREADPOOL_H
 #define MODULE_THREADPOOL_H
-#include "define/Defines.h"
 #include <queue>
 #include <mutex>
 #include <atomic>
+#include "define/Defines.h"
 #include "boost/shared_ptr.hpp"
 #include "boost/thread.hpp"
 #include "boost/asio.hpp"
 #include "SingleItemQueue.h"
 
-namespace Module
-{
-    class NullItem : public std::exception
-    {
+namespace Module {
+    class NullItem : public std::exception {
         std::string message;
     public:
         NullItem() : message("NullItem") { }
-        virtual ~NullItem() throw() { }
-        virtual const char* what() const throw() { return message.c_str(); }
+        ~NullItem() noexcept override { }
+        const char* what() const noexcept override { return message.c_str(); }
     };
 
-    class ExecutableItem
-    {
+    class ExecutableItem {
     public:
         virtual void Exec() { return; };
         inline int& Result() { return m_result; }
         int m_result;
-        //coverity fix: define a virtual destruct
+        // coverity fix: define a virtual destruct
         virtual ~ExecutableItem(){};
     };
 
-    typedef std::shared_ptr< UnlimitedQueue<ExecutableItem> > STPOutput;
-    typedef SingleItemQueue<ExecutableItem> STPInput;
+    using STPOutput = std::shared_ptr< UnlimitedQueue<ExecutableItem> >;
+    using STPInput = SingleItemQueue<ExecutableItem>;
 
-    class ThreadPool
-    {
+    class ThreadPool {
     public:
-        ThreadPool(size_t nThreads);
+        explicit ThreadPool(size_t nThreads);
         std::thread** m_Threads = NULL;
         size_t m_threadNum;
         virtual ~ThreadPool();
         SingleItemQueue<ExecutableItem>* GetInputQueue();
         STPInput m_input;
+        std::atomic<bool>* m_threadWorkingFlags; // 每个线程的工作状态标志
+        bool GetThreadWorkStatus(ThreadPool* pool, size_t threadID);
     protected:
         virtual void Run(std::shared_ptr<ExecutableItem>& item);
-        virtual void WorkerLoop();
+        virtual void WorkerLoop(size_t threadID);
         ThreadPool(const ThreadPool& other);
         ThreadPool& operator=(const ThreadPool& other);
         
         std::shared_ptr<ExecutableItem> m_haltItem;
         
-        friend void CreateThreads(ThreadPool* pool,size_t nThread);
+        friend void CreateThreads(ThreadPool* pool, size_t nThread);
         friend void DeleteThreads(ThreadPool* pool);
     };
 
@@ -89,40 +87,37 @@ namespace Module
         public:
             ItemWrapper(std::shared_ptr<ExecutableItem> item, STPOutput output);
             virtual void Exec();
-            virtual ~ItemWrapper() = default; 
+            virtual ~ItemWrapper() = default;
         };
     };
 
-    class ExcutebleObject :public ExecutableItem
-    {
+    class ExcutebleObject : public ExecutableItem {
     public:
-        
-       virtual void Read() =0;
-       virtual void Write() =0;
-       virtual void Exec() = 0;
-       virtual void Finish(){};
-       virtual void Next() {};
+    
+    virtual void Read() =0;
+    virtual void Write() =0;
+    void Exec() override = 0;
+    virtual void Finish(){};
+    virtual void Next() {};
 
-       int GetState(){return m_State;}
-       void SetState(int state){m_State = state;}
-       int GetQueueType(){return m_QueueType;}
-       void SetQueueType(int queueType){m_QueueType = queueType;}
+    int GetState(){return m_State;}
+    void SetState(int state){m_State = state;}
+    int GetQueueType(){return m_QueueType;}
+    void SetQueueType(int queueType){m_QueueType = queueType;}
  
     private:
         int m_State;
         int m_QueueType;
     };
 
-    enum OBJECT_STATE
-    {
+    enum class OBJECT_STATE {
         READ_WRITE_OBJECT_STATE_READ,
         READ_WRITE_OBJECT_STATE_WRITE,
         READ_WRITE_OBJECT_STATE_EXEC,
         READ_WRITE_OBJECT_STATE_FINISH,
     };
 
-    enum QUEUE_TYPE
-    {
+    enum class QUEUE_TYPE {
         QUEUE_TYPE_PRODUCT,
         QUEUE_TYPE_BACKUP,
     };

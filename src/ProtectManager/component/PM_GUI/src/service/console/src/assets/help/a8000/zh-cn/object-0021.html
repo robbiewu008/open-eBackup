@@ -1,0 +1,118 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤7：执行备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="object-0013.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="object-0021">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤7：执行备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="object-0021"></a><a name="object-0021"></a>
+
+<h1 class="topictitle1">步骤7：执行备份</h1>
+<div><p>执行备份前将需要保护的资源关联到指定SLA，系统将对这些资源按照SLA进行保护，并根据SLA周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><ul><li>手动备份时，SLA中定义的参数（<span class="uicontrol">“<span>失败后自动重试</span>”</span>除外）会应用到手动备份任务中。</li><li>手动备份产生的副本保留时长按照SLA中的定义进行保留。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="object-0021__zh-cn_topic_0000002199964685_uicontrol31735811411">“<span id="object-0021__zh-cn_topic_0000002199964685_text4171858161413">保护</span> &gt; 文件系统 &gt; <span id="object-0021__zh-cn_topic_0000002199964685_text6353164213157">对象存储</span>”</span>。</span></li><li><span>单击“对象集合”页签，勾选需要保护的对象集合，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p><p>您也可以勾选多个对象集合进行批量保护。</p>
+</p></li><li><span>选择SLA。</span><p><div class="p" id="object-0021__zh-cn_topic_0000002200146973_p16181740836">您也可以单击<span class="uicontrol" id="object-0021__zh-cn_topic_0000002200146973_uicontrol744210206420">“<span id="object-0021__zh-cn_topic_0000002200146973_text1873812341015">创建</span>”</span>，创建新的SLA。<div class="note" id="object-0021__zh-cn_topic_0000002200146973_note25947145710"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="object-0021__zh-cn_topic_0000002200146973_p125947145711"><span id="object-0021__zh-cn_topic_0000002200146973_ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
+</div></div>
+</div>
+</p></li><li><span>配置对象集合保护高级参数。</span><p><div class="p">相关参数说明如<a href="#object-0021__zh-cn_topic_0000001792548340_table354613271506">表1</a>所示。
+<div class="tablenoborder"><a name="object-0021__zh-cn_topic_0000001792548340_table354613271506"></a><a name="zh-cn_topic_0000001792548340_table354613271506"></a><table cellpadding="4" cellspacing="0" summary="" id="object-0021__zh-cn_topic_0000001792548340_table354613271506" frame="border" border="1" rules="all"><caption><b>表1 </b>对象集合保护高级参数说明</caption><colgroup><col style="width:19.75%"><col style="width:80.25%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="19.75%" id="mcps1.3.3.2.4.2.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="80.25%" id="mcps1.3.3.2.4.2.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p>ACL备份</p>
+</td>
+<td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>默认关闭，开启后，将备份桶和对象的ACL属性，同时也会降低对象扫描速度。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p>断点续备</p>
+</td>
+<td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p>默认关闭，开启后，如果上次备份失败后再次执行备份，备份任务则会基于上次备份中断的地方继续备份，而不需要重新开始备份。默认重试次数为3次。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>如果在进入备份阶段前备份任务就已失败，则下次备份无法触发断点续备功能。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p>使用桶日志进行增量扫描</p>
+</td>
+<td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p><span style="color:#282B33;">针对待备份的桶，如需开启使用桶日志进行增量扫描，请确保：</span></p>
+<ul><li><span style="color:#282B33;">该桶已打开桶日志开关并对桶日志进行相关配置。</span></li><li><span style="color:#282B33;">备份所使用的用户对用于存储该桶相关日志的桶有读权限。</span></li></ul>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>仅对象存储类型为华为云Stack对象存储时展示该参数。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p><span>小文件聚合</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p><span style="color:#282B33;">开启后，系统将同一目录下的多个小文件聚合为大文件，提升备份效率，若SLA设置了增量备份，则不支持关闭小文件聚合。若SLA设置了永久增量（合成全量）备份，则不支持开启小文件聚合。</span><span style="color:#1A1A1A;">单目录下子目录数+文件数超过100万时，不建议开启聚合。</span></p>
+<ul><li id="object-0021__files-0016_li1322365713546">聚合后文件大小：多个小文件聚合后产生的聚合文件大小。</li><li id="object-0021__files-0016_li1122335714541">最大的被聚合文件大小：最大支持聚合的小文件大小。</li></ul>
+<p>小文件聚合应满足：聚合后文件大小 &gt;= 最大的被聚合文件大小。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p>备份副本自动索引</p>
+</td>
+<td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p><span style="color:#282B33;">开启后，系统自动为副本创建文件索引，创建索引后，支持搜索副本中的文件、目录或链接。</span><span style="color:#282B33;">您也可以为副本手动创建索引。</span></p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="object-0021__vmware_gud_0033_zh-cn_topic_0000001792520410_p0743109201911">索引需要占用备份存储空间，当系统中的索引文件总数超过10亿时，请按照<span id="object-0021__vmware_gud_0033_zh-cn_topic_0000001792520410_cite23814569190">《OceanProtect DataBackup 1.5.0-1.6.0 故障处理》</span>中的“创建副本索引失败”章节进行处理。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="19.75%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.1 "><p>磁带归档副本自动索引</p>
+</td>
+<td class="cellrowborder" valign="top" width="80.25%" headers="mcps1.3.3.2.4.2.1.2.2.3.1.2 "><p><span style="color:#1A1A1A;">默认关闭，当归档存储类型选择为</span><span class="parmvalue" style="color:#1A1A1A;">“磁带库”</span><span style="color:#1A1A1A;">时，显示该参数。当需要查看归档副本内的详细数据，或者需要节省恢复时占用的存储空间，此时可以开启开关。开启后，系统自动为副本创建文件索引，创建索引后，支持恢复单个或多个文件。</span></p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>关闭磁带归档副本自动索引，磁带副本将无法直接恢复到生产存储，会额外在<span>OceanProtect</span>创建临时文件系统，占用备份存储空间，当恢复任务结束后，该临时文件系统会被自动清理回收。</p>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>单击<span class="uicontrol" id="object-0021__zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p><p id="object-0021__zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p>
+</p></li><li><span>执行手动备份。</span><p><p>当您需要立即执行一次备份任务时，可以通过手动备份实现。</p>
+<ol type="a"><li>单击“对象集合”页签，在需要备份的对象集合所在行单击<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>支持选择多个资源批量进行手动备份。勾选多个资源，在页面左上角选择<span class="uicontrol">“<span>更多</span> &gt; <span>手动备份</span>”</span>。</p>
+</div></div>
+</li><li>设置手动备份产生的副本名称。<p>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p>
+</li><li>选择保护策略：全量备份、增量备份或永久增量（合成全量）备份。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>永久增量（合成全量）备份仅在创建增量备份策略时，勾选了<span>“<span>设置为永久增量（合成全量）备份</span>”时展示。</span></li><li><span>如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></li></ul>
+</div></div>
+</li><li>单击<span class="uicontrol">“<span>确定</span>”</span>。</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="object-0013.html">备份对象存储</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

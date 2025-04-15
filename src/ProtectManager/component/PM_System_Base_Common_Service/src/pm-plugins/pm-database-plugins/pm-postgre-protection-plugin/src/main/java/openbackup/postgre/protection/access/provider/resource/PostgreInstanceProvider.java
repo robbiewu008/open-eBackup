@@ -12,12 +12,14 @@
 */
 package openbackup.postgre.protection.access.provider.resource;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceCheckContext;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceConnectionCheckProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.service.InstanceResourceService;
 import openbackup.system.base.common.constants.CommonErrorCode;
@@ -28,12 +30,14 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.cxf.common.util.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * postgre单实例provider
@@ -46,15 +50,30 @@ public class PostgreInstanceProvider implements ResourceProvider {
 
     private final InstanceResourceService instanceResourceService;
 
+    private final ResourceService resourceService;
+
     /**
      * PostgreInstanceProvider构造方法
      *
-     * @param providerManager  provider管理器
+     * @param providerManager provider管理器
      * @param instanceResourceService 实例资源服务
+     * @param resourceService resourceService
      */
-    public PostgreInstanceProvider(ProviderManager providerManager, InstanceResourceService instanceResourceService) {
+    public PostgreInstanceProvider(ProviderManager providerManager, InstanceResourceService instanceResourceService,
+        ResourceService resourceService) {
         this.providerManager = providerManager;
         this.instanceResourceService = instanceResourceService;
+        this.resourceService = resourceService;
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> agents = resourceService.queryDependencyResources(true, DatabaseConstants.AGENTS,
+            Collections.singletonList(resource.getUuid()));
+        dependencies.put(DatabaseConstants.AGENTS, agents);
+        resource.setDependencies(dependencies);
+        return true;
     }
 
     @Override
@@ -94,7 +113,9 @@ public class PostgreInstanceProvider implements ResourceProvider {
     private void setPostgreInstance(ProtectedResource resource, String checkResult) {
         Map<String, String> messageMap = JSONObject.fromObject(checkResult).toMap(String.class);
         resource.setVersion(messageMap.get(DatabaseConstants.VERSION));
-        resource.setExtendInfoByKey(DatabaseConstants.DATA_DIRECTORY, messageMap.get(DatabaseConstants.DATA_DIRECTORY));
+        Map<String, String> extendInfo = Optional.ofNullable(resource.getExtendInfo()).orElseGet(HashMap::new);
+        extendInfo.putAll(messageMap);
+        resource.setExtendInfo(extendInfo);
     }
 
     @Override
@@ -102,6 +123,9 @@ public class PostgreInstanceProvider implements ResourceProvider {
         log.info("start update postgre instance parameters check. resource name: {}", resource.getName());
         // check实例端口是否被修改
         instanceResourceService.checkSignalInstancePortIsChanged(resource);
+        // 检查实例连通性
+        String checkResult = checkConnection(resource);
+        setPostgreInstance(resource, checkResult);
 
         // 检查实例连通性
         checkConnection(resource);

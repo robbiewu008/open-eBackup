@@ -1,17 +1,18 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import {
+  ApplicationType,
   CommonConsts,
   CopiesService,
   CopyControllerService,
@@ -22,6 +23,7 @@ import {
   isSlaResourceSubType,
   ProjectedObjectApiService
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { assign, each, filter, includes, isEmpty, trim } from 'lodash';
 
 @Component({
@@ -44,6 +46,15 @@ export class SlaAssociateResourceComponent implements OnInit {
   sizeOptions = CommonConsts.PAGE_SIZE_OPTIONS;
   isHyperdetect =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.hyperdetect.value;
+  E6000RejectType = [
+    DataMap.Job_Target_Type.NASFileSystem.value,
+    DataMap.Job_Target_Type.commonShare.value,
+    DataMap.Job_Target_Type.ActiveDirectory.value,
+    DataMap.Job_Target_Type.ExchangeSingle.value,
+    DataMap.Job_Target_Type.ExchangeGroup.value,
+    DataMap.Job_Target_Type.ExchangeDataBase.value,
+    DataMap.Job_Target_Type.ExchangeEmail.value
+  ]; // E6000不支持的应用
   columns = [
     {
       key: 'name',
@@ -57,6 +68,12 @@ export class SlaAssociateResourceComponent implements OnInit {
         .toArray('Job_Target_Type', [
           DataMap.Job_Target_Type.LocalFileSystem.value
         ])
+        .filter(item => {
+          if (this.appUtilsService.isDistributed) {
+            return !includes(this.E6000RejectType, item.value);
+          }
+          return true;
+        })
         .filter(item => isSlaResourceSubType(item.value))
     },
     {
@@ -94,6 +111,12 @@ export class SlaAssociateResourceComponent implements OnInit {
             .toArray('Job_Target_Type', [
               DataMap.Job_Target_Type.LocalFileSystem.value
             ])
+            .filter(item => {
+              if (this.appUtilsService.isDistributed) {
+                return !includes(this.E6000RejectType, item.value);
+              }
+              return true;
+            })
             .filter(item => isSlaResourceSubType(item.value))
         },
         {
@@ -138,7 +161,8 @@ export class SlaAssociateResourceComponent implements OnInit {
     private dataMapService: DataMapService,
     private copiesApiService: CopiesService,
     private copyControllerService: CopyControllerService,
-    private projectedObjectApiService: ProjectedObjectApiService
+    private projectedObjectApiService: ProjectedObjectApiService,
+    private appUtilsService: AppUtilsService
   ) {}
 
   ngOnInit() {

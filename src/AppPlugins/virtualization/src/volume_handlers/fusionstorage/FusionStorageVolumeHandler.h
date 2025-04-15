@@ -58,9 +58,14 @@ public:
     void ReleaseBufferCache(const uint64_t &offsetInBytes, const uint64_t &readLen);
     int32_t Flush();
     std::shared_ptr<JobHandle> GetJobHandleInTask();
+    int32_t QueryStoragePoolUsedRate(double &usedCapacityRate) override;
     std::shared_ptr<DiskDeviceFile> GetDiskDeviceFile() override
     {
         return m_spDeviceFile;
+    }
+    void SetOpService(bool isOpService)
+    {
+        m_isOpService = isOpService;
     }
 
     std::shared_ptr<FusionStorageBitmapHandle> m_spBitmapHandle;
@@ -108,6 +113,7 @@ private:
     AppProtect::BackupJobType m_backupType;
     std::string m_apiMode;
     bool m_isBackup;
+    bool m_isOpService {false};
 };
 }  // namespace VirtPlugin
 

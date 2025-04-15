@@ -12,6 +12,12 @@
 */
 package openbackup.oracle.interceptor;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentListener;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
@@ -20,6 +26,7 @@ import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnum;
+import openbackup.data.protection.access.provider.sdk.enums.RestoreLocationEnum;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreModeEnum;
 import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
 import openbackup.data.protection.access.provider.sdk.lock.LockResourceBo;
@@ -34,7 +41,6 @@ import openbackup.data.protection.access.provider.sdk.util.TaskUtil;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.common.DatabaseErrorCode;
 import openbackup.database.base.plugin.interceptor.AbstractDbRestoreInterceptorProvider;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.oracle.constants.OracleConstants;
 import openbackup.oracle.service.OracleBaseService;
 import openbackup.system.base.common.constants.CommonErrorCode;
@@ -49,12 +55,8 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.MessageTemplate;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -67,6 +69,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -95,6 +98,7 @@ public class OracleRestoreProvider extends AbstractDbRestoreInterceptorProvider 
     private final OracleSingleRestoreProvider singleProvider;
     private final OracleClusterRestoreProvider clusterProvider;
     private final ResourceService resourceService;
+    private final DeployTypeService deployTypeService;
     private MessageTemplate<String> messageTemplate;
     private EncryptorService encryptorService;
     private AgentUnifiedService agentUnifiedService;
@@ -107,15 +111,17 @@ public class OracleRestoreProvider extends AbstractDbRestoreInterceptorProvider 
      * @param singleProvider    单机恢复provider
      * @param clusterProvider   集群恢复provider
      * @param resourceService   resourceService
+     * @param deployTypeService   deployTypeService
      */
     public OracleRestoreProvider(CopyRestApi copyRestApi, OracleBaseService oracleBaseService,
             OracleSingleRestoreProvider singleProvider, OracleClusterRestoreProvider clusterProvider,
-            ResourceService resourceService) {
+            ResourceService resourceService, DeployTypeService deployTypeService) {
         this.copyRestApi = copyRestApi;
         this.oracleBaseService = oracleBaseService;
         this.singleProvider = singleProvider;
         this.clusterProvider = clusterProvider;
         this.resourceService = resourceService;
+        this.deployTypeService = deployTypeService;
     }
 
     @Autowired
@@ -143,6 +149,7 @@ public class OracleRestoreProvider extends AbstractDbRestoreInterceptorProvider 
         log.info("oracle restore check start task id: {}.", task.getTaskId());
         TaskUtil.setRestoreTaskSpeedStatisticsEnum(task, SpeedStatisticsEnum.UBC);
         Copy copy = copyRestApi.queryCopyByID(task.getCopyId());
+        checkCopy(task, copy);
         checkRestore(task, copy);
         fillRestoreMode(task, copy);
         fillAdvanceParams(task, copy);
@@ -163,6 +170,12 @@ public class OracleRestoreProvider extends AbstractDbRestoreInterceptorProvider 
             supplySnapshotNodes(task);
         }
         fillRepositoriesForWindows(task);
+
+        // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+        if (deployTypeService.isPacific()) {
+            task.getAdvanceParams().put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        }
+
         log.info("oracle restore check finish task id: {}.", task.getTaskId());
         return task;
     }
@@ -250,7 +263,7 @@ public class OracleRestoreProvider extends AbstractDbRestoreInterceptorProvider 
     private void fillRestoreMode(RestoreTask task, Copy copy) {
         if (CopyGeneratedByEnum.BY_CLOUD_ARCHIVE.value().equals(copy.getGeneratedBy())
                 || CopyGeneratedByEnum.BY_TAPE_ARCHIVE.value().equals(copy.getGeneratedBy())
-        || CopyGeneratedByEnum.BY_IMPORTED.value().equals(copy.getGeneratedBy())) {
+                || CopyGeneratedByEnum.BY_IMPORTED.value().equals(copy.getGeneratedBy())) {
             task.setRestoreMode(RestoreModeEnum.DOWNLOAD_RESTORE.getMode());
         } else {
             task.setRestoreMode(RestoreModeEnum.LOCAL_RESTORE.getMode());
@@ -261,26 +274,28 @@ public class OracleRestoreProvider extends AbstractDbRestoreInterceptorProvider 
 
     private void checkRestore(RestoreTask task, Copy copy) {
         TaskResource targetResource = task.getTargetObject();
-        checkSubType(copy, targetResource);
-        checkVersion(targetResource, copy.getResourceProperties());
+        checkSubType(copy, targetResource, task);
     }
 
-    private void checkVersion(TaskResource targetResource, String resourceProperties) {
-        JSONObject resourceJson = JSONObject.fromObject(resourceProperties);
-        String copyVersion = Optional.ofNullable(resourceJson.get(DatabaseConstants.VERSION).toString())
-                .orElse(StringUtils.EMPTY);
-        ProtectedResource resource = oracleBaseService.getResource(targetResource.getUuid());
-        String targetVersion = resource.getVersion();
-        if (!copyVersion.equals(targetVersion)) {
-            log.error("Oracle restore check version failed, source version: {}, target version: {}",
-                    copyVersion, targetVersion);
-            throw new LegoCheckedException(DatabaseErrorCode.RESTORE_RESOURCE_VERSION_INCONSISTENT,
-                    "Inconsistent Version!");
+    private void checkCopy(RestoreTask task, Copy copy) {
+        if (Objects.nonNull(task) && Objects.nonNull(copy)) {
+            String tables = task.getAdvanceParams().getOrDefault("tables", "");
+            if (StringUtils.isNotBlank(tables)
+                    && copy.getSourceCopyType() == BackupTypeConstants.LOG.getAbBackupType()) {
+                log.error("Log copies do not support table restore, taskId: {}, copy id: {}",
+                        task.getTaskId(), task.getCopyId());
+                throw new LegoCheckedException(CommonErrorCode.SYSTEM_ERROR, "System error");
+            }
         }
     }
 
-    // Oracle不允许从单机恢复到集群
-    private void checkSubType(Copy copy, TaskResource target) {
+    // Oracle不允许从单机恢复到集群, 细粒度恢复支持单机恢复到集群
+    private void checkSubType(Copy copy, TaskResource target, RestoreTask task) {
+        Map<String, String> advanceParams = task.getAdvanceParams();
+        if (Objects.nonNull(advanceParams)
+                && StringUtils.isNotBlank(advanceParams.getOrDefault("tables", ""))) {
+            return;
+        }
         if (ResourceSubTypeEnum.ORACLE.equalsSubType(copy.getResourceSubType())
                 && !ResourceSubTypeEnum.ORACLE.equalsSubType(target.getSubType())) {
             log.error("Oracle restore copy type: {}, target type: {}", copy.getResourceSubType(), target.getSubType());
@@ -307,25 +322,54 @@ public class OracleRestoreProvider extends AbstractDbRestoreInterceptorProvider 
 
     @Override
     protected List<String> findAssociatedResourcesToSetNextFull(RestoreTask task) {
+        log.info("exe oracle findAssociatedResourcesToSetNextFull");
         Copy copy = copyRestApi.queryCopyByID(task.getCopyId());
-        Map<String, Object> conditions = new HashMap<>();
-        conditions.put("name", copy.getResourceName());
-        conditions.put("parentUuid", task.getTargetEnv().getUuid());
-        conditions.put("subType", task.getTargetObject().getSubType());
-        PageListResponse<ProtectedResource> response = resourceService.query(0, 1, conditions);
-        List<ProtectedResource> resources = response.getRecords();
-        if (VerifyUtil.isEmpty(resources)) {
-            return Collections.emptyList();
+        Map<String, Object> conditions1 = new HashMap<>();
+        List<String> pdbNewResourceIds = new ArrayList<String>();
+        if (ResourceSubTypeEnum.ORACLE_PDB.getType().equals(copy.getResourceSubType())
+                && RestoreLocationEnum.ORIGINAL.equals(task.getTargetLocation())) {
+            log.info("PDB ORIGINAL Restore findAssociatedResources:{}", copy.getResourceId());
+            return Collections.singletonList(copy.getResourceId());
+        } else if (ResourceSubTypeEnum.ORACLE_PDB.getType().equals(copy.getResourceSubType())) {
+            conditions1.put(DatabaseConstants.SUB_TYPE, ResourceSubTypeEnum.ORACLE_PDB.getType());
+            conditions1.put(DatabaseConstants.PARENT_UUID, task.getTargetObject().getUuid());
+            int pageNo = 0;
+            PageListResponse<ProtectedResource> data;
+            do {
+                data = resourceService.query(pageNo, IsmNumberConstant.TEN, conditions1);
+                log.info("data getRecords:{}", data.getRecords().toString());
+                data.getRecords().forEach(registeredResource -> {
+                    pdbNewResourceIds.add(registeredResource.getUuid());
+                });
+                pageNo++;
+            } while (data.getRecords().size() >= IsmNumberConstant.TEN);
+            log.info("pdbNewResourceIds{}", pdbNewResourceIds);
+            if (!VerifyUtil.isEmpty(pdbNewResourceIds)) {
+                return pdbNewResourceIds;
+            } else {
+                return Collections.emptyList();
+            }
+        } else {
+            Map<String, Object> conditions = new HashMap<>();
+            conditions.put(DatabaseConstants.NAME, copy.getResourceName());
+            conditions.put(DatabaseConstants.PARENT_UUID, task.getTargetEnv().getUuid());
+            conditions.put(DatabaseConstants.SUB_TYPE, task.getTargetObject().getSubType());
+            PageListResponse<ProtectedResource> response = resourceService.query(0, 1, conditions);
+            List<ProtectedResource> resources = response.getRecords();
+            if (VerifyUtil.isEmpty(resources)) {
+                return Collections.emptyList();
+            }
+            log.info("set oracle next backup type to full. task id: {}, resources: {} next backup is full.",
+                    task.getTaskId(), resources.get(0).getUuid());
+            return Collections.singletonList(resources.get(0).getUuid());
         }
-        log.info("set oracle next backup type to full. task id: {}, resources: {} next backup is full.",
-                task.getTaskId(), resources.get(0).getUuid());
-        return Collections.singletonList(resources.get(0).getUuid());
     }
 
     @Override
     public boolean applicable(String subType) {
         return ResourceSubTypeEnum.ORACLE_CLUSTER.getType().equals(subType)
-                || ResourceSubTypeEnum.ORACLE.getType().equals(subType);
+                || ResourceSubTypeEnum.ORACLE.getType().equals(subType)
+                || ResourceSubTypeEnum.ORACLE_PDB.getType().equals(subType);
     }
 
     @Override
@@ -340,6 +384,7 @@ public class OracleRestoreProvider extends AbstractDbRestoreInterceptorProvider 
         if (!jobStatus.checkSuccess()) {
             return;
         }
+        super.postProcess(task, jobStatus);
         Copy copy = copyRestApi.queryCopyByID(task.getCopyId());
         Map<String, Object> conditions = new HashMap<>();
         conditions.put("parentUuid", task.getTargetEnv().getUuid());

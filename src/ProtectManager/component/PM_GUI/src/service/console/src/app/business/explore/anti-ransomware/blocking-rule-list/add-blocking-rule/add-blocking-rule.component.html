@@ -30,7 +30,7 @@
     </lv-form-item>
     <ng-container *ngIf="formGroup.value.associateVstore">
         <lv-form-item>
-            <lv-form-label></lv-form-label>
+            <lv-form-label class="tenantclass"></lv-form-label>
             <lv-form-control>
                 <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
             </lv-form-control>

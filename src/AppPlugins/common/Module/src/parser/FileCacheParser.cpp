@@ -282,7 +282,11 @@ CTRL_FILE_RETCODE FileCacheParser::WriteFileCache(FileCache &fcache)
         m_writeBuffer.write((char *)&fcacheV20, sizeof(fcacheV20));
         m_currWriteOffset += sizeof(fcacheV20);
     }
-    return CTRL_FILE_RETCODE::SUCCESS;
+    auto ret = CTRL_FILE_RETCODE::SUCCESS;
+    if (m_writeBuffer.tellp() > BINARY_MAX_BUFFER_SIZE) {
+        ret = FlushToFile();
+    }
+    return ret;
 }
 
 void FileCacheParser::ConvertFcacheToV20(const FileCache &fcache, FileCacheV20 &fcacheV20)
@@ -311,6 +315,11 @@ CTRL_FILE_RETCODE FileCacheParser::WriteFileCacheEntries(std::queue<FileCache> &
             m_writeBuffer.write((char *)&fcacheV20, sizeof(fcacheV20));
             m_currWriteOffset += sizeof(fcacheV20);
         }
+        if (m_writeBuffer.tellp() > BINARY_MAX_BUFFER_SIZE) {
+            if (FlushToFile() != CTRL_FILE_RETCODE::SUCCESS) {
+                return CTRL_FILE_RETCODE::FAILED;
+            }
+        }
     }
     return CTRL_FILE_RETCODE::SUCCESS;
 }
@@ -324,6 +333,11 @@ CTRL_FILE_RETCODE FileCacheParser::WriteFileCacheEntries(
         fileCacheQueue.pop();
         m_writeBuffer.write((char *)&fcache, sizeof(fcache));
         m_currWriteOffset += sizeof(fcache);
+        if (m_writeBuffer.tellp() > BINARY_MAX_BUFFER_SIZE) {
+            if (FlushToFile() != CTRL_FILE_RETCODE::SUCCESS) {
+                return CTRL_FILE_RETCODE::FAILED;
+            }
+        }
     }
     return CTRL_FILE_RETCODE::SUCCESS;
 }
@@ -346,14 +360,17 @@ CTRL_FILE_RETCODE FileCacheParser::WriteFileCacheEntries(
 void FileCacheParser::PrintFileCache(const FileCache& fileCache)
 {
     DBGLOG("Write to fcache - %s", m_fileName.c_str());
-    DBGLOG("Write fileCache - inode: %u, mdataoffset: %u, hastag: %u, crc: %u, fileId: %u, metalength: %u, compareFilg: %u",
-        fileCache.m_inode, fileCache.m_mdataOffset, fileCache.m_filePathHash.crc, fileCache.m_fileMetaHash.crc, fileCache.m_fileId, fileCache.m_metaLength, fileCache.m_compareFlag);
+    DBGLOG("Write fileCache - inode: %u, mdataoffset: %u,"
+        "hastag: %u, crc: %u, fileId: %u, metalength: %u, compareFilg: %u",
+        fileCache.m_inode, fileCache.m_mdataOffset, fileCache.m_filePathHash.crc,
+        fileCache.m_fileMetaHash.crc, fileCache.m_fileId, fileCache.m_metaLength, fileCache.m_compareFlag);
 }
 
 CTRL_FILE_RETCODE FileCacheParser::FlushToFile()
 {
     CTRL_FILE_RETCODE ret = WriteToFile(m_writeBuffer, CTRL_BINARY_FILE);
     if (ret != CTRL_FILE_RETCODE::SUCCESS) {
+        ERRLOG("Flush to file Failed");
         return CTRL_FILE_RETCODE::FAILED;
     }
     m_writeBuffer.str("");
@@ -371,6 +388,13 @@ uint64_t FileCacheParser::GetCurrentOffset()
 CTRL_FILE_RETCODE FileCacheParser::ReadFileCacheEntries(std::queue<FileCache> &fcQueue, uint64_t offset,
     uint32_t totalCount, uint16_t metaFileIndex)
 {
+    uint64_t nextOffset = 0;
+    return ReadFileCacheEntries(fcQueue, offset, totalCount, metaFileIndex, nextOffset);
+}
+
+CTRL_FILE_RETCODE FileCacheParser::ReadFileCacheEntries(std::queue<FileCache> &fcQueue, uint64_t offset,
+    uint32_t totalCount, uint16_t metaFileIndex, uint64_t& nextOffset)
+{
     lock_guard<std::mutex> lk(m_lock);
     if (!m_readFd.is_open()) {
         return CTRL_FILE_RETCODE::FAILED;
@@ -380,7 +404,10 @@ CTRL_FILE_RETCODE FileCacheParser::ReadFileCacheEntries(std::queue<FileCache> &f
         return CTRL_FILE_RETCODE::FAILED;
     }
     m_readFd.seekg(offset);
-    return ReadEntries(fcQueue, totalCount, metaFileIndex);
+    CTRL_FILE_RETCODE ret = ReadEntries(fcQueue, totalCount, metaFileIndex);
+    nextOffset = m_readFd.tellg();
+    DBGLOG("read file cache finish. %llu", nextOffset);
+    return ret;
 }
 
 CTRL_FILE_RETCODE FileCacheParser::ReadFileCacheEntries(std::queue<FileCache> &fcQueue, uint32_t maxEntries,

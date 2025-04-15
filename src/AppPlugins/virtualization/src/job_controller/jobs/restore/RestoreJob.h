@@ -55,9 +55,12 @@ enum class State {
     STATE_EXECJOB_PREHOOK,
     STATE_EXECJOB_INITIALIZE,               // 执行子任务_初始化参数
     STATE_EXECJOB_LOAD_DIRTYRANGES,         // 执行子任务_加载dirtyrange
+    STATE_EXECJOB_CHECK_BEFORE_MOUNT,
+    STATE_EXECJOB_PREPARE_MOUNT,
     STATE_EXECJOB_RESTORE_VOLUME,
     STATE_EXECJOB_POWERON_MACHINE,          // 执行子任务_恢复卷
     STATE_EXECJOB_MIGRATE_VOLUME,
+    STATE_EXECJOB_RENAME_MACHINE,
     STATE_EXECJOB_POSTHOOK,
 
     /* 最后的业务子任务 */
@@ -91,7 +94,7 @@ public:
 
     /* 公共函数 */
     bool CommonInfoInit();
-    bool InitHandlers();
+    virtual bool InitHandlers();
     bool InitRestoreParams();
     int PowerOnMachine();
 

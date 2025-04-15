@@ -107,3 +107,19 @@ class ResourceAbility:
             err_msg = "clean persistent mount path failed"
         log.info(f"remove project end result is {err_msg}.")
         ResourceAbility.write_error_param_to_result_file(result_path, err_code, body_err_code, err_msg, parameters)
+
+    @staticmethod
+    @exter_attack
+    def finalize_clear(req_id, job_id, sub_id, data):
+        result_path = os.path.join(ParamConstant.RESULT_PATH, f"result{req_id}")
+        params_from_pm = ResourceParam(req_id)
+        resource_info = TDSQLResourceInfo(req_id, params_from_pm)
+        body_err_code = ExecuteResultEnum.SUCCESS.value
+        err_code = ExecuteResultEnum.SUCCESS.value
+        err_msg = "finalize clear success!"
+        parameters = []
+        if not resource_info.finalize_clear():
+            log.error("fail to clear binlog file")
+            err_msg = "clear binlog file failed"
+        log.info(f"finalize clear end result is {err_msg}.")
+        ResourceAbility.write_error_param_to_result_file(result_path, err_code, body_err_code, err_msg, parameters)

@@ -34,7 +34,7 @@
             {{'common_name_label' | i18n}}
         </lv-form-label>
         <lv-form-control [lvErrorTip]="nameErrorTip">
-            <input lv-input type="text" formControlName="name" />
+            <input lv-input type="text" formControlName="name"  placeholder="{{'common_input_kingbase_instance_name_label' | i18n}}" />
         </lv-form-control>
     </lv-form-item>
 
@@ -71,6 +71,8 @@
         <lv-form-item>
             <lv-form-label lvRequired>
                 {{'common_database_client_path_label' | i18n}}
+              <i lv-icon="aui-icon-help" [lv-tooltip]="pathHelpTpl" lvTooltipTheme="light" class="configform-constraint"
+                 lvColorState='true' (mouseenter)="pathHelpHover()"></i>
             </lv-form-label>
             <lv-form-control [lvErrorTip]='pathErrorTip'>
                 <input lv-input type="text" formControlName="client" />
@@ -79,6 +81,8 @@
         <lv-form-item>
             <lv-form-label lvRequired>
                 {{'common_dataplane_ip_label' | i18n}}
+              <i lv-icon="aui-icon-help" [lv-tooltip]="ipAddressHelpTpl" lvTooltipTheme="light" class="configform-constraint"
+                 lvColorState='true' (mouseenter)="ipAddressHelpHover()"></i>
             </lv-form-label>
             <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
                 <input lv-input type="text" formControlName="business_ip" />
@@ -160,3 +164,10 @@
         <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
     </div>
 </ng-container>
+
+<ng-template #pathHelpTpl>
+  <span [innerHtml]="pathHelp"></span>
+</ng-template>
+<ng-template #ipAddressHelpTpl>
+  <span [innerHtml]="ipAddressHelp"></span>
+</ng-template>

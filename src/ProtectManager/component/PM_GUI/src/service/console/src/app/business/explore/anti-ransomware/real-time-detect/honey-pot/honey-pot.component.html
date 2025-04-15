@@ -38,11 +38,14 @@
 </ng-container>
 <ng-container *ngIf="!realTimeStatus">
     <div class="no-data">
-        <i lv-icon="aui-icon-no-data"></i>
-        <div class="no-data-label" [innerHTML]="noDataTip">
-        </div>
+        <lv-empty [lvDescription]="emptyTpl"></lv-empty>
     </div>
 </ng-container>
+
+<ng-template #emptyTpl>
+    <span [innerHTML]="noDataTip"></span>
+</ng-template>
+
 
 
 <ng-template #statusTpl let-item>

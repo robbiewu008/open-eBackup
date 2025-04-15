@@ -1,0 +1,61 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤8：开启NFSv4.1服务（适用于OceanProtect X系列备份一体机和OceanProtect E1000（备份存储为OceanProtect））">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="nas_s_0020.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="nas_s_0028">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤8：开启NFSv4.1服务（适用于OceanProtect X系列备份一体机和OceanProtect E1000（备份存储为OceanProtect））</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="nas_s_0028"></a><a name="nas_s_0028"></a>
+
+<h1 class="topictitle1">步骤8：开启NFSv4.1服务（适用于OceanProtect X系列备份一体机和OceanProtect E1000（备份存储为OceanProtect））</h1>
+<div id="body0000001439317313"><p id="nas_s_0028__p8060118">执行NAS备份前，需要开启NFSv4.1服务，否则备份将失败。</p>
+<div class="section" id="nas_s_0028__section16941161934519"><h4 class="sectiontitle">操作步骤</h4><ol id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_ol9474161314358"><li id="nas_s_0028__li817511415559"><span>登录DeviceManager。具体操作请参见<a href="nas_s_dm.html">登录DeviceManager管理界面</a>。</span></li><li id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_li6474813183518"><span>选择“设置 &gt; 文件服务 &gt; NFS服务”。</span></li><li id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_li0195181917353"><span>在左上方的“租户”下拉框中选择需要开启NFSv4服务的租户。</span></li><li id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_li184362365364"><span>单击右上角的“修改”。</span><p><p id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_p8880155893611">系统进入“NFS服务”的配置页面。</p>
+<p id="nas_s_0028__zh-cn_topic_0000001292005288_p1648016318135"><span><img id="nas_s_0028__zh-cn_topic_0000001292005288_image369813213135" src="zh-cn_image_0000002164805072.png"></span></p>
+<div class="note" id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_zh-cn_topic_0000001138838698_zh-cn_topic_0274231677_zh-cn_topic_0272257898_zh-cn_topic_0164720663_note12780141103215"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_zh-cn_topic_0000001138838698_zh-cn_topic_0274231677_zh-cn_topic_0272257898_zh-cn_topic_0164720663_p7780114114325">界面展示的信息请以实际为准。</p>
+</div></div>
+</p></li><li id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_li8991419123516"><span>启用“NFSv4.1服务”。</span></li><li id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_li1475916319252"><span>在“域名”中输入存储域的名称。</span><p><div class="note" id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_note685462219540"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_ul8782423175419"><li id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_li478222345416">NFSv4.1版本采用“用户名+域名”的映射机制，增强客户端访问共享资源的安全性。</li><li id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_li97824238541">在无域或LDAP环境下，保持默认域名“localdomain”。</li><li id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_li778292385410">在NIS环境下，输入的信息和访问共享的Linux客户端上“/etc/idmapd.conf”文件中的domain一致（推荐这两者都为NIS域的域名）。</li><li id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_li878212312549">域名长度不能超过64个字符。</li></ul>
+</div></div>
+</p></li><li id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_li622882011356"><span>单击“保存”。</span><p><p id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_p136851159913">系统弹出“危险”对话框。</p>
+<div class="notice" id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_note182429551426"><span class="noticetitle"><img src="public_sys-resources/notice_3.0-zh-cn.png"> </span><div class="noticebody"><p id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_p424210551026">如果已有主机访问存储系统的共享，启用或禁用NFS服务的操作可能会导致业务中断。请仔细确认该操作的影响。</p>
+</div></div>
+</p></li><li id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_li11450192018359"><span>仔细阅读对话框中的内容，确认无误后选择“我已阅读上述信息，了解执行此操作带来的后果”。</span></li><li id="nas_s_0028__zh-cn_topic_0000001292005288_zh-cn_topic_0000001223878385_li129656181229"><span>单击“确定”。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="nas_s_0020.html">备份NAS共享</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

@@ -1,0 +1,85 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 2: Creating an Object Set">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200141889.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200141925">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 2: Creating an Object Set</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200141925"></a><a name="EN-US_TOPIC_0000002200141925"></a>
+
+<h1 class="topictitle1">Step 2: Creating an Object Set</h1>
+<div><div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200141925__en-us_topic_0000002199964685_uicontrol31735811411"><b><span id="EN-US_TOPIC_0000002200141925__en-us_topic_0000002199964685_text4171858161413"><strong>Protection</strong></span> &gt; File Systems &gt; <span id="EN-US_TOPIC_0000002200141925__en-us_topic_0000002199964685_text6353164213157"><strong>Object Storage</strong></span></b></span>.</span></li><li><span>Switch to the <strong>Object Set</strong> tab page and click <strong>Register</strong>.</span></li><li><span>Configure the information about the object set.</span><p><p><a href="#EN-US_TOPIC_0000002200141925__en-us_topic_0000001792548276_en-us_topic_0000001218047555_table6268122683816">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200141925__en-us_topic_0000001792548276_en-us_topic_0000001218047555_table6268122683816"></a><a name="en-us_topic_0000001792548276_en-us_topic_0000001218047555_table6268122683816"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200141925__en-us_topic_0000001792548276_en-us_topic_0000001218047555_table6268122683816" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Object set registration information</caption><colgroup><col style="width:30.599999999999998%"><col style="width:69.39999999999999%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="30.599999999999998%" id="mcps1.3.1.2.3.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="69.39999999999999%" id="mcps1.3.1.2.3.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="30.599999999999998%" headers="mcps1.3.1.2.3.2.2.2.3.1.1 "><p>Object Set Name</p>
+</td>
+<td class="cellrowborder" valign="top" width="69.39999999999999%" headers="mcps1.3.1.2.3.2.2.2.3.1.2 "><p>User-defined name of the object set.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.599999999999998%" headers="mcps1.3.1.2.3.2.2.2.3.1.1 "><p>Object Storage</p>
+</td>
+<td class="cellrowborder" valign="top" width="69.39999999999999%" headers="mcps1.3.1.2.3.2.2.2.3.1.2 "><p>Select the created object storage.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.599999999999998%" headers="mcps1.3.1.2.3.2.2.2.3.1.1 "><p>Object Set</p>
+</td>
+<td class="cellrowborder" valign="top" width="69.39999999999999%" headers="mcps1.3.1.2.3.2.2.2.3.1.2 "><p>Select buckets under the object storage.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.599999999999998%" headers="mcps1.3.1.2.3.2.2.2.3.1.1 "><p>Filter Criteria</p>
+</td>
+<td class="cellrowborder" valign="top" width="69.39999999999999%" headers="mcps1.3.1.2.3.2.2.2.3.1.2 "><p>Enter a prefix and press <strong>Enter</strong> to filter an object or a directory in a path in the target bucket for protection.</p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>The prefix is the relative path from the bucket to be backed up to an individual object or directory.<p>For example, the prefix of the <strong>test/test.doc</strong> file in the bucket to be backed up is <strong>test/test.doc</strong>, and the prefix of the data in the <strong>test/test1/test2</strong> directory in the bucket to be backed up is <strong>test/test1/test2</strong>.</p>
+</li><li>Special characters \:*?"&lt;&gt;| cannot be contained in the prefix.</li><li>The prefix cannot start with a slash (/).</li><li>The prefix cannot contain two consecutive slashes (/).</li></ul>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200141889.html">Backing Up Object Storage</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

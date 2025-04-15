@@ -1,0 +1,99 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="VMware Copies">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164755530.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002199996581">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>VMware Copies</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002199996581"></a><a name="EN-US_TOPIC_0000002199996581"></a>
+  <h1 class="topictitle1">VMware Copies</h1>
+  <div>
+   <p>This section describes how to perform ransomware detection on VMware copies.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p>A ransomware protection policy has been created for the resource.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_section18311622172515">
+    <h4 class="sectiontitle">Precautions</h4>
+    <ul id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_ul448021115266">
+     <li id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_li14483114103711">Linux and Windows OSs are supported.</li>
+     <li id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_li1948051110265">The following can be detected: ext2, ext3, ext4, and XFS Linux file systems, and NTFS, FAT, and FAT32 Windows file systems.</li>
+     <li id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_li0743654102718">Encrypted volumes do not support detection.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Performing Detection</h4>
+    <p>In addition to copy detection based on scheduled ransomware protection policies, you can perform manual detection on copies of individual resources. To perform manual detection, perform the following steps:</p>
+    <ol>
+     <li id="EN-US_TOPIC_0000002199996581__li65041025102510"><span>Choose <strong id="EN-US_TOPIC_0000002199996581__en-us_topic_0000002199964685_b112062511819">Explore</strong> &gt; <strong id="EN-US_TOPIC_0000002199996581__en-us_topic_0000002199964685_b15206175112819">Ransomware Protection</strong>.</span></li>
+     <li id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_li10802184322512"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002199996581__uicontrol9710036192719"><b><span id="EN-US_TOPIC_0000002199996581__text18670135718279"><strong>VMware</strong></span></b></span>.</span></li>
+     <li id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_li1680214318257"><span>Locate the row of the target resource and choose <span class="menucascade" id="EN-US_TOPIC_0000002199996581__menucascade20215830192810"><b><span class="uicontrol" id="EN-US_TOPIC_0000002199996581__uicontrol1521573016281"><span id="EN-US_TOPIC_0000002199996581__text17613115182818"><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002199996581__uicontrol7517173272811"><span id="EN-US_TOPIC_0000002199996581__text345103202915"><strong>Manually Detect</strong></span></span></b></span>.</span><p></p>
+      <div class="p" id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_p18295134812142">
+       In the displayed dialog box, select the copies to be detected and click <span class="uicontrol" id="EN-US_TOPIC_0000002199996581__uicontrol9104113618261"><b>OK</b></span>.
+       <div class="note" id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_note72063315202">
+        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <p id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_p420613182014">Alternatively, you can locate the row of the target resource and click the number of copies. In the displayed window on the right, choose <span class="menucascade" id="EN-US_TOPIC_0000002199996581__menucascade1540072615307"><b><span class="uicontrol" id="EN-US_TOPIC_0000002199996581__uicontrol164004269308"><span id="EN-US_TOPIC_0000002199996581__text17400112615308"><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002199996581__uicontrol17400162612305"><span id="EN-US_TOPIC_0000002199996581__text1440012263306"><strong>Manually Detect</strong></span></span></b></span> on the right of the target copy.</p>
+        </div>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Viewing the Detection Report</h4>
+    <ol>
+     <li><span>Choose <strong id="EN-US_TOPIC_0000002199996581__en-us_topic_0000002199996581_en-us_topic_0000002199964685_b112062511819">Explore</strong> &gt; <strong id="EN-US_TOPIC_0000002199996581__en-us_topic_0000002199996581_en-us_topic_0000002199964685_b15206175112819">Ransomware Protection</strong>.</span></li>
+     <li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002199996581__en-us_topic_0000002199996581_uicontrol9710036192719"><b><span id="EN-US_TOPIC_0000002199996581__en-us_topic_0000002199996581_text18670135718279"><strong>VMware</strong></span></b></span>.</span></li>
+     <li><span>Locate the row that contains the target resource and click <span class="uicontrol"><b><span><strong>Copies</strong></span></b></span>.</span></li>
+     <li><span>In the displayed window, choose <span class="menucascade"><b><span class="uicontrol"><span><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Detection Report</strong></span></span></b></span> on the right of a copy. The detection report displays details.</span></li>
+     <li id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_li548131222613"><span>(Optional) Handle false detection.</span><p></p><p id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_p663985722615">If an uninfected copy is detected as <span class="uicontrol" id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_uicontrol13393161563117"><b><span id="EN-US_TOPIC_0000002199996581__text72045614196"><strong>Infected</strong></span></b></span>, you can correct the copy status through false detection handling.</p>
+      <ol type="a" id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_ol1757712526272">
+       <li id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_li10577165219278">Locate the row that contains the target resource and choose <span class="menucascade" id="EN-US_TOPIC_0000002199996581__menucascade18121185463216"><b><span class="uicontrol" id="EN-US_TOPIC_0000002199996581__uicontrol412095417323"><span id="EN-US_TOPIC_0000002199996581__text176814943317"><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002199996581__uicontrol1690335616326"><span id="EN-US_TOPIC_0000002199996581__text127241714113314"><strong>Handle False Detection</strong></span></span></b></span> in the <span class="uicontrol" id="EN-US_TOPIC_0000002199996581__uicontrol183469451329"><b><span id="EN-US_TOPIC_0000002199996581__text1012504813215"><strong>Operation</strong></span></b></span> column on the right.</li>
+       <li id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_li19091545153613">In the displayed dialog box, confirm the information and click <span class="uicontrol" id="EN-US_TOPIC_0000002199996581__uicontrol19430921103312"><b><span id="EN-US_TOPIC_0000002199996581__text197432026103310"><strong>OK</strong></span></b></span>. The system changes the copy state from <span class="uicontrol" id="EN-US_TOPIC_0000002199996581__uicontrol1933924072010"><b><span id="EN-US_TOPIC_0000002199996581__text1033924010204"><strong>Infected</strong></span></b></span> (incorrect detection) to <span class="uicontrol" id="EN-US_TOPIC_0000002199996581__uicontrol1339114082016"><b><span id="EN-US_TOPIC_0000002199996581__text1433994011202"><strong>Uninfected</strong></span></b></span>.</li>
+      </ol>
+      <div class="note" id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_note8907111033116">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000002199996581__en-us_topic_0000001263616354_p190741093120">False detection handling is supported only for copies in the <span class="uicontrol" id="EN-US_TOPIC_0000002199996581__uicontrol72628673418"><b><span id="EN-US_TOPIC_0000002199996581__text226218643413"><strong>Infected</strong></span></b></span> state.</p>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164755530.html">Performing Ransomware Protection for Copies (Applicable to 1.5.0)</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -19,6 +19,6 @@
         (copy)="copy()" (cut)="copy()" />
 </lv-input-group>
 <ng-template #eyeTpl>
-    <i [lv-icon]="coverPwd ? 'aui-icon-eye-close' : 'aui-icon-eye-open'" [ngClass]="{'mgt-3': !coverPwd}"
-        [lvColorState]="!disabled" (click)="cover()"></i>
+    <i lv-icon="{{coverPwd ? 'aui-icon-eye-close' : 'aui-icon-eye-open'}}" [lvColorState]="!disabled"
+        (click)="cover()"></i>
 </ng-template>

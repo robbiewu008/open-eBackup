@@ -13,12 +13,15 @@
 package openbackup.data.access.framework.copy.index.provider;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.core.common.enums.CopyIndexStatus;
 import openbackup.data.access.framework.core.common.model.RestoreStorageInfo;
 import openbackup.data.access.framework.core.common.model.ScanRequest;
 import openbackup.data.access.framework.core.common.model.SnapInfo;
 import openbackup.data.access.framework.protection.service.repository.TaskRepositoryManager;
+import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.copy.CopyBo;
 import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
 import openbackup.system.base.common.msg.NotifyManager;
@@ -28,8 +31,6 @@ import openbackup.system.base.common.utils.security.EncryptorUtil;
 import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.storage.StorageRestClient;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -171,6 +172,9 @@ public abstract class AbstractVmIndexerProvider {
     }
 
     private void sendScanMessage(ScanRequest scanRequest) {
+        StorageRepository storageRepository = scanRequest.getStorageRepository();
+        storageRepository.encryptPassword();
+        scanRequest.setStorageRepository(storageRepository);
         notifyManager.send(TopicConstants.SCAN_REQUEST, JSONObject.fromObject(scanRequest).toString());
         log.info("Sent topic message[{}] successfully", TopicConstants.SCAN_REQUEST);
     }

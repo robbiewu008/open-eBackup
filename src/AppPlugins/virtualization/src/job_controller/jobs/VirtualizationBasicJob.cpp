@@ -41,6 +41,7 @@ int VirtualizationBasicJob::ExecHook(const ExecHookParam &para)
         auto hook = (para.hookType == HookType::PRE_HOOK) ? preHook : postHook;
         ret = hook(para);
         if (ret == FAILED) {
+            ERRLOG("ExecHook failed, hookType: %d.", static_cast<int>(para.hookType == HookType::PRE_HOOK));
             ERRLOG("Exec hook failed, stage: %d.", static_cast<int>(para.stage));
             return ret;
         }
@@ -304,25 +305,56 @@ bool VirtualizationBasicJob::GetRepoPath(
     int curPathIndex = 0;
     std::string nodeBalance = Module::ConfigReader::getString(GENERAL_CONF, "DataRepoPathBalance");
     for (const auto &path : repo.path) {
+        // e1000部分初始复制副本（数据面修改后的副本理应是正常的）数据仓和元数据仓目录层级多一级，需要特殊处理
+        // 正常路径：/mnt/databackup/HCSCloudHost/XXX/meta/CloudHost_XXX/source_policy_XXX_Context_Global_MD/1.2.3.4/
+        // e1000路径：/mnt/databackup/HCSCloudHost/XXX/meta/CloudHost_XXX/source_policy_XXX_Context_Global_MD/1.2.3.4/source_policy_XXX_Context_Global_MD
+        std::string e1000RepeatedPath = FindStartWithSourcePolicy(path);
+        bool pathExist = false;
         // business sub job get data repo path from index
         if (repo.repositoryType == RepositoryDataType::DATA_REPOSITORY && isBusinessSubJob) {
             if (nodeBalance == "true") {
                 return LoadBalancer::GetInstance()->GetNodePath(repo.path, repoPath);
-            } else if (pathCount > 0 && (subJobIndex % pathCount) == curPathIndex && repoHandler->Exists(path)) {
-                repoPath = path;
-                DBGLOG("Repo path:%s, %s", repoPath.c_str(), m_taskInfo.c_str());
-                return true;
+            } else if (pathCount > 0 && (subJobIndex % pathCount) == curPathIndex) {
+                pathExist = CheckPathExixts(repoHandler, path, e1000RepeatedPath, repoPath);
             }
             ++curPathIndex;
         } else {
-            if (repoHandler->Exists(path)) {
-                repoPath = path;
-                return true;
-            }
+            pathExist = CheckPathExixts(repoHandler, path, e1000RepeatedPath, repoPath);
+        }
+        if (pathExist) {
+            return true;
         }
     }
     ERRLOG("Failed to get repo path, %s", m_taskInfo.c_str());
     return false;
+}
+
+bool VirtualizationBasicJob::CheckPathExixts(const std::shared_ptr<RepositoryHandler> &repoHandler,
+    const std::string &path, const std::string &e1000RepeatedPath, std::string &repoPath)
+{
+    if (repoHandler->Exists(e1000RepeatedPath)) {
+        repoPath = e1000RepeatedPath;
+        INFOLOG("E1000 repo path:%s, %s", repoPath.c_str(), m_taskInfo.c_str());
+        return true;
+    } else if (repoHandler->Exists(path)) {
+        DBGLOG("Repo path:%s, %s", repoPath.c_str(), m_taskInfo.c_str());
+        repoPath = path;
+        return true;
+    }
+    return false;
+}
+
+std::string VirtualizationBasicJob::FindStartWithSourcePolicy(const std::string& fullString)
+{
+    std::vector<std::string> substrings;
+    boost::split(substrings, fullString, boost::is_any_of("/"));
+
+    for (const auto& substring : substrings) {
+        if (substring.find("source_policy") != std::string::npos) {
+            return fullString + "/" + substring;
+        }
+    }
+    return fullString;
 }
 
 uint64_t VirtualizationBasicJob::GetSegementSizeFromConf()

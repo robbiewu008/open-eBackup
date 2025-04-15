@@ -12,15 +12,20 @@
 */
 package openbackup.data.access.client.sdk.api.framework.agent;
 
+import feign.Param;
+import feign.RequestLine;
+import feign.Response;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentDetailDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentIqnValidateRequest;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentWwpnInfo;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AsyncNotifyScanRes;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CheckAppReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CleanAgentLogReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CollectAgentLogRsp;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.DeliverTaskStatusDto;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.FinalizeClearReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.GetAgentLogCollectStatusRsp;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.GetClusterEsnReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.HostDto;
@@ -32,13 +37,12 @@ import openbackup.data.access.client.sdk.api.framework.agent.dto.UpdateAgentLeve
 import openbackup.data.access.client.sdk.api.framework.agent.dto.UpdateAgentPluginTypeReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.model.AgentUpdatePluginTypeResult;
 import openbackup.system.base.common.model.host.ManagementIp;
+import openbackup.system.base.sdk.agent.model.AgentSupportCompressedPackageType;
+import openbackup.system.base.sdk.agent.model.AgentUpdateRequest;
 import openbackup.system.base.sdk.agent.model.AgentUpdateResponse;
+import openbackup.system.base.sdk.agent.model.AgentUpdateResultResponse;
 import openbackup.system.base.sdk.cert.request.PushUpdateCertToAgentReq;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import feign.Param;
-import feign.RequestLine;
-import feign.Response;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -62,6 +66,20 @@ public interface AgentUnifiedRestApi {
     @RequestLine("POST /v2/agent/{appType}/detail")
     ListResourceV2Rsp listResourceDetailV2(URI uri, @Param("appType") String appType,
         @RequestBody ListResourceV2Req listResourceV2Req);
+
+    /**
+     * 向Agent查询应用详细信息
+     *
+     * @param id 资源扫描的任务id
+     * @param uri agent接口访问地址
+     * @param appType 应用类型
+     * @param listResourceV2Req 查询app list的参数
+     * @return agent主机信息
+     */
+    @ExterAttack
+    @RequestLine("POST /v2/agent/{appType}/asyncdetail?id={id}")
+    AsyncNotifyScanRes asyncListResourceDetailV2(URI uri, @Param("appType") String appType, @Param("id") String id,
+                                                 @RequestBody ListResourceV2Req listResourceV2Req);
 
     /**
      * 获取agent主机信息
@@ -298,6 +316,37 @@ public interface AgentUnifiedRestApi {
     GetClusterEsnReq getClusterEsn(URI uri);
 
     /**
+     * query compress tool
+     *
+     * @param uri 用户指定的请求前缀
+     * @return 检查agent包支持类型请求体
+     */
+    @ExterAttack
+    @RequestLine("GET /v1/agent/host/action/compresstool")
+    AgentSupportCompressedPackageType queryCompressedPackageType(URI uri);
+
+    /**
+     * 执行客户端升级
+     *
+     * @param uri 用户指定的请求前缀
+     * @param agentUpdateRequest agent更新请求体
+     * @return AgentUpdateResultResponse-agent响应
+     */
+    @ExterAttack
+    @RequestLine("POST /agent/host/action/agent/upgrade")
+    AgentUpdateResponse updateAgent(URI uri, AgentUpdateRequest agentUpdateRequest);
+
+    /**
+     * 查询客户端升级状态
+     *
+     * @param uri 用户指定的请求前缀
+     * @return AgentUpdateResponse-agent响应
+     */
+    @ExterAttack
+    @RequestLine("GET /agent/host/action/check/status/upgrade")
+    AgentUpdateResultResponse queryAgentUpdateResult(URI uri);
+
+    /**
      * agent解挂载
      *
      * @param uri agent接口访问地址
@@ -361,4 +410,18 @@ public interface AgentUnifiedRestApi {
     @ExterAttack
     @RequestLine("POST /v1/agent/host/action/cert/network/check")
     AgentBaseDto checkConnection(URI uri);
+
+
+    /**
+     * finalizeClear 副本入库后置清理任务
+     *
+     * @param uri agent接口访问地址
+     * @param appType 应用类型
+     * @param finalizeClearReq 请求体
+     * @return AgentBaseDto
+     */
+    @ExterAttack
+    @RequestLine("POST /v1/agent/{appType}/finalizeclear")
+    AgentBaseDto finalizeClear(URI uri, @Param("appType") String appType,
+        @RequestBody FinalizeClearReq finalizeClearReq);
 }

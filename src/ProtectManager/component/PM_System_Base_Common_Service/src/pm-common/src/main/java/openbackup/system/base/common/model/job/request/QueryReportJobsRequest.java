@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.common.model.job.request;
 
-import openbackup.system.base.common.model.PagingParamRequest;
-import openbackup.system.base.common.model.SortingParamRequest;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import openbackup.system.base.common.model.PagingParamRequest;
+import openbackup.system.base.common.model.SortingParamRequest;
 
 /**
  * The QueryReportJobsRequest

@@ -12,17 +12,6 @@
 */
 package openbackup.system.base.common.rest;
 
-import openbackup.system.base.common.constants.CertCommonConstant;
-import openbackup.system.base.common.constants.CertErrorCode;
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.constants.FeignClientConstant;
-import openbackup.system.base.common.exception.LegoCheckedException;
-import openbackup.system.base.common.scurity.BcmX509KeyManager;
-import openbackup.system.base.common.scurity.BcmX509TrustManager;
-import openbackup.system.base.common.scurity.SecurityCertificateManager;
-import openbackup.system.base.common.utils.VerifyUtil;
-import openbackup.system.base.config.SystemConfig;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import feign.Client;
@@ -37,6 +26,16 @@ import feign.codec.Encoder;
 import feign.codec.ErrorDecoder;
 import feign.form.spring.SpringFormEncoder;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.constants.CertCommonConstant;
+import openbackup.system.base.common.constants.CertErrorCode;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.constants.FeignClientConstant;
+import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.scurity.BcmX509KeyManager;
+import openbackup.system.base.common.scurity.BcmX509TrustManager;
+import openbackup.system.base.common.scurity.SecurityCertificateManager;
+import openbackup.system.base.common.utils.VerifyUtil;
+import openbackup.system.base.config.SystemConfig;
 
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
@@ -108,6 +107,11 @@ public class FeignBuilder extends Feign.Builder {
         FeignClientConstant.CONNECT_TIMEOUT, TimeUnit.MILLISECONDS, FeignClientConstant.READ_TIMEOUT,
         TimeUnit.MILLISECONDS, true);
 
+    private static Request.Options fastFailTimeoutOptions = new Request.Options(
+        FeignClientConstant.FAST_FAIL_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS,
+        FeignClientConstant.FAST_FAIL_READ_TIMEOUT,
+        TimeUnit.MILLISECONDS, true);
+
     /**
      * VMware连接超时配置：连接超时时间30s，读取超时时间60分钟。
      */
@@ -121,6 +125,27 @@ public class FeignBuilder extends Feign.Builder {
     private static final Request.Options MEMBER_DEFAULT_TIMEOUT_OPTIONS =
         new Request.Options(FeignClientConstant.CONNECT_TIMEOUT, TimeUnit.MILLISECONDS,
             FeignClientConstant.MEMBER_READ_TIMEOUT, TimeUnit.MILLISECONDS, true);
+
+    /**
+     * 默认连接超时配置：连接超时时间30s，读取超时时间10秒。
+     */
+    private static final Request.Options BACKUP_CLUSTER_JOB_DEFAULT_TIMEOUT_OPTIONS =
+        new Request.Options(FeignClientConstant.CONNECT_TIMEOUT, TimeUnit.MILLISECONDS,
+            FeignClientConstant.BACKUP_CLUSTER_JOB_CLIENT_READ_TIMEOUT, TimeUnit.MILLISECONDS, true);
+
+    /**
+     * 路由服务连接超时配置；连接超时时间5s, 读取超时时间10s
+     */
+    private static final Request.Options ROUTE_SERVICE_TIMEOUT_OPTIONS = new Request.Options(
+        FeignClientConstant.ROUTE_SERVICE_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS,
+        FeignClientConstant.ROUTE_SERVICE_READ_TIMEOUT, TimeUnit.MILLISECONDS, true);
+
+    /**
+     * Dme服务连接超时配置；连接超时时间30s, 读取超时时间5分钟
+     */
+    private static final Request.Options DME_SERVICE_TIMEOUT_OPTIONS = new Request.Options(
+        FeignClientConstant.CONNECT_TIMEOUT, TimeUnit.MILLISECONDS,
+        FeignClientConstant.DME_READ_TIMEOUT, TimeUnit.MILLISECONDS, true);
 
     /**
      * 默认重试策略配置： 当前是重试周期1分钟，最多重试3次。
@@ -168,12 +193,39 @@ public class FeignBuilder extends Feign.Builder {
     }
 
     /**
+     * 生成fast fail FeignBuilder
+     *
+     * @return fast fail FeignBuilder
+     */
+    public static Feign.Builder getFastFailFeignBuilder() {
+        return new FeignBuilder().options(fastFailTimeoutOptions);
+    }
+
+    /**
      * 生成VMwareFeignBuilder
      *
      * @return VMwareFeignBuilder
      */
     public static FeignBuilder getVmwareFeignBuilder() {
         return new FeignBuilder().options(VMWARE_TIMEOUT_OPTIONS);
+    }
+
+    /**
+     * 生成路由服务FeignBuilder
+     *
+     * @return RouteServiceFeignBuilder
+     */
+    public static FeignBuilder getRouteServiceFeignBuilder() {
+        return new FeignBuilder().options(ROUTE_SERVICE_TIMEOUT_OPTIONS);
+    }
+
+    /**
+     * 生成Dme服务FeignBuilder
+     *
+     * @return DmeServiceFeignBuilder
+     */
+    public static FeignBuilder getDmeServiceFeignBuilder() {
+        return new FeignBuilder().options(DME_SERVICE_TIMEOUT_OPTIONS);
     }
 
     /**
@@ -406,6 +458,26 @@ public class FeignBuilder extends Feign.Builder {
     }
 
     /**
+     * 构造访问备份成员节点的客户端，设置超时时间为10秒
+     *
+     * @param type type
+     * @param encoder encoder
+     * @param proxy proxy
+     * @param <T> template type
+     * @return target
+     */
+    public static <T> T buildBackupClusterJobClient(Class<T> type, Encoder encoder, Proxy proxy) {
+        return new FeignBuilder().options(BACKUP_CLUSTER_JOB_DEFAULT_TIMEOUT_OPTIONS)
+            .retryer(Retryer.NEVER_RETRY)
+            .encoder(getEncoder(encoder))
+            .decoder(CommonDecoder.decoder())
+            .errorDecoder(CommonDecoder::errorDecode)
+            .contract(new Contract.Default())
+            .client(buildTrustManagerClient(false, proxy, getKeyStore()))
+            .target(Target.EmptyTarget.create(type));
+    }
+
+    /**
      * 构造访问备份成员节点的客户端，支持传输文件
      *
      * @param type type
@@ -608,7 +680,7 @@ public class FeignBuilder extends Feign.Builder {
      * @return target
      */
     public static <T> T buildInternalHttpsClientWithSpringMvcContractDefaultEncoder(Class<T> type, Client client) {
-        return getDefaultRetryableBuilder().encoder(createDefaultEncoder())
+        return getDefaultFeignBuilder().encoder(createDefaultEncoder())
             .decoder(CommonDecoder.decoder())
             .errorDecoder(CommonDecoder::errorDecode)
             .contract(new SpringMvcContract())
@@ -625,7 +697,7 @@ public class FeignBuilder extends Feign.Builder {
      * @return target
      */
     public static <T> T buildInternalHttpsClientWithSpringMvcContract(Class<T> type, Client client) {
-        return getDefaultRetryableBuilder().encoder(new SpringFormEncoder())
+        return getDefaultFeignBuilder().encoder(new SpringFormEncoder())
             .decoder(CommonDecoder.decoder())
             .errorDecoder(CommonDecoder::errorDecode)
             .contract(new SpringMvcContract())
@@ -720,7 +792,7 @@ public class FeignBuilder extends Feign.Builder {
      */
     public static <T> T buildProxyWithoutRetry(Class<T> type, Decoder decoder, ErrorDecoder errorDecoder, Proxy proxy) {
         ObjectFactory<HttpMessageConverters> converter = getHttpMessageConvertersObjectFactory();
-        Feign.Builder builder = getDefaultRetryableBuilder().retryer(Retryer.NEVER_RETRY)
+        Feign.Builder builder = getFastFailFeignBuilder().retryer(Retryer.NEVER_RETRY)
             .encoder(new SpringEncoder(converter))
             .decoder(decoder)
             .client(getProxyClient(proxy))

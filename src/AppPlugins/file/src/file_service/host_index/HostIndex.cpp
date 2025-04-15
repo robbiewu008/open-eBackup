@@ -27,6 +27,7 @@ namespace FilePlugin {
 namespace {
     constexpr auto MODULE = "HostIndex";
     constexpr auto INDEXPATHDIVIDERMARK = "DEE-SHARE";
+    const std::string PLUGIN_CONFIG_KEY = "FilePluginConfig";
     constexpr auto RFI = "rfi";
     const int RFI_PREFIX_LENGTH = 6;
     const int REPORT_INTERVAL = 45;
@@ -182,13 +183,13 @@ int HostIndex::IdentifyRepos()
 
     m_indexType = m_preRepo != nullptr ? HostIndexType::HOST_INDEX_TYPE_INC : HostIndexType::HOST_INDEX_TYPE_FULL;
 
-    if (m_curRepo == nullptr || m_cacheRepo == nullptr || m_indexRepo == nullptr) {
+    if (m_curRepo == nullptr || m_cacheRepo == nullptr || m_indexRepo == nullptr || m_metaRepo == nullptr) {
         ERRLOG("repo init not complete");
         return Module::FAILED;
     }
-    if (m_cacheRepo->path.size() == 0 || m_indexRepo->path.size() == 0) {
-        ERRLOG("m_cacheRepo->path.size: %d, m_indexRepo->path.size: %d",
-            m_cacheRepo->path.size(), m_indexRepo->path.size());
+    if (m_cacheRepo->path.size() == 0 || m_indexRepo->path.size() == 0 || m_metaRepo->path.size() == 0) {
+        ERRLOG("m_cacheRepo->path.size: %d, m_indexRepo->path.size: %d, m_metaRepo->path.size: %d",
+            m_cacheRepo->path.size(), m_indexRepo->path.size(), m_metaRepo->path.size());
         return FAILED;
     }
     return Module::SUCCESS;
@@ -234,8 +235,10 @@ int HostIndex::IdentifyRepo(StorageRepository& repo)
             INFOLOG("set pre meta repo complete!");
         }
     }
-    if (m_metaRepo != nullptr && m_metaRepo->path[0].find("--checkpoint=") != string::npos) {
-        ERRLOG("tar is unsafe, because path contains checkpoint=1");
+    if (m_metaRepo != nullptr && !m_metaRepo->path.empty() &&
+        m_metaRepo->path[0].find("--checkpoint=") != string::npos) {
+        ERRLOG("meta repo path size is %d, or tar is unsafe, because path contains checkpoint=.",
+            m_metaRepo->path.size());
         return Module::FAILED;
     }
     return Module::SUCCESS;
@@ -448,7 +451,7 @@ int HostIndex::UnzipMetafileToCurPathAndRemove(const string& path) const
     if (ret != 0) {
         ERRLOG("unzip failed! %d", ret);
         for (auto msg : errOutput) {
-            ERRLOG("errmsg : %s", msg.c_str());
+            WARNLOG("errmsg : %s", msg.c_str());
         }
         return FAILED;
     }
@@ -487,7 +490,7 @@ void HostIndex::UnzipMetafileToCurPathAndRemoveAsync(const string& path, promise
     if (ret != 0) {
         ERRLOG("unzip failed! %d", ret);
         for (auto msg : errOutput) {
-            ERRLOG("errmsg : %s", msg.c_str());
+            WARNLOG("errmsg : %s", msg.c_str());
         }
         m_isPreparing = false;
         promiseObj.set_value(FAILED);
@@ -649,8 +652,8 @@ void HostIndex::PrepareForGenrateRfi(string preMetaFilePath, string curMetafilep
     // unzip curMetafilepath to workDir/latest/
     string workDir = m_cacheRepo->path[0] + dir_sep + META + LATEST;
     string rfiDir = m_cacheRepo->path[0] + dir_sep + RFI;
-    PluginUtils::CreateDirectory(workDir);
-    PluginUtils::CreateDirectory(rfiDir);
+    PluginUtils::SafeCreateDirectory(workDir, m_cacheRepo->path[0]);
+    PluginUtils::SafeCreateDirectory(rfiDir, m_cacheRepo->path[0]);
     string curMetaFileZipFileName = m_metaRepo->path[0] + dir_sep + METAFILE_PARENT_DIR + dir_sep + METAFILE_ZIP_NAME;
     string win7z = Module::EnvVarManager::GetInstance()->GetAgentWin7zPath();
     string cmd = win7z + " -y x " + curMetaFileZipFileName + " -o" + workDir;
@@ -668,7 +671,7 @@ void HostIndex::PrepareForGenrateRfi(string preMetaFilePath, string curMetafilep
     }
     // unzip preMetaFilePath to workDir/previous/
     workDir = m_cacheRepo->path[0] + dir_sep + META + PREVIOUS;
-    PluginUtils::CreateDirectory(workDir);
+    PluginUtils::SafeCreateDirectory(workDir, m_cacheRepo->path[0]);
     string preMetaFileZipFileName = m_preMetaRepo->path[0] + dir_sep + METAFILE_PARENT_DIR +
         dir_sep + METAFILE_ZIP_NAME;
     win7z = Module::EnvVarManager::GetInstance()->GetAgentWin7zPath();
@@ -693,8 +696,8 @@ void HostIndex::PrepareForGenrateRfi(string preMetaFilePath, string curMetafilep
     // unzip curMetafilepath to workDir/latest/
     string workDir = m_cacheRepo->path[0] + dir_sep + META + LATEST;
     string rfiDir = m_cacheRepo->path[0] + dir_sep + RFI;
-    PluginUtils::CreateDirectory(workDir);
-    PluginUtils::CreateDirectory(rfiDir);
+    PluginUtils::SafeCreateDirectory(workDir, m_cacheRepo->path[0]);
+    PluginUtils::SafeCreateDirectory(rfiDir, m_cacheRepo->path[0]);
     string curMetaFileZipFileName = m_metaRepo->path[0] + dir_sep + METAFILE_PARENT_DIR +
         dir_sep + METAFILE_ZIP_NAME;
     
@@ -717,7 +720,7 @@ void HostIndex::PrepareForGenrateRfi(string preMetaFilePath, string curMetafilep
     }
     // unzip preMetaFilePath to workDir/previous/
     workDir = m_cacheRepo->path[0] + dir_sep + META + PREVIOUS;
-    PluginUtils::CreateDirectory(workDir);
+    PluginUtils::SafeCreateDirectory(workDir, m_cacheRepo->path[0]);
     string preMetaFileZipFileName = m_preMetaRepo->path[0] + dir_sep + METAFILE_PARENT_DIR +
         dir_sep + METAFILE_ZIP_NAME;
 #if defined(_AIX) || defined(SOLARIS)
@@ -784,6 +787,10 @@ void HostIndex::FillScanConfigForGenerateRfi(const string& prevDcachePath,
     m_scanConfig.scanResultCb = GeneratedCopyCtrlFileCb;
     m_scanConfig.scanHardlinkResultCb = GeneratedHardLinkCtrlFileCb;
     m_scanConfig.rfiCtrlCb = GenerateRfiCtrlFileCb;
+    if (Module::ConfigReader::getString(PLUGIN_CONFIG_KEY, "KEEP_RFI_IN_CACHE_REPO") == "1") {
+        INFOLOG("set to keep rfifile, jobId %s", m_indexPara->jobId.c_str());
+        m_scanConfig.keepRfiFile = true;
+    }
     HCP_Log(INFO, MODULE) << "EXIT FillScanConfig" << HCPENDLOG;
 }
 

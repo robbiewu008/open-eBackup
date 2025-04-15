@@ -185,7 +185,7 @@ void HandleReadFailure(NfsReadCbData *cbData, FileHandle &fileHandle, int status
 
     NfsCommonData *commonData = cbData->commonData;
 
-    if (IS_LIBNFS_RETRIABLE_ERROR(status)) {
+    if (IS_LIBNFS_NEED_RETRY(status)) {
         commonData->pktStats->Increment(PKT_TYPE::READ, PKT_COUNTER::FAILED, 1, PKT_ERROR::RETRIABLE_ERR);
         fileHandle.m_retryCnt++;
         if (fileHandle.m_retryCnt > DEFAULT_MAX_READ_RETRY) {

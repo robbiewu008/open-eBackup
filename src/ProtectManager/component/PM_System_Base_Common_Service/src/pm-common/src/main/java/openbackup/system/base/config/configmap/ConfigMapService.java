@@ -12,11 +12,14 @@
 */
 package openbackup.system.base.config.configmap;
 
+import com.google.common.collect.ImmutableSet;
+
 import openbackup.system.base.common.rest.CommonFeignConfiguration;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.cluster.request.ClusterComponentPwdInfoRequest;
 import openbackup.system.base.sdk.infrastructure.model.InfrastructureResponse;
+import openbackup.system.base.util.ConfigMapUtil;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Iterator;
+import java.util.Set;
 
 /**
  * 数据库信息获取
@@ -32,6 +35,30 @@ import java.util.Iterator;
  */
 @FeignClient(name = "configMapService", url = "${service.url.infra}", configuration = CommonFeignConfiguration.class)
 public interface ConfigMapService {
+    /**
+     * DEPLOY_TYPE_KEY
+     */
+    String DEPLOY_TYPE_KEY = "deploy_type";
+
+    /**
+     * UPGRADING_KEY
+     */
+    String UPGRADING_KEY = "upgrading";
+
+    /**
+     * JOB_DELETE_KEY
+     */
+    String JOB_DELETE_KEY = "job.Delete";
+
+    /**
+     * NON_REAL_TIME_KEYS
+     */
+    Set<String> NON_REAL_TIME_KEYS = ImmutableSet.of(
+            DEPLOY_TYPE_KEY,
+            UPGRADING_KEY,
+            JOB_DELETE_KEY
+    );
+
     /**
      * 获取名为common-conf的ConfigMap的配置项
      *
@@ -67,7 +94,7 @@ public interface ConfigMapService {
      */
     @PostMapping("/v1/infra/external/cluster/update/password")
     InfrastructureResponse
-        replaceComponentPassword(@RequestBody ClusterComponentPwdInfoRequest clusterComponentPwdInfoRequest);
+    replaceComponentPassword(@RequestBody ClusterComponentPwdInfoRequest clusterComponentPwdInfoRequest);
 
     /**
      * 更新内部组件database/kafka/redis/cifs/dataturbo密码
@@ -84,12 +111,15 @@ public interface ConfigMapService {
      * @return value
      */
     default String getValueFromConfigMapByKey(String keyStr) {
+        if (NON_REAL_TIME_KEYS.contains(keyStr)) {
+            return ConfigMapUtil.getValueInConfigMap(ConfigMapUtil.COMMON_CONF, keyStr);
+        }
+
         String returnValue = "";
         ConfigMapRes dataSource = getCommonConfigMapData();
         JSONArray jsonArray = dataSource.getData();
 
-        for (Iterator it = jsonArray.iterator(); it.hasNext();) {
-            final Object next = it.next();
+        for (final Object next : jsonArray) {
             if (next instanceof JSONObject) {
                 JSONObject object = (JSONObject) next;
                 if (object.containsKey(keyStr)) {
@@ -125,7 +155,7 @@ public interface ConfigMapService {
      * @return 任务强制删除配置
      */
     default String getDeleteJobForce() {
-        return getValueFromConfigMapByKey("job.Delete");
+        return getValueFromConfigMapByKey(JOB_DELETE_KEY);
     }
 
     /**
@@ -134,7 +164,7 @@ public interface ConfigMapService {
      * @return 部署类型
      */
     default String getDeployType() {
-        return getValueFromConfigMapByKey("deploy_type");
+        return getValueFromConfigMapByKey(DEPLOY_TYPE_KEY);
     }
 
     /**
@@ -143,7 +173,7 @@ public interface ConfigMapService {
      * @return 是否处于升级中
      */
     default boolean isSystemUpgrading() {
-        String upgrading = getValueFromConfigMapByKey("upgrading");
+        String upgrading = getValueFromConfigMapByKey(UPGRADING_KEY);
         return Boolean.parseBoolean(upgrading);
     }
 }

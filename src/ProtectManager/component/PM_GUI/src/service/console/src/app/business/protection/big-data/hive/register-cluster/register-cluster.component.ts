@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   Input,
@@ -418,7 +418,9 @@ export class RegisterClusterComponent implements OnInit {
       this.formGroup.value.serverLink.split(',').length > 1 &&
       !this.formGroup.value.zookeeperNamespace
     ) {
-      this.message.error(this.i18n.get('protection_zk_mode_tip_label'));
+      this.message.error(this.i18n.get('protection_zk_mode_tip_label'), {
+        lvMessageKey: 'serverLinkInvalidMessageKey'
+      });
       highAvailability = false;
     } else {
       highAvailability = true;
@@ -595,7 +597,7 @@ export class RegisterClusterComponent implements OnInit {
   getAgents(recordsTemp?, startPage?) {
     this.clientManagerApiService
       .queryAgentListInfoUsingGET({
-        pageSize: 200,
+        pageSize: CommonConsts.PAGE_SIZE_MAX,
         pageNo: startPage || 0,
         conditions: JSON.stringify({
           pluginType: `${DataMap.Resource_Type.HiveBackupSet.value}Plugin`
@@ -611,7 +613,8 @@ export class RegisterClusterComponent implements OnInit {
         startPage++;
         recordsTemp = [...recordsTemp, ...res.records];
         if (
-          startPage === Math.ceil(res.totalCount / 200) ||
+          startPage ===
+            Math.ceil(res.totalCount / CommonConsts.PAGE_SIZE_MAX) ||
           res.totalCount === 0
         ) {
           const agentArr = [];

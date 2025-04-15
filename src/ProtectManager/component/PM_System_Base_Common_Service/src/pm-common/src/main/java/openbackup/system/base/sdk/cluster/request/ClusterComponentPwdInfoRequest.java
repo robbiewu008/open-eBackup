@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.sdk.cluster.request;
 
-import openbackup.system.base.sdk.cluster.model.ClusterComponentPwdInfo;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.system.base.sdk.cluster.model.ClusterComponentPwdInfo;
 
 import java.util.List;
 

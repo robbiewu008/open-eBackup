@@ -12,6 +12,7 @@
 */
 package openbackup.oracle.interceptor;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
@@ -20,8 +21,6 @@ import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.oracle.constants.OracleConstants;
 import openbackup.oracle.service.OracleBaseService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

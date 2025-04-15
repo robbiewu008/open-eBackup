@@ -12,6 +12,7 @@
 */
 #include "ServiceFactory.h"
 #include "ServiceCenter.h"
+#include "log/Log.h"
 #ifdef WIN32
 #include "ThriftService.h"
 #include "CertificateService.h"
@@ -24,6 +25,7 @@ ServiceFactory* ServiceFactory::GetInstance()
 {
     static ServiceFactory instance;
     static bool centerInitailize = ServiceFactory::GetServiceCenter()->Initailize();
+    DBGLOG("centerInitailize : %d", centerInitailize);
 #ifdef WIN32
     if (centerInitailize) {
         IServiceCenter::GetInstance()->Register("IThriftService", []() -> std::shared_ptr<IService> {

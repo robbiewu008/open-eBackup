@@ -1,0 +1,102 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="查看文件系统信息">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002042804916.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="防勒索 帮助中心-Dorado V700R001C00">
+<meta name="DC.Publisher" content="20241226">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002042963148">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>查看文件系统信息</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002042963148"></a><a name="ZH-CN_TOPIC_0000002042963148"></a>
+
+<h1 class="topictitle1">查看文件系统信息</h1>
+<div><div class="section"><h4 class="sectiontitle">前提条件</h4><p>已在ProtectManager上发现了存储系统上的文件系统资源。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><p>用户在存储系统上创建的文件系统，可以被自动发现到ProtectManager上，并展示在“本地文件系统”页面。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>存储系统上新创建的文件系统，在ProtectManager进行扫描时，可能需要等待一定时间才能被ProtectManager发现。</li><li>在ProtectManager上发现的文件系统不支持在ProtectManager删除。</li><li>在ProtectManager上不展示克隆文件系统。</li><li>在ProtectManager上不展示HyperDetect特性创建的以“pvc_”开头的文件系统。</li></ul>
+</div></div>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol">“<span>保护</span> &gt; <span>存储</span> &gt; 本地资源”</span>。</span></li><li><span>选择“本地文件系统”页签，在本地文件系统列表，浏览文件系统的信息。</span><p><ol type="a"><li>文件系统的详细信息如<a href="#ZH-CN_TOPIC_0000002042963148__table157333333311">表1</a>所示。
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000002042963148__table157333333311"></a><a name="table157333333311"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000002042963148__table157333333311" frame="border" border="1" rules="all"><caption><b>表1 </b>文件系统详细信息</caption><colgroup><col style="width:27.41%"><col style="width:72.59%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="27.41%" id="mcps1.3.3.2.2.2.1.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="72.59%" id="mcps1.3.3.2.2.2.1.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p>资源ID</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p>本地文件系统的ID。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p>名称</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p>本地文件系统名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p>租户</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p>文件系统所属租户。默认值为<span class="uicontrol">“System_vStore”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p>SLA</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p>当本地文件系统已关联SLA时，则显示SLA名称，否则显示<span class="uicontrol">“--”</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p>SLA遵从度</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p>SLA遵从度指某次备份任务是否按设定的备份频率或备份窗口成功完成备份。例如，某次备份任务（首次备份除外）的备份时间满足备份窗口或备份频率要求，且备份成功，则表示SLA遵从。某次备份任务SLA设定的备份频率为每半小时执行一次，如果备份时间超过半小时，则表示SLA不遵从。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="27.41%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.1 "><p>保护状态</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.59%" headers="mcps1.3.3.2.2.2.1.1.2.2.3.1.2 "><p>本地文件系统当前是否被保护。</p>
+<ul><li>未保护：本地文件系统未关联SLA，或者已关联SLA但已禁用保护。</li><li>已保护：本地文件系统已关联SLA，且已激活保护。</li><li>创建中：本地文件系统已关联SLA，正在创建保护。</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>单击本地文件系统名称，浏览本地文件系统总览信息、副本数据以及相关任务。<ul><li>本地文件系统总览信息<p>显示本地文件系统的名称、SLA信息、任务执行时间、副本总数等。</p>
+</li><li>本地文件系统快照数据<p>您可以依次按照年、月、天查找相应时间的副本。</p>
+<p>时间下方显示<span><img src="zh-cn_image_0000002079043981.png"></span>，表示该时间存在副本。</p>
+</li><li>本地文件系统相关任务<p>本地文件系统相关的所有任务展示，包括勒索检测快照备份、恢复等任务。</p>
+</li></ul>
+</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000002042804916.html">本地文件系统</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

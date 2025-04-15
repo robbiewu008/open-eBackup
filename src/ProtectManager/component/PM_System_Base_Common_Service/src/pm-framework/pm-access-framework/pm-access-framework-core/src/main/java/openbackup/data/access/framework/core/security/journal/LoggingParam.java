@@ -12,11 +12,10 @@
 */
 package openbackup.data.access.framework.core.security.journal;
 
-import openbackup.system.base.common.exception.LegoCheckedException;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import openbackup.system.base.common.exception.LegoCheckedException;
 
 /**
  * 功能描述

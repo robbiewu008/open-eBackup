@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef _EXTERNAL_PLUGIN_MANAGER_H
 #define _EXTERNAL_PLUGIN_MANAGER_H
 
@@ -74,7 +86,12 @@ public:
     mp_int32 QueryPluginDetailV2(const mp_string &strAppType, CRequestMsg &requestMsg, CResponseMsg &responseMsg);
     // query plugin detail
     mp_int32 CheckPlugin(const mp_string &strAppType, CRequestMsg &requestMsg, CResponseMsg &responseMsg);
-
+    // async query plugin resource
+    mp_int32 PluginAsyncListApplicationResource(const mp_string &strAppType, CRequestMsg &requestMsg,
+        CResponseMsg &responseMsg);
+    // plugin finalize clear
+    mp_int32 PluginFinalizeClear(const mp_string &strAppType, CRequestMsg &requestMsg, CResponseMsg &responseMsg);
+    
     mp_int32 QueryRemoteCluster(const mp_string &strAppType, CRequestMsg& requestMsg, CResponseMsg& responseMsg);
     // query plugin config
     mp_int32 QueryPluginConfig(const mp_string &strAppType, CRequestMsg& requestMsg, CResponseMsg& responseMsg);
@@ -101,6 +118,10 @@ private:
     mp_int32 StartPlugin(const mp_string &pluginName);
     mp_void QueryPluginState(const mp_string &strAppType, Json::Value &jValueRsp);
     mp_int32 InvokingPlugins(const Json::Value &requestParam, CResponseMsg &responseMsg,
+        const std::shared_ptr<AppProtect::ApplicationServiceConcurrentClient> &appServiceClient);
+    mp_int32 AsyncListApplicationResource(const Json::Value &requestParam, CResponseMsg &responseMsg,
+        const std::shared_ptr<AppProtect::ApplicationServiceConcurrentClient> &appServiceClient, const mp_string id);
+    mp_int32 FinalizeClear(const Json::Value &requestParam, CResponseMsg &responseMsg,
         const std::shared_ptr<AppProtect::ApplicationServiceConcurrentClient> &appServiceClient);
     mp_int32 WriteThriftServerPort(const mp_int32 &thriftServerPort);
     mp_int32 QueryPluginDetailV1(const Json::Value &requestParam, CResponseMsg &responseMsg,

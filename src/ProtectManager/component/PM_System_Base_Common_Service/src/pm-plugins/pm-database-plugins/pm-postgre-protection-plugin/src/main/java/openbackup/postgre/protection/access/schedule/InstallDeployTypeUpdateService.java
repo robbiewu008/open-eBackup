@@ -12,6 +12,9 @@
 */
 package openbackup.postgre.protection.access.schedule;
 
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigConstants;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
@@ -21,10 +24,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.postgre.protection.access.common.PostgreConstants;
 import openbackup.system.base.query.PageQueryOperator;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.curator.shaded.com.google.common.collect.ImmutableMap;
@@ -75,8 +74,13 @@ public class InstallDeployTypeUpdateService implements CommandLineRunner {
                 ResourceSubTypeEnum.POSTGRE_CLUSTER.getType(), ResourceSubTypeEnum.POSTGRE_CLUSTER_INSTANCE.getType()));
         queryParams.setConditions(conditionMap);
         PageListResponse<ProtectedResource> pageListResponse = resourceService.query(queryParams);
-        if (pageListResponse.getTotalCount() > 0) {
+        int totalCount = pageListResponse.getTotalCount();
+        if (totalCount > 0) {
             List<ProtectedResource> result = pageListResponse.getRecords();
+            for (int page = 1; page <= (totalCount - 1) / queryParams.getSize(); page++) {
+                queryParams.setPage(page);
+                result.addAll(resourceService.query(queryParams).getRecords());
+            }
             for (ProtectedResource resource : result) {
                 Map<String, String> extendInfo = resourceExtendInfoService.queryExtendInfo(resource.getUuid(),
                     PostgreConstants.INSTALL_DEPLOY_TYPE);

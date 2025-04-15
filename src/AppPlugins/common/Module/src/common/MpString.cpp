@@ -606,4 +606,46 @@ bool CMpString::FormattingPath(string& strPath)
     return true;
 }
 
+bool CMpString::FormattingPath2(string& strPath)
+{
+    const std::string DOUBLE_SLASH = "//";
+    const std::string PARENT_PATH_SEPARATOR = "/..";
+#ifdef WIN32
+    char path[MAX_FULL_PATH_LEN + 1] = { 0x00 };
+    if (strPath.length() > MAX_FULL_PATH_LEN || PathCanonicalize(path, strPath.c_str()) == false) {
+        COMMLOG(OS_LOG_ERROR, "FormattingPath %s failed.", strPath.c_str());
+        return false;
+    }
+#else
+    size_t nPos = strPath.find(DOUBLE_SLASH);
+    while (nPos != string::npos) {
+        strPath = strPath.replace(nPos, DOUBLE_SLASH.size(), PATH_SEPARATOR);
+        nPos = strPath.find(DOUBLE_SLASH);
+    }
+
+    // rerase ..
+    size_t pos1 = strPath.find(PARENT_PATH_SEPARATOR);
+    while (pos1 != string::npos) {
+        string pre = strPath.substr(0, pos1);
+        size_t pos2 = pre.find_last_of(PATH_SEPARATOR);
+        if (pos2 == string::npos) {
+            break;
+        }
+        string mid = pre.substr(pos2);
+        strPath.erase(pos1, PARENT_PATH_SEPARATOR.size());
+        strPath.erase(pos2, mid.size());
+
+        pos1 = strPath.find(PARENT_PATH_SEPARATOR);
+    }
+
+    char path[PATH_MAX + 1] = { 0x00 };
+    if (strPath.length() > PATH_MAX || NULL == realpath(strPath.c_str(), path)) {
+        COMMLOG(OS_LOG_ERROR, "FormattingPath %s failed, errno[%d]:%s.", strPath.c_str(), errno, strerror(errno));
+        return false;
+    }
+#endif
+    strPath = path;
+    return true;
+}
+
 } // namespace Module

@@ -39,3 +39,11 @@
       {{item.environment?.endpoint | nil}}
   </p>
 </ng-template>
+
+<ng-template #databaseTypeTpl let-item>
+  <span lv-overflow>{{ item.sapHanaDbType | textMap:'saphanaDatabaseType' }}</span>
+</ng-template>
+
+<ng-template #sapHanaDbDeployType let-item>
+  <span lv-overflow> {{item.sapHanaDbDeployType | textMap:'saphanaDatabaseDeployType'}}</span>
+</ng-template>

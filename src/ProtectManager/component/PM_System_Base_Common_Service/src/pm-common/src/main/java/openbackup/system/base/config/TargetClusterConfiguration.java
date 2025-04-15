@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.config;
 
+import feign.codec.Encoder;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.rest.FeignBuilder;
 import openbackup.system.base.sdk.cluster.BackupClusterJobClient;
 import openbackup.system.base.sdk.cluster.TargetClusterRestApi;
 import openbackup.system.base.util.RequestUriUtil;
-
-import feign.codec.Encoder;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +45,7 @@ public class TargetClusterConfiguration {
     @Scope(value = "prototype", proxyMode = ScopedProxyMode.INTERFACES)
     public TargetClusterRestApi createTargetRequestBean(DmaProxyProperties proxyProperties) {
         return FeignBuilder.buildTargetClusterClient(TargetClusterRestApi.class, encoder,
-            RequestUriUtil.getDmaProxy(proxyProperties));
+                RequestUriUtil.getDmaProxy(proxyProperties));
     }
 
     /**
@@ -59,7 +58,7 @@ public class TargetClusterConfiguration {
     @Scope(value = "prototype", proxyMode = ScopedProxyMode.INTERFACES)
     public TargetClusterRestApi createTargetRequestBeanManagePort(DmaProxyProperties proxyProperties) {
         return FeignBuilder.buildDefaultTargetClusterClient(TargetClusterRestApi.class, encoder,
-            RequestUriUtil.getDmaProxy(proxyProperties));
+                RequestUriUtil.getDmaProxy(proxyProperties));
     }
 
     /**
@@ -94,11 +93,11 @@ public class TargetClusterConfiguration {
     @Scope(value = "prototype", proxyMode = ScopedProxyMode.INTERFACES)
     public TargetClusterRestApi createMemberClusterApiWithDmaProxyManagePort(DmaProxyProperties proxyProperties) {
         return FeignBuilder.buildMemberClusterClient(TargetClusterRestApi.class, encoder,
-            RequestUriUtil.getDmaProxy(proxyProperties));
+                RequestUriUtil.getDmaProxy(proxyProperties));
     }
 
     /**
-     * 生成 BackupClusterJobClient, 添加超时时间为5分钟
+     * 生成 BackupClusterJobClient, 添加超时时间为10秒
      *
      * @param proxyProperties dme代理，域名和端口
      * @return BackupClusterJobClient
@@ -106,7 +105,7 @@ public class TargetClusterConfiguration {
     @Bean("backupClusterJobClient")
     @Scope(value = "prototype", proxyMode = ScopedProxyMode.INTERFACES)
     public BackupClusterJobClient createBackupClusterJobClient(DmaProxyProperties proxyProperties) {
-        return FeignBuilder.buildMemberClusterClient(BackupClusterJobClient.class, encoder,
+        return FeignBuilder.buildBackupClusterJobClient(BackupClusterJobClient.class, encoder,
                 RequestUriUtil.getDmaProxy(proxyProperties));
     }
 }

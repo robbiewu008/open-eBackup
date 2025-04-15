@@ -16,6 +16,10 @@ import static openbackup.data.access.framework.core.common.constants.TopicConsta
 import static openbackup.system.base.kafka.annotations.MessageListener.RETRY_FACTORY;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
+import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.constant.CopyPropertiesKeyConstant;
 import openbackup.data.access.framework.core.common.enums.CopyIndexStatus;
 import openbackup.data.access.framework.core.manager.ProviderManager;
@@ -33,10 +37,10 @@ import openbackup.data.access.framework.livemount.provider.LiveMountServiceProvi
 import openbackup.data.access.framework.livemount.service.LiveMountService;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.enums.CopyFeatureEnum;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.constants.DateFormatConstant;
 import openbackup.system.base.common.constants.IsmNumberConstant;
+import openbackup.system.base.common.enums.WormValidityTypeEnum;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.license.LicenseValidateService;
 import openbackup.system.base.common.model.livemount.LiveMountEntity;
@@ -52,6 +56,7 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.copy.model.CopyInfo;
 import openbackup.system.base.sdk.copy.model.CopyStatus;
+import openbackup.system.base.sdk.copy.model.CopyStorageUnitStatus;
 import openbackup.system.base.sdk.copy.model.CopyWormStatus;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.license.enums.FunctionEnum;
@@ -59,10 +64,7 @@ import openbackup.system.base.sdk.livemount.model.Identity;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.DeployTypeService;
-import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
 import openbackup.system.base.util.ProviderRegistry;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.logging.log4j.util.Strings;
 import org.redisson.api.RMap;
@@ -374,12 +376,16 @@ public class MountFlowListener extends AbstractFlowListener {
         cloneCopy.setGeneration(cloneCopy.getGeneration() + 1);
         cloneCopy.setParentCopyUuid(sourceCopy.getUuid());
         cloneCopy.setStatus(CopyStatus.MOUNTING.getValue());
+        cloneCopy.setStorageUnitStatus(CopyStorageUnitStatus.ONLINE.getValue());
         cloneCopy.setUserId(sourceCopy.getUserId());
         cloneCopy.setIndexed(COPY_INDEX_UNINDEXED);
         // set retention time
         cloneCopy.setRetentionType(PERMANENT_RETENTION);
         cloneCopy.setDurationUnit(null);
         cloneCopy.setExpirationTime(null);
+        cloneCopy.setWormValidityType(WormValidityTypeEnum.WORM_NOT_OPEN.getType());
+        cloneCopy.setWormDurationUnit(null);
+        cloneCopy.setWormExpirationTime(null);
         Long timestamp = System.currentTimeMillis();
         cloneCopy.setTimestamp(timestamp + "000");
         cloneCopy.setGeneratedTime(timestamp + "000");

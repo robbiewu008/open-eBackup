@@ -1,14 +1,16 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
+# 
+#  This file is a part of the open-eBackup project.
+#  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+#  If a copy of the MPL was not distributed with this file, You can obtain one at
+#  http://mozilla.org/MPL/2.0/.
+# 
+#  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+# 
+#  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+#  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+#  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 
 ##############################################################
 # The function of this script is to MODIFY the client agent.
@@ -25,6 +27,10 @@ fi
 TMP_DATA_BACKUP_AGENT_HOME=`cat /etc/profile | grep "export DATA_BACKUP_AGENT_HOME=" |${MYAWK} -F "=" '{print $NF}'`
 if [ -n "${TMP_DATA_BACKUP_AGENT_HOME}" ]; then
     . /etc/profile
+    if [ -n "${DATA_BACKUP_AGENT_HOME}" ]; then
+        DATA_BACKUP_AGENT_HOME=${TMP_DATA_BACKUP_AGENT_HOME}
+        export DATA_BACKUP_AGENT_HOME
+    fi
 else
     DATA_BACKUP_AGENT_HOME=/opt
     export DATA_BACKUP_AGENT_HOME
@@ -284,10 +290,16 @@ SUExecCmdWithOutput()
     cmd=$1
     if [ "${SYS_NAME}" = "SunOS" ] || [ "${SYS_NAME}" = "AIX" ]; then
         output=`su - ${AGENT_USER} -c "${EXPORT_ENV}${cmd}"` 
+        ret=$?
     else
         output=`su -m ${AGENT_USER} -s ${SHELL_TYPE_SH} -c "${EXPORT_ENV}${cmd}"`
+        ret=$?
+        if [ $ret -ne 0 ]; then
+            output=`su -p ${AGENT_USER} -s ${SHELL_TYPE_SH} -c "${EXPORT_ENV}${cmd}"`
+            ret=$?
+        fi
     fi
-    ret=$?
+    
     VerifySpecialChar "$output"
     echo $output
     return $ret
@@ -353,7 +365,8 @@ CompareUpdateVersion()
         TEM_PATH=`pwd`
         cp $PAC_NAME_TMP ${CURRENT_PATH}/ProtectClient-e/DIR_TMP
         cd ${CURRENT_PATH}/ProtectClient-e/DIR_TMP
-        xz -d ${PAC_NAME_TMP}
+        chmod 550 ${INSTALL_PACKAGE_PATH}/third_party_software/XZ/xz
+        ${INSTALL_PACKAGE_PATH}/third_party_software/XZ/xz -d ${PAC_NAME_TMP}
         PACK_NAME=${PAC_NAME_TMP%%.xz}
         tar -xf ${PACK_NAME}
         cd $TEM_PATH
@@ -490,6 +503,32 @@ BackUpCurAgentInfo()
     BackupAgentPluginPkg
     Log "MIGRATE: The installed DataBackup ProtectAgent are backed up successfully."
     echo "The installed DataBackup ProtectAgent are backed up successfully."
+}
+
+RepalceBackupConf()
+{
+    echo "Begin to repalce th backup DataBackup ProtectAgent Plugin conf."
+    Log "Modify:Begin to repalce th backup DataBackup ProtectAgent Plugin conf."
+    tmpPath=`pwd`
+    cd "${MODIFY_BACKUP_PATH}/Plugins"
+    oldPluginNames=`ls -l . | grep -E "Plugin|Block_Service" | ${MYAWK} '/^d/ {print $NF}'`
+    for oldPlugin in $oldPluginNames; do
+        oldPluginExistNow=`ls -l ${PLUGIN_DIR} | grep ${oldPlugin} | ${MYAWK} '/^d/ {print $NF}'`
+        if [ -z "${oldPluginExistNow}" ];then
+            Log "${oldPlugin} not used now."
+            continue
+        fi
+        Log "Replace the ${oldPlugin} conf file."
+        CP -f "${MODIFY_BACKUP_PATH}/Plugins/${oldPlugin}/plugin_attribute_*.json" "${PLUGIN_DIR}/${oldPlugin}/"
+        if [ "${oldPlugin}" = "ElasticSearchPlugin" ] || [ "${oldPlugin}" = "HadoopPlugin" ]; then
+            CP -r -f "${MODIFY_BACKUP_PATH}/Plugins/${oldPlugin}/cfg" "${PLUGIN_DIR}/${oldPlugin}"
+        else
+            CP -r -f "${MODIFY_BACKUP_PATH}/Plugins/${oldPlugin}/conf" "${PLUGIN_DIR}/${oldPlugin}"
+        fi
+    done
+    cd ${tmpPath}
+    Log "Modify: The backup DataBackup ProtectAgent Plugin conf has been replaced."
+    echo "The backup DataBackup ProtectAgent Plugin conf has been replaced successfully."
 }
 
 UninstallPlugins()
@@ -772,7 +811,11 @@ InstallPlugins()
         cd "${PLUGIN_DIR}/${pluginName}"
         pluginFile=${plugin}
         if [ "xz" = `echo ${plugin} | ${MYAWK} -F '.' '{print $NF}'` ]; then
-            xz -d $plugin
+            if [ "${SYS_NAME}" = "AIX" ]; then
+                ${INSTALL_PACKAGE_PATH}/third_party_software/XZ/xz -d $plugin
+            else
+                xz -d $plugin
+            fi
             if [ $? -ne 0 ]; then
                 echo "xz $pluginName fail." >> $AGENT_BIN_PATH/stmp/InstallPlugins.info
                 LogError "Install $pluginName fail." $ERR_INSTALL_PLUGINS
@@ -906,6 +949,8 @@ if [ $? -ne 0 ]; then
     Log "Install plugin failed"
     ExitHandle 1
 fi
+
+RepalceBackupConf
 
 RestartAgent
 

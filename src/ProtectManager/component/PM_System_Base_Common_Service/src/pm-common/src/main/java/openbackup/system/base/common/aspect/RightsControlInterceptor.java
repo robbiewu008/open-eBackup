@@ -12,6 +12,7 @@
 */
 package openbackup.system.base.common.aspect;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.constants.TokenBo;
@@ -22,8 +23,6 @@ import openbackup.system.base.common.utils.RightsControl;
 import openbackup.system.base.common.utils.UserUtils;
 import openbackup.system.base.sdk.auth.api.AuthNativeApi;
 import openbackup.system.base.util.DefaultRoleHelper;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RedissonClient;

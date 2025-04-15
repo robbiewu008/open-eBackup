@@ -1,14 +1,16 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
+# 
+#  This file is a part of the open-eBackup project.
+#  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+#  If a copy of the MPL was not distributed with this file, You can obtain one at
+#  http://mozilla.org/MPL/2.0/.
+# 
+#  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+# 
+#  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+#  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+#  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 
 #--------------------------------------------
@@ -396,6 +398,7 @@ PrepareBeforeInstallNewAgent()
     DISABLE_SAFE_RANDOM_NUMBER=`XmlParseViaShell ${AGENT_BACKUP_PATH}/ProtectClient-E/conf/agent_cfg.xml Security disable_safe_random_number`
     IS_ENABLE_DATATURBO=`XmlParseViaShell ${AGENT_BACKUP_PATH}/ProtectClient-E/conf/agent_cfg.xml Dataturbo is_enable_dataturbo`
     EIP=`SUExecCmdWithOutput "sed '/^EIP=/!d;s/.*=//' ${AGENT_BACKUP_PATH}/ProtectClient-E/conf/testcfg.tmp"`
+    IS_FILECLIENT_INSTALL=`SUExecCmdWithOutput "sed '/^IS_FILECLIENT_INSTALL=/!d;s/.*=//' ${AGENT_BACKUP_PATH}/ProtectClient-E/conf/testcfg.tmp"`
 
     # current user id
     USER_ID=`XmlParseViaShell ${AGENT_BACKUP_PATH}/ProtectClient-E/conf/agent_cfg.xml System userid`
@@ -489,7 +492,12 @@ HandleDataTurbo()
     IsDataTurboInstalled
     if [ $? -eq 0 ]; then
         clearDataturboMountPath
-        UpgradeDataTurbo "${INSTALL_PACKAGE_PATH}/third_party_software/dataturbo.zip"
+        unzipdir=`which unzip 2>/dev/null | awk '{print $1}'`
+        if [ "" = "${unzipdir}" ]; then
+            UpgradeDataTurbo "${INSTALL_PACKAGE_PATH}/third_party_software/dataturbo.tar.gz" "tar"
+        else
+            UpgradeDataTurbo "${INSTALL_PACKAGE_PATH}/third_party_software/dataturbo.zip" "zip"
+        fi
         if [ $? -ne 0 ]; then
             LogError "Faild to upgrade dataturbo." ${ERR_UPGRADE_FAIL_DATATURBO_UPGRADE}
             exit 1
@@ -514,6 +522,13 @@ UninstallOldAgent()
 GetSNMPCfg()
 {
     log_level=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read System \"log_level\""`
+    log_count=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read System \"log_count\""`
+    log_max_size=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read System \"log_max_size\""`
+    log_keep_time=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read System \"log_keep_time\""`
+
+    logfile_size=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read Monitor rdagent \"logfile_size\""`
+    logfile_size_alarm_threshold=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read Monitor rdagent \"logfile_size_alarm_threshold\""`
+
     engine_id=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read SNMP \"engine_id\""`
     context_name=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read SNMP \"context_name\""`
     security_name=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read SNMP \"security_name\""`
@@ -523,10 +538,16 @@ GetSNMPCfg()
     private_protocol=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read SNMP \"private_protocol\""`
     auth_password=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read SNMP \"auth_password\""`
     auth_protocol=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read SNMP \"auth_protocol\""`
+
     archive_threshold=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read Backup \"archive_threshold\""`
     archive_thread_timeout=`SUExecCmdWithOutput "\"${OLD_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" read Backup \"archive_thread_timeout\""`
 
     LOG_LEVEL=${log_level}
+    LOG_COUNT=${log_count}
+    LOG_MAX_SIZE=${log_max_size}
+    LOG_KEEP_TIME=${log_keep_time}
+    LOGFILE_SIZE=${logfile_size}
+    LOGFILE_SIZE_ALARM_THRESHOLD=${logfile_size_alarm_threshold}
     ENGINE_ID=${engine_id}
     CONTEXT_NAME=${context_name}
     SECURITY_NAME=${security_name}
@@ -538,11 +559,18 @@ GetSNMPCfg()
     AUTH_PROTOCOL=${auth_protocol}
     ARCHIVE_THRESHOLD=${archive_threshold}
     ARCHIVE_THREAD_TIMEOUT=${archive_thread_timeout}
+    UPGRADE_BEFORE_LOGLEVEL=${LOG_LEVEL}
+    export UPGRADE_BEFORE_LOGLEVEL
 }
 
 SetSNMPCfg()
 {
     SUExecCmd "\"${NEW_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" write System log_level \"${LOG_LEVEL}\""
+    SUExecCmd "\"${NEW_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" write System log_count \"${LOG_COUNT}\""
+    SUExecCmd "\"${NEW_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" write System log_max_size \"${LOG_MAX_SIZE}\""
+    SUExecCmd "\"${NEW_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" write System log_keep_time \"${LOG_KEEP_TIME}\""
+    SUExecCmd "\"${NEW_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" write Monitor rdagent logfile_size \"${LOGFILE_SIZE}\""
+    SUExecCmd "\"${NEW_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" write Monitor rdagent logfile_size_alarm_threshold \"${LOGFILE_SIZE_ALARM_THRESHOLD}\""
     SUExecCmd "\"${NEW_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" write SNMP engine_id \"${ENGINE_ID}\""
     SUExecCmd "\"${NEW_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" write SNMP context_name \"${CONTEXT_NAME}\""
     SUExecCmd "\"${NEW_INSTALL_PATH}/ProtectClient-E/sbin/xmlcfg\" write SNMP security_name \"${SECURITY_NAME}\""
@@ -597,6 +625,18 @@ RestoreHcsFile()
 {
     if [ -f "$AGENT_BACKUP_PATH"/Plugins/VirtualizationPlugin/conf/clean.ini ]; then
         CP "$AGENT_BACKUP_PATH"/Plugins/VirtualizationPlugin/conf/clean.ini "${NEW_INSTALL_PATH}"/Plugins/VirtualizationPlugin/conf
+    fi
+
+    return 0
+}
+
+RestoreFusionOneFile()
+{   
+    echo "restore fusionone file"
+    if [ -f "$AGENT_BACKUP_PATH"/Plugins/FusionComputePlugin/lib/service/librbd.so ]; then
+        CP "$AGENT_BACKUP_PATH"/Plugins/FusionComputePlugin/lib/service/librbd.so "${NEW_INSTALL_PATH}"/Plugins/FusionComputePlugin/lib/service
+        chmod 550 "${NEW_INSTALL_PATH}"/Plugins/FusionComputePlugin/lib/service/librbd.so
+        chown root:rdadmin "${NEW_INSTALL_PATH}"/Plugins/FusionComputePlugin/lib/service/librbd.so
     fi
 
     return 0
@@ -696,11 +736,15 @@ RestoreProxyData()
     echo EIP=${EIP} | tr -d '\r' >> ${NEW_INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp
     SUExecCmd "\"${NEW_INSTALL_PATH}/ProtectClient-E/bin/xmlcfg\" write Mount eip \"${EIP}\""
 
+    echo IS_FILECLIENT_INSTALL=${IS_FILECLIENT_INSTALL} | tr -d '\r' >> ${NEW_INSTALL_PATH}/ProtectClient-E/conf/testcfg.tmp
+
     # copy old logs
     CP ${AGENT_BACKUP_PATH}/ProtectClient-E/stmp/AGENTLOG* ${NEW_INSTALL_PATH}/ProtectClient-E/stmp
 
     # restore hcs file
     RestoreHcsFile
+    # restore fusionone file
+    RestoreFusionOneFile
 
     RestoreThirdPartFile
 

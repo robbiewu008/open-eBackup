@@ -1,16 +1,16 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, OnInit } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -26,11 +26,13 @@ import {
   CommonConsts,
   DataMap,
   DataMapService,
+  GlobalService,
   I18NService,
   PermissonsAttributes,
   ProtectedResourceApiService,
   ProxyHostSelectMode
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   each,
   filter,
@@ -41,19 +43,20 @@ import {
   isEmpty,
   isNumber,
   isUndefined,
+  map,
   set,
   size,
   toNumber,
   trim
 } from 'lodash';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'aui-advanced-parameter',
   templateUrl: './advanced-parameter.component.html',
   styleUrls: ['./advanced-parameter.component.less']
 })
-export class AdvancedParameterComponent implements OnInit {
+export class AdvancedParameterComponent implements OnInit, OnDestroy {
   includes = includes;
   formGroup: FormGroup;
   resourceData;
@@ -77,7 +80,8 @@ export class AdvancedParameterComponent implements OnInit {
       DataMap.Deploy_Type.x8000.value,
       DataMap.Deploy_Type.x6000.value,
       DataMap.Deploy_Type.x9000.value,
-      DataMap.Deploy_Type.e6000.value
+      DataMap.Deploy_Type.e6000.value,
+      DataMap.Deploy_Type.decouple.value
     ],
     this.i18n.get('deploy_type')
   );
@@ -86,12 +90,14 @@ export class AdvancedParameterComponent implements OnInit {
   isAgentExternal = false;
   externalAgentLists = [];
   extParams;
+  hasRansomware = false; // 用于判断是否有已创建的防勒索策略
+  ransomwareStatus$: Subscription = new Subscription();
 
   channelsErrorTip = {
     ...this.baseUtilService.rangeErrorTip,
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 40])
   };
-  tipsLabel = this.i18n.get('protection_fileset_channels_tips_label');
+  tipsLabel = this.i18n.get('protection_nasshare_channels_tips_label');
 
   unitOptions: OptionItem[] = [
     {
@@ -121,6 +127,13 @@ export class AdvancedParameterComponent implements OnInit {
     }
   ];
 
+  isDetail = false;
+  protectData;
+  protectDataHosts: string;
+  protectDataPath: string;
+
+  isStorageUnity = false;
+
   hotDataErrorTip = {
     ...this.baseUtilService.requiredErrorTip,
     ...this.baseUtilService.integerErrorTip,
@@ -133,11 +146,13 @@ export class AdvancedParameterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private i18n: I18NService,
+    private globalService: GlobalService,
     private dataMapService: DataMapService,
     public baseUtilService: BaseUtilService,
     private messageService: MessageService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private clientManagerApiService: ClientManagerApiService
+    private clientManagerApiService: ClientManagerApiService,
+    public appUtilsService: AppUtilsService
   ) {}
 
   ngOnInit() {
@@ -148,15 +163,42 @@ export class AdvancedParameterComponent implements OnInit {
     this.initForm();
     this.getProtocol();
     this.getProxyOptions();
+    this.getRansomwareStatus();
+  }
+
+  ngOnDestroy() {
+    this.ransomwareStatus$.unsubscribe();
+  }
+
+  initDetailData(data) {
+    if (data.protectionStatus === DataMap.Protection_Status.protected.value) {
+      this.isDetail = true;
+      this.protectData = data.protectedObject?.extParameters;
+      this.resourceData = data;
+      this.subResourceType = data.subType;
+      this.protectDataPath = this.protectData.filters.join(',');
+      this.isStorageUnity =
+        data.environment?.extendInfo?.ndmpType === '3' &&
+        data.extendInfo?.isFs === '0';
+    }
   }
 
   getProtocol() {
+    if (this.isDetail) {
+      return;
+    }
+    const extParameters = this.resourceData.protectedObject?.extParameters;
+    if (
+      this.subResourceType === DataMap.Resource_Type.ndmp.value &&
+      isArray(extParameters?.filters)
+    ) {
+      this.formGroup
+        .get('filterFile')
+        ?.setValue(extParameters.filters.join(','));
+    }
     if (
       !includes(
-        [
-          DataMap.Resource_Type.NASFileSystem.value,
-          DataMap.Resource_Type.ndmp.value
-        ],
+        [DataMap.Resource_Type.NASFileSystem.value],
         this.subResourceType
       )
     ) {
@@ -183,20 +225,8 @@ export class AdvancedParameterComponent implements OnInit {
           return (item.isLeaf = true);
         }
       });
-    if (
-      !isEmpty(this.resourceData.protectedObject) &&
-      !isEmpty(this.resourceData.protectedObject.extParameters)
-    ) {
-      const extParameters = this.resourceData.protectedObject.extParameters;
+    if (extParameters) {
       this.formGroup.get('protocol').setValue(extParameters.protocol + '');
-      if (
-        this.subResourceType === DataMap.Resource_Type.ndmp.value &&
-        isArray(extParameters.filters)
-      ) {
-        this.formGroup
-          .get('filterFile')
-          ?.setValue(extParameters.filters.join(','));
-      }
     }
   }
 
@@ -220,8 +250,7 @@ export class AdvancedParameterComponent implements OnInit {
         pluginType:
           this.subResourceType === DataMap.Resource_Type.NASFileSystem.value
             ? AgentsSubType.NasFileSystem
-            : AgentsSubType.Ndmp,
-        linkStatus: [DataMap.resource_LinkStatus_Special.normal.value]
+            : AgentsSubType.Ndmp
       })
     };
     this.clientManagerApiService
@@ -239,6 +268,16 @@ export class AdvancedParameterComponent implements OnInit {
           startPage === Math.ceil(res.totalCount / 200) ||
           res.totalCount === 0
         ) {
+          recordsTemp = filter(recordsTemp, item => {
+            return (
+              item.linkStatus ===
+                DataMap.resource_LinkStatus_Special.normal.value ||
+              includes(
+                this.resourceData.protectedObject?.extParameters?.agents,
+                item.rootUuid
+              )
+            );
+          });
           const hostArray = [];
           each(recordsTemp, item => {
             hostArray.push({
@@ -270,9 +309,27 @@ export class AdvancedParameterComponent implements OnInit {
                 ) || []
               );
           }
+          if (this.isDetail && this.protectData.agents) {
+            this.protectDataHosts = map(
+              this.protectData.agents.split(';'),
+              agent => {
+                return find(this.hostOptions, host => host.uuid === agent)
+                  ?.endpoint;
+              }
+            ).join(',');
+          }
           return;
         }
         this.getProxyOptions(recordsTemp, startPage);
+      });
+  }
+
+  getRansomwareStatus() {
+    // 开启了防勒索策略的资源是不能开小文件聚合的
+    this.ransomwareStatus$ = this.globalService
+      .getState('syncRansomwareStatus')
+      .subscribe(res => {
+        this.hasRansomware = res;
       });
   }
 
@@ -317,7 +374,7 @@ export class AdvancedParameterComponent implements OnInit {
       // 每个条件不能超过255个字符
       for (let i = 0; i < size(values); i++) {
         const value = values[i];
-        if (value.length > 255) {
+        if (value.length > 255 || includes(value, '/')) {
           return { invalidFilter: { value: control.value } };
         }
         if (!this.validStar(value)) {
@@ -334,7 +391,7 @@ export class AdvancedParameterComponent implements OnInit {
 
   initForm() {
     this.formGroup = this.fb.group({
-      channels: new FormControl(this.isX3000 ? 10 : 25, {
+      channels: new FormControl(10, {
         validators: [
           this.baseUtilService.VALID.required(),
           this.baseUtilService.VALID.integer(),
@@ -344,14 +401,18 @@ export class AdvancedParameterComponent implements OnInit {
       aggregation_mode: new FormControl(DataMap.Aggregation_Mode.disable.value),
       permissons_attributes: new FormControl(PermissonsAttributes.FolderOnly),
       protocol: new FormControl(''),
+      sparseFileDetect: new FormControl(false),
       smallFile: new FormControl(false),
       fileSize: new FormControl(4096),
       maxFileSize: new FormControl(1024),
       smbHardlinkProtection: new FormControl(true),
       smbAclProtection: new FormControl(true),
       enableHotData: new FormControl(false),
+      enableColdData: new FormControl(false),
       hotData: new FormControl(''),
-      unit: new FormControl(60)
+      unit: new FormControl(60),
+      coldData: new FormControl(''),
+      coldUnit: new FormControl(60)
     });
     // NDMP过滤文件
     if (this.subResourceType === DataMap.Resource_Type.ndmp.value) {
@@ -374,6 +435,21 @@ export class AdvancedParameterComponent implements OnInit {
       }
       this.formGroup.get('hotData').updateValueAndValidity();
     });
+    this.formGroup.get('enableColdData').valueChanges.subscribe(res => {
+      if (res) {
+        this.formGroup
+          .get('coldData')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.integer(),
+            this.baseUtilService.VALID.minSize(0)
+          ]);
+      } else {
+        this.formGroup.get('coldData').clearValidators();
+      }
+      this.formGroup.get('coldData').updateValueAndValidity();
+    });
+
     // X3000、X6000、X8000增加代理主机
     if (
       this.exterAgent &&
@@ -408,10 +484,7 @@ export class AdvancedParameterComponent implements OnInit {
     }
     if (
       includes(
-        [
-          DataMap.Resource_Type.NASFileSystem.value,
-          DataMap.Resource_Type.ndmp.value
-        ],
+        [DataMap.Resource_Type.NASFileSystem.value],
         this.subResourceType
       )
     ) {
@@ -461,6 +534,7 @@ export class AdvancedParameterComponent implements OnInit {
 
   patchForm() {
     if (
+      this.isDetail ||
       isEmpty(this.resourceData.protectedObject) ||
       isEmpty(this.resourceData.protectedObject.extParameters)
     ) {
@@ -477,6 +551,7 @@ export class AdvancedParameterComponent implements OnInit {
         .setValue(extParameters.permissions_and_attributes);
 
       this.formGroup.patchValue({
+        sparseFileDetect: extParameters.sparse_file_detection,
         smallFile:
           extParameters?.small_file_aggregation ===
           DataMap.Aggregation_Mode.enable.value,
@@ -484,14 +559,23 @@ export class AdvancedParameterComponent implements OnInit {
         maxFileSize: extParameters?.aggregation_file_max_size || 1024,
         smbHardlinkProtection: extParameters?.smb_hardlink_protection ?? true,
         smbAclProtection: extParameters?.smb_acl_protection ?? true,
-        channels: extParameters?.channels || (this.isX3000 ? 10 : 25),
+        channels: extParameters?.channels || 10,
         enableHotData:
           extParameters?.backup_hot_data && extParameters?.unit ? true : false,
+        enableColdData:
+          extParameters?.backup_cold_data && extParameters?.coldUnit
+            ? true
+            : false,
         hotData:
           extParameters?.backup_hot_data && extParameters?.unit
             ? extParameters?.backup_hot_data / extParameters?.unit
             : '',
-        unit: extParameters?.unit || 60
+        coldData:
+          extParameters?.backup_cold_data && extParameters?.coldUnit
+            ? extParameters?.backup_cold_data / extParameters?.coldUnit
+            : '',
+        unit: extParameters?.unit || 60,
+        coldUnit: extParameters?.coldUnit || 60
       });
     }
     // 修改索引
@@ -502,6 +586,9 @@ export class AdvancedParameterComponent implements OnInit {
     this.resourceData = isArray(data) ? data[0] : data;
     this.subResourceType = this.resourceData.sub_type;
     this.doradoNasFiles = isArray(data) ? data : [data];
+    this.isStorageUnity =
+      this.resourceData.environment?.extendInfo?.ndmpType === '3' &&
+      this.resourceData.extendInfo?.isFs === '0';
   }
 
   onOK() {
@@ -514,10 +601,14 @@ export class AdvancedParameterComponent implements OnInit {
     )
       ? {
           proxy_host_mode: ProxyHostSelectMode.Auto,
-          protocol: +this.formGroup.value.protocol
+          protocol:
+            this.subResourceType === DataMap.Resource_Type.ndmp.value
+              ? Number(DataMap.NasFileSystem_Protocol.ndmp.value)
+              : +this.formGroup.value.protocol
         }
       : {
           channels: toNumber(this.formGroup.get('channels').value),
+          sparse_file_detection: this.formGroup.get('sparseFileDetect').value,
           small_file_aggregation: this.formGroup.value.smallFile
             ? DataMap.Aggregation_Mode.enable.value
             : DataMap.Aggregation_Mode.disable.value,
@@ -527,7 +618,12 @@ export class AdvancedParameterComponent implements OnInit {
             this.formGroup.value.enableHotData && this.formGroup.value.hotData
               ? this.formGroup.value.hotData * this.formGroup.value.unit
               : 0,
-          unit: this.formGroup.value.unit
+          unit: this.formGroup.value.unit,
+          backup_cold_data:
+            this.formGroup.value.enableColdData && this.formGroup.value.coldData
+              ? this.formGroup.value.coldData * this.formGroup.value.coldUnit
+              : 0,
+          coldUnit: this.formGroup.value.coldUnit
         };
     if (
       includes(
@@ -582,6 +678,7 @@ export class AdvancedParameterComponent implements OnInit {
         [
           'backup_res_auto_index',
           'archive_res_auto_index',
+          'tape_archive_auto_index',
           'enable_security_archive'
         ],
         key => {

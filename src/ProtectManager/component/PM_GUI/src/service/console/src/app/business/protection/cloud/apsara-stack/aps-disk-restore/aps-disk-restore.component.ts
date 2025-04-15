@@ -1,17 +1,23 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidatorFn
+} from '@angular/forms';
 import { OptionItem } from '@iux/live';
 import {
   AppService,
@@ -24,7 +30,9 @@ import {
   I18NService,
   ProtectedResourceApiService,
   RestoreApiV2Service,
-  RestoreV2LocationType
+  RestoreV2LocationType,
+  SYSTEM_TIME,
+  ResourceDetailType
 } from 'app/shared';
 import {
   ProTableComponent,
@@ -46,6 +54,7 @@ import {
   includes,
   isEmpty,
   isNumber,
+  isUndefined,
   map,
   pick,
   reject,
@@ -96,6 +105,14 @@ export class ApsDiskRestoreComponent implements OnInit {
   proxyOptions = [];
   verifyStatus;
   copyVerifyDisableLabel;
+  hasTargetSystem = false; // 判断目标虚拟机内是否包含系统盘
+  targetSystemDisk;
+  needPassword = false;
+
+  passwordErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
+    invalidInput: this.i18n.get('common_invalid_input_label')
+  };
 
   targetDisksOptions;
   cacheSelectedDisk = [];
@@ -366,7 +383,13 @@ export class ApsDiskRestoreComponent implements OnInit {
       targetServer: new FormControl([]),
       proxyHost: new FormControl([]),
       restoreAutoPowerOn: new FormControl(false),
-      copyVerify: new FormControl(false)
+      copyVerify: new FormControl(false),
+      password: new FormControl('', {
+        validators: [
+          this.validPassword(),
+          this.baseUtilService.VALID.required()
+        ]
+      })
     });
 
     this.formGroup.get('restoreTo').valueChanges.subscribe(res => {
@@ -381,6 +404,7 @@ export class ApsDiskRestoreComponent implements OnInit {
           .setValidators([this.baseUtilService.VALID.required()]);
       }
       this.formGroup.get('targetServer').updateValueAndValidity();
+      defer(() => this.setVaild());
     });
 
     this.formGroup.get('targetServer').valueChanges.subscribe(res => {
@@ -395,6 +419,24 @@ export class ApsDiskRestoreComponent implements OnInit {
         this.formGroup.get('restoreTo').setValue(RestoreV2LocationType.NEW)
       );
     }
+
+    this.formGroup.get('password').valueChanges.subscribe(res => {
+      defer(() => this.setVaild());
+    });
+  }
+
+  validPassword(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (isUndefined(this.formGroup) || isEmpty(control.value)) {
+        return null;
+      }
+
+      const reg1 = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[()`~!@#$%^&*_\-+=|{}\[\]:;<>,.?/]).{8,30}$/;
+      if (!reg1.test(control.value)) {
+        return { invalidInput: { value: control.value } };
+      }
+      return null;
+    };
   }
 
   clearTargetDisk() {
@@ -455,78 +497,17 @@ export class ApsDiskRestoreComponent implements OnInit {
   }
 
   getResourceDetail(server?) {
-    this.protectedResourceApiService
-      .ListResources({
-        pageNo: CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE,
-        queryDependency: true,
-        conditions: JSON.stringify({
-          uuid: !server
-            ? this.resourceProperties.rootUuid ||
-              this.resourceProperties.root_uuid
-            : server[0].rootUuid
-        })
-      })
-      .subscribe((res: any) => {
-        if (first(res.records)) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          if (!server) {
-            this.getDisk(agentsId, res.records[0]);
-          } else {
-            this.getDisk(agentsId, res.records[0], server);
-          }
-        }
-      });
-  }
-
-  getDisk(
-    agentsId,
-    resourceInfo,
-    server?,
-    recordsTemp?: any[],
-    startPage?: number
-  ) {
-    const params = {
-      agentId: agentsId,
-      envId: !server
-        ? this.resourceProperties.rootUuid || this.resourceProperties.root_uuid
-        : server[0].rootUuid,
-      resourceIds: [
-        !server
-          ? this.resourceProperties.uuid || this.resourceProperties.root_uuid
-          : server[0].rootUuid
-      ],
-      pageNo: startPage || 1,
-      pageSize: 200,
-      conditions: JSON.stringify({
-        resourceType: 'APS-disk',
-        uuid: !server ? this.resourceProperties.uuid : server[0].uuid,
-        regionId: !server
-          ? this.resourceProperties.extendInfo.regionId
-          : server[0].extendInfo.regionId
-      })
-    };
-
-    this.appService.ListResourcesDetails(params).subscribe(res => {
-      if (!recordsTemp) {
-        recordsTemp = [];
-      }
-      if (!isNumber(startPage)) {
-        startPage = 1;
-      }
-      recordsTemp = [...recordsTemp, ...res.records];
-      if (
-        startPage === Math.ceil(res.totalCount / 200) ||
-        res.totalCount === 0
-      ) {
+    const targetServer = !isEmpty(server)
+      ? first(server)
+      : this.resourceProperties;
+    this.appUtilsService
+      .getResourcesDetails(
+        targetServer,
+        ResourceDetailType.apsDisk,
+        {},
+        { regionId: targetServer.extendInfo?.regionId }
+      )
+      .subscribe(recordsTemp => {
         each(recordsTemp, item => {
           assign(item, {
             size: item.extendInfo?.size,
@@ -535,17 +516,11 @@ export class ApsDiskRestoreComponent implements OnInit {
             sla: false
           });
         });
+        this.targetSystemDisk = find(recordsTemp, { mode: 'true' });
+        this.hasTargetSystem = !!this.targetSystemDisk;
         this.targetDisksOptions = recordsTemp;
         this.getTargetDisk();
-        return;
-      }
-      startPage++;
-      if (!server) {
-        this.getDisk(agentsId, resourceInfo, null, recordsTemp, startPage);
-      } else {
-        this.getDisk(agentsId, resourceInfo, server, recordsTemp, startPage);
-      }
-    });
+      });
   }
 
   getOptions(subType, params, node?) {
@@ -692,18 +667,48 @@ export class ApsDiskRestoreComponent implements OnInit {
     );
     each(this.targetTableData?.data, item => {
       let tmpOptions = item.targetDiskOptions;
-      each(tmpOptions, val => {
-        if (
-          find(this.cacheSelectedDisk, disk => disk === val.uuid) ||
-          item.size > val.size
-        ) {
-          val.disabled = true;
-        } else {
-          val.disabled = false;
-        }
-      });
-      item.targetDiskOptions = [...tmpOptions];
+      if (!isEmpty(tmpOptions)) {
+        this.configNewDiskOption(tmpOptions, item);
+      }
     });
+    // 如果选择了副本中的系统盘，并且恢复到的目标位置是系统盘，或者恢复到没有系统盘的设备的新位置，都需要输入密码
+    defer(() => this.configPassword());
+  }
+
+  private configNewDiskOption(tmpOptions: any, item: any) {
+    each(tmpOptions, val => {
+      if (
+        find(this.cacheSelectedDisk, disk => disk === val.uuid) ||
+        item.size > val.size
+      ) {
+        val.disabled = true;
+      } else {
+        val.disabled = false;
+      }
+    });
+    item.targetDiskOptions = [...tmpOptions];
+  }
+
+  private configPassword() {
+    const tmpSystemDiskData = find(
+      this.targetTableData.data,
+      item => item.mode === 'true'
+    );
+    if (
+      (!!tmpSystemDiskData &&
+        this.hasTargetSystem &&
+        tmpSystemDiskData?.targetDisk === this.targetSystemDisk.uuid &&
+        tmpSystemDiskData?.recoveryType === this.EXIST_DISK) ||
+      (tmpSystemDiskData?.recoveryType === this.NEW_DISK &&
+        !this.hasTargetSystem)
+    ) {
+      this.formGroup.get('password').enable();
+      this.needPassword = true;
+    } else {
+      this.formGroup.get('password').disable();
+      this.needPassword = false;
+    }
+
     this.setVaild();
   }
 
@@ -742,6 +747,12 @@ export class ApsDiskRestoreComponent implements OnInit {
               size: toNumber(item.size),
               isNewDisk: 'true'
             };
+          }
+
+          if (item.mode === 'true' && this.needPassword) {
+            assign(curData, {
+              password: this.formGroup.get('password').value
+            });
           }
 
           return JSON.stringify({

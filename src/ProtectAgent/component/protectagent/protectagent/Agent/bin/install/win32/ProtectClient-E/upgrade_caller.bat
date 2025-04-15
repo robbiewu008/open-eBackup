@@ -1,4 +1,5 @@
 @echo off
+:: 
 ::  This file is a part of the open-eBackup project.
 ::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 ::  If a copy of the MPL was not distributed with this file, You can obtain one at
@@ -9,6 +10,7 @@
 ::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
 ::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 ::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+::
 setlocal EnableDelayedExpansion
 
 set CURRENT_PATH=%~dp0
@@ -36,18 +38,20 @@ call :Log "Upgrade caller begin."
 call :Log "Start check the Upgrade Script."
 call :CheckUpgradeScript
 if NOT %errorlevel% EQU 0 (
-    call :LogError "Check pac unique unsuccessfully." %ERR_UPGRADE_SCRIPT_NOT_FOUND%
+    call :LogError "Check pac unique failed." %ERR_UPGRADE_SCRIPT_NOT_FOUND%
     exit %ERR_UPGRADE_SCRIPT_NOT_FOUND_RETCODE%
 )
 
 call :Log "Begin to call upgrade script, and exec mode is /push."
 rem Move upgrade_pre.log and errormsg.log to the temporary directory.
-copy /y %LOGFILE_PATH% %AGENT_UPGRADE_PACKAGE_PATH% >nul
+copy /y %LOGFILE_PATH% %AGENT_UPGRADE_PACKAGE_PATH% >> %LOGFILE_PATH% 2>&1
 start /high /wait cmd /c %UPGRADE_SCRIPT_PATH% /push
 if NOT %errorlevel% EQU 0(
     set RES=%errorlevel%
+    call :Log "Upgrade failed, errno=%RES%."
     exit %RES%
 )
+call :Log "Upgrade Agent successfully."
 endlocal
 exit 0
 

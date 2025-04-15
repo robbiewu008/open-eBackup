@@ -28,7 +28,8 @@
 
 using namespace AppProtect;
 constexpr uint32_t MAX_RETRY_CNT = 3;
-#define REPORT_LOG2AGENT(subJobDetails, returnValue, logDetailList, logDetail, curProcess, curSpeed, curJobstatus) do { \
+#define REPORT_LOG2AGENT(subJobDetails, returnValue, logDetailList, logDetail,                                         \
+                          curProcess, curSpeed, curJobstatus) do {                                                     \
     subJobDetails.__set_jobId(m_parentJobId);                                                                          \
     if (m_subJobInfo != nullptr && m_subJobInfo->subJobId != "") {                                                     \
         subJobDetails.__set_subJobId(m_subJobInfo->subJobId);                                                          \
@@ -57,12 +58,14 @@ constexpr uint32_t MAX_RETRY_CNT = 3;
     logDetail.__set_description("");                                                                                   \
 } while (0)
 
-#define ABORT_ENDTASK(subJobDetails, result, logDetailList, logDetail, process, speed)                                 \
+#define ABORT_ENDTASK(subJobDetails, result, logDetailList, logDetail, process, speed) do {                            \
     if (IsAbortJob()) {                                                                                                \
         HCP_Log(INFO, "BasicJob") << "Receive abort req, End Task" << HCPENDLOG;                                       \
         REPORT_LOG2AGENT(subJobDetails, result, logDetailList, logDetail, process, speed, SubJobStatus::ABORTED);      \
         return Module::SUCCESS;                                                                                        \
-    }
+    }                                                                                                                  \
+} while (0)
+   
 
 #ifdef WIN32
 class AGENT_API BasicJob {
@@ -77,6 +80,7 @@ public:
     virtual int ExecuteSubJob();
     virtual int PostJob();
     virtual int AbortJob();
+    virtual int ExecuteAsyncJob();
 
     virtual void EndJob(AppProtect::SubJobStatus::type jobStatus);
     // info
@@ -137,6 +141,7 @@ protected:
         logDetail.__set_level(level);
         std::vector<std::string> logInfoParams;
         int v[2048] = { (AddInfoParam(args, logInfoParams), 0)... };
+        (void)v;
         logDetail.__set_params(logInfoParams);
         logDetail.__set_timestamp(std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now().time_since_epoch()).count());
@@ -152,6 +157,7 @@ protected:
         logDetail.__set_errorCode(errCode);
         std::vector<std::string> errorParams;
         int v[2048] = { (AddInfoParam(args, errorParams), 0)... };
+        (void)v;
         logDetail.__set_errorParams(errorParams);
         return;
     }

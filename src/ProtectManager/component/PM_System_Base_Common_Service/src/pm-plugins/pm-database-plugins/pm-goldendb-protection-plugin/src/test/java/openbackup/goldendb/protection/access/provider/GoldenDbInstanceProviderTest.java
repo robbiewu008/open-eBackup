@@ -15,6 +15,7 @@ package openbackup.goldendb.protection.access.provider;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.goldendb.protection.access.constant.GoldenDbConstant;
@@ -71,7 +72,7 @@ public class GoldenDbInstanceProviderTest {
 
     @Test
     public void testBeforeCreate() {
-        when(mockGoldenDbService.singleConnectCheck(any(), any())).thenReturn(true);
+        when(mockGoldenDbService.singleConnectCheck(any(), any())).thenReturn(new AgentBaseDto());
 
         // Configure GoldenDbService.getGtmNode(...).
 
@@ -123,7 +124,7 @@ public class GoldenDbInstanceProviderTest {
         managerNodeCheck.setAccessible(true);
         PowerMockito.when(mockGoldenDbService.getEnvironmentById(any())).thenReturn(getEnvironment());
         PowerMockito.when(mockGoldenDbService.getManageDbNode(any())).thenReturn(Arrays.asList(new Node()));
-        PowerMockito.when(mockGoldenDbService.singleConnectCheck(any(), any())).thenReturn(false);
+        PowerMockito.when(mockGoldenDbService.singleConnectCheck(any(), any())).thenReturn(new AgentBaseDto());
         try {
             managerNodeCheck.invoke(goldenDbInstanceProvider, getEnvironment());
             Assert.fail();
@@ -140,7 +141,7 @@ public class GoldenDbInstanceProviderTest {
         Method computeNodeCheck = goldenDbInstanceProvider.getClass()
             .getDeclaredMethod("computeNodeCheck", ProtectedEnvironment.class);
         computeNodeCheck.setAccessible(true);
-        PowerMockito.when(mockGoldenDbService.singleConnectCheck(any(), any())).thenReturn(false);
+        PowerMockito.when(mockGoldenDbService.singleConnectCheck(any(), any())).thenReturn(new AgentBaseDto());
         try {
             computeNodeCheck.invoke(goldenDbInstanceProvider, getEnvironment());
             Assert.fail();
@@ -158,7 +159,7 @@ public class GoldenDbInstanceProviderTest {
             .getDeclaredMethod("gtmNodeCheck", ProtectedEnvironment.class);
         gtmNodeCheck.setAccessible(true);
         PowerMockito.when(mockGoldenDbService.getGtmNode(any())).thenReturn(Arrays.asList(new Gtm()));
-        PowerMockito.when(mockGoldenDbService.singleConnectCheck(any(), any())).thenReturn(false);
+        PowerMockito.when(mockGoldenDbService.singleConnectCheck(any(), any())).thenReturn(new AgentBaseDto());
         try {
             gtmNodeCheck.invoke(goldenDbInstanceProvider, getEnvironment());
             Assert.fail();

@@ -18,11 +18,12 @@ target_include_directories(general_obj
     ${MODULE_BASE_PATH}/src
     ${MODULE_BASE_PATH}/src/common
     ${MODULE_OPENSRC_PATH}/boost_rel/include
+    ${MODULE_OPENSRC_PATH}/jsoncpp_rel/include
     ${AGENT_SDK_PATH}/include
     ${MODULE_SECUREC_INC_PATH}
 )
 
 target_link_libraries(general_obj
     PRIVATE
-    database_inc
+    safe_cmplib
 )

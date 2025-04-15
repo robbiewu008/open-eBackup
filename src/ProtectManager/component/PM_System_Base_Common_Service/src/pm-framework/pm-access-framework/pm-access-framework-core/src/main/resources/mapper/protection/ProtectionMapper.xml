@@ -29,8 +29,10 @@
         <result column="path" property="path"/>
         <result column="ext_parameters" property="extParameters"/>
         <result column="status" property="status"/>
-        <result column="latest_time" property="latestTime"/>
-        <result column="earliest_time" property="earliestTime"/>
+        <result column="latest_time" property="latestTime"
+                typeHandler="openbackup.system.base.common.typehandler.TimestampTypeHandler"/>
+        <result column="earliest_time" property="earliestTime"
+                typeHandler="openbackup.system.base.common.typehandler.TimestampTypeHandler"/>
         <result column="chain_id" property="chainId"/>
         <result column="consistent_status" property="consistentStatus"/>
     </resultMap>
@@ -75,7 +77,8 @@
                                      path,
                                      ext_parameters,
                                      status,
-                                     chain_id)
+                                     chain_id,
+                                     env_id)
         VALUES (#{po.uuid},
                 #{po.slaId},
                 #{po.slaName},
@@ -87,7 +90,8 @@
                 #{po.path},
                 #{po.extParameters, typeHandler=com.huawei.oceanprotect.sla.infrastructure.repository.handler.ObjectJsonHandler},
                 #{po.status},
-                #{po.chainId})
+                #{po.chainId},
+                #{po.envId})
     </insert>
 
     <update id="updateExtParameters">

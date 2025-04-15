@@ -35,6 +35,7 @@ SQLITE_BIN="sqlite3"
 LIB64_DIR="/usr/lib64"
 COMMON_LIBSTDCPP="libstdc++.so.6"
 OPEN_SRC_PACKET_DIR=${AGENT_ROOT}/open_src
+OPEN_PLATFORM_DIR=${AGENT_ROOT}/platform
 LIB_STD_CPP_SO_PATH="${LIB64_DIR}/${COMMON_LIBSTDCPP}"
 LIB_STD_CPP_SO=""
 LIB_SECUREC_SO=""
@@ -93,11 +94,24 @@ AddPackFilesBin()
 
 PackLibStdCppSo()
 {
-    LIB_STD_CPP_SO=`ls ${OPEN_SRC_PACKET_DIR}/libstdc++.so.6*`
-    if [ "${LIB_STD_CPP_SO}" = "" ];then
+    LIB_STD_CPP_SO_LINK_TARGET=`readlink /usr/lib64/libstdc++.so.6`
+    if [ "${LIB_STD_CPP_SO_LINK_TARGET}" = "" ]; then
+        echo "No stdc++.so.6 null"
+        exit 1
+    fi
+
+    LIB_STD_CPP_SO=""
+    if [ -f "${LIB_STD_CPP_SO_LINK_TARGET}" ]; then
+        LIB_STD_CPP_SO=${LIB_STD_CPP_SO_LINK_TARGET}
+    else
+        LIB_STD_CPP_SO="/usr/lib64/${LIB_STD_CPP_SO_LINK_TARGET}"
+    fi
+
+    if [ "${LIB_STD_CPP_SO}" = "" ]; then
         echo "${LIB_STD_CPP_SO} : null"
         exit 1
     fi
+
     /bin/cp -rf "${LIB_STD_CPP_SO}" "${AGENT_ROOT}/bin"
     echo "compile Agent with libstdc++ file ${LIB_STD_CPP_SO}"
     LIB_STD_CPP_SO=`basename ${LIB_STD_CPP_SO}`
@@ -114,16 +128,8 @@ PackLibcryptSO()
 
 PackLibSecurecSo()
 {
-    if [ ! -f /etc/euleros-release ]; then
-        return 0
-    fi
-    
     sys_arch=`uname -p`
-    if [ "${sys_arch}" != "aarch64" ] && [ "${sys_arch}" != "aarch32" ]; then
-        return 0
-    fi
-
-    LIB_SECUREC_SO=`ls ${OPEN_SRC_PACKET_DIR}/libsecurec.so*`
+    LIB_SECUREC_SO=`ls ${OPEN_PLATFORM_DIR}/securec/libsecurec.so*`
     if [ -f "${LIB_SECUREC_SO}" ]; then 
         /bin/cp -rf "${LIB_SECUREC_SO}" "${AGENT_ROOT}/bin"
         LIB_SECUREC_SO=`basename ${LIB_SECUREC_SO}`

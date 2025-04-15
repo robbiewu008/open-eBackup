@@ -21,5 +21,7 @@
 
 std::wstring String2wstring(const std::string &s);
 std::wstring String2WstringByUtf8(const std::string &s);
+std::string BSTRToString(const BSTR &bstr);
+BSTR StringToBSTR(const std::string& str);
 #endif
 #endif

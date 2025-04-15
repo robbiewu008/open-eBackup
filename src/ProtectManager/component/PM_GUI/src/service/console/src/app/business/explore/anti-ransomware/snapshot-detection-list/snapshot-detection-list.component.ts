@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -27,11 +27,11 @@ import {
   WarningMessageService
 } from 'app/shared';
 import {
-  TableData,
-  TableConfig,
+  Filters,
   ProTableComponent,
   TableCols,
-  Filters
+  TableConfig,
+  TableData
 } from 'app/shared/components/pro-table';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
@@ -81,39 +81,40 @@ export class SnapshotDetectionListComponent implements OnInit, AfterViewInit {
         }
       },
       {
-        key: 'totalCount',
+        key: 'totalCountNas',
         name: this.i18n.get('explore_file_system_count_label'),
         sort: true,
         hidden: !SupportLicense.isFile
       },
       {
-        key: 'condition',
+        key: 'conditionNas',
         name: this.i18n.get('explore_detection_condition_label'),
-        width: 280,
+        width: SupportLicense.isBoth ? '32%' : '60%',
         cellRender: this.statisticsTpl,
         hidden: !SupportLicense.isFile
       },
       {
-        key: 'totalCount',
+        key: 'totalCountLun',
         name: this.i18n.get('explore_lun_numbers_label'),
         sort: true,
         hidden: !SupportLicense.isSan
       },
       {
-        key: 'condition',
+        key: 'conditionLun',
         name: this.i18n.get('explore_lun_protection_label'),
-        width: 280,
+        width: SupportLicense.isBoth ? '32%' : '60%',
         cellRender: this.lunStatisticsTpl,
         hidden: !SupportLicense.isSan
       }
     ];
 
     this.tableConfig = {
+      filterTags: true,
       table: {
         compareWith: 'id',
+        colResize: false,
         columns: cols,
         scrollFixed: true,
-        scroll: { y: '45vh' },
         colDisplayControl: false,
         fetchData: (filter: Filters) => {
           this.getData(filter);
@@ -151,7 +152,10 @@ export class SnapshotDetectionListComponent implements OnInit, AfterViewInit {
       .subscribe(res => {
         res.records.filter(item => {
           assign(item, {
-            totalCount: item.protectedCount + item.unprotectedCount
+            totalCountNas:
+              item?.protectedCount + item?.unprotectedCount || '--',
+            totalCountLun:
+              item?.protectedCountLun + item?.unprotectedCountLun || '--'
           });
         });
         this.tableData = {

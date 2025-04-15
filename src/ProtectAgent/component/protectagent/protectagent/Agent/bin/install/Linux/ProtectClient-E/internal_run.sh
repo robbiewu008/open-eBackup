@@ -1,14 +1,16 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
+# 
+#  This file is a part of the open-eBackup project.
+#  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+#  If a copy of the MPL was not distributed with this file, You can obtain one at
+#  http://mozilla.org/MPL/2.0/.
+# 
+#  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+# 
+#  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+#  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+#  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 
 # ----------------------------------
@@ -89,16 +91,16 @@ REGISTER_STATUS_SUCC=2
 ###### ANTI-EXTORTION ######
 DEPLOY_TYPE_A8000="a8000"
 
-###### ·Ö²¼Ê½Ò»Ìå»ú #######
+###### åˆ†å¸ƒå¼ä¸€ä½“æœº #######
 DEPLOY_DISTRIBUTED_APPLIANCE="d7"
 
-###### Í¨ÓÃ·þÎñÆ÷ #######
+###### é€šç”¨æœåŠ¡å™¨ #######
 DEPLOY_GENERAL_SERVER="d8"
-###### ·ÀÀÕË÷
+###### é˜²å‹’ç´¢
 DEPLOY_TYPE_HYPERDETECT="hyperdetect"
-###### °×ÅÆ·ÀÀÕË÷
+###### ç™½ç‰Œé˜²å‹’ç´¢
 DEPLOY_TYPE_HYPERDETECT_NO_BRAND="d4"
-###### °²È«Ò»Ìå»ú
+###### å®‰å…¨ä¸€ä½“æœº
 DEPLOY_TYPE_CYBER_ENGINE="d5"
 CONTAINER_CYBER_ENGINE_NIC="eth1"
 ###### X6000
@@ -110,7 +112,7 @@ X3000_SUB_JOB_MAX=5
 X3000_NOT_INFRA_MAIN_JOB_MAX=10
 X3000_DO_INFRA_MAIN_JOB_MAX=5
 
-# x6000²¿Êð£¬¿ò¼Ü´¦ÀíÖ÷ÈÎÎñ×î´ó²¢ÐÐÊý
+# x6000éƒ¨ç½²ï¼Œæ¡†æž¶å¤„ç†ä¸»ä»»åŠ¡æœ€å¤§å¹¶è¡Œæ•°
 X6000_JOB_MAX=9
 
 ###################################################
@@ -257,7 +259,7 @@ function ConfigListenIp()
         LOCAL_IP=${TMP_LOCAL_IP}
     done
 
-    # ´Óbackup_nat_planeÖÐ»ñÈ¡±¾½ÚµãµÄip£¬¼´PM ip
+    # ä»Žbackup_nat_planeä¸­èŽ·å–æœ¬èŠ‚ç‚¹çš„ipï¼Œå³PM ip
 
     LISTEN_IP=${LOCAL_IP}
 
@@ -367,6 +369,14 @@ function ConfigPMIp()
             if [ ! -s /opt/network-conf/backup_net_plane ] && [ "${DEPLOY_TYPE}" != "${DEPLOY_TYPE_CYBER_ENGINE}" ]; then
                 echo "/opt/network-conf/backup_net_plane is empty, waiting..."
                 sleep 30
+            elif [ -s /opt/network-conf/backup_net_plane ]; then
+                if ! grep -q "$NODE_NAME" /opt/network-conf/backup_net_plane; then
+                    echo "No backup net plane in this node, waiting..."
+                    sleep 30 
+                else
+                    echo "success to load backup netplane. "
+                    break
+                fi
             else
                 echo "success to load backup netplane. "
                 break
@@ -446,7 +456,7 @@ function ConfigIp()
     Log "Start config ip, deply_type=[${DEPLOY_TYPE}]."
 
     if [ "${DEPLOY_TYPE}" = "${DEPLOY_TYPE_HYPERDETECT}" ] || [ "${DEPLOY_TYPE}" = "${DEPLOY_TYPE_HYPERDETECT_NO_BRAND}" ]; then 
-        # dorado»·¾³·ÀÀÕË÷²¿Êð£¬ÎÞ·¨Ê¹ÓÃÒµÎñÃæip£¬¹Ì¶¨Ê¹ÓÃÈÝÆ÷¿¨eth0,½ö´æÔÚipv4
+        # doradoçŽ¯å¢ƒé˜²å‹’ç´¢éƒ¨ç½²ï¼Œæ— æ³•ä½¿ç”¨ä¸šåŠ¡é¢ipï¼Œå›ºå®šä½¿ç”¨å®¹å™¨å¡eth0,ä»…å­˜åœ¨ipv4
         LISTEN_IP=`ip addr show ${CONTAINER_NIC} |  grep -w "inet" | $AWK -F " " '{print $2}' | $AWK -F "/" '{print $1}'`
  
         Log "Listening ip address: ${LISTEN_IP}"
@@ -461,7 +471,7 @@ function ConfigIp()
         ${AGENT_ROOT_PATH}/bin/xmlcfg write Backup ebk_server_ip ${LISTEN_IP}
         ${AGENT_ROOT_PATH}/bin/xmlcfg write System domain_name_dme  ${HOSTNAME}
     elif [ "${DEPLOY_TYPE}" = "${DEPLOY_TYPE_CYBER_ENGINE}" ]; then
-        # dorado»·¾³·ÀÀÕË÷²¿Êð£¬ÎÞ·¨Ê¹ÓÃÒµÎñÃæip£¬¹Ì¶¨Ê¹ÓÃÈÝÆ÷¿¨eth0,½ö´æÔÚipv4
+        # doradoçŽ¯å¢ƒé˜²å‹’ç´¢éƒ¨ç½²ï¼Œæ— æ³•ä½¿ç”¨ä¸šåŠ¡é¢ipï¼Œå›ºå®šä½¿ç”¨å®¹å™¨å¡eth0,ä»…å­˜åœ¨ipv4
         LISTEN_IP=`ifconfig ${CONTAINER_CYBER_ENGINE_NIC} |  grep -w "inet" | $AWK -F " " '{print $2}' | $AWK -F "/" '{print $1}'`
  
         Log "Listening ip address: ${LISTEN_IP}"
@@ -911,7 +921,7 @@ function GetNASIp()
         return
     fi
 
-    # 2. ÆÕÍ¨ÈÝÆ÷Ê¹ÓÃ127.0.0.1½øÐÐ¹ÒÔØ
+    # 2. æ™®é€šå®¹å™¨ä½¿ç”¨127.0.0.1è¿›è¡ŒæŒ‚è½½
     sudo ${PERMISSION_SCRIPT_PATH} chown ${AGENT_USER}:${DEFAULT_GROUP_INTERNAL} "${PERSISTENCE_TMP_ROOT_PATH}/hosts"
     echo "127.0.0.1 nas.storage.protectengine_a.host" >> "${PERSISTENCE_TMP_ROOT_PATH}/hosts"
 
@@ -937,7 +947,7 @@ function ConfigHcsMapping()
 function InitIscsiName()
 {
     sudo "${PERMISSION_SCRIPT_PATH}" chown "${AGENT_USER}:${DEFAULT_GROUP_INTERNAL}" "/etc/iscsi/initiatorname.iscsi"
-    # ³õÊ¼»¯iscsiÃû³Æ£¬·ÀÖ¹Á½¿ØÄÚÖÃagentµÄiscsiÃû³ÆÏàÍ¬
+    # åˆå§‹åŒ–iscsiåç§°ï¼Œé˜²æ­¢ä¸¤æŽ§å†…ç½®agentçš„iscsiåç§°ç›¸åŒ
     iscsi_name=`sed -n "/^InitiatorName/p"  /etc/iscsi/initiatorname.iscsi|cut -d'=' -f2`
     echo "" >  /etc/iscsi/initiatorname.iscsi
 
@@ -961,7 +971,8 @@ function ChangePrivilegeForGroup() {
 function DoSetCapsForVirtualization()
 {
     Log "Start to do set caps for virtualization."
-    sudo ${PERMISSION_SCRIPT_PATH} chmod g+rx -R ${EXAGENT_USER}:${DEFAULT_GROUP_INTERNAL} "${VIRTUAL_PLUGIN_PATH}"
+    sudo ${PERMISSION_SCRIPT_PATH} chmod -R 750 "${VIRTUAL_PLUGIN_PATH}"
+    sudo ${PERMISSION_SCRIPT_PATH} chown -R ${EXAGENT_USER}:${AGENT_GROUP} "${VIRTUAL_PLUGIN_PATH}"
     sudo ${VIRTUAL_PLUGIN_PATH}/install/sudo_set_caps.sh
     Log "Set caps for virtualization finished."
 }
@@ -969,7 +980,7 @@ function DoSetCapsForVirtualization()
 function ConfigDomainName()
 {
     Log "Start config domain name."
-    DomainName=`${AGENT_ROOT_PATH}/bin/openssl x509 -subject -in ${AGENT_ROOT_PATH}/nginx/conf/server.pem -noout | ${AWK} -F '=' '{print $NF}'`
+    DomainName=`${AGENT_ROOT_PATH}/bin/openssl x509 -in ${AGENT_ROOT_PATH}/nginx/conf/server.pem -noout -subject | sed -n 's/.*CN = \([^,]*\).*/\1/p'`
     if [ -z "${DomainName}" ];then
         Log "Get ssl domain failed."
         exit 1
@@ -1001,6 +1012,11 @@ WriteParams()
     echo "NODE_NAME=${NODE_NAME}" >> "${AGENT_ROOT_PATH}/conf/testcfg.tmp"
     echo "PODE_NAME=${PODE_NAME}" >> "${AGENT_ROOT_PATH}/conf/testcfg.tmp"
     echo "POD_IP=${POD_IP}" >> "${AGENT_ROOT_PATH}/conf/testcfg.tmp"
+
+    cat /home/rdadmin/.profile | grep "export NODE_NAME="
+    if [ $? -ne 0 ]; then
+        echo "export NODE_NAME=${NODE_NAME}" >> /home/rdadmin/.profile
+    fi
 
     # xmlxfg
     ${AGENT_ROOT_PATH}/bin/xmlcfg write Backup backup_scene ${BACKUP_SCENE}
@@ -1058,7 +1074,7 @@ function StartIscsi()
 
     sudo iscsid -f >> "${AGENT_ROOT_PATH}/log/iscsi_service.log" 2>&1 &
 
-    #  ÊÊÅä°²È«ÈÝÆ÷ÄÚÎÞ·¨²éÑ¯¹ÒÔØ¾íµÄÇé¿ö
+    #  é€‚é…å®‰å…¨å®¹å™¨å†…æ— æ³•æŸ¥è¯¢æŒ‚è½½å·çš„æƒ…å†µ
     sudo "${PERMISSION_SCRIPT_PATH}" chown "${AGENT_USER}:${DEFAULT_GROUP_INTERNAL}" "/sys/module/scsi_mod/parameters/scan"
     echo "async" > /sys/module/scsi_mod/parameters/scan
     sudo "${PERMISSION_SCRIPT_PATH}" chown root:root "/sys/module/scsi_mod/parameters/scan"

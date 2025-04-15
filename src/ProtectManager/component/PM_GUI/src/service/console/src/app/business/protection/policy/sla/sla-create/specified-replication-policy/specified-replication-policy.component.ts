@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -28,7 +28,19 @@ import {
   ScheduleTrigger
 } from 'app/shared';
 import { SlaValidatorService } from 'app/shared/services/sla-validator.service';
-import { assign, each, first, get, includes, set, size, uniqBy } from 'lodash';
+import {
+  assign,
+  each,
+  find,
+  first,
+  get,
+  includes,
+  isArray,
+  isEmpty,
+  set,
+  size,
+  uniqBy
+} from 'lodash';
 import { Observable, Observer } from 'rxjs';
 import { AppUtilsService } from '../../../../../../shared/services/app-utils.service';
 import { ReplicationPolicyComponent } from './replication-policy/replication-policy.component';
@@ -103,12 +115,27 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
     each(this.formGroup.value.replicationTeams, item => {
       if (item?.external_system_id) {
         replicationCluster.push({
-          external_system_id: item.external_system_id
+          external_system_id: item.external_system_id,
+          action: item.action
         });
       }
     });
-    const clusterItems = uniqBy(replicationCluster, 'external_system_id');
-    if (size(clusterItems) !== size(replicationCluster)) {
+    const dataClusterItems = uniqBy(
+      replicationCluster.filter(
+        item => item.action === DataMap.replicationAction.data.value
+      ),
+      'external_system_id'
+    );
+    const logClusterItems = uniqBy(
+      replicationCluster.filter(
+        item => item.action === DataMap.replicationAction.log.value
+      ),
+      'external_system_id'
+    );
+    if (
+      size(dataClusterItems) + size(logClusterItems) !==
+      size(replicationCluster)
+    ) {
       this.messageService.error(
         this.i18n.get('protection_external_system_same_repeats_label'),
         {
@@ -148,6 +175,44 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
     return !size(errorMsgs);
   }
 
+  // NAS共享、NAS文件系统、文件集、对象存储的备份SLA目标端重删关闭，复制的SLA链路重删不能开启
+  validLinkRedelete(): boolean {
+    // E6000不会下发这两个参数，所以不用管
+    if (this.appUtilsService.isDistributed) {
+      return true;
+    }
+    const backpExtParams: any = isArray(this.backupData)
+      ? this.backupData[0]?.ext_parameters
+      : {};
+    const hasLinkDeduplication = find(
+      this.formGroup.value.replicationTeams,
+      item => item.link_deduplication
+    );
+    if (
+      includes(
+        [
+          ApplicationType.NASFileSystem,
+          ApplicationType.NASShare,
+          ApplicationType.Fileset,
+          ApplicationType.ObjectStorage
+        ],
+        this.applicationData
+      ) &&
+      !backpExtParams?.deduplication &&
+      !isEmpty(hasLinkDeduplication)
+    ) {
+      this.messageService.error(
+        this.i18n.get('protection_link_redelete_error_tip_label'),
+        {
+          lvMessageKey: 'lvMsg_key_link_deduplication_error_label',
+          lvShowCloseButton: true
+        }
+      );
+      return false;
+    }
+    return true;
+  }
+
   getReplicationParams() {
     const replicationTeams = [];
     each(this.formGroup.value.replicationTeams, (item, index) => {
@@ -162,7 +227,7 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
     const params = {
       uuid: item.uuid,
       name: item.name,
-      action: PolicyType.REPLICATION,
+      action: item.action,
       type: PolicyType.REPLICATION,
       ext_parameters: {
         specified_scope: [],
@@ -174,7 +239,6 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
         external_system_id: item.external_system_id,
         link_deduplication: item.link_deduplication,
         link_compression: item.link_compression,
-        is_worm: item.is_worm,
         alarm_after_failure: item.alarm_after_failure,
         start_replicate_time: this.datePipe.transform(
           item.start_replicate_time,
@@ -254,13 +318,19 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
       delete params.retention.retention_duration;
       delete params.retention.duration_unit;
     }
-    if (this.isDataBackup || this.appUtilsService.isDecouple) {
+    if (
+      this.isDataBackup ||
+      this.appUtilsService.isDecouple ||
+      this.appUtilsService.isDistributed
+    ) {
       set(
         params,
         'ext_parameters.replication_target_mode',
         item.replicationMode
       );
-
+      if (this.appUtilsService.isDistributed) {
+        delete params.ext_parameters.link_deduplication;
+      }
       if (
         item.replicationMode === this.replicationModeType.CROSS_DOMAIN &&
         (item.external_storage_id || item.replication_storage_id) &&
@@ -281,7 +351,8 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
         set(params, 'ext_parameters.user_info', {
           user_id: item.specifyUser,
           username: item.userName,
-          password: item.authPassword || undefined
+          password: item.authPassword || undefined,
+          userType: item.userType
         });
       }
 
@@ -334,20 +405,45 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
     if (this.isHcsUser) {
       delete params.ext_parameters.external_system_id;
       delete params.ext_parameters.replication_storage_type;
-      set(
-        params,
-        'ext_parameters.region_code',
-        item.external_system_id[0]?.parent?.region_id ||
-          item.external_system_id[0]?.region_id
-      );
-      set(params, 'ext_parameters.project_id', item.external_system_id[0]?.id);
+      if (item.replicationMode === ReplicationModeType.INTRA_DOMAIN) {
+        set(
+          params,
+          'ext_parameters.replication_storage_type',
+          item?.replication_storage_type
+        );
+      } else {
+        set(
+          params,
+          'ext_parameters.region_code',
+          item.external_system_id[0]?.parent?.region_id ||
+            item.external_system_id[0]?.region_id
+        );
+        set(
+          params,
+          'ext_parameters.project_id',
+          item.external_system_id[0]?.id
+        );
+      }
       if (item.replicationMode === ReplicationModeType.CROSS_CLOUD) {
         assign(params.ext_parameters, {
           source_cluster_ip: item.external_system_id[0]?.source_cluster_ip,
           hcs_cluster_id: item.hcs_cluster_id,
           vdc_name: item.vdc_name,
           tenant_name: item.tenant_name,
-          cluster_ip: item.external_system_id[0]?.cluster_ip.split(',')[0]
+          cluster_ip: item.external_system_id[0]?.cluster_ip.split(',')[0],
+          replication_storage_type: item?.replication_storage_type
+        });
+        set(params, 'ext_parameters.storage_info', {
+          storage_id:
+            item.replication_storage_type ===
+            DataMap.backupStorageTypeSla.group.value
+              ? item.external_storage_id
+              : item.replication_storage_id,
+          storage_type:
+            item.replication_storage_type ===
+            DataMap.backupStorageTypeSla.group.value
+              ? 'storage_unit_group'
+              : 'storage_unit'
         });
       }
     }
@@ -362,6 +458,12 @@ export class SpecifiedReplicationPolicyComponent implements OnInit {
       }
 
       if (!this.validFormArray()) {
+        observer.error(false);
+        observer.complete();
+        return;
+      }
+
+      if (!this.validLinkRedelete()) {
         observer.error(false);
         observer.complete();
         return;

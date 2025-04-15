@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -39,10 +39,11 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
+import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
-import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
   assign,
+  cloneDeep,
   each,
   filter,
   find,
@@ -52,6 +53,7 @@ import {
   map,
   size
 } from 'lodash';
+import { finalize } from 'rxjs';
 import { RealTimeConfirmComponent } from './real-time-confirm/real-time-confirm.component';
 import { SetFileBlockingComponent } from './set-file-blocking/set-file-blocking.component';
 
@@ -93,10 +95,10 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
     private dataMapService: DataMapService,
     private honeypotService: HoneypotService,
     private drawModalService: DrawModalService,
-    private virtualScroll: VirtualScrollService,
     private warningMessageService: WarningMessageService,
     private configManagementService: ConfigManagementService,
-    private fileExtensionFilterManagementService: FileExtensionFilterManagementService
+    private fileExtensionFilterManagementService: FileExtensionFilterManagementService,
+    private batchOperateService: BatchOperateService
   ) {}
 
   ngAfterViewInit() {
@@ -127,7 +129,7 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
       },
       {
         id: 'enable-blocking',
-        label: this.i18n.get('explore_enable_blocking_files_label'),
+        label: this.i18n.get('explore_enable_ransom_blocking_files_label'),
         disableCheck: data => {
           return (
             !size(data) ||
@@ -204,7 +206,7 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
       },
       {
         id: 'disable-blocking',
-        label: this.i18n.get('explore_disable_blocking_files_label'),
+        label: this.i18n.get('explore_disable_ransom_blocking_files_label'),
         divide: true,
         disableCheck: data => {
           return (
@@ -321,6 +323,7 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
     ];
 
     this.tableConfig = {
+      filterTags: true,
       table: {
         autoPolling: CommonConsts.TIME_INTERVAL,
         compareWith: 'vstoreId',
@@ -330,10 +333,6 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
           selectionMode: 'multiple',
           selectionTrigger: 'selector',
           showSelector: true
-        },
-        scroll: {
-          ...this.virtualScroll.scrollParam,
-          y: '65vh'
         },
         colDisplayControl: false,
         fetchData: (filter: Filters, args) => {
@@ -457,6 +456,8 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
       this.messageBox.confirm({
         lvOkType: 'primary',
         lvCancelType: 'default',
+        lvHeader: this.i18n.get('explore_enable_real_time_detection_label'),
+        lvWidth: this.i18n.isEn ? 480 : 400,
         lvContent: RealTimeConfirmComponent,
         lvComponentParams: {
           type: 'NAS'
@@ -469,6 +470,29 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
               isEnabled: true,
               vstoreIds: map(data, 'vstoreId'),
               isEnhancedDetect: content.isChecked
+            }
+          };
+          this.configManagementService
+            .updateVstoreDetectConfigs(params)
+            .subscribe(() => {
+              this.selectionData = [];
+              this.dataTable.setSelections([]);
+              this.dataTable.fetchData();
+            });
+        }
+      });
+    } else if (configField === DetectionConfigField.FileExtensionFilter) {
+      this.messageBox.confirm({
+        lvHeader: this.i18n.get('explore_enable_ransom_blocking_files_label'),
+        lvWidth: this.i18n.isEn ? 480 : 400,
+        lvContent: this.i18n.get('explore_blocking_files_confirm_label'),
+        lvOk: () => {
+          const params = {
+            vstoreCopyDetectConfig: {
+              configField,
+              isEnabled: true,
+              vstoreIds: map(data, 'vstoreId'),
+              isEnhancedDetect: false
             }
           };
           this.configManagementService
@@ -500,57 +524,100 @@ export class DetectionSettingListComponent implements OnInit, AfterViewInit {
   }
 
   disable(data, configField, contentLabel?) {
-    const params = {
-      vstoreCopyDetectConfig: {
-        configField,
-        isEnabled: false,
-        isEnhancedDetect: false,
-        vstoreIds: map(data, 'vstoreId')
-      }
-    };
+    each(data, item => (item.name = item?.vstoreName));
     if (configField === DetectionConfigField.IoDetect) {
-      const body = [];
-      each(data, item => {
-        body.push({
-          vstoreName: item.vstoreName,
-          fsName: ''
-        });
-      });
-      const closeParams: any = {
-        honeypotRequests: body
-      };
-      this.warningMessageService.create({
-        content: this.i18n.get(contentLabel, [map(data, 'vstoreName')]),
-        onOK: () => {
-          this.honeypotService
-            .CloseHoneypot({
-              honeypotRequests: closeParams,
-              akOperationTips: false
-            })
-            .subscribe(res => {
-              this.configManagementService
-                .updateVstoreDetectConfigs(params)
-                .subscribe(res => {
-                  this.selectionData = [];
-                  this.dataTable.setSelections([]);
-                  this.dataTable.fetchData();
-                });
-            });
-        }
-      });
+      this.disableRealTime(data, configField, contentLabel);
     } else {
-      this.warningMessageService.create({
-        content: this.i18n.get(contentLabel, [map(data, 'vstoreName')]),
-        onOK: () => {
-          this.configManagementService
-            .updateVstoreDetectConfigs(params)
-            .subscribe(res => {
-              this.selectionData = [];
-              this.dataTable.setSelections([]);
-              this.dataTable.fetchData();
-            });
-        }
-      });
+      this.disabledIntelligent(data, configField, contentLabel);
     }
+  }
+
+  // 禁用实时勒索检测
+  disableRealTime(data, configField, contentLabel?) {
+    this.warningMessageService.create({
+      content: this.i18n.get(contentLabel, [map(data, 'vstoreName')]),
+      onOK: () => {
+        this.batchOperateService.selfGetResults(
+          item => {
+            return this.honeypotService
+              .CloseHoneypot({
+                honeypotRequests: {
+                  honeypotRequests: [
+                    {
+                      vstoreName: item.vstoreName,
+                      fsName: ''
+                    }
+                  ]
+                } as any,
+                akDoException: false,
+                akOperationTips: false,
+                akLoading: false
+              })
+              .pipe(
+                finalize(() => {
+                  this.configManagementService
+                    .updateVstoreDetectConfigs({
+                      vstoreCopyDetectConfig: {
+                        configField,
+                        isEnabled: false,
+                        isEnhancedDetect: false,
+                        vstoreIds: [item.vstoreId]
+                      } as any,
+                      akOperationTips: false,
+                      akLoading: false
+                    })
+                    .subscribe();
+                })
+              );
+          },
+          map(cloneDeep(data), item => {
+            assign(item, { uuid: item.vstoreId });
+            return item;
+          }),
+          () => {
+            this.selectionData = [];
+            this.dataTable.setSelections([]);
+            this.dataTable.fetchData();
+          },
+          '',
+          true
+        );
+      }
+    });
+  }
+
+  // 禁用智能勒索检测
+  disabledIntelligent(data, configField, contentLabel?) {
+    this.warningMessageService.create({
+      content: this.i18n.get(contentLabel, [map(data, 'vstoreName')]),
+      onOK: () => {
+        this.batchOperateService.selfGetResults(
+          item => {
+            return this.configManagementService.updateVstoreDetectConfigs({
+              vstoreCopyDetectConfig: {
+                configField,
+                isEnabled: false,
+                isEnhancedDetect: false,
+                vstoreIds: [item.vstoreId]
+              } as any,
+              akDoException: false,
+              akOperationTips: false,
+              akLoading: false
+            });
+          },
+          map(cloneDeep(data), item => {
+            assign(item, { uuid: item.vstoreId });
+            return item;
+          }),
+          () => {
+            this.selectionData = [];
+            this.dataTable.setSelections([]);
+            this.dataTable.fetchData();
+          },
+          '',
+          true
+        );
+      }
+    });
   }
 }

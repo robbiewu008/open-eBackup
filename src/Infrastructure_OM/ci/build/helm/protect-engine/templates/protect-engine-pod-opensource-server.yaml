@@ -91,8 +91,8 @@ spec:
                 - -c
                 - sh /opt/OceanStor/100P/ProtectEngine-E/dme_vmware/script/dmeservice/check_health.sh dme-vmware
             initialDelaySeconds: 100
-            periodSeconds: 10
-            timeoutSeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 30
           securityContext:
             seccompProfile:
               type: RuntimeDefault
@@ -127,6 +127,8 @@ spec:
               readOnly: true
             - mountPath: /opt/network-conf
               name: network-conf
+            - mountPath: /opt/common-conf
+              name: common-conf
         - name: dme-nginx
           env:
             - name: NODE_NAME
@@ -225,8 +227,8 @@ spec:
                 - -c
                 - sh /opt/OceanStor/100P/ProtectEngine-E/dme_jobmanager/script/dmeservice/check_health.sh dme-jobmanager
             initialDelaySeconds: 100
-            periodSeconds: 10
-            timeoutSeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 30
           securityContext:
             seccompProfile:
               type: RuntimeDefault
@@ -249,6 +251,8 @@ spec:
               readOnly: true
             - mountPath: /opt/logpath
               name: common-path
+            - mountPath: /opt/common-conf
+              name: common-conf
         - name: dme-replication
           env:
             - name: NODE_NAME
@@ -272,6 +276,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+            - name: DEPLOY_TYPE
+              value: d8
           image: dme_replication:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
           resources:
@@ -281,7 +287,6 @@ spec:
             limits:
               cpu: "7"
               memory: "6G"
-              dorado/dev_fuse: "1" # 闪存提供的devpassthrough使用的名称为dorado/dev_fuse，保持一致
           securityContext:
             seccompProfile:
               type: RuntimeDefault
@@ -308,8 +313,8 @@ spec:
                 - -c
                 - sh /opt/OceanStor/100P/ProtectEngine-E/dme_replication/script/dmeservice/check_health.sh dme-replication
             initialDelaySeconds: 100
-            periodSeconds: 10
-            timeoutSeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 30
           volumeMounts:
             - mountPath: /kmc_conf
               name: kmc-conf
@@ -330,6 +335,12 @@ spec:
               name: metadata-path
             - mountPath: /opt/huawei-data-protection/vmware/
               name: metadata-path
+            - mountPath: /mnt/replication/
+              name: cache-filesystem
+            - mountPath: /opt/common-conf
+              name: common-conf
+            - mountPath: /opt/replication-conf
+              name: replication-conf
         - name: dme-unifiedbackupcontroller
           env:
             - name: NODE_NAME
@@ -367,6 +378,7 @@ spec:
           image: dme_unifiedbackupcontroller:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
           securityContext:
+            privileged: true
             seccompProfile:
               type: RuntimeDefault
             capabilities:
@@ -389,6 +401,9 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 10
           volumeMounts:
+            - mountPath: /dev/fuse
+              name: fuse
+              readOnly: true
             - mountPath: /cache
               name: ubc-tmp
             - mountPath: /mnt/repository
@@ -458,8 +473,8 @@ spec:
             exec:
               command: ['sh','/opt/OceanStor/100P/ProtectEngine-E/dme_archive/script/dmeservice/check_health.sh', 'dme-archive']
             initialDelaySeconds: 100
-            periodSeconds: 5
-            timeoutSeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 30
           volumeMounts:
             - mountPath: /mnt
               name: archive-mnt
@@ -483,6 +498,10 @@ spec:
               name: metadata-path
             - mountPath: /opt/network-conf
               name: network-conf
+            - mountPath: /opt/common-conf
+              name: common-conf
+            - mountPath: /opt/archive-conf
+              name: archive-conf
         - name: dme-openstorageapi-controller
           image: dme_openstorageapi_controller:{{ .Values.global.version }}
           imagePullPolicy: IfNotPresent
@@ -491,6 +510,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+            - name: FILECLIENT_CONF_PATH
+              value: /opt/OceanProtect/logs/$(NODE_NAME)/protectengine-e/dme_openstorageapi_controller
+            - name: FILECLIENT_LOG_PATH
+              value: /opt/OceanProtect/logs/$(NODE_NAME)/protectengine-e/dme_openstorageapi_controller
             - name: POD_IP
               valueFrom:
                 fieldRef:
@@ -658,6 +681,9 @@ spec:
         - name: date-config
           hostPath:
             path: /etc/localtime
+        - name: fuse
+          hostPath:
+            path: /dev/fuse
         - name: cache-volume
           emptyDir: {}
         - name: cache-filesystem
@@ -669,6 +695,12 @@ spec:
         - name: common-conf
           configMap:
             name: common-conf
+        - name: replication-conf
+          configMap:
+            name: replication-conf
+        - name: archive-conf
+          configMap:
+            name: archive-conf
         - name: network-conf
           configMap:
             name: network-conf

@@ -41,15 +41,20 @@ public:
     }
     fuse_ino_t ParentInodeNumber() const
     {
-        return *reinterpret_cast<const std::uint64_t*>(m_data.data() + sizeof(std::uint64_t));
+        return *reinterpret_cast<const fuse_ino_t*>(m_data.data() + sizeof(std::uint64_t));
     }
     std::uint32_t Mode() const
     {
         return *reinterpret_cast<const std::uint32_t*>(m_data.data() + sizeof(std::uint64_t) + sizeof(fuse_ino_t));
     }
+    const UserGroup* Uidgid() const
+    {
+        return reinterpret_cast<const UserGroup*>(m_data.data() + sizeof(std::uint64_t) + sizeof(fuse_ino_t) +
+            sizeof(std::uint32_t));
+    }
     const char* Name() const
     {
-        return m_data.data() + sizeof(std::uint64_t) + sizeof(fuse_ino_t) + sizeof(std::uint32_t);
+        return m_data.data() + sizeof(std::uint64_t) + sizeof(fuse_ino_t) + sizeof(std::uint32_t) + sizeof(UserGroup);
     }
 
 private:

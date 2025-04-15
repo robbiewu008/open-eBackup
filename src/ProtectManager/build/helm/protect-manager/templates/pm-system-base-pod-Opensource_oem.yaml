@@ -87,7 +87,7 @@ spec:
       initContainers:
         - name: pm-database-version-migration
           image: pm-database-version-migration:{{ .Values.global.version }}
-          command: [ "/bin/sh", "-c", "if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME} && chmod 750 /opt/OceanProtect/logs/${NODE_NAME} && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx;fi && chown 65500:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI;fi && chown 15012:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service;fi && chown 15013:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service && su nobody -s /bin/bash -c 'cd /context/src/ && python3 -m app' && chown 99:99 /opt/ProtectManager && chmod 770 /opt/ProtectManager && chown 99:99 /opt/OceanProtect/logs/*/protectmanager && if [ -d '/opt/ProtectManagerNas' ];then chown 99:99 /opt/ProtectManagerNas;fi && if [ -d '/opt/ProtectManagerAgentLog' ];then chown 99:99 /opt/ProtectManagerAgentLog;fi && if [ -d '/opt/ProtectManager/report' ];then chown 99:99 /opt/ProtectManager/report;fi && if [ -d '/opt/third_data' ];then chown 99:99 /opt/third_data && chmod 750 /opt/third_data;fi" ]
+          command: [ "/bin/sh", "-c", "if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME} && chmod 750 /opt/OceanProtect/logs/${NODE_NAME} && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx;fi && chown 65500:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI;fi && chown 15012:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Database_Version_Migration' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Database_Version_Migration;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Database_Version_Migration && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Database_Version_Migration && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service;fi && chown 15013:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service && su nobody -s /bin/bash -c 'cd /context/src/ && python3 -m app' && chown 99:99 /opt/ProtectManager && chmod 770 /opt/ProtectManager && chown 99:99 /opt/OceanProtect/logs/*/protectmanager && if [ -d '/opt/ProtectManagerNas' ];then chown 99:99 /opt/ProtectManagerNas;fi && if [ -d '/opt/ProtectManagerAgentLog' ];then chown 99:99 /opt/ProtectManagerAgentLog;fi && if [ -d '/opt/ProtectManager/report' ];then chown 99:99 /opt/ProtectManager/report;fi && if [ -d '/opt/third_data' ];then chown 99:99 /opt/third_data && chmod 750 /opt/third_data;fi" ]
           env:
             - name: NODE_NAME
               valueFrom:
@@ -127,6 +127,9 @@ spec:
               readOnly: true
             - mountPath: /opt/third_data/
               name: data-nas
+            - mountPath: /opt/cluster_config
+              name: cluster-volume
+              readOnly: true
       containers:
         - name: pm-nginx
           command: [ "/bin/sh", "-c", "sh script/start.sh && chmod 550 /usr/local/nginx/nginx && chmod 440 /usr/local/nginx/conf/nginx.conf && rm -rf /tmp/nginx"]
@@ -168,6 +171,8 @@ spec:
               name: nas-path
             - mountPath: /opt/ProtectManager/
               name: pm-path
+            - mountPath: /etc/localtime
+              name: date-config-localtime
             - mountPath: /tmp
               name: pm-nginx-tmp
             - mountPath: /kmc_conf
@@ -200,7 +205,7 @@ spec:
                 - check_health.sh
             initialDelaySeconds: 300
             periodSeconds: 35
-            timeoutSeconds: 30
+            timeoutSeconds: 35
           securityContext:
             {{- if eq $environment "Dorado" }}
             seccompProfile:
@@ -235,6 +240,11 @@ spec:
             - mountPath: /opt/cluster_config
               name: cluster-volume
               readOnly: true
+            - mountPath: /opt/network_config
+              name: network-volume
+              readOnly: true
+            - mountPath: /opt/pm_variable_parameter_config
+              name: pm-variable-parameter-volume
             - mountPath: /OSM/conf
               name: dorado-config-dir
               readOnly: true
@@ -249,6 +259,8 @@ spec:
               name: data-nas
             - mountPath: /etc/adjtime
               name: adjtime-path
+            - mountPath: /var/run/cgroup2
+              name: cgroup2
           envFrom:
             - configMapRef:
                 name: protect-manager-conf
@@ -320,6 +332,8 @@ spec:
               value: "8094"
             - name: DEPLOY_TYPE
               value: {{$deploytype}}
+            - name: VERSION
+              value: {{ .Values.global.version }}
             {{- if .Values.global.region_id }}
             - name: REGION_ID
               value: {{ .Values.global.region_id }}
@@ -401,8 +415,18 @@ spec:
         - name: cluster-volume
           configMap:
             name: cluster-conf
+        - name: network-volume
+          configMap:
+            name: network-conf
+        - name: pm-variable-parameter-volume
+          configMap:
+            name: pm-variable-parameter-conf
         - name: config-volume
           configMap:
             name: protect-manager-conf
             defaultMode: 0640
+        - name: cgroup2
+          hostPath:
+            path: /var/run/cgroup2
+            type: Directory
 {{- end }}

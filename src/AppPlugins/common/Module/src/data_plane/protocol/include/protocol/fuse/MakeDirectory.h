@@ -47,10 +47,15 @@ public:
     {
         return *reinterpret_cast<const mode_t*>(m_data.data() + sizeof(std::uint64_t) + sizeof(fuse_ino_t));
     }
+    const UserGroup* Uidgid() const
+    {
+        return reinterpret_cast<const UserGroup*>(m_data.data() + sizeof(std::uint64_t) + sizeof(fuse_ino_t) +
+            sizeof(mode_t));
+    }
     boost::string_view Name() const
     {
-        return { m_data.data() + sizeof(std::uint64_t) + sizeof(fuse_ino_t) + sizeof(mode_t),
-                 m_data.size() - sizeof(std::uint64_t) - sizeof(fuse_ino_t) - sizeof(mode_t) };
+        return { m_data.data() + sizeof(std::uint64_t) + sizeof(fuse_ino_t) + sizeof(mode_t) + sizeof(UserGroup),
+                 m_data.size() - sizeof(std::uint64_t) - sizeof(fuse_ino_t) - sizeof(mode_t) - sizeof(UserGroup) };
     }
 
 private:

@@ -1,0 +1,17 @@
+{
+  "type": "Database",
+  "subType": "AntDBInstance",
+  "functions": {
+    "connection": {
+      "dependency": [
+        {
+          "resource":"",
+          "environment": "agents"
+        }
+      ]
+    },
+    "scan": {
+      "auto-scan": false
+    }
+  }
+}

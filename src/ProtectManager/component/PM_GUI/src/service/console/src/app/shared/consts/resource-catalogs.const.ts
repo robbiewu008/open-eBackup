@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { CatalogName } from './common.const';
 import { DataMap } from './data-map.config';
 
@@ -20,6 +20,10 @@ export const RESOURCE_CATALOGS = [
     children: [
       {
         catalog_name: DataMap.Resource_Type.ABBackupClient.value,
+        show: true
+      },
+      {
+        catalog_name: DataMap.Resource_Type.AntDB.value,
         show: true
       },
       {
@@ -37,10 +41,6 @@ export const RESOURCE_CATALOGS = [
       {
         catalog_name: DataMap.Resource_Type.DB2.value,
         show: true
-      },
-      {
-        catalog_name: DataMap.Resource_Type.SQLServer.value,
-        show: false
       },
       {
         catalog_name: DataMap.Resource_Type.MySQL.value,
@@ -73,10 +73,6 @@ export const RESOURCE_CATALOGS = [
       {
         catalogName: DataMap.Resource_Type.OceanBaseCluster.value,
         show: true
-      },
-      {
-        catalog_name: DataMap.Resource_Type.GBase.value,
-        show: false
       },
       {
         catalog_name: DataMap.Resource_Type.MongoDB.value,
@@ -163,6 +159,10 @@ export const RESOURCE_CATALOGS = [
       {
         catalogName: DataMap.Resource_Type.fusionOne.value,
         show: true
+      },
+      {
+        catalogName: DataMap.Resource_Type.nutanixVm.value,
+        show: true
       }
     ]
   },
@@ -225,6 +225,10 @@ export const RESOURCE_CATALOGS = [
       {
         catalogName: DataMap.Resource_Type.commonShare.value,
         show: true
+      },
+      {
+        catalogName: DataMap.Resource_Type.ndmp.value,
+        show: true
       }
     ]
   },
@@ -268,6 +272,10 @@ export const RESOURCE_CATALOGS = [
       },
       {
         catalogName: DataMap.Resource_Type.saphanaDatabase.value,
+        show: true
+      },
+      {
+        catalogName: DataMap.Resource_Type.Saponoracle.value,
         show: true
       }
     ]

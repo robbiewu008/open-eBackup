@@ -16,8 +16,15 @@
     <lv-group lvGutter="8px">
       <h1>
         {{ 'common_alarms_events_label' | i18n }}
-        <i lv-icon="aui-icon-help" [lv-tooltip]="alarmHelpTpl" lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint alarm-help"
-          lvColorState='true' (mouseenter)="alarmHelpHover()"></i>
+        <i
+          lv-icon="aui-icon-help"
+          [lv-tooltip]="alarmHelpTpl"
+          lvTooltipTheme="light"
+          lvTooltipPosition="right"
+          class="configform-constraint alarm-help"
+          lvColorState="true"
+          (mouseenter)="alarmHelpHover()"
+        ></i>
       </h1>
       <aui-multi-cluster-switch
         (onChange)="onChange()"
@@ -82,6 +89,16 @@
                 >
                   <span>{{ clear }}</span>
                 </button>
+                <div class="insight-export-alarm">
+                  <i
+                    lv-icon="aui-icon-export-extra"
+                    [lvColorState]="true"
+                    (click)="exportCurrentAlarms()"
+                    lv-tooltip="{{ exportAlarmTipLabel }}"
+                    lvTooltipPosition="bottom"
+                    lvTooltipTheme="light"
+                  ></i>
+                </div>
               </div>
               <div class="list-container">
                 <div class="tags-container" *ngIf="apiFilters?.length">
@@ -332,18 +349,32 @@
           </lv-group>
           <div class="aui-block insight-padding-none" *ngIf="!isDataBackup">
             <div class="aui-operation alarms-operation">
-              <button
-                lv-button
-                lvType="primary"
-                [disabled]="
-                  !alarmsTable.getSelection() ||
-                  alarmsTable.getSelection().length < 1
-                "
-                (click)="clearAlarms()"
-              >
-                <span>{{ clear }}</span>
-              </button>
               <lv-group>
+                <button
+                  lv-button
+                  pmpermission
+                  pmOperation="ClearAlarm"
+                  lvType="primary"
+                  [disabled]="
+                    !alarmsTable.getSelection() ||
+                    alarmsTable.getSelection().length < 1
+                  "
+                  (click)="clearAlarms()"
+                >
+                  <span>{{ clear }}</span>
+                </button>
+              </lv-group>
+              <lv-group>
+                <div class="insight-export" *ngIf="isDecouple || isDistributed">
+                  <i
+                    lv-icon="aui-icon-export-extra"
+                    [lvColorState]="true"
+                    (click)="exportCurrentAlarms()"
+                    lv-tooltip="{{ exportAlarmTipLabel }}"
+                    lvTooltipPosition="bottom"
+                    lvTooltipTheme="light"
+                  ></i>
+                </div>
                 <div class="insight-refresh">
                   <i
                     lv-icon="lv-icon-refresh"
@@ -612,7 +643,7 @@
               <lv-group>
                 <div class="insight-export">
                   <i
-                    lv-icon="aui-icon-export"
+                    lv-icon="aui-icon-export-extra"
                     [lvColorState]="true"
                     (click)="exportHistoryAlarms()"
                     lv-tooltip="{{ exportEventTipLabel }}"
@@ -630,6 +661,13 @@
               </lv-group>
             </div>
             <div class="list-container">
+              <aui-filter-tags
+                [filterMap]="eventFilters"
+                [tableCols]="eventCols"
+                (clearCertainTag)="clearEventTag($event)"
+                (clearAllTag)="clearAllEventTag()"
+                *ngIf="isHyperDetect"
+              ></aui-filter-tags>
               <lv-datatable
                 [lvData]="eventsData"
                 lvSelectionMode="multiple"
@@ -656,7 +694,7 @@
                           item.key != 'type' &&
                           item.key != 'confirmStatus' &&
                           item.key != 'sourceType' &&
-                          item.key != 'alarmTimeStr' &&
+                          item.key != 'firstTimeStr' &&
                           item.key != 'deviceName' &&
                           item.key != 'nodeName' &&
                           item.key != 'alarmId'
@@ -716,7 +754,7 @@
                       </th>
                       <!-- 发生时间过滤  -->
                       <th
-                        *ngIf="item.isShow && item.key === 'alarmTimeStr'"
+                        *ngIf="item.isShow && item.key === 'firstTimeStr'"
                         lvCellKey="{{ item.key }}"
                         lvShowCustom
                       >

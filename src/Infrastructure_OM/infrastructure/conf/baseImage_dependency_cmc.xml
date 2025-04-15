@@ -27,7 +27,7 @@
             <id>
                 <offering>PUMA</offering>
                 <componentName>SimbaOS</componentName>
-                <componentVersion>1.0.144</componentVersion>
+                <componentVersion>1.0.233</componentVersion>
             </id>
             <according>Y</according>
             <copies>
@@ -42,8 +42,8 @@
             <repoType>Generic</repoType>
             <id>
                 <offering>EulerOS Server</offering>
-                <componentName>EulerOSServerV200R011C00ARM</componentName>
-                <componentVersion>2023.03.20.172211</componentVersion>
+                <componentName>EulerOSServerV200R012C00ARM</componentName>
+                <componentVersion>2024.03.28.001222</componentVersion>
             </id>
             <according>Y</according>
             <copies>
@@ -58,8 +58,8 @@
             <repoType>Generic</repoType>
             <id>
                 <offering>EulerOS Server</offering>
-                <componentName>EulerOSServerV200R011C00ARM</componentName>
-                <componentVersion>2023.03.20.172211</componentVersion>
+                <componentName>EulerOSServerV200R012C00ARM</componentName>
+                <componentVersion>2024.03.28.001222</componentVersion>
             </id>
             <according>Y</according>
             <copies>
@@ -74,7 +74,7 @@
             <repoType>Generic</repoType>
             <id>
                 <offering>BiSheng JDK8 Enterprise</offering>
-                <version>BiSheng JDK8 Enterprise 202.1.0.420.B002</version>
+                <version>BiSheng JDK8 Enterprise 202.1.0.430.B002</version>
             </id>
             <copies>
                 <copy>
@@ -88,11 +88,11 @@
             <repoType>Generic</repoType>
             <id>
                 <offering>GaussDB Kernel</offering>
-                <version>GaussDB Kernel 505.0.0.SPC1500.B002</version>
+                <version>GaussDB Kernel 505.1.0.SPC0900.B003</version>
             </id>
             <copies>
                 <copy>
-                    <source>Lite/Euler2.11_arm_64/GaussDB-Kernel_505.0.0.SPC1500.B002_Server_ARM_Lite.tar.gz</source>
+                    <source>Lite/Euler2.12_arm_64/GaussDB-Kernel_505.1.0.SPC0900.B003_Server_ARM_Lite.tar.gz</source>
                     <dest></dest>
                 </copy>
             </copies>
@@ -114,5 +114,20 @@
                 </copy>
             </copies>
         </dependency>
+        <dependency>
+            <versionType>Service</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>OPENX</offering>
+                <name>KillerOfPlaintextEcho</name>
+                <version>0.3.0</version>
+            </id>
+            <copies>
+                <copy>
+                    <source>KillerOfPlaintextEcho-0.3.0.zip</source>
+                    <dest></dest>
+                </copy>
+            </copies>
+		</dependency>
     </dependencies>
 </project>

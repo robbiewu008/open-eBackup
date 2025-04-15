@@ -179,10 +179,15 @@ public:
             return;
         }
         if (m_jobHandle == nullptr) {
+            ERRLOG("Job handle is null.");
             return;
         }
         std::vector<AppProtect::StorageRepository> repos = m_jobHandle->GetStorageRepos();
         for (const auto &repo : repos) {
+            if (repo.path.size() == 0) {
+                WARNLOG("Repo path size is 0.");
+                return;
+            }
             if (repo.repositoryType == RepositoryDataType::META_REPOSITORY) {
                 m_metaRepoHandler = RepositoryFactory::CreateRepositoryHandler(repo);
                 m_volumeInfoRepoHandler = RepositoryFactory::CreateRepositoryHandler(repo);  // 创建用于记录卷信息的仓库句柄
@@ -205,6 +210,12 @@ public:
     virtual int32_t NeedToBackupBlock(std::shared_ptr<uint8_t[]> &buffer, struct io_event* event)
     {
         return CALCULATE_INITIAL_STATE;
+    }
+
+    virtual int32_t QueryStoragePoolUsedRate(double &usedCapacityRate)
+    {
+        usedCapacityRate = VirtPlugin::DEFAULT_STORAGE_THRESHOLD_LIMIT;
+        return SUCCESS;
     }
 
     static std::shared_ptr<uint8_t[]> GetAllZeroDirtyRangeDataPtr()

@@ -12,6 +12,11 @@
 */
 package openbackup.informix.protection.access.service.impl;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.provider.UnifiedEnvironmentCheckProvider;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
@@ -38,7 +43,6 @@ import openbackup.database.base.plugin.service.ClusterEnvironmentService;
 import openbackup.database.base.plugin.service.InstanceProtectionService;
 import openbackup.informix.protection.access.constant.InformixConstant;
 import openbackup.informix.protection.access.service.InformixService;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -50,10 +54,6 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.StreamUtil;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,9 +163,8 @@ public class InformixServiceImpl implements InformixService {
                 getResourceById(dependencies.get(DatabaseConstants.AGENTS).get(0).getUuid());
         String clusterName = clusterResource.getName();
         copyResource.getExtendInfo().put(InformixConstant.CLUSTER_NAME, clusterName);
-        String hostId = clusterResource.getDependencies().get(DatabaseConstants.AGENTS).get(0).getUuid();
         ProtectedResource protectedResource = new ProtectedResource();
-        protectedResource.setUuid(hostId);
+        protectedResource.setUuid(clusterResource.getUuid());
         dependencies.put(DatabaseConstants.AGENTS, Collections.singletonList(protectedResource));
     }
 

@@ -20,6 +20,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceCheckContext;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceConnectionCheckProvider;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.service.InstanceResourceService;
 import openbackup.system.base.common.constants.CommonErrorCode;
@@ -27,9 +28,11 @@ import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.util.ArrayList;
@@ -47,11 +50,13 @@ public class PostgreInstanceProviderTest {
 
     private final InstanceResourceService InstanceResourceService = PowerMockito.mock(InstanceResourceService.class);
 
+    private final ResourceService resourceService = PowerMockito.mock(ResourceService.class);
+
     private final ResourceConnectionCheckProvider resourceConnectionCheckProvider = PowerMockito.mock(
         ResourceConnectionCheckProvider.class);
 
     private final PostgreInstanceProvider postgreInstanceProvider = new PostgreInstanceProvider(providerManager,
-        InstanceResourceService);
+        InstanceResourceService, resourceService);
 
     /**
      * 用例场景：框架调 applicable接口
@@ -67,6 +72,23 @@ public class PostgreInstanceProviderTest {
         Assert.assertFalse(postgreInstanceProvider.applicable(resource));
     }
 
+    @Test
+    public void test_supplyDependency() {
+        ProtectedResource protectedResource = new ProtectedResource();
+        protectedResource.setType(ResourceTypeEnum.DATABASE.getType());
+        protectedResource.setSubType(ResourceSubTypeEnum.POSTGRE_INSTANCE.getType());
+        protectedResource.setUuid("test1");
+        ProtectedEnvironment protectedEnvironment = new ProtectedEnvironment();
+        protectedEnvironment.setUuid("uuid");
+        protectedEnvironment.setName("name1");
+        protectedEnvironment.setEndpoint("endpoint1");
+        List<ProtectedResource> list = new ArrayList<>();
+        list.add(protectedEnvironment);
+        PowerMockito.when(resourceService.queryDependencyResources(Mockito.anyBoolean(), Mockito.any(), Mockito.any()))
+            .thenReturn(list);
+        Assert.assertTrue(postgreInstanceProvider.supplyDependency(protectedResource));
+    }
+
     /**
      * 用例场景：创建postgre实例前检查
      * 前置条件：实例没有被创建
@@ -75,8 +97,7 @@ public class PostgreInstanceProviderTest {
     @Test
     public void execute_before_create_success() {
         PowerMockito.when(providerManager.findProvider(any(), any())).thenReturn(resourceConnectionCheckProvider);
-        PowerMockito.when(resourceConnectionCheckProvider.tryCheckConnection(any()))
-            .thenReturn(mockContext());
+        PowerMockito.when(resourceConnectionCheckProvider.tryCheckConnection(any())).thenReturn(mockContext());
         ProtectedResource resource = mockResource();
         postgreInstanceProvider.beforeCreate(resource);
         Assert.assertEquals("9.6.0", resource.getVersion());
@@ -91,8 +112,7 @@ public class PostgreInstanceProviderTest {
     @Test
     public void execute_before_update_success() {
         PowerMockito.when(providerManager.findProvider(any(), any())).thenReturn(resourceConnectionCheckProvider);
-        PowerMockito.when(resourceConnectionCheckProvider.tryCheckConnection(any()))
-            .thenReturn(mockContext());
+        PowerMockito.when(resourceConnectionCheckProvider.tryCheckConnection(any())).thenReturn(mockContext());
         postgreInstanceProvider.beforeUpdate(mockResource());
     }
 

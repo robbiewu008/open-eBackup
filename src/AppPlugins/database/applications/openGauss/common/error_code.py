@@ -65,6 +65,8 @@ class OpenGaussErrorCode:
     # 校验集群失败
     CHECK_CLUSTER_FAILED = 1577209956
 
+    DB_TYPE_AND_AGENTS_NOT_MATCH = 1577213492
+
     # 配置参数错误 操作失败
     VAILD_PARAM_EXECUTE = 1577209947
 
@@ -105,6 +107,12 @@ class OpenGaussErrorCode:
 
     # 未配置归档文件夹或配置错误
     ERROR_ARCHIVE_DIR = 1677931381
+
+    # 分布式cmdb输入的数据库和密码不正确
+    ERR_CMDB_WRONG_DATABASE_PWD = 1577209986
+
+    # 分布式cmdb输入的dcs信息与集群节点不一致
+    ERROR_DCS_NOT_SUITABLE = 1677930092
 
     # 无错误码
     NO_ERR = None

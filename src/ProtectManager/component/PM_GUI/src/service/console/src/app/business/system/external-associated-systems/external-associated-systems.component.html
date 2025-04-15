@@ -31,15 +31,9 @@
       </lv-group>
     </div>
     <div class="list-container">
-      <lv-pro-table
-        #dataTable
-        [config]="tableConfig"
-        [data]="tableData"
-        [hidden]="tableIsHidden"
-      ></lv-pro-table>
+      <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData" [hidden]="tableIsHidden"></lv-pro-table>
       <div class="no-data" *ngIf="tableIsHidden">
-        <i lv-icon="lv-icon-no-data"></i>
-        <div class="no-data-label" [innerHTML]="i18n.get('system_external_system_no_data_label')"></div>
+        <lv-empty [lvDescription]="emptyTpl"></lv-empty>
       </div>
     </div>
   </div>
@@ -47,7 +41,11 @@
 
 <ng-template #nameTpl let-item>
   <lv-group lvGutter="4px" (click)="jump(item)">
-    <span [ngClass]="{'aui-link': item.type !== 'dpa'}">{{item.name}}</span>
-    <i *ngIf="item.type !== 'dpa'" lv-icon="aui-icon-open-link"></i>
+    <span class="aui-link">{{item.name}}</span>
+    <i lv-icon="aui-icon-open-link"></i>
   </lv-group>
+</ng-template>
+
+<ng-template #emptyTpl>
+  <span innerHTML="{{'system_external_system_no_data_label' | i18n}}"></span>
 </ng-template>

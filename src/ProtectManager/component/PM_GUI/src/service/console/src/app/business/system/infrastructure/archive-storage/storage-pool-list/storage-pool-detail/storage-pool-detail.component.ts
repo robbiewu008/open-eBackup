@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   OnInit,
@@ -102,8 +102,8 @@ export class StoragePoolDetailComponent implements OnInit {
         name: this.i18n.get('system_archive_write_status_label'),
         filter: {
           type: 'select',
-          isMultiple: false,
-          showCheckAll: false,
+          isMultiple: true,
+          showCheckAll: true,
           options: this.dataMapService.toArray('Tape_Write_Status')
         },
         cellRender: {
@@ -116,8 +116,8 @@ export class StoragePoolDetailComponent implements OnInit {
         name: this.i18n.get('common_status_label'),
         filter: {
           type: 'select',
-          isMultiple: false,
-          showCheckAll: false,
+          isMultiple: true,
+          showCheckAll: true,
           options: this.dataMapService.toArray('Library_Tape_Status')
         },
         cellRender: {
@@ -221,10 +221,10 @@ export class StoragePoolDetailComponent implements OnInit {
         assign(params, { tapeLabel: conditions.tapeLabel });
       }
       if (conditions.writeStatus) {
-        assign(params, { writeStatus: conditions.writeStatus[0] });
+        assign(params, { writeStatuses: conditions.writeStatus });
       }
       if (conditions.status) {
-        assign(params, { status: conditions.status[0] });
+        assign(params, { statuses: conditions.status });
       }
     }
 

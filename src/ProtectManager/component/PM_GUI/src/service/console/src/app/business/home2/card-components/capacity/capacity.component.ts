@@ -1,46 +1,52 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, OnInit, Input } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
-  BaseUtilService,
-  CapacityApiService,
   ApiMultiClustersService,
   BackupClustersApiService,
+  BaseUtilService,
+  CAPACITY_UNIT,
+  CapacityApiService,
+  CapacityCalculateLabel,
+  ClustersApiService,
+  CommonConsts,
+  CookieService,
   DataMap,
   DataMapService,
   I18NService,
-  CAPACITY_UNIT,
+  MultiClusterStatus,
   ResourceService,
-  StorageUnitService,
-  RouterUrl
+  RouterUrl,
+  StorageUnitService
 } from 'app/shared';
-
-import { CapacityCalculateLabel } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { MultiClusterStatus, CookieService } from 'app/shared';
-import { Router } from '@angular/router';
 import {
   assign,
+  ceil,
   each,
   filter,
   find,
+  floor,
   get,
   includes,
   isArray,
   isEmpty,
+  isNaN,
   reduce,
-  round
+  round,
+  toNumber
 } from 'lodash';
 
 @Component({
@@ -55,22 +61,27 @@ export class CapacityComponent implements OnInit {
   resourceData = [];
   resourceProtect = null;
   backupStorageUnits = {
-    total: 0,
-    data: []
+    storageNum: 0,
+    storageData: [],
+    usedCapacity: 0,
+    freeCapacity: 0,
+    totalCapacity: 0,
+    percent: 0
   };
-  copyList = [];
+  copyList: { [key: string]: any } = {
+    total: 0
+  };
   abnormalNode = null;
   unitconst = CAPACITY_UNIT;
   isAllCluster = true;
   RouterUrl = RouterUrl;
   round = round;
-  backupCapacityInfo: any = {
-    percent: 0
-  };
   tapeInfo: any = {};
   cloudStorageInfo: any = {};
-  hasArchiving = false;
-
+  showTape = !(
+    this.appUtilsService.isDistributed || this.appUtilsService.isDecouple
+  );
+  isShowOBS = true; // 是否显示对象存储百分比条
   constructor(
     private i18n: I18NService,
     public baseUtilService: BaseUtilService,
@@ -83,6 +94,7 @@ export class CapacityComponent implements OnInit {
     public cookieService: CookieService,
     public appUtilsService: AppUtilsService,
     private storageUnitService: StorageUnitService,
+    private clusterApiService: ClustersApiService,
     public capacityApiService: CapacityApiService,
     public capacityCalculateLabel: CapacityCalculateLabel
   ) {}
@@ -105,9 +117,8 @@ export class CapacityComponent implements OnInit {
     Promise.all([
       this.getAbnormalNode(),
       this.getResourceInfo(),
-      this.getBackupCapcacity(),
       this.getBackupInfo(params),
-      this.getCopyInfo(params),
+      this.getCopyInfo(),
       this.getArchiveInfo(params)
     ]).then(() => {
       this.cardInfo.loading = false;
@@ -250,43 +261,83 @@ export class CapacityComponent implements OnInit {
           pageNo: 0
         })
         .subscribe(res => {
-          this.backupStorageUnits.total = res.totalCount;
-          this.backupStorageUnits.data = res.records;
+          const { records, totalCount } = res;
+          const { usedCapacity, totalCapacity } = records.reduce(
+            (acc: { usedCapacity; totalCapacity }, item) => {
+              if (
+                item.deviceType ===
+                DataMap.poolStorageDeviceType.OceanProtectX.value
+              ) {
+                acc.usedCapacity =
+                  acc.usedCapacity + Number(item.usedCapacity) / 2; // X系列容量相关要除以2
+                acc.totalCapacity =
+                  acc.totalCapacity + Number(item.totalCapacity) / 2;
+              } else {
+                acc.usedCapacity = acc.usedCapacity + Number(item.usedCapacity);
+                acc.totalCapacity =
+                  acc.totalCapacity + Number(item.totalCapacity);
+              }
+              return {
+                usedCapacity: acc.usedCapacity,
+                totalCapacity: acc.totalCapacity
+              };
+            },
+            { usedCapacity: 0, totalCapacity: 0 }
+          );
+          const freeCapacity = totalCapacity - usedCapacity;
+          const unit = CAPACITY_UNIT.KB;
+          const percent =
+            totalCapacity && ((usedCapacity * 100) / totalCapacity).toFixed(0);
+          const { backupStorageUnits } = this;
+          assign(backupStorageUnits, {
+            storageNum: totalCount,
+            totalCapacity: this.transformCapacity(totalCapacity, unit),
+            usedCapacity: this.transformCapacity(usedCapacity, unit),
+            freeCapacity: this.transformCapacity(freeCapacity, unit),
+            percent
+          });
           resolve(true);
         });
     });
   }
 
   //获取复制统计信息
-  getCopyInfo(params) {
+  getCopyInfo() {
+    const params = {
+      startPage: CommonConsts.PAGE_START,
+      roleList: [DataMap.Target_Cluster_Role.replication.value],
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
+      akLoading: false
+    };
     return new Promise(resolve => {
-      this.ApiMultiClustersService.getMultiClusterReplicationCapacitySummary(
-        params
-      ).subscribe(res => {
-        this.handleCopyInfo(res);
+      this.clusterApiService.getClustersInfoUsingGET(params).subscribe(res => {
         resolve(true);
+        this.handleCopyInfo(res);
       });
     });
   }
 
   handleCopyInfo(res) {
-    res.map(item => {
-      assign(item, {
-        percent:
-          ((item.usedCapacity * 100) / item.totalCapacity).toFixed(0) || 0
-      });
-      if (item.type === 'replication' && item.totalCapacity !== 0) {
-        //为0视为未配置
-        this.copyList.push(
-          Object.assign(item, {
-            label: this.i18n.get('system_replication_cluster_label'),
-            usedCapacity: this.transformKBUnit(item.usedCapacity),
-            freeCapacity: this.transformKBUnit(item.freeCapacity),
-            totalCapacity: this.transformKBUnit(item.totalCapacity)
-          })
-        );
+    let usedCapacity = 0,
+      totalCapacity = 0,
+      freeCapacity = 0;
+    res.records.forEach(item => {
+      if (item.status === DataMap.Cluster_Node_Status.online.value) {
+        usedCapacity += toNumber(item.usedCapacity);
+        totalCapacity += toNumber(item.capacity);
       }
     });
+    freeCapacity = toNumber(totalCapacity - usedCapacity);
+    this.copyList = {
+      label: this.i18n.get('system_replication_cluster_label'),
+      percent: isNaN(usedCapacity / totalCapacity)
+        ? 0
+        : ceil((usedCapacity * 100) / totalCapacity, 0),
+      usedCapacity: this.transformCapacity(usedCapacity),
+      freeCapacity: this.transformCapacity(freeCapacity),
+      totalCapacity: this.transformCapacity(totalCapacity),
+      total: res.totalCount
+    };
   }
 
   //获取归档统计信息
@@ -302,45 +353,40 @@ export class CapacityComponent implements OnInit {
   }
 
   handleArchiveInfo(res) {
-    this.hasArchiving = false;
     res.map(item => {
-      assign(item, {
-        percent:
-          (100 * (item.usedCapacity / item.totalCapacity)).toFixed(0) || 0
-      });
-      if (
-        item.type === 'tape' &&
-        !(
-          this.appUtilsService.isDistributed || this.appUtilsService.isDecouple
-        ) &&
-        item.usedCapacity !== 0
-      ) {
-        // 磁带
-        this.hasArchiving = true;
-      }
-      if (
-        item.type === 'tape' &&
-        !(this.appUtilsService.isDistributed || this.appUtilsService.isDecouple)
-      ) {
+      if (item.type === 'tape' && this.showTape) {
         // 磁带
         this.tapeInfo = Object.assign(item, {
           label: this.i18n.get('system_archive_device_label'),
-          usedCapacity: this.transformKBUnit(item.usedCapacity)
+          usedCapacity: this.transformCapacity(
+            item.usedCapacity,
+            CAPACITY_UNIT.MB
+          )
         });
       }
 
-      if (item.type === 'cloudStorage' && item.totalCapacity !== 0) {
-        // 对象存储
-        this.hasArchiving = true;
-      }
       if (item.type === 'cloudStorage') {
         // 对象存储
+        let percent: number = 100 * (item.usedCapacity / item.totalCapacity);
+        assign(item, {
+          percent: isNaN(percent) ? 0 : floor(percent, 2)
+        });
         this.cloudStorageInfo = Object.assign(item, {
           label: this.i18n.get('common_object_storage_label'),
-          usedCapacity: this.transformKBUnit(item.usedCapacity),
-          freeCapacity: this.transformKBUnit(item.freeCapacity),
-          totalCapacity: this.transformKBUnit(item.totalCapacity)
+          usedCapacity: this.transformCapacity(item.usedCapacity),
+          freeCapacity: this.transformCapacity(item.freeCapacity),
+          totalCapacity: this.transformCapacity(item.totalCapacity)
         });
+        if (item.totalCapacity === '-1 KB') {
+          // -1情况是az或s3云无法读取容量，且没有其他可读取云
+          this.isShowOBS = false;
+          this.cloudStorageInfo = Object.assign(item, {
+            label: this.i18n.get('common_object_storage_label'),
+            usedCapacity: '--',
+            freeCapacity: '--',
+            totalCapacity: '--'
+          });
+        }
       }
     });
   }
@@ -348,12 +394,12 @@ export class CapacityComponent implements OnInit {
   //获取异常节点数
   getAbnormalNode() {
     return new Promise(resolve => {
-      this.BackupClustersApiService.getBackupClustersSummary({}).subscribe(
-        res => {
-          this.abnormalNode = res.wrongClusterNum;
-          resolve(true);
-        }
-      );
+      this.BackupClustersApiService.getBackupClustersSummary({
+        akLoading: false
+      }).subscribe(res => {
+        this.abnormalNode = res.wrongClusterNum;
+        resolve(true);
+      });
     });
   }
 
@@ -365,46 +411,11 @@ export class CapacityComponent implements OnInit {
     this.router.navigate([RouterUrl.SystemInfrastructureClusterManagement]);
   }
 
-  getBackupCapcacity() {
-    if (this.cookieService.isCloudBackup) {
-      return;
-    }
-    return new Promise(resolve => {
-      if (this.isAllCluster) {
-        this.ApiMultiClustersService.getMultiClusterCapacity({
-          akLoading: false
-        }).subscribe(res => {
-          this.backupCapacityInfo = {
-            usedCapacity: this.transformKBUnit(res.usedCapacity),
-            freeCapacity: this.transformKBUnit(res.freeCapacity),
-            totalCapacity: this.transformKBUnit(res.totalCapacity),
-            percent:
-              (100 * (res.usedCapacity / res.totalCapacity)).toFixed(0) || 0
-          };
-          resolve(true);
-        });
-      } else {
-        this.capacityApiService
-          .queryClusterStorageUsingGET({ akLoading: false })
-          .subscribe(res => {
-            this.backupCapacityInfo = {
-              usedCapacity: this.transformKBUnit(res.usedCapacity),
-              freeCapacity: this.transformKBUnit(res.freeCapacity),
-              totalCapacity: this.transformKBUnit(res.totalCapacity),
-              percent:
-                (100 * (res.usedCapacity / res.totalCapacity)).toFixed(0) || 0
-            };
-            resolve(true);
-          });
-      }
-    });
-  }
-
-  private transformKBUnit(capacity) {
+  private transformCapacity(capacity, unit = CAPACITY_UNIT.KB) {
     return this.capacityCalculateLabel.transform(
       capacity,
       '1.0-2',
-      CAPACITY_UNIT.KB,
+      unit,
       false
     );
   }

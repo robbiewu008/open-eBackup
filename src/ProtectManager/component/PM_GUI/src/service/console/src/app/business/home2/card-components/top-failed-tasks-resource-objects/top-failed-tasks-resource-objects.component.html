@@ -26,12 +26,12 @@
           <div class="first-box">
             <div lvOverflow>{{ data.resourceName }}</div>
             <div *ngIf="i === 0" class="top">
-              TOP1
+              Top 1
             </div>
           </div>
         </td>
         <td>
-          <div lvOverflow>{{ data.resourceType }}</div>
+          <div lvOverflow>{{ data.resourceType | textMap: 'Job_Target_Type' }}</div>
         </td>
         <td>{{ data.count }}</td>
       </tr>

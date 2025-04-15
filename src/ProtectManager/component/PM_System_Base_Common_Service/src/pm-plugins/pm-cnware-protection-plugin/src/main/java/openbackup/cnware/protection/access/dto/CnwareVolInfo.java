@@ -12,19 +12,18 @@
 */
 package openbackup.cnware.protection.access.dto;
 
-import openbackup.data.access.framework.core.common.model.AbstractVmVolInfo;
-import openbackup.data.access.framework.core.common.model.CopySnapShotInfo;
-import openbackup.data.access.framework.core.common.model.DiskInfo;
-import openbackup.data.access.framework.core.common.model.VmIndexerCopyMetaData;
-import openbackup.data.access.framework.core.common.model.VmSnapMetadata;
-import openbackup.system.base.common.utils.JSONObject;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.data.access.framework.core.common.model.AbstractVmVolInfo;
+import openbackup.data.access.framework.core.common.model.CopySnapShotInfo;
+import openbackup.data.access.framework.core.common.model.DiskInfo;
+import openbackup.data.access.framework.core.common.model.VmIndexerCopyMetaData;
+import openbackup.data.access.framework.core.common.model.VmSnapMetadata;
+import openbackup.system.base.common.utils.JSONObject;
 
 import java.util.List;
 import java.util.stream.Collectors;

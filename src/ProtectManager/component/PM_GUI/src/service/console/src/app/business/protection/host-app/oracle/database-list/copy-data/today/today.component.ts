@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   Component,
@@ -21,8 +21,10 @@ import {
 import {
   CopiesService,
   CopyControllerService,
-  DatabasesService,
   getGeneralDatabaseConf,
+  isIncompleteOracleCopy,
+  isJson,
+  SystemApiService,
   TextMapPipe
 } from 'app/shared';
 import { ModifyRetentionPolicyComponent } from 'app/shared/components';
@@ -34,33 +36,43 @@ import {
   MODAL_COMMON,
   OperateItems,
   RestoreType,
-  RestoreV2Type
+  RestoreV2Type,
+  SYSTEM_TIME
 } from 'app/shared/consts';
 import {
   DataMapService,
   I18NService,
   WarningMessageService
 } from 'app/shared/services';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { ManualMountService } from 'app/shared/services/manual-mount.service';
 import { RestoreService } from 'app/shared/services/restore.service';
 import {
   assign,
   cloneDeep,
+  defer,
   each,
   find,
   first,
   get,
   includes,
+  indexOf,
+  isEmpty,
   isNumber,
+  isString,
   isUndefined,
+  lastIndexOf,
   mapValues,
   omit,
+  range,
   replace,
   set,
   size,
-  toString
+  toString,
+  uniqBy
 } from 'lodash';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'aui-copy-data-dbtoday',
@@ -78,6 +90,8 @@ export class TodayComponent implements OnInit {
   listView = 0;
   copyNum = 0;
   timeZone;
+  extTimeZone = SYSTEM_TIME.timeZone;
+  standardTimeZone = 'UTC';
   resourceResourceType = DataMap.Resource_Type;
   copyDataBackupType = DataMap.CopyData_Backup_Type;
   columns = [
@@ -126,9 +140,10 @@ export class TodayComponent implements OnInit {
   HbaseTimeRanges = [];
   sliderHandleColor = '#b8becc';
   sliderValTips;
-
+  archiveLogCopy = false;
   treeData = [];
   copyData;
+  archiveLogCopyData = [];
   logData;
   timePickerValue;
   optItems;
@@ -138,6 +153,26 @@ export class TodayComponent implements OnInit {
   orders = ['-display_timestamp'];
 
   readonly initPointLen = 7;
+
+  // 令时修改，一天可能不止24小时或者小于24小时
+  slideDivision = 24;
+  slideMax = this.slideDivision * 3600;
+  isDayLightTimeBegin = false;
+  isDayLightTimeEnd = false;
+  repeatHour = 1;
+  repeatHourLong = 0;
+  dayLightTimeEndLastHourLong = 0;
+  lostHour = 2;
+  orderTimeMap = {
+    summer: 'summer',
+    winter: 'winter'
+  };
+  orderTimeSelected = this.orderTimeMap.summer;
+  disabledHour = hour => {
+    return false;
+  };
+  daylinghtLineLeft = '0px';
+  daylinghtTextLeft = '0px';
 
   @ViewChild(CopyDataListComponent, { static: false })
   copyDataListComponent: CopyDataListComponent;
@@ -149,15 +184,105 @@ export class TodayComponent implements OnInit {
     private datePipe: DatePipe,
     private textMapPipe: TextMapPipe,
     private restoreService: RestoreService,
-    private databaseService: DatabasesService,
     private manualMountService: ManualMountService,
     private drawModalService: DrawModalService,
+    private systemApiService: SystemApiService,
     private copyControllerService: CopyControllerService,
-    private warningMessageService: WarningMessageService
+    private warningMessageService: WarningMessageService,
+    private appUtilsService: AppUtilsService
   ) {}
 
   ngOnInit() {
-    this.initSlider();
+    this.archiveLogCopy = [
+      this.resourceResourceType.tdsqlInstance.value,
+      this.resourceResourceType.tdsqlDistributedInstance.value
+    ].includes(this.resType);
+  }
+
+  // 夏令时开始找到哪个小时缺失
+  findLostHour(timeStr) {
+    const hourArr = range(24);
+    each(timeStr, str => {
+      const hour = new Date(str).getHours();
+      if (indexOf(hourArr, hour) === -1) {
+        this.lostHour = hour;
+        return false;
+      }
+    });
+  }
+
+  // 夏令时结束找到重复的小时
+  findRepeatHour(timeStr, timeStamp) {
+    each(timeStr, (str: string) => {
+      if (indexOf(timeStr, str) !== lastIndexOf(timeStr, str)) {
+        this.repeatHour = new Date(str).getHours();
+        this.repeatHourLong = timeStamp[lastIndexOf(timeStr, str)] * 1000;
+        // 获取当天最后一个小时时间戳
+        this.dayLightTimeEndLastHourLong =
+          timeStamp[timeStamp.length - 2] * 1000;
+        return false;
+      }
+    });
+  }
+
+  setTipLineOffsetLeft() {
+    const pointCells = document.getElementsByClassName('lv-slider-cell');
+    if (isEmpty(pointCells)) {
+      return;
+    }
+    const targetCell: any =
+      pointCells[
+        this.isDayLightTimeBegin ? this.lostHour : this.repeatHour + 1
+      ];
+    this.daylinghtLineLeft = `${targetCell.offsetLeft}px`;
+    this.daylinghtTextLeft = `${targetCell.offsetLeft - 30}px`;
+  }
+
+  // 获取一天多少小时，适配夏令时
+  getSystemTimeLine() {
+    this.systemApiService
+      .getSystemTimelineUsingGET({
+        date: this.datePipe.transform(this.currentDate, 'yyyy-MM-dd')
+      })
+      .pipe(finalize(() => this.initSlider()))
+      .subscribe((res: any) => {
+        if (isJson(res)) {
+          res = JSON.parse(res);
+        }
+        const hours = size(res.timeStr);
+        this.slideDivision = hours - 1;
+        this.slideMax = this.slideDivision * 3600;
+        // 夏令时开始，时间拨快1小时
+        this.isDayLightTimeBegin = hours < 25;
+        // 夏令时结束，时间回拨1小时
+        this.isDayLightTimeEnd = hours > 25;
+        // 获取重复的小时
+        if (this.isDayLightTimeEnd) {
+          this.findRepeatHour(res.timeStr, res.timeStamp);
+          this.changeTimePicker();
+        }
+        if (this.isDayLightTimeBegin) {
+          this.findLostHour(res.timeStr);
+          // 禁用丢失的小时
+          this.disabledHour = hour => {
+            return hour === this.lostHour;
+          };
+        }
+        // 设置冬夏令时提示位置
+        defer(() => this.setTipLineOffsetLeft());
+      });
+  }
+
+  setSysTime() {
+    this.systemApiService
+      .getSystemTimeUsingGET({
+        akDoException: false
+      })
+      .subscribe(res => {
+        const sysDate = new Date(res.time);
+        this.timePickerValue = new Date(sysDate);
+        this.timePickerChange(sysDate);
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -165,86 +290,102 @@ export class TodayComponent implements OnInit {
       this.timePickerValue = new Date(
         changes.currentDate.currentValue.setHours(0, 0, 0, 0)
       );
+      // 改为调接口查询，每次需要重绘
+      this.sliderPoints = [];
+      this.getSystemTimeLine();
       this.getSliderLines();
       this.queryCopyPoint({ value: 0 });
     }
   }
 
+  changeTimePicker(triggerPicker = true) {
+    if (this.orderTimeSelected === this.orderTimeMap.summer) {
+      this.disabledHour = hour => {
+        return hour > this.repeatHour;
+      };
+    } else {
+      this.disabledHour = hour => {
+        return hour < this.repeatHour;
+      };
+    }
+    const timeHour = this.timePickerValue.getHours();
+    if (
+      (this.orderTimeSelected === this.orderTimeMap.summer &&
+        timeHour > this.repeatHour) ||
+      (this.orderTimeSelected === this.orderTimeMap.winter &&
+        timeHour < this.repeatHour)
+    ) {
+      this.timePickerValue = new Date(
+        this.timePickerValue.setHours(this.repeatHour)
+      );
+    }
+    if (triggerPicker) {
+      this.timePickerChange(this.timePickerValue);
+    }
+  }
+
+  getPointValue(index): number {
+    if (this.isDayLightTimeEnd && index * 4 > this.repeatHour) {
+      return this.calculatePoint(index) + 3600;
+    }
+    if (this.isDayLightTimeBegin && index * 4 > this.lostHour) {
+      return this.calculatePoint(index) - 3600;
+    }
+    return this.calculatePoint(index);
+  }
+
   initSlider() {
-    this.sliderPoints = [
-      {
-        value: this.calculatePoint(0),
-        label: '00:00:00',
+    each(range(this.initPointLen), index => {
+      this.sliderPoints.push({
+        value: this.getPointValue(index),
+        label: `${this.formatTime(index * 4)}:00:00`,
         pointStyle: {
           'background-color': 'transparent',
           'border-color': 'transparent'
         }
-      },
-      {
-        value: this.calculatePoint(1),
-        label: '04:00:00',
-        pointStyle: {
-          'background-color': 'transparent',
-          'border-color': 'transparent'
-        }
-      },
-      {
-        value: this.calculatePoint(2),
-        label: '08:00:00',
-        pointStyle: {
-          'background-color': 'transparent',
-          'border-color': 'transparent'
-        }
-      },
-      {
-        value: this.calculatePoint(3),
-        label: '12:00:00',
-        pointStyle: {
-          'background-color': 'transparent',
-          'border-color': 'transparent'
-        }
-      },
-      {
-        value: this.calculatePoint(4),
-        label: '16:00:00',
-        pointStyle: {
-          'background-color': 'transparent',
-          'border-color': 'transparent'
-        }
-      },
-      {
-        value: this.calculatePoint(5),
-        label: '20:00:00',
-        pointStyle: {
-          'background-color': 'transparent',
-          'border-color': 'transparent'
-        }
-      },
-      {
-        value: this.calculatePoint(6),
-        label: '24:00:00',
-        pointStyle: {
-          'background-color': 'transparent',
-          'border-color': 'transparent'
-        }
-      }
-    ];
+      });
+    });
+    this.sliderPoints = [...this.sliderPoints];
   }
 
   calculatePoint(index) {
     return 3600 * 4 * index;
   }
 
+  isReplicateOrArchival(item) {
+    return includes(
+      [
+        DataMap.CopyData_generatedType.replicate.value,
+        DataMap.CopyData_generatedType.reverseReplication.value,
+        DataMap.CopyData_generatedType.cascadedReplication.value,
+        DataMap.CopyData_generatedType.cloudArchival.value,
+        DataMap.CopyData_generatedType.tapeArchival.value
+      ],
+      item?.generated_by
+    );
+  }
+
+  // 复制副本或者归档副本取副本备份时间
+  getDisplayTimestamp(item) {
+    if (this.isReplicateOrArchival(item)) {
+      return item.origin_copy_time_stamp;
+    }
+    return item.display_timestamp;
+  }
+
   getCopyData() {
+    const params = {
+      resource_id: this.id
+    };
+    assign(params, {
+      origin_date: this.datePipe.transform(this.currentDate, 'yyyy-MM-dd')
+    });
     this.copiesApiService
       .queryResourcesV1CopiesGet({
         pageNo: this.pageIndex,
         pageSize: this.pageSize,
         orders: this.orders,
-        conditions: JSON.stringify({
-          date: this.datePipe.transform(this.currentDate, 'yyyy-MM-dd'),
-          resource_id: this.id
-        })
+        conditions: JSON.stringify(params)
       })
       .subscribe(res => {
         const points = res.items.filter(item => {
@@ -258,17 +399,13 @@ export class TodayComponent implements OnInit {
           this.sliderPoints.push({
             value: this.calculateCopyPoint(
               this.datePipe.transform(
-                new Date(item.display_timestamp),
-                'yyyy/MM/dd HH:mm:ss',
-                this.timeZone
-              )
+                new Date(this.getDisplayTimestamp(item)),
+                'yyyy/MM/dd HH:mm:ss'
+              ),
+              false,
+              item.timestamp / 1000
             ),
-            tip: this.textMapPipe.transform(
-              !isUndefined(item.source_copy_type)
-                ? item.source_copy_type
-                : item.backup_type,
-              'CopyData_Backup_Type'
-            ),
+            tip: this.getTip(item),
             handleColor: '#779bfa',
             pointStyle: {
               'border-color': '#779bfa',
@@ -280,6 +417,22 @@ export class TodayComponent implements OnInit {
         this.sliderPoints = [...this.sliderPoints];
         this.fetchHbaseBackupLines();
       });
+  }
+
+  private getTip(item: any) {
+    let dataMapKey = 'CopyData_Backup_Type';
+    if (
+      item?.resource_sub_type === this.resourceResourceType.HBaseBackupSet.value
+    ) {
+      // Hbase备份集的增量备份展示为永久增量，修改时html也需要同步修改
+      dataMapKey = 'specialBackUpType';
+    }
+    return this.textMapPipe.transform(
+      !isUndefined(item.source_copy_type)
+        ? item.source_copy_type
+        : item.backup_type,
+      dataMapKey
+    );
   }
 
   getSliderLines() {
@@ -299,7 +452,8 @@ export class TodayComponent implements OnInit {
             slider =>
               oldEndTime > slider.value[0] && oldStartTime < slider.value[1]
           )
-        )
+        ) ||
+        this.archiveLogCopy
       ) {
         // 时间段与当前时间段轴上某时间段没有重叠时（重叠包括两段时间首尾相接）
         newSliderLines.push(item);
@@ -359,6 +513,8 @@ export class TodayComponent implements OnInit {
       if (
         !includes(
           [
+            DataMap.Resource_Type.Dameng_singleNode.value,
+            DataMap.Resource_Type.generalDatabase.value,
             DataMap.Resource_Type.SQLServerDatabase.value,
             DataMap.Resource_Type.SQLServerClusterInstance.value,
             DataMap.Resource_Type.SQLServerInstance.value,
@@ -374,10 +530,26 @@ export class TodayComponent implements OnInit {
             DataMap.Resource_Type.lightCloudGaussdbInstance.value,
             DataMap.Resource_Type.oracle.value,
             DataMap.Resource_Type.oracleCluster.value,
+            DataMap.Resource_Type.oraclePDB.value,
             DataMap.Resource_Type.tdsqlInstance.value,
+            DataMap.Resource_Type.tdsqlDistributedInstance.value,
             DataMap.Resource_Type.ExchangeSingle.value,
             DataMap.Resource_Type.ExchangeGroup.value,
-            DataMap.Resource_Type.ExchangeDataBase.value
+            DataMap.Resource_Type.ExchangeDataBase.value,
+            DataMap.Resource_Type.saphanaDatabase.value,
+            DataMap.Resource_Type.AntDBClusterInstance.value,
+            DataMap.Resource_Type.AntDBInstance.value,
+            DataMap.Resource_Type.gaussdbForOpengaussInstance.value,
+            DataMap.Resource_Type.MongodbSingleInstance.value,
+            DataMap.Resource_Type.dbTwoDatabase.value,
+            DataMap.Resource_Type.OpenGauss_instance.value,
+            DataMap.Resource_Type.informixInstance.value,
+            DataMap.Resource_Type.informixClusterInstance.value,
+            DataMap.Resource_Type.saponoracleDatabase.value,
+            DataMap.Resource_Type.gaussdbTSingle.value,
+            DataMap.Resource_Type.GaussDB_T.value,
+            DataMap.Resource_Type.KingBaseInstance.value,
+            DataMap.Resource_Type.KingBaseClusterInstance.value
           ],
           this.rowData.sub_type
         )
@@ -398,8 +570,10 @@ export class TodayComponent implements OnInit {
   getHbaseBackupLines(recordsTemp?, startPage?) {
     this.sliderLines = [];
     const date = this.datePipe.transform(this.currentDate, 'yyyy/MM/dd');
-    const startTime = new Date(`${date} 00:00:00`).getTime() / 1000;
-    const endTime = new Date(`${date} 23:59:59`).getTime() / 1000;
+    const startTime =
+      this.appUtilsService.toSystemTimeLong(`${date} 00:00:00`) / 1000;
+    const endTime =
+      this.appUtilsService.toSystemTimeLong(`${date} 23:59:59`) / 1000;
     const params = {
       startTime,
       endTime,
@@ -481,17 +655,20 @@ export class TodayComponent implements OnInit {
                 this.calculateCopyPoint(
                   lineStartTime / 1000 < startTime
                     ? startTime * 1000
-                    : lineStartTime
+                    : lineStartTime,
+                  true
                 ),
                 this.calculateCopyPoint(
-                  lineEndTime / 1000 >= endTime ? endTime * 1000 : lineEndTime
+                  lineEndTime / 1000 >= endTime ? endTime * 1000 : lineEndTime,
+                  true
                 )
               ],
               data: timeRange,
-              tip: this.i18n.get('common_log_backup_label'),
+              tip: this.i18n.get('common_log_label'),
               handleColor: '#779bfa',
               style: {
-                'background-color': '#779bfa'
+                'background-color': '#779bfa',
+                'z-index': 4
               }
             });
           });
@@ -505,97 +682,9 @@ export class TodayComponent implements OnInit {
       });
   }
 
-  getOracleLines() {
-    this.sliderLines = [];
-    const date = this.datePipe.transform(this.currentDate, 'yyyy/MM/dd');
-    const timeStart = new Date(`${date} 00:00:00`).getTime() / 1000;
-    const timeEnd = new Date(`${date} 23:59:59`).getTime() / 1000;
-    this.databaseService
-      .queryDatabaseTimestampV1DatabasesDbIdTimestampsGet({
-        databaseType: this.rowData.sub_type,
-        dbId: this.rowData.uuid,
-        timeStart: timeStart.toString(),
-        timeEnd: timeEnd.toString()
-      })
-      .subscribe(res => {
-        this.timeZone = first(res.Data.TIMERANGE).TIMEZONE;
-        this.databaseService
-          .queryDatabaseTimestampV1DatabasesDbIdTimestampsGet({
-            databaseType: this.rowData.sub_type,
-            dbId: this.rowData.uuid,
-            timeStart: (
-              2 * timeStart -
-              Date.parse(
-                this.datePipe.transform(
-                  timeStart * 1000,
-                  'yyyy/MM/dd HH:mm:ss',
-                  this.timeZone
-                )
-              ) /
-                1000
-            ).toString(),
-            timeEnd: (
-              2 * timeEnd -
-              Date.parse(
-                this.datePipe.transform(
-                  timeEnd * 1000,
-                  'yyyy/MM/dd HH:mm:ss',
-                  this.timeZone
-                )
-              ) /
-                1000
-            ).toString()
-          })
-          .subscribe(res => {
-            res.Data.TIMERANGE.forEach(timeRange => {
-              const timeZoneStartTime = Date.parse(
-                this.datePipe.transform(
-                  parseInt(timeRange.STARTTIME, 10) * 1000,
-                  'yyyy/MM/dd HH:mm:ss',
-                  timeRange.TIMEZONE
-                )
-              );
-              const timeZoneEndTime = Date.parse(
-                this.datePipe.transform(
-                  parseInt(timeRange.ENDTIME, 10) * 1000,
-                  'yyyy/MM/dd HH:mm:ss',
-                  timeRange.TIMEZONE
-                )
-              );
-              this.sliderLines.push({
-                value: [
-                  this.calculateCopyPoint(
-                    timeZoneStartTime / 1000 < timeStart
-                      ? timeStart * 1000
-                      : timeRange.STARTTIME === '0'
-                      ? 0
-                      : timeZoneStartTime
-                  ),
-                  this.calculateCopyPoint(
-                    timeZoneEndTime / 1000 > timeEnd
-                      ? timeEnd * 1000
-                      : timeRange.ENDTIME === '0'
-                      ? 0
-                      : timeZoneEndTime
-                  )
-                ],
-                data: res.Data,
-                tip: this.i18n.get('common_log_backup_label'),
-                handleColor: '#779bfa',
-                style: {
-                  'background-color': '#779bfa'
-                }
-              });
-            });
-            this.sliderLines = [...this.sliderLines];
-            this.sliderChange({ value: 0 });
-            this.getCopyData();
-          });
-      });
-  }
-
   changeListView(data) {
     if (!data) {
+      this.archiveLogCopyData = [];
       this.getSliderLines();
       this.queryCopyPoint({ value: 0 });
     }
@@ -609,16 +698,39 @@ export class TodayComponent implements OnInit {
     }
   }
 
-  calculateCopyPoint(time) {
+  calculateCopyPoint(time, isLong = false, copyTimeLong?: number) {
     if (!time) {
       return;
     }
-    const timeDate = new Date(time);
-    return (
-      timeDate.getHours() * 60 * 60 +
-      timeDate.getMinutes() * 60 +
-      timeDate.getSeconds()
-    );
+    const timeDate = isLong
+      ? new Date(
+          this.datePipe.transform(time, 'yyyy/MM/dd HH:mm:ss', this.extTimeZone)
+        )
+      : new Date(time);
+
+    let hour = timeDate.getHours();
+    // 夏令时开始后面的时间需要减一小时
+    if (!isLong && this.isDayLightTimeBegin && hour > this.lostHour) {
+      hour--;
+    }
+    // 2个相同的时间需要通过时间戳来判断夏令时还是冬令时
+    if (
+      !isLong &&
+      this.isDayLightTimeEnd &&
+      hour === this.repeatHour &&
+      copyTimeLong >= this.repeatHourLong
+    ) {
+      hour++;
+    }
+    // 时间戳的话需要处理的是超过当天的1小时
+    if (
+      isLong &&
+      this.isDayLightTimeEnd &&
+      time >= this.dayLightTimeEndLastHourLong
+    ) {
+      hour++;
+    }
+    return hour * 60 * 60 + timeDate.getMinutes() * 60 + timeDate.getSeconds();
   }
 
   sliderChange(data, isHover = false) {
@@ -629,7 +741,11 @@ export class TodayComponent implements OnInit {
       this.timePickerChange(this.timePickerValue);
     }
     this.sliderValTips = `${timeVal}`;
-    this.isInLogDataRange(data.value, isHover);
+    if (this.archiveLogCopy) {
+      this.initArchiveLogDataRange(data.value, isHover);
+    } else {
+      this.isInLogDataRange(data.value, isHover);
+    }
     this.isCopyDataPointInSlider(data.value, isHover);
     return this.sliderValTips;
   }
@@ -668,8 +784,26 @@ export class TodayComponent implements OnInit {
   valToTime(val) {
     const time = val;
     const min = Math.floor(time % 3600);
+    let hour = Math.floor(time / 3600);
+
+    // 夏令时开始
+    if (this.isDayLightTimeBegin && hour >= this.lostHour) {
+      hour++;
+    }
+
+    // 夏令时结束
+    if (this.isDayLightTimeEnd) {
+      if (hour > this.repeatHour) {
+        this.orderTimeSelected = this.orderTimeMap.winter;
+        hour--;
+      } else {
+        this.orderTimeSelected = this.orderTimeMap.summer;
+      }
+      this.changeTimePicker(false);
+    }
+
     return (
-      this.formatTime(Math.floor(time / 3600)) +
+      this.formatTime(hour) +
       ':' +
       this.formatTime(Math.floor(min / 60)) +
       ':' +
@@ -701,11 +835,27 @@ export class TodayComponent implements OnInit {
     if (!data) {
       return;
     }
-    const time =
+    let time =
       data.getHours() * 3600 + data.getMinutes() * 60 + data.getSeconds();
+    // 夏令时开始
+    if (this.isDayLightTimeBegin && data.getHours() > this.lostHour) {
+      time -= 3600;
+    }
+    // 夏令时结束
+    if (
+      this.isDayLightTimeEnd &&
+      data.getHours() >= this.repeatHour &&
+      this.orderTimeSelected === this.orderTimeMap.winter
+    ) {
+      time += 3600;
+    }
     this.sliderVal = time;
     this.copyData = this.isCopyDataPoint(data);
-    this.isInLogDataRange(this.sliderVal);
+    if (this.archiveLogCopy) {
+      this.initArchiveLogDataRange(this.sliderVal);
+    } else {
+      this.isInLogDataRange(this.sliderVal);
+    }
   }
 
   isInLogDataRange(value, isHover = false) {
@@ -715,11 +865,7 @@ export class TodayComponent implements OnInit {
         this.sliderValTips = `${this.valToTime(value)} ${item.tip}`;
         if (!isHover) {
           this.sliderHandleColor = item.handleColor;
-          if (
-            !this.logData ||
-            this.logData === null ||
-            this.logData?.uuid !== item.data?.copyId
-          ) {
+          if (!this.logData || this.logData?.uuid !== item.data?.copyId) {
             this.copiesApiService
               .queryResourcesV1CopiesGet({
                 pageNo: this.pageIndex,
@@ -741,6 +887,55 @@ export class TodayComponent implements OnInit {
     }
   }
 
+  initArchiveLogDataRange(value, isHover = false) {
+    let flag = true;
+    this.sliderLines.forEach(item => {
+      if (value >= item.value[0] && value <= item.value[1]) {
+        this.sliderValTips = `${this.valToTime(value)} ${item.tip}`;
+        this.formatArchiveCopyData(isHover, item);
+        flag = false;
+      }
+    });
+    this.archiveLogCopyData = this.archiveLogCopyData.filter(item => {
+      const copy = find(this.HbaseTimeRanges, { copyId: item.uuid });
+      return (
+        copy &&
+        value >= this.calculateCopyPoint(copy.startTime * 1e3) &&
+        value <= this.calculateCopyPoint(copy.endTime * 1e3)
+      );
+    });
+    if (flag && !isHover) {
+      this.archiveLogCopyData = [];
+    }
+  }
+
+  private formatArchiveCopyData(isHover: boolean, item) {
+    if (isHover) {
+      return;
+    }
+    this.sliderHandleColor = item.handleColor;
+    if (
+      isEmpty(this.archiveLogCopyData) ||
+      !find(this.archiveLogCopyData, { uuid: item.data?.copyId })
+    ) {
+      this.copiesApiService
+        .queryResourcesV1CopiesGet({
+          pageNo: this.pageIndex,
+          pageSize: this.pageSize,
+          conditions: JSON.stringify({
+            uuid: item.data?.copyId
+          })
+        })
+        .subscribe(res => {
+          this.logData = { ...first(res.items) };
+          this.archiveLogCopyData.push(this.logData);
+          this.archiveLogCopyData = [
+            ...uniqBy(this.archiveLogCopyData, 'uuid')
+          ];
+        });
+    }
+  }
+
   isCopyDataPointInSlider(value, isHover = false) {
     this.sliderPoints.forEach(item => {
       if (value === item.value && item.tip) {
@@ -750,6 +945,16 @@ export class TodayComponent implements OnInit {
         }
       }
     });
+  }
+
+  // 夏令时场景找副本，存在2个相同的时间
+  dayLightTime(copyTimeLong: number): boolean {
+    if (!this.isDayLightTimeEnd) {
+      return true;
+    }
+    return this.orderTimeSelected === this.orderTimeMap.summer
+      ? copyTimeLong < this.repeatHourLong
+      : copyTimeLong >= this.repeatHourLong;
   }
 
   isCopyDataPoint(data: Date) {
@@ -762,15 +967,15 @@ export class TodayComponent implements OnInit {
     for (let i = this.initPointLen; i < sliderPointLen; i++) {
       const copyTime = new Date(
         this.datePipe.transform(
-          this.sliderPoints[i].data.display_timestamp,
-          'yyyy/MM/dd HH:mm:ss',
-          this.timeZone
+          this.getDisplayTimestamp(this.sliderPoints[i].data),
+          'yyyy/MM/dd HH:mm:ss'
         )
       );
       if (
         data.getHours() === copyTime.getHours() &&
         data.getMinutes() === copyTime.getMinutes() &&
-        data.getSeconds() === copyTime.getSeconds()
+        data.getSeconds() === copyTime.getSeconds() &&
+        this.dayLightTime(this.sliderPoints[i].data?.timestamp / 1000)
       ) {
         return this.resType !== this.resourceResourceType.oracle.value
           ? this.getHbaseCopyData(this.sliderPoints[i].data)
@@ -802,7 +1007,8 @@ export class TodayComponent implements OnInit {
       includes(
         [
           DataMap.Resource_Type.oracle.value,
-          DataMap.Resource_Type.oracleCluster.value
+          DataMap.Resource_Type.oracleCluster.value,
+          DataMap.Resource_Type.oraclePDB.value
         ],
         this.rowData.sub_type
       ) &&
@@ -826,7 +1032,7 @@ export class TodayComponent implements OnInit {
       ? [
           {
             id: 'restore',
-            label: this.i18n.get('common_restore_label'),
+            label: this.getCommonRestoreLabel(this.resType),
             disabled: data.status !== DataMap.copydata_validStatus.normal.value,
             hidden:
               getGeneralDatabaseConf(
@@ -851,7 +1057,9 @@ export class TodayComponent implements OnInit {
                 [
                   this.resourceResourceType.OceanBaseCluster.value,
                   this.resourceResourceType.tdsqlInstance.value,
-                  this.resourceResourceType.OpenGauss_instance.value
+                  this.resourceResourceType.tdsqlDistributedInstance.value,
+                  this.resourceResourceType.OpenGauss_instance.value,
+                  this.resourceResourceType.oraclePDB.value
                 ],
                 this.resType
               )
@@ -864,6 +1072,7 @@ export class TodayComponent implements OnInit {
             label: this.i18n.get('common_live_restore_job_label'),
             permission: OperateItems.InstanceRecovery,
             hidden:
+              this.appUtilsService.isDistributed ||
               includes(
                 [
                   DataMap.Resource_Type.Dameng_singleNode.value,
@@ -896,10 +1105,23 @@ export class TodayComponent implements OnInit {
                   DataMap.Resource_Type.saphanaDatabase.value,
                   DataMap.Resource_Type.OpenGauss_instance.value,
                   DataMap.Resource_Type.MongodbSingleInstance.value,
-                  DataMap.Resource_Type.MongodbClusterInstance.value
+                  DataMap.Resource_Type.MongodbClusterInstance.value,
+                  DataMap.Resource_Type.AntDBInstance.value,
+                  DataMap.Resource_Type.AntDBClusterInstance.value,
+                  DataMap.Resource_Type.oraclePDB.value
                 ],
                 this.resType
-              ) || this.hideOracleWinodwsOpt(data),
+              ) ||
+              (includes(
+                [
+                  DataMap.Resource_Type.oracle.value,
+                  DataMap.Resource_Type.oracleCluster.value
+                ],
+                this.resType
+              ) &&
+                data.generated_by ===
+                  DataMap.CopyData_generatedType.liveMount.value) ||
+              this.hideOracleWinodwsOpt(data),
             onClick: () => {
               this.instantRestore();
             }
@@ -975,11 +1197,16 @@ export class TodayComponent implements OnInit {
       .toString(2)
       .split('')
       .reverse();
+    const properties = isJson(data?.properties)
+      ? JSON.parse(data.properties)
+      : data.properties;
     return [
       {
         id: 'restore',
-        disabled: data.status !== DataMap.copydata_validStatus.normal.value,
-        label: this.i18n.get('common_restore_label'),
+        disabled:
+          data.status !== DataMap.copydata_validStatus.normal.value ||
+          isIncompleteOracleCopy(data, properties, data?.resource_sub_type),
+        label: this.getCommonRestoreLabel(this.resType),
         hidden:
           getGeneralDatabaseConf(
             data,
@@ -1043,17 +1270,36 @@ export class TodayComponent implements OnInit {
       },
       {
         id: 'instantRestore',
-        disabled: data.status !== DataMap.copydata_validStatus.normal.value,
+        disabled:
+          data.status !== DataMap.copydata_validStatus.normal.value ||
+          isIncompleteOracleCopy(data, properties, data?.resource_sub_type),
         label: this.i18n.get('common_live_restore_job_label'),
         hidden:
+          this.appUtilsService.isDistributed ||
           (data.features ? features[2] !== '1' : false) ||
           data.generated_by ===
             DataMap.CopyData_generatedType.tapeArchival.value ||
           this.resType !== this.resourceResourceType.oracle.value ||
-          includes([DataMap.Resource_Type.MySQL.value], this.resType) ||
-          (this.resType === this.resourceResourceType.oracle.value &&
-            this.rowData.version &&
-            this.rowData.version.substring(0, 2) === '11') ||
+          includes(
+            [
+              DataMap.Resource_Type.MySQL.value,
+              DataMap.Resource_Type.oraclePDB.value,
+              DataMap.Resource_Type.AntDBInstance.value,
+              DataMap.Resource_Type.AntDBClusterInstance.value
+            ],
+            this.resType
+          ) ||
+          (includes(
+            [
+              DataMap.Resource_Type.oracle.value,
+              DataMap.Resource_Type.oracleCluster.value
+            ],
+            this.resType
+          ) &&
+            ((this.rowData.version &&
+              this.rowData.version.substring(0, 2) === '11') ||
+              data.generated_by ===
+                DataMap.CopyData_generatedType.liveMount.value)) ||
           this.hideOracleWinodwsOpt(data),
         permission: OperateItems.InstanceRecovery,
         onClick: () => {
@@ -1067,7 +1313,8 @@ export class TodayComponent implements OnInit {
           DataMap.copydata_validStatus.normal.value !== data.status ||
           (data.generated_by === DataMap.CopyData_generatedType.liveMount.value
             ? data.generation > DataMap.CopyData_Generation.two.value
-            : data.generation >= DataMap.CopyData_Generation.two.value),
+            : data.generation >= DataMap.CopyData_Generation.two.value) ||
+          isIncompleteOracleCopy(data, properties, data?.resource_sub_type),
         hidden:
           (data.features ? features[3] !== '1' : false) ||
           data.generated_by ===
@@ -1127,10 +1374,8 @@ export class TodayComponent implements OnInit {
         disabled: data.status !== DataMap.copydata_validStatus.normal.value,
         label: this.i18n.get('common_modify_retention_policy_label'),
         hidden:
-          (this.resType === DataMap.Resource_Type.HBaseBackupSet.value &&
-            data.backup_type === DataMap.CopyData_Backup_Type.log.value) ||
           data.generated_by ===
-            DataMap.CopyData_generatedType.tapeArchival.value,
+          DataMap.CopyData_generatedType.tapeArchival.value,
         permission: OperateItems.ModifyingCopyRetentionPolicy,
         onClick: () => {
           this.modifyRetention(data);
@@ -1179,7 +1424,9 @@ export class TodayComponent implements OnInit {
           this.timeZone
         )
       );
-    return (selectTimeStamp + timeOffset) / 1000;
+    return (
+      this.appUtilsService.toSystemTimeLong(selectTimeStamp + timeOffset) / 1000
+    );
   }
 
   restore(data?) {
@@ -1202,13 +1449,17 @@ export class TodayComponent implements OnInit {
             this.resourceResourceType.KingBaseClusterInstance.value,
             this.resourceResourceType.ExchangeSingle.value,
             this.resourceResourceType.ExchangeGroup.value,
-            this.resourceResourceType.ExchangeDataBase.value
+            this.resourceResourceType.ExchangeDataBase.value,
+            this.resourceResourceType.AntDBInstance.value,
+            this.resourceResourceType.AntDBClusterInstance.value
           ].includes(this.resType)
         ? this.getPostgreData(data)
         : [
             this.resourceResourceType.OceanBaseCluster.value,
             this.resourceResourceType.tdsqlInstance.value,
-            this.resourceResourceType.OpenGauss_instance.value
+            this.resourceResourceType.OpenGauss_instance.value,
+            this.resourceResourceType.tdsqlDistributedInstance.value,
+            this.resourceResourceType.oraclePDB.value
           ].includes(this.resType)
         ? this.getCopyDataTimeStamp(data)
         : this.resType !== this.resourceResourceType.oracle.value
@@ -1217,7 +1468,8 @@ export class TodayComponent implements OnInit {
       isMessageBox: !includes(
         [
           DataMap.Resource_Type.oracle.value,
-          DataMap.Resource_Type.oracleCluster.value
+          DataMap.Resource_Type.oracleCluster.value,
+          DataMap.Resource_Type.oraclePDB.value
         ],
         this.rowData.sub_type
       ),
@@ -1238,7 +1490,6 @@ export class TodayComponent implements OnInit {
   }
 
   getOracleCopyData(data?) {
-    // shit山，这里改动要小心
     const oracleData = {
       ...data,
       restoreTimeStamp: data ? '' : this.getTodayTime().toString(),
@@ -1263,6 +1514,13 @@ export class TodayComponent implements OnInit {
         'storage_snapshot_flag',
         false
       ),
+      generated_by: get(data || this.logData, 'generated_by'),
+      is_replicated: get(data || this.logData, 'is_replicated', false),
+      resource_status: get(
+        data || this.logData,
+        'resource_status',
+        DataMap.Resource_Status.exist.value
+      ),
       properties: JSON.stringify({
         oracle_metadata: {
           ORACLEPARAM: {
@@ -1284,7 +1542,8 @@ export class TodayComponent implements OnInit {
     };
     if (!data) {
       const date = this.datePipe.transform(this.currentDate, 'yyyy/MM/dd');
-      const startTime = new Date(`${date} 00:00:00`).getTime() / 1000;
+      const startTime =
+        this.appUtilsService.toSystemTimeLong(`${date} 00:00:00`) / 1000;
       const timeRange = find(this.HbaseTimeRanges, item => {
         return (
           item.endTime >= this.sliderVal + startTime &&
@@ -1345,7 +1604,8 @@ export class TodayComponent implements OnInit {
     };
     if (!data) {
       const date = this.datePipe.transform(this.currentDate, 'yyyy/MM/dd');
-      const startTime = new Date(`${date} 00:00:00`).getTime() / 1000;
+      const startTime =
+        this.appUtilsService.toSystemTimeLong(`${date} 00:00:00`) / 1000;
       const timeRange = find(this.HbaseTimeRanges, item => {
         return (
           item.endTime >= this.sliderVal + startTime &&
@@ -1378,7 +1638,8 @@ export class TodayComponent implements OnInit {
     };
     if (!data && this.resType !== this.resourceResourceType.oracle.value) {
       const date = this.datePipe.transform(this.currentDate, 'yyyy/MM/dd');
-      const startTime = new Date(`${date} 00:00:00`).getTime() / 1000;
+      const startTime =
+        this.appUtilsService.toSystemTimeLong(`${date} 00:00:00`) / 1000;
       const timeRange = find(this.HbaseTimeRanges, item => {
         return (
           item.endTime >= this.sliderVal + startTime &&
@@ -1419,7 +1680,34 @@ export class TodayComponent implements OnInit {
         )
       );
     }
-
+    if (
+      includes(
+        [
+          DataMap.Resource_Type.dbTwoDatabase.value,
+          DataMap.Resource_Type.DB2.value
+        ],
+        this.rowData.sub_type
+      )
+    ) {
+      set(
+        hbaseCopyData,
+        'generated_by',
+        get(
+          !!data ? data : this.logData,
+          'generated_by',
+          hbaseCopyData.generated_by
+        )
+      );
+      set(
+        hbaseCopyData,
+        'resource_status',
+        get(
+          !!data ? data : this.logData,
+          'resource_status',
+          hbaseCopyData.resource_status
+        )
+      );
+    }
     return hbaseCopyData;
   }
 
@@ -1447,7 +1735,8 @@ export class TodayComponent implements OnInit {
     };
     if (!data) {
       const date = this.datePipe.transform(this.currentDate, 'yyyy/MM/dd');
-      const startTime = new Date(`${date} 00:00:00`).getTime() / 1000;
+      const startTime =
+        this.appUtilsService.toSystemTimeLong(`${date} 00:00:00`) / 1000;
       const timeRange = find(this.HbaseTimeRanges, item => {
         return (
           item.endTime >= this.sliderVal + startTime &&
@@ -1507,13 +1796,15 @@ export class TodayComponent implements OnInit {
       includes(
         [
           DataMap.Resource_Type.oracle.value,
-          DataMap.Resource_Type.oracleCluster.value
+          DataMap.Resource_Type.oracleCluster.value,
+          DataMap.Resource_Type.oraclePDB.value
         ],
         this.rowData.subType
       )
     ) {
       const date = this.datePipe.transform(this.currentDate, 'yyyy/MM/dd');
-      const startTime = new Date(`${date} 00:00:00`).getTime() / 1000;
+      const startTime =
+        this.appUtilsService.toSystemTimeLong(`${date} 00:00:00`) / 1000;
       const timeRange = find(this.HbaseTimeRanges, item => {
         return (
           item.endTime >= this.sliderVal + startTime &&
@@ -1582,17 +1873,16 @@ export class TodayComponent implements OnInit {
 
   deleteCopy(data) {
     this.warningMessageService.create({
+      rowData: data,
+      actionId: OperateItems.DeletingCopy,
       content: this.i18n.get('common_copy_delete_label', [
-        this.datePipe.transform(
-          data.display_timestamp,
-          'yyyy-MM-dd HH:mm:ss',
-          this.timeZone
-        )
+        this.datePipe.transform(data.display_timestamp, 'yyyy-MM-dd HH:mm:ss')
       ]),
-      onOK: () => {
+      onOK: modal => {
         this.copiesApiService
           .deleteCopyV1CopiesCopyIdDelete({
-            copyId: data.uuid
+            copyId: data.uuid,
+            isForced: get(modal, 'contentInstance.forciblyDeleteCopy', null)
           })
           .subscribe(res => {
             if (
@@ -1626,8 +1916,7 @@ export class TodayComponent implements OnInit {
             resType: this.resType,
             name: this.datePipe.transform(
               data.display_timestamp,
-              'yyyy-MM-dd HH:mm:ss',
-              this.timeZone
+              'yyyy-MM-dd HH:mm:ss'
             ),
             rowData: this.rowData
           })
@@ -1640,5 +1929,13 @@ export class TodayComponent implements OnInit {
         ]
       })
     );
+  }
+
+  getCommonRestoreLabel(subType) {
+    if (subType === this.resourceResourceType.oraclePDB.value) {
+      return this.i18n.get('common_pdb_set_restore_label');
+    } else {
+      return this.i18n.get('common_restore_label');
+    }
   }
 }

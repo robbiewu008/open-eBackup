@@ -11,7 +11,7 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="tips" *ngIf="specialResource && action === protectResourceAction.Modify && specialTips">
+<div class="tips" *ngIf="specialResource && action === protectResourceAction.Modify">
     <i style="display: inline-block; margin-right: 4px;" lv-icon="lv-icon-status-info" lvColorState='true'
         class="type-icon"></i>
     <span style="display: inline-block; width: 96%;">
@@ -19,25 +19,33 @@
     </span>
 </div>
 <aui-backup-policy [formGroup]="formGroup" [data]="backupData" [applicationType]="applicationData"
-    [activeIndex]="activeIndex" [isSpecialSense]="specialResource" [action]="action">
+    [isWormData]="isWormData" [activeIndex]="activeIndex" [isSpecialSense]="specialResource" [action]="action"
+    [isBasicDisk]="isBasicDisk">
 </aui-backup-policy>
-<ng-contianer
+<ng-container
     *ngIf="!_includes([applicationType.GBase, applicationType.Vmware, applicationType.Common, applicationType.LocalFileSystem, applicationType.LocalLun], applicationData)">
     <div class="dashed-line aui-gutter-column-lg"></div>
-    <aui-advanced-parameters [appType]="applicationData" [formGroup]="formGroup" [data]="backupData" [action]="action" [isUsed]="isUsed">
+    <aui-advanced-parameters [appType]="applicationData" [formGroup]="formGroup" [data]="backupData" [action]="action"
+        [isUsed]="isUsed" [hasArchival]="hasArchival" [hasReplication]="hasReplication" [application]="applicationData"
+        (isDisableBasicDiskWorm)="storageTypeWormChange($event)">
     </aui-advanced-parameters>
-</ng-contianer>
+</ng-container>
 <ng-container [ngSwitch]="applicationData"
     *ngIf="_includes([applicationType.GBase, applicationType.Vmware, applicationType.Common,applicationType.LocalFileSystem, applicationType.LocalLun], applicationData)">
     <ng-container *ngSwitchCase="applicationType.Common">
-        <aui-general-advanced-parameter [formGroup]="formGroup" [data]="backupData" [action]="action" [isUsed]="isUsed">
+        <div class="dashed-line aui-gutter-column-lg"></div>
+        <aui-general-advanced-parameter [formGroup]="formGroup" [data]="backupData" [action]="action" [isUsed]="isUsed"
+            [hasArchival]="hasArchival" [hasReplication]="hasReplication" (isDisableBasicDiskWorm)="storageTypeWormChange($event)">
         </aui-general-advanced-parameter>
     </ng-container>
     <ng-container *ngSwitchCase="applicationType.Vmware">
-        <aui-vmware-advanced-parameter [formGroup]="formGroup" [data]="backupData" [action]="action" [isUsed]="isUsed">
+        <div class="dashed-line aui-gutter-column-lg"></div>
+        <aui-vmware-advanced-parameter [formGroup]="formGroup" [data]="backupData" [action]="action" [isUsed]="isUsed"
+            [hasArchival]="hasArchival" [hasReplication]="hasReplication" (isDisableBasicDiskWorm)="storageTypeWormChange($event)">
         </aui-vmware-advanced-parameter>
     </ng-container>
     <ng-container *ngSwitchCase="applicationType.LocalFileSystem">
+        <div class="dashed-line aui-gutter-column-lg"></div>
         <aui-local-file-system-advanced-parameter [formGroup]="formGroup" [data]="backupData" [action]="action">
         </aui-local-file-system-advanced-parameter>
     </ng-container>

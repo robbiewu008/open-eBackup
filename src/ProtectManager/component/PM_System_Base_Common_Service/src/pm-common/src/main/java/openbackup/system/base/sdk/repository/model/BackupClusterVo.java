@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.sdk.repository.model;
 
-import openbackup.system.base.common.utils.VerifyUtil;
-
 import lombok.Data;
+import openbackup.system.base.common.utils.VerifyUtil;
 
 import java.math.BigDecimal;
 import java.util.Objects;

@@ -76,6 +76,9 @@ public:
     static mp_void RemoveProtect(ActionResult& returnValue,
         const ApplicationEnvironment& appEnv, const Application& application);
 
+    static mp_void FinalizeClear(ActionResult& returnValue, const ApplicationEnvironment& appEnv,
+        const Application& application, const std::map<std::string, std::string>& extendInfo);
+
 private:
     static mp_void GetException(const Json::Value &retValue);
 };

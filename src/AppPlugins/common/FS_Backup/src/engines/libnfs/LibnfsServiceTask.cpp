@@ -218,34 +218,26 @@ int LibnfsServiceTask::DeleteDirectory(const std::string &filePath)
         ret = nftw(fullPath.c_str(), UnlinkCb, NUMBER_EIGHT, FTW_DEPTH | FTW_PHYS);
         if (ret != NUMBER_ZERO) {
             if (errno != ENOENT) {
-                ERRLOG("Deletion Failed for: %s ret: %d, errno: %d", fullPath.c_str(), ret, errno);
+                WARNLOG("Deletion Failed for: %s ret: %d, errno: %d", fullPath.c_str(), ret, errno);
             }
         } else {
             DBGLOG("Deleted Dir/File: %s ret= %d", filePath.c_str(), ret);
         }
-        string rmDirFile = "rm -rf '" + fullPath + "'";
-        (void)runShellCmdWithOutput(INFO, MODULE_NAME, 0, rmDirFile, { }, output, errOutput);
-
-        /* Check if the directory still exists. If exists retry delete */
-        struct stat sb;
-        ret = lstat(fullPath.c_str(), &sb);
+        INFOLOG("Start to remove dir(%s).", fullPath.c_str());
+        ret = FSBackupUtils::RemoveDir(fullPath) ? MP_SUCCESS : MP_FAILED;
         if (ret == MP_SUCCESS) {
-            deletedFlag = false;
-            /* This indicates the directory still exists. So retry delete after 10 seconds */
-            ERRLOG("Directory still exists : %s", fullPath.c_str());
-        } else if (errno == ENOENT) {
-            DBGLOG("Directory is deleted : %s", fullPath.c_str());
+            INFOLOG("Remove dir(%s) success.", fullPath.c_str());
             deletedFlag = true;
         } else {
             deletedFlag = false;
+            ERRLOG("Remove directory(%s) failed!", fullPath.c_str());
             std::this_thread::sleep_for(chrono::milliseconds(DEFAULT_MAX_RETRY_TIMEOUT));
             m_pktStats->Increment(PKT_TYPE::LINKDELETE, PKT_COUNTER::FAILED, 1, PKT_ERROR::RETRIABLE_ERR);
         }
     } while ((!deletedFlag) && retryCnt < DEFAULT_MAX_REQUEST_RETRY);
-    if (ret != MP_SUCCESS) {
+    if (ret == MP_SUCCESS) {
         DBGLOG("Remove succeeded for: %s", fullPath.c_str());
         m_controlInfo->m_noOfDirDeleted++;
-        m_pktStats->Increment(PKT_TYPE::LINKDELETE, PKT_COUNTER::FAILED);
     } else {
         ERRLOG("Remove failed for: %s after retries: %d", fullPath.c_str(), retryCnt);
         FSBackupUtils::RecordFailureDetail(m_failureRecorder, fullPath, errno);

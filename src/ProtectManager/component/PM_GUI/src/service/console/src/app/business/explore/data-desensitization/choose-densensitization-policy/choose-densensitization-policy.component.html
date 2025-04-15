@@ -44,10 +44,9 @@
             <lv-group [lvColumns]='["auto", "auto"]' lvRowGutter="10px" lvColumnGutter="15px">
                 <ng-container *ngFor="let data of policyData">
                     <lv-radio [lvViewType]="'custom'" [lvValue]="data.id">
-                        <div [ngClass]="{'policy-select': group.isChecked(data.id)}">
-                            <aui-desensitization-policy-card [showOptItems]="false" [cardItem]="data">
-                            </aui-desensitization-policy-card>
-                        </div>
+                        <aui-desensitization-policy-card [showOptItems]="false" [cardItem]="data"
+                            [isChecked]="group.isChecked(data.id)">
+                        </aui-desensitization-policy-card>
                     </lv-radio>
                 </ng-container>
             </lv-group>

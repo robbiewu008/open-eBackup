@@ -64,13 +64,18 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class TidbClusterRestoreInterceptor extends AbstractDbRestoreInterceptorProvider {
+    /**
+     * resourceService字段的描述信息
+     * 例如：资源服务实例，用于处理资源相关的操作
+     */
+
+    public final ResourceService resourceService;
+
     final TidbService tidbService;
 
     final TidbAgentProvider tidbAgentProvider;
 
     private final CopyRestApi copyRestApi;
-
-    private final ResourceService resourceService;
 
     private final DefaultProtectAgentSelector defaultSelector;
 
@@ -191,7 +196,7 @@ public class TidbClusterRestoreInterceptor extends AbstractDbRestoreInterceptorP
         } else {
             task.setRestoreMode(RestoreModeEnum.LOCAL_RESTORE.getMode());
         }
-        log.info("build TDSQL copy restore mode. copy id: {}, mode: {}", task.getCopyId(), task.getRestoreMode());
+        log.info("build tidb copy restore mode. copy id: {}, mode: {}", task.getCopyId(), task.getRestoreMode());
     }
 
     /**
@@ -200,7 +205,7 @@ public class TidbClusterRestoreInterceptor extends AbstractDbRestoreInterceptorP
      * @param task 恢复任务
      */
     private void buildRestoreRepositories(RestoreTask task) {
-        log.info("TDSQL start to build restore repositories.");
+        log.info("tidb start to build restore repositories.");
         Map<String, String> advanceParams = Optional.ofNullable(task.getAdvanceParams()).orElse(new HashMap<>());
         String restoreTimestamp = advanceParams.get(TidbConstants.RESTORE_TIME_STAMP_KEY);
         Copy copy = copyRestApi.queryCopyByID(task.getCopyId());

@@ -20,7 +20,7 @@
             <lv-radio-group formControlName="restoreLocation">
                 <lv-group [lvGutter]="'24px'">
                     <lv-radio [lvValue]="restoreLocationType.ORIGIN"
-                        [lvDisabled]="rowCopy?.resource_status === 'NOT_EXIST'">
+                        [lvDisabled]="isDisableOrigin">
                         {{ 'common_restore_to_origin_location_label' | i18n }}
                     </lv-radio>
                     <lv-radio [lvValue]="restoreLocationType.NEW">
@@ -46,8 +46,8 @@
                 {{'explore_ali_target_org_label' | i18n}}
             </lv-form-label>
             <lv-form-control>
-                <lv-select [lvOptions]="orgOptions" lvValueKey="value" formControlName="targetOrg" lvShowFilter lvFilterKey="label"
-                    lvFilterMode="contains"></lv-select>
+                <lv-select [lvOptions]="orgOptions" lvValueKey="value" formControlName="targetOrg" lvShowFilter
+                    lvFilterKey="label" lvFilterMode="contains"></lv-select>
             </lv-form-control>
         </lv-form-item>
         <lv-form-item>
@@ -55,8 +55,8 @@
                 {{'explore_ali_target_zone_label' | i18n}}
             </lv-form-label>
             <lv-form-control>
-                <lv-select [lvOptions]="zoneOptions" lvValueKey="value" formControlName="targetZone" lvShowFilter lvFilterKey="label"
-                    lvFilterMode="contains"></lv-select>
+                <lv-select [lvOptions]="zoneOptions" lvValueKey="value" formControlName="targetZone" lvShowFilter
+                    lvFilterKey="label" lvFilterMode="contains"></lv-select>
             </lv-form-control>
         </lv-form-item>
         <lv-form-item>
@@ -64,19 +64,28 @@
                 {{'common_cloud_server_label' | i18n}}
             </lv-form-label>
             <lv-form-control>
-                <lv-select [lvOptions]="serverOptions" lvValueKey="value" formControlName="server" lvShowFilter lvFilterKey="label"
-                    lvFilterMode="contains"></lv-select>
+                <lv-select [lvOptions]="serverOptions" lvValueKey="value" formControlName="server" lvShowFilter
+                    lvFilterKey="label" lvFilterMode="contains"></lv-select>
             </lv-form-control>
         </lv-form-item>
         <lv-form-item>
             <lv-form-label>
-               {{'explore_ali_target_resourceset_label' | i18n}}
+                {{'explore_ali_target_resourceset_label' | i18n}}
             </lv-form-label>
             <lv-form-control>
                 <input lv-input type="text" formControlName="targetResourceSet">
             </lv-form-control>
         </lv-form-item>
     </ng-container>
+    <lv-form-item *ngIf="needPassword">
+        <lv-form-label lvRequired>
+            {{ 'common_password_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="passwordErrorTip">
+            <aui-inupt-with-eye formControlName='password' autocomplete="new-password"
+                class="control-container"></aui-inupt-with-eye>
+        </lv-form-control>
+    </lv-form-item>
 </lv-form>
 
 <div class="aui-gutter-column-xl"></div>
@@ -86,7 +95,7 @@
         <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
             <lv-form-item>
                 <lv-form-label>
-                    {{'protection_proxy_host_label' | i18n}}
+                    {{'protection_clients_label' | i18n}}
                     <i lv-icon="aui-icon-help" [lv-tooltip]="'protection_hcs_proxy_server_tip_label' | i18n"
                         lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
                 </lv-form-label>

@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.sdk.job.model.request;
 
+import lombok.Data;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.job.model.JobLogBo;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
-
-import lombok.Data;
 
 import java.util.List;
 

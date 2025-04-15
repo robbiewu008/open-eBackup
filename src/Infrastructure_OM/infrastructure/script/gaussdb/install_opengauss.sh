@@ -170,6 +170,35 @@ fi
 chmod 700 data
 check_result "$?" "${LINENO} chmod 700 data"
 
+CLUSTER_ROLE=""
+if [[ ${DEPLOY_TYPE} == "d0" || ${DEPLOY_TYPE} == "d1" || ${DEPLOY_TYPE} == "d2" || ${DEPLOY_TYPE} == "d6" ]]; then
+    config_maps=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/cluster-conf)
+    is_exist=$(echo "${config_maps}" | python3 -c "import sys, json;print(json.load(sys.stdin).get('data',{}).get('CLUSTER_ROLE'))")
+    CLUSTER_ROLE=${is_exist}
+    if [ "${is_exist}" == "None" ];then
+        log_info "Start to add cluster conf"
+        PAYLOAD="{\"data\":{\"CLUSTER_ROLE\":\"\",\"CLUSTER_ESN\":\"\",\"CLUSTER_SERVICE_IPS\":\"\",\"CLUSTER_ADDING_FLAG\":\"\"}}"
+        for i in {1..3}
+        do
+            curl --cacert ${rootCAFile} \
+              -X PATCH \
+              -H "Content-Type: application/strategic-merge-patch+json" \
+              -H "Authorization: Bearer ${tokenFile}" \
+              --data "${PAYLOAD}" \
+              https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/cluster-conf
+            log_info "${LINENO} Start to check cluster conf"
+            config_maps=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/cluster-conf)
+            is_exist=$(echo "${config_maps} " | python3 -c "import sys, json;print(json.load(sys.stdin).get('data',{}).get('CLUSTER_ROLE'))")
+            if [ "${is_exist}" != "None" ];then
+                log_info "${LINENO} Succeed to add cluster conf"
+                break
+            fi
+            log_error "${LINENO} Failed to add cluster conf"
+            sleep 5
+        done
+    fi
+fi
+
 config_maps=$(curl --cacert ${rootCAFile} -X GET -H "Authorization: Bearer $tokenFile" https://${KUBERNETES_SERVICE_HOST}/api/v1/namespaces/dpa/configmaps/common-conf)
 is_exist=$(echo "${config_maps} " | python3 -c "import sys, json;print(json.load(sys.stdin)['data'].get('loglevel'))")
 if [ "${is_exist}" == "None" ];then

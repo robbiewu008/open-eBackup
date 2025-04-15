@@ -12,9 +12,42 @@
   -->
 
 <lv-form [formGroup]="hostFormGroup" class="formGroup">
-    <lv-form-item>
+    <ng-container *ngIf="includes([dataMap.OS_Type.Linux.value],formGroup.value.osType)">
+        <lv-form-item>
+            <lv-form-label>{{'protection_network_type_label' | i18n}}</lv-form-label>
+            <lv-form-control>
+                <lv-select [lvOptions]="networkOptions" formControlName="networkType" lvValueKey="value"></lv-select>
+            </lv-form-control>
+        </lv-form-item>
+        <ng-container *ngIf="hostFormGroup.value.networkType === dataMap.networkPlaneType.management.value">
+            <lv-form-item>
+                <lv-form-label lvRequired>
+                    {{'protection_manage_ip_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_manage_ip_tip_label' | i18n}}"
+                    class="configform-constraint" lvTooltipPosition="rightTop" lvTooltipTheme="light"
+                    lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="ipsErrorTip">
+                    <input type="text" formControlName="manageIp" lv-input />
+                </lv-form-control>
+            </lv-form-item>
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_business_ip_label' | i18n}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_business_ip_tip_label' | i18n}}"
+                    class="configform-constraint" lvTooltipPosition="rightTop" lvTooltipTheme="light"
+                    lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="ipsErrorTip">
+                    <input type="text" formControlName="businessIp" lv-input />
+                </lv-form-control>
+            </lv-form-item>
+        </ng-container>
+    </ng-container>
+    
+    <lv-form-item *ngIf="hostFormGroup.value.networkType === dataMap.networkPlaneType.backup.value">
         <lv-form-label lvRequired>
-            {{'common_ip_address_segment_label' | i18n}}
+            {{'protection_business_ips_label' | i18n}}
         </lv-form-label>
         <lv-form-control [lvErrorTip]="ipsErrorTip">
             <input type="text" formControlName="ip" lv-input />
@@ -103,6 +136,30 @@
             <aui-inupt-with-eye formControlName="password"></aui-inupt-with-eye>
         </lv-form-control>
     </lv-form-item>
+    <ng-container *ngIf="isWindows">
+        <lv-form-item>
+            <lv-form-label>
+                {{'common_host_join_domain_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-radio-group formControlName="joinDomain">
+                    <lv-group lvGutter="48px">
+                        <ng-container *ngFor="let item of passwordTypeOptions;">
+                            <lv-radio [lvValue]="item.value">{{ item.label|i18n }}</lv-radio>
+                        </ng-container>
+                    </lv-group>
+                </lv-radio-group>
+            </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="hostFormGroup.get('joinDomain').value">
+            <lv-form-label lvRequired>
+                {{'common_rdadmin_password_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="passwordErrorTip">
+                <aui-inupt-with-eye formControlName="rdadminPassword"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
     <lv-form-item
         *ngIf="includes([dataMap.OS_Type.Linux.value, dataMap.OS_Type.Unix.value], formGroup.value.osType) && hostFormGroup.value.userType === dataMap.userType.common.value && !hostFormGroup.value.passwordType">
         <lv-form-label lvRequired>

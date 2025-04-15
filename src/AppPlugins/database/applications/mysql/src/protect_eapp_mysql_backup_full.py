@@ -97,7 +97,7 @@ class EAppMysqlBackupFull(MysqlBackupFull):
 
     def report_copy(self, copy_path):
         self._backup_time = self.get_backup_log_time(os.path.join(copy_path, self.get_host_sn()))
-        ret = self.write_copy_info(self._backup_time)
+        ret = self.write_copy_info(self._backup_time, copy_path)
         if not ret:
             log.error(f"Write_copy_info_failed. pid:{self._p_id} jobId:{self._job_id}")
             return False

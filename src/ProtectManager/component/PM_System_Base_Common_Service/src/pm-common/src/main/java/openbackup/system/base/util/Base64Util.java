@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -78,5 +77,16 @@ public class Base64Util {
     public static String decryptBase64ToString(String context) {
         String fileContext = Optional.ofNullable(context).orElse(StringUtils.EMPTY);
         return IOUtils.toString(Base64.getDecoder().decode(fileContext));
+    }
+
+    /**
+     * 将Base64编码的文本解码为原文本。
+     *
+     * @param context 已编码文本
+     * @return 解码后的原文本
+     */
+    public static byte[] decryptBase64ToBytes(String context) {
+        String fileContext = Optional.ofNullable(context).orElse(StringUtils.EMPTY);
+        return Base64.getDecoder().decode(fileContext);
     }
 }

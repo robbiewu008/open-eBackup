@@ -67,14 +67,23 @@
                 {{ 'protection_openstack_disk_type_diff_label' | i18n }}
             </span>
         </lv-group>
-        <div class="aui-gutter-column-xl target-table">
+        <div class="aui-gutter-column-md target-table">
             <lv-pro-table [data]="targetTableData" [config]="targetTableConfig"></lv-pro-table>
         </div>
+        <lv-form-item *ngIf="needPassword" class="aui-gutter-column-md">
+            <lv-form-label lvRequired>
+                {{ 'common_password_label' | i18n }}
+            </lv-form-label>
+            <lv-form-control [lvErrorTip]="passwordErrorTip">
+                <aui-inupt-with-eye formControlName='password' autocomplete="new-password"
+                    class="control-container"></aui-inupt-with-eye>
+            </lv-form-control>
+        </lv-form-item>
         <lv-collapse [lvMultiExpansion]="false" lvType="simple">
             <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
                 <lv-form-item>
                     <lv-form-label>
-                        {{'protection_proxy_host_label' | i18n}}
+                        {{'protection_clients_label' | i18n}}
                     </lv-form-label>
                     <lv-form-control>
                         <lv-select [lvOptions]="proxyOptions" formControlName="proxyHost" lvValueKey='value'
@@ -125,8 +134,8 @@
         <lv-select class="disk-select"
             [lvDisabled]='!formGroup.value.targetServer?.length && formGroup.value.restoreTo === restoreLocationType.NEW'
             [lvOptions]="item.targetDiskOptions" [(ngModel)]="item.targetDisk" lvShowFilter lvFilterKey="label"
-            lvFilterMode="contains" (ngModelChange)='diskChange($event, item)' lvValueKey='uuid'
-            lvShowClear [lvContentTemplate]="diskTpl">
+            lvFilterMode="contains" (ngModelChange)='diskChange($event, item)' lvValueKey='uuid' lvShowClear
+            [lvContentTemplate]="diskTpl">
         </lv-select>
     </ng-template>
 </ng-template>

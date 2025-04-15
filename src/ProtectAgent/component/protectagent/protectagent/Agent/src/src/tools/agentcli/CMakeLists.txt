@@ -16,6 +16,7 @@ if(LLT)
         TestHost.cpp
         UnixTimeStamp.cpp
         MergeConfFiles.cpp
+        UpgradeJsonConf.cpp
     )
 
     target_link_libraries(agentcliobj

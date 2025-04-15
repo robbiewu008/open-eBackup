@@ -1,18 +1,19 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
+  Input,
   OnInit,
   TemplateRef,
   ViewChild
@@ -22,7 +23,9 @@ import {
   DataMap,
   DataMapService,
   extendSlaInfo,
+  hasProtectPermission,
   I18NService,
+  OperateItems,
   ProtectedResourceApiService
 } from 'app/shared';
 import {
@@ -40,11 +43,14 @@ import {
   each,
   isNumber,
   split,
+  map as _map,
   find,
   filter,
-  isEmpty
+  isEmpty,
+  filter as _filter
 } from 'lodash';
 import { map } from 'rxjs/operators';
+import { ProtectService } from '../../../../../shared/services/protect.service';
 
 @Component({
   selector: 'aui-sql-server-summary',
@@ -68,6 +74,7 @@ export class SummaryComponent implements OnInit {
   constructor(
     private appUtilsService: AppUtilsService,
     private i18n: I18NService,
+    private protectService: ProtectService,
     private slaService: SlaService,
     private dataMapService: DataMapService,
     private protectedResourceApiService: ProtectedResourceApiService,
@@ -280,6 +287,45 @@ export class SummaryComponent implements OnInit {
         cellRender: {
           type: 'status',
           config: this.dataMapService.toArray('Protection_Status')
+        }
+      },
+      {
+        key: 'operation',
+        width: 130,
+        name: this.i18n.get('common_operation_label'),
+        cellRender: {
+          type: 'operation',
+          config: {
+            maxDisplayItems: 1,
+            items: [
+              {
+                id: 'removeProtection',
+                permission: OperateItems.RemoveProtection,
+                disableCheck: data => {
+                  return (
+                    size(
+                      _filter(data, val => {
+                        return (
+                          (!isEmpty(val.sla_id) ||
+                            val.protection_status ===
+                              DataMap.Protection_Status.protected.value) &&
+                          hasProtectPermission(val)
+                        );
+                      })
+                    ) !== size(data) || !size(data)
+                  );
+                },
+                onClick: data => {
+                  this.protectService
+                    .removeProtection(_map(data, 'uuid'), _map(data, 'name'))
+                    .subscribe(() => {
+                      return this.getDatabase();
+                    });
+                },
+                label: this.i18n.get('protection_remove_protection_label')
+              }
+            ]
+          }
         }
       }
     ];

@@ -1,0 +1,130 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="恢复文件集中的单个或多个文件">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="Files-0065.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="Files-0067">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>恢复文件集中的单个或多个文件</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="Files-0067"></a><a name="Files-0067"></a>
+
+<h1 class="topictitle1">恢复文件集中的单个或多个文件</h1>
+<div><p>如果您希望快速恢复副本中的一个或多个文件，可以通过执行文件级恢复实现。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><p>恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="Files-0067__zh-cn_topic_0000002199964685_uicontrol1888202316279">“<span id="Files-0067__zh-cn_topic_0000002199964685_text16882112392716">数据利用</span> &gt; <span id="Files-0067__zh-cn_topic_0000002199964685_text13882182372717">副本数据</span> &gt; 文件系统 &gt; 文件集”</span>。</span><p><div class="note" id="Files-0067__zh-cn_topic_0000002199964685_note192321935714"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="Files-0067__zh-cn_topic_0000002199964685_p62332915575">对于1.5.0版本，选择<span class="uicontrol" id="Files-0067__zh-cn_topic_0000002199964685_uicontrol35211628145713">“<span id="Files-0067__zh-cn_topic_0000002199964685_text15521328105712">数据利用</span> &gt; <span id="Files-0067__zh-cn_topic_0000002199964685_text9521152813577">副本数据</span> &gt; <span id="Files-0067__zh-cn_topic_0000002199964685_text18417734832">裸机</span> &gt; 文件集”</span>。</p>
+</div></div>
+</p></li><li><span>您可以以文件集资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p><p>在<span class="uicontrol">“资源”</span>页签，根据资源名称查找到需要恢复的资源，并单击资源名称。</p>
+</p></li><li><span>在<span class="uicontrol">“副本数据”</span>区域，依次选择年、月、天找到副本。</span><p><p>当时间上显示<span><img src="zh-cn_image_0000002200006733.png"></span>，即表示该月、该天存在副本。</p>
+</p></li><li><span>在文件集副本所在行单击“更多 &gt; 文件级恢复”。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>链接文件不支持文件级恢复。</p>
+</div></div>
+</p></li><li><span>在文件集副本数据中选择单个或多个文件或目录。</span><p><ul><li>对于1.5.0版本，从目录树勾选待恢复的文件。</li><li>对于1.6.0及后续版本，请先设置恢复文件的选择方式，再从目录树选择待恢复文件或手动输入待恢复文件的路径。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>手动输入文件路径时，请输入文件完整路径，例如：/opt/abc/efg.txt或者C:\abc\efg.txt。当输入文件夹路径时，表示恢复该文件夹下的所有文件，例如：/opt/abc或者C:\abc。路径中的文件名区分大小写。</li></ul>
+</div></div>
+</li></ul>
+</p></li><li><span>配置恢复文件参数。</span><p><p>相关参数说明如<a href="#Files-0067__table93951625101715">表1</a>所示。</p>
+
+<div class="tablenoborder"><a name="Files-0067__table93951625101715"></a><a name="table93951625101715"></a><table cellpadding="4" cellspacing="0" summary="" id="Files-0067__table93951625101715" frame="border" border="1" rules="all"><caption><b>表1 </b>恢复文件参数说明</caption><colgroup><col style="width:23.09%"><col style="width:76.91%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="23.09%" id="mcps1.3.3.2.6.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="76.91%" id="mcps1.3.3.2.6.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>恢复至</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>文件集的恢复位置。</p>
+<ul><li>原位置：恢复至原机原位置。</li><li>新位置：恢复至新位置，需要指定恢复的目标主机及路径。<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="Files-0067__files-0066_p17892164110119">Windows操作系统对文件执行新位置恢复后，如果恢复目标位置未显示恢复后的文件，请在Windows操作系统中打开文件夹，选择“查看”页签，单击“选项”打开“文件夹选项”对话框，选择“查看”页签，取消勾选“隐藏受保护的操作系统文件（推荐）”后便可显示。</p>
+</div></div>
+</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>位置</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>仅在“原位置”恢复时展示该参数，显示文件所在位置。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>目标主机</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>仅在“新位置”恢复时展示该参数，选择恢复的目标主机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>目标路径</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>仅在“新位置”恢复时展示该参数，选择恢复的目标路径。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>覆盖规则</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。</p>
+<ul><li>直接替换已经存在的文件。</li><li>忽略已存在的文件，即跳过这些同名文件不替换。</li><li>只替换比恢复文件更旧的文件，即保存目标位置上较新的同名文件不替换。<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>硬链接文件副本恢复时，如果恢复路径存在同名文件，覆盖规则仅支持“直接替换已存在的文件”。</p>
+</div></div>
+</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>通道数</p>
+</td>
+<td class="cellrowborder" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>通道数越大，备份性能越好，相应占用生产主机内存越多，每个通道占用约200MB内存。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>输入值必须在1~40之间，请根据生产主机内存的使用情况进行配置。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="23.09%" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>恢复前执行脚本</p>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" width="76.91%" headers="mcps1.3.3.2.6.2.2.2.3.1.2 "><p>您可以根据实际需求，配置“恢复前执行脚本”、“恢复成功执行脚本”和“恢复失败执行脚本”，当恢复任务事件中出现“开始执行前置任务”提示后，配置的脚本会在对应场景下执行。</p>
+<ul><li><span>如果是非Windows操作系统，请输入脚本名称，脚本名称以</span><strong>.sh</strong><span>结尾。确保脚本已存放在客户端安装目录下的</span><span class="filepath">“DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty”</span><span>目录下。</span></li><li><span>如果是Windows操作系统，请输入脚本名称，脚本名称以</span><strong>.bat</strong><span>结尾。确保脚本已存放在客户端安装目录下的</span><span class="filepath">“DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty”</span><span>目录下。</span><div class="note" id="Files-0067__zh-cn_topic_0000001792548340_note64007332505"><span class="notetitle"> 说明： </span><div class="notebody"><p id="Files-0067__zh-cn_topic_0000001792548340_zh-cn_topic_0000001792402656_zh-cn_topic_0000001264099602_p196461512103113">当配置了<span class="uicontrol" id="Files-0067__zh-cn_topic_0000001792548340_zh-cn_topic_0000001792402656_zh-cn_topic_0000001264099602_uicontrol180112781919">“<span id="Files-0067__zh-cn_topic_0000001792548340_zh-cn_topic_0000001792402656_zh-cn_topic_0000001264099602_text10711756153116">恢复成功执行脚本</span>”</span>时，即使该脚本执行失败，<span id="Files-0067__text10105204810495">OceanProtect</span>上也会显示恢复任务的状态为<span class="uicontrol" id="Files-0067__zh-cn_topic_0000001792548340_zh-cn_topic_0000001792402656_zh-cn_topic_0000001264099602_uicontrol488919204209">“<span id="Files-0067__zh-cn_topic_0000001792548340_zh-cn_topic_0000001792402656_zh-cn_topic_0000001264099602_text186291135132417">成功</span>”</span>。请您留意任务详情中是否有后置脚本执行失败的相关提示，如有请及时修正脚本。</p>
+</div></div>
+</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>恢复成功执行脚本</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.6.2.2.2.3.1.1 "><p>恢复失败执行脚本</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>对于1.6.0及后续版本，若选择“新位置”，您还需选择是否“保留原始路径”。</span><p><div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li><span style="color:#1A1A1A;">勾选时，文件按副本中的原始路径恢复到目标位置。 </span></li><li><span style="color:#1A1A1A;">不勾选时： </span><ul><li><span style="color:#1A1A1A;">若待恢复文件都在同一层级的同一目录，文件会不带目录直接恢复到目标位置。</span></li><li><span style="color:#1A1A1A;">若待恢复文件不在同一目录，系统会先查找所有文件的最下层公共目录，并将公共目录下与待恢复文件相关的各个目录恢复到目标位置。</span><p><span style="color:#1A1A1A;">例如：</span><span style="color:#1A1A1A;">待恢复文件原始路径为：folder1/dir1/dir2/test1.txt、folder1/dir1/dir3/test2.txt，最小层公共目录为：dir1，目标路径为folder2。</span><span style="color:#1A1A1A;">恢复后路径为：folder2/dir2/test1.txt、folder2/dir3/test2.txt</span>。</p>
+</li></ul>
+</li></ul>
+</div></div>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="Files-0065.html">执行恢复</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

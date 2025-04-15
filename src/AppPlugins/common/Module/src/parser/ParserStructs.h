@@ -16,6 +16,7 @@
 #include <vector>
 #include <string>
 #include <cstring>
+#include <openssl/sha.h>
 #include "securec.h"
 
 namespace Module {
@@ -114,6 +115,7 @@ enum class CTRL_FILE_RETCODE {
     SUCCESS = 0,
     LIMIT_REACHED = 1,
     READ_EOF = 2,
+    INVALID_CONTENT = 3
 };
 
 enum class MetaType {
@@ -245,8 +247,14 @@ enum class XMETA_TYPE {
     /* 对象存储中的对象key */
     XMETA_TYPE_KEY = 9,
 
+    XMETA_TYPE_ADS_STREAM_NAME = 10,
+
+    XMETA_TYPE_ADS_METAFILE_INDEX = 11,
+
+    XMETA_TYPE_ADS_METAFILE_OFFSET = 12,
+
+    XMETA_TYPE_MAX_LENGTH = 13
     /* upper bound of XMETA_TYPE enum */
-    XMETA_TYPE_MAX_LENGTH = 10,
 };
 
 class XMetaField {
@@ -258,16 +266,23 @@ public:
 class FileMetaWrapper {
 public:
     FileMeta m_meta;
-	std::vector<XMetaField> m_xMeta;
-
+    std::vector<XMetaField> m_xMeta;
+    Hash m_filePathHash {0};
     FileMetaWrapper() {};
     ~FileMetaWrapper() {};
+};
+
+struct CompareFileMetaWrapper {
+    bool operator() (const FileMetaWrapper& fm1, const FileMetaWrapper& fm2) const
+    {
+        return (memcmp(fm1.m_filePathHash.sha1, fm2.m_filePathHash.sha1, SHA_DIGEST_LENGTH) > 0);
+    }
 };
 
 class DirMetaWrapper {
 public:
     DirMeta m_meta;
-	std::vector<XMetaField> m_xMeta;
+    std::vector<XMetaField> m_xMeta;
 
     DirMetaWrapper() {};
     ~DirMetaWrapper() {};
@@ -379,8 +394,8 @@ public:
     uint16_t m_fileId = 0;      /* metadata file id */
     uint16_t m_fcacheFileId = 0; /* fcache file id */
     uint16_t m_metaLength = 0;  /* Total meta length stored in meta file */
-    Hash m_dirPathHash {0};     /* Hash of full-path of the dir*/
-    Hash m_dirMetaHash {0};     /* Hash of meta-data of the dir*/
+    Hash m_dirPathHash {0};     /* Hash of full-path of the dir */
+    Hash m_dirMetaHash {0};     /* Hash of meta-data of the dir */
 
     DirCache() {};
     explicit DirCache(const DirCache *dc)
@@ -477,8 +492,8 @@ public:
     uint16_t m_fileId = 0;     /* metadata file id */
     uint16_t m_metaLength = 0;  /* Total meta length stored in meta file */
     uint16_t m_compareFlag = FCACHE_FILE_NOT_MODIFIED; /* Compare flag which is used at incremental scan */
-    Hash m_filePathHash {0};    /* Hash of full-path of the file*/
-    Hash m_fileMetaHash {0};    /* Hash of meta-data of the file*/
+    Hash m_filePathHash {0};    /* Hash of full-path of the file */
+    Hash m_fileMetaHash {0};    /* Hash of meta-data of the file */
 
     FileCache() {};
     explicit FileCache(const FileCache *fcache)
@@ -513,6 +528,25 @@ public:
         m_fileId = fcache->m_fileId;
     }
     ~FileCache() {};
+};
+
+class FileCacheRecord {
+public:
+    FileCache fcache;             // fcache记录
+    uint32_t fileIndex = 0;       // FileCache所在的文件句柄的索引
+};
+
+struct AdsStruct {
+    bool isLastStruct;              // 是否是最后一个块
+    uint32_t currentBlock;          // 当前是第几个块
+    uint32_t nextIndex;             // 下一个流在哪个ads文件中
+    uint32_t currentStreamLength;   // 当前streamData 的length
+    uint32_t numOfStreams;          // ads流的个数， 总数
+    uint32_t currentStreamIndex;    // 当前是第几个流 index / total
+    uint64_t currentStreamOffset;   // 当前streamData 的offset
+    uint64_t nextOffset;            // 下一个流的offset
+    unsigned char sha1[SHA_DIGEST_LENGTH + 1]; // 校验位
+    uint8_t* streamData = nullptr;  // 流的内容
 };
 
 struct HardlinkCtrlEntry {

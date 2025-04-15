@@ -12,11 +12,10 @@
 */
 package openbackup.system.base.query;
 
-import openbackup.system.base.common.utils.JSONObject;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
+import openbackup.system.base.common.utils.JSONObject;
 
 import java.util.List;
 import java.util.function.Consumer;

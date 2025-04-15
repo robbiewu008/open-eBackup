@@ -2,10 +2,13 @@
    Get running environment
   */}}
   {{- $environment:= "" }}
+  {{- $cluster_enable:= "" }}
   {{- if .Values.global }}
   {{- $environment = .Values.global.environment }}
+  {{- $cluster_enable = .Values.global.cluster_enable | toString }}
   {{- else }}
   {{- $environment = .Values.local.environment }}
+  {{- $cluster_enable:= "false" }}
   {{- end }}
   {{- $storageip:= "" }}
   {{- if eq $environment "Dorado" }}
@@ -52,7 +55,12 @@ metadata:
   name: protectmanager-system-base
   namespace: dpa
 spec:
-  replicas: {{$realreplicas}}
+  replicas:
+  {{- if eq $cluster_enable "true" }}
+    3
+  {{- else }}
+    1
+  {{- end }}
   podManagementPolicy: "Parallel"
   serviceName: protectmanager-system-base
   selector:
@@ -66,7 +74,43 @@ spec:
         co.elastic.logs/processors.decode_json_fields.fields.1: message
         co.elastic.logs/processors.decode_json_fields.target: ""
         co.elastic.logs/processors.decode_json_fields.overwrite_keys: "true"
+        {{- if eq $cluster_enable "true" }}
+        tag: cluster
+        {{- end }}
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - MASTER
+                      - STANDBY
+                      - SLAVE
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 3
+              preference:
+                matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - MASTER
+            - weight: 2
+              preference:
+                matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - STANDBY
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - SLAVE
       serviceAccountName: pm-base-sa
       {{- if eq $environment "Dorado" }}
       hostNetwork: true
@@ -87,7 +131,7 @@ spec:
       initContainers:
         - name: pm-database-version-migration
           image: pm-database-version-migration:{{ .Values.global.version }}
-          command: [ "/bin/sh", "-c", "if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME} && chmod 750 /opt/OceanProtect/logs/${NODE_NAME} && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx;fi && chown 65500:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI;fi && chown 15012:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service;fi && chown 15013:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service && su nobody -s /bin/bash -c 'cd /context/src/ && python3 -m app' && chown 99:99 /opt/ProtectManager && chmod 770 /opt/ProtectManager && chown 99:99 /opt/OceanProtect/logs/*/protectmanager && if [ -d '/opt/ProtectManagerNas' ];then chown 99:99 /opt/ProtectManagerNas;fi && if [ -d '/opt/ProtectManagerAgentLog' ];then chown 99:99 /opt/ProtectManagerAgentLog;fi && if [ -d '/opt/ProtectManager/report' ];then chown 99:99 /opt/ProtectManager/report;fi && if [ -d '/opt/third_data' ];then chown 99:99 /opt/third_data && chmod 750 /opt/third_data;fi" ]
+          command: [ "/bin/sh", "-c", "if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME} && chmod 750 /opt/OceanProtect/logs/${NODE_NAME} && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx;fi && chown 65500:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Nginx && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI;fi && chown 15012:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_GUI && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Database_Version_Migration' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Database_Version_Migration;fi && chown 99:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Database_Version_Migration && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Database_Version_Migration && if [ ! -d '/opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service' ];then mkdir -p /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service;fi && chown 15013:99 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service && chmod 750 /opt/OceanProtect/logs/${NODE_NAME}/protectmanager/PM_Data_Protection_Service && su nobody -s /bin/bash -c 'cd /context/src/ && python3 -m app' && chown 99:99 /opt/ProtectManager && chmod 770 /opt/ProtectManager && chown 99:99 /opt/OceanProtect/logs/*/protectmanager && if [ -d '/opt/ProtectManagerNas' ];then chown 99:99 /opt/ProtectManagerNas;fi && if [ -d '/opt/ProtectManagerAgentLog' ];then chown 99:99 /opt/ProtectManagerAgentLog;fi && if [ -d '/opt/ProtectManager/report' ];then chown 99:99 /opt/ProtectManager/report;fi && if [ -d '/opt/third_data' ];then chown 99:99 /opt/third_data && chmod 750 /opt/third_data;fi" ]
           env:
             - name: NODE_NAME
               valueFrom:
@@ -127,12 +171,16 @@ spec:
             - mountPath: /kmc_conf
               name: kmc-conf
               readOnly: true
+            - mountPath: /opt/multicluster_conf
+              name: multicluster-volume
+              readOnly: true
       containers:
         - name: pm-nginx
           command: [ "/bin/sh", "-c", "sh script/start.sh && chmod 550 /usr/local/nginx/nginx && chmod 440 /usr/local/nginx/conf/nginx.conf && rm -rf /tmp/nginx"]
           image: pm-nginx:{{ .Values.global.version }}
           ports:
             - containerPort: 30093
+            - containerPort: 30094
           env:
             - name: NODE_NAME
               valueFrom:
@@ -174,6 +222,8 @@ spec:
               name: nas-path
             - mountPath: /opt/ProtectManager/
               name: pm-path
+            - mountPath: /etc/localtime
+              name: date-config-localtime
             - mountPath: /tmp
               name: pm-nginx-tmp
             - mountPath: /kmc_conf
@@ -182,11 +232,11 @@ spec:
           {{- if eq $environment "Dorado" }}
           resources:
             requests:
-              memory: "100Mi"
-              cpu: "0.1"
+              memory: "200Mi"
+              cpu: "0.5"
             limits:
-              memory: "100Mi"
-              cpu: "0.3"
+              memory: "200Mi"
+              cpu: "0.5"
           {{- end }}
         - name: pm-system-base
           image: pm-system-base:{{ .Values.global.version }}
@@ -206,7 +256,7 @@ spec:
                 - check_health.sh
             initialDelaySeconds: 300
             periodSeconds: 25
-            timeoutSeconds: 10
+            timeoutSeconds: 35
           securityContext:
             {{- if eq $environment "Dorado" }}
             seccompProfile:
@@ -250,17 +300,25 @@ spec:
               readOnly: true
             - mountPath: /opt/ProtectManager/report/
               name: report-path
+            - mountPath: /opt/multicluster_conf
+              name: multicluster-volume
+              readOnly: true
+            - mountPath: /opt/network_config
+              name: network-volume
+              readOnly: true
+            - mountPath: /opt/pm_variable_parameter_config
+              name: pm-variable-parameter-volume
           envFrom:
               - configMapRef:
                   name: protect-manager-conf
           {{- if eq $environment "Dorado" }}
           resources:
             requests:
-              memory: "3.5Gi"
-              cpu: "0.4"
+              memory: "4.5Gi"
+              cpu: "2.0"
             limits:
               memory: "4.5Gi"
-              cpu: "1"
+              cpu: "2.0"
           {{- end }}
           env:
             - name: NODE_NAME
@@ -321,6 +379,8 @@ spec:
               value: "8094"
             - name: DEPLOY_TYPE
               value: d8
+            - name: VERSION
+              value: {{ .Values.global.version }}
             {{- if .Values.global.region_id }}
             - name: REGION_ID
               value: {{ .Values.global.region_id }}
@@ -328,6 +388,10 @@ spec:
             {{- if .Values.global.domain_name }}
             - name: GLOBAL_DOMAIN_NAME
               value: {{ .Values.global.domain_name }}
+            {{- end }}
+            {{- if .Values.global.external_domain_name }}
+            - name: EXTERNAL_GLOBAL_DOMAIN_NAME
+              value: {{ .Values.global.external_domain_name }}
             {{- end }}
       volumes:
         - name: pm-nginx-tmp
@@ -372,4 +436,13 @@ spec:
           configMap:
             name: protect-manager-conf
             defaultMode: 0640
+        - name: network-volume
+          configMap:
+            name: network-conf
+        - name: pm-variable-parameter-volume
+          configMap:
+            name: pm-variable-parameter-conf
+        - name: multicluster-volume
+          configMap:
+            name: multicluster-conf
 {{- end }}

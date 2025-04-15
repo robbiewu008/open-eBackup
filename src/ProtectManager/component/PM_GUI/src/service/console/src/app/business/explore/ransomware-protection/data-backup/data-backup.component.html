@@ -12,7 +12,7 @@
   -->
 
 <div class="aui-fullpage">
-    <div class="overview-tag">
+    <div class="overview-tag aui-gutter-column-md">
         <lv-group lvGutter="24px" class="title-group">
             <img src="assets/img/anti_detection_brand.svg" class="logo">
             <lv-group lvGutter="8px" lvDirection='vertical'>
@@ -40,8 +40,8 @@
             </lv-group>
         </lv-group>
     </div>
-    <div class="aui-block aui-paginator-container">
-        <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab">
+    <div class="aui-block aui-paginator-container custom-main-tab">
+        <lv-tabs [(lvActiveIndex)]="activeIndex" class="aui-tab" lvType="card">
             <lv-tab [lvTitle]="'common_file_systems_label' | i18n" [lvId]="'fileSystem'">
                 <ng-template lv-tab-lazy>
                     <aui-ransomware-file-system (refreshFileSystem)="refreshFileSystem()"></aui-ransomware-file-system>
@@ -52,6 +52,18 @@
                     <aui-ransomware-backup-policy (refreshPolicy)="refreshPolicy()"></aui-ransomware-backup-policy>
                 </ng-template>
             </lv-tab>
+            <lv-tab [lvTitle]="titleTpl" [lvId]="'whiteList'">
+                <ng-template lv-tab-lazy>
+                    <aui-data-backup-white-list></aui-data-backup-white-list>
+                </ng-template>
+            </lv-tab>
         </lv-tabs>
     </div>
 </div>
+
+<ng-template #titleTpl>
+    <lv-group lvGutter="2">
+        <span>{{'explore_whitelist_label' | i18n}}</span>
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_whitelist_help_label' | i18n}}" lvColorState='true'></i>
+    </lv-group>
+</ng-template>

@@ -1,0 +1,74 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 2: Enabling the Automatic zkmeta Backup Function (Applicable to Distributed Instances)">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164818898.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164818970">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 2: Enabling the Automatic zkmeta Backup Function (Applicable to Distributed Instances)</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164818970"></a><a name="EN-US_TOPIC_0000002164818970"></a>
+
+<h1 class="topictitle1">Step 2: Enabling the Automatic zkmeta Backup Function (Applicable to Distributed Instances)</h1>
+<div><p>Before performing a backup job for TDSQL distributed instances, you need to enable the automatic backup function of zkmeta. Otherwise, cross-cluster database restoration will fail.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p id="EN-US_TOPIC_0000002164818970__en-us_topic_0000002200059925_p9667843103811"><span id="EN-US_TOPIC_0000002164818970__en-us_topic_0000002200059925_ph1292522251311">Unless otherwise specified, the operations in this section use TDSQL 10.3.22.1 as an example. The operations may vary depending on the actual version.</span></p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Log in to each schedule node as user <strong>root</strong>.</span></li><li><span>Run the following command to modify configuration file <span class="filepath"><b>confscheduler.xml</b></span>:</span><p><pre class="screen">cd /data/application/scheduler/conf/</pre>
+<pre class="screen">vi scheduler.xml</pre>
+<p>Add the following information to the <strong>&lt;manager&gt;&lt;/manager&gt;</strong> tag in the configuration file:</p>
+<pre class="screen">&lt;back_zkmeta value="on"/&gt;</pre>
+</p></li><li><span>Log in to each ZooKeeper node as user <strong>root</strong>.</span><p><pre class="screen">cd /data/application/zookeeper/bin/</pre>
+<pre class="screen">./zkCli.sh -server 127.0.0.1:<em>Port number</em></pre>
+<p>Example:</p>
+<pre class="screen">cd /data/application/zookeeper/bin/
+./zkCli.sh -server 127.0.0.1:2118</pre>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Replace the <em>Port number</em> in the command with the actual ZooKeeper port number queried by choosing <strong>Dispatching and management system</strong> &gt; <strong>Zookeeper monitoring</strong> on the TDSQL CHITU management console.</p>
+</div></div>
+</p></li><li><span>Perform the following operations on all ZooKeeper nodes to modify the JSON configuration:</span><p><ol type="a"><li id="EN-US_TOPIC_0000002164818970__li8335103775513"><a name="EN-US_TOPIC_0000002164818970__li8335103775513"></a><a name="li8335103775513"></a>Run the following command to query the JSON configuration item content:<pre class="screen">get /tdsqlzk/configs/agent@global</pre>
+<p>The following is an example of the query result:</p>
+<pre class="screen">{"generate_es_conf":"0","oc_dir":"/data/oc_agent","ocagent_port":"8966"}</pre>
+</li><li>Run the following command to add the <strong>"local_backup":"1"</strong> configuration item to the JSON configuration.<div class="p">Even if the <strong>"local_backup":"1"</strong> configuration item already exists in the JSON configuration queried in <a href="#EN-US_TOPIC_0000002164818970__li8335103775513">4.a</a>, you still need to run the following command to ensure that the configuration takes effect:<pre class="screen">set /tdsqlzk/configs/agent@global<strong> </strong><em>{"generate_es_conf":"0","oc_dir":"/data/oc_agent","ocagent_port":"8966","local_backup":"1"}</em></pre>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Replace <em>{"generate_es_conf":"0","oc_dir":"/data/oc_agent","ocagent_port":"8966","local_backup":"1"}</em> in the preceding command with the actual one.</p>
+</div></div>
+</div>
+</li></ol>
+</p></li><li><span>Log in to all nodes where the cluster is located as user <strong>root</strong> and run the following command to restart the production host.</span><p><pre class="screen">reboot</pre>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164818898.html">Backing Up a TDSQL Database</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

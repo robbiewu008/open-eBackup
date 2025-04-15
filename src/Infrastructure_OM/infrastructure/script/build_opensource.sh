@@ -14,17 +14,19 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 # See the MPL v2 for more details.
 ########################################
-set -x
-CURRENT_PATH=$(cd `dirname $0`/; pwd)
+
+CURRENT_PATH=$(
+  cd $(dirname $0)/
+  pwd
+)
 source $CURRENT_PATH/open_comm_param.sh
 
 # base_image
 cd "${CURRENT_PATH}"
-
-sh open_build_base_image.sh debug $2
-if [ $? -ne 0 ];then
-    echo "build base images failed"
-    exit 1
+sh open_build_base_image.sh
+if [ $? -ne 0 ]; then
+  echo "build base images failed"
+  exit 1
 fi
 
 echo "build base images success"
@@ -32,9 +34,9 @@ echo "build base images success"
 # om
 cd "${CURRENT_PATH}"/../../om
 sh build_opensource.sh
-if [ $? -ne 0 ];then
-    echo "build om images failed"
-    exit 1
+if [ $? -ne 0 ]; then
+  echo "build om images failed"
+  exit 1
 fi
 
 echo "build om images success"
@@ -42,9 +44,10 @@ echo "build om images success"
 # infra(sftp、zookeeper)
 cd "${CURRENT_PATH}"
 sh open_build_images.sh
+
 if [ $? -ne 0 ]; then
-    echo "build infrastructure images failed"
-    exit 1
+  echo "build infrastructure images failed"
+  exit 1
 fi
 
 echo "build infrastructure images success"

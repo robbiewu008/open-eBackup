@@ -1,0 +1,199 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 7: Creating a Backup SLA">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200004613.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002199970261">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 7: Creating a Backup SLA</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002199970261"></a><a name="EN-US_TOPIC_0000002199970261"></a>
+
+<h1 class="topictitle1">Step 7: Creating a Backup SLA</h1>
+<div><p>You can customize Service Level Agreements (SLAs) based on your requirements to protect resources. </p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002199964685_uicontrol8111821122820"><b>Protection &gt; Protection Policies &gt; SLAs</b></span>.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span>.</span></li><li><span>Enter an SLA name.</span></li><li><span>Select an application type for the SLA to be created.</span><p><ol type="a"><li>Click the <span class="uicontrol"><b><span><strong>Applications</strong></span></b></span> icon to create a general SLA or an SLA for a specified application.<ul><li>On the <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b1159831019515">General SLA</strong> tab page, click <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b7748151518514">All Resources</strong>.<p id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_p144377559348">A general SLA can be applied to resources except filesets, SQL Server, PostgreSQL, Kingbase, Redis, ClickHouse, MongoDB, NAS shares, NAS file systems, Huawei Cloud Stack GaussDB, TDSQL, Kubernetes CSI, TiDB, volumes, common shares, Active Directory, GaussDB T single-node systems, object storage, GaussDB (1.6.0 and later versions), GaussDB (DWS), SAP HANA (as an application in 1.6.0 and later versions), SAP on Oracle, AntDB, VMware, and Hyper-V.</p>
+</li><li>On the <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b7010451519">Specific to application</strong> tab page, select an application type.<p id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_p1889316245358">This section describes how to create an SLA for a specified application.</p>
+</li></ul>
+</li><li>Click <span class="uicontrol"><b>OK</b></span>.</li></ol>
+</p></li><li><span>Configure a backup policy.</span><p><ol type="a"><li>Click the <span class="uicontrol"><b><span><strong>Backup Policy</strong></span></b></span> icon.</li><li>Set basic parameters of the backup policy.<p><a href="#EN-US_TOPIC_0000002199970261__en-us_topic_0000001337708186_table2663151516335">Table 1</a> describes related parameters.</p>
+<div class="p">Set the backup interval, copy retention period, and backup time window based on service requirements. The recommended settings are as follows:<ul><li>The backup interval must be longer than the backup duration.</li><li>The retention period of log backup copies must be longer than the backup interval.</li></ul>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>At least one backup policy must be created. To add another backup policy, click <span><img src="en-us_image_0000002199970293.png"></span> on the right of the page.</li><li>Only one backup policy can be added for log backup. A maximum of four backup policies can be added for other backup types.</li></ul>
+</div></div>
+</div>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002199970261__en-us_topic_0000001337708186_table2663151516335"></a><a name="en-us_topic_0000001337708186_table2663151516335"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002199970261__en-us_topic_0000001337708186_table2663151516335" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Basic parameters of a backup policy</caption><colgroup><col style="width:11.87%"><col style="width:15.28%"><col style="width:72.85000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.5.2.1.2.3.2.4.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.5.2.1.2.3.2.4.1.2"><p><strong>Description</strong></p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" rowspan="2" valign="top" width="11.87%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span><strong>Full Backup</strong></span></p>
+<p></p>
+<p></p>
+</td>
+<td class="cellrowborder" valign="top" width="15.28%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.2 "><p>Set the name of a backup policy.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p>-</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><div class="p">Configure the execution time, backup interval, copy retention period, and backup time window for full backup.<ul><li>Configure the backup interval and copy retention period for full backup.<ul><li><span><strong>By Year</strong></span><p>Configure the job to be executed once every year on <em>xx</em> (month) <em>xx</em> (day). Set copies to be retained for <em>xx</em> days, <em>xx</em> weeks, <em>xx</em> months, <em>xx</em> years, or permanently.</p>
+<p>If the date does not exist in the year, no copy is generated.</p>
+</li><li><span><strong>By Month</strong></span><p>Configure the job to be executed on <em>xx</em> (day) (or select multiple days) or the last day of each month. Set copies to be retained for <em>xx</em> days, <em>xx</em> weeks, <em>xx</em> months, <em>xx</em> years, or permanently.</p>
+<p>If the backup is to be performed on the <em>xx</em>th day of each month, no copy is generated when the date does not exist in the current month.</p>
+</li><li><span><strong>By Week</strong></span><p>Configure the job to be executed once every Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, or Sunday (or select multiple options), and copies to be retained for <em>xx</em> days, <em>xx</em> weeks, <em>xx</em> months, <em>xx</em> years, or permanently.</p>
+</li><li><strong>By Day</strong><p>Configure the job to be executed every <em>xx</em> days starting from <em>xx</em> (year) <em>xx</em> (month) <em>xx</em> (day). Set copies to be retained for <em>xx</em> days, <em>xx</em> weeks, <em>xx</em> months, <em>xx</em> years, or permanently.</p>
+</li><li><strong>By Hour</strong><p>Configure the job to be executed every <em>xx</em> hours starting from <em>xx</em> (year) <em>xx</em> (month) <em>xx</em> (day). Set copies to be retained for <em>xx</em> days, <em>xx</em> weeks, <em>xx</em> months, <em>xx</em> years, or permanently.</p>
+</li></ul>
+</li><li>Set the time period for performing full backup. The full backup job will not be scheduled beyond the time range.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>If the end time is earlier than or the same as the start time, the end time is actually the end time on the next day.</li><li>If the backup job is not completed within the specified time window, the system does not stop the backup job, but reports an event.</li><li>Once the retention period expires, the system automatically deletes the expired copies.</li></ul>
+</div></div>
+</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" rowspan="2" valign="top" width="11.87%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span><strong>Log Backup</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="15.28%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.2 "><p>Set the name of a backup policy.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p>-</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.2.1.2.3.2.4.1.1 "><p>Configure the first log backup time, backup frequency, and copy retention period.</p>
+<ul><li><strong>By Day</strong><p>Configure the job to be executed every <em>xx</em> days starting from <em>xx</em> (year) <em>xx</em> (month) <em>xx</em> (day). Set copies to be retained for <em>xx</em> days, <em>xx</em> weeks, <em>xx</em> months, <em>xx</em> years, or permanently.</p>
+</li><li><strong>By Hour</strong><p>Configure the job to be executed every <em>xx</em> hours starting from <em>xx</em> (year) <em>xx</em> (month) <em>xx</em> (day). Set copies to be retained for <em>xx</em> days, <em>xx</em> weeks, <em>xx</em> months, <em>xx</em> years, or permanently.</p>
+</li><li><strong>By Minute</strong><p>Configure the job to be executed every <em>xx</em> minutes starting from <em>xx</em> (year) <em>xx</em> (month) <em>xx</em> (day). Set copies to be retained for <em>xx</em> days, <em>xx</em> weeks, <em>xx</em> months, <em>xx</em> years, or permanently.</p>
+</li></ul>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><ul><li>Before backing up logs, ensure that a full backup copy exists.</li><li>Log backup policies cannot be configured separately.</li></ul>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ol><ol type="a" start="3"><li>To generate a WORM copy for 1.6.0 and later versions, enable WORM and set a WORM validity period. Otherwise, skip this step.<div class="p" id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_p19339194114493">For <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b15358729184918">WORM Validity Period</strong>, you can select <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b469832194914">Same as the copy retention period</strong> or <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b4820353104917">Custom validity period</strong>.<div class="note" id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_note8945151620502"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_ul1878144981310"><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li5523165014136">Only the OceanProtect X series backup appliances and OceanProtect E1000 support WORM.</li></ul>
+<ul id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_ul2550728175518"><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li103014415565">WORM copies cannot be deleted or their validity periods cannot be shortened.</li><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li9171132315916">The custom WORM validity period cannot be longer than the copy retention period.</li><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li976612319580">A WORM copy cannot be changed to a non-WORM copy within its validity period.</li><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li8684112013014">If you select <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b1834713017282">Same as the copy retention period</strong> for <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b0211164119281">WORM Validity Period</strong> and choose to retain copies permanently, the actual WORM validity period is 20 years for the copies in snapshot format and 70 years for the copies in directory format. This is because copies in snapshot format can be retained for up to 20 years and those in directory format can be retained for up to 70 years on the backup storage.</li></ul>
+</div></div>
+</div>
+</li><li>Set other parameters of the backup policy.<div class="p"><a href="#EN-US_TOPIC_0000002199970261__en-us_topic_0000001337708186_table1970194542811">Table 2</a> describes related parameters.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002199970261__en-us_topic_0000001337708186_table1970194542811"></a><a name="en-us_topic_0000001337708186_table1970194542811"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002199970261__en-us_topic_0000001337708186_table1970194542811" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Other parameters of a backup policy</caption><colgroup><col style="width:30.06%"><col style="width:69.94%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="30.06%" id="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="69.94%" id="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><div class="p"><strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b203081655125718">Specify Target Location</strong><div class="note" id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_note81807159571"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_p5180415155714">Only the OceanProtect X series backup appliances and OceanProtect E1000 support this parameter.</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><div class="p">Specify the target storage location of backup copies.<ul id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_ul3832679403"><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li299019528162"><span class="parmvalue" id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_parmvalue20580546155113"><b>Backup Storage Units</b></span>: A backup storage unit corresponds to a backup cluster node. After a backup storage unit is selected, copies are stored to the storage unit. If the capacity of the storage unit is insufficient, the backup job will fail.<p id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_p36749546164">For details about how to create a backup storage unit, see "Creating a Backup Storage Unit" in the <i><cite id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_cite114441740141613">OceanProtect DataBackup 1.5.0-1.6.0 Cluster HA Feature Guide</cite></i>.</p>
+</li><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li168151656101610"><span class="parmvalue" id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_parmvalue142224995111"><b>Backup Storage Unit Groups</b></span>: A backup storage unit group is a collection of backup storage units. After a backup storage unit group is selected, the system automatically selects a target backup storage unit based on the storage policy of the storage unit group.<p id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_p15126135815168">For details about how to create a backup storage unit group, see "(Optional) Creating Backup Storage Unit Groups" in the <i><cite id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_cite961778916">OceanProtect DataBackup 1.5.0-1.6.0 Cluster HA Feature Guide</cite></i>.</p>
+</li></ul>
+<div class="note" id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_note06533915171"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_ul2261104811172"><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li182618487176">For 1.5.0, this parameter is displayed only when you have deployed the cluster HA feature. You can leave the target location unspecified. If you do not specify the target location, the system automatically selects the target storage unit through intelligent balancing.</li><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li1025484315189">For 1.6.0 and later versions, you must specify the target location.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p><strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b25086515492">Rate Limiting Policy</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>Average maximum amount of data that can be transmitted per second in a backup job. </p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p><span><strong>Source Deduplication</strong></span></p>
+<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_p164111271351">Only the OceanProtect X series backup appliances and OceanProtect E1000 (with the OceanProtect used as backup storage) support this parameter.</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><div class="p">After this function is enabled, the amount of data to be transmitted can be reduced, but more client resources will be occupied.<div class="note" id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_note8885112682911"><span class="notetitle"> NOTE: </span><div class="notebody"><ul id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_ul5885426132914"><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li10885172616299">A client can only be linked with one storage unit. To enable source deduplication, select <span class="parmvalue" id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_parmvalue13417617181719"><b>Backup Storage Unit</b></span> for <span class="parmname" id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_parmname164341313131719"><b>Specify Target Location</b></span>. Otherwise, a storage unit that is not linked with the client may be selected through intelligent balancing. As a result, source deduplication fails to be enabled. If different protected objects are associated with different SLAs, where different backup storage units are specified, select different clients for the protected objects. Otherwise, source deduplication will fail to be enabled for some backup jobs.</li><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li9885182662911">If a client has been linked with a storage unit but is not performing a backup job with source deduplication enabled, you can run the <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b1734071915190">dataturbo delete storage_object storage_name=</strong><em id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_i18291255102216">?</em> command on the host where the client is deployed to delete the source deduplication link with the storage unit. The value of <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b9927131312572">storage_name</strong> in the command can be queried by running the <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b11782052162315">dataturbo show storage_object</strong> command. This way, when the client performs a backup job with source deduplication enabled, the link between the client and a new storage unit can be established.</li><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li11885142615297">Visit <a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect Compatibility Query</a> to check whether source deduplication is supported by the OS of the host where the client is deployed. If not supported, source deduplication will not take effect after being configured.</li><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li7883549153219">If a built-in client (that is, the client is co-deployed with the <span id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_text13835155817114">OceanProtect</span>) is used for backup, source deduplication does not take effect after being configured.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p><strong>Threads</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>Number of threads configured in the thread pool for copying files during backup job execution.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><div class="p"><strong>Standard SmartCompression</strong><div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>Only the OceanProtect E6000 Appliance supports this parameter.</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>After standard SmartCompression is enabled, service data is compressed before being written to the storage space, saving storage space and improving backup efficiency.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><div class="p"><strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b693713423122">Job Timeout Alarm</strong><div class="note" id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_note379352823112"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_en-us_topic_0000001839143213_p8320153562113">This parameter is available only in 1.6.0 and later versions.</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>After this function is enabled, an alarm is sent if the job execution time exceeds the time window. The alarm needs to be manually cleared.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p><span><strong>Job Failure Alarm</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>After this function is enabled, an alarm is automatically sent when a job fails. The alarm is automatically cleared when the next job is successful.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="30.06%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.1 "><p><span><strong>Automatic Retry</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="69.94%" headers="mcps1.3.2.2.5.2.2.2.1.2.2.3.1.2 "><p>After this function is enabled, the system automatically retries when a backup job fails.</p>
+<div class="p">The number of retries ranges from 1 to 5, and the waiting time ranges from 1 minute to 30 minutes. For example, if the number of retries is set to <strong>3</strong> and the waiting time to <strong>5</strong> minutes, the system makes a total of three retries and performs each retry every 5 minutes.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>During automatic retry, the system creates a backup job. If the backup job is not within the backup time window, the job is not executed and fails.</p>
+</div></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li><li>Click <span class="uicontrol"><b>OK</b></span>.</li></ol>
+</p></li><li><span>(Optional) Configure an archive policy.</span><p><p>The built-in storage space of the <span>OceanProtect</span> is limited. If you need to retain copy data for a long time, you are advised to archive the copy data to external storage.</p>
+<p>You can configure an archive policy by clicking the <span class="uicontrol"><b><span><strong>Archive Policy</strong></span></b></span> icon or by modifying the SLA.</p>
+<p>For details about how to configure an archive policy, see <a href="en-us_topic_0000002164603854.html">Archiving</a>.</p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_p8134208105320">For OceanProtect E1000, if the device type of the backup storage unit or backup storage unit group specified in the backup policy is <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b18149203319200">NormalServer</strong>, no archive policy can be created.</p>
+</div></div>
+</p></li><li><span>(Optional) Configure a replication policy.</span><p><p>The <span>OceanProtect</span> allows you to replicate local data to a remote data center. If a disaster occurs, copy data in the remote data center can be used to restore production data and services can be taken over.</p>
+<p>You can configure a replication policy by clicking the <span class="uicontrol"><b><span><strong>Replication Policy</strong></span></b></span> icon or by modifying the SLA.</p>
+<p>For details about how to configure a replication policy, see "Creating a Replication SLA" of the corresponding product model in <a href="en-us_topic_0000002199970233.html">Replication</a>.</p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_ul1078182475012"><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li1997785914120"><span id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_ph157229311971">For OceanProtect E1000, if the device type of the backup storage unit or backup storage unit group specified in the backup policy is <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b8791405812">NormalServer</strong>, no replication policy can be created.</span></li><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li18183194213013">For 1.6.0 and later versions:<ul id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_ul20769645302"><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li83901215999">The WORM validity period of the backup policy in the SLA must be shorter than the copy retention period in the replication policy.</li><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li878324105017">If WORM is not configured at the local end but configured at the target end, the WORM validity period is the same as the replication copy retention period.</li><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li07815248507">If WORM is configured at the local end but not at the target end, the WORM validity period of replication copies is the same as that of WORM copies at the local end. The retention period of replication copies is greater than or equal to the WORM validity period of backup copies at the local end.</li><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li1278624195020">If WORM is configured at both the local and target ends and WORM is configured by resource in the WORM configuration of <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b78231650163717">Data Security</strong> at the target end, all replication copies will have WORM enabled, and the WORM validity period is the same as the replication copy retention period.</li><li id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_li127819245503">At the local end, if you configure local backup copies to be retained permanently and set <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b20511104361110">WORM Validity Period</strong> to <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b851224341112">Same as the copy retention period</strong>, the WORM validity period is permanent. After a backup copy is generated, if you modify the SLA policy (by adding a replication policy and setting <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b115122018172413">Replication and Retention Rules</strong> to <strong id="EN-US_TOPIC_0000002199970261__en-us_topic_0000002164820434_b9172163882417">Replicate all copies</strong>), the WORM validity period at the target end is the same as the retention period of replication copies.</li></ul>
+</li></ul>
+</div></div>
+</p></li><li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200004613.html">Backing Up PostgreSQL</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

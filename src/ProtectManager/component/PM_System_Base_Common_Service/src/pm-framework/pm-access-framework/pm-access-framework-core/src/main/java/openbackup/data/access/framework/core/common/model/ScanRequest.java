@@ -12,12 +12,11 @@
 */
 package openbackup.data.access.framework.core.common.model;
 
-import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 
 /**
  * Global Search index

@@ -368,5 +368,22 @@ struct HostResource {
     SERIAL_MEMEBER(storageRate)
     END_SERIAL_MEMEBER
 };
+
+struct BaseInfo {
+    std::string m_name;
+    std::string m_vmHostName;
+    std::string m_remark;
+    std::string m_osType;
+    std::string m_osVersion;
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_name, name)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_vmHostName, vmHostName)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_remark, remark)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_osType, osType)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_osVersion, osVersion)
+    END_SERIAL_MEMEBER
+};
+
 }
 #endif

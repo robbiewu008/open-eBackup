@@ -12,6 +12,7 @@
   -->
 
 <lv-group [lvColumns]='["auto","auto","auto"]' lvRowGutter="0px" class="overview-top">
+    <!-- 勒索文件拦截 -->
     <div class="aui-block statistics-block" *ngIf="supportLicense.isFile">
         <h2>{{ 'explore_blocking_files_label' | i18n }}</h2>
         <lv-group [lvColumns]="['15%','auto','15%']" lvRowGutter="15px" lvColumnGutter="15px" (click)="getDetail()">
@@ -31,7 +32,7 @@
     <!-- 实时勒索检测 -->
     <div class="aui-block statistics-block">
         <h2>{{ 'explore_real_time_detection_label' | i18n }}</h2>
-        <lv-group [lvColumns]="['15%','auto','auto','15%']" lvRowGutter="15px" lvColumnGutter="15px"
+        <lv-group [lvColumns]="['15%','auto','auto','3%']" lvRowGutter="15px" lvColumnGutter="15px"
             (click)="getDetail()">
             <div class='top-block'>
                 <i lv-icon="aui-icon-realtime-enable-detection"></i>
@@ -61,7 +62,7 @@
             <div class='top-block'>
                 <i lv-icon="aui-icon-intelligent-enable-detection"></i>
             </div>
-            <lv-group lvGutter="8px" lvDirection='vertical'  *ngIf="supportLicense.isFile">
+            <lv-group lvGutter="8px" lvDirection='vertical' *ngIf="supportLicense.isFile">
                 <p class="anti-count">
                     {{ enableSnapshotCount > 999 ? '999+' : enableSnapshotCount }}<span
                         class="total-count-summay">/{{snapshotTotalCount}}</span>

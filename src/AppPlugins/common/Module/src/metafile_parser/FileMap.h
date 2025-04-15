@@ -97,83 +97,6 @@ struct FileMapParams {
 };
 
 class FileMap {
-private:
-    std::mutex m_lock {};                            /* Lock */
-    std::string m_fileMapName;                  /* This file map name */
-    uint32_t m_maxEntryPerFile = 0;             /* Maximum entries per control file */
-    FileMapHeader m_header {};	                /* File header info */
-
-    std::ifstream m_readFd {};    /* Read FD */
-    std::stringstream m_readBuffer {};               /* Read Buffer */
-    std::ofstream m_writeFd {};   /* Write FD */
-    std::stringstream m_writeBuffer {};              /* Write Buffer */
-
-    uint32_t m_entries = 0;                     /* Number of file/dir entries in the file */
-
-    std::unordered_map<std::string, std::unordered_set<std::string>> m_fileMap;
-
-    /**
-    * Open a File in READ Mode
-    */
-    NAS_FILEMAP_RETCODE OpenRead();
-
-    /**
-    * Open a File in WRITE Mode
-    */
-    NAS_FILEMAP_RETCODE OpenWrite();
-
-    /**
-    * Open a File in UPDATE Mode
-    */
-    NAS_FILEMAP_RETCODE OpenUpdate();
-
-    /**
-    * Template to Open a File in Read/Write Mode
-    */
-    template<class FileStream>
-    NAS_CTRL_FILE_RETCODE FileOpen(FileStream &strmFd, std::string fileName, std::ios::openmode fileMode);
-
-    /**
-     * Read the file header info from file and load to m_header
-     */
-    NAS_FILEMAP_RETCODE ReadHeader();
-    NAS_FILEMAP_RETCODE FillHeader(uint32_t &headerLine, std::vector<std::string> &headerLineSplit, std::string &mapFileHeaderLine);
-
-    /**
-     * Write the file header info to file from m_header
-     */
-    NAS_FILEMAP_RETCODE WriteHeader();
-
-    /**
-     * Get the line to write in header info of file
-     */
-    std::string GetFileHeaderLine(uint32_t headerLine);
-
-    /**
-     * Validate header information read from the file
-     */
-    NAS_FILEMAP_RETCODE ValidateHeader();
-
-    /**
-     * Translate FileMapEntry structure to file map line string
-     */
-    std::string TranslateFromFileMapEntry(FileMapEntry &fileMapEntry);
-
-    /**
-     * Translate file map entry read from file to FileMapEntry structure
-     */
-    void TranslateToFileMapEntry(std::vector<std::string> &dirEntryStringFromFile, FileMapEntry &fileMapEntry);
-
-    /**
-     * Merge external file map with self file map.
-     */
-    NAS_FILEMAP_RETCODE Merge(std::unordered_map<std::string, std::unordered_set<std::string>> &fileMap);
-
-    /**
-     * Merge a list of file maps with this object.
-     */
-    NAS_FILEMAP_RETCODE Merge(std::vector<std::string> &fileMapList);
-
 public:
 
     /**
@@ -252,6 +175,84 @@ public:
      * Load file into in-memory map
      */
     NAS_FILEMAP_RETCODE GetFileMap(std::unordered_map<std::string, std::unordered_set<std::string>> &fileMap);
+
+private:
+    std::mutex m_lock {};                            /* Lock */
+    std::string m_fileMapName;                  /* This file map name */
+    uint32_t m_maxEntryPerFile = 0;             /* Maximum entries per control file */
+    FileMapHeader m_header {};	                /* File header info */
+
+    std::ifstream m_readFd {};    /* Read FD */
+    std::stringstream m_readBuffer {};               /* Read Buffer */
+    std::ofstream m_writeFd {};   /* Write FD */
+    std::stringstream m_writeBuffer {};              /* Write Buffer */
+
+    uint32_t m_entries = 0;                     /* Number of file/dir entries in the file */
+
+    std::unordered_map<std::string, std::unordered_set<std::string>> m_fileMap;
+
+    /**
+    * Open a File in READ Mode
+    */
+    NAS_FILEMAP_RETCODE OpenRead();
+
+    /**
+    * Open a File in WRITE Mode
+    */
+    NAS_FILEMAP_RETCODE OpenWrite();
+
+    /**
+    * Open a File in UPDATE Mode
+    */
+    NAS_FILEMAP_RETCODE OpenUpdate();
+
+    /**
+    * Template to Open a File in Read/Write Mode
+    */
+    template<class FileStream>
+    NAS_CTRL_FILE_RETCODE FileOpen(FileStream &strmFd, std::string fileName, std::ios::openmode fileMode);
+
+    /**
+     * Read the file header info from file and load to m_header
+     */
+    NAS_FILEMAP_RETCODE ReadHeader();
+    NAS_FILEMAP_RETCODE FillHeader(uint32_t &headerLine,
+        std::vector<std::string> &headerLineSplit, std::string &mapFileHeaderLine);
+
+    /**
+     * Write the file header info to file from m_header
+     */
+    NAS_FILEMAP_RETCODE WriteHeader();
+
+    /**
+     * Get the line to write in header info of file
+     */
+    std::string GetFileHeaderLine(uint32_t headerLine);
+
+    /**
+     * Validate header information read from the file
+     */
+    NAS_FILEMAP_RETCODE ValidateHeader();
+
+    /**
+     * Translate FileMapEntry structure to file map line string
+     */
+    std::string TranslateFromFileMapEntry(FileMapEntry &fileMapEntry);
+
+    /**
+     * Translate file map entry read from file to FileMapEntry structure
+     */
+    void TranslateToFileMapEntry(std::vector<std::string> &dirEntryStringFromFile, FileMapEntry &fileMapEntry);
+
+    /**
+     * Merge external file map with self file map.
+     */
+    NAS_FILEMAP_RETCODE Merge(std::unordered_map<std::string, std::unordered_set<std::string>> &fileMap);
+
+    /**
+     * Merge a list of file maps with this object.
+     */
+    NAS_FILEMAP_RETCODE Merge(std::vector<std::string> &fileMapList);
 };
 
 #endif // DME_NAS_FILE_MAP_H

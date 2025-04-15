@@ -17,25 +17,32 @@ import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
 import com.huawei.oceanprotect.base.cluster.sdk.util.ClusterUriUtil;
 import com.huawei.oceanprotect.base.cluster.sdk.util.IpUtil;
-import openbackup.system.base.sdk.copy.model.StorageInfo;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.Lists;
 
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dme.AvailableTimeRanges;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeUnifiedRestApi;
+import openbackup.data.access.framework.copy.controller.req.CatalogQueryNoReq;
 import openbackup.data.access.framework.copy.controller.req.CatalogQueryReq;
+import openbackup.data.access.framework.core.common.enums.VmBrowserMountStatus;
+import openbackup.system.base.sdk.dee.model.VmBrowserMountRequest;
 import openbackup.data.access.framework.copy.mng.service.CopyService;
 import openbackup.data.access.framework.core.dao.CopiesProtectionMapper;
 import openbackup.data.access.framework.core.dao.CopyMapper;
-import openbackup.data.access.framework.core.entity.CopiesEntity;
-import openbackup.data.access.framework.core.entity.CopiesProtectionEntity;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.core.model.CopySummaryResource;
+import openbackup.data.access.framework.core.model.CopySummaryResourceCondition;
+import openbackup.data.access.framework.core.model.CopySummaryResourceQuery;
 import openbackup.data.protection.access.provider.sdk.copy.CopyCommonInterceptor;
+import openbackup.data.protection.access.provider.sdk.copy.CopyServiceSdk;
+import openbackup.system.base.bean.CopiesEntity;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.ErrorCodeConstant;
 import openbackup.system.base.common.constants.TokenBo;
@@ -53,7 +60,10 @@ import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.copy.model.Copy;
+import openbackup.system.base.sdk.copy.model.CopyExtendType;
 import openbackup.system.base.sdk.copy.model.CopyResourceSummary;
+import openbackup.system.base.sdk.copy.model.CopyStatus;
+import openbackup.system.base.sdk.copy.model.StorageInfo;
 import openbackup.system.base.sdk.dee.DeeBaseParseRest;
 import openbackup.system.base.sdk.dee.DeeInternalCopyRest;
 import openbackup.system.base.sdk.dee.model.CopyCatalogsRequest;
@@ -67,7 +77,6 @@ import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
 import openbackup.system.base.util.DefaultRoleHelper;
 import openbackup.system.base.util.IdUtil;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,13 +86,11 @@ import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -92,7 +99,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class CopyServiceImpl implements CopyService {
+public class CopyServiceImpl implements CopyService, CopyServiceSdk {
     private static final String INDEXED = "Indexed";
 
     private static final String AGGREGATION = "isAggregation";
@@ -152,7 +159,7 @@ public class CopyServiceImpl implements CopyService {
     }
 
     @Override
-    public PageListResponse<FineGrainedRestore> listCopyCatalogsName(String copyId, CatalogQueryReq catalogQueryReq) {
+    public PageListResponse<FineGrainedRestore> listCopyCatalogsByName(String copyId, CatalogQueryReq catalogQueryReq) {
         Copy copy = copyRestApi.queryCopyByID(copyId);
         if (!StringUtils.isEmpty(copy.getDeviceEsn()) && memberClusterService.isNeedForward(copy.getDeviceEsn())) {
             log.info(
@@ -185,20 +192,21 @@ public class CopyServiceImpl implements CopyService {
 
     @Override
     public PageListResponse<FineGrainedRestore> listCopyCatalogs(
-        String copyId, String parentPath, Integer pageSize, Integer pageNum, String conditions) {
+        String copyId, CatalogQueryNoReq catalogQueryReq) {
         Copy copy = copyRestApi.queryCopyByID(copyId);
         if (!StringUtils.isEmpty(copy.getDeviceEsn()) && memberClusterService.isNeedForward(copy.getDeviceEsn())) {
             log.info(
                 "copy(id:{}) is stored in remote node(esn:{}), try forward request to remote node",
                 copyId,
                 copy.getDeviceEsn());
-            return forwardToRemote(copy, parentPath, pageSize, pageNum, conditions);
+            return forwardToRemote(copy, catalogQueryReq);
         }
         CopyCatalogsRequest catalogsRequest = new CopyCatalogsRequest();
-        catalogsRequest.setParentPath(parentPath);
-        catalogsRequest.setPageSize(pageSize);
-        catalogsRequest.setPageNum(pageNum);
-        catalogsRequest.setConditions(conditions);
+        catalogsRequest.setParentPath(catalogQueryReq.getParentPath());
+        catalogsRequest.setPageSize(catalogQueryReq.getPageSize());
+        catalogsRequest.setPageNum(catalogQueryReq.getPageNo());
+        catalogsRequest.setConditions(catalogQueryReq.getConditions());
+        catalogsRequest.setSearchAfter(catalogQueryReq.getSearchAfter());
         FinegrainedRestoreCopy fileLevelRecoverCopy = getFileLevelRecoverCopy(copy);
         catalogsRequest.setCopyInfo(fileLevelRecoverCopy);
         log.info("Fine grained restore request:{}", JSONObject.fromObject(catalogsRequest));
@@ -218,15 +226,15 @@ public class CopyServiceImpl implements CopyService {
     }
 
     private PageListResponse<FineGrainedRestore> forwardToRemote(
-        Copy copy, String parentPath, Integer pageSize, Integer pageNum, String conditions) {
+        Copy copy, CatalogQueryNoReq catalogQueryReq) {
         ClusterRequestInfo clusterRequestInfo = memberClusterService.getClusterRequestInfo(copy.getDeviceEsn());
         String ip = IpUtil.getAvailableIp(clusterRequestInfo.getIp());
         URI uri = ClusterUriUtil.buildURI(ip, clusterRequestInfo.getPort());
         Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("parentPath", parentPath);
-        paramMap.put("pageSize", pageSize);
-        paramMap.put("pageNo", pageNum);
-        paramMap.put("conditions", conditions);
+        paramMap.put("parentPath", catalogQueryReq.getParentPath());
+        paramMap.put("pageSize", catalogQueryReq.getPageSize());
+        paramMap.put("pageNo", catalogQueryReq.getPageNo());
+        paramMap.put("conditions", catalogQueryReq.getConditions());
         try {
             return targetApi.listCopyCatalogs(uri, clusterRequestInfo.getToken(), copy.getUuid(), paramMap);
         } catch (FeignException | LegoCheckedException | LegoUncheckedException e) {
@@ -293,74 +301,30 @@ public class CopyServiceImpl implements CopyService {
 
     @Override
     public PageListResponse<CopySummaryResource> listCopyResourceSummary(
-        int pageNo, int pageSize, String conditions, String[] orders) {
+            int pageNo, int pageSize, String conditions, String[] orders) {
         Map<String, Object> conditionMap = JSONObject.fromObject(conditions).toMap(Object.class);
-        LambdaQueryWrapper<CopiesEntity> lambdaQueryWrapper = new LambdaQueryWrapper();
-        fillCopiesParam(conditionMap, lambdaQueryWrapper);
-        List<CopiesEntity> copiesEntityList =
-            Optional.ofNullable(copyMapper.selectList(lambdaQueryWrapper)).orElse(new ArrayList<>());
+        CopySummaryResourceCondition condition = new CopySummaryResourceCondition();
+        fillCopiesParam(conditionMap, condition);
+        fillCopiesProtectionParam(conditionMap, condition);
 
-        List<CopySummaryResource> result = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(copiesEntityList)) {
-            // 根据资源id分组
-            Map<String, List<CopiesEntity>> copiesMap =
-                copiesEntityList.stream().collect(Collectors.groupingBy(CopiesEntity::getResourceId));
-            List<String> resourceIds = copiesMap.keySet().stream().collect(Collectors.toList());
+        CopySummaryResourceQuery query = new CopySummaryResourceQuery();
+        query.setPageNo(pageNo);
+        query.setPageSize(pageSize);
+        query.setCondition(condition);
+        addOrders(orders, query);
 
-            List<CopiesProtectionEntity> protectionEntities = copiesProtectionMapper.selectBatchIds(resourceIds);
-            Map<String, CopiesProtectionEntity> protectionEntityMap =
-                protectionEntities.stream()
-                    .collect(
-                        Collectors.toMap(
-                            CopiesProtectionEntity::getProtectedResourceId, Function.identity()));
-            result =
-                copiesMap.keySet().stream()
-                    .filter(resourceId -> isSameProtectedSlaId(resourceId, conditionMap, protectionEntityMap))
-                    .map(
-                        resourceId -> {
-                            CopySummaryResource copyResourceSummary = new CopySummaryResource();
-                            CopiesProtectionEntity protection = protectionEntityMap.get(resourceId);
-                            if (protection != null) {
-                                BeanUtils.copyProperties(protection, copyResourceSummary);
-                                copyResourceSummary.setIsProtected(protection.getProtectedStatus());
-                            } else {
-                                copyResourceSummary.setIsProtected(false);
-                            }
-                            List<CopiesEntity> copiesEntities =
-                                copiesMap.get(resourceId).stream()
-                                    .sorted(
-                                        Comparator.comparing(
-                                            copiesEntity ->
-                                                copiesEntity
-                                                    .getDisplayTimestamp()
-                                                    .getTime()))
-                                    .collect(Collectors.toList());
-                            copyResourceSummary.setCopyCount(copiesEntities.size());
-                            BeanUtils.copyProperties(copiesEntities.get(0), copyResourceSummary);
-                            return copyResourceSummary;
-                        })
-                    .collect(Collectors.toList());
-            result = filterByCopiesProtection(conditionMap, result);
-            result = sortCopySummaryResult(orders, result);
-        }
+        // Mybatis-plus Page 分页插件 pageNo 不是从 0 开始，而是从 1 开始
+        Page<CopySummaryResource> page = new Page<>(pageNo + 1, pageSize);
+        IPage<CopySummaryResource> pageResult = copyMapper.selectCopySummaryResourceListV2(page, query);
 
-        return convertToPage(pageNo, pageSize, result);
-    }
+        PageListResponse<CopySummaryResource> pageListResponse = new PageListResponse<>();
+        pageListResponse.setStartIndex(pageNo);
+        pageListResponse.setTotalCount((int) pageResult.getTotal());
+        pageListResponse.setPageSize((int) pageResult.getSize());
+        pageListResponse.setTotalPages((int) pageResult.getPages());
+        pageListResponse.setRecords(pageResult.getRecords());
 
-    private boolean isSameProtectedSlaId(
-        String resourceId,
-        Map<String, Object> conditionMap,
-        Map<String, CopiesProtectionEntity> protectionEntityMap) {
-        if (!conditionMap.containsKey("protectedSlaId")) {
-            return true;
-        }
-        if (VerifyUtil.isEmpty(protectionEntityMap.get(resourceId))) {
-            return false;
-        }
-        return protectionEntityMap
-            .get(resourceId)
-            .getProtectedSlaId()
-            .equals(conditionMap.get("protectedSlaId").toString());
+        return pageListResponse;
     }
 
     @Override
@@ -368,7 +332,7 @@ public class CopyServiceImpl implements CopyService {
         Map<String, Object> condition = new HashMap<>();
         condition.put("resource_id", resourceId);
         PageListResponse<CopySummaryResource> response =
-            listCopyResourceSummary(0, 1, JSON.toJSONString(condition), null);
+                listCopyResourceSummary(0, 1, JSON.toJSONString(condition), null);
         CopySummaryResource copySummaryResource = response.getTotalCount() > 0 ? response.getRecords().get(0) : null;
         CopyResourceSummary summary = new CopyResourceSummary();
         if (copySummaryResource != null) {
@@ -377,69 +341,52 @@ public class CopyServiceImpl implements CopyService {
         return summary;
     }
 
-    private PageListResponse<CopySummaryResource> convertToPage(
-        int pageNo, int pageSize, List<CopySummaryResource> result) {
-        PageListResponse<CopySummaryResource> pageListResponse = new PageListResponse<>();
-        int totalPages = result.size() % pageSize == 0 ? result.size() / pageSize : result.size() / pageSize + 1;
-        pageListResponse.setTotalCount(result.size());
-        pageListResponse.setPageSize(pageSize);
-        pageListResponse.setTotalPages(totalPages);
-        pageListResponse.setStartIndex(pageNo);
-        int endSize = (pageNo + 1) * pageSize;
-        endSize = endSize > result.size() ? result.size() : endSize;
-        pageListResponse.setRecords(result.subList(pageNo * pageSize, endSize));
-        return pageListResponse;
-    }
-
-    private List<CopySummaryResource> filterByCopiesProtection(
-        Map<String, Object> conditionMap, List<CopySummaryResource> summaryResources) {
-        List<CopySummaryResource> result = summaryResources;
+    private void fillCopiesProtectionParam(
+            Map<String, Object> conditionMap, CopySummaryResourceCondition condition) {
+        if (conditionMap.containsKey("protectedSlaId")
+                && StringUtils.isNotEmpty(conditionMap.get("protectedSlaId").toString())) {
+            condition.setProtectedSlaId(conditionMap.get("protectedSlaId").toString());
+        }
         if (conditionMap.containsKey("protectedSlaName")
-            && StringUtils.isNotEmpty(conditionMap.get("protectedSlaName").toString())) {
-            result =
-                summaryResources.stream()
-                    .filter(
-                        copySummaryResource ->
-                            !VerifyUtil.isEmpty(copySummaryResource.getProtectedSlaName()))
-                    .filter(
-                        copyResourceSummary ->
-                            copyResourceSummary
-                                .getProtectedSlaName()
-                                .contains(conditionMap.get("protectedSlaName").toString()))
-                    .collect(Collectors.toList());
+                && StringUtils.isNotEmpty(conditionMap.get("protectedSlaName").toString())) {
+            condition.setProtectedSlaName(conditionMap.get("protectedSlaName").toString());
         }
-        // 根据状态过滤，根据数量排序，根据查询字段排序，分页
-        if (conditionMap.containsKey("protectedStatus")) {
-            List<Boolean> protectedStatus = (List<Boolean>) conditionMap.get("protectedStatus");
-            result =
-                summaryResources.stream()
-                    .filter(copyResourceSummary -> containStatus(protectedStatus, copyResourceSummary))
+        if (conditionMap.containsKey("protectedStatus") && conditionMap.get("protectedStatus") instanceof JSONArray) {
+            JSONArray protectedStatus = (JSONArray) conditionMap.get("protectedStatus");
+            List<Boolean> protectedStatuList = Arrays.stream(protectedStatus.toArray()).map(o -> (Boolean) o)
                     .collect(Collectors.toList());
+            condition.setProtectedStatus(protectedStatuList);
         }
-        return result;
     }
 
-    private boolean containStatus(List<Boolean> protectedStatus, CopySummaryResource copyResourceSummary) {
-        for (Boolean isProtected : protectedStatus) {
-            Boolean isContainStatus =
-                isProtected == null
-                    ? copyResourceSummary.getIsProtected() == isProtected
-                    : isProtected.equals(copyResourceSummary.getIsProtected());
-            if (isContainStatus) {
-                return true;
+    private void addOrders(
+            String[] orders, CopySummaryResourceQuery query) {
+        if (orders == null) {
+            return;
+        }
+        for (String order : orders) {
+            if (StringUtils.isEmpty(order)) {
+                continue;
+            }
+            // 底层 SQL 有注入风险，必须在 orders 中进行白名单过滤
+            char orderFlag = order.charAt(0);
+            if (orderFlag != '+' && orderFlag != '-') {
+                continue;
+            }
+            if (order.contains("copyCount")) {
+                query.setOrders(Lists.newArrayList(orderFlag + "copy_count"));
             }
         }
-        return false;
     }
 
     private void fillCopiesParam(
-        Map<String, Object> conditionMap, LambdaQueryWrapper<CopiesEntity> lambdaQueryWrapper) {
-        fillCopyResourceCondition(conditionMap, lambdaQueryWrapper);
-        fillCopyPropertyCondition(conditionMap, lambdaQueryWrapper);
+        Map<String, Object> conditionMap, CopySummaryResourceCondition condition) {
+        fillCopyResourceConditionV2(conditionMap, condition);
+        fillCopyPropertyCondition(conditionMap, condition);
         try {
             TokenBo.UserBo userBo = sessionService.getCurrentUser();
             if (userBo != null && !DefaultRoleHelper.isAdmin(userBo.getId())) {
-                addUserDomainCondition(lambdaQueryWrapper);
+                addUserDomainConditionV2(condition);
             }
         } catch (LegoCheckedException exception) {
             log.error("get user bo failed");
@@ -458,12 +405,22 @@ public class CopyServiceImpl implements CopyService {
         }
     }
 
+    private void addUserDomainConditionV2(CopySummaryResourceCondition condition) {
+        TokenBo.UserBo user = sessionService.getCurrentUser();
+        if (!VerifyUtil.isEmpty(user) && !VerifyUtil.isEmpty(user.getDomainId())) {
+            if (!IdUtil.isUUID(user.getDomainId())) {
+                throw new LegoCheckedException(ErrorCodeConstant.ERR_PARAM, "user domain id incorrect");
+            }
+            condition.setDomainId(user.getDomainId());
+        }
+    }
+
     private void fillCopyResourceCondition(
-        Map<String, Object> conditionMap, LambdaQueryWrapper<CopiesEntity> lambdaQueryWrapper) {
+            Map<String, Object> conditionMap, LambdaQueryWrapper<CopiesEntity> lambdaQueryWrapper) {
         if (conditionMap.containsKey("resourceSubType") && conditionMap.get("resourceSubType") instanceof JSONArray) {
             JSONArray subTypes = (JSONArray) conditionMap.get("resourceSubType");
             List<String> subTypeList =
-                Arrays.stream(subTypes.toArray()).map(o -> o.toString()).collect(Collectors.toList());
+                    Arrays.stream(subTypes.toArray()).map(Object::toString).collect(Collectors.toList());
             lambdaQueryWrapper.in(CopiesEntity::getResourceSubType, subTypeList);
         }
         if (conditionMap.containsKey("resourceName")) {
@@ -472,57 +429,57 @@ public class CopyServiceImpl implements CopyService {
         fillCopyResourceIdParams(conditionMap, lambdaQueryWrapper);
         if (conditionMap.containsKey("resourceLocation")) {
             lambdaQueryWrapper.like(
-                CopiesEntity::getResourceLocation, "%" + conditionMap.get("resourceLocation") + "%");
+                    CopiesEntity::getResourceLocation, "%" + conditionMap.get("resourceLocation") + "%");
         }
         if (conditionMap.containsKey("resourceStatus") && conditionMap.get("resourceStatus") instanceof JSONArray) {
             JSONArray resourceStatuses = (JSONArray) conditionMap.get("resourceStatus");
             List<String> resourceStatusList =
-                Arrays.stream(resourceStatuses.toArray()).map(o -> o.toString()).collect(Collectors.toList());
+                    Arrays.stream(resourceStatuses.toArray()).map(Object::toString).collect(Collectors.toList());
             lambdaQueryWrapper.in(CopiesEntity::getResourceStatus, resourceStatusList);
         }
         if (conditionMap.containsKey("resourceEnvironmentIp")) {
             lambdaQueryWrapper.like(
-                CopiesEntity::getResourceEnvironmentIp, "%" + conditionMap.get("resourceEnvironmentIp") + "%");
+                    CopiesEntity::getResourceEnvironmentIp, "%" + conditionMap.get("resourceEnvironmentIp") + "%");
         }
         if (conditionMap.containsKey("resourceEnvironmentName")) {
             lambdaQueryWrapper.like(
-                CopiesEntity::getResourceEnvironmentName, "%" + conditionMap.get("resourceEnvironmentName") + "%");
+                    CopiesEntity::getResourceEnvironmentName, "%" + conditionMap.get("resourceEnvironmentName") + "%");
         }
     }
 
     private void fillCopyPropertyCondition(
-        Map<String, Object> conditionMap, LambdaQueryWrapper<CopiesEntity> lambdaQueryWrapper) {
+            Map<String, Object> conditionMap, CopySummaryResourceCondition condition) {
         if (conditionMap.containsKey("indexed") && StringUtils.isNotEmpty(conditionMap.get("indexed").toString())) {
-            lambdaQueryWrapper.eq(CopiesEntity::getIndexed, conditionMap.get("indexed"));
+            condition.setIndexed(conditionMap.get("indexed").toString());
         }
         if (conditionMap.containsKey("gn_range") && StringUtils.isNotEmpty(conditionMap.get("gn_range").toString())) {
             JSONObject gnRange = JSONObject.fromObject(conditionMap);
             JSONArray gnRangeArray = gnRange.getJSONArray("gn_range");
-            lambdaQueryWrapper.between(CopiesEntity::getGn, gnRangeArray.get(0), gnRangeArray.get(1));
+            condition.setGnLte(gnRangeArray.get(0).toString());
+            condition.setGnGte(gnRangeArray.get(1).toString());
         }
         if (conditionMap.containsKey("device_esn")
-            && StringUtils.isNotEmpty(conditionMap.get("device_esn").toString())) {
-            lambdaQueryWrapper.eq(CopiesEntity::getDeviceEsn, conditionMap.get("device_esn"));
+                && StringUtils.isNotEmpty(conditionMap.get("device_esn").toString())) {
+            condition.setDeviceEsn(conditionMap.get("device_esn").toString());
         }
         if (conditionMap.containsKey("chain_id") && StringUtils.isNotEmpty(conditionMap.get("chain_id").toString())) {
-            lambdaQueryWrapper.eq(CopiesEntity::getChainId, conditionMap.get("chain_id"));
+            condition.setChainId(conditionMap.get("chain_id").toString());
         }
         if (conditionMap.containsKey("generated_by")
-            && StringUtils.isNotEmpty(conditionMap.get("generated_by").toString())) {
-            lambdaQueryWrapper.eq(CopiesEntity::getGeneratedBy, conditionMap.get("generated_by"));
+                && StringUtils.isNotEmpty(conditionMap.get("generated_by").toString())) {
+            condition.setGeneratedBy(Lists.newArrayList(conditionMap.get("generated_by").toString()));
         }
-
         if (conditionMap.containsKey("generated_by_array")
-            && conditionMap.get("generated_by_array") instanceof JSONArray) {
+                && conditionMap.get("generated_by_array") instanceof JSONArray) {
             JSONArray generatedByArrays = (JSONArray) conditionMap.get("generated_by_array");
-            List<String> generatedByArrayList =
-                Arrays.stream(generatedByArrays.toArray()).map(o -> o.toString()).collect(Collectors.toList());
-            lambdaQueryWrapper.in(CopiesEntity::getGeneratedBy, generatedByArrayList);
+            List<String> generatedByList =
+                    Arrays.stream(generatedByArrays.toArray()).map(Object::toString).collect(Collectors.toList());
+            condition.setGeneratedBy(generatedByList);
         }
     }
 
     private void fillCopyResourceIdParams(
-        Map<String, Object> conditionMap, LambdaQueryWrapper<CopiesEntity> lambdaQueryWrapper) {
+            Map<String, Object> conditionMap, LambdaQueryWrapper<CopiesEntity> lambdaQueryWrapper) {
         if (conditionMap.containsKey("resourceId")) {
             lambdaQueryWrapper.eq(CopiesEntity::getResourceId, conditionMap.get("resourceId"));
         } else {
@@ -533,41 +490,58 @@ public class CopyServiceImpl implements CopyService {
         if (conditionMap.containsKey("resourceIds") && conditionMap.get("resourceIds") instanceof JSONArray) {
             JSONArray resourceIds = (JSONArray) conditionMap.get("resourceIds");
             List<String> resourceIdList =
-                Arrays.stream(resourceIds.toArray()).map(o -> o.toString()).collect(Collectors.toList());
+                    Arrays.stream(resourceIds.toArray()).map(Object::toString).collect(Collectors.toList());
             if (!VerifyUtil.isEmpty(resourceIdList)) {
                 lambdaQueryWrapper.in(CopiesEntity::getResourceId, resourceIdList);
             }
         }
     }
 
-    private List<CopySummaryResource> sortCopySummaryResult(
-        String[] orders, List<CopySummaryResource> summaryResources) {
-        List<CopySummaryResource> result = summaryResources;
-        if (orders == null) {
-            return result;
+    private void fillCopyResourceConditionV2(Map<String, Object> conditionMap, CopySummaryResourceCondition condition) {
+        if (conditionMap.containsKey("resourceName")) {
+            condition.setResourceName(conditionMap.get("resourceName").toString());
         }
-        for (String order : orders) {
-            if (StringUtils.isEmpty(order)) {
-                continue;
-            }
-            if (order.contains("copyCount")) {
-                boolean isAsc = order.startsWith("+");
-                if (isAsc) {
-                    result =
-                        summaryResources.stream()
-                            .sorted(Comparator.comparing(CopySummaryResource::getCopyCount))
-                            .collect(Collectors.toList());
-                } else {
-                    result =
-                        summaryResources.stream()
-                            .sorted(
-                                Comparator.comparing(
-                                    copyResourceSummary -> -copyResourceSummary.getCopyCount()))
-                            .collect(Collectors.toList());
-                }
+        if (conditionMap.containsKey("resourceLocation")) {
+            condition.setResourceLocation(conditionMap.get("resourceLocation").toString());
+        }
+        if (conditionMap.containsKey("resourceSubType") && conditionMap.get("resourceSubType") instanceof JSONArray) {
+            JSONArray subTypes = (JSONArray) conditionMap.get("resourceSubType");
+            List<String> subTypeList = Arrays.stream(subTypes.toArray()).map(Object::toString)
+                    .collect(Collectors.toList());
+            condition.setResourceSubType(subTypeList);
+        }
+        if (conditionMap.containsKey("resourceStatus") && conditionMap.get("resourceStatus") instanceof JSONArray) {
+            JSONArray resourceStatuses = (JSONArray) conditionMap.get("resourceStatus");
+            List<String> resourceStatusList = Arrays.stream(resourceStatuses.toArray()).map(Object::toString)
+                    .collect(Collectors.toList());
+            condition.setResourceStatus(resourceStatusList);
+        }
+        if (conditionMap.containsKey("resourceEnvironmentIp")) {
+            condition.setResourceEnvironmentIp(conditionMap.get("resourceEnvironmentIp").toString());
+        }
+        if (conditionMap.containsKey("resourceEnvironmentName")) {
+            condition.setResourceEnvironmentName(conditionMap.get("resourceEnvironmentName").toString());
+        }
+        fillCopyResourceIdParamsV2(conditionMap, condition);
+    }
+
+    private void fillCopyResourceIdParamsV2(Map<String, Object> conditionMap, CopySummaryResourceCondition condition) {
+        List<String> resourceIdList = Lists.newArrayList();
+        if (conditionMap.containsKey("resourceId")) {
+            resourceIdList.add(conditionMap.get("resourceId").toString());
+        } else {
+            if (conditionMap.containsKey("resource_id")) {
+                resourceIdList.add(conditionMap.get("resource_id").toString());
             }
         }
-        return result;
+        if (conditionMap.containsKey("resourceIds") && conditionMap.get("resourceIds") instanceof JSONArray) {
+            JSONArray resourceIds = (JSONArray) conditionMap.get("resourceIds");
+            resourceIdList.addAll(Arrays.stream(resourceIds.toArray()).map(Object::toString)
+                    .collect(Collectors.toList()));
+        }
+        if (!VerifyUtil.isEmpty(resourceIdList)) {
+            condition.setResourceIds(resourceIdList);
+        }
     }
 
     @Override
@@ -610,6 +584,7 @@ public class CopyServiceImpl implements CopyService {
         fileLevelRecoverCopy.setGn(copy.getGn());
         fileLevelRecoverCopy.setResourceId(copy.getResourceId());
         fileLevelRecoverCopy.setUuid(copy.getUuid());
+        fileLevelRecoverCopy.setOriginBackupId(copy.getOriginBackupId());
         fileLevelRecoverCopy.setGeneratedBy(copy.getGeneratedBy());
         fileLevelRecoverCopy.setChainId(copy.getChainId());
         fileLevelRecoverCopy.setResourceSubType(copy.getResourceSubType());
@@ -669,7 +644,120 @@ public class CopyServiceImpl implements CopyService {
     }
 
     @Override
+    public void openCopyGuestSystem(String copyId) {
+        Copy copy = copyRestApi.queryCopyByID(copyId);
+        if (!StringUtils.isEmpty(copy.getDeviceEsn()) && memberClusterService.isNeedForward(copy.getDeviceEsn())) {
+            log.info(
+                "copy(id:{}) is stored in remote node(esn:{}), try forward request to remote node",
+                copyId,
+                copy.getDeviceEsn());
+            forwardOpenCopyGuestSystemToRemote(copy);
+            return;
+        }
+        // 更新状态为挂载中
+        copyRestApi.updateCopyBrowseMountStatus(copyId, VmBrowserMountStatus.MOUNTING.getBrowserMountStatus());
+        // 生成copyInfo
+        FinegrainedRestoreCopy finegrainedRestoreCopy = generateCopyInfo(copy);
+        VmBrowserMountRequest vmBrowserMountRequest = VmBrowserMountRequest.builder()
+            .copyInfo(finegrainedRestoreCopy)
+            .requestId(UUID.randomUUID().toString()).build();
+        deeBaseParseRest.openCopyGuestSystem(copyId, vmBrowserMountRequest);
+    }
+
+    private FinegrainedRestoreCopy generateCopyInfo(Copy copy) {
+        FinegrainedRestoreCopy finegrainedRestoreCopy = getFileLevelRecoverCopy(copy);
+        CopyCatalogsRequest catalogsRequest = new CopyCatalogsRequest();
+        catalogsRequest.setCopyInfo(finegrainedRestoreCopy);
+        // 插件差异化处理
+        CopyCommonInterceptor provider =
+            providerManager.findProvider(CopyCommonInterceptor.class, copy.getResourceSubType(), null);
+        if (provider != null) {
+            provider.buildCatalogsRequest(copy, catalogsRequest);
+        }
+        return finegrainedRestoreCopy;
+    }
+
+    private void forwardOpenCopyGuestSystemToRemote(Copy copy) {
+        ClusterRequestInfo clusterRequestInfo = memberClusterService.getClusterRequestInfo(copy.getDeviceEsn());
+        String ip = IpUtil.getAvailableIp(clusterRequestInfo.getIp());
+        URI uri = ClusterUriUtil.buildURI(ip, clusterRequestInfo.getPort());
+        try {
+            targetApi.openCopyGuestSystem(uri, clusterRequestInfo.getToken(), copy.getUuid());
+        } catch (FeignException | LegoCheckedException | LegoUncheckedException e) {
+            log.error("request to remote node(esn:{}) failed", copy.getDeviceEsn(), ExceptionUtil.getErrorMessage(e));
+            throw new LegoCheckedException(
+                CommonErrorCode.NETWORK_CONNECTION_TIMEOUT,
+                "request to remote node failed esn:" + copy.getDeviceEsn());
+        }
+    }
+
+    @Override
     public void closeCopyGuestSystem(String copyId) {
-        deeBaseParseRest.closeCopyGuestSystem(copyId);
+        Copy copy = copyRestApi.queryCopyByID(copyId);
+        if (!StringUtils.isEmpty(copy.getDeviceEsn()) && memberClusterService.isNeedForward(copy.getDeviceEsn())) {
+            log.info(
+                "copy(id:{}) is stored in remote node(esn:{}), try forward request to remote node",
+                copyId,
+                copy.getDeviceEsn());
+            forwardCloseCopyGuestSystemToRemote(copy);
+            return;
+        }
+        // 更新状态为解挂载中
+        copyRestApi.updateCopyBrowseMountStatus(copyId, VmBrowserMountStatus.MOUNT_DELETING.getBrowserMountStatus());
+        try {
+            deeBaseParseRest.closeCopyGuestSystem(copyId);
+            // 更新状态为解挂载成功
+            copyRestApi.updateCopyBrowseMountStatus(copyId, VmBrowserMountStatus.UMOUNT.getBrowserMountStatus());
+        } catch (Exception e) {
+            // 更新状态为删除失败
+            copyRestApi.updateCopyBrowseMountStatus(copyId,
+                VmBrowserMountStatus.MOUNT_DELETE_FAIL.getBrowserMountStatus());
+        }
+    }
+
+    private void forwardCloseCopyGuestSystemToRemote(Copy copy) {
+        ClusterRequestInfo clusterRequestInfo = memberClusterService.getClusterRequestInfo(copy.getDeviceEsn());
+        String ip = IpUtil.getAvailableIp(clusterRequestInfo.getIp());
+        URI uri = ClusterUriUtil.buildURI(ip, clusterRequestInfo.getPort());
+        try {
+            targetApi.closeCopyGuestSystem(uri, clusterRequestInfo.getToken(), copy.getUuid());
+        } catch (FeignException | LegoCheckedException | LegoUncheckedException e) {
+            log.error("request to remote node(esn:{}) failed", copy.getDeviceEsn(), ExceptionUtil.getErrorMessage(e));
+            throw new LegoCheckedException(
+                CommonErrorCode.NETWORK_CONNECTION_TIMEOUT,
+                "request to remote node failed esn:" + copy.getDeviceEsn());
+        }
+    }
+
+    @Override
+    public void deleteInvalidCopies(String sourceId, int limit, List<String> excludeCopies) {
+        BasePage<Copy> checkPointInvalidCopies = queryCopiesByResourceIdAndStatusAndExtendType(sourceId,
+            CopyStatus.INVALID.getValue(), CopyExtendType.CHECKPOINT.getValue(), limit);
+        List<Copy> deleteCopies = checkPointInvalidCopies.getItems();
+        for (Copy c : deleteCopies) {
+            if (!excludeCopies.contains(c.getUuid())) {
+                log.info("delete checkPoint invalid copies, total_num:{}, copy_id:{}",
+                    checkPointInvalidCopies.getTotal(), c.getUuid());
+                copyRestApi.deleteCopy(c.getUuid(), null);
+            }
+        }
+    }
+
+    @Override
+    public CopiesEntity queryOriginCopyIdById(String copyId) {
+        CopiesEntity copiesEntity = copyMapper.selectById(copyId);
+        if (copiesEntity == null) {
+            throw new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "CopiesEntity " + copyId + " is null");
+        }
+        return copiesEntity;
+    }
+
+    @Override
+    public void updateCopyResourceName(String newResourceName, String resourceId) {
+        if (StringUtils.isEmpty(newResourceName) || StringUtils.isEmpty(resourceId)) {
+            log.error("Update copy resource name: {} of resource: {} failed", newResourceName, resourceId);
+            throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, "Illegal resource name");
+        }
+        copyMapper.updateCopyResourceName(newResourceName, resourceId);
     }
 }

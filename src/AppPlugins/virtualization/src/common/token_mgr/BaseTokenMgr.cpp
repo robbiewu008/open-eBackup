@@ -15,6 +15,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include "log/Log.h"
+#include "common/Utils.h"
 #include "common/utils/Utils.h"
 #ifdef WIN32
 #include <windows.h>
@@ -68,7 +69,7 @@ bool BaseTokenMgr::TokenIsExpired(std::string &date)
         ERRLOG("Failed to trans date to time stamp.");
         return false;
     }
-    int64_t expiresTimeStamp = std::stoi(timeStamp);
+    int64_t expiresTimeStamp = Module::SafeStoi(timeStamp);
     int timeStampDiff = GetTimeDiffWithGMT();
     if ((expiresTimeStamp + timeStampDiff - EARLY_EXPIRATION_TIME) < nowTimeStamp) { // 提前30秒过期
         return true;
@@ -107,8 +108,11 @@ std::string BaseTokenMgr::AddToken(ModelBase &model, std::shared_ptr<GetTokenRes
     auto headers = getTokenResponse->GetHeaders();
     auto it_head = headers.find("X-Subject-Token");
     if (it_head == headers.end()) {
-        ERRLOG("Not found head key X-Subject-Token");
-        return tokenValue;
+        it_head = headers.find("x-subject-token");
+        if (it_head == headers.end()) {
+            ERRLOG("Not found head key X-Subject-Token or x-subject-token");
+            return tokenValue;
+        }
     }
     tokenInfoTmp.m_token = *(it_head->second.begin());
     tokenInfoTmp.m_extendInfo = getTokenResponse->GetBody();
@@ -126,7 +130,7 @@ bool BaseTokenMgr::GetTokenFromMap(ModelBase &model, std::string &tokenValue, st
     std::string key = GetTokenKey(model);
     auto it = m_tokenMap.find(key);
     if (it == m_tokenMap.end()) {
-        DBGLOG("Not found token, the key:%s", key.c_str());
+        WARNLOG("Not found token, the key:%s", key.c_str());
         return false;
     }
     if (checkExpireFlag) {    // 检验是否过期

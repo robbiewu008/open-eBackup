@@ -101,7 +101,7 @@
         </dependency>
         <dependency>
             <groupId>com.huawei.oceanprotect</groupId>
-            <artifactId>pm-label</artifactId>
+            <artifactId>pm-label-sdk</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

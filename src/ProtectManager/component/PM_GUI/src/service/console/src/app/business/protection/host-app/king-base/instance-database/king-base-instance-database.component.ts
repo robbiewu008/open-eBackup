@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -26,6 +26,7 @@ import {
   DataMap,
   DataMapService,
   DATE_PICKER_MODE,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getLabelList,
   getPermissionMenuItem,
@@ -42,6 +43,7 @@ import {
   ProtectedResourceApiService,
   ProtectResourceAction,
   RoleOperationMap,
+  SetTagType,
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -52,6 +54,7 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { ProtectService } from 'app/shared/services/protect.service';
@@ -78,10 +81,11 @@ import {
   values,
   some
 } from 'lodash';
-import { map } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { KingBaseRegisterComponent } from './register/king-base-register.component';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
 import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
+import { GetLabelOptionsService } from '../../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-king-base-instance-database',
@@ -98,7 +102,7 @@ export class KingBaseInstanceDatabaseComponent
   selectionData = [];
   optItems = [];
   dataMap = DataMap;
-
+  currentDetailUuid = '';
   groupCommon = GROUP_COMMON;
 
   @Input() activeIndex;
@@ -122,7 +126,9 @@ export class KingBaseInstanceDatabaseComponent
     private batchOperateService: BatchOperateService,
     private takeManualBackupService: TakeManualBackupService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService,
+    private appUtilsService: AppUtilsService
   ) {}
 
   ngAfterViewInit() {
@@ -252,13 +258,17 @@ export class KingBaseInstanceDatabaseComponent
                   hasProtectPermission(val)
                 );
               })
-            ) !== size(data) || !size(data)
+            ) !== size(data) ||
+            !size(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX
           );
         },
         permission: OperateItems.DeactivateProtection,
         disabledTips: this.i18n.get(
           'protection_partial_resources_deactive_label'
         ),
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n),
         label: this.i18n.get('protection_deactive_protection_label'),
         onClick: data => {
           this.protectService
@@ -365,7 +375,7 @@ export class KingBaseInstanceDatabaseComponent
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_add_tag_label'),
         onClick: data => this.addTag(data)
@@ -377,7 +387,7 @@ export class KingBaseInstanceDatabaseComponent
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_remove_tag_label'),
         onClick: data => this.removeTag(data)
@@ -518,8 +528,11 @@ export class KingBaseInstanceDatabaseComponent
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -604,6 +617,7 @@ export class KingBaseInstanceDatabaseComponent
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data ? data : this.selectionData,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable?.setSelections([]);
@@ -616,6 +630,7 @@ export class KingBaseInstanceDatabaseComponent
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data ? data : this.selectionData,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable?.setSelections([]);
@@ -794,9 +809,10 @@ export class KingBaseInstanceDatabaseComponent
         delete conditionsTemp.equipmentType;
       }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
@@ -830,6 +846,13 @@ export class KingBaseInstanceDatabaseComponent
         })
       )
       .subscribe(res => {
+        this.appUtilsService.openDetailModalAfterQueryData(
+          {
+            autoPolling: args?.isAutoPolling,
+            records: res.records
+          },
+          this
+        );
         this.tableData = {
           total: res.totalCount,
           data: res.records
@@ -843,6 +866,7 @@ export class KingBaseInstanceDatabaseComponent
   }
 
   getResourceDetail(res) {
+    this.currentDetailUuid = res.uuid;
     this.protectedResourceApiService
       .ListResources({
         pageNo: CommonConsts.PAGE_START,
@@ -896,7 +920,8 @@ export class KingBaseInstanceDatabaseComponent
                 return getTableOptsItems(cloneDeep(this.optItems), v, this);
               }
             }
-          )
+          ),
+          lvHeader: item?.name
         });
       });
   }
@@ -909,8 +934,7 @@ export class KingBaseInstanceDatabaseComponent
       {
         width: 780,
         data,
-        onOK: () => this.dataTable?.fetchData(),
-        restoreWidth: params => this.getResourceDetail(params)
+        onOK: () => this.dataTable?.fetchData()
       }
     );
   }
@@ -941,6 +965,7 @@ export class KingBaseInstanceDatabaseComponent
   connectTest(data) {
     this.protectedResourceApiService
       .CheckProtectedResource({ resourceId: data.uuid })
+      .pipe(finalize(() => this.dataTable?.fetchData()))
       .subscribe(res => {
         this.messageService.success(this.i18n.get('job_status_success_label'), {
           lvMessageKey: 'successKey',

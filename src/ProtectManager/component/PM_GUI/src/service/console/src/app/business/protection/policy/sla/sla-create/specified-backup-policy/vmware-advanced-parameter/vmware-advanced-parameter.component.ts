@@ -1,16 +1,24 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, Input, OnInit } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
 import {
@@ -21,28 +29,32 @@ import {
   DataMapService,
   I18NService,
   ProtectResourceAction,
-  QosService
+  QosService,
+  RouterUrl
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
-import { assign, find, first, map, size } from 'lodash';
+import { assign, find, first, isEmpty, map, size } from 'lodash';
 
 @Component({
   selector: 'aui-vmware-advanced-parameter',
   templateUrl: './vmware-advanced-parameter.component.html',
   styleUrls: ['./vmware-advanced-parameter.component.less']
 })
-export class VmwareAdvancedParameterComponent implements OnInit {
+export class VmwareAdvancedParameterComponent implements OnInit, OnChanges {
   find = find;
   size = size;
-  qosNames = [];
+  qosNameOps = [];
   protectResourceAction = ProtectResourceAction;
   dataMap = DataMap;
+  @Input() qosNames: any;
   @Input() isSlaDetail: boolean;
   @Input() action: any;
   @Input() data: any;
   @Input() formGroup: FormGroup;
   @Input() isUsed: boolean;
-
+  @Input() hasArchival: boolean;
+  @Input() hasReplication: boolean;
+  @Output() isDisableBasicDiskWorm = new EventEmitter<any>();
   capacityThresholdErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
     invalidRang: this.i18n.get('common_valid_rang_label', [0, 100])
   });
@@ -57,9 +69,12 @@ export class VmwareAdvancedParameterComponent implements OnInit {
     ...this.baseUtilService.requiredErrorTip
   };
 
+  slaQosName;
   isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
   isRetry = true;
-  isDisableQos = false; // 如果选择了本地盘的存储单元就禁止限速策略
+  isDisableBasicDisk = false; // 如果选择了本地盘的存储单元就禁止的功能，目前有限速策略、目标端重删、源端重删
+
+  ratePolicyRouterUrl = RouterUrl.ProtectionLimitRatePolicy;
 
   constructor(
     public baseUtilService: BaseUtilService,
@@ -72,8 +87,18 @@ export class VmwareAdvancedParameterComponent implements OnInit {
     public appUtilsService?: AppUtilsService
   ) {}
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!isEmpty(this.qosNames) && size(this.data)) {
+      this.slaQosName = find(this.qosNames, {
+        uuid: first(map(this.data, 'ext_parameters')).qos_id
+      })?.name;
+    }
+  }
+
   ngOnInit() {
-    this.getQosNames();
+    if (!this.isSlaDetail) {
+      this.getQosNames();
+    }
     this.updateForm();
     this.updateData();
   }
@@ -95,6 +120,7 @@ export class VmwareAdvancedParameterComponent implements OnInit {
 
   updateForm() {
     this.formGroup.addControl('storage_type', new FormControl(''));
+    this.formGroup.addControl('device_type', new FormControl(''));
     this.formGroup.addControl('storage_id', new FormControl(''));
     this.formGroup.addControl('fine_grained_restore', new FormControl(false));
     this.formGroup.addControl(
@@ -125,6 +151,8 @@ export class VmwareAdvancedParameterComponent implements OnInit {
       'specifies_transfer_mode',
       new FormControl(DataMap.vmwareTransferMode.san.value)
     );
+
+    this.formGroup.addControl('add_backup_record', new FormControl(false));
 
     this.formGroup.addControl(
       'available_capacity_threshold',
@@ -224,7 +252,8 @@ export class VmwareAdvancedParameterComponent implements OnInit {
   }
 
   storageTypeChange(e) {
-    this.isDisableQos = e;
+    this.isDisableBasicDisk = e;
+    this.isDisableBasicDiskWorm.emit(e);
   }
 
   getQosNames() {
@@ -234,7 +263,7 @@ export class VmwareAdvancedParameterComponent implements OnInit {
         pageSize: 100
       })
       .subscribe(res => {
-        this.qosNames = map(res.items, (item: any) => {
+        this.qosNameOps = map(res.items, (item: any) => {
           item['isLeaf'] = true;
           item['label'] = item.name;
           return item;

@@ -519,14 +519,15 @@ public:
             HCP_Log(WARN, IODeviceModule) << "removing file, but not exists. name: " << directoryName << HCPENDLOG;
             return true;
         }
-
-        std::vector<std::string> paramList;
-        paramList.push_back(directoryName);
-        std::string cmd = "rm -rf '?'";
         Timer timer;
-        if (RunLoggedSystemCommand(DEBUG, IODeviceModule, 0, cmd, paramList) != 0) {
-            HCP_Log(ERR, IODeviceModule) << "Force to delete dir failed. Delete dir path:" << directoryName << HCPENDLOG;
-
+        try {
+            if (boost::filesystem::remove_all(directoryName) == false) {
+                ERRLOG("Remove path(%s) failed!", directoryName);
+                return false;
+            }
+        } catch (const boost::filesystem::filesystem_error &e) {
+            HCP_Log(ERR, IODeviceModule) << "remove_all() exeption: " << WIPE_SENSITIVE(e.code().message())
+                << ", path: " << directoryName << HCPENDLOG;
             return false;
         }
         HCP_Log(DEBUG, IODeviceModule) << "remove all files End, dir path=" << directoryName << ", duration=" <<

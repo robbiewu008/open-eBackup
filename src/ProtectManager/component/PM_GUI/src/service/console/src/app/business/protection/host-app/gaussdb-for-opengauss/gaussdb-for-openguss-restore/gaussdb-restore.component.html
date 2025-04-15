@@ -110,7 +110,7 @@
         {{ 'explore_available_id_label' | i18n }}
         <i
           lv-icon="aui-icon-help"
-          lv-tooltip="{{ '' | i18n }}"
+          [lv-tooltip]="azIdTpl"
           lvTooltipPosition="rightTop"
           lvTooltipTheme="light"
           class="configform-constraint"
@@ -124,35 +124,13 @@
             [formGroupName]="i"
             style="margin-bottom: 20px;"
           >
-            <lv-group
-              lvGutter="16px"
-              [lvColumns]="['auto', '20px']"
-              class="lv-group-flex-start"
-            >
+            <lv-group lvGutter="16px" class="lv-group-flex-start">
               <lv-form-control [lvErrorTip]="basicErrorTip">
                 <input type="text" formControlName="availableId" lv-input />
-              </lv-form-control>
-              <lv-form-control>
-                <span (click)="removeRow(i)" *ngIf="availableIds.length > 1">
-                  <i
-                    lv-icon="aui-icon-remove"
-                    class="remove-target-host-container"
-                  ></i>
-                </span>
               </lv-form-control>
             </lv-group>
           </div>
         </div>
-        <button
-          class="add-style"
-          lv-button
-          lvType="link"
-          (click)="addRow()"
-          [disabled]="availableIds.length > 2"
-        >
-          <i lv-icon="lv-icon-create"></i>
-          <span>{{ 'common_new_add_label' | i18n }}</span>
-        </button>
       </lv-form-control>
     </lv-form-item>
     <lv-form-item>
@@ -171,14 +149,6 @@
     <lv-form-item>
       <lv-form-label lvRequired>
         {{ 'explore_disk_type_label' | i18n }}
-        <i
-          lv-icon="aui-icon-help"
-          lv-tooltip="{{ '' | i18n }}"
-          lvTooltipPosition="rightTop"
-          lvTooltipTheme="light"
-          class="configform-constraint"
-          lvColorState="true"
-        ></i>
       </lv-form-label>
       <lv-form-control>
         <lv-radio-group
@@ -207,14 +177,6 @@
     <lv-form-item>
       <lv-form-label lvRequired>
         {{ 'protection_fc_disk_capacity_label' | i18n }}
-        <i
-          lv-icon="aui-icon-help"
-          lv-tooltip="{{ '' | i18n }}"
-          lvTooltipPosition="rightTop"
-          lvTooltipTheme="light"
-          class="configform-constraint"
-          lvColorState="true"
-        ></i>
       </lv-form-label>
       <lv-form-control [lvErrorTip]="numberErrorTip">
         <lv-input-group
@@ -233,14 +195,6 @@
           <lv-form-item>
             <lv-form-label>
               {{ 'explore_main_available_id_label' | i18n }}
-              <i
-                lv-icon="aui-icon-help"
-                lv-tooltip="{{ '' | i18n }}"
-                lvTooltipPosition="rightTop"
-                lvTooltipTheme="light"
-                class="configform-constraint"
-                lvColorState="true"
-              ></i>
             </lv-form-label>
             <lv-form-control>
               <lv-select
@@ -254,14 +208,6 @@
           <lv-form-item>
             <lv-form-label>
               {{ 'explore_arbitrament_available_id_label' | i18n }}
-              <i
-                lv-icon="aui-icon-help"
-                lv-tooltip="{{ '' | i18n }}"
-                lvTooltipPosition="rightTop"
-                lvTooltipTheme="light"
-                class="configform-constraint"
-                lvColorState="true"
-              ></i>
             </lv-form-label>
             <lv-form-control>
               <lv-select
@@ -292,14 +238,6 @@
     <lv-form-item>
       <lv-form-label lvRequired>
         {{ 'explore_virtual_cloud_id_label' | i18n }}
-        <i
-          lv-icon="aui-icon-help"
-          lv-tooltip="{{ '' | i18n }}"
-          lvTooltipPosition="rightTop"
-          lvTooltipTheme="light"
-          class="configform-constraint"
-          lvColorState="true"
-        ></i>
       </lv-form-label>
       <lv-form-control [lvErrorTip]="basicErrorTip">
         <input lv-input type="text" formControlName="virtualCloudId" />
@@ -308,14 +246,6 @@
     <lv-form-item>
       <lv-form-label lvRequired>
         {{ 'explore_subnet_id_label' | i18n }}
-        <i
-          lv-icon="aui-icon-help"
-          lv-tooltip="{{ '' | i18n }}"
-          lvTooltipPosition="rightTop"
-          lvTooltipTheme="light"
-          class="configform-constraint"
-          lvColorState="true"
-        ></i>
       </lv-form-label>
       <lv-form-control [lvErrorTip]="basicErrorTip">
         <input lv-input type="text" formControlName="subnetId" />
@@ -324,14 +254,6 @@
     <lv-form-item>
       <lv-form-label lvRequired>
         {{ 'explore_security_group_id_label' | i18n }}
-        <i
-          lv-icon="aui-icon-help"
-          lv-tooltip="{{ '' | i18n }}"
-          lvTooltipPosition="rightTop"
-          lvTooltipTheme="light"
-          class="configform-constraint"
-          lvColorState="true"
-        ></i>
       </lv-form-label>
       <lv-form-control [lvErrorTip]="basicErrorTip">
         <input lv-input type="text" formControlName="securityGroupId" />
@@ -378,14 +300,6 @@
           <lv-form-item>
             <lv-form-label>
               {{ 'explore_payment_label' | i18n }}
-              <i
-                lv-icon="aui-icon-help"
-                lv-tooltip="{{ '' | i18n }}"
-                lvTooltipPosition="rightTop"
-                lvTooltipTheme="light"
-                class="configform-constraint"
-                lvColorState="true"
-              ></i>
             </lv-form-label>
             <lv-form-control>
               <lv-select
@@ -399,14 +313,6 @@
           <lv-form-item>
             <lv-form-label>
               {{ 'explore_auto_backup_policy_label' | i18n }}
-              <i
-                lv-icon="aui-icon-help"
-                lv-tooltip="{{ '' | i18n }}"
-                lvTooltipPosition="rightTop"
-                lvTooltipTheme="light"
-                class="configform-constraint"
-                lvColorState="true"
-              ></i>
             </lv-form-label>
             <lv-group lvGutter="8px">
               <lv-form-control>
@@ -416,6 +322,7 @@
                   lvPlaceholder="HH:mm"
                   [lvFormat]="'HH:mm'"
                   lvReadonly
+                  [lvFooter]="startTimePickerFooterTpl"
                 ></lv-time-picker>
               </lv-form-control>
               <span>-</span>
@@ -426,6 +333,7 @@
                   lvPlaceholder="HH:mm"
                   [lvFormat]="'HH:mm'"
                   lvReadonly
+                  [lvFooter]="endTimePickerFooterTpl"
                 ></lv-time-picker>
               </lv-form-control>
             </lv-group>
@@ -433,14 +341,6 @@
           <lv-form-item>
             <lv-form-label>
               {{ 'explort_utc_timezone_label' | i18n }}
-              <i
-                lv-icon="aui-icon-help"
-                lv-tooltip="{{ '' | i18n }}"
-                lvTooltipPosition="rightTop"
-                lvTooltipTheme="light"
-                class="configform-constraint"
-                lvColorState="true"
-              ></i>
             </lv-form-label>
             <lv-form-control>
               <lv-select
@@ -463,3 +363,29 @@
     </ng-template>
   </lv-form>
 </ng-container>
+
+<ng-template #azIdTpl>
+  <span innerHTML="{{ 'protection_hcs_gaussdb_az_tip_label' | i18n }}"></span>
+</ng-template>
+
+<ng-template #startTimePickerFooterTpl>
+  <button
+    lv-button
+    lvType="link"
+    class="time-picker-current"
+    (click)="setSysTime(databaseFormGroup.get('backupStart'))"
+  >
+    {{ 'common_current_time_label' | i18n }}
+  </button>
+</ng-template>
+
+<ng-template #endTimePickerFooterTpl>
+  <button
+    lv-button
+    lvType="link"
+    class="time-picker-current"
+    (click)="setSysTime(databaseFormGroup.get('backupEnd'))"
+  >
+    {{ 'common_current_time_label' | i18n }}
+  </button>
+</ng-template>

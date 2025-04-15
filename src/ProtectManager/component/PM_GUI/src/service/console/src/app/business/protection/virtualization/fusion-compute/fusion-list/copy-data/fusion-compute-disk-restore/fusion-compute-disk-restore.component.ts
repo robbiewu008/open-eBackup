@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   Component,
@@ -18,7 +18,7 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { MODAL_COMMON } from 'app/shared';
+import { getBootTypeWarnTipByType, MODAL_COMMON } from 'app/shared';
 import {
   AppService,
   ProtectedResourceApiService,
@@ -32,7 +32,8 @@ import {
   ResourceType,
   RestoreFileType,
   RestoreLocationType,
-  RestoreV2LocationType
+  RestoreV2LocationType,
+  SYSTEM_TIME
 } from 'app/shared/consts';
 import { I18NService } from 'app/shared/services';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
@@ -41,6 +42,9 @@ import {
   cloneDeep,
   each,
   find,
+  first,
+  get,
+  isArray,
   isEmpty,
   isString,
   isUndefined,
@@ -58,6 +62,7 @@ import { FormGroup } from '@angular/forms';
 import { forkJoin, Observable, Observer, of, Subject } from 'rxjs';
 import { MessageService } from '@iux/live';
 import { mergeMap } from 'rxjs/operators';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 @Component({
   selector: 'aui-fusion-compute-disk-restore',
   templateUrl: './fusion-compute-disk-restore.component.html',
@@ -103,6 +108,8 @@ export class FusionComputeDiskRestoreComponent
   selectedLocation = this.restoreV2LocationType.ORIGIN;
   _isUndefined = isUndefined;
   _isEmpty = isEmpty;
+  rowCopyBootType; // 副本中记录的bootType，有可能为空
+  bootOptionsWarnTip;
   targetDataStoreErrorTip = this.i18n.get(
     'protection_restore_new_datastore_tip_label'
   );
@@ -118,7 +125,8 @@ export class FusionComputeDiskRestoreComponent
     private drawModalService: DrawModalService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private messageService: MessageService,
-    private appService: AppService
+    private appService: AppService,
+    private appUtilsService: AppUtilsService
   ) {}
 
   ngOnInit() {
@@ -319,6 +327,7 @@ export class FusionComputeDiskRestoreComponent
   initData() {
     this.resourceProp = JSON.parse(this.rowCopy.resource_properties);
     this.properties = JSON.parse(this.rowCopy.properties);
+    this.rowCopyBootType = get(this.properties, 'bootType', null);
     // 复制副本、反向复制、级联复制、磁带归档、对象存储归档
     if (
       [
@@ -354,6 +363,10 @@ export class FusionComputeDiskRestoreComponent
         total: size(showData)
       };
     }
+  }
+
+  getBootOptionsTip(rowData?) {
+    getBootTypeWarnTipByType(this, rowData?.bootType, this.rowCopyBootType);
   }
 
   getOriginalResource() {
@@ -454,13 +467,10 @@ export class FusionComputeDiskRestoreComponent
             this.selectedLocation = content.formGroup.value.restoreLocation;
             this.inputTarget = this.targetParams.path;
             if (this.selectedLocation === this.restoreV2LocationType.ORIGIN) {
+              this.bootOptionsWarnTip = '';
               this.isOriginPosition = true;
               this.getDataStores().subscribe(response => {
-                const totalData = [];
-                for (const item of response) {
-                  totalData.push(...item.records);
-                }
-
+                const totalData = [...response];
                 if (totalData.length) {
                   this.targetDiskOptions = map(totalData, item => {
                     return assign(item, {
@@ -476,6 +486,7 @@ export class FusionComputeDiskRestoreComponent
               });
             } else {
               this.isOriginPosition = false;
+              this.getBootOptionsTip(this.targetParams);
               if (this.targetParams.isSame) {
                 this.sameDataStore = this.targetParams.dataStore[0];
                 this.isSame = true;
@@ -491,6 +502,7 @@ export class FusionComputeDiskRestoreComponent
                 this.targetDiskOptions = this.targetParams.dataStore;
                 this.isSame = false;
               }
+              delete this.targetParams.bootType;
             }
           }
         });
@@ -572,72 +584,18 @@ export class FusionComputeDiskRestoreComponent
   }
 
   getDataStores(): Observable<any> {
-    const params = {
-      pageNo: CommonConsts.PAGE_START,
-      pageSize: CommonConsts.PAGE_SIZE,
-      queryDependency: true,
-      conditions: JSON.stringify({
-        subType:
-          this.rowCopy.resource_sub_type ||
-          DataMap.Resource_Type.FusionCompute.value,
-        uuid: this.resourceProp.environment_uuid
-      })
+    const resource = {
+      rootUuid: this.resourceProp.environment_uuid,
+      uuid: this.resourceProp.parent_uuid
     };
-
-    return this.protectedResourceApiService.ListResources(params).pipe(
-      mergeMap((res: any) => {
-        if (res.records?.length) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (!isEmpty(onlineAgents)) {
-            const agentsId = onlineAgents[0].uuid;
-            return this.getShowData(
-              agentsId,
-              this.resourceProp.environment_uuid,
-              [this.resourceProp.parent_uuid]
-            );
-          } else {
-            return of([]);
-          }
-        } else {
-          return of([]);
-        }
-      })
-    );
-  }
-
-  getShowData(agentId, envId, resourceIds): Observable<any> {
-    const params = {
-      agentId,
-      envId,
-      pageNo: 1,
-      pageSize: CommonConsts.PAGE_SIZE * 10,
-      resourceIds
-    };
-    let curData = [];
-    return this.appService.ListResourcesDetails(params).pipe(
-      mergeMap((response: any) => {
-        curData = [of(response)];
-
-        const totalCount = response.totalCount;
-        const pageCount = Math.ceil(totalCount / (CommonConsts.PAGE_SIZE * 10));
-        for (let i = 2; i <= pageCount; i++) {
-          curData.push(
-            this.appService.ListResourcesDetails({
-              agentId,
-              envId,
-              pageNo: i,
-              pageSize: CommonConsts.PAGE_SIZE * 10,
-              resourceIds
-            })
-          );
-        }
-        return forkJoin(curData);
-      })
-    );
+    return new Observable<any>((observer: Observer<any>) => {
+      this.appUtilsService
+        .getResourcesDetails(resource, '', {}, {}, false)
+        .subscribe(res => {
+          observer.next(res);
+          observer.complete();
+        });
+    });
   }
 
   restore(): Observable<void> {

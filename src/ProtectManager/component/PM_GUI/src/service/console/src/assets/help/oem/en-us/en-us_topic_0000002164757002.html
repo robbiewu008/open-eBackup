@@ -1,0 +1,76 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Oracle Database Backup Fails and the Error Details Contain &quot;RMAN-06059: expected archived log not found, loss of archived log compromises recoverability&quot;">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164757014.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164757002">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Oracle Database Backup Fails and the Error Details Contain "RMAN-06059: expected archived log not found, loss of archived log compromises recoverability"</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164757002"></a><a name="EN-US_TOPIC_0000002164757002"></a>
+  <h1 class="topictitle1">Oracle Database Backup Fails and the Error Details Contain "RMAN-06059: expected archived log not found, loss of archived log compromises recoverability"</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>The Oracle database backup job fails and the error details contain "RMAN-06059: expected archived log not found, loss of archived log compromises recoverability".</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p>Before the backup job is executed, the file system that stores backup log files is deleted. As a result, invalid log files exist on the Oracle host and the backup fails. (On DeviceManager, the file system whose name starts with L stores backup log files.)</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol>
+     <li><span>Log in to the Oracle database host.</span><p></p>
+      <ul id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_en-us_topic_0000001656760969_ul1983714162204">
+       <li id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_en-us_topic_0000001656760969_li7258697580">If the Linux OS is used, use PuTTY to log in to the Oracle database host and run the <strong id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_b14682476107">su - oracle</strong> command to switch to user <strong id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_b1646874718106">oracle</strong>.</li>
+       <li id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_en-us_topic_0000001656760969_li1366015032013">If the Windows OS is used, log in to the Oracle database host as the system administrator.</li>
+      </ul> <p></p></li>
+     <li><span>Run the following commands to access the RMAN:</span><p></p>
+      <ul id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_ul19454143574215">
+       <li id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_li44549351422">If the Linux OS is used, run the following commands:<p id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_p363075015428"><a name="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_li44549351422"></a><a name="en-us_topic_0000002164597202_li44549351422"></a><strong id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_b154781158438">export ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_i86308505427">Instance name</em></p> <p id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_p16630205014425"><strong id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_b1553717104312">rman target /</strong></p></li>
+       <li id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_li1991913252438">If the Windows OS is used, perform the following operations:
+        <ol type="a" id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_ol124110408264">
+         <li id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_li624120402267">Press <span class="uicontrol" id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_en-us_topic_0000002164597290_uicontrol11819941114510"><b>Win+R</b></span> to open the <strong id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_en-us_topic_0000002164597290_b1015191219408">Run</strong> window.</li>
+         <li id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_li161821338277">Enter <span class="parmvalue" id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_parmvalue122291222476"><b>cmd</b></span> and run the following commands:<p id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_p18919132511435"><strong id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_b4919142514320">set ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_i11919102574313">Instance name</em></p> <p id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_p149191125144318"><strong id="EN-US_TOPIC_0000002164757002__en-us_topic_0000002164597202_b1191932510433">rman target /</strong></p></li>
+        </ol></li>
+      </ul> <p></p></li>
+     <li><span>Run the following commands to verify and delete the invalid log files:</span><p></p><p><strong>crosscheck archivelog all;</strong></p> <p><strong>delete expired archivelog all;</strong></p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164757014.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

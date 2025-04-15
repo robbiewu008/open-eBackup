@@ -19,6 +19,7 @@ from common.file_common import log
 from common.parse_parafile import get_env_variable
 from tdsql.common.util import request_post
 from tdsql.common.const import RestoreParam
+from tdsql.handle.common.const import TDSQLProtectKeyName
 
 
 class RestRequests:
@@ -419,3 +420,40 @@ class RestRequests:
                 continue
             return True, ret_body.get("returnData")
         return False, []
+
+    def query_coldbackup_node(self, env_variable, request_url, group_id, set_id, pid):
+        log.info(f"start query_coldbackup_node.")
+        user, passwd = self.get_user_passwd(env_variable)
+        timestamp = int(time.time())
+        request_body = {
+            "callee": "TDSQL",
+            "caller": user,
+            "eventId": 101,
+            "interface": {
+                "interfaceName": "TDSQL.GetColdbackupElectZkNode",
+                "para": {
+                    "groupid": group_id,
+                    "id": set_id
+                }
+            },
+            "password": passwd,
+            "timestamp": timestamp,
+            "version": "1.0"
+        }
+        request_header = {'Content-type': 'application/json'}
+        # 调用oss接口,接口失败重试3次，每次间隔3s
+        retry_nums = 0
+        while retry_nums < 3:
+            retry_nums += 1
+            if retry_nums != 1:
+                time.sleep(3)
+            ret, ret_body, ret_header = request_post(request_url, request_body, request_header)
+            log.info(f'query_coldbackup_node ret_body : {ret_body}, retry_nums:  {retry_nums}')
+            if not ret:
+                log.error(f'Failed query_coldbackup_node, ret_body is : {ret_body}')
+                continue
+            if ret_body.get("returnMsg") != "ok":
+                log.error(f'query_coldbackup_node error with return: {ret_body.get("returnMsg")}')
+                continue
+            return True, ret_body.get("returnData")
+        return False, {}

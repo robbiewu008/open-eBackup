@@ -1,0 +1,120 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 2: Enabling the Archive Mode">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200004613.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200004653">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 2: Enabling the Archive Mode</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200004653"></a><a name="EN-US_TOPIC_0000002200004653"></a>
+
+<h1 class="topictitle1">Step 2: Enabling the Archive Mode</h1>
+<div><p>Before backing up the database, you must enable the archive mode. Otherwise, the backup fails.</p>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ul><li><strong>Single or cluster (Pgpool, CLup, and HACS) instance: Enable the archive mode by modifying configuration file parameters.</strong><ol><li>Use PuTTY to log in to the PostgreSQL database host. Perform the following operations on all nodes.</li><li>Create a path for storing archive logs (WALs). The <strong>/mnt/server/archivedir/</strong> path is used as an example in subsequent operations.<pre class="screen">mkdir -p<em> /mnt/server/archivedir/</em></pre>
+</li><li>Grant the read and write permissions to the operating system user <strong>postgres</strong> who runs the database.<pre class="screen">chmod 750 <em>/mnt/server/archivedir/</em>
+chown postgres:postgres <em>/mnt/server/archivedir/</em></pre>
+</li><li>Run the <strong>su - postgres</strong> command to switch to the operating system user <strong>postgres</strong> who runs the database. Information similar to the following is displayed:<pre class="screen">[root@pg_102_129 ~]# su - postgres
+[postgres@pg_102_129 root]$<em>  </em></pre>
+</li><li>Log in to the PostgreSQL database.<pre class="screen">cd <em>/usr/local/pgsql/bin</em>
+./psql</pre>
+</li><li>Run the <strong>show config_file</strong><strong>;</strong> command to query the path to the <strong>postgresql.conf</strong> file. Information similar to the following is displayed:<pre class="screen">postgres=# show config_file;
+              config_file
+---------------------------------------
+ /usr/local/pgsql/data/postgresql.conf
+(1 row)</pre>
+</li><li>Press <span class="uicontrol"><b>Ctrl+D</b></span> to log out of the database management user <strong>postgres</strong> and log in to the PostgreSQL database host.</li><li>Open the <strong>postgresql.conf</strong> file. The <strong>/usr/local/pgsql/data/postgresql.conf</strong> path is used as an example.<pre class="screen">vi <em>/usr/local/pgsql/data/postgresql.conf</em></pre>
+</li><li>Find and modify the <strong>wal_level</strong>, <strong>archive_mode</strong>, and <strong>archive_command</strong> parameters in the <strong>postgresql.conf</strong> file as follows:<pre class="screen">wal_level = replica                     # minimal, replica, or logical
+archive_mode = on               # enables archiving; off, on, or always
+archive_command = 'cp %p /mnt/server/archivedir/%f'          # command to use to archive a logfile segment</pre>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><ul><li>Set <strong>wal_level</strong> to <strong>archive</strong> (<strong>replica</strong> for PostgreSQL 9.6 or later).</li><li>Set <strong>archive_mode</strong> to <strong>on</strong>.</li><li>Set <strong>archive_command</strong> to <strong>'cp %p /mnt/server/archivedir/%f'</strong> and ensure that the archive log path is a single path.</li><li><strong>archive_command</strong> supports only the <strong>cp</strong> command.</li><li>When modifying the <strong>postgresql.conf</strong> file, change the values of existing fields in the file. Do not add the same fields to the file. Otherwise, the restoration job will be affected.</li><li>After the archive mode is enabled, you need to manually delete logs. Otherwise, the database cannot run properly. </li></ul>
+</div></div>
+</li><li>Exit the PostgreSQL database and restart it.<ul><li><strong>Single instance</strong><div class="p"><strong>/usr/local/pgsql/bin/pg_ctl</strong> indicates the path of <strong>pg_ctl</strong> in the PostgreSQL installation path. <strong>-D</strong> indicates the user-defined data directory. <strong>-l</strong> indicates the log output file specified during the PostgreSQL database startup. Before specifying the log output file, ensure that the file can be created successfully.<pre class="screen"><em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l <em>logfile</em>  restart</pre>
+</div>
+</li><li><strong>Cluster instance (Pgpool)</strong><ol type="a"><li>Stop the database on the standby node and then the database on the primary node.<pre class="screen"><em>/usr/local/pgpool/bin/pgpool</em> -m fast stop
+su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile stop</pre>
+</li><li>Start the database on the primary node and then the database on the standby node.<pre class="screen">su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile start
+<em>/usr/local/pgpool/bin/pgpool</em>  -n</pre>
+</li></ol>
+</li><li><strong>Cluster instance (CLup)</strong><ol type="a"><li>Stop the database on the standby node and then the database on the primary node.<p>1) Log in to the CLup database management system.</p>
+<p>2) Choose <strong>HA Cluster</strong> &gt; <strong>HA Management</strong>, find the target cluster, and click <span class="uicontrol"><b>Offline</b></span>. After the cluster is brought offline, the cluster status changes to <strong>Offline</strong>.</p>
+<p>3) Choose <strong>Instance</strong> &gt; <strong>Instance List</strong>, find the target database instance, and click <span class="uicontrol"><b>Stop</b></span> to stop the standby database and then the primary database. After the database instances are stopped, their states change to <strong>Stopped</strong>.</p>
+</li><li>Start the database on the primary node and then the database on the standby node.<p>1) Choose <strong>Instance</strong> &gt; <strong>Instance List</strong>, find the target database instance, and click <span class="uicontrol"><b>Start</b></span> to start the primary database and then the standby database. After the database instances are started, their states change to <strong>Running</strong>.</p>
+<p>2) Choose <strong>HA Cluster</strong> &gt; <strong>HA Management</strong>, find the target cluster, and click <span class="uicontrol"><b>Online</b></span>. After the cluster is brought online, the cluster status changes to <strong>Online</strong>.</p>
+</li></ol>
+</li><li><strong>Cluster instance (HACS)</strong><ol type="a"><li>Run the <strong>crm configure property maintenance-mode=true</strong> command to freeze the HACS cluster. After the HACS cluster is frozen, you can manually stop the PostgreSQL database.<div class="p">1) Stop the database on the standby node and then the database on the primary node.<pre class="screen">su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile stop</pre>
+</div>
+<div class="p">2) Start the database on the primary node and then the database on the standby node.<pre class="screen">su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile start</pre>
+</div>
+</li><li>Run the <strong>crm configure property maintenance-mode=false</strong> command to unfreeze the HACS cluster.</li></ol>
+</li></ul>
+</li><li>Restart the PostgreSQL database and run the following command to check whether the archive mode is enabled:<pre class="screen">show archive_mode;</pre>
+<p>If the function is enabled, the following information is displayed:</p>
+<p><span><img src="en-us_image_0000002169383338.png"></span></p>
+</li></ol>
+</li></ul>
+<ul><li><strong>Cluster instance (Patroni): Enable the archive mode by running database commands.</strong><ol><li>Use PuTTY to log in to the PostgreSQL database host. Perform the following operations on all nodes.</li><li>Create a path for storing archive logs (WALs). The <strong>/mnt/server/archivedir/</strong> path is used as an example in subsequent operations.<pre class="screen">mkdir -p /mnt/server/archivedir/</pre>
+</li><li>Grant the read and write permissions to the operating system user who runs the database.<pre class="screen">chmod 750 /mnt/server/archivedir/
+chown postgres:postgres /mnt/server/archivedir/</pre>
+</li><li>Run the <strong>su - postgres</strong> command to switch to the database administrator <strong>postgres</strong>. Information similar to the following is displayed:<pre class="screen">[root@pg_102_129 ~]# su - postgres
+[postgres@pg_102_129 root]$<em>  </em></pre>
+</li><li>Log in to the PostgreSQL database.<pre class="screen">cd /usr/local/pgsql/bin
+./psql</pre>
+</li><li>On the PostgreSQL database host, run the following commands in sequence to enable the database archive mode:<pre class="screen">alter system set wal_level= 'replica';
+alter system set archive_mode= 'on';
+alter system set archive_command ='cp %p /mnt/server/archivedir/%f';</pre>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p><strong>archive_command</strong> supports only the <strong>cp</strong> command.</p>
+</div></div>
+</li><li>Exit the PostgreSQL database and restart it.<div class="p">1) Stop all standby nodes.<pre class="screen">systemctl stop patroni</pre>
+</div>
+<div class="p">2) Restart the primary node.<pre class="screen">systemctl restart patroni</pre>
+</div>
+<div class="p">3) Start all standby nodes.<pre class="screen">systemctl start patroni</pre>
+</div>
+</li><li>Restart the PostgreSQL database and run the following command to check whether the archive mode is enabled:<pre class="screen">show archive_mode;</pre>
+<p>If the function is enabled, the following information is displayed:</p>
+<p><span><img src="en-us_image_0000002204791729.png"></span></p>
+</li></ol>
+</li></ul>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200004613.html">Backing Up PostgreSQL</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

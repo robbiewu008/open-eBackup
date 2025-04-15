@@ -15,6 +15,11 @@ package openbackup.data.access.framework.backup.service.impl;
 import static com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants.STORAGE_INFO;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
+
+import com.google.common.collect.ImmutableSet;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.backup.dto.StorageInfoDto;
 import openbackup.data.access.framework.protection.service.repository.RepositoryStrategyManager;
 import openbackup.data.access.framework.protection.service.repository.strategies.RepositoryStrategy;
@@ -26,13 +31,12 @@ import openbackup.data.protection.access.provider.sdk.enums.RepositoryTypeEnum;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.model.repository.enums.StoragePoolHealthStatus;
+import openbackup.system.base.common.model.repository.enums.StoragePoolRunningStatus;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
 import openbackup.system.base.sdk.repository.api.BackupStorageApi;
 import openbackup.system.base.sdk.repository.model.BackupUnitVo;
-
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
@@ -41,6 +45,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -51,6 +56,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Slf4j
 public class StorageRepositoryCreateServiceImpl implements StorageRepositoryCreateService {
+    private static final Set<String> CAN_BACKUP_STATUS = ImmutableSet.of(
+        StoragePoolRunningStatus.ONLINE.getRunningStatus(), StoragePoolRunningStatus.RECONSTRUCTION.getRunningStatus(),
+        StoragePoolRunningStatus.PRE_COPY.getRunningStatus(), StoragePoolRunningStatus.BALANCING.getRunningStatus());
+
     private final StorageUnitService storageUnitService;
 
     private final BackupStorageApi backupStorageApi;
@@ -103,7 +112,18 @@ public class StorageRepositoryCreateServiceImpl implements StorageRepositoryCrea
             .getUnitList()
             .stream()
             .map(BackupUnitVo::toStorageUnitVo)
+            .filter(this::filterUnit)
             .map(this::buildStorageRepositoryFromStorageUnitVo)
             .collect(Collectors.toList());
+    }
+
+    private boolean filterUnit(StorageUnitVo unit) {
+        if (!VerifyUtil.isEmpty(unit.getHealthStatus()) && String.valueOf(unit.getHealthStatus())
+            .equals(StoragePoolHealthStatus.FAULT.getHealthStatus())) {
+            return false;
+        }
+
+        return VerifyUtil.isEmpty(unit.getRunningStatus()) || CAN_BACKUP_STATUS.contains(
+            String.valueOf(unit.getRunningStatus()));
     }
 }

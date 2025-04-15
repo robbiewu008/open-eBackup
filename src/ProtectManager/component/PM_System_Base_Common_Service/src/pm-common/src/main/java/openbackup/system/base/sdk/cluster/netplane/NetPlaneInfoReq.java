@@ -12,15 +12,14 @@
 */
 package openbackup.system.base.sdk.cluster.netplane;
 
-import openbackup.system.base.common.utils.network.AddressUtil;
-import openbackup.system.base.common.validator.constants.RegexpConstants;
-import openbackup.system.base.common.validator.constants.ValidateGroups;
-import openbackup.system.base.sdk.cluster.netplane.validateprovider.NetPlaneInfoReqCroupProvider;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.common.utils.network.AddressUtil;
+import openbackup.system.base.common.validator.constants.RegexpConstants;
+import openbackup.system.base.common.validator.constants.ValidateGroups;
+import openbackup.system.base.sdk.cluster.netplane.validateprovider.NetPlaneInfoReqCroupProvider;
 
 import org.hibernate.validator.group.GroupSequenceProvider;
 
@@ -53,33 +52,33 @@ public class NetPlaneInfoReq {
      * 掩码
      */
     @NotBlank
-    @Pattern(regexp = RegexpConstants.IPV4_SUB_NETMASK, message = "value invalid",
-        groups = {ValidateGroups.IPv4Group.class})
-    @Pattern(regexp = RegexpConstants.IPV6_SUB_NETMASK, message = "value invalid",
-        groups = {ValidateGroups.IPv6Group.class})
+    @Pattern(regexp = RegexpConstants.IPV4_SUB_NETMASK, message = "value invalid", groups = {
+            ValidateGroups.IPv4Group.class})
+    @Pattern(regexp = RegexpConstants.IPV6_SUB_NETMASK, message = "value invalid", groups = {
+            ValidateGroups.IPv6Group.class})
     private String mask;
 
     /**
      * 网关
      */
-    @Pattern(regexp = RegexpConstants.IPADDRESS_V4, message = "value invalid",
-        groups = {ValidateGroups.IPv4Group.class})
+    @Pattern(regexp = RegexpConstants.IPADDRESS_V4, message = "value invalid", groups = {
+            ValidateGroups.IPv4Group.class})
     @Pattern(regexp = AddressUtil.IPV6REG, message = "value invalid", groups = {ValidateGroups.IPv6Group.class})
     private String gateway;
 
     /**
      * 基础设施IP
      */
-    @Pattern(regexp = RegexpConstants.IPADDRESS_V4, message = "value invalid",
-        groups = {ValidateGroups.IPv4Group.class})
+    @Pattern(regexp = RegexpConstants.IPADDRESS_V4, message = "value invalid", groups = {
+            ValidateGroups.IPv4Group.class})
     @Pattern(regexp = AddressUtil.IPV6REG, message = "value invalid", groups = {ValidateGroups.IPv6Group.class})
     private String infraIp;
 
     /**
      * gaussdb IP
      */
-    @Pattern(regexp = RegexpConstants.IPADDRESS_V4, message = "value invalid",
-        groups = {ValidateGroups.IPv4Group.class})
+    @Pattern(regexp = RegexpConstants.IPADDRESS_V4, message = "value invalid", groups = {
+            ValidateGroups.IPv4Group.class})
     @Pattern(regexp = AddressUtil.IPV6REG, message = "value invalid", groups = {ValidateGroups.IPv6Group.class})
     private String gaussIp;
 
@@ -103,9 +102,12 @@ public class NetPlaneInfoReq {
     @Valid
     private VlanPortVo vlanPort;
 
+    // 支持绑定端口，基于以太端口的vlan口，基于绑定端口的vlan口；
+    // 共享是指gauss ip和infra ip的逻辑口，是否共享底座的端口，无论是已存在的还是新创建的。
     @JsonProperty("shareBondPort")
     private boolean isShareBondPort = false;
 
+    // 支持绑定端口，基于绑定端口的vlan口；复用是指复用底座的端口
     @JsonProperty("reuse")
     private boolean isReuse = false;
 

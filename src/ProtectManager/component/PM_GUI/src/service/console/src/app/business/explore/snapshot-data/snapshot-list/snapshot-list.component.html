@@ -181,7 +181,7 @@
 </div>
 
 <ng-template #colHideTpl>
-    <lv-tree [lvData]="columns" [lvShowCheckbox]="true" [lvShowExpandedIcon]="false" lvSelectionMode="multiple"
+    <lv-tree [lvData]="columns" [lvShowCheckbox]="true" lvSelectionMode="multiple"
         [(lvSelection)]="columnSelection" (lvCheck)="columnCheck($event)"
         [lvScroll]="virtualScroll.scrollParam"></lv-tree>
 </ng-template>

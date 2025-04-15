@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   Component,
@@ -31,9 +31,9 @@ import {
   GROUP_COMMON,
   I18NService,
   JobAPIService,
-  OperateItems,
   RoleOperationMap,
   SlaApiService,
+  SYSTEM_TIME,
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -53,6 +53,7 @@ import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service
 import {
   assign,
   defer,
+  each,
   find,
   includes,
   isEmpty,
@@ -63,7 +64,7 @@ import {
   size,
   trim
 } from 'lodash';
-import { combineLatest, Subject, Subscription, timer } from 'rxjs';
+import { Subject, Subscription, timer } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -91,10 +92,10 @@ export class RecoveryDrillComponent
   groupCommon = GROUP_COMMON;
   roleOperationMap = RoleOperationMap;
 
-  timeZone = 'UTC+08:00';
+  timeZone = SYSTEM_TIME.timeZone;
 
-  joibTimeText = this.i18n.get('explore_all_time_label');
-  joibOptions: MenuItem[];
+  jobTimeText = this.i18n.get('explore_all_time_label');
+  jobOptions: any[];
   abnormalResultTotal = 0;
   abnormalResult = [];
   abPageSize = 5;
@@ -105,6 +106,8 @@ export class RecoveryDrillComponent
   pageSize = CommonConsts.PAGE_SIZE_SMALL;
   total = 0;
   planData = [];
+
+  abnormalJobLimitTime: string;
 
   destroy$ = new Subject();
   summrySub$: Subscription;
@@ -249,48 +252,44 @@ export class RecoveryDrillComponent
       }
     ];
 
-    this.joibOptions = [
+    this.jobOptions = [
       {
         id: 'all',
         label: this.i18n.get('explore_all_time_label'),
-        onClick: () => {
-          this.joibTimeText = this.i18n.get('explore_all_time_label');
-          this.getRecentAbnormalJobs();
-        }
+        limitTime: ''
       },
       {
         id: 'day',
         label: this.i18n.get('common_last_24_hour_label'),
-        onClick: () => {
-          this.joibTimeText = this.i18n.get('common_last_24_hour_label');
-          this.getRecentAbnormalJobs('1d');
-        }
+        limitTime: '1d'
       },
       {
         id: 'week',
         label: this.i18n.get('common_last_week_label'),
-        onClick: () => {
-          this.joibTimeText = this.i18n.get('common_last_week_label');
-          this.getRecentAbnormalJobs('1w');
-        }
+        limitTime: '1w'
       },
       {
         id: 'month',
         label: this.i18n.get('common_last_month_label'),
-        onClick: () => {
-          this.joibTimeText = this.i18n.get('common_last_month_label');
-          this.getRecentAbnormalJobs('1m');
-        }
+        limitTime: '1m'
       },
       {
         id: 'year',
         label: this.i18n.get('explore_half_year_label'),
-        onClick: () => {
-          this.joibTimeText = this.i18n.get('explore_half_year_label');
-          this.getRecentAbnormalJobs('0.5y');
-        }
+        limitTime: '0.5y'
       }
     ];
+
+    each(this.jobOptions, item => {
+      assign(item, {
+        onClick: () => {
+          this.jobTimeText = item.label;
+          this.abnormalJobLimitTime = item.limitTime;
+          this.abPageIndex = CommonConsts.PAGE_START;
+          this.getRecentAbnormalJobs();
+        }
+      });
+    });
 
     const opts: { [key: string]: ProButton } = {
       create: {
@@ -422,7 +421,7 @@ export class RecoveryDrillComponent
       },
       {
         key: 'type',
-        name: this.i18n.get('explore_drill_type_label'),
+        name: this.i18n.get('explore_drill_plan_type_label'),
         filter: {
           type: 'select',
           isMultiple: true,
@@ -555,32 +554,32 @@ export class RecoveryDrillComponent
       });
   }
 
-  getRecentAbnormalJobs(fromStartTime?) {
+  getRecentAbnormalJobs() {
     const params = {
       pageNo: this.abPageIndex + 1,
-      pageSize: this.abPageSize,
-      limitTime: fromStartTime
+      pageSize: this.abPageSize
     };
+    if (!isEmpty(this.abnormalJobLimitTime)) {
+      assign(params, {
+        limitTime: this.abnormalJobLimitTime
+      });
+    }
     if (this.abnormalJobSub$) {
       this.abnormalJobSub$.unsubscribe();
     }
     this.abnormalJobSub$ = timer(0, CommonConsts.TIME_INTERVAL)
       .pipe(
         switchMap(index => {
-          return combineLatest([
-            this.systemTimeService.getSystemTime(false),
-            this.exerciseService.exerciseFail({
-              ...params,
-              akLoading: !index
-            })
-          ]);
+          return this.exerciseService.exerciseFail({
+            ...params,
+            akLoading: !index
+          });
         }),
         takeUntil(this.destroy$)
       )
       .subscribe(res => {
-        this.timeZone = res[0].displayName;
-        this.abnormalResult = res[1].records || [];
-        this.abnormalResultTotal = res[1].totalCount || 0;
+        this.abnormalResult = res.records || [];
+        this.abnormalResultTotal = res.totalCount || 0;
       });
   }
 

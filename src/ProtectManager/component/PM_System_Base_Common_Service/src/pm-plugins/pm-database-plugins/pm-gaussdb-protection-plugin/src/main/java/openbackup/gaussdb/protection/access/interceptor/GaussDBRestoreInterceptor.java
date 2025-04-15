@@ -12,6 +12,9 @@
 */
 package openbackup.gaussdb.protection.access.interceptor;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
@@ -28,7 +31,6 @@ import openbackup.gaussdb.protection.access.constant.GaussDBConstant;
 import openbackup.gaussdb.protection.access.provider.GaussDBAgentProvider;
 import openbackup.gaussdb.protection.access.service.GaussDBService;
 import openbackup.gaussdb.protection.access.util.GaussDBClusterUtils;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
@@ -39,8 +41,6 @@ import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -121,7 +121,7 @@ public class GaussDBRestoreInterceptor extends AbstractDbRestoreInterceptorProvi
         JSONObject properties = JSONObject.fromObject(copy.getProperties());
         String backupToolTypeVaules = properties.getString(GaussDBConstant.ADVANCE_PARAMS_KEY_TOOL_TYPE);
         advancedParams.put(GaussDBConstant.ADVANCE_PARAMS_KEY_TOOL_TYPE, backupToolTypeVaules);
-        advancedParams.put(GaussDBConstant.SPEED_STATISTICS, SpeedStatisticsEnum.UBC.getType());
+        advancedParams.put(GaussDBConstant.SPEED_STATISTICS, SpeedStatisticsEnum.APPLICATION.getType());
         task.setAdvanceParams(advancedParams);
     }
 

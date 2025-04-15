@@ -13,7 +13,7 @@
 
 <div class="list-container">
     <lv-datatable [lvData]='tableData' (lvSortChange)="sortChange($event)" [lvPaginator]="page" lvSort #lvTable
-        class="aui-table-group" [lvScroll]="virtualScroll.scrollParamMap['search-file-table']" lvAsync>
+        class="aui-table-group" lvAsync>
         <thead>
             <tr>
                 <ng-container *ngFor="let item of columns">
@@ -58,7 +58,7 @@
                                         </ng-container>
                                         <ng-container *ngSwitchCase="'nodeLastModifiedTime'">
                                             <span lv-overflow *ngIf="item[col.key] !== 0">
-                                                {{item[col.key] * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}
+                                                {{item[col.key] * 1000 | date: 'yyyy-MM-dd HH:mm:ss':timeZone}}
                                             </span>
                                             <span *ngIf="item[col.key] === 0">--</span>
                                         </ng-container>

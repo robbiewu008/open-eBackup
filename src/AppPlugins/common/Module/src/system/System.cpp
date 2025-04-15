@@ -329,7 +329,7 @@ namespace Module{
         wstring wCmd = converterX.from_bytes(cmd);
         if (!CreateProcess(NULL, (LPWSTR)wCmd.c_str(), NULL, NULL, FALSE, 0, NULL, NULL, &stStartupInfo, &stProcessInfo)) {
             retCode = GetLastError();
-            printf("CreateProcess failed: %d\n", retCode);
+            ERRLOG("CreateProcess failed: %u", retCode);
             return -1;
         }
 

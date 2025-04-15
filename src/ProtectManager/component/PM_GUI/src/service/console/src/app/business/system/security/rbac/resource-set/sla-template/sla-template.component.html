@@ -64,6 +64,7 @@
         <th width="9%" lvCellKey='replication_count' *ngIf="!cookieService.isCloudBackup && !isHcsUser">
           <span lv-overflow>{{'protection_replication_target_counts_label'|i18n}}</span>
         </th>
+        <th>{{'protection_sla_created_by_label'|i18n}}</th>
       </tr>
     </thead>
     <tbody>
@@ -102,6 +103,9 @@
           </td>
           <td *ngIf="!cookieService.isCloudBackup && !isHcsUser">
             {{item.replication_count | nil}}
+          </td>
+          <td>
+            <span lv-overflow>{{item.user_name | nil}}</span>
           </td>
         </tr>
       </ng-container>

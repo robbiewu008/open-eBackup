@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -64,6 +64,10 @@ import { AppUtilsService } from 'app/shared/services/app-utils.service';
       .between-page div:first-child {
         margin-right: 16px;
       }
+
+      .header-margin {
+        margin-top: 0;
+      }
     `
   ]
 })
@@ -100,7 +104,8 @@ export class AlarmDumpComponent implements OnInit, OnDestroy {
     [
       DataMap.Deploy_Type.cloudbackup.value,
       DataMap.Deploy_Type.cloudbackup2.value,
-      DataMap.Deploy_Type.hyperdetect.value
+      DataMap.Deploy_Type.hyperdetect.value,
+      DataMap.Deploy_Type.decouple.value
     ],
     this.i18n.get('deploy_type')
   )
@@ -147,6 +152,12 @@ export class AlarmDumpComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initDumpData();
+  }
+
+  setSysTime() {
+    this.appUtilsService.setTimePickerCurrent(
+      this.dumpForm.get('transferStartTime')
+    );
   }
 
   onChange() {

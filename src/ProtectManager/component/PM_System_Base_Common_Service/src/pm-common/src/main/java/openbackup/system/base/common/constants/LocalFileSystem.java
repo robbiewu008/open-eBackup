@@ -58,4 +58,9 @@ public class LocalFileSystem {
      * 是否是克隆文件系统
      */
     private boolean isCloneFs;
+
+    /**
+     * 是否配置了smart mobility，配置了值为 1，不配置为null
+     */
+    private String hasSmartMobility;
 }

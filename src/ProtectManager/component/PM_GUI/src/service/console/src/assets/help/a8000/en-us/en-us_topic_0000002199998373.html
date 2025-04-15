@@ -1,0 +1,58 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Failure to Restore a Cluster Copy to a New Cluster Because the Temporary Directory /tmp/omm_mppdb Does Not Exist.">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164597706.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002199998373">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Failure to Restore a Cluster Copy to a New Cluster Because the Temporary Directory /tmp/omm_mppdb Does Not Exist.</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002199998373"></a><a name="EN-US_TOPIC_0000002199998373"></a>
+
+<h1 class="topictitle1">Failure to Restore a Cluster Copy to a New Cluster Because the Temporary Directory <strong>/tmp/omm_mppdb</strong> Does Not Exist.</h1>
+<div><div class="section"><h4 class="sectiontitle">Fault Symptom</h4><p>After a cluster copy is restored to a new cluster, the configuration file has been uploaded to all nodes in the new cluster, and the read permission has been assigned to the cluster user, the error message "The database user cannot access the installation configuration file." is still displayed in the task details.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Cause</h4><p>The temporary directory <strong>/tmp/omm_mppdb</strong> of the GaussDB (DWS) node fails to be created or is incorrectly deleted in an abnormal scenario.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Suggestion</h4><ol><li><span>Log in to any node of the GaussDB (DWS) cluster.</span></li><li><span>Run the following commands in sequence to switch to the cluster user and load environment variables:</span><p><pre class="screen">su - <em>Cluster username</em></pre>
+<pre class="screen">source <em>Environment variable file path</em></pre>
+</p></li><li><span>Run the <strong>gs_ssh -c 'hostname'</strong> command to check whether the command output of each node contains the "scp: /tmp/omm_mppdb/: Not a directory" error information.</span><p><ul><li>If the error information is displayed, check whether the <strong>/tmp/omm_mppdb/</strong> directory exists on the corresponding node. If the directory does not exist, log in to the node, manually create the <strong>/tmp/omm_mppdb/</strong> directory, set the read and write permissions for the cluster user, and try again.</li><li>If no error information is displayed, collect logs and contact technical support for assistance.</li></ul>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164597706.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

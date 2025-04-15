@@ -17,6 +17,8 @@ import com.huawei.emeistor.console.contant.ConfigConstant;
 import com.huawei.emeistor.console.exterattack.ExterAttack;
 import com.huawei.emeistor.console.service.SessionService;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  */
 @Component
+@Slf4j
 public final class RequestUtil {
     @Autowired
     private HttpServletRequest request;
@@ -96,6 +99,9 @@ public final class RequestUtil {
         }
         if (!StringUtils.isEmpty(request.getHeader(ConfigConstant.DME_AZ))) {
             header.add(ConfigConstant.DME_AZ, request.getHeader(ConfigConstant.DME_AZ));
+        }
+        if (!StringUtils.isEmpty(request.getHeader(ConfigConstant.DME_PROJECT_ID))) {
+            header.add(ConfigConstant.DME_PROJECT_ID, request.getHeader(ConfigConstant.DME_PROJECT_ID));
         }
         header.add(ConfigConstant.REQUEST_ID, NormalizerUtil.normalizeForString(requestId));
         header.add(ConfigConstant.REQUEST_IP, NormalizerUtil.normalizeForString(requestIp));

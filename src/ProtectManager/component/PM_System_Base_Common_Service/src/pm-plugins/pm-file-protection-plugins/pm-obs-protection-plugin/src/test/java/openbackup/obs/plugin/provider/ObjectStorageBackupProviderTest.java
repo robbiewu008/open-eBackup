@@ -33,6 +33,7 @@ import com.huawei.oceanprotect.repository.service.LocalStorageService;
 import openbackup.system.base.common.constants.LocalStorageInfoRes;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -69,6 +70,9 @@ public class ObjectStorageBackupProviderTest {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private LocalStorageService localStorageService;
+
+    @Mock
+    private DeployTypeService deployTypeService;
 
     @InjectMocks
     private ObjectStorageBackupProvider objectStorageProvider;

@@ -134,7 +134,7 @@ bool CopyAggregator::IsComplete()
     if ((FSBackupUtils::GetCurrentTime() - m_isCompleteTimer) > COMPLETION_CHECK_INTERVAL) {
         m_isCompleteTimer = FSBackupUtils::GetCurrentTime();
         INFOLOG("CopyAggregator check complete : aggregateConsume - %d, copyReadProduce - %d, readPhaseComplete - %d, "
-                "aggTaskProduce - %d, aggTaskConsume - %d, aggregateQueueEmpty - %d, aggregateQueueSize - %u"
+                "aggTaskProduce - %d, aggTaskConsume - %d, aggregateQueueEmpty - %d, aggregateQueueSize - %u, "
                 "BlockBufferCount: %llu, BlockBufferSize: %llu, AggregatorFileSize: %u AggregatorFileCount: %u",
             m_controlInfo->m_aggregateConsume.load(),
             m_controlInfo->m_readProduce.load(),

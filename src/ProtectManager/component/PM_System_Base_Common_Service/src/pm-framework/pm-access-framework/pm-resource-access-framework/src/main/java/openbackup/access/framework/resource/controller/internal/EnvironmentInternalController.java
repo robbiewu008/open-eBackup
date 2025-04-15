@@ -12,6 +12,11 @@
 */
 package openbackup.access.framework.resource.controller.internal;
 
+import com.huawei.oceanprotect.system.base.user.service.UserService;
+
+import com.alibaba.fastjson.JSON;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.dto.AgentRegisterResponse;
 import openbackup.access.framework.resource.dto.ProtectedEnvironmentDto;
 import openbackup.access.framework.resource.service.ProtectedResourceRepository;
@@ -43,11 +48,6 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.enums.LinuxOsTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.security.exterattack.ExterAttack;
-import com.huawei.oceanprotect.system.base.user.service.UserService;
-
-import com.alibaba.fastjson.JSON;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -91,7 +91,7 @@ import javax.validation.Valid;
 @RequestMapping("/v2/internal")
 public class EnvironmentInternalController {
     // 延迟时间，单位min
-    private static final int DELAY_MINUTE = 5;
+    private static final int DELAY_MINUTE = 8;
 
     // 更新
     private static final String UPDATE = "2";
@@ -103,6 +103,8 @@ public class EnvironmentInternalController {
     private static final Pattern SAN_CLIENT_UUID_PATTERN = Pattern.compile("\\w{8}(-\\w{4}){3}-\\w{12}_sanclient");
 
     private static final String QUERY_IP_RESPONSE_URL = "/rest/csm-cmdb/v1/instances/CLOUD_VM_NOVA";
+
+    private static final String IS_AUTO_SYNCHRONIZE_HOST_NAME = "is_auto_synchronize_host_name";
 
     private static final String SYS_ADMIN_ROLE_ID = "1";
 
@@ -140,7 +142,8 @@ public class EnvironmentInternalController {
      */
     @ExterAttack
     @PostMapping("/environments")
-    public AgentRegisterResponse registerProtectedEnvironment(@RequestBody @Valid ProtectedEnvironmentDto environmentDto) {
+    public AgentRegisterResponse registerProtectedEnvironment(
+            @RequestBody @Valid ProtectedEnvironmentDto environmentDto) {
         log.info("Register environment,uuid:{},name:{},endpoint:{},port:{},os type:{},sub type:{},createdTime:{}.",
             environmentDto.getUuid(), environmentDto.getName(), environmentDto.getEndpoint(), environmentDto.getPort(),
             environmentDto.getOsType(), environmentDto.getSubType(), environmentDto.getCreatedTime());
@@ -220,6 +223,11 @@ public class EnvironmentInternalController {
         } finally {
             StringUtil.clean(hcsToken);
         }
+        // hcs多朵云场景临时规避 当agent处于不通的云时 此处查不到agent内大网 故直接用agent上报的ip (针对手动安装场景 填写了eip)
+        if (VerifyUtil.isEmpty(queryIpResponse) || VerifyUtil.isEmpty(queryIpResponse.getObjList())) {
+            log.error("Fail to query ip from environment, will use endpoint reported from agent!");
+            return;
+        }
         String ip = queryIpResponse.getObjList().get(0).getExternalRelayIpAddress();
         log.info("Set agent environment for hcs. The ip is {}, id:{}", ip, environment.getUuid());
 
@@ -243,6 +251,9 @@ public class EnvironmentInternalController {
         ProtectedEnvironment environment = new ProtectedEnvironment();
         BeanUtils.copyProperties(environmentDto, environment);
         buildEnvironmentUserId(environment, environmentDto);
+        environmentDto.getExtendInfo()
+            .put(IS_AUTO_SYNCHRONIZE_HOST_NAME, environmentDto.getIsAutoSynchronizeHostName());
+        environment.setExtendInfo(environmentDto.getExtendInfo());
         environment.setRootUuid(environmentDto.getUuid());
         environment.setLinkStatus(LinkStatusEnum.ONLINE.getStatus().toString());
         if (VerifyUtil.isEmpty(environment.getPath())) {

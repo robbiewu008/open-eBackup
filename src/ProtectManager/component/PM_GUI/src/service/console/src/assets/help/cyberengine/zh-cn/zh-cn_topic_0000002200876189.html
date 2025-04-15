@@ -1,0 +1,98 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="开启文件拦截">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002200876185.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="00-OceanCyber 300 1.2.0 联机帮助">
+<meta name="DC.Publisher" content="20250228">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ZH-CN_TOPIC_0000002200876189">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>开启文件拦截</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ZH-CN_TOPIC_0000002200876189"></a><a name="ZH-CN_TOPIC_0000002200876189"></a>
+
+<h1 class="topictitle1">开启文件拦截</h1>
+<div id="body0000001676753813"><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p8060118">请参考本节操作开启文件拦截。</p>
+<div class="section" id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_section195772489558"><h4 class="sectiontitle">前提条件</h4><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p203681751135519">文件系统已开启NFS或者CIFS共享。</p>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_section72952052836"><h4 class="sectiontitle">注意事项</h4><ul id="ZH-CN_TOPIC_0000002200876189__ul5537132134812"><li id="ZH-CN_TOPIC_0000002200876189__li4537173217484">对于双活域从端或远程复制租户Pair从端文件系统开启文件拦截时，由于对应存储设备双活或远程复制功能的限制，文件扩展名过滤规则在对应的存储设备不生效，此时OceanCyber产生告警。对应的主端文件系统开启文件拦截后，NAS双活的配置会自动同步到从端，此时OceanCyber可以手动扫描文件系统，文件扩展名关联状态正常后可清除告警。</li><li id="ZH-CN_TOPIC_0000002200876189__li121843418483">如果存储设备的文件系统开启了DataTurbo共享，则不支持开启文件拦截。</li><li id="ZH-CN_TOPIC_0000002200876189__li99101028141615">实时侦测：支持OceanProtect 1.3.0及以上版本、OceanStor Dorado 6.1.6及以上版本，不支持开启dataturbo的文件系统。</li></ul>
+</div>
+<div class="section" id="ZH-CN_TOPIC_0000002200876189__section329313107287"><h4 class="sectiontitle">操作步骤</h4><ol id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_ol1498311525414"><li id="ZH-CN_TOPIC_0000002200876189__li791210321107"><span>在导航栏选择“<span id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001676473709_text0486163811356">数据安全</span> &gt; <span id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001676473709_text56981229133613">文件拦截</span>”。</span></li></ol><ol start="2" id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_ol13790921131411"><li id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_li5362122616287"><span>在<span class="uicontrol" id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_uicontrol12890172918">“<span id="ZH-CN_TOPIC_0000002200876189__text162101954103611">文件系统</span>”</span>页签，选择需要开启文件拦截的文件系统，单击<span class="menucascade" id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_menucascade81473270438">“<span class="uicontrol" id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_uicontrol134420288434"><span id="ZH-CN_TOPIC_0000002200876189__text184215301421">更多</span> &gt; <span id="ZH-CN_TOPIC_0000002200876189__text19915182644517">开启文件拦截</span></span>”</span>。</span><p><div class="note" id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_note751754763520"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_ul2045311719102"><li id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_li163418810101">您也可以勾选多个需要开启文件拦截的文件系统，单击上方的<span class="uicontrol" id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_uicontrol1155885215407">“<span id="ZH-CN_TOPIC_0000002200876189__text111051174616">开启文件拦截</span>”</span>。</li><li id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_li84532771015">如果不需要文件拦截，请单击<span class="menucascade" id="ZH-CN_TOPIC_0000002200876189__menucascade073602594620">“<span class="uicontrol" id="ZH-CN_TOPIC_0000002200876189__uicontrol47378252463"><span id="ZH-CN_TOPIC_0000002200876189__text197371925144610">更多</span> &gt; <span id="ZH-CN_TOPIC_0000002200876189__text15396124244614">禁用文件拦截</span></span>”</span>。或者勾选多个需要禁用文件拦截的文件系统，单击上方的<span class="uicontrol" id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_uicontrol18831135817197">“<span id="ZH-CN_TOPIC_0000002200876189__text16811125424616">禁用文件拦截</span>”</span>。</li></ul>
+</div></div>
+</p></li><li id="ZH-CN_TOPIC_0000002200876189__li129201626175414"><span>系统弹出提示框，仔细阅读提示内容后，单击<span class="uicontrol" id="ZH-CN_TOPIC_0000002200876189__uicontrol655725410548">“<span id="ZH-CN_TOPIC_0000002200876189__text6636225556">确定</span>”</span>。</span></li><li id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_li3647205162"><span>单击文件的<span class="uicontrol" id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_uicontrol19446220181513">“<span id="ZH-CN_TOPIC_0000002200876189__text88273271476">文件扩展名过滤规则数量</span>”</span>，查看<span id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_text1236327176">文件扩展名过滤规则</span>的关联状态。关联状态说明如<a href="#ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_table450913122183">表1</a>。如果关联状态为<span class="uicontrol" id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_uicontrol173383421403">“<span id="ZH-CN_TOPIC_0000002200876189__text6244948184711">已应用</span>”</span>，表明<span id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_text576756613">文件扩展名过滤规则</span>已生效。</span><p>
+<div class="tablenoborder"><a name="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_table450913122183"></a><a name="zh-cn_topic_0000001283108982_table450913122183"></a><table cellpadding="4" cellspacing="0" summary="" id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_table450913122183" frame="border" border="1" rules="all"><caption><b>表1 </b><span id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_text517524195">文件扩展名过滤规则</span>关联状态说明</caption><colgroup><col style="width:22.06%"><col style="width:77.94%"></colgroup><thead align="left"><tr id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_row17509181216189"><th align="left" class="cellrowborder" valign="top" width="22.06%" id="mcps1.3.4.3.3.2.1.2.3.1.1"><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p350910127186">关联状态</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="77.94%" id="mcps1.3.4.3.3.2.1.2.3.1.2"><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p12509201261818">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_row750918121189"><td class="cellrowborder" valign="top" width="22.06%" headers="mcps1.3.4.3.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p10509412191810"><span id="ZH-CN_TOPIC_0000002200876189__text1930034454816">已关联</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="77.94%" headers="mcps1.3.4.3.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p450911215181"><span id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_text1464565679">文件扩展名过滤规则</span>已关联文件系统。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_row950931215184"><td class="cellrowborder" valign="top" width="22.06%" headers="mcps1.3.4.3.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p18509131212182"><span id="ZH-CN_TOPIC_0000002200876189__text1167610492488">已应用</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="77.94%" headers="mcps1.3.4.3.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p8509181214182"><span id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_text182965993">文件扩展名过滤规则</span>已应用到文件系统。文件系统中相同扩展名文件的创建、打开和重命名行为将被阻止。</p>
+<div class="note" id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_note156481438182119"><span class="notetitle"> 说明： </span><div class="notebody"><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p1430704116224">在通过CIFS共享访问文件系统时，删除操作需要先打开文件再执行删除，因此删除文件的操作也会被拦截。</p>
+</div></div>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_row14509712111814"><td class="cellrowborder" valign="top" width="22.06%" headers="mcps1.3.4.3.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p11509161215186"><span id="ZH-CN_TOPIC_0000002200876189__text5404155124813">应用中</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="77.94%" headers="mcps1.3.4.3.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p350911218189"><span id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_text646944908">文件扩展名过滤规则</span>正在应用到文件系统。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_row1450961212189"><td class="cellrowborder" valign="top" width="22.06%" headers="mcps1.3.4.3.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p151010122187"><span id="ZH-CN_TOPIC_0000002200876189__text1587121004920">解除关联中</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="77.94%" headers="mcps1.3.4.3.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p155107126186"><span id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_text986868922">文件扩展名过滤规则</span>与文件系统正在解除关联。文件系统也将会取消应用。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_row1551021217184"><td class="cellrowborder" valign="top" width="22.06%" headers="mcps1.3.4.3.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p451091213189"><span id="ZH-CN_TOPIC_0000002200876189__text17077144912">取消应用中</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="77.94%" headers="mcps1.3.4.3.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p95109126186"><span id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_text1939571560">文件扩展名过滤规则</span>正在取消应用到文件系统。</p>
+</td>
+</tr>
+<tr id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_row14053817198"><td class="cellrowborder" valign="top" width="22.06%" headers="mcps1.3.4.3.3.2.1.2.3.1.1 "><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p440515811193"><span id="ZH-CN_TOPIC_0000002200876189__text10603102210491">异常</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="77.94%" headers="mcps1.3.4.3.3.2.1.2.3.1.2 "><p id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_p440511812194">已应用的<span id="ZH-CN_TOPIC_0000002200876189__zh-cn_topic_0000001283108982_text402747774">文件扩展名过滤规则</span>对部分文件系统共享未生效。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000002200876185.html">配置文件拦截（事前拦截）</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

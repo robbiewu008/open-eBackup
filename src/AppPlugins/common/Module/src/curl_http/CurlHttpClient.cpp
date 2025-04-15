@@ -375,7 +375,7 @@ void CurlHttpResponse::SetTwoWayAuthentication(const HttpRequest& req)
     }
 }
 
-void CurlHttpResponse::SendTwoWayCertRequest(const HttpRequest& req, const uint32_t timeOut)
+void CurlHttpResponse::SendTwoWayCertRequest(const HttpRequest& req, const uint32_t connTimeOut, const uint32_t timeOut)
 {
     HCP_Log(INFO, HTTP_CLIENT_MODULE_NAME) << WIPE_SENSITIVE(req.method) << "," << WIPE_SENSITIVE(req.url) << HCPENDLOG;
 
@@ -391,8 +391,8 @@ void CurlHttpResponse::SendTwoWayCertRequest(const HttpRequest& req, const uint3
     curl_easy_setopt(m_Curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(m_Curl, CURLOPT_FORBID_REUSE, 1);
     curl_easy_setopt(m_Curl, CURLOPT_NOSIGNAL, 1);
-    curl_easy_setopt(m_Curl, CURLOPT_CONNECTTIMEOUT, static_cast<int>(timeOut));
-    curl_easy_setopt(m_Curl, CURLOPT_TIMEOUT, static_cast<int>(timeOut));
+    curl_easy_setopt(m_Curl, CURLOPT_CONNECTTIMEOUT, static_cast<int>(connTimeOut));
+    curl_easy_setopt(m_Curl, CURLOPT_TIMEOUT, static_cast<int>(std::max(timeOut, connTimeOut)));
     curl_easy_setopt(m_Curl, CURLOPT_VERBOSE, 0);
     curl_easy_setopt(m_Curl, CURLOPT_ERRORBUFFER, curl_error_str);
 
@@ -426,7 +426,8 @@ void CurlHttpResponse::SendTwoWayCertRequest(const HttpRequest& req, const uint3
     CleanCertInfo();
 }
 
-void CurlHttpResponse::SendRequest(const HttpRequest& req, const uint32_t timeOut)
+void CurlHttpResponse::SendRequest(const HttpRequest& req, const uint32_t connTimeOut,
+    const uint32_t timeOut)
 {
     HCP_Log(INFO, HTTP_CLIENT_MODULE_NAME) << "Method: " << req.method
                                         << ", url: " << req.url << ", special card: "
@@ -443,7 +444,7 @@ void CurlHttpResponse::SendRequest(const HttpRequest& req, const uint32_t timeOu
     // redirect
     curl_easy_setopt(m_Curl, CURLOPT_FOLLOWLOCATION, 1L);
     // set timeout parameters
-    SetTimeOut(m_Curl, timeOut);
+    SetTimeOut(m_Curl, connTimeOut, timeOut);
     curl_easy_setopt(m_Curl, CURLOPT_ERRORBUFFER, curl_error_str);
     if (req.enableProxy) {
         curl_easy_setopt(m_Curl, CURLOPT_PROXY, "protectengine-e-dma:30071");
@@ -477,19 +478,19 @@ void CurlHttpResponse::SendRequest(const HttpRequest& req, const uint32_t timeOu
     }
     if (m_ErrorCode != CURLE_OK) {
         HCP_Log(ERR, HTTP_CLIENT_MODULE_NAME) << "Http send request failed. Error is"
-            << curl_error_str << HCPENDLOG;
+            << m_ErrorCode << ", " << curl_error_str << HCPENDLOG;
     }
     if (headers != nullptr) {
         curl_slist_free_all(headers);
     }
 }
 
-void CurlHttpResponse::SetTimeOut(CURL* curlPtr, const uint32_t timeOut)
+void CurlHttpResponse::SetTimeOut(CURL* curlPtr, const uint32_t connTimeOut, const uint32_t timeOut)
 {
     curl_easy_setopt(curlPtr, CURLOPT_FORBID_REUSE, 1);
     curl_easy_setopt(curlPtr, CURLOPT_NOSIGNAL, 1);
-    curl_easy_setopt(curlPtr, CURLOPT_CONNECTTIMEOUT, static_cast<int>(timeOut));
-    curl_easy_setopt(curlPtr, CURLOPT_TIMEOUT, static_cast<int>(timeOut));
+    curl_easy_setopt(curlPtr, CURLOPT_CONNECTTIMEOUT, static_cast<int>(connTimeOut));
+    curl_easy_setopt(curlPtr, CURLOPT_TIMEOUT, static_cast<int>(std::max(timeOut, connTimeOut)));
     curl_easy_setopt(curlPtr, CURLOPT_VERBOSE, 0);
 }
 
@@ -848,25 +849,27 @@ std::map<std::string, std::set<std::string> > CurlHttpResponse::GetHeaders()
     return m_Headers;
 }
 
-std::shared_ptr<IHttpResponse> CurlHttpClient::SendRequest(const HttpRequest& req, const uint32_t timeOut /* = 90 */)
+std::shared_ptr<IHttpResponse> CurlHttpClient::SendRequest(const HttpRequest& req, const uint32_t connTimeOut /* = 90 */,
+    const uint32_t timeOut /* = 0 */)
 {
     std::shared_ptr<CurlHttpResponse> rsp = std::make_shared<CurlHttpResponse>();
     if (rsp == nullptr || rsp->GetPtr() == nullptr) {
         HCP_Log(ERR, HTTP_CLIENT_MODULE_NAME) << "Create curlhttpclient object failed." << HCPENDLOG;
         return std::shared_ptr<CurlHttpResponse>();
     }
-    rsp->SendRequest(req, timeOut);
+    rsp->SendRequest(req, connTimeOut, timeOut);
     return rsp;
 }
 
-std::shared_ptr<IHttpResponse> CurlHttpClient::SendMemCertRequest(const HttpRequest& req, const uint32_t timeOut)
+std::shared_ptr<IHttpResponse> CurlHttpClient::SendMemCertRequest(const HttpRequest& req, const uint32_t connTimeOut
+    /* = 90 */, const uint32_t timeOut /* = 0 */)
 {
     std::shared_ptr<CurlHttpResponse> rsp = std::make_shared<CurlHttpResponse>();
     if (rsp == nullptr || rsp->GetPtr() == nullptr) {
         HCP_Log(ERR, HTTP_CLIENT_MODULE_NAME) << "Create curlhttpclient object failed." << HCPENDLOG;
         return std::shared_ptr<CurlHttpResponse>();
     }
-    rsp->SendTwoWayCertRequest(req, timeOut);
+    rsp->SendTwoWayCertRequest(req, connTimeOut, timeOut);
     return rsp;
 }
 

@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.common.scurity;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CertErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;

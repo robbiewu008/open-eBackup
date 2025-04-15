@@ -106,6 +106,17 @@ BackupRetCode ArchiveHardlinkReader::Enqueue(FileHandle& fileHandle)
     return BackupRetCode::SUCCESS;
 }
 
+bool ArchiveHardlinkReader::IsAbort()
+{
+    if (m_abort || m_controlInfo->m_failed || m_controlInfo->m_controlReaderFailed) {
+        INFOLOG("abort %d failed %d controlReaderFailed %d",
+            m_abort, m_controlInfo->m_failed.load(), m_controlInfo->m_controlReaderFailed.load());
+        m_controlInfo->m_readPhaseComplete = true;
+        return true;
+    }
+    return false;
+}
+
 bool ArchiveHardlinkReader::IsComplete()
 {
     if ((FSBackupUtils::GetCurrentTime() - m_isCompleteTimer) > COMPLETION_CHECK_INTERVAL) {
@@ -139,12 +150,13 @@ int ArchiveHardlinkReader::OpenFile(FileHandle& fileHandle)
     DBGLOG("Enter OpenFile: %s", fileHandle.m_file->m_fileName.c_str());
     auto openTask = make_shared<ArchiveServiceTask>(
         ArchiveEvent::OPEN_SRC, m_blockBufferMap, fileHandle, m_params, m_archiveClient);
-    if (!(m_jsPtr->Put(openTask))) {
+    if (!(m_jsPtr->Put(openTask, true, TIME_LIMIT_OF_PUT_TASK))) {
         ERRLOG("put open file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -159,12 +171,13 @@ int ArchiveHardlinkReader::CloseFile(FileHandle& fileHandle)
     DBGLOG("Enter CloseFile: %s", fileHandle.m_file->m_fileName.c_str());
     auto task = make_shared<ArchiveServiceTask>(
         ArchiveEvent::CLOSE_SRC, m_blockBufferMap, fileHandle, m_params, m_archiveClient);
-    if (!m_jsPtr->Put(task)) {
+    if (!m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK)) {
         ERRLOG("put close file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -204,13 +217,14 @@ int ArchiveHardlinkReader::ReadSymlinkData(FileHandle& fileHandle)
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto task = make_shared<ArchiveServiceTask>(
         ArchiveEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params, m_archiveClient);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName);
         ERRLOG("ReadSymlinkData task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("ReadSymlinkData total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("ReadSymlinkData total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 #endif
 }
@@ -229,13 +243,14 @@ int ArchiveHardlinkReader::ReadEmptyData(FileHandle& fileHandle)
     m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
     auto task = make_shared<ArchiveServiceTask>(
         ArchiveEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params, m_archiveClient);
-    if (!m_jsPtr->Put(task)) {
+    if (!m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK)) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName);
         ERRLOG("ReadEmptyData put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
-    ++m_readTaskProduce;
-    DBGLOG("ReadEmptyData total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_readTaskProduce;
+    DBGLOG("ReadEmptyData total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -262,12 +277,13 @@ int ArchiveHardlinkReader::ReadNormalData(FileHandle& fileHandle)
         m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
         auto task = make_shared<ArchiveServiceTask>(
             ArchiveEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params, m_archiveClient);
-        if (m_jsPtr->Put(task) == false) {
+        if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
             m_blockBufferMap->Delete(fileHandle.m_file->m_fileName);
             ERRLOG("ReadNormalData put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+            m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
             return FAILED;
         }
-        ++m_readTaskProduce;
+        ++m_controlInfo->m_readTaskProduce;
     }
 
     if (remainSize != 0) {
@@ -280,14 +296,15 @@ int ArchiveHardlinkReader::ReadNormalData(FileHandle& fileHandle)
         auto task = make_shared<ArchiveServiceTask>(
             ArchiveEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params, m_archiveClient);
         m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
-        if (m_jsPtr->Put(task) == false) {
+        if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
             m_blockBufferMap->Delete(fileHandle.m_file->m_fileName);
             ERRLOG("ReadNormalData put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
+            m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
             return FAILED;
         }
-        ++m_readTaskProduce;
+        ++m_controlInfo->m_readTaskProduce;
     }
-    DBGLOG("ReadNormalData total readTask produce for now: %d", m_readTaskProduce.load());
+    DBGLOG("ReadNormalData total readTask produce for now: %d", m_controlInfo->m_readTaskProduce.load());
     return SUCCESS;
 }
 
@@ -352,9 +369,10 @@ void ArchiveHardlinkReader::ProcessReadEntries(FileHandle& fileHandle)
 /* check if we can take ThreadFunc into base class */
 void ArchiveHardlinkReader::ThreadFunc()
 {
+    HCPTSP::getInstance().reset(m_backupParams.commonParams.reqID);
     INFOLOG("ArchiveHardlinkReader main thread start!");
     while (true) {
-        if (m_abort) {
+        if (IsAbort()) {
             WARNLOG("ArchiveHardlinkReader main thread abort!");
             m_threadDone = true;
             return;
@@ -421,8 +439,8 @@ void ArchiveHardlinkReader::PollReadTask()
             } else {
                 HandleFailedEvent(task);
             }
-            ++m_readTaskConsume;
-            DBGLOG("read tasks consume cnt for now %llu", m_readTaskConsume.load());
+            ++m_controlInfo->m_readTaskConsume;
+            DBGLOG("read tasks consume cnt for now %llu", m_controlInfo->m_readTaskConsume.load());
         }
     }
 
@@ -446,7 +464,7 @@ void ArchiveHardlinkReader::HandleSuccessEvent(shared_ptr<ArchiveServiceTask> ta
     if (taskPtr->m_event == ArchiveEvent::OPEN_SRC) {
         fileHandle.m_file->SetSrcState(FileDescState::SRC_OPENED); // INIT -> SRC_OPENED
         DBGLOG("Put SRC_OPENED file to read queue %s", fileHandle.m_file->m_fileName.c_str());
-        m_readQueue->WaitAndPush(fileHandle);
+        m_readQueue->Push(fileHandle);
         // push to aggregate to write to open dst
         PushFileHandleToAggregator(fileHandle);
     }
@@ -460,7 +478,7 @@ void ArchiveHardlinkReader::HandleSuccessEvent(shared_ptr<ArchiveServiceTask> ta
         if (fileHandle.m_file->m_blockStats.m_totalCnt == fileHandle.m_file->m_blockStats.m_readReqCnt ||
             fileHandle.m_file->m_size == 0) {
             fileHandle.m_file->SetSrcState(FileDescState::READED); // PARTIAL_READED|READ_DATA -> READED
-            m_readQueue->WaitAndPush(fileHandle);
+            m_readQueue->Push(fileHandle);
             DBGLOG("File is readed: %s, total: %d, readcnt: %d, size: %d", fileHandle.m_file->m_fileName.c_str(),
                 fileHandle.m_file->m_blockStats.m_totalCnt.load(), fileHandle.m_file->m_blockStats.m_readReqCnt.load(),
                 fileHandle.m_file->m_size);

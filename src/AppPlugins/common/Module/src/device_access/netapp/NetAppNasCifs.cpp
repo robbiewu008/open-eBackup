@@ -210,7 +210,7 @@ namespace Module {
     }
 
     int NetAppNasCIFS::ValidateQueryCifsShareResponse(Json::Value &data, std::string volumeName,
-                                                        std::string &sharePath, int& errorCode)
+                                                      std::string &sharePath, int& errorCode)
     {
         for (Json::Value::ArrayIndex i = 0; i != data["records"].size(); i++) {
             if (!data["records"][i].isMember("name") || !data["records"][i].isMember("path") ||
@@ -378,6 +378,7 @@ namespace Module {
             iRet = DeleteParentSnapshot(parentVolumeName, parentVolumeUuid, parentSnapshot);
             if (iRet == FAILED) {
                 HCP_Log(ERR, NETAPP_MODULE) << "Could not Delete Parent Snapshot" << HCPENDLOG;
+                return FAILED;
             }
         }
         HCP_Log(INFO, NETAPP_MODULE) <<"Delete cifs share and volume success!" << HCPENDLOG;

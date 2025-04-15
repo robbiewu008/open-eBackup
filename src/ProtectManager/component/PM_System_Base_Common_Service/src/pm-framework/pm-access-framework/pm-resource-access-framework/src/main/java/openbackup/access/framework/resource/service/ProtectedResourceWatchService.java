@@ -12,6 +12,7 @@
 */
 package openbackup.access.framework.resource.service;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.proxy.ProxyFactory;
 import openbackup.access.framework.resource.validator.JsonSchemaValidator;
 import openbackup.data.access.framework.core.manager.ProviderManager;
@@ -21,8 +22,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.invoke.Invocation;
 import openbackup.system.base.util.SensitiveValidateUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -108,7 +107,7 @@ public class ProtectedResourceWatchService implements ProtectedResourceMonitor {
 
     private void doExtendInfoSensetiveValidate(ProtectedResource resource) {
         if (VerifyUtil.isEmpty(resource.getExtendInfo())) {
-            return ;
+            return;
         }
         List<String> allfields = resource.getExtendInfo().keySet().stream().collect(Collectors.toList());
         List<String> fieldsFromJsonSchema = jsonSchemaValidator.getSecretFields(resource.getSubType());

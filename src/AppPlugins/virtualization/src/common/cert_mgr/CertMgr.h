@@ -91,6 +91,8 @@ public:
 protected:
     bool SaveDataToTempFile(const std::string& filePath, const std::string& data);
     bool RemoveTempFile(const std::string& filePath);
+    std::string GetCertRootPath();
+    bool SaveCertAndCrlFile(const std::string &tmpCertDir, const std::string &fileName);
 
 protected:
     std::string m_certification;

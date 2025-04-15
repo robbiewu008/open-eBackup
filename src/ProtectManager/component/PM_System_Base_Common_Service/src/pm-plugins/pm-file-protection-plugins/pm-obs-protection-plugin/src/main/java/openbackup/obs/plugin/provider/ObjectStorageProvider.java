@@ -12,6 +12,12 @@
 */
 package openbackup.obs.plugin.provider;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
 import openbackup.data.access.framework.protection.common.constants.AgentKeyConstant;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
@@ -23,7 +29,6 @@ import openbackup.data.protection.access.provider.sdk.resource.EnvironmentProvid
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.obs.plugin.common.ObjectStorageCommonTool;
 import openbackup.obs.plugin.common.constants.EnvironmentConstant;
 import openbackup.obs.plugin.service.ObjectStorageAgentService;
@@ -36,11 +41,6 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.enums.ObjectStorageTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
@@ -128,7 +128,7 @@ public class ObjectStorageProvider implements EnvironmentProvider {
             encryptData(environment);
             // 拼接uuid
             String uuid = environment.getExtendInfo().get(EnvironmentConstant.KEY_STORAGE_TYPE)
-                + SymbolConstant.UNDERLINE + tenantId;
+                + SymbolConstant.UNDERLINE + tenantId + SymbolConstant.UNDERLINE + environment.getEndpoint();
             // 设置uuid
             environment.setUuid(uuid);
             // 校验uuid是否重复，避免重复注册
@@ -290,13 +290,6 @@ public class ObjectStorageProvider implements EnvironmentProvider {
         if (!StringUtils.equals(environment.getEndpoint(), equipment.getEndpoint())) {
             throw new DataProtectionAccessException(CommonErrorCode.ILLEGAL_PARAM,
                 new String[] {environment.getEndpoint()});
-        }
-
-        // 协议不可修改
-        if (!StringUtils.equals(environment.getAuth().getExtendInfo().get(EnvironmentConstant.KEY_USE_HTTPS),
-            equipment.getAuth().getExtendInfo().get(EnvironmentConstant.KEY_USE_HTTPS))) {
-            throw new DataProtectionAccessException(CommonErrorCode.ILLEGAL_PARAM,
-                new String[] {environment.getAuth().getExtendInfo().get(EnvironmentConstant.KEY_USE_HTTPS)});
         }
     }
 

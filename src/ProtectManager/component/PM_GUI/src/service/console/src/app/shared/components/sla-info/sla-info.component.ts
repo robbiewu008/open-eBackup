@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -28,12 +28,14 @@ import {
   PolicyAction,
   QosService,
   ReplicationModeType,
+  RouterUrl,
   ScheduleTrigger,
   SLA_BACKUP_NAME,
   StoragesApiService,
   StorageUnitService,
   StorageUserAuthService
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { SlaParseService } from 'app/shared/services/sla-parse.service';
 import {
   assign,
@@ -42,8 +44,10 @@ import {
   find,
   get,
   includes,
+  intersection,
   isEmpty,
   isEqual,
+  isFunction,
   isNumber,
   map,
   set,
@@ -73,7 +77,8 @@ export class SlaInfoComponent implements OnInit {
   mediaSetOptions = {};
   targetZoneOps = [];
   resourceOps = [];
-
+  _get = get;
+  isDistributed = this.appUtilsService.isDistributed;
   dataMap = DataMap;
   appType = ApplicationType;
   daysOfType = DaysOfType;
@@ -94,6 +99,7 @@ export class SlaInfoComponent implements OnInit {
     ApplicationType.Vmware,
     ApplicationType.CNware,
     ApplicationType.FusionCompute,
+    ApplicationType.FusionOne,
     ApplicationType.KubernetesDatasetCommon,
     ApplicationType.KubernetesStatefulSet,
     DataMap.Resource_Type.kubernetesNamespaceCommon.value,
@@ -110,7 +116,8 @@ export class SlaInfoComponent implements OnInit {
     ApplicationType.NASShare,
     ApplicationType.ObjectStorage,
     ApplicationType.Fileset,
-    ApplicationType.Volume
+    ApplicationType.Volume,
+    ApplicationType.HDFS
   ];
   actionSort = [
     'full',
@@ -125,21 +132,33 @@ export class SlaInfoComponent implements OnInit {
       DataMap.Deploy_Type.x3000.value,
       DataMap.Deploy_Type.x6000.value,
       DataMap.Deploy_Type.x8000.value,
-      DataMap.Deploy_Type.x9000.value
+      DataMap.Deploy_Type.x9000.value,
+      DataMap.Deploy_Type.e6000.value,
+      DataMap.Deploy_Type.decouple.value
     ],
     this.i18n.get('deploy_type')
   );
+
+  isHyperdetect =
+    this.i18n.get('deploy_type') === DataMap.Deploy_Type.hyperdetect.value;
+
+  // 备份软件,包含X系列，E6000，软硬解耦
+  isOceanProtect =
+    this.appUtilsService.isDataBackup || this.appUtilsService.isDecouple;
   replicationModeType = ReplicationModeType;
   isDmeUser = this.cookieService.get('userType') === CommonConsts.DME_USER_TYPE;
+  isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
   autoIndexForObs = false; // 对象存储下支持自动索引的应用
   autoIndexForTape = false; // 磁带库下支持自动索引的应用
-
+  archiveLogCopy = false; // 归档日志副本
+  ratePolicyRouterUrl = RouterUrl.ProtectionLimitRatePolicy;
   @Input() sla: any = {};
   @Input() activeIndex = '0';
   @Input() isTask = false;
   @Input() job: any = {};
 
   constructor(
+    public appUtilsService: AppUtilsService,
     private fb: FormBuilder,
     public i18n: I18NService,
     public datePipe: DatePipe,
@@ -165,10 +184,14 @@ export class SlaInfoComponent implements OnInit {
           ApplicationType.Hive,
           ApplicationType.HDFS,
           ApplicationType.KubernetesStatefulSet,
+          ApplicationType.KubernetesDatasetCommon,
           ApplicationType.Vmware,
           ApplicationType.HCSCloudHost,
           ApplicationType.FusionCompute,
-          ApplicationType.TDSQL
+          ApplicationType.TDSQL,
+          ApplicationType.HyperV,
+          ApplicationType.CNware,
+          ApplicationType.Nutanix
         ],
         this.sla.application
       )
@@ -191,6 +214,10 @@ export class SlaInfoComponent implements OnInit {
         ApplicationType.Fileset,
         ApplicationType.Ndmp
       ],
+      this.sla.application
+    );
+    this.archiveLogCopy = includes(
+      [ApplicationType.TDSQL],
       this.sla.application
     );
     this.autoIndexForTape = includes(
@@ -264,12 +291,44 @@ export class SlaInfoComponent implements OnInit {
           )
         });
       });
-      this.getExtSystems();
+      this.getExtSystems(() => {
+        this.getCrossCloudUnitName();
+      });
     }
 
     if (this.isDataBackup && !this.isDmeUser) {
       this.initReplicationStorageNames();
     }
+  }
+
+  private getCrossCloudUnitName() {
+    each(this.replicationTeams, item => {
+      if (item.replication_target_mode === ReplicationModeType.CROSS_CLOUD) {
+        let tmpClusterId = find(
+          this.externalSystems,
+          val =>
+            !!intersection(val.clusterIp.split(','), [item.cluster_ip]).length
+        ).clusterId;
+        const params = {
+          pageNo: CommonConsts.PAGE_START,
+          pageSize: CommonConsts.PAGE_SIZE_MAX,
+          userId: item.project_id,
+          authType:
+            item.replication_storage_type ===
+            DataMap.backupStorageTypeSla.unit.value
+              ? 1
+              : 2,
+          clusterId: tmpClusterId
+        };
+        this.storageUserAuthService
+          .getRemoteStorageUserAuthRelationsByUserId(params)
+          .subscribe((res: any) => {
+            item.replication_storage_name = find(res.records, {
+              storageId: item.storage_id
+            }).storageName;
+          });
+      }
+    });
   }
 
   initReplicationStorageNames() {
@@ -500,7 +559,6 @@ export class SlaInfoComponent implements OnInit {
       .getClustersInfoUsingGET(params)
       .subscribe((res: any) => {
         const nodes = map(res.records, item => {
-          this.getMediaSets([], null, null, item);
           return {
             ...item,
             key: item.clusterId,
@@ -510,6 +568,18 @@ export class SlaInfoComponent implements OnInit {
           };
         });
         this.clusterNodeNames = nodes;
+        let nodeArray = [];
+        each(this.archiveTeams, item => {
+          if (item.protocol === DataMap.Archival_Protocol.tapeLibrary.value) {
+            const tmpNode = find(nodes, {
+              storageEsn: item?.storage_list[0]?.esn
+            });
+            nodeArray.push(tmpNode);
+          }
+        });
+        each(nodeArray, item => {
+          this.getMediaSets([], null, null, item);
+        });
       });
   }
 
@@ -549,7 +619,7 @@ export class SlaInfoComponent implements OnInit {
     });
   }
 
-  getExtSystems() {
+  getExtSystems(callback?) {
     this.clusterApiService
       .getClustersInfoUsingGET({
         startPage: 0,
@@ -559,6 +629,9 @@ export class SlaInfoComponent implements OnInit {
       })
       .subscribe(res => {
         this.externalSystems = res.records;
+        if (isFunction(callback)) {
+          callback();
+        }
       });
   }
 

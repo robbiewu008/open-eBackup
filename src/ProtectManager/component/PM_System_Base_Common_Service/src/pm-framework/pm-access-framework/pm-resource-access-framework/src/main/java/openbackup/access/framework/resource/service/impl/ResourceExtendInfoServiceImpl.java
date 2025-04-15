@@ -12,6 +12,10 @@
 */
 package openbackup.access.framework.resource.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.persistence.dao.ProtectedResourceExtendInfoMapper;
 import openbackup.access.framework.resource.persistence.model.ProtectedResourceExtendInfoPo;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceExtendInfoService;
@@ -20,20 +24,18 @@ import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.VerifyUtil;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -84,6 +86,46 @@ public class ResourceExtendInfoServiceImpl implements ResourceExtendInfoService 
             }
         }
     }
+
+    @Override
+    public void saveOrUpdateExtendInfoWithOutTransactional(String resourceId, Map<String, String> extendInfoMap) {
+        Set<String> keySet = extendInfoMap.keySet();
+        List<String> keyList = new ArrayList<>(keySet);
+        if (VerifyUtil.isEmpty(keyList)) {
+            return;
+        }
+        LambdaQueryWrapper<ProtectedResourceExtendInfoPo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ProtectedResourceExtendInfoPo::getResourceId, resourceId)
+            .in(ProtectedResourceExtendInfoPo::getKey, keyList);
+        List<ProtectedResourceExtendInfoPo> protectedResourceExtendInfoPoList =
+            protectedResourceExtendInfoMapper.selectList(queryWrapper);
+        Map<String, ProtectedResourceExtendInfoPo> extendInfoPoMap =
+            counvertProtectedResourceExtendInfoMap(protectedResourceExtendInfoPoList);
+        for (String key : extendInfoMap.keySet()) {
+            ProtectedResourceExtendInfoPo infoPo = extendInfoPoMap.get(key);
+            if (infoPo != null) {
+                infoPo.setValue(extendInfoMap.get(key));
+                protectedResourceExtendInfoMapper.updateById(infoPo);
+            } else {
+                ProtectedResourceExtendInfoPo resourceExtendInfoPo = new ProtectedResourceExtendInfoPo();
+                resourceExtendInfoPo.setUuid(UUID.randomUUID().toString());
+                resourceExtendInfoPo.setResourceId(resourceId);
+                resourceExtendInfoPo.setKey(key);
+                resourceExtendInfoPo.setValue(extendInfoMap.get(key));
+                protectedResourceExtendInfoMapper.insert(resourceExtendInfoPo);
+            }
+        }
+    }
+
+    private Map<String, ProtectedResourceExtendInfoPo> counvertProtectedResourceExtendInfoMap(
+        List<ProtectedResourceExtendInfoPo> protectedResourceExtendInfoPoList) {
+        Map<String, ProtectedResourceExtendInfoPo> map = new HashMap<>();
+        for (ProtectedResourceExtendInfoPo protectedResourceExtendInfoPo : protectedResourceExtendInfoPoList) {
+            map.put(protectedResourceExtendInfoPo.getKey(), protectedResourceExtendInfoPo);
+        }
+        return map;
+    }
+
 
     @Override
     public Map<String, String> queryExtendInfo(String resourceId, String... keys) {

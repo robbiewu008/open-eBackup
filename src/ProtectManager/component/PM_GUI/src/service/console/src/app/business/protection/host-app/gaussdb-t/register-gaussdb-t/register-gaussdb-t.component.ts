@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import {
@@ -35,7 +35,8 @@ import {
   toNumber,
   filter,
   isEmpty,
-  includes
+  includes,
+  differenceBy
 } from 'lodash';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
@@ -79,7 +80,7 @@ export class RegisterGaussdbTComponent implements OnInit {
   deploymentTypeOptions = this.dataMapService
     .toArray('guassdbTDeploymentType')
     .filter(v => (v.isLeaf = true));
-
+  resItem; // item缺少内容，下面接口调出来的res赋值给resItem
   @ViewChild('footerTpl', { static: true }) footerTpl: TemplateRef<any>;
 
   constructor(
@@ -114,6 +115,7 @@ export class RegisterGaussdbTComponent implements OnInit {
     this.protectedResourceApiService
       .ShowResource({ resourceId: this.item.uuid })
       .subscribe(res => {
+        this.resItem = res;
         const data = {
           name: res.name,
           type: res.subType,
@@ -270,6 +272,13 @@ export class RegisterGaussdbTComponent implements OnInit {
   }
 
   getParams() {
+    let reduceAgents = [];
+    if (this.resItem) {
+      reduceAgents = differenceBy(
+        this.resItem?.dependencies?.agents.map(item => item.uuid),
+        this.formGroup.value.agents
+      );
+    }
     const params = {
       name: this.formGroup.value.name,
       type: ResourceType.DATABASE,
@@ -289,7 +298,12 @@ export class RegisterGaussdbTComponent implements OnInit {
           item => {
             return { uuid: item };
           }
-        )
+        ),
+        '-agents': !isEmpty(this.resItem)
+          ? reduceAgents.map(item => {
+              return { uuid: item };
+            })
+          : []
       }
     };
 

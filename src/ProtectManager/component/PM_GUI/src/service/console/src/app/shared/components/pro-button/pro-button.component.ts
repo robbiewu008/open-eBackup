@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -131,6 +131,11 @@ export class ProButtonComponent implements OnInit, AfterViewInit, OnDestroy {
     return button.displayCheck ? button.displayCheck(_data) : true;
   }
 
+  _getDisableTips(button) {
+    const _data = this.bindData || [];
+    return button.disabledTipsCheck ? button.disabledTipsCheck(_data) : '';
+  }
+
   _buttonClick($event) {
     const call: any =
       this.button && this.button.onClick
@@ -166,7 +171,9 @@ export class ProButtonComponent implements OnInit, AfterViewInit, OnDestroy {
         label: item.label,
         icon: item.icon,
         divide: item.divide,
-        tips: this._getDisableStatus(item) ? item.disabledTips : '',
+        tips: this._getDisableStatus(item)
+          ? this._getDisableTips(item) || item.disabledTips
+          : '',
         disabled: this._getDisableStatus(item),
         hidden: !this._getDisplayStatus(item),
         items: []

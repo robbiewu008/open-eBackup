@@ -1,5 +1,5 @@
 .tree-table-container {
-  border: 1px solid #e6e6e6;
+  border: 1px solid var(--live-angular-color-border-regular);
 }
 
 .header-tab {
@@ -7,7 +7,7 @@
   line-height: 40px;
   padding-left: 8px;
   box-sizing: border-box;
-  background: rgb(247, 247, 247);
+  background: var(--live-angular-color-header-background);
 }
 
 .search-path-container {
@@ -16,7 +16,7 @@
 }
 
 .bread-crumb-path {
-  border: 1px solid #e6e6e6;
+  border: 1px solid var(--live-angular-color-border-regular);
   border-radius: 4px;
   height: 32px;
   padding-left: 8px;
@@ -29,7 +29,7 @@
 
 .tree-table {
   align-items: flex-start;
-  border-top: 1px solid #e6e6e6;
+  border-top: 1px solid var(--live-angular-color-border-regular);
 }
 
 .tree-container {
@@ -40,13 +40,13 @@
 
 .table-container {
   height: 600px;
-  border-left: 1px solid #e6e6e6;
+  border-left: 1px solid var(--live-angular-color-border-regular);
 }
 
 .dash-line {
   width: 1px;
   height: 10px;
-  background: rgb(151, 151, 151);
+  background: var(--live-angular-color-border-regular);
 }
 
 .num-tag {
@@ -56,16 +56,33 @@
   height: 18px;
   line-height: 18px;
   border-radius: 10px;
-  color: #ffffff;
-  border: 1px solid #ffffff;
-  background: rgb(128, 128, 128);
+  color: var(--live-angular-color-text-inverse);
+  border: 1px solid var(--live-angular-color-badge-border);
+  background: var(--live-angular-color-icon-secondary);
   padding: 0 4px;
 }
 
 .tag-light {
-  background: rgb(38, 115, 229);
+  background: var(--live-angular-color-primary-active);
 }
 
 .opt-row {
   justify-content: space-between;
+}
+
+.page-total {
+  margin-left: 16px;
+  margin-top: 10px;
+}
+
+.mount-tip-container {
+  align-items: center;
+  padding: 0 8px;
+}
+
+.empty-container {
+  height: 234px;
+  padding: 64px 0;
+  display: flex;
+  align-items: flex-start;
 }

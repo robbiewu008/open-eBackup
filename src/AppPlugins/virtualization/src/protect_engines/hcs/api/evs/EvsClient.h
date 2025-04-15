@@ -24,6 +24,8 @@
 #include "protect_engines/hcs/api/ecs/model/GetServerDetailsResponse.h"
 #include "protect_engines/hcs/api/ecs/model/GetServerListRequest.h"
 #include "protect_engines/hcs/api/ecs/model/GetServerListResponse.h"
+#include "protect_engines/openstack/api/cinder/model/DeleteSnapshotResponse.h"
+#include "protect_engines/openstack/api/cinder/model/DeleteSnapshotRequest.h"
 
 namespace HcsPlugin {
 class EvsClient : RestClient {
@@ -35,6 +37,8 @@ public:
 
     std::shared_ptr<ShowVolumeResponse> ShowVolumeDetail(ShowVolumeRequest &request);
     std::shared_ptr<ShowVolumeDetailResponse> ShowVolumeDetailList(ShowVolumeListRequest &request);
+    std::shared_ptr<OpenStackPlugin::DeleteSnapshotResponse> DeleteSnapshot(
+        OpenStackPlugin::DeleteSnapshotRequest &request);
 
 private:
     bool GetServerDetailsCheckParams(ModelBase &model);

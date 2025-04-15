@@ -117,6 +117,7 @@ struct Volume {
     std::string m_volumeType;                // 卷类型
     VolumeImageMetadata m_volImageMetadata;
     std::string m_osVolRepDriverData;
+    std::string m_osVolHostAttr;
     std::string m_groupId;                   // new in version 3.13
     std::string m_providerId;                // new in version 3.21
     bool m_sharedTargets {true};             // avalibel in version 3.68
@@ -149,6 +150,7 @@ struct Volume {
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_volumeType, volume_type)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_volImageMetadata, volume_image_metadata)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_osVolRepDriverData, os-volume-replication:driver_data)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_osVolHostAttr, os-vol-host-attr:host)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_groupId, group_id)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_providerId, provider_id)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_sharedTargets, shared_targets)
@@ -271,6 +273,43 @@ public:
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_volumeType, volume_type)
+    END_SERIAL_MEMEBER
+};
+
+class Capability {
+public:
+    std::string m_locationInfo;
+    std::string m_poolName;
+    double m_totalCapacityGb;
+    double m_freeCapacityGb;
+    std::string m_volumeBackendName;
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_locationInfo, location_info)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_poolName, pool_name)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_totalCapacityGb, total_capacity_gb)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_freeCapacityGb, free_capacity_gb)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_volumeBackendName, volume_backend_name)
+    END_SERIAL_MEMEBER
+};
+
+class Pool {
+public:
+    std::string m_name;
+    Capability m_capabilities;
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_name, name)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_capabilities, capabilities)
+    END_SERIAL_MEMEBER
+};
+
+class Pools {
+public:
+    std::vector<Pool> m_pools;
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_pools, pools)
     END_SERIAL_MEMEBER
 };
 OPENSTACK_PLUGIN_NAMESPACE_END

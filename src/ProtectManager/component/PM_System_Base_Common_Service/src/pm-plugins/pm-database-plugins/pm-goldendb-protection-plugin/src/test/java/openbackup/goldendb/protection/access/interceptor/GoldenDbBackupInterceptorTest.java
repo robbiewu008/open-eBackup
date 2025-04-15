@@ -18,6 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
@@ -59,10 +60,12 @@ public class GoldenDbBackupInterceptorTest {
 
     private GoldenDbBackupInterceptor goldenDbBackupInterceptorUnderTest;
 
+    private AgentUnifiedService agentUnifiedService;
+
     @Before
     public void setUp() {
         goldenDbBackupInterceptorUnderTest = new GoldenDbBackupInterceptor(mockGoldenDbService, goldenDbTaskCheck,
-            resourceService, new GoldenDBAgentProvider(mockGoldenDbService));
+            resourceService, new GoldenDBAgentProvider(mockGoldenDbService), agentUnifiedService);
     }
 
     @Test

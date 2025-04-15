@@ -40,10 +40,7 @@
       <div id="performance-chart"></div>
     </div>
     <div class="performance-no-data" *ngIf="!showChart">
-      <i lv-icon="aui-icon-no-data"></i>
-      <div class="no-data-label">
-        {{'common_no_data_label' | i18n}}
-      </div>
+      <lv-empty></lv-empty>
     </div>
   </div>
 </lv-loading>

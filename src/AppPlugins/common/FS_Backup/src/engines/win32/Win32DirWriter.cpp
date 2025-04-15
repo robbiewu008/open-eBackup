@@ -21,6 +21,8 @@ using namespace FS_Backup;
 
 namespace {
     const int RETRY_TIME_MILLISENCOND = 1000;
+    const uint32_t FILENOTEXIST = 2;
+    const uint32_t PATHNOTEXIST = 3;
 }
 
 Win32DirWriter::Win32DirWriter(
@@ -46,6 +48,20 @@ void Win32DirWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskPtr
 
     DBGLOG("Win32 dir failed %s retry cnt %d", fileHandle.m_file->m_fileName.c_str(), fileHandle.m_retryCnt);
 
+    if (FSBackupUtils::IsStuck(m_controlInfo)) {
+        ERRLOG("set backup to failed due to stucked!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+        return;
+    }
+
+    if (taskPtr->m_errDetails.second == FILENOTEXIST || taskPtr->m_errDetails.second == PATHNOTEXIST) {
+        // 对于文件不存在的情况或者目录不存在的情况跳过
+        WARNLOG("File/Folder %s not exist, discardReadError is true, ignore it", fileHandle.m_file->m_fileName.c_str());
+        ++m_controlInfo->m_noOfDirCopied;
+        m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
+        return;
+    }
     if (fileHandle.m_retryCnt >= DEFAULT_ERROR_SINGLE_FILE_CNT ||
         taskPtr->IsCriticalError()) {
         FSBackupUtils::RecordFailureDetail(m_failureRecorder, taskPtr->m_errDetails);
@@ -53,7 +69,6 @@ void Win32DirWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskPtr
         if (fileHandle.m_file->GetDstState() != FileDescState::META_WRITE_FAILED) {
             fileHandle.m_file->SetDstState(FileDescState::META_WRITE_FAILED);
             fileHandle.m_errNum = taskPtr->m_errDetails.second;
-            m_failedList.emplace_back(fileHandle);
         }
         ++m_controlInfo->m_noOfDirFailed;
         if (!m_backupParams.commonParams.skipFailure || taskPtr->IsCriticalError()) {

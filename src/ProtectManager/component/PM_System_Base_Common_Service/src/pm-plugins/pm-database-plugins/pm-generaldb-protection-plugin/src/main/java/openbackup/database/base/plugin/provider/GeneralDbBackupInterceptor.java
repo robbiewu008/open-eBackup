@@ -12,6 +12,9 @@
 */
 package openbackup.database.base.plugin.provider;
 
+import com.google.common.collect.Maps;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.backup.constant.BackupConstant;
 import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
@@ -32,10 +35,6 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.EnumUtil;
-
-import com.google.common.collect.Maps;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -153,6 +152,7 @@ public class GeneralDbBackupInterceptor extends AbstractDbBackupInterceptor {
         Map<String, String> advanceParams = Optional.ofNullable(backupTask.getAdvanceParams())
             .orElse(Maps.newHashMap());
         advanceParams.put(DatabaseConstants.MULTI_POST_JOB, String.valueOf(isMultiPostJob));
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
         backupTask.setAdvanceParams(advanceParams);
     }
 

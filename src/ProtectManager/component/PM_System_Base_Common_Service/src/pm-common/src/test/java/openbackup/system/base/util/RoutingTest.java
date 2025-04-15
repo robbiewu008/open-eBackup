@@ -22,6 +22,7 @@ import openbackup.system.base.sdk.infrastructure.model.beans.NodePodInfo;
 import io.jsonwebtoken.lang.Assert;
 import openbackup.system.base.util.Routing;
 
+import org.eclipse.jetty.io.EofException;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +31,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
+import java.io.EOFException;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,6 +150,18 @@ public class RoutingTest {
     public void check_exception_is_retryable_exception_success() {
         Routing routing = new Routing(buildHosts(), 8088);
         ConnectException exception = new ConnectException("test");
+        org.junit.Assert.assertTrue(routing.isRetryableException(exception));
+    }
+
+    /**
+     * 用例场景：判断异常是否属于可重试异常
+     * 前置条件：1.可重试异常
+     * 检  查  点：异常为重试异常
+     */
+    @Test
+    public void check_exception_is_retryable_exception_when_eof_exception_then_success() {
+        Routing routing = new Routing(buildHosts(), 8088);
+        EOFException exception = new EofException("test");
         org.junit.Assert.assertTrue(routing.isRetryableException(exception));
     }
 

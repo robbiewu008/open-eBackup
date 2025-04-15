@@ -1,28 +1,61 @@
 import os
-from pydantic import BaseModel, Field
 from fastapi import APIRouter, HTTPException, status
-from server.common.logger.logger import get_logger
+from server.common.logger.logger import logger
 from server.services.appinstall import dataprotect
-from server.schemas.request import InstallSimbaOSRequest, InstallSmartkubeRequest, \
-    PreinstallDataProtectRequest, ResetSimbaOSRequest, InstallDataProtectRequest, GetSimbaosStatusResponse, \
-    GetDataProtectStatusResponse, ExpandDataBackupRequest, ExpandSimbaOSRequest, UpgradeDataProtectRequest, \
-    DeleteSimbaOSNodeRequest, SynchronizeCertRequest, DataBackupExpandDataBackupRequest, PreUpgradeSimbaOSRequest, \
-    UpgradeSimbaOSRequest
-from server.services.appinstall.dataprotect import simbaos_reset, simbaos_preinstall, simbaos_install, \
-    dataprotect_preinstall, dataprotect_install, dataprotect_reset, get_simbaos_status, get_dataprotect_status, \
-    expand_dataprotect, expand_simbaos, upgrade_dataprotect, delete_simbaos_node, syn_cert,\
-    databackup_expand_dataprotect, pre_upgrade_simbaos, upgrade_simbaos, post_upgrade_simbaos
+from server.schemas.request import (
+    InstallSimbaOSRequest,
+    InstallSmartkubeRequest,
+    PreinstallDataProtectRequest,
+    ResetSimbaOSRequest,
+    InstallDataProtectRequest,
+    GetSimbaosStatusResponse,
+    GetDataProtectStatusResponse,
+    ExpandDataBackupRequest,
+    ExpandSimbaOSRequest,
+    UpgradeDataProtectRequest,
+    DeleteSimbaOSNodeRequest,
+    SynchronizeCertRequest,
+    DataBackupExpandDataBackupRequest,
+    PreUpgradeSimbaOSRequest,
+    UpgradeSimbaOSRequest,
+    UpgradeStateCheck,
+    UpgradeDatabackup,
+)
+from server.services.appinstall.dataprotect import (
+    simbaos_reset,
+    simbaos_preinstall,
+    simbaos_install,
+    dataprotect_preinstall,
+    dataprotect_install,
+    dataprotect_reset,
+    get_simbaos_status,
+    get_dataprotect_status,
+    expand_dataprotect,
+    expand_simbaos,
+    upgrade_dataprotect,
+    delete_simbaos_node,
+    syn_cert,
+    databackup_expand_dataprotect,
+    pre_upgrade_simbaos,
+    upgrade_simbaos,
+    post_upgrade_simbaos,
+)
 from server.common import consts
-
-external_router = APIRouter(
-    prefix="/app",
-    tags=["application"]
+from server.services.appinstall.dp_upgrade_check import (
+    upgrade_state_check,
+    upgrade_state_check_post,
+    CheckFailures,
+    upgrade_alarms_check,
+    upgrade_config_check,
+    upgrade_resources_check,
+    upgrade_services_check,
+    upgrade_jobs_check
 )
+from server.services.appinstall.dp_upgrade_databackup import upgrade_databackup
 
-databackup_router = APIRouter(
-    prefix="/app",
-    tags=["application"]
-)
+external_router = APIRouter(prefix="/app", tags=["application"])
+
+databackup_router = APIRouter(prefix="/app", tags=["application"])
 
 
 @external_router.post("/test")
@@ -98,8 +131,9 @@ def request_expand_simbaos(req: UpgradeSimbaOSRequest):
 def request_expand_simbaos():
     has_issue, info = post_upgrade_simbaos()
     if has_issue:
-        HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Failed to post_upgrade simbaos node, "
-                                                                      f"info:{info}")
+        HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=f"Failed to post_upgrade simbaos node, " f"info:{info}"
+        )
 
 
 @databackup_router.post("/dataprotect/preinstall", summary="加载镜像包")
@@ -107,16 +141,16 @@ def request_expand_simbaos():
 def request_load_image(req: PreinstallDataProtectRequest):
     has_issue, info = dataprotect_preinstall(req)
     if has_issue:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Failed to load dataprotect image, info: {info}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=f"Failed to load dataprotect image, info: {info}"
+        )
 
 
 @databackup_router.post("/dataprotect/syn_cert", summary="同步证书相关文件")
 def request_syn_cert(req: SynchronizeCertRequest):
     has_issue = syn_cert(req)
     if has_issue:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Failed to syn cert")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Failed to syn cert")
 
 
 @external_router.post("/dataprotect/install", summary="安装数据保护软件")
@@ -125,8 +159,9 @@ def request_install_dataprotect(req: InstallDataProtectRequest):
     script_path = os.path.join(consts.SCRIPTS_PATH, "dataprotect", req.device_type.lower(), "install.sh")
     has_issue, info = dataprotect_install(req, script_path)
     if has_issue:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Failed to install dataprotect, info:{info}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=f"Failed to install dataprotect, info:{info}"
+        )
 
 
 @databackup_router.delete("/dataprotect/reset", summary="卸载数据保护软件")
@@ -134,8 +169,7 @@ def request_install_dataprotect(req: InstallDataProtectRequest):
 def request_reset_dataprotect():
     has_issue, info = dataprotect_reset()
     if has_issue:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Failed to reset dataprotect, info:{info}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Failed to reset dataprotect, info:{info}")
 
 
 @databackup_router.get("/dataprotect/status", summary="查询数据保护软件安装情况")
@@ -143,8 +177,7 @@ def request_reset_dataprotect():
 def request_get_dataprotect_status():
     has_issue, deploy_status, chart_name, info = get_dataprotect_status()
     if has_issue:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Failed to get dataprotect, info:{info}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Failed to get dataprotect, info:{info}")
     return GetDataProtectStatusResponse(status=deploy_status, chart_name=chart_name)
 
 
@@ -153,22 +186,128 @@ def request_install_dataprotect(req: DataBackupExpandDataBackupRequest):
     script_path = os.path.join(consts.SCRIPTS_PATH, "dataprotect", req.device_type.lower(), "expand.sh")
     has_issue, info = databackup_expand_dataprotect(req, script_path)
     if has_issue:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=f"Failed to install dataprotect, info:{info}"
+        )
+
+
+@external_router.post("/dataprotect/upgrade", summary="升级数据保护软件")
+@databackup_router.post("/dataprotect/upgrade", summary="升级数据保护软件")
+def request_upgrade_dataprotect(req: UpgradeDataProtectRequest):
+    has_issue, info = upgrade_dataprotect(req)
+    if has_issue:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=f"Failed to install dataprotect, info:{info}"
+        )
+
+@external_router.post("/dataprotect/upgrade", summary="升级数据保护软件")
+@databackup_router.post("/dataprotect/upgrade", summary="升级数据保护软件")
+def request_upgrade_dataprotect(req: UpgradeDataProtectRequest):
+    has_issue, info = upgrade_dataprotect(req)
+    if has_issue:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f"Failed to install dataprotect, info:{info}")
-
 
 @external_router.post("/dataprotect/expand", summary="扩容数据保护软件")
 def request_install_dataprotect(req: ExpandDataBackupRequest):
     script_path = os.path.join(consts.SCRIPTS_PATH, "dataprotect", req.device_type.lower(), "expand.sh")
     has_issue, info = expand_dataprotect(req, script_path)
     if has_issue:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Failed to install dataprotect, info:{info}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=f"Failed to install dataprotect, info:{info}"
+        )
 
 
-@external_router.post("/dataprotect/upgrade", summary="升级数据保护软件")
-def request_upgrade_dataprotect(req: UpgradeDataProtectRequest):
-    has_issue, info = upgrade_dataprotect(req)
-    if has_issue:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Failed to install dataprotect, info:{info}")
+@databackup_router.post("/dataprotect/upgrade_check", summary="数据保护软件升级前检查")
+@external_router.post("/dataprotect/upgrade_check", summary="数据保护软件升级前检查")
+def request_upgrade_status_check(req: UpgradeStateCheck):
+    no_issue, info = upgrade_state_check(req)
+    if not no_issue:
+        for err in CheckFailures:
+            if info.split(":", 1)[0] == err.value[:-1]:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"{err.value} Failed to pass the preupgrade status check, info:{info}",
+                )
+
+@databackup_router.post("/dataprotect/upgrade_check_alarm", summary="数据保护软件升级前检查")
+@external_router.post("/dataprotect/upgrade_check_alarm", summary="数据保护软件升级前检查")
+def request_upgrade_status_check_alarm(req: UpgradeStateCheck):
+    no_issue, info = upgrade_alarms_check(req)
+    if not no_issue:
+        for err in CheckFailures:
+            if info.split(":", 1)[0] == err.value[:-1]:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"{err.value} Failed to pass the preupgrade status check, info:{info}",
+                )
+
+@databackup_router.post("/dataprotect/upgrade_check_config", summary="数据保护软件升级前检查")
+@external_router.post("/dataprotect/upgrade_check_config", summary="数据保护软件升级前检查")
+def request_upgrade_status_check_config(req: UpgradeStateCheck):
+    no_issue, info = upgrade_config_check(req)
+    if not no_issue:
+        for err in CheckFailures:
+            if info.split(":", 1)[0] == err.value[:-1]:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"{err.value} Failed to pass the preupgrade status check, info:{info}",
+                )
+
+@databackup_router.post("/dataprotect/upgrade_check_resources", summary="数据保护软件升级前检查")
+@external_router.post("/dataprotect/upgrade_check_resources", summary="数据保护软件升级前检查")
+def request_upgrade_status_check_config(req: UpgradeStateCheck):
+    no_issue, info = upgrade_resources_check(req)
+    if not no_issue:
+        for err in CheckFailures:
+            if info.split(":", 1)[0] == err.value[:-1]:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"{err.value} Failed to pass the preupgrade status check, info:{info}",
+                )
+
+@databackup_router.post("/dataprotect/upgrade_services_services", summary="数据保护软件升级前检查")
+@external_router.post("/dataprotect/upgrade_services_services", summary="数据保护软件升级前检查")
+def request_upgrade_status_check_config(req: UpgradeStateCheck):
+    no_issue, info = upgrade_services_check(req)
+    if not no_issue:
+        for err in CheckFailures:
+            if info.split(":", 1)[0] == err.value[:-1]:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"{err.value} Failed to pass the preupgrade status check, info:{info}",
+                )
+
+@databackup_router.post("/dataprotect/upgrade_jobs_services", summary="数据保护软件升级前检查")
+@external_router.post("/dataprotect/upgrade_jobs_services", summary="数据保护软件升级前检查")
+def request_upgrade_status_check_jobs(req: UpgradeStateCheck):
+    no_issue, info = upgrade_jobs_check(req)
+    if not no_issue:
+        for err in CheckFailures:
+            if info.split(":", 1)[0] == err.value[:-1]:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"{err.value} Failed to pass the preupgrade status check, info:{info}",
+                )
+
+@databackup_router.post("/dataprotect/upgrade_post_check", summary="数据保护软件升级后检查")
+@external_router.post("/dataprotect/upgrade_post_check", summary="数据保护软件升级后检查")
+def request_upgrade_status_postcheck(req: UpgradeStateCheck):
+    no_issue, info = upgrade_state_check_post(req)
+    if not no_issue:
+        for err in CheckFailures:
+            if info.split(":", 1)[0] == err.value[:-1]:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"{err.value} Failed to pass the post upgrade status check, info:{info}",
+                )
+
+
+@databackup_router.post("/dataprotect/upgrade_databackup", summary="数据保护软件升级前备份")
+@external_router.post("/dataprotect/upgrade_databackup", summary="升级数据保护软件升级前备份")
+def request_upgrade_databackup(req: UpgradeDatabackup):
+    no_issue, info = upgrade_databackup(req)
+    if not no_issue:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=f"Failed to backup the info before the upgrade, info:{info}"
+        )

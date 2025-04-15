@@ -1,0 +1,120 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤1：创建复制网络逻辑端口（适用于1.5.0版本）">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="mysql-0030.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="mysql-0031">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤1：创建复制网络逻辑端口（适用于1.5.0版本）</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="mysql-0031"></a><a name="mysql-0031"></a>
+  <h1 class="topictitle1">步骤1：创建复制网络逻辑端口<span id="fc_gud_0026_2_zh-cn_topic_0000002200061401_ph3529103314555">（适用于1.5.0版本）</span></h1>
+  <div>
+   <p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p1720618465166">分别在主从端存储系统的DeviceManager，创建复制网络逻辑端口，用于远程复制数据传输。</p>
+   <div class="section" id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_section76551503175">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p4324626143813">已规划主从端复制网络IP地址。</p>
+   </div>
+   <div class="section" id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_section01286189357">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_ol3195132918350">
+     <li id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_li319522912350"><span>分别登录主端和从端存储系统的DeviceManager管理界面。具体操作请参考<a href="zh-cn_topic_0000002164820486.html">登录DeviceManager管理界面</a>。</span></li>
+     <li id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_li1749374163512"><span>选择“服务 &gt; 网络 &gt; 逻辑端口”。</span></li>
+     <li id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_li17548185061613"><span>设置“租户”为“所有租户”。</span></li>
+     <li id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_li1020518291423"><span>单击<span class="uicontrol" id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_uicontrol9233246164210">“创建”</span>，创建逻辑端口。</span><p></p><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p122201058114510">相关参数说明如<a href="#mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_table4902520114617">表1</a>所示。</p>
+      <div class="tablenoborder">
+       <a name="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_table4902520114617"></a><a name="fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_table4902520114617"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_table4902520114617" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>逻辑端口参数说明
+        </caption>
+        <colgroup>
+         <col style="width:43.55%">
+         <col style="width:56.45%">
+        </colgroup>
+        <thead align="left">
+         <tr id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row12902520144613">
+          <th align="left" class="cellrowborder" valign="top" width="43.55%" id="mcps1.3.3.2.4.2.2.2.3.1.1"><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p11902142011468">参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="56.45%" id="mcps1.3.3.2.4.2.2.2.3.1.2"><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p139023200466">说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row1990214209462">
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p179021520174612">名称</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p10902122084614">自定义复制网络逻辑端口名称。</p></td>
+         </tr>
+         <tr id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row590214206469">
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p1390242018463">角色</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p89021220144617">选择<span class="uicontrol" id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_uicontrol1599065984713">“复制”</span>。</p></td>
+         </tr>
+         <tr id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row159021320204618">
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p89021320194613">IP地址类型</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p1790212044613">复制网络逻辑端口的IP地址类型，IPv4或IPv6。</p></td>
+         </tr>
+         <tr id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row2902122013465">
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p139021020134618">IP</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p39031820154614">复制网络逻辑端口的IP地址。</p></td>
+         </tr>
+         <tr id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row10903720194618">
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p17903220184614">子网掩码</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p89031620184617">当IP地址为IPv4类型时，配置其子网掩码。</p></td>
+         </tr>
+         <tr id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row070651994917">
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p1470619193499">前缀</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p1770671912495">当IP地址为IPv6类型时，配置其前缀。</p></td>
+         </tr>
+         <tr id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row1075519116478">
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p475641115470">网关</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p1675612113472">复制网络逻辑端口IP地址的网关。</p></td>
+         </tr>
+         <tr id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row4957112110477">
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p6957152119477">端口类型</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_p1187201353020">选择用于创建复制网络逻辑端口的端口类型。支持选择“以太网端口”、“绑定端口”或“VLAN”。</p> <p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_p7393956171420">默认情况下，用户在初始化<span id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_text44851941602">本产品</span>过程中已对用于复制的端口进行了绑定，因此，如果用户无其他操作（如删除绑定端口等），此处需要选择“绑定端口”。</p></td>
+         </tr>
+         <tr id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_row3551112915475">
+          <td class="cellrowborder" valign="top" width="43.55%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_p165511029124718">主端口</p></td>
+          <td class="cellrowborder" valign="top" width="56.45%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_p175510297476">创建的复制网络逻辑端口所属的以太网端口、绑定端口或VLAN。</p> <p id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_p1549136151615">系统已过滤出用于复制网络的所有端口，选择任意一个已连接的端口即可。</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_li1871473615017"><span>单击<span class="uicontrol" id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_uicontrol58330521508">“确定”</span>。</span></li>
+     <li id="mysql-0031__fc_gud_0026_2_zh-cn_topic_0000002200061401_zh-cn_topic_0000001149078659_li205675443341"><span>重复以上步骤，依次为每个主端口配置逻辑端口。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="mysql-0030.html">复制MySQL/MariaDB/GreatSQL副本</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,20 +1,21 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MessageService, ModalRef } from '@iux/live';
 import {
+  AntiRansomwarePolicyApiService,
   ApplicationType,
   BaseUtilService,
   CommonConsts,
@@ -42,6 +43,8 @@ import {
   first,
   get,
   includes,
+  isEmpty,
+  isUndefined,
   map,
   omit,
   pick,
@@ -63,9 +66,10 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
   backupData;
   activeIndex;
   specialResource = false;
-  specialTips = false;
   specialResourceTips = '';
-  archvieDataList;
+  archivalDataList;
+  hasArchival = false;
+  hasReplication = false;
   replicationData;
   applicationData;
   formGroup: FormGroup;
@@ -74,7 +78,19 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
   isUsed: boolean;
   _includes = includes;
   hasOpenGauss = []; // 用于判断opengauss已绑定的资源
-
+  isCyber = includes(
+    [
+      DataMap.Deploy_Type.cyberengine.value,
+      DataMap.Deploy_Type.cloudbackup2.value,
+      DataMap.Deploy_Type.hyperdetect.value,
+      DataMap.Deploy_Type.cloudbackup.value
+    ],
+    this.i18n.get('deploy_type')
+  );
+  isDistributed = this.appUtilsService.isDistributed;
+  isWormData = false; // 判断关联资源是否存在防勒索界面设置的worm
+  resourceList = [];
+  isBasicDisk = false;
   constructor(
     public baseUtilService: BaseUtilService,
     public i18n: I18NService,
@@ -86,11 +102,18 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
     private slaValidatorService: SlaValidatorService,
     private projectedObjectApiService: ProjectedObjectApiService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    public appUtilsService: AppUtilsService
+    public appUtilsService: AppUtilsService,
+    private antiRansomwarePolicyApiService: AntiRansomwarePolicyApiService
   ) {}
 
   ngOnInit() {
     this.isUsed = !!this.sla?.resource_count;
+    this.hasArchival = !isEmpty(this.archivalDataList);
+    this.hasReplication =
+      !isEmpty(this.replicationData?.policyList) &&
+      ((this.appUtilsService.isDecouple &&
+        this.applicationData !== ApplicationType.HCSCloudHost) ||
+        this.appUtilsService.isDistributed);
     assign(
       this.backupData,
       {
@@ -120,6 +143,9 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
     ) {
       this.getSlaResource();
     }
+    if (!this.isCyber && !this.isDistributed && !isEmpty(this.sla?.uuid)) {
+      this.getResourceList();
+    }
   }
 
   // 修改SLA时的特殊场景处理
@@ -133,8 +159,6 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
           ? DataMap.Resource_Type.Dameng_cluster.value
           : this.applicationData === ApplicationType.NASShare
           ? DataMap.Resource_Type.NASShare.value
-          : this.applicationData === ApplicationType.MongoDB
-          ? DataMap.Resource_Type.MongodbSingleInstance.value
           : this.applicationData === ApplicationType.ObjectStorage
           ? DataMap.Resource_Type.ObjectSet.value
           : DataMap.Resource_Type.fileset.value
@@ -162,13 +186,40 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
               : this.applicationData === ApplicationType.OpenGauss
               ? ''
               : this.i18n.get('protection_fileset_sla_tips_label');
-          if (this.applicationData !== ApplicationType.MongoDB) {
-            this.specialTips = true;
-          }
         } else {
           this.specialResource = false;
         }
       });
+  }
+
+  getResourceList(param?) {
+    const params = param || {
+      slaId: this.sla.uuid,
+      pageNo: CommonConsts.PAGE_START,
+      pageSize: 100
+    };
+    this.projectedObjectApiService
+      .pageQueryV1ProtectedObjectsGet(params)
+      .subscribe(res => {
+        this.resourceList = [...this.resourceList, ...res.items];
+        this.resourceList = this.resourceList.map(e => {
+          return e.resource_id;
+        });
+        this.getDataWormStatus(this.resourceList);
+      });
+  }
+
+  getDataWormStatus(data) {
+    const resourceParams = {
+      resourceIds: data
+    };
+    if (resourceParams.resourceIds.length > 0) {
+      this.antiRansomwarePolicyApiService
+        .ShowAntiRansomwarePolicies(resourceParams)
+        .subscribe(res => {
+          this.isWormData = !!find(res.records, item => item.schedule.setWorm);
+        });
+    }
   }
 
   getOpenGaussValid(items) {
@@ -513,13 +564,24 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
       name: item.name,
       type: PolicyType.BACKUP,
       action: item.action,
+      worm_validity_type: item.worm_switch ? item.worm_validity_type : 0,
       retention: {
         retention_type:
           DataMap.Interval_Unit.persistent.value === item.duration_unit
             ? RetentionType.PERMANENTLY_RETAINED
             : RetentionType.TEMPORARY_RESERVATION,
         retention_duration: +item.retention_duration,
-        duration_unit: item.duration_unit
+        duration_unit: item.duration_unit,
+        worm_retention_duration: item.worm_switch
+          ? item.worm_validity_type === 1
+            ? item.retention_duration
+            : item.worm_specified_retention_duration
+          : null,
+        worm_duration_unit: item.worm_switch
+          ? item.worm_validity_type === 1
+            ? item.duration_unit
+            : item.worm_specified_duration_unit
+          : null
       },
       schedule: {
         trigger: includes(
@@ -577,7 +639,11 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
     ) {
       set(params, 'action', PolicyAction.PERMANENT);
     }
-
+    if (this.isCyber) {
+      delete params.retention.worm_retention_duration;
+      delete params.retention.worm_duration_unit;
+      delete params.worm_validity_type;
+    }
     return params;
   }
 
@@ -587,16 +653,24 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
       name: item.name,
       type: PolicyType.BACKUP,
       action: item.action,
+      worm_validity_type: item.worm_switch ? item.worm_validity_type : 0,
       retention: {
         retention_type:
           DataMap.Interval_Unit.persistent.value === item.duration_unit
             ? RetentionType.PERMANENTLY_RETAINED
             : RetentionType.TEMPORARY_RESERVATION,
-        retention_duration:
-          this.applicationData === ApplicationType.HBase
-            ? null
-            : +item.retention_duration,
-        duration_unit: item.duration_unit
+        retention_duration: Number(item.retention_duration),
+        duration_unit: item.duration_unit,
+        worm_retention_duration: item.worm_switch
+          ? item.worm_validity_type === 1
+            ? item.retention_duration
+            : item.worm_specified_retention_duration
+          : null,
+        worm_duration_unit: item.worm_switch
+          ? item.worm_validity_type === 1
+            ? item.duration_unit
+            : item.worm_specified_duration_unit
+          : null
       },
       schedule: {
         trigger: ScheduleTrigger.PERIOD_EXECUTE,
@@ -618,7 +692,11 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
       delete params.retention.retention_duration;
       delete params.retention.duration_unit;
     }
-
+    if (this.isCyber) {
+      delete params.retention.worm_retention_duration;
+      delete params.retention.worm_duration_unit;
+      delete params.worm_validity_type;
+    }
     return params;
   }
 
@@ -660,6 +738,16 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
           ? RetentionType.PERMANENTLY_RETAINED
           : RetentionType.TEMPORARY_RESERVATION;
       params.retention.duration_unit = item.specified_duration_unit;
+      params.retention.worm_retention_duration = item.worm_switch
+        ? item.worm_validity_type === 1
+          ? +item.specified_retention_duration
+          : item.worm_specified_retention_duration
+        : null;
+      params.retention.worm_duration_unit = item.worm_switch
+        ? item.worm_validity_type === 1
+          ? item.specified_duration_unit
+          : item.worm_specified_duration_unit
+        : null;
       params.schedule.window_start = this.datePipe.transform(
         item.specified_window_start,
         'HH:mm:ss'
@@ -680,7 +768,7 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
         assign(params, this.getGeneralExtParameters());
         break;
       case ApplicationType.Fileset:
-      case ApplicationType.Volume:
+
       case ApplicationType.NASShare:
       case ApplicationType.NASFileSystem:
       case ApplicationType.ObjectStorage:
@@ -689,6 +777,7 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
           this.getApplicationExtParameters(['deduplication', 'auto_index'])
         );
         break;
+      case ApplicationType.Volume:
       case ApplicationType.Ndmp:
         assign(params, this.getApplicationExtParameters(['auto_index']));
         break;
@@ -710,7 +799,6 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
       // 基础高级参数应用
       case ApplicationType.GaussDBDWS:
       case ApplicationType.Elasticsearch:
-      case ApplicationType.Hive:
       case ApplicationType.Redis:
       case ApplicationType.ClickHouse:
       case ApplicationType.KubernetesDatasetCommon:
@@ -726,16 +814,29 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
         assign(params, this.getApplicationExtParameters(['rate_limit']));
         break;
       case ApplicationType.PostgreSQL:
+      case ApplicationType.AntDB:
         assign(params, this.getApplicationExtParameters(['thread_number']));
         break;
       case ApplicationType.LightCloudGaussDB:
+        assign(
+          params,
+          this.getApplicationExtParameters([
+            'rate_limit',
+            'enable_standby_backup',
+            'close_compression',
+            'agents',
+            'restart_archive'
+          ])
+        );
+        break;
       case ApplicationType.GaussDBForOpenGauss:
         assign(
           params,
           this.getApplicationExtParameters([
             'rate_limit',
             'enable_standby_backup',
-            'close_compression'
+            'close_compression',
+            'restart_archive'
           ])
         );
         break;
@@ -743,7 +844,6 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
         assign(params, this.getApplicationExtParameters(['parallel_process']));
         break;
       case ApplicationType.MySQL:
-      case ApplicationType.OpenGauss:
         assign(
           params,
           this.getApplicationExtParameters([
@@ -760,6 +860,8 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
         break;
       case ApplicationType.Dameng:
       case ApplicationType.SQLServer:
+      case ApplicationType.Saponoracle:
+      case ApplicationType.OpenGauss:
         assign(params, this.getApplicationExtParameters(['channel_number']));
         break;
       case ApplicationType.DB2:
@@ -787,11 +889,31 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
         break;
       // 普通云平台虚拟化
       case ApplicationType.HCSCloudHost:
-      case ApplicationType.OpenStack:
-      case ApplicationType.ApsaraStack:
+        assign(
+          params,
+          this.getApplicationExtParameters([
+            'copy_verify',
+            'fine_grained_restore',
+            'available_capacity_threshold',
+            'keep_snapshot'
+          ])
+        );
+        break;
       case ApplicationType.FusionCompute:
       case ApplicationType.FusionOne:
       case ApplicationType.CNware:
+      case ApplicationType.OpenStack:
+        assign(
+          params,
+          this.getApplicationExtParameters([
+            'copy_verify',
+            'fine_grained_restore',
+            'available_capacity_threshold'
+          ])
+        );
+        break;
+      case ApplicationType.ApsaraStack:
+      case ApplicationType.Nutanix:
         assign(
           params,
           this.getApplicationExtParameters([
@@ -804,6 +926,15 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
         assign(
           params,
           this.getApplicationExtParameters(['available_capacity_threshold'])
+        );
+        break;
+      case ApplicationType.Hive:
+        assign(
+          params,
+          this.getApplicationExtParameters([
+            'available_capacity_threshold',
+            'is_block_level_incr_backup'
+          ])
         );
         break;
       case ApplicationType.KubernetesStatefulSet:
@@ -821,7 +952,12 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
       case ApplicationType.HDFS:
         assign(
           params,
-          this.getApplicationExtParameters(['auto_index', 'concurrent_number'])
+          this.getApplicationExtParameters([
+            'auto_index',
+            'concurrent_number',
+            'available_capacity_threshold',
+            'is_block_level_incr_backup'
+          ])
         );
         break;
       case ApplicationType.HBase:
@@ -836,7 +972,8 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
           params,
           this.getApplicationExtParameters([
             'copy_verify',
-            'fine_grained_restore'
+            'fine_grained_restore',
+            'available_capacity_threshold'
           ])
         );
         break;
@@ -845,6 +982,15 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
         break;
     }
     return params;
+  }
+
+  getStorageType() {
+    return this.formGroup.value.device_type ===
+      DataMap.poolStorageDeviceType.Server.value &&
+      this.formGroup.value.storage_type ===
+        DataMap.storagePoolBackupStorageType.unit.value
+      ? 'BasicDisk'
+      : this.formGroup.value.device_type;
   }
 
   getApplicationExtParameters(params?) {
@@ -883,6 +1029,7 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
         ApplicationType.KingBase,
         ApplicationType.MySQL,
         ApplicationType.PostgreSQL,
+        ApplicationType.AntDB,
         ApplicationType.TDSQL,
         ApplicationType.Dameng,
         ApplicationType.OpenGauss,
@@ -910,6 +1057,11 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
       if (!ext_parameters.qos_id) {
         delete ext_parameters.qos_id;
       }
+    }
+
+    // HCS保留快照处理，词条修改为删除快照，值需要反着来
+    if (includes([ApplicationType.HCSCloudHost], this.applicationData)) {
+      ext_parameters.keep_snapshot = !ext_parameters.keep_snapshot;
     }
 
     // 部分应用qos处理
@@ -964,6 +1116,11 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
       ext_parameters.rate_limit = +ext_parameters.rate_limit;
     }
 
+    // 代理主机
+    if (!isUndefined(ext_parameters.agents) && isEmpty(ext_parameters)) {
+      ext_parameters.agents = [];
+    }
+
     // 生产存储剩余容量阈值处理
     if (ext_parameters.available_capacity_threshold) {
       ext_parameters.available_capacity_threshold = Number(
@@ -982,6 +1139,7 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
     if (this.formGroup.value.storage_id) {
       ext_parameters.storage_info = {
         storage_type: this.formGroup.value.storage_type,
+        device_type: this.getStorageType(),
         storage_id: this.formGroup.value.storage_id
       };
     } else {
@@ -1014,6 +1172,7 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
     if (this.formGroup.value.storage_id) {
       ext_parameters.storage_info = {
         storage_type: this.formGroup.value.storage_type,
+        device_type: this.getStorageType(),
         storage_id: this.formGroup.value.storage_id
       };
     } else {
@@ -1039,6 +1198,7 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
       'ensure_deleted_data',
       'ensure_specifies_transfer_mode',
       'specifies_transfer_mode',
+      'add_backup_record',
       'auto_retry',
       'available_capacity_threshold',
       'auto_retry_times',
@@ -1064,6 +1224,7 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
     if (this.formGroup.value.storage_id) {
       ext_parameters.storage_info = {
         storage_type: this.formGroup.value.storage_type,
+        device_type: this.getStorageType(),
         storage_id: this.formGroup.value.storage_id
       };
     } else {
@@ -1083,8 +1244,17 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
       'source_deduplication',
       'auto_retry',
       'auto_retry_times',
-      'auto_retry_wait_minutes'
+      'auto_retry_wait_minutes',
+      'available_capacity_threshold',
+      'is_block_level_incr_backup'
     ]);
+
+    // 生产存储剩余容量阈值处理
+    if (ext_parameters.available_capacity_threshold) {
+      ext_parameters.available_capacity_threshold = Number(
+        ext_parameters.available_capacity_threshold
+      );
+    }
 
     if (includes([PolicyAction.FULL, PolicyAction.INCREMENT], item.action)) {
       ext_parameters['is_reserved_latest_snapshot'] =
@@ -1110,6 +1280,7 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
     if (this.formGroup.value.storage_id) {
       ext_parameters.storage_info = {
         storage_type: this.formGroup.value.storage_type,
+        device_type: this.getStorageType(),
         storage_id: this.formGroup.value.storage_id
       };
     } else {
@@ -1162,7 +1333,9 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
 
     return { ext_parameters };
   }
-
+  storageTypeWormChange(e) {
+    this.isBasicDisk = e;
+  }
   onOK(): Observable<any> {
     if (includes([ApplicationType.Dameng], this.applicationData)) {
       const fullPolicy = find(
@@ -1257,7 +1430,7 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
             ]),
             {
               lvShowCloseButton: true,
-              lvMessageKey: 'filesetSLAMessageKey'
+              lvMessageKey: 'openGaussDatabaseSLAMessageKey'
             }
           );
           observer.error(false);
@@ -1277,25 +1450,7 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
             ]),
             {
               lvShowCloseButton: true,
-              lvMessageKey: 'filesetSLAMessageKey'
-            }
-          );
-          observer.error(false);
-          return;
-        }
-
-        if (
-          this.applicationData === ApplicationType.MongoDB &&
-          find(policyArray, item => item.action === PolicyAction.LOG)
-        ) {
-          this.messageService.error(
-            this.i18n.get('protection_fileset_sla_vaild_label', [
-              this.i18n.get('resource_sub_type_mongodb_single_label'),
-              this.i18n.get('common_log_backup_label')
-            ]),
-            {
-              lvShowCloseButton: true,
-              lvMessageKey: 'filesetSLAMessageKey'
+              lvMessageKey: 'openGaussInstanceSLAMessageKey'
             }
           );
           observer.error(false);
@@ -1317,6 +1472,14 @@ export class SpecifiedBackupPolicyComponent implements OnInit {
             'backupTeams',
             'title'
           ]);
+          // HCS删除快照处理，描述和字段相反需要处理
+          if (
+            includes([ApplicationType.HCSCloudHost], this.applicationData) &&
+            res.ext_parameters
+          ) {
+            res.ext_parameters.keep_snapshot = !res.ext_parameters
+              .keep_snapshot;
+          }
           return res;
         })
       };

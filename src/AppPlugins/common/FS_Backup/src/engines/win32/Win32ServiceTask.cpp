@@ -17,11 +17,16 @@
 #include <handleapi.h>
 #include <filesystem>
 #include <errhandlingapi.h>
+#include <algorithm>
+#include <windows.h>
 #include "FileSystemUtil.h"
 #include "Win32PathUtils.h"
 #include "Win32BackupEngineUtils.h"
 #include "log/Log.h"
 #include "FSBackupUtils.h"
+#include "Utils.h"
+#include "XMetaParser.h"
+#include "AdsParser.h"
 
 
 using namespace std;
@@ -30,10 +35,14 @@ using namespace Module;
 using namespace Win32BackupEngineUtils;
 
 namespace {
+    const std::string PATH_SEP = "\\";
+    const std::string XMETA_FILENAME_PFX = "xmeta_file_";
+    const std::string ADS_METAFILE_PFX = "ads_meta_file_";
     const uint64_t UNIX_TIME_START = 0x019DB1DED53E8000; /* January 1, 1970 (start of Unix epoch) in "ticks" */
     const uint64_t TICKS_PER_SECOND = 10000000; /* a tick is 100ns */
     // DACL_SECURITY_INFORMATION | SACL_SECURITY_INFORMATION | OWNER_SECURITY_INFORMATION | GROUP_SECURITY_INFORMATION
     const uint32_t ALL_SEC_INFORMATION = 0x0000000F;
+    const int BUFFER_SIZE = 128 * 1024;  // 128KB缓冲区
 }
 
 void Win32ServiceTask::SetCriticalErrorInfo(uint64_t err)
@@ -166,29 +175,12 @@ int Win32ServiceTask::ProcessOpenDst(const std::string& dstFile)
         DBGLOG("skip open dst for symlink %s", dstFile.c_str());
         return SUCCESS;
     }
-    m_fileHandle.m_file->dstIOHandle.win32Fd = ::CreateFileW(wDstFile.c_str(), GENERIC_WRITE, FILE_SHARE_WRITE, NULL,
+    m_fileHandle.m_file->dstIOHandle.win32Fd = ::CreateFileW(wDstFile.c_str(), GENERIC_WRITE, 0, NULL,
         creationDisposition, FILE_ATTRIBUTE_NORMAL, NULL);
+    /* When success, need to check whether the file is a sparse file. So can't return */
     if (m_fileHandle.m_file->dstIOHandle.win32Fd == INVALID_HANDLE_VALUE) {
-        /* When success, need to check whether the file is a sparse file. So can't return */
         DWORD lastError = GetLastError();
-        if (lastError == ERROR_FILE_EXISTS) {
-            if (ProcessRestorePolicy(dstFile) != SUCCESS) {
-                return FAILED;
-            }
-        } else if (lastError == ERROR_PATH_NOT_FOUND) {
-            WARNLOG("parent dir of %s is not exist, create it now", dstFile.c_str());
-            DWORD errorCode = 0; // error for dir create
-            if (!Win32BackupEngineUtils::CreateDirectoryRecursively(Win32PathUtil::GetParentDir(dstFile),
-                                                                    m_params.dstRootPath, errorCode)) {
-                m_errDetails = {dstFile, lastError};
-                return FAILED;
-            }
-            if (ProcessOpenDst(dstFile) != SUCCESS) {
-                return FAILED;
-            }
-        } else {
-            m_errDetails = {dstFile, GetLastError()};
-            ERRLOG("create file failed %s, errno %d", dstFile.c_str(), m_errDetails.second);
+        if (ProessOpenDstFailed(dstFile, wDstFile, lastError) != SUCCESS) {
             return FAILED;
         }
     }
@@ -200,6 +192,59 @@ int Win32ServiceTask::ProcessOpenDst(const std::string& dstFile)
             ERRLOG("init sparse file failed %s errno %d", dstFile.c_str(), m_errDetails.second);
             return FAILED;
         }
+    }
+    return SUCCESS;
+}
+
+int Win32ServiceTask::ProessOpenDstFailed(const std::string& dstFile, const std::wstring wDstFile, DWORD lastError)
+{
+    if (lastError == ERROR_FILE_EXISTS) {
+        if (ProcessRestorePolicy(dstFile) != SUCCESS) {
+            return FAILED;
+        }
+    } else if (lastError == ERROR_PATH_NOT_FOUND) {
+        WARNLOG("parent dir of %s is not exist, create it now", dstFile.c_str());
+        DWORD errorCode = 0; // error for dir create
+        if (!Win32BackupEngineUtils::CreateDirectoryRecursively(Win32PathUtil::GetParentDir(dstFile),
+                                                                m_params.dstRootPath, errorCode)) {
+            m_errDetails = {dstFile, lastError};
+            return FAILED;
+        }
+        if (ProcessOpenDst(dstFile) != SUCCESS) {
+            return FAILED;
+        }
+    } else if (lastError == ERROR_ACCESS_DENIED) {
+        if (ReopenDstNoAccessFile(dstFile, wDstFile) != SUCCESS) {
+            m_errDetails = {dstFile, lastError};
+            return FAILED;
+        }
+    } else {
+        m_errDetails = {dstFile, lastError};
+        ERRLOG("create file failed %s, errno %d", dstFile.c_str(), m_errDetails.second);
+        return FAILED;
+    }
+    return SUCCESS;
+}
+
+int Win32ServiceTask::ReopenDstNoAccessFile(const std::string& dstFile, const std::wstring wDstFile)
+{
+    WARNLOG("File(%s) is exist, but access denied, try to reopen it.", dstFile.c_str());
+    std::optional<FileSystemUtil::StatResult> statResult = FileSystemUtil::Stat(dstFile);
+    if (statResult->IsReadOnly()) {
+        // 只读文件，尝试去除只读属性后再以写权限打开
+        if (!::SetFileAttributesW(wDstFile.c_str(),
+            static_cast<DWORD>(m_fileHandle.m_file->m_fileAttr) & ~FILE_ATTRIBUTE_READONLY)) {
+            ERRLOG("Remove the read-only attribute of file %s failed, errno %d", dstFile.c_str(), ::GetLastError());
+            return FAILED;
+        }
+    }
+    // 如果已有文件是隐藏文件，使用CREATE_ALWAYS和FILE_ATTRIBUTE_NORMAL会报ERROR_ACCESS_DENIED
+    // 这里文件肯定存在，所以使用TRUNCATE_EXISTING方式打开文件
+    m_fileHandle.m_file->dstIOHandle.win32Fd = ::CreateFileW(wDstFile.c_str(), GENERIC_WRITE, 0, NULL,
+        TRUNCATE_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (m_fileHandle.m_file->dstIOHandle.win32Fd == INVALID_HANDLE_VALUE) {
+        ERRLOG("Reopen noaccess file failed %s, errno %d", dstFile.c_str(), ::GetLastError());
+        return FAILED;
     }
     return SUCCESS;
 }
@@ -269,17 +314,16 @@ int Win32ServiceTask::ProcessOverwriteOlderPolicy(const string& dstFile)
 int Win32ServiceTask::ProcessOverwritePolicy(const string& dstFile)
 {
     wstring wDstFile = Win32BackupEngineUtils::ExtenedPathW(dstFile);
-    // check if file attribute is hidden
-    bool isHidden = FileHandleHasAttribute(m_fileHandle, FILE_ATTRIBUTE_HIDDEN);
-    if (isHidden) {
-        // set hidden attribute
-        m_fileHandle.m_file->dstIOHandle.win32Fd = ::CreateFileW(wDstFile.c_str(), GENERIC_WRITE, 0, NULL,
-            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_HIDDEN, NULL);
-    } else {
-        m_fileHandle.m_file->dstIOHandle.win32Fd = ::CreateFileW(wDstFile.c_str(), GENERIC_WRITE, 0, NULL,
-            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-    }
+    // 如果已有文件是隐藏文件，使用CREATE_ALWAYS和FILE_ATTRIBUTE_NORMAL会报ERROR_ACCESS_DENIED
+    // 这里文件肯定存在，所以使用TRUNCATE_EXISTING方式打开文件
+    m_fileHandle.m_file->dstIOHandle.win32Fd = ::CreateFileW(wDstFile.c_str(), GENERIC_WRITE, 0, NULL,
+        TRUNCATE_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (m_fileHandle.m_file->dstIOHandle.win32Fd == INVALID_HANDLE_VALUE) {
+        DWORD lastError = ::GetLastError();
+        // 如果错误码是ERROR_ACCESS_DENIED，可能是只读文件，尝试去除只读属性后再以写权限打开
+        if (lastError == ERROR_ACCESS_DENIED && ReopenDstNoAccessFile(dstFile, wDstFile) == SUCCESS) {
+            return SUCCESS;
+        }
         m_errDetails = {dstFile, GetLastError()};
         ERRLOG("open failed %s errno %d", dstFile.c_str(), m_errDetails.second);
         return FAILED;
@@ -327,31 +371,39 @@ void Win32ServiceTask::HandleReadData()
         (DWORD)m_fileHandle.m_block.m_size, &numberOfBytesRead, &ov);
     if (!res || numberOfBytesRead != m_fileHandle.m_block.m_size) {
         uint32_t errcode = (GetLastError() == 0 ? E_BACKUP_READ_LESS_THAN_EXPECTED : GetLastError());
-        m_errDetails = {srcFile, errcode};
-        ERRLOG("ReadFile failed %s, cnt %d, size %llu, errno %d",
-            srcFile.c_str(), numberOfBytesRead, m_fileHandle.m_block.m_size, m_errDetails.second);
-        SetCriticalErrorInfo(m_errDetails.second);
-        if (m_params.discardReadError) {
+        if (errcode == E_BACKUP_READ_LESS_THAN_EXPECTED && m_params.discardReadError) {
+            WARNLOG("%s read(%lu) less than expected(%lu). discardReadError is true, ignore it.",
+                srcFile.c_str(), numberOfBytesRead, m_fileHandle.m_block.m_size);
+            m_errDetails = {srcFile, E_BACKUP_READ_LESS_THAN_EXPECTED};
             m_fileHandle.m_file->SetFlag(READ_FAILED_DISCARD);
-            m_result = SUCCESS;
+            // 因为discardReadError为true,继续走成功流程
         } else {
+            m_errDetails = {srcFile, errcode};
+            ERRLOG("pread failed %s, cnt %lu, size %lu, errno %lu, err message %s",
+                srcFile.c_str(), numberOfBytesRead, m_fileHandle.m_block.m_size, errcode, strerror(errcode));
+            SetCriticalErrorInfo(errcode);
             m_result = FAILED;
-            return;
+            CloseSmallFileSrcFd();
+            return; // 失败退出
         }
     }
     DBGLOG("ReadFile success %s blockInfo %llu %llu %u!", srcFile.c_str(),
         m_fileHandle.m_block.m_seq, m_fileHandle.m_block.m_offset, m_fileHandle.m_block.m_size);
     m_result = SUCCESS;
 
+    CloseSmallFileSrcFd();
+    return;
+}
+
+void Win32ServiceTask::CloseSmallFileSrcFd()
+{
     if (m_fileHandle.m_file->m_size <= m_params.blockSize &&
         !ProcessFileHandleAsSparseFile(m_params.writeSparseFile, m_fileHandle)) {
         CloseHandle(m_fileHandle.m_file->srcIOHandle.win32Fd);
         m_fileHandle.m_file->srcIOHandle.win32Fd = INVALID_HANDLE_VALUE;
-        DBGLOG("CloseHandle small file %s size %llu blockSize %d",
+        DBGLOG("CloseHandle src small file %s size %llu blockSize %d",
             m_fileHandle.m_file->m_fileName.c_str(), m_fileHandle.m_file->m_size, m_params.blockSize);
     }
-
-    return;
 }
 
 void Win32ServiceTask::PushSubStreamFileHandleToReadQueue(const std::wstring& wStreamName)
@@ -518,22 +570,45 @@ void Win32ServiceTask::HandleWriteData()
         ERRLOG("not opened file. %s", dstFile.c_str());
         return;
     }
-    DWORD writedSize = 0;
-    OVERLAPPED ov {};
-    Win32BackupEngineUtils::ConvertUint64ToDword(m_fileHandle.m_block.m_offset, ov.OffsetHigh, ov.Offset);
-    BOOL res = WriteFile(m_fileHandle.m_file->dstIOHandle.win32Fd, (LPVOID)(m_fileHandle.m_block.m_buffer),
-        (DWORD)m_fileHandle.m_block.m_size, &writedSize, &ov);
-    if (!res || writedSize != m_fileHandle.m_block.m_size) {
-        m_errDetails = {dstFile, GetLastError()};
-        ERRLOG("win32 WriteFile failed %s size %u cnt %d errno %d",
-            dstFile.c_str(), m_fileHandle.m_block.m_size, writedSize, m_errDetails.second);
-        SetCriticalErrorInfo(m_errDetails.second);
+
+    if (!WriteFileWithRetry(dstFile)) {
+        ERRLOG("win32 WriteFile failed %s size %u", dstFile.c_str(), m_fileHandle.m_block.m_size);
         m_result = FAILED;
         return;
     }
+
     m_result = SUCCESS;
     CloseSmallFileDstFd();
     return;
+}
+
+bool Win32ServiceTask::WriteFileWithRetry(const std::string& dstFile)
+{
+    uint64_t currentCount = 0;
+    while (currentCount < m_fileHandle.m_block.m_size) {
+        DWORD writedSize = 0;
+        OVERLAPPED ov {};
+        Win32BackupEngineUtils::ConvertUint64ToDword(m_fileHandle.m_block.m_offset + currentCount,
+            ov.OffsetHigh, ov.Offset);
+        BOOL res = WriteFile(m_fileHandle.m_file->dstIOHandle.win32Fd,
+            static_cast<LPVOID>(m_fileHandle.m_block.m_buffer + currentCount),
+            static_cast<DWORD>(m_fileHandle.m_block.m_size - currentCount), &writedSize, &ov);
+        currentCount += writedSize;
+        if (!res || currentCount > m_fileHandle.m_block.m_size) {
+            m_errDetails = {dstFile, GetLastError()};
+            ERRLOG("win32 WriteFile failed %s size %u cnt %d errno %d",
+                dstFile.c_str(), m_fileHandle.m_block.m_size, writedSize, m_errDetails.second);
+            SetCriticalErrorInfo(m_errDetails.second);
+            return false;
+        }
+        // 此处仅记录异常情况，自动重试
+        if (currentCount < m_fileHandle.m_block.m_size) {
+            WARNLOG("win32 WriteFile partly success, %s size %u cnt %d errno %d",
+                    dstFile.c_str(), m_fileHandle.m_block.m_size, writedSize, m_errDetails.second);
+        }
+    }
+
+    return true;
 }
 
 // 该方法合入Module
@@ -622,7 +697,7 @@ void Win32ServiceTask::HandleWriteMetaForADS()
 
     // SetFileInformationByHandle to set for main stream
     if (!::SetFileInformationByHandle(hFile, FileBasicInfo, &fileBasicInfo, sizeof(FILE_BASIC_INFO))) {
-        ERRLOG("SetFileInformationByHandle failed, host file: %s, errno %d",
+        WARNLOG("SetFileInformationByHandle failed, host file: %s, errno %d",
             dstPath.c_str(), ::GetLastError());
     }
 
@@ -804,14 +879,41 @@ bool Win32ServiceTask::SetSecurityDescriptorW(const std::wstring& wPath, DWORD& 
         WARNLOG("Get group from psd failed, bDefaulted: %u, err: %u", bDefaulted, ::GetLastError());
     }
 
-    DWORD res = ::SetNamedSecurityInfoW(const_cast<LPWSTR>(wPath.c_str()),
-        SE_FILE_OBJECT, sdFlag, pOwner, pGroup, pDacl, pSacl);
+    DWORD res = m_fileHandle.IsDir() ? SetSecurityForDir(wPath, sdFlag, pSecurityDescriptor) : ::SetNamedSecurityInfoW(
+        const_cast<LPWSTR>(wPath.c_str()), SE_FILE_OBJECT, sdFlag, pOwner, pGroup, pDacl, pSacl);
     if (res != ERROR_SUCCESS) {
         ERRLOG("Set dAcl failed, errno %u", res);
         errorCode = res;
         return false;
     }
     return true;
+}
+
+DWORD Win32ServiceTask::SetSecurityForDir(const std::wstring& wPath, uint32_t sdFlag,
+    PSECURITY_DESCRIPTOR pSecurityDescriptor) const
+{
+    // 打开目录句柄用于设置安全描述符
+    HANDLE hDir = ::CreateFileW(
+        wPath.c_str(),
+        GENERIC_READ,
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
+        nullptr,
+        OPEN_EXISTING,
+        FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OPEN_REPARSE_POINT,
+        nullptr);
+    if (hDir == INVALID_HANDLE_VALUE) {
+        ERRLOG("Open dir failed!");
+        return ::GetLastError();
+    }
+    // 目录使用SetKernelObjectSecurity接口设置安全描述符，防止ACEs向下继承导致耗时长
+    if (!::SetKernelObjectSecurity(hDir, sdFlag, pSecurityDescriptor)) {
+        DWORD errorCode = ::GetLastError();
+        ERRLOG("SetKernelObjectSecurity failed, err: %u", errorCode);
+        ::CloseHandle(hDir);
+        return errorCode;
+    }
+    ::CloseHandle(hDir);
+    return ERROR_SUCCESS;
 }
 
 void Win32ServiceTask::HandleLink()
@@ -881,13 +983,50 @@ void Win32ServiceTask::HandleCloseDst()
     return;
 }
 
+bool Win32ServiceTask::DeleteDirectoryRecursively(const std::string& dirPath)
+{
+    WIN32_FIND_DATA findFileData;
+    HANDLE hFind = FindFirstFileW(FileSystemUtil::Utf8ToUtf16(dirPath + "\\*").c_str(), &findFileData);
+    if (hFind == INVALID_HANDLE_VALUE) {
+        ERRLOG("File or directory cannot be found");
+        return false;
+    }
+    do {
+        std::string fileOrDir = FileSystemUtil::Utf16ToUtf8(findFileData.cFileName);
+        // 跳过"."和".."文件夹
+        if (fileOrDir == "." || fileOrDir == "..") {
+            continue;
+        }
+        const std::string fullPath = dirPath + PATH_SEP + fileOrDir;
+        if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+            // 如果是目录，递归删除
+            if (!DeleteDirectoryRecursively(fullPath)) {
+                FindClose(hFind);
+                ERRLOG("Failed to delete directory:%s", fullPath.c_str());
+                return false;
+            }
+        } else {
+            // 如果是文件，删除文件
+            if (DeleteFileW(FileSystemUtil::Utf8ToUtf16(fullPath).c_str()) == 0) {
+                ERRLOG("Failed to delete file:%s", fullPath.c_str());
+                FindClose(hFind);
+                return false;
+            }
+        }
+    } while (FindNextFile(hFind, &findFileData) != 0);
+    FindClose(hFind);
+    // 删除空的目录
+    return RemoveDirectory(FileSystemUtil::Utf8ToUtf16(dirPath).c_str()) != 0;
+}
+
 void Win32ServiceTask::HandleDelete()
 {
     DBGLOG("Enter HandleDelete");
     string path = PathConcat(m_params.dstRootPath, m_fileHandle.m_file->m_fileName, m_params.dstTrimPrefix);
     wstring wPath = Win32BackupEngineUtils::ExtenedPathW(path);
+    string prepath = FileSystemUtil::Utf16ToUtf8(wPath);
     if (m_fileHandle.IsDir()) {
-        if (!RemoveDirectory(wPath.c_str())) {
+        if (!DeleteDirectoryRecursively(prepath.c_str())) {
             m_errDetails = {path, GetLastError()};
             ERRLOG("Delete dir %s failed, errno %d", path.c_str(), m_errDetails.second);
             return;
@@ -911,7 +1050,9 @@ bool Win32ServiceTask::Win32DeleteFile(const string& filePath)
         if (lastError == ERROR_ACCESS_DENIED) {
             WARNLOG("File %s is a read-only file, remove the read-only attribute now!", filePath.c_str());
             return DeleteReadOnlyFile(filePath);
-        } else if (lastError == ERROR_FILE_NOT_FOUND) {
+        } else if (lastError == ERROR_FILE_NOT_FOUND ||
+                lastError == ERROR_PATH_NOT_FOUND ||
+                lastError == ERROR_INVALID_NAME) {
             WARNLOG("File %s had been deleted!", filePath.c_str());
             return true;
         }
@@ -929,7 +1070,7 @@ bool Win32ServiceTask::IsValidWin32Handle(const HANDLE& handle) const
 bool Win32ServiceTask::DeleteReadOnlyFile(const string& filePath)
 {
     wstring wFilePath = Win32BackupEngineUtils::ExtenedPathW(filePath);
-    if (!SetFileAttributes(wFilePath.c_str(),
+    if (!::SetFileAttributesW(wFilePath.c_str(),
         static_cast<DWORD>(m_fileHandle.m_file->m_fileAttr) & ~FILE_ATTRIBUTE_READONLY)) {
         ERRLOG("Remove the read-only attribute of file %s failed, errno %d", filePath.c_str(), GetLastError());
         return false;
@@ -945,6 +1086,10 @@ void Win32ServiceTask::HandleCreateDir()
 {
     string dstDir = PathConcat(m_params.dstRootPath, m_fileHandle.m_file->m_fileName, m_params.dstTrimPrefix);
     DBGLOG("HandleCreateDir: %s", dstDir.c_str());
+    // 如果是根目录，直接返回不创建
+    if (dstDir == m_params.dstRootPath) {
+        return;
+    }
     DWORD errorCode = 0;
     if (!Win32BackupEngineUtils::CreateDirectoryRecursively(dstDir, m_params.dstRootPath, errorCode)) {
         m_errDetails = { dstDir, errorCode };
@@ -954,6 +1099,11 @@ void Win32ServiceTask::HandleCreateDir()
     }
     wstring wDstDir = Win32BackupEngineUtils::ExtenedPathW(dstDir);
     DWORD setDescriptorError = 0;
+    if (m_params.writeAcl) {
+        DBGLOG("HandleCreateDir Success!");
+        m_result = SUCCESS;
+        return;
+    }
     if (m_params.writeAcl && !SetSecurityDescriptorW(wDstDir, setDescriptorError)) {
         ERRLOG("set security descriptor for dir %s failed", dstDir.c_str());
         m_errDetails = { dstDir, setDescriptorError };
@@ -963,4 +1113,122 @@ void Win32ServiceTask::HandleCreateDir()
     DBGLOG("HandleCreateDir Success!");
     m_result = SUCCESS;
     return;
+}
+
+void Win32ServiceTask::HandleWriteSubStreams()
+{
+    std::vector<Module::XMetaField> entryList{};
+    GetXMetaEntries(entryList);
+    std::vector<std::string> streamNames{};
+    std::string adsMetaFileIndex;
+    std::string adsMetaFileOffset;
+    std::for_each(entryList.begin(), entryList.end(), [&streamNames, &adsMetaFileIndex, &adsMetaFileOffset](const XMetaField& entry) {
+        if (entry.m_xMetaType == Module::XMETA_TYPE::XMETA_TYPE_ADS_STREAM_NAME) {
+            streamNames.push_back(entry.m_value);
+        }
+        if (entry.m_xMetaType == Module::XMETA_TYPE::XMETA_TYPE_ADS_METAFILE_INDEX) {
+            adsMetaFileIndex = entry.m_value;
+        }
+        if (entry.m_xMetaType == Module::XMETA_TYPE::XMETA_TYPE_ADS_METAFILE_OFFSET) {
+            adsMetaFileOffset = entry.m_value;
+        }
+    });
+    DoWriteSubStreams(streamNames, adsMetaFileIndex, adsMetaFileOffset);
+    return;
+}
+
+void Win32ServiceTask::GetXMetaEntries(std::vector<Module::XMetaField>& entryList)
+{
+    // 需要读xmeta的文件信息， 所以需要xmeta的路径
+    std::string xMetaFilePath = m_params.metaPath + PATH_SEP + XMETA_FILENAME_PFX + to_string(m_fileHandle.m_file->m_xMetaFileIndex);
+    std::unique_ptr<Module::XMetaParser> xMetaParser = std::make_unique<Module::XMetaParser>(xMetaFilePath);
+    if (xMetaParser == nullptr) {
+        ERRLOG("Open XMeta file failed, path: %s", xMetaFilePath.c_str());
+        m_result = FAILED;
+        return;
+    }
+    CTRL_FILE_RETCODE retVal = xMetaParser->Open(CTRL_FILE_OPEN_MODE::READ);
+    if (retVal != CTRL_FILE_RETCODE::SUCCESS) {
+        ERRLOG("xMetaParser Open failed. Ret: %d: ", retVal);
+        m_result = FAILED;
+        return;
+    }
+    if (xMetaParser->ReadXMeta(entryList, m_fileHandle.m_file->m_xMetaFileOffset) != CTRL_FILE_RETCODE::SUCCESS) {
+        ERRLOG("Failed to read xmeta file : %s, offset: %llu", xMetaFilePath.c_str(), m_fileHandle.m_file->m_xMetaFileOffset);
+        m_result = FAILED;
+        return;
+    }
+    xMetaParser->Close(CTRL_FILE_OPEN_MODE::READ);
+    return;
+}
+
+void Win32ServiceTask::DoWriteSubStreams(const std::vector<std::string>& streamNames,
+    const std::string& adsMetaFileIndex, const std::string& adsMetaFileOffset)
+{
+    // 文件名
+    std::string dstFile = PathConcat(m_params.dstRootPath, m_fileHandle.m_file->m_fileName, m_params.dstTrimPrefix);
+    INFOLOG("Enter WriteSubStream for dstFile: %s", dstFile.c_str());
+    uint64_t adsOffset = Module::SafeStoUll(adsMetaFileOffset, UINT64_MAX);
+    if (adsOffset == UINT64_MAX) {
+        ERRLOG("Convert ads offset failed! %s, %llu", adsMetaFileOffset.c_str(), adsOffset);
+        m_result = FAILED;
+        return;
+    }
+
+    std::string adsFileName = m_params.metaPath + PATH_SEP + ADS_METAFILE_PFX + adsMetaFileIndex;
+    std::unique_ptr<Module::AdsParser> adsParser = std::make_unique<Module::AdsParser>(adsFileName);
+    CTRL_FILE_RETCODE retVal = adsParser->Open(CTRL_FILE_OPEN_MODE::READ);
+    if (retVal != CTRL_FILE_RETCODE::SUCCESS) {
+        ERRLOG("adsParser Open failed. Ret: %d: ", retVal);
+        m_result = FAILED;
+        return;
+    }
+    uint8_t* buffer = new uint8_t[BUFFER_SIZE];
+    for (const std::string& streamName : streamNames) {
+        if (!WriteSingleSubStream(dstFile, streamName, adsParser, buffer, adsOffset)) {
+            WARNLOG("Write substream failed! %s, %s", dstFile.c_str(), streamName.c_str());
+            // increase substream failed
+            continue;
+        }
+    }
+    delete[] buffer;
+    m_result = SUCCESS;
+    return;
+}
+
+bool Win32ServiceTask::WriteSingleSubStream(const std::string& dstFile, const std::string& streamName,
+    std::unique_ptr<Module::AdsParser>& adsParser, uint8_t* buffer, uint64_t& adsOffset)
+{
+    uint64_t nextOffset;
+    uint32_t nextIndex;
+    bool isLast;
+    // open stream
+    std::wstring dstPathW = FileSystemUtil::Utf8ToUtf16(dstFile + ":" + streamName);
+    INFOLOG("open substream path : %s", FileSystemUtil::Utf16ToUtf8(dstPathW).c_str());
+    HANDLE hFile = CreateFileW(dstPathW.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) {
+        ERRLOG("Open substream failed: %s, %d", FileSystemUtil::Utf16ToUtf8(dstPathW).c_str(), ::GetLastError());
+        
+        return false;
+    }
+    do {
+        memset_s(buffer, BUFFER_SIZE, 0, BUFFER_SIZE);
+        uint32_t readLen = adsParser->ReadAdsEntry(adsOffset, buffer, nextIndex, nextOffset, isLast);
+        DWORD bytesWritten;
+        // write stream data
+        BOOL writeResult = ::WriteFile(hFile, buffer, readLen, &bytesWritten, NULL);
+        if (!writeResult) {
+            std::wcerr << L"Failed to write to ADS stream. Error: " << GetLastError() << std::endl;
+            CloseHandle(hFile);
+            return false;
+        }
+        adsOffset = nextOffset;
+        DBGLOG("Get next stream offset: %llu", adsOffset);
+    } while (!isLast);
+    // stream write end
+    ::CloseHandle(hFile);
+    INFOLOG("Write substream finish. %s", FileSystemUtil::Utf16ToUtf8(dstPathW).c_str());
+    adsOffset = nextOffset;
+    INFOLOG("Get next stream offset: %llu", adsOffset);
+    return true;
 }

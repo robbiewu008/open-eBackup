@@ -12,24 +12,28 @@
 */
 package openbackup.system.base.common.system;
 
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.annotation.JobScheduleControl;
 import openbackup.system.base.common.annotation.JobScheduleControls;
 import openbackup.system.base.common.constants.IsmNumberConstant;
+import openbackup.system.base.common.system.event.SystemConfigChangeEvent;
 import openbackup.system.base.common.utils.CommonUtil;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.job.api.JobCenterNativeApi;
+import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.JobScheduleConfig;
 import openbackup.system.base.sdk.job.model.request.JobScheduleRule;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ApplicationListener;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -39,10 +43,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,16 +60,29 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 @Component
 @Slf4j
-public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLineRunner {
+public class JobScheduleControlRegistrar
+    implements BeanPostProcessor, CommandLineRunner, ApplicationListener<SystemConfigChangeEvent> {
+    /**
+     * 原先在data_protection中配置排队策略的任务类型，由data_protection迁移至system_base配置
+     */
+    private static final List<JobTypeEnum> NONE_RESUMESTATUS_JOB_TYPE = Lists.newArrayList(JobTypeEnum.COPY_DELETE,
+            JobTypeEnum.RESTORE, JobTypeEnum.BACKUP, JobTypeEnum.INSTANT_RESTORE, JobTypeEnum.COPY_EXPIRE,
+            JobTypeEnum.COPY_REPLICATION, JobTypeEnum.ARCHIVE);
+
     private final ConcurrentLinkedQueue<JobScheduleConfig> jobScheduleConfigs = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Class<?>> jobScheduleClasses = new ConcurrentLinkedQueue<>();
 
     private final ConfigurableEnvironment environment;
 
     private final JobCenterNativeApi jobCenterNativeApi;
 
-    public JobScheduleControlRegistrar(ConfigurableEnvironment environment, JobCenterNativeApi jobCenterNativeApi) {
+    private final SystemConfigMapManager systemConfigMapManager;
+
+    public JobScheduleControlRegistrar(ConfigurableEnvironment environment, JobCenterNativeApi jobCenterNativeApi,
+        SystemConfigMapManager systemConfigMapManager) {
         this.environment = environment;
         this.jobCenterNativeApi = jobCenterNativeApi;
+        this.systemConfigMapManager = systemConfigMapManager;
     }
 
     /**
@@ -92,7 +109,7 @@ public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLi
         Method[] methods = clazz.getMethods();
         RequestMapping clazzRequestMapping = AnnotationUtils.getAnnotation(clazz, RequestMapping.class);
         if (clazzRequestMapping == null) {
-            return Collections.emptyList();
+            return jobScheduleConfigMap.values();
         }
         for (Method method : methods) {
             JobScheduleControl control = AnnotationUtils.getAnnotation(method, JobScheduleControl.class);
@@ -121,14 +138,29 @@ public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLi
             }
         }
         buildGlobalJobLimit(rule, control.globalJobLimit());
-        rule.setScopeJobLimit(control.scopeJobLimit());
+        if (control.scopeJobLimit() == IsmNumberConstant.ABNORMAL_SCOPE_JOB_LIMIT) {
+            rule.setScopeJobLimit(Integer.parseInt(
+                systemConfigMapManager.getSystemConfig(SystemConfigConstant.RUNNING_JOB_LIMIT_COUNT_ONE_NODE)));
+        } else {
+            rule.setScopeJobLimit(control.scopeJobLimit());
+        }
         rule.setMajorPriority(control.majorPriority());
         if (control.minorPriorities().length > 0) {
             rule.setMinorPriorities(Arrays.asList(control.minorPriorities()));
         }
         rule.setStrictScope(control.strictScope());
-        rule.setResumeStatus(control.resumeStatus());
-        rule.setExamine(path);
+        // 由data_protection服务迁移的归档、恢复、即时恢复、备份、复制、副本过期、副本删除类型不设置resumeStatus，默认没有此属性
+        if (!NONE_RESUMESTATUS_JOB_TYPE.contains(control.jobType())) {
+            rule.setResumeStatus(control.resumeStatus());
+        }
+        if (BigDecimal.ZERO.compareTo(BigDecimal.valueOf(control.pendingWindow())) != 0) {
+            rule.setPendingWindow(control.pendingWindow());
+        }
+        if (JobTypeEnum.ARCHIVE.getValue().equals(control.jobType().getValue())) {
+            rule.setExamine(control.examine());
+        } else {
+            rule.setExamine(path);
+        }
         return rule;
     }
 
@@ -160,7 +192,10 @@ public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLi
             if (StringUtils.isNumeric(value.toString())) {
                 configValue = Integer.valueOf(value.toString());
             } else {
-                String property = environment.getProperty(value.toString());
+                String property = systemConfigMapManager.getSystemConfig(value.toString());
+                if (VerifyUtil.isEmpty(property)) {
+                    property = environment.getProperty(value.toString());
+                }
                 if (!StringUtils.isNumeric(property)) {
                     log.info("Config: {} property: {} not an integer.", key.toString(), property);
                     return;
@@ -173,7 +208,7 @@ public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLi
     }
 
     private JobScheduleConfig getOrNewJobScheduleConfig(Map<String, JobScheduleConfig> jobScheduleConfigMap,
-            JobScheduleControl control) {
+                                                        JobScheduleControl control) {
         String jobType = control.jobType().getValue();
         return Optional.ofNullable(jobScheduleConfigMap.get(jobType)).orElseGet(() -> {
             JobScheduleConfig scheduleConfig = new JobScheduleConfig();
@@ -187,6 +222,9 @@ public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLi
     private void resolveJobScheduleControlConfigs(Map<String, JobScheduleConfig> jobScheduleConfigMap, Class<?> clazz) {
         Set<JobScheduleControl> controls = AnnotatedElementUtils.findMergedRepeatableAnnotations(clazz,
                 JobScheduleControl.class, JobScheduleControls.class);
+        if (!VerifyUtil.isEmpty(controls)) {
+            jobScheduleClasses.add(clazz);
+        }
         for (JobScheduleControl control : controls) {
             JobScheduleRule rule = parseJobScheduleRule(control, null);
             getOrNewJobScheduleConfig(jobScheduleConfigMap, control).getRules().add(rule);
@@ -245,5 +283,20 @@ public class JobScheduleControlRegistrar implements BeanPostProcessor, CommandLi
     @Override
     public void run(String... args) throws Exception {
         jobScheduleConfigs.forEach(this::updateJobSchedulePolicy);
+    }
+
+    @Override
+    public void onApplicationEvent(SystemConfigChangeEvent event) {
+        if (!event.getChangedConfigMap().containsKey(SystemConfigConstant.RUNNING_JOB_LIMIT_COUNT_ONE_NODE)) {
+            return;
+        }
+        Collection<JobScheduleConfig> collection = new ArrayList<>();
+        jobScheduleClasses.forEach(clazz -> collection.addAll(getJobScheduleControlConfig(clazz)));
+        if (!collection.isEmpty()) {
+            log.info("Async job config changes to redis");
+            jobScheduleConfigs.clear();
+            jobScheduleConfigs.addAll(collection);
+            jobScheduleConfigs.forEach(this::updateJobSchedulePolicy);
+        }
     }
 }

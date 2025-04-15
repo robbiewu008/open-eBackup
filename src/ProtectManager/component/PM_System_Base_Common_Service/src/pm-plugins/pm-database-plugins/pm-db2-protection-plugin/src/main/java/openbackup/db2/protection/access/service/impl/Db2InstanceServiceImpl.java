@@ -12,6 +12,11 @@
 */
 package openbackup.db2.protection.access.service.impl;
 
+import com.google.common.collect.ImmutableList;
+
+import feign.FeignException;
+import io.jsonwebtoken.lang.Collections;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentDetailDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
@@ -42,6 +47,7 @@ import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
+import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.StringUtil;
@@ -50,12 +56,6 @@ import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.RequestUriUtil;
 import openbackup.system.base.util.StreamUtil;
-
-import com.google.common.collect.ImmutableList;
-
-import feign.FeignException;
-import io.jsonwebtoken.lang.Collections;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
@@ -147,34 +147,48 @@ public class Db2InstanceServiceImpl implements Db2InstanceService {
 
     @Override
     public void filterClusterInstance(ProtectedResource clusterInstance) {
-        if (!Db2ClusterTypeEnum.POWER_HA.getType()
-            .equals(clusterInstance.getExtendInfoByKey(DatabaseConstants.CLUSTER_TYPE))) {
+        if (!(Db2ClusterTypeEnum.POWER_HA.getType()
+            .equals(clusterInstance.getExtendInfoByKey(DatabaseConstants.CLUSTER_TYPE))
+            || Db2ClusterTypeEnum.RHEL_HA.getType()
+            .equals(clusterInstance.getExtendInfoByKey(DatabaseConstants.CLUSTER_TYPE)))) {
             return;
         }
         ProtectedResource primaryInstance = queryHadrPrimaryNode(clusterInstance);
         clusterInstance.getDependencies().put(DatabaseConstants.CHILDREN, ImmutableList.of(primaryInstance));
     }
 
-    private ProtectedResource queryHadrPrimaryNode(ProtectedResource clusterInstance) {
+    @Override
+    public ProtectedResource queryHadrPrimaryNode(ProtectedResource clusterInstance) {
         List<ProtectedResource> childrenInstance = clusterInstance.getDependencies().get(DatabaseConstants.CHILDREN);
         for (ProtectedResource subInstance : childrenInstance) {
             ProtectedEnvironment subEnv = environmentService.getEnvironmentById(
                 subInstance.getExtendInfoByKey(DatabaseConstants.HOST_ID));
-            AppEnvResponse appEnvResponse = agentUnifiedService.getClusterInfo(subInstance, subEnv);
-            List<NodeInfo> nodes = appEnvResponse.getNodes();
-            if (!Collections.isEmpty(nodes)) {
-                NodeInfo masterNode = nodes.stream()
-                    .filter(
-                        node -> NodeType.MASTER.getNodeType().equals(node.getExtendInfo().get(DatabaseConstants.ROLE)))
-                    .findFirst()
-                    .orElse(null);
-                if (masterNode != null) {
+            try {
+                Optional<NodeInfo> masterNode = queryMasterNode(subInstance, subEnv);
+                if (masterNode.isPresent()) {
                     return subInstance;
                 }
+            } catch (LegoCheckedException e) {
+                log.error("query db2 cluster fail", ExceptionUtil.getErrorMessage(e));
             }
         }
         log.error("The primary node is not queried. uuid: {}.", clusterInstance.getUuid());
         throw new LegoCheckedException(CommonErrorCode.ERR_PARAM, "The primary node is not queried");
+    }
+
+    @Override
+    public Optional<NodeInfo> queryMasterNode(ProtectedResource subInstance, ProtectedEnvironment subEnv) {
+        AppEnvResponse appEnvResponse = agentUnifiedService.getClusterInfo(subInstance, subEnv);
+        List<NodeInfo> nodes = appEnvResponse.getNodes();
+        NodeInfo masterNode = null;
+        if (!Collections.isEmpty(nodes)) {
+            masterNode = nodes.stream()
+                .filter(node -> NodeType.MASTER.getNodeType()
+                    .equals(node.getExtendInfo().get(DatabaseConstants.ROLE)))
+                .findFirst()
+                .orElse(null);
+        }
+        return Optional.ofNullable(masterNode);
     }
 
     @Override
@@ -399,6 +413,8 @@ public class Db2InstanceServiceImpl implements Db2InstanceService {
             .orElseThrow(() -> new LegoCheckedException("Don't have sub instance."));
         // powerHA集群实例时需要把集群实例的id设置到子实例上，为了powerHA主备切换时扫描的数据库的id不变
         if (Db2ClusterTypeEnum.POWER_HA.getType()
+            .equals(clusterInstance.getExtendInfoByKey(DatabaseConstants.CLUSTER_TYPE))
+            || Db2ClusterTypeEnum.RHEL_HA.getType()
             .equals(clusterInstance.getExtendInfoByKey(DatabaseConstants.CLUSTER_TYPE))) {
             subInstance.setUuid(clusterInstance.getUuid());
         }

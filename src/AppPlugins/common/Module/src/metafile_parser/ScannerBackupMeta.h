@@ -25,8 +25,6 @@
 #include "define/Defines.h"
 #include "securec.h"
 #include "NasControlFile.h"
-// #include "NfsContextContainer.h"
-// #include "ScannerUtils.h"
 
 constexpr uint32_t SCANNER_PATH_LEN_MAX = 4096;
 constexpr uint32_t SCANNER_FILE_NAME_LEN_MAX = 256;

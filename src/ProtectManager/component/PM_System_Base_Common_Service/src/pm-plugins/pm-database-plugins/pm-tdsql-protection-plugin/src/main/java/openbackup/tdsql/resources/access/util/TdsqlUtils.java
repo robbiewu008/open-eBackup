@@ -12,11 +12,11 @@
 */
 package openbackup.tdsql.resources.access.util;
 
+import com.alibaba.fastjson.JSON;
+
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.tdsql.resources.access.constant.TdsqlConstant;
-
-import com.alibaba.fastjson.JSON;
 
 import java.util.HashMap;
 

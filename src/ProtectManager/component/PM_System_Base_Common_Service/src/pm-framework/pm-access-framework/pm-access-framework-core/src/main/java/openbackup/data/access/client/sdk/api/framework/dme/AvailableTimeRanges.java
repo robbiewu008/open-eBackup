@@ -36,6 +36,11 @@ public class AvailableTimeRanges {
     private long endTime;
 
     /**
+     * 副本类型
+     */
+    private String type;
+
+    /**
      * 可恢复时间范围
      * 当数据库插件需上报多个可恢复时间区段时，将时间戳以二维数组的形式传至该字段
      * 例：[[1685155711, 1685173850],[1685173956, 1685175203]]

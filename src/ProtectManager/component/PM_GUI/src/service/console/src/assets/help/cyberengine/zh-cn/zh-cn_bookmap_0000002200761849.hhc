@@ -1,0 +1,242 @@
+
+<html>
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+   
+<!-- Sitemap 1.0 -->
+</head>
+<body>
+<OBJECT type="text/site properties">
+<param value="0x800025" name="Window Styles">
+<param value="宋体,10,1" name="Font">
+</OBJECT>
+
+<UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="简介"><param name="Local" value="zh-cn_topic_0000002200876309.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="关于OceanCyber"><param name="Local" value="zh-cn_topic_0000002165355572.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="快速入门"><param name="Local" value="zh-cn_topic_0000002165355588.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="个人数据隐私声明"><param name="Local" value="zh-cn_topic_0000002200761901.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="首页"><param name="Local" value="zh-cn_topic_0000002165355596.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="数据安全"><param name="Local" value="zh-cn_topic_0000002165355564.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="添加存储设备"><param name="Local" value="zh-cn_topic_0000002200761809.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="（可选）配置网络"><param name="Local" value="zh-cn_topic_0000002200761765.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="配置勒索病毒防护"><param name="Local" value="zh-cn_topic_0000002200876253.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="配置文件拦截（事前拦截）"><param name="Local" value="zh-cn_topic_0000002200876185.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="创建文件扩展名过滤规则"><param name="Local" value="zh-cn_topic_0000002200876205.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="文件扩展名过滤规则关联文件系统"><param name="Local" value="zh-cn_topic_0000002165515172.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="更新文件扩展名过滤规则"><param name="Local" value="zh-cn_topic_0000002200876225.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="扫描文件系统"><param name="Local" value="zh-cn_topic_0000002200876217.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="开启文件拦截"><param name="Local" value="zh-cn_topic_0000002200876189.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="配置实时侦测（事中拦截）"><param name="Local" value="zh-cn_topic_0000002200876261.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="创建实时侦测策略"><param name="Local" value="zh-cn_topic_0000002200761801.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="（可选）配置白名单"><param name="Local" value="zh-cn_topic_0000002165355496.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="执行实时侦测"><param name="Local" value="zh-cn_topic_0000002165515176.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="配置智能侦测（事后拦截）"><param name="Local" value="zh-cn_topic_0000002165515180.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="创建智能侦测策略"><param name="Local" value="zh-cn_topic_0000002165355492.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="（可选）配置白名单"><param name="Local" value="zh-cn_topic_0000002200876241.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="执行智能侦测"><param name="Local" value="zh-cn_topic_0000002165515188.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="周期性执行侦测"><param name="Local" value="zh-cn_topic_0000002200761805.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="手动执行侦测"><param name="Local" value="zh-cn_topic_0000002165355500.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI></UL>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="配置Air Gap"><param name="Local" value="zh-cn_topic_0000002165355456.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="创建Air Gap策略"><param name="Local" value="zh-cn_topic_0000002165515144.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="关联Air Gap策略"><param name="Local" value="zh-cn_topic_0000002200761761.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="查看数据安全报告"><param name="Local" value="zh-cn_topic_0000002200876229.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="添加报告"><param name="Local" value="zh-cn_topic_0000002165515148.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="查看报告"><param name="Local" value="zh-cn_topic_0000002165515132.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="总览勒索侦测报表"><param name="Local" value="zh-cn_topic_0000002200876197.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="恢复快照数据"><param name="Local" value="zh-cn_topic_0000002165355480.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理勒索病毒防护"><param name="Local" value="zh-cn_topic_0000002200761741.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理文件拦截（事前拦截）"><param name="Local" value="zh-cn_topic_0000002200761781.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="文件扩展名过滤规则解除关联文件系统"><param name="Local" value="zh-cn_topic_0000002165515164.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="删除文件扩展名过滤规则"><param name="Local" value="zh-cn_topic_0000002165355468.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="更新文件扩展名过滤规则"><param name="Local" value="zh-cn_topic_0000002200876201.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="禁用文件拦截"><param name="Local" value="zh-cn_topic_0000002165515120.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理实时侦测（事中拦截）"><param name="Local" value="zh-cn_topic_0000002165355460.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理实时侦测策略"><param name="Local" value="zh-cn_topic_0000002165515156.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理白名单"><param name="Local" value="zh-cn_topic_0000002165355444.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理文件系统保护计划"><param name="Local" value="zh-cn_topic_0000002165515160.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理智能侦测（事后拦截）"><param name="Local" value="zh-cn_topic_0000002200761785.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="查看文件系统信息"><param name="Local" value="zh-cn_topic_0000002200761793.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理文件系统保护计划"><param name="Local" value="zh-cn_topic_0000002165355464.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理智能侦测策略"><param name="Local" value="zh-cn_topic_0000002165515116.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理侦测模型"><param name="Local" value="zh-cn_topic_0000002200761797.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理Air Gap"><param name="Local" value="zh-cn_topic_0000002200761769.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理存储设备"><param name="Local" value="zh-cn_topic_0000002200876237.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="查看存储设备"><param name="Local" value="zh-cn_topic_0000002200876233.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="修改存储设备关联的Air Gap策略"><param name="Local" value="zh-cn_topic_0000002200876221.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="移除存储设备关联的Air Gap策略"><param name="Local" value="zh-cn_topic_0000002165355452.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="开启存储设备关联的Air Gap策略"><param name="Local" value="zh-cn_topic_0000002200761745.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="关闭存储设备关联的Air Gap策略"><param name="Local" value="zh-cn_topic_0000002165355472.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理Air Gap策略"><param name="Local" value="zh-cn_topic_0000002200761773.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理快照数据"><param name="Local" value="zh-cn_topic_0000002200761789.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="查看快照数据"><param name="Local" value="zh-cn_topic_0000002200876213.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="查看侦测结果"><param name="Local" value="zh-cn_topic_0000002165515136.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="误报处理"><param name="Local" value="zh-cn_topic_0000002165355428.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理数据安全报告"><param name="Local" value="zh-cn_topic_0000002200876245.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="删除报告"><param name="Local" value="zh-cn_topic_0000002165355432.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理告警与事件"><param name="Local" value="zh-cn_topic_0000002225193453.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理事件转储"><param name="Local" value="zh-cn_topic_0000002189833068.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理SNMP Trap通知"><param name="Local" value="zh-cn_topic_0000002225118997.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理告警通知"><param name="Local" value="zh-cn_topic_0000002189673436.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="发件设置"><param name="Local" value="zh-cn_topic_0000002225193457.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Syslog通知"><param name="Local" value="zh-cn_topic_0000002189833076.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理任务"><param name="Local" value="zh-cn_topic_0000002225119001.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="查看任务进度"><param name="Local" value="zh-cn_topic_0000002189673444.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="停止任务"><param name="Local" value="zh-cn_topic_0000002225193461.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="下载任务"><param name="Local" value="zh-cn_topic_0000002189833084.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="系统"><param name="Local" value="zh-cn_topic_0000002200876325.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理用户"><param name="Local" value="zh-cn_topic_0000002200876345.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="用户角色介绍"><param name="Local" value="zh-cn_topic_0000002200761893.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="创建用户"><param name="Local" value="zh-cn_topic_0000002200761865.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="修改用户"><param name="Local" value="zh-cn_topic_0000002200876329.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="锁定用户"><param name="Local" value="zh-cn_topic_0000002165355552.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="解锁用户"><param name="Local" value="zh-cn_topic_0000002165355556.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="移除用户"><param name="Local" value="zh-cn_topic_0000002165515268.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="重置用户密码"><param name="Local" value="zh-cn_topic_0000002200761897.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理密码找回邮箱"><param name="Local" value="zh-cn_topic_0000002200761877.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理安全策略"><param name="Local" value="zh-cn_topic_0000002165515260.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理证书"><param name="Local" value="zh-cn_topic_0000002165515236.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="查看证书信息"><param name="Local" value="zh-cn_topic_0000002200761861.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="添加外部证书"><param name="Local" value="zh-cn_topic_0000002165515280.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="导入证书"><param name="Local" value="zh-cn_topic_0000002165355548.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="导出请求文件"><param name="Local" value="zh-cn_topic_0000002200876361.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="修改证书过期告警"><param name="Local" value="zh-cn_topic_0000002165355580.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理证书吊销列表"><param name="Local" value="zh-cn_topic_0000002200876321.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="导入证书吊销列表"><param name="Local" value="zh-cn_topic_0000002165515248.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="查看证书吊销列表"><param name="Local" value="zh-cn_topic_0000002165515244.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="下载证书吊销列表"><param name="Local" value="zh-cn_topic_0000002165355568.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="删除证书吊销列表"><param name="Local" value="zh-cn_topic_0000002165355584.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="下载证书"><param name="Local" value="zh-cn_topic_0000002165515272.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="删除外部证书"><param name="Local" value="zh-cn_topic_0000002200876349.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="替换服务端OceanCyber 300 数据安全一体机的SSL证书"><param name="Local" value="zh-cn_topic_0000002165515276.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="在终端浏览器中导入安全证书"><param name="Local" value="zh-cn_topic_0000002200761857.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理日志"><param name="Local" value="zh-cn_topic_0000002200876341.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理系统数据备份"><param name="Local" value="zh-cn_topic_0000002200876317.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="配置管理数据备份"><param name="Local" value="zh-cn_topic_0000002165515240.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="导出管理数据备份"><param name="Local" value="zh-cn_topic_0000002165515256.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="删除管理数据备份"><param name="Local" value="zh-cn_topic_0000002200761853.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="导入管理数据备份"><param name="Local" value="zh-cn_topic_0000002200876337.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="恢复管理数据"><param name="Local" value="zh-cn_topic_0000002200761885.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="恢复当前系统管理数据"><param name="Local" value="zh-cn_topic_0000002165355560.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="系统重装后恢复管理数据"><param name="Local" value="zh-cn_topic_0000002200876353.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI></UL>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理事件转储"><param name="Local" value="zh-cn_topic_0000002165355600.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理SNMP Trap通知"><param name="Local" value="zh-cn_topic_0000002200761873.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="配置iBMC时间"><param name="Local" value="zh-cn_topic_0000002165355592.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="管理告警通知"><param name="Local" value="zh-cn_topic_0000002200761889.html"></OBJECT><UL>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="发件设置"><param name="Local" value="zh-cn_topic_0000002200761881.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI>
+<LI><OBJECT type="text/sitemap"><param name="Name" value="Syslog通知"><param name="Local" value="zh-cn_topic_0000002165355576.html"><param name="ImageNumber" value="9"></OBJECT>
+</LI></UL>
+</LI></UL>
+</LI></UL>
+</body>
+</html>

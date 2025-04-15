@@ -12,10 +12,11 @@
 */
 package openbackup.access.framework.resource.dto;
 
-import openbackup.data.protection.access.provider.sdk.base.Authentication;
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
+import openbackup.data.protection.access.provider.sdk.base.Authentication;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -62,6 +63,12 @@ public class BaseProtectedEnvironmentDto {
      * 资源的扩展属性
      */
     private Map<String, String> extendInfo;
+
+    /**
+     * 是否同步agent主机名称
+     */
+    @JsonProperty("is_auto_synchronize_host_name")
+    private String isAutoSynchronizeHostName;
 
     // 资源的依赖
     private Map<String, List<ProtectedResource>> dependencies;

@@ -7,7 +7,7 @@ import hashlib
 
 from server.models.bridge import DpserverCertManager
 from server.common import consts
-#from server.common.dpserver_kmc import Kmcv3Wapper, KmcStatus, encode_base64, decode_base64
+from server.common.dpserver_kmc import Kmcv3Wapper, KmcStatus, encode_base64, decode_base64
 from server.common.sync import sync_file
 
 
@@ -51,9 +51,28 @@ class CertManagerDataBackup(DpserverCertManager):
 
     def get_private_cert_passwd(self):
         """
-
+        if no password file, create one.
         """
+        password_file = consts.SSL_KEYFILE_PASSWORD_UNDECRYPT_DPSERVER
+        kmc = Kmcv3Wapper(consts.KMC_LIB_PATH_DPSERVER_DATABACKUP)
+        kmc.initialize(consts.KMC_MASTER_KEY_FILE, consts.KMC_BACKUP_KEY_FILE, "dpserver")
+
+        if os.path.isfile(password_file):
+            with open(password_file, 'r') as f:
+                cipher_text = f.read()
+            has_err, plain_text = kmc.decrypt(cipher_text)
+            if has_err:
+                raise Exception("Failed to decrypt password")
+            self.passwd = plain_text
+            return
+
         self.passwd = generate_key_passwd()
+        has_err, encrypted_passwd = kmc.encrypt(self.passwd)
+        if has_err:
+            raise Exception("Failed to encrypt passwd")
+        os.makedirs(consts.DPSERVER_CERT_BASE, exist_ok=True)
+        with open(password_file, 'w') as f:
+            f.write(encrypted_passwd)
 
     def prepare_cert(self):
         """

@@ -22,9 +22,22 @@
 namespace FilePlugin {
 struct HostApplicationExtent {
     std::string m_filters;
+    std::string m_isOSBackup;
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_filters, filters)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_isOSBackup, is_OS_backup)
+    END_SERIAL_MEMEBER
+};
+
+struct FileDiskInfo {
+    std::string diskId;
+    std::string diskName;
+    uint64_t diskSize;
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(diskId, diskId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(diskName, diskName)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(diskSize, diskSize)
     END_SERIAL_MEMEBER
 };
 
@@ -34,14 +47,17 @@ struct AggCopyExtendInfo {
     std::string dataPathSuffix;
     std::string maxSizeAfterAggregate;
     std::string maxSizeToAggregate;
+    std::vector<FileDiskInfo> diskInfoSet;
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(isAggregation, isAggregation)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(metaPathSuffix, metaPathSuffix)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(dataPathSuffix, dataPathSuffix)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(maxSizeAfterAggregate, maxSizeAfterAggregate)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(maxSizeToAggregate, maxSizeToAggregate)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(diskInfoSet, diskInfoSet)
     END_SERIAL_MEMEBER
 };
+
 
 struct HostBackupJobExtend {
     /* PM传的string，需要修改 */
@@ -57,6 +73,7 @@ struct HostBackupJobExtend {
     std::string m_maxSizeAfterAggregate;
     std::string m_maxSizeToAggregate;
     std::string m_channels;
+    std::string m_snapshotSizePercent;
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_isConsistent, consistent_backup)
@@ -71,6 +88,7 @@ struct HostBackupJobExtend {
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_maxSizeAfterAggregate, aggregation_file_size)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_maxSizeToAggregate, aggregation_file_max_size)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_channels, channels)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_snapshotSizePercent, snapshot_size_percent)
     END_SERIAL_MEMEBER
 };
 
@@ -86,6 +104,8 @@ struct HostBackupCopy {
     std::string m_backupFilter {};
     std::string m_isConsistent {};
     uint64_t m_lastBackupTime {};
+    uint64_t m_adsmetaFileVersion {0};
+    std::string m_isArchiveSupportHardlink {};
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_metadataBackupType, MetadataBackupType)
@@ -93,6 +113,8 @@ struct HostBackupCopy {
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_backupFilter, backupFilter)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_isConsistent, isConsistent)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_lastBackupTime, lastBackupTime)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_adsmetaFileVersion, m_adsmetaFileVersion)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_isArchiveSupportHardlink, isArchiveSupportHardlink)
     END_SERIAL_MEMEBER
 };
 
@@ -141,6 +163,8 @@ struct BackupStatistic {
     uint64_t noOfDirCopied      = 0;        /* No of directories copied */
     uint64_t noOfFilesCopied    = 0;        /* No of files copied */
     uint64_t noOfBytesCopied    = 0;        /* No of bytes (in KB) copied */
+    uint64_t skipFileCnt        = 0;        /* No of files skipped */
+    uint64_t skipDirCnt         = 0;        /* No of dir skipped */
     uint64_t noOfDirDeleted     = 0;        /* No of directories deleted */
     uint64_t noOfFilesDeleted   = 0;        /* No of files deleted */
     uint64_t noOfDirFailed      = 0;        /* No of directories failed to be copied/deleted */
@@ -150,11 +174,12 @@ struct BackupStatistic {
     uint64_t noOfSrcRetryCount  = 0;        /* No of src side retry count */
     uint64_t noOfDstRetryCount  = 0;        /* No of dst side retry count */
     time_t   lastLogReportTime  = 0;        /* Last time (epoch seconds) when we report log to PM */
-
+    uint64_t noOfFilesWriteSkip = 0;        /* No of files skipped to write (Ignore replace policy) */
     uint64_t noOfFailureRecordsWritten = 0; /* No of backup failure records that have been written to file */
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(noOfDirToBackup, noOfDirToBackup)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(noOfFilesWriteSkip, noOfFilesWriteSkip)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(noOfFilesToBackup, noOfFilesToBackup)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(noOfBytesToBackup, noOfBytesToBackup)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(noOfDirToDelete, noOfDirToDelete)
@@ -162,6 +187,8 @@ struct BackupStatistic {
     SERIAL_MEMBER_TO_SPECIFIED_NAME(noOfDirCopied, noOfDirCopied)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(noOfFilesCopied, noOfFilesCopied)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(noOfBytesCopied, noOfBytesCopied)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(skipFileCnt, skipFileCnt)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(skipDirCnt, skipDirCnt)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(noOfDirDeleted, noOfDirDeleted)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(noOfFilesDeleted, noOfFilesDeleted)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(noOfDirFailed, noOfDirFailed)
@@ -185,6 +212,9 @@ struct BackupStatistic {
         sumBackupStatistic.noOfDirCopied     = stats.noOfDirCopied      + noOfDirCopied;
         sumBackupStatistic.noOfFilesCopied   = stats.noOfFilesCopied    + noOfFilesCopied;
         sumBackupStatistic.noOfBytesCopied   = stats.noOfBytesCopied    + noOfBytesCopied;
+        sumBackupStatistic.skipFileCnt       = stats.skipFileCnt        + skipFileCnt;
+        sumBackupStatistic.noOfFilesWriteSkip       = stats.noOfFilesWriteSkip        + noOfFilesWriteSkip;
+        sumBackupStatistic.skipDirCnt        = stats.skipDirCnt         + skipDirCnt;
         sumBackupStatistic.noOfDirDeleted    = stats.noOfDirDeleted     + noOfDirDeleted;
         sumBackupStatistic.noOfFilesDeleted  = stats.noOfFilesDeleted   + noOfFilesDeleted;
         sumBackupStatistic.noOfDirFailed     = stats.noOfDirFailed      + noOfDirFailed;
@@ -252,12 +282,14 @@ struct BackupSubJob {
     uint32_t subTaskType {};         // CopyPhase, DelPhase, HardLinkPhase, DirMTimePhase
     std::string prefix {};           // backup prefix
     std::string fsId {};             // archive fs id in S3
+    std::string parentDir {};
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(controlFile, controlFile)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(subTaskType, subTaskType)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(prefix, prefix)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(fsId, fsId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(parentDir, parentDir)
     END_SERIAL_MEMEBER
 };
 

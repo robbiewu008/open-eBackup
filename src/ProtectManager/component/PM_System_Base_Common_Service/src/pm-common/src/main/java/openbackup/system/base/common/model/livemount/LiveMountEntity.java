@@ -12,8 +12,6 @@
 */
 package openbackup.system.base.common.model.livemount;
 
-import openbackup.system.base.query.PageQueryConfig;
-
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -22,6 +20,8 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Data;
+import openbackup.system.base.common.typehandler.TimestampTypeHandler;
+import openbackup.system.base.query.PageQueryConfig;
 
 import java.sql.Timestamp;
 
@@ -40,7 +40,7 @@ import java.sql.Timestamp;
             "%target_resource_ip%"
         },
         orders = {"created_time", "mounted_copy_display_timestamp"})
-@TableName(value = "live_mount")
+@TableName(value = "live_mount", autoResultMap = true)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class LiveMountEntity {
     private String id;
@@ -80,16 +80,17 @@ public class LiveMountEntity {
     private String enableStatus;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT, typeHandler = TimestampTypeHandler.class)
     private Timestamp createdTime;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(fill = FieldFill.INSERT_UPDATE, typeHandler = TimestampTypeHandler.class)
     private Timestamp updatedTime;
 
     private String mountedCopyId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(typeHandler = TimestampTypeHandler.class)
     private Timestamp mountedCopyDisplayTimestamp;
 
     private String mountedSourceCopyId;

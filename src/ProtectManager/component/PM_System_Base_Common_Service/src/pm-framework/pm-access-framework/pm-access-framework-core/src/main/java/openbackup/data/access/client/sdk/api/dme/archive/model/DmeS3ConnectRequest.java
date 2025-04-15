@@ -12,16 +12,15 @@
 */
 package openbackup.data.access.client.sdk.api.dme.archive.model;
 
-import openbackup.system.base.common.constants.ProtocolPortConstant;
-import openbackup.system.base.common.enums.StorageConnectTypeEnum;
-import openbackup.system.base.common.model.storage.StorageRequest;
-import openbackup.system.base.common.utils.VerifyUtil;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import openbackup.system.base.common.constants.ProtocolPortConstant;
+import openbackup.system.base.common.enums.StorageConnectTypeEnum;
+import openbackup.system.base.common.model.storage.StorageRequest;
+import openbackup.system.base.common.utils.VerifyUtil;
 
 /**
  * DME 连通性请求体
@@ -71,6 +70,9 @@ public class DmeS3ConnectRequest {
 
     private Integer cloudType;
 
+    @JsonProperty("checkType")
+    private Integer cloudCheckType;
+
     /**
      * DmeS3ConnectRequest
      *
@@ -89,6 +91,7 @@ public class DmeS3ConnectRequest {
         this.setUserName(request.getAk());
         this.setCloudType(request.getCloudType());
         this.setConnectType(request.getConnectType());
+        this.setCloudCheckType(request.getCloudCheckType());
         if (request.isUseHttps()) {
             this.setCertificate(request.getCertName());
             this.setPort(ProtocolPortConstant.HTTPS_PORT);

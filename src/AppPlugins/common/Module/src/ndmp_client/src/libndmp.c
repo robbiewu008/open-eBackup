@@ -1,15 +1,10 @@
 /*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+ * Copyright (c) Huawei Technologies Co., Ltd. 2023. All rights reserved.
+ * @file libndmp.c
+ * @date 5/16/2023
+ * @author
+ * @brief
+ */
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -98,15 +93,13 @@ typedef enum NdmpStartBackupStatus
     NDMP_START_RESTORE_INNER_ERROR = -7
 } NdmpStartBackupStatus;
 
-typedef enum NdmpStatus
+typedef enum NdmpStorageType
 {
-    NDMP_STATUS_INIT = 1,
-    NDMP_STATUS_PROCESSING = 2,
-    NDMP_STATUS_ABORTED = 3,
-    NDMP_STATUS_FINISHED = 4,
-    NDMP_STATUS_CONNECTION_HALTED = 5,
-    NDMP_STATUS_INTERNAL_ERROR = -1
-} NdmpStatus;
+    PRODUCT_DORADO = 0,
+    PRODUCT_NETAPP = 1,
+    PRODUCT_ISILON = 2,
+    PRODUCT_UNITY = 3
+} NdmpStorageType;
 
 typedef enum DumpType
 {
@@ -140,7 +133,7 @@ struct AuthInfo {
     char *password;
 };
 
-static NdmpConnection		g_srcConnection;
+NdmpConnection		g_srcConnection;
 extern NdmpMsgHandler		ndmp_msg_handler_tbl[];
 static MsgQueue				g_backendQueue;
 struct AuthInfo             g_srcAuth;
@@ -148,11 +141,9 @@ struct AuthInfo             g_dstAuth;
 static int                  g_restoreState = 0;
 static ndmp_pval			g_environment[10];
 pthread_mutex_t             g_connectionMutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t      g_dataMutex = PTHREAD_MUTEX_INITIALIZER;
 static uint64_t             g_srcProcessBytes = 0;
 static uint64_t             g_srcRemainingSize = 0;
 char*                       g_srcIp;
-char*                       g_dstIp;
 char*                       g_backupFilePath;
 char*                       g_dataPath;
 static int                  g_ndmpStatus;
@@ -160,7 +151,7 @@ pthread_t                   g_getStatPt;
 pthread_t                   g_runBackupPt;
 pthread_t                   g_getDataPt;
 bool                        g_isSendAbort = false;
-static uint64_t             g_backupFilesCnt = 0;
+uint64_t             g_backupFilesCnt = 0;
 static ndmp_class_version g_setExt[3];
 
 void setSendAbortValue(bool value)
@@ -214,14 +205,12 @@ void InitLog(const char* fullLogPath, int logLevel, const char* rootPath)
 void log_auth_params(NdmpClientInterface *interface)
 {
     size_t srcIpLen = strlen(interface->srcIp);
-    size_t dstIpLen = strlen(interface->dstIp);
     g_srcIp = (char*)malloc(srcIpLen + 1);
     strncpy_s(g_srcIp, srcIpLen + 1, interface->srcIp, srcIpLen + 1);
-    strncpy_s(g_dstIp, dstIpLen + 1, interface->dstIp, dstIpLen + 1);
     INFOLOG("Log auth params: (srcip : %s), (dstip: %s), (srcuser: %s), (dstuser: %s), "
-        "(srcpath: %s), (dstpath: %s)", interface->srcIp,
+        "(srcpath: %s), (dstpath: %s), (backfilePath:%s)", interface->srcIp,
         interface->dstIp, interface->srcAuth, interface->dstAuth,
-        interface->srcPath, interface->dstPath);
+        interface->srcPath, interface->dstPath, interface->backFilePath);
 }
 
 int init_auth(NdmpClientInterface *interface)
@@ -457,6 +446,33 @@ void NdmpSetExtInfo()
     }
 }
 
+int NdmpGetProductType()
+{
+    // 获取生产端产品型号
+    ndmp_config_get_host_info_reply_v4 *hostReply = NULL;
+    int rc = ndmpSendRequest(g_srcConnection, NDMP_CONFIG_GET_HOST_INFO, NDMP_NO_ERR,
+                NULL, (void **)&hostReply);
+    if (rc == 0) {
+        WARNLOG("NDMP_CONFIG_GET_HOST_INFO request send, osType:%s!", hostReply->os_type);
+        if (strstr(hostReply->os_type, DORADO_OS) != NULL) {
+            return PRODUCT_DORADO;
+        }
+
+        if (strstr(hostReply->os_type, NETAPP_OS) != NULL) {
+            return PRODUCT_NETAPP;
+        }
+
+        if (strstr(hostReply->os_type, ISILON_OS) != NULL) {
+            return PRODUCT_ISILON;
+        }
+
+        if (strstr(hostReply->os_type, UNITY_OS) != NULL) {
+            return PRODUCT_UNITY;
+        }
+    }
+    return PRODUCT_DORADO;
+}
+
 int NdmpClientAuth(NdmpClientInterface *interface)
 {
     // log
@@ -484,10 +500,11 @@ int NdmpClientAuth(NdmpClientInterface *interface)
         ERRLOG("error auth to src : %s", g_srcAuth.user);
         return NDMP_AUTH_ERROR_SRC;
     }
-
+    int type = NdmpGetProductType();
     NdmpSetExtInfo();
     INFOLOG("auth success!");
-    return 0;
+
+    return type;
 }
 
 int NdmpGetFsInfo(NdmpFsInfo* reply)
@@ -558,7 +575,7 @@ int NdmpGetFsInfo(NdmpFsInfo* reply)
 void log_backup_params(NdmpClientInterface *interface)
 {
     INFOLOG("log backup params: (srcpath: %s), (dstpath: %s), (level: %s),"
-        "(dumpType: %d[0:dorado, 1:netapp]), (port: %d)", 
+        "(dumpType: %d[0:dorado, 1:netapp]), (port: %d), (exclude: %s)", 
     interface->srcPath, interface->dstPath, interface->level,
     interface->dumpType, interface->port, interface->exclude);
 }
@@ -614,13 +631,22 @@ int ndmp_src_backup(NdmpClientInterface *interface)
 
     int rc = 0;
 
-    (void)initSrcBackup(interface);
-    char y[] = "y";
-    char n[] = "n";
-    g_environment[8].name = "NETAPP";
-    g_environment[8].value = (interface->dumpType == DUMP_TYPE_NETAPP) ? y : n;
+    g_environment[0].name = "TYPE";
+    g_environment[0].value = "dump";
+    g_environment[1].name = "FILESYSTEM";
+    g_environment[1].value = interface->srcPath;
+    g_environment[2].name = "PREFIX";
+    g_environment[2].value = interface->srcPath;
+    g_environment[3].name = "LEVEL";
+    g_environment[3].value = interface->level;
+    g_environment[4].name = "HIST";
+    g_environment[4].value = "Y";
+    g_environment[5].name = "UPDATE";
+    g_environment[5].value = "Y";
+    g_environment[6].name = "EXCLUDE";
+    g_environment[6].value = interface->exclude;
     dump_request.env.env_val = g_environment;
-    dump_request.env.env_len = 9;
+    dump_request.env.env_len = 7;
     dump_request.bu_type = "dump";
 
     rc = ndmpSendRequest(g_srcConnection, NDMP_DATA_START_BACKUP, NDMP_NO_ERR,
@@ -689,13 +715,23 @@ void NdmpGetRestoreTmpFileName(char *fileName, char *path)
     strcat_s(fileName, NDMPD_DATA_MAX_FILE_PATH, NDMPD_DEFAULT_RESTORE_FILE_TMP);
 }
 
+FILE *NdmpOpenFileWithRetry(char *fileName, char *mode) {
+    int retryCount = 0;
+    FILE *f = NULL;
+    do {
+        f = fopen(fileName, mode);
+    } while (++retryCount <= MAX_RETRY_CNT && f == NULL);
+
+    return f;
+}
+
 int ParseNdmpRestoreFilesTmpFile(ndmp_name_v3 *nList, uint64_t nlistSize, char *fileName)
 {
     DBGLOG("fileName:%s", fileName);
     char *tmpOriginStr = NULL;
-    FILE *f = fopen(fileName, "r");
+    FILE *f = NdmpOpenFileWithRetry(fileName, "r");
     if (f == NULL) {
-        ERRLOG("open tmp file faild!");
+        ERRLOG("open tmp file faild! errno: %d, error message: %s", errno, strerror(errno));
         return -1;
     }
  
@@ -773,10 +809,10 @@ int NdmpeGetRestoreGetFileNum(char *restoreFile)
 {
     char fileName[NDMPD_DATA_MAX_FILE_PATH] = { 0 };
     NdmpGetRestoreTmpFileName(fileName, restoreFile);
-    FILE *f = fopen(fileName, "r");
+    FILE *f = NdmpOpenFileWithRetry(fileName, "r");
     char num[NDMPD_DEFAULT_RESTORE_FILE_NUM] = { 0 };
     if (f == NULL) {
-        ERRLOG("open tmp file faild!");
+        ERRLOG("open tmp file faild! errno: %d, error message: %s", errno, strerror(errno));
         return 1;
     }
  
@@ -805,15 +841,13 @@ int ndmp_dst_restore(NdmpClientInterface *interface)
 
     char y[] = "y";
     char n[] = "n";
-    g_environment[5].name = "NETAPP";
-    g_environment[5].value = (interface->dumpType == DUMP_TYPE_NETAPP) ? y : n;
-    g_environment[6].name = "FILESYSTEM";
+    g_environment[5].name = "FILESYSTEM";
+    g_environment[5].value = interface->srcPath;
+    g_environment[6].name = "PREFIX";
     g_environment[6].value = interface->srcPath;
-    g_environment[7].name = "PREFIX";
-    g_environment[7].value = interface->srcPath;
 
     restore_request.env.env_val = g_environment;
-    restore_request.env.env_len = 8;
+    restore_request.env.env_len = 7;
     restore_request.bu_type = "dump";
     restore_request.nlist.nlist_val = nllist;
     restore_request.nlist.nlist_len = nlistSize;
@@ -945,7 +979,6 @@ void ndmp_get_connect_stat(NdmpConnection *ndmp_connection, bool is_src)
 {
     ndmp_data_get_state_reply_v4 *get_state_reply = NULL;
     int					 rc = 0;
-
     (void) pthread_mutex_lock(&g_connectionMutex);
     rc = ndmpSendRequest(*ndmp_connection, NDMP_DATA_GET_STATE, NDMP_NO_ERR,
 				0, (void **) &get_state_reply);
@@ -1064,20 +1097,19 @@ int shutdown_connection()
 {
     int rc = 0;
     // flush ndmp messages on both connections
-
+    (void) pthread_mutex_lock(&g_connectionMutex);
     if (NULL != g_srcConnection) {
         if (check_connect_socket(g_srcConnection)) {
             DBGLOG("Backup:pass ndmpPoll.");
             rc = ndmpSendRequest(g_srcConnection, NDMP_CONNECT_CLOSE, NDMP_NO_ERR, NULL, NULL);
             if (rc != 0) {
-                ERRLOG("Error closing src connection.");
+                WARNLOG("Error closing src connection.");
             } else {
                 ndmpFreeMessage(g_srcConnection);
             }
         }
-        ndmpDestroyConnection(g_srcConnection);
     }
-
+    (void) pthread_mutex_unlock(&g_connectionMutex);
     return 0;
 }
 
@@ -1099,7 +1131,7 @@ void close_thread(pthread_t *pt)
 void* get_backup_stat(void* arg)
 {
     // 10s 查一次
-    int time_intv = 1;
+    int time_intv = 10;
     int rc = 0;
     int st;
 
@@ -1116,6 +1148,10 @@ void* get_backup_stat(void* arg)
             ndmp_get_connect_stat(&g_srcConnection, true);
         }
     }
+    (void) pthread_mutex_lock(&g_connectionMutex);
+    ndmpDestroyConnection(g_srcConnection);
+    g_srcConnection = NULL;
+    (void) pthread_mutex_unlock(&g_connectionMutex);
     INFOLOG("exit get stat cycle");
     return NULL;
 }
@@ -1133,9 +1169,9 @@ void ndmp_end_backup()
 
 void writeProcessMsg(char *msg)
 {
-    FILE *f = fopen(g_backupFilePath, "a+");
+    FILE *f = NdmpOpenFileWithRetry(g_backupFilePath, "a+");
     if (f == NULL) {
-        ERRLOG("write log message file faild!");
+        ERRLOG("write log message file faild! errno: %d, error message: %s", errno, strerror(errno));
         return;
     }
 
@@ -1160,14 +1196,12 @@ void NdmpReleaseFhAddDirReq(NdmpGetFhAddDir *dirReq, unsigned int len)
 int NdmpParseFhAddDirRequest(ndmp_fh_add_dir_request_v4 *req, NdmpGetFhAddDir *addDirs)
 {
     unsigned int sucNum = 0;
-    INFOLOG("Entering parse request");
     addDirs->dir_len = req->dirs.dirs_len;
     for (int i = 0; i < req->dirs.dirs_len; i++) {
         addDirs->dirs[i].node = quadToLongLong(req->dirs.dirs_val[i].node);
         addDirs->dirs[i].parent = quadToLongLong(req->dirs.dirs_val[i].parent);
         int pathLen = strlen(req->dirs.dirs_val[i].names.names_val[0].ndmp_file_name_v3_u.unix_name);
         addDirs->dirs[i].pathLen = pathLen;
-        DBGLOG("dequeue file name:%s, strlen:%d", req->dirs.dirs_val[i].names.names_val[0].ndmp_file_name_v3_u.unix_name, pathLen);
         addDirs->dirs[i].path = (char *)malloc(pathLen + 1);
         if (addDirs->dirs[i].path == NULL) {
             ERRLOG("malloc faild!");
@@ -1196,50 +1230,54 @@ ERR:
 */
 int NdmpWriteTmpFhAddDirFile(NdmpGetFhAddDir *dirs)
 {
-    INFOLOG("Entering write tmp files!");
     int rc = 0;
     char input[NDMP_CACHE_NODE_DEFAULE_INFO_LINE_SIZE] = { 0 };
+    char aggr[NDMPD_DATA_AGGR_BUFFER_SIZE] = {0};
+    int offset = 0;
     FILE *cacheFile = NULL;
     char fileName[NDMPD_DATA_MAX_FILE_PATH] = { 0 };
     NdmpinitFilepath(fileName, g_dataPath, "FILE_CACHE_TMP");
-    cacheFile = fopen(fileName, "a");
+    cacheFile = NdmpOpenFileWithRetry(fileName, "a");
     if (cacheFile == NULL) {
         ERRLOG("Open file failed!");
         return -1;
     }
- 
+    char *escaped = (char *)malloc(NDMP_CACHE_NODE_DEFAULE_INFO_LINE_SIZE);
+    if (!escaped) {
+        ERRLOG("escaped malloc failed!");
+        return -1;
+    }
     for (int i = 0; i < dirs->dir_len; i++) {
+        unsigned int newLen = dirs->dirs[i].pathLen;
+        unsigned int k = 0;
+        for (unsigned int j = 0; j < dirs->dirs[i].pathLen; j++) {
+            char ch = dirs->dirs[i].path[j];
+            if (ch == '"' || ch == '\\') {
+                escaped[k++] = '\\';
+                newLen++;
+            }
+            escaped[k++] = ch;
+        }
+        escaped[k] = '\0';  // 确保字符串结束
         bzero(input, NDMP_CACHE_NODE_DEFAULE_INFO_LINE_SIZE);
         rc = sprintf_s(input, NDMP_CACHE_NODE_DEFAULE_INFO_LINE_SIZE,
             "{\"nodeId\": \"%lld\", \"parentId\": \"%lld\", \"nameLen\": \"%u\", \"name\": \"%s\"}\n",
-            dirs->dirs[i].node, dirs->dirs[i].parent, dirs->dirs[i].pathLen, dirs->dirs[i].path);
+            dirs->dirs[i].node, dirs->dirs[i].parent, newLen, escaped);
         if (rc == -1) {
             ERRLOG("format input failed!");
             break;
         }
-        if (fputs(input, cacheFile) < 0) {
-            rc = -1;
-            ERRLOG("input line failed!");
-            break;
-        }
+        memcpy_s(aggr + offset, strlen(input), input, strlen(input));
+        offset += strlen(input);
     }
- 
+    free(escaped);
+    escaped = NULL;
+    if (fputs(aggr, cacheFile) < 0) {
+        rc = -1;
+        ERRLOG("input line failed!");
+    }
     fclose(cacheFile);
     return rc < 0 ? rc : 0;
-}
-
-void NdmpReleaseFhAddDirBody(ndmp_fh_add_dir_request_v4 *dirReq)
-{
-    if (dirReq == NULL) {
-        return;
-    }
- 
-    for (int i = 0; i < dirReq->dirs.dirs_len; i++) {
-        MODULE_FREE(dirReq->dirs.dirs_val[i].names.names_val[0].ndmp_file_name_v3_u.unix_name);
-        MODULE_FREE(dirReq->dirs.dirs_val[i].names.names_val);
-    }
-    MODULE_FREE(dirReq->dirs.dirs_val);
-    MODULE_FREE(dirReq);
 }
  
 void NdmpReleaseFhAddNodeReq(NdmpGetFhAddNode *nodes)
@@ -1251,28 +1289,13 @@ void NdmpReleaseFhAddNodeReq(NdmpGetFhAddNode *nodes)
     MODULE_FREE(nodes->files);
     MODULE_FREE(nodes);
 }
-
-void NdmpReleaseFhAddNodeBody(ndmp_fh_add_node_request_v4 *nodes)
-{
-    if (nodes == NULL) {
-        return;
-    }
- 
-    for (int i = 0; i < nodes->nodes.nodes_len; i++) {
-        MODULE_FREE(nodes->nodes.nodes_val[i].stats.stats_val);
-    }
-    MODULE_FREE(nodes->nodes.nodes_val);
-    MODULE_FREE(nodes);
-}
  
 int NdmpProcessFhAddDir(void *body)
 {   
-    INFOLOG("Entering parseDir");
 	int rc = 0;
     ndmp_fh_add_dir_request_v4 *req = (ndmp_fh_add_dir_request_v4 *)body;
     NdmpGetFhAddDir *addDirs = (NdmpGetFhAddDir *)malloc(sizeof(NdmpGetFhAddDir));
     if (addDirs == NULL) {
-       NdmpReleaseFhAddDirBody((ndmp_fh_add_dir_request_v4 *)body);
        ERRLOG("malloc failed");
         return -1;
     }
@@ -1280,7 +1303,6 @@ int NdmpProcessFhAddDir(void *body)
     addDirs->dirs = (NdmpDirs *)malloc(sizeof(NdmpDirs) * req->dirs.dirs_len);
     if (addDirs->dirs == NULL) {
         MODULE_FREE(addDirs);
-        NdmpReleaseFhAddDirBody((ndmp_fh_add_dir_request_v4 *)body);
         ERRLOG("malloc failed");
         return -1;
     }
@@ -1291,7 +1313,7 @@ int NdmpProcessFhAddDir(void *body)
     rc = NdmpWriteTmpFhAddDirFile(addDirs);   
     if (rc != 0) {
         ERRLOG("write faild");
-        NdmpReleaseFhAddDirBody((ndmp_fh_add_dir_request_v4 *)body);
+        NdmpReleaseFhAddDirReq(addDirs, addDirs->dir_len);
         return rc;
     }
 
@@ -1311,9 +1333,6 @@ void NdmpFhAddNodeGenerateFileType(char *cType, int nType)
         case NDMP_FILE_DIR:
 			strcpy_s(cType, 2, "d");
             break;
-        case NDMP_FILE_REG:
-			strcpy_s(cType, 2, "f");
-            break;
         case NDMP_FILE_SLINK:
 			strcpy_s(cType, 2, "l");
             break;
@@ -1326,10 +1345,12 @@ int NdmpWriteTmpFhAddNodeFile(NdmpGetFhAddNode *nodes)
 {
     int rc = 0;
     char input[NDMP_CACHE_NODE_DEFAULE_INFO_LINE_SIZE] = { 0 };
+    char aggr[NDMPD_DATA_AGGR_BUFFER_SIZE] = {0};
+    int offset = 0;
     FILE *cacheFile = NULL;
     char fileName[NDMPD_DATA_MAX_FILE_PATH] = { 0 };
     NdmpinitFilepath(fileName, g_dataPath, "NODE_CACHE_TMP");
-    cacheFile = fopen(fileName, "a");
+    cacheFile = NdmpOpenFileWithRetry(fileName, "a");
     if (cacheFile == NULL) {
         ERRLOG("Open file failed!");
         return -1;
@@ -1342,6 +1363,62 @@ int NdmpWriteTmpFhAddNodeFile(NdmpGetFhAddNode *nodes)
         rc = sprintf_s(input, NDMP_CACHE_NODE_DEFAULE_INFO_LINE_SIZE,
             "{\"nodeId\": \"%lld\", \"fhInfo\": \"%lld\", \"type\": \"%s\", \"mtime\": \"%lld\", \"size\": \"%lld\"}\n",
             nodes->files[i].node, nodes->files[i].FhInfo, cType, nodes->files[i].mtime, nodes->files[i].size);
+        if (rc == -1) {
+            ERRLOG("format input failed!");
+            break;
+        }
+        memcpy_s(aggr + offset, strlen(input), input, strlen(input));
+        offset += strlen(input);
+    }
+
+    if (fputs(aggr, cacheFile) < 0) {
+        rc = -1;
+        ERRLOG("input line failed!");
+    }
+ 
+    fclose(cacheFile);
+    return rc < 0 ? rc : 0;
+}
+
+int NdmpWriteTmpFhAddFiles(NdmpGetFhAddNode *nodes)
+{
+    int rc = 0;
+    char input[NDMPD_DATA_DEFAULT_BUFFER_SIZE + 200] = { 0 };
+    char tail[NDMPD_DATA_MAX_FILE_PATH] = { 0 };
+    FILE *cacheFile = NULL;
+    char fileName[NDMPD_DATA_MAX_FILE_PATH] = { 0 };
+    NdmpinitFilepath(fileName, g_dataPath, "index.tmp");
+    cacheFile = NdmpOpenFileWithRetry(fileName, "r");    // 先判断文件存不存在，存在append,不存在需要写第一行：
+    if (cacheFile == NULL) {
+        if (sprintf_s(tail, NDMPD_DATA_MAX_FILE_PATH,
+           "{\"title\": \"Raw File-system Index Database\",\"version\": \"2.0\",\"time\": \"%ld\"}\n",
+            (long)time(NULL)) == -1) {
+            ERRLOG("format input failed!");
+            return -1;
+        }
+    } else {
+        fclose(cacheFile);
+    }
+
+    cacheFile = NdmpOpenFileWithRetry(fileName, "a");
+    CHECK_NULL_POINTER_RETURN(cacheFile, -1);
+
+    if (fputs(tail, cacheFile) < 0) {
+        ERRLOG("input line failed!, errno:%d.", errno);
+        fclose(cacheFile);
+        return -1;
+    }
+
+    char cType[3] = { 0 };
+    for (int i = 0; i < nodes->files_len; i++) {
+        bzero(input, NDMPD_DATA_DEFAULT_BUFFER_SIZE + 200);
+        if (strcmp("/", nodes->files[i].path) == 0) {
+            continue;
+        }
+        NdmpFhAddNodeGenerateFileType(cType, nodes->files[i].ftype);
+        rc = sprintf_s(input, NDMPD_DATA_DEFAULT_BUFFER_SIZE + 200,
+            "{\"path\": \"%s\", \"mtime\": \"%lld\", \"size\": \"%lld\", \"inode\": \"%lld\", \"id\": \"%lld\", \"type\": \"%s\", \"status\": \"new\"}\n",
+            nodes->files[i].path, nodes->files[i].mtime, nodes->files[i].size, nodes->files[i].node, nodes->files[i].FhInfo, cType);
         if (rc == -1) {
             ERRLOG("format input failed!");
             break;
@@ -1359,7 +1436,7 @@ int NdmpWriteTmpFhAddNodeFile(NdmpGetFhAddNode *nodes)
  
 void NdmpParseFhAddNodeRequest(ndmp_fh_add_node_request_v4 *req, NdmpGetFhAddNode *nodes)
 {
-    nodes->files_len =  req->nodes.nodes_len;
+    nodes->files_len = req->nodes.nodes_len;
     for (int i = 0; i < nodes->files_len; i++) {
         nodes->files[i].mtime = req->nodes.nodes_val[i].stats.stats_val[0].mtime;
         nodes->files[i].size = quadToLongLong(req->nodes.nodes_val[i].stats.stats_val[0].size);
@@ -1368,15 +1445,56 @@ void NdmpParseFhAddNodeRequest(ndmp_fh_add_node_request_v4 *req, NdmpGetFhAddNod
         nodes->files[i].ftype = req->nodes.nodes_val[i].stats.stats_val[0].ftype;
     }
 }
+
+void NdmpReleaseFhAddFilesReq(NdmpGetFhAddNode *nodeReq, unsigned int len)
+{
+    if (nodeReq == NULL) {
+        return;
+    }
+ 
+    for (int i = 0; i < len; i++) {
+        MODULE_FREE(nodeReq->files[i].path);
+    }
+    MODULE_FREE(nodeReq->files);
+    MODULE_FREE(nodeReq);
+}
+
+int NdmpParseFhAddFileRequest(ndmp_fh_add_file_request_v4 *req, NdmpGetFhAddNode *nodes)
+{
+    unsigned int sucNum = 0;
+    nodes->files_len = req->files.files_len;
+    for (int i = 0; i < nodes->files_len; i++) {
+        nodes->files[i].mtime = req->files.files_val[i].stats.stats_val[0].mtime;
+        nodes->files[i].size = quadToLongLong(req->files.files_val[i].stats.stats_val[0].size);
+        nodes->files[i].node = quadToLongLong(req->files.files_val[i].node);
+        nodes->files[i].FhInfo = quadToLongLong(req->files.files_val[i].fh_info);
+        nodes->files[i].ftype = req->files.files_val[i].stats.stats_val[0].ftype;
+        int pathLen = strlen(req->files.files_val[i].names.names_val[0].ndmp_file_name_v3_u.unix_name);
+        nodes->files[i].pathLen = pathLen;
+        nodes->files[i].path = (char *)malloc(pathLen + 1);
+        if (nodes->files[i].path == NULL) {
+            ERRLOG("malloc faild!");
+            NdmpReleaseFhAddFilesReq(nodes, sucNum);
+            return -1;
+        }
+        ++sucNum;
+        if (memcpy_s(nodes->files[i].path, pathLen + 1, req->files.files_val[i].names.names_val[0].ndmp_file_name_v3_u.unix_name,
+            pathLen + 1) != 0) {
+            ERRLOG("memcpy faild!");
+            NdmpReleaseFhAddFilesReq(nodes, sucNum);
+            return -1;
+        }
+    }
+
+    return 0;
+}
  
 int NdmpProcessFhAddNode(void *body)
 {
 	int rc = 0;
     ndmp_fh_add_node_request_v4 *req = (ndmp_fh_add_node_request_v4 *)body;
- 
     NdmpGetFhAddNode *nodes = (NdmpGetFhAddNode *)malloc(sizeof(NdmpGetFhAddNode));
     if (nodes == NULL) {
-        NdmpReleaseFhAddDirBody((ndmp_fh_add_dir_request_v4 *)body);
         ERRLOG("malloc failed");
         return -1;
     }
@@ -1384,98 +1502,69 @@ int NdmpProcessFhAddNode(void *body)
     nodes->files = (NdmpFileStats *)malloc(sizeof(NdmpFileStats) * req->nodes.nodes_len);
     if (nodes->files == NULL) {
         MODULE_FREE(nodes);
-        NdmpReleaseFhAddDirBody((ndmp_fh_add_dir_request_v4 *)body);
         ERRLOG("malloc failed");
         return -1;
     } 
     NdmpParseFhAddNodeRequest(req, nodes);
 
     rc = NdmpWriteTmpFhAddNodeFile(nodes);   
-    CHECK_RESULT_GOTO(rc, 0, ERR);
 
-ERR:
     NdmpReleaseFhAddNodeReq(nodes);
-    NdmpReleaseFhAddNodeBody((ndmp_fh_add_node_request_v4 *)body);
     return rc;
 }
 
-int innerProcessRequest(bool *got_data_halted, time_t *got_mover_time, MsgData *msg)
+int NdmpProcessFhAddFile(void *body)
 {
-    /* process any messages that came in */
-    if (dequeue((MsgQueue*)ndmpGetClientData(g_srcConnection), msg)) {
-        switch (msg->message) {
-            case NDMP_NOTIFY_DATA_HALTED: {
-                if (msg->reason == NDMP_DATA_HALT_SUCCESSFUL)
-                {
-                    *got_data_halted = true;
-                    ndmp_get_connect_stat(&g_srcConnection, true);
-                    time_t tmpTime = time(NULL);
-                    memcpy_s(got_mover_time, sizeof(time_t), &tmpTime, sizeof(time_t));
-                } else {
-                    ERRLOG("%s: Connection halted: %s, got_data_halted = %d.",
-                        g_srcIp, msg->text, *got_data_halted);
-                    set_ndmp_status(NDMP_STATUS_CONNECTION_HALTED);
-                    return -1;
-                }
-                break;
-            }
-            case NDMP_DATA_ABORT: {
-                ERRLOG("%s: Connection abort: %s, got_data_halted = %d.",
-                    g_srcIp, msg->text, *got_data_halted);
-                set_ndmp_status(NDMP_STATUS_ABORTED);
-                return -1;
-            }
-            case NDMP_LOG_MESSAGE: {
-                INFOLOG("%s: LOG: %s.", g_srcIp, msg->text);
-                (void)writeProcessMsg(msg->text);
-                break;
-            }
-            case NDMP_FH_ADD_NODE: {
-                uint64_t cnt = 0;
-                sscanf_s(msg->text, "%llu", &cnt, sizeof(msg->text));
-                (void) pthread_mutex_lock(&g_dataMutex);
-                g_backupFilesCnt += cnt;
-                (void) pthread_mutex_unlock(&g_dataMutex);
-                INFOLOG("backup %llu files, total: %llu", cnt, g_backupFilesCnt);
-                return NdmpProcessFhAddNode(msg->body);
-            }
-            case NDMP_FH_ADD_DIR: {
-                return NdmpProcessFhAddDir(msg->body);
-            }
-            default:
-                DBGLOG("%s: %s.", g_srcIp, msg->text);
-        }
+	int rc = 0;
+    ndmp_fh_add_file_request_v4 *req = (ndmp_fh_add_file_request_v4 *)body;
+    NdmpGetFhAddNode *nodes = (NdmpGetFhAddNode *)malloc(sizeof(NdmpGetFhAddNode));
+    if (nodes == NULL) {
+        ERRLOG("malloc failed");
+        return -1;
     }
 
-    return 0;
+    nodes->files = (NdmpFileStats *)malloc(sizeof(NdmpFileStats) * req->files.files_len);
+    if (nodes->files == NULL) {
+        MODULE_FREE(nodes);
+        ERRLOG("malloc failed");
+        return -1;
+    } 
+    rc = NdmpParseFhAddFileRequest(req, nodes);
+    CHECK_RESULT_RETURN(rc, 0, "Parse fh add file request failed!");
+
+    rc = NdmpWriteTmpFhAddFiles(nodes);
+
+    NdmpReleaseFhAddFilesReq(nodes, nodes->files_len);
+    return rc;
+
 }
 
 int process_requests()
 {
     fd_set conn_fds;
-    bool got_data_halted = false;
+    int got_data_halted = 0;
     MsgData msg;
     struct timeval timeout;
-    time_t got_mover_time = 0;
     int rc = 0;
 
     while (1) {
-        (void) pthread_mutex_lock(&g_connectionMutex);
-        if (g_isSendAbort) {
-            ERRLOG("status abort exit!");
-            g_isSendAbort = false;
-            (void) pthread_mutex_unlock(&g_connectionMutex);
-            return -1;
-        }
-        (void) pthread_mutex_unlock(&g_connectionMutex);
         /* work-around NetApp bug id 7134 so we don't wait forever,
          * three minutes should be long enough in most cases... */
-        if (got_data_halted && got_mover_time &&
-            (time(NULL) > got_mover_time + (time_t) 300)) {
-            INFOLOG("Data server never halted, closing connection.");
+        (void) pthread_mutex_lock(&g_dataMutex);
+        got_data_halted = (int)g_ndmpStatus;
+        (void) pthread_mutex_unlock(&g_dataMutex);
+
+        if (got_data_halted == NDMP_STATUS_COMPLETED) {
+    		ndmp_get_connect_stat(&g_srcConnection, true);
+            set_ndmp_status(NDMP_STATUS_FINISHED);
+            INFOLOG("Mover and data server halted, return success.");
             return 0;
         }
 
+        if (got_data_halted != NDMP_STATUS_PROCESSING) {
+            ERRLOG("Data server never halted, closing connection.");
+            return -1;
+        }
         /* reinitialize timeout each time it is used because Linux modifies
          * timeout to reflect the amount of time not slept */
         timeout.tv_sec = 1L;
@@ -1504,25 +1593,15 @@ int process_requests()
         }
 
         (void) pthread_mutex_unlock(&g_connectionMutex);
-
-        rc = innerProcessRequest(&got_data_halted, &got_mover_time, &msg);
-        if (got_data_halted) {
-            INFOLOG("Mover and data server halted, return success.");
-            set_ndmp_status(NDMP_STATUS_FINISHED);
-            return 0;
-        }
-
-        if (rc != 0) {
-            return rc;
-        }
     }
 }
 
 void* ndmp_run_backup(void* arg)
 {
     INFOLOG("enter ndmp_run_backup");
-
-    int rc = process_requests();
+    pthread_t dequeThread;
+    int rc = 0;
+    rc = process_requests();
     
     INFOLOG("process_requests done, rc is %d\n", rc);
 
@@ -1532,7 +1611,7 @@ void* ndmp_run_backup(void* arg)
     }
 
     ndmp_end_backup();
-
+    close_thread(&dequeThread);
     return NULL;
 }
 
@@ -1543,11 +1622,31 @@ void initNdmpBackupDataParams(NdmpClientInterface *interface)
     g_dataConnection.level = interface->level[0] - '0';
 }
 
+bool IsNdmpServerNeedPreparedSetting()
+{
+    // 获取生产端产品型号
+    ndmp_config_get_host_info_reply_v4 *hostReply = NULL;
+    int rc = ndmpSendRequest(g_srcConnection, NDMP_CONFIG_GET_HOST_INFO, NDMP_NO_ERR,
+                NULL, (void **)&hostReply);
+    if (rc == 0) {
+        WARNLOG("NDMP_CONFIG_GET_HOST_INFO request send, osType:%s!", hostReply->os_type);
+        if (strstr(hostReply->os_type, UNITY_OS) != NULL) { // 存储厂商为unity，不支持设置此扩展属性
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void ndmpBackupPrepareRequestSend(NdmpClientInterface *interface)
 {
+    initSrcBackup(interface);
+    if (!IsNdmpServerNeedPreparedSetting()) {
+        return;
+    }
+
     ndmp_data_start_backup_request_v4 prepareReq;
     ndmp_data_start_backup_reply_v4 *prepareReply = NULL;
-    initSrcBackup(interface);
     prepareReq.env.env_val = g_environment;
     prepareReq.env.env_len = 8;
     prepareReq.bu_type = "dump";
@@ -1589,7 +1688,7 @@ int NdmpStartBackup(NdmpClientInterface *interface)
 
     // open ndmp connection & client auth
     rc = NdmpClientAuth(interface);
-    if (rc != 0){
+    if (rc < 0){
         ERRLOG("error auth before start backup");
         return rc;
     }
@@ -1640,9 +1739,12 @@ void initNdmpRestoreDataParams(NdmpClientInterface *interface)
 
 void ndmpRestorePrepareRequestSend(NdmpClientInterface *interface)
 {
+    initNdmpDstRestore(interface);
+    if (!IsNdmpServerNeedPreparedSetting()) {
+        return;
+    }
     ndmp_data_start_backup_request_v4 prepareReq;
     ndmp_data_start_backup_reply_v4 *prepareReply = NULL;
-    initNdmpDstRestore(interface);
     g_environment[5].name = "FILESYSTEM";
     g_environment[5].value = interface->dstPath;
     g_environment[6].name = "PREFIX";
@@ -1650,6 +1752,9 @@ void ndmpRestorePrepareRequestSend(NdmpClientInterface *interface)
     prepareReq.env.env_val = g_environment;
     prepareReq.env.env_len = 7;
     prepareReq.bu_type = "dump";
+    if (!IsNdmpServerNeedPreparedSetting()) {
+        return;
+    }
     ndmpSendRequest(g_srcConnection, NDMP_CAB_DATA_CONN_PREPARE, NDMP_NO_ERR,
                 (void*)&prepareReq, (void**)&prepareReply);
 }
@@ -1670,7 +1775,7 @@ int NdmpStartRestore(NdmpClientInterface *interface)
 
     // open ndmp connection & client auth
     rc = NdmpClientAuth(interface);
-    if (rc != 0){
+    if (rc < 0){
         ERRLOG("error auth before start restore");
         return NDMP_AUTH_ERROR_DST;
     }
@@ -1732,6 +1837,13 @@ int NdmpAbortBackup(NdmpClientInterface *interface)
     ndmp_end_backup();
 
     return 0;
+}
+
+void NdmpProcessInterrupt()
+{
+    ndmp_abort_backup();
+
+    ndmp_end_backup();    
 }
 
 void NdmpDestroy()

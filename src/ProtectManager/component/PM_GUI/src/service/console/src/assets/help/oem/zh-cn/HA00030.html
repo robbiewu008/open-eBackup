@@ -1,0 +1,106 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="查看备份存储单元">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="HA00029.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="documenttype" content="usermanual">
+  <meta name="prodname" content="csbs">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="HA00030">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>查看备份存储单元</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="HA00030"></a><a name="HA00030"></a>
+  <h1 class="topictitle1">查看备份存储单元</h1>
+  <div>
+   <p>添加成员节点后，系统自动将成员节点对应的备份存储，添加为备份存储单元。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li id="HA00030__li466583421410"><span>选择<span class="menucascade" id="HA00030__menucascade31053579148">“<span class="uicontrol" id="HA00030__uicontrol41059577142"><span id="HA00030__text1054020121612">系统</span></span> &gt; <span class="uicontrol" id="HA00030__uicontrol154661958121418"><span id="HA00030__text8757278167">基础设施</span></span> &gt; <span class="uicontrol" id="HA00030__uicontrol54471544151"><span id="HA00030__text1631251418164">集群管理</span></span>”</span>。</span></li>
+     <li><span>选择<span class="uicontrol">“<span>备份存储单元组</span>”</span>。</span></li>
+     <li><span>单击<span class="uicontrol">“<span>备份存储单元</span>”</span>，查看备份存储单元信息。相关参数说明请参见<a href="#HA00030__table1257133075716">表1</a>。</span><p></p>
+      <div class="tablenoborder">
+       <a name="HA00030__table1257133075716"></a><a name="table1257133075716"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="HA00030__table1257133075716" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>备份存储单元参数说明
+        </caption>
+        <colgroup>
+         <col style="width:27.85%">
+         <col style="width:72.15%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" valign="top" width="27.85%" id="mcps1.3.2.2.3.2.1.2.3.1.1"><p>参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="72.15%" id="mcps1.3.2.2.3.2.1.2.3.1.2"><p>说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" valign="top" width="27.85%" headers="mcps1.3.2.2.3.2.1.2.3.1.1 "><p><span>名称</span></p></td>
+          <td class="cellrowborder" valign="top" width="72.15%" headers="mcps1.3.2.2.3.2.1.2.3.1.2 "><p>备份存储单元的名称。对于自动添加的备份存储单元，名称默认为成员节点的名称加上<span class="uicontrol">“_auto_add”</span>后缀。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="27.85%" headers="mcps1.3.2.2.3.2.1.2.3.1.1 "><p><span>状态</span></p></td>
+          <td class="cellrowborder" valign="top" width="72.15%" headers="mcps1.3.2.2.3.2.1.2.3.1.2 "><p>备份存储单元的状态。</p>
+           <ul>
+            <li><span>在线</span>：备份存储单元与主节点连接正常。</li>
+            <li><span>离线</span>：备份存储单元与主节点连接断开。</li>
+            <li>升级中：备份存储单元正在升级为成员节点。</li>
+           </ul></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="27.85%" headers="mcps1.3.2.2.3.2.1.2.3.1.1 "><p><span>是否属于本地集群</span></p></td>
+          <td class="cellrowborder" valign="top" width="72.15%" headers="mcps1.3.2.2.3.2.1.2.3.1.2 "><p>备份存储单元是否属于本地集群。</p>
+           <ul>
+            <li>是：成员节点对应的备份存储单元。</li>
+            <li>否：手动添加的备份存储单元。</li>
+           </ul></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="27.85%" headers="mcps1.3.2.2.3.2.1.2.3.1.1 "><p>IP</p></td>
+          <td class="cellrowborder" valign="top" width="72.15%" headers="mcps1.3.2.2.3.2.1.2.3.1.2 "><p>备份存储单元的管理IP地址。</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" width="27.85%" headers="mcps1.3.2.2.3.2.1.2.3.1.1 "><p><span>端口</span></p></td>
+          <td class="cellrowborder" valign="top" width="72.15%" headers="mcps1.3.2.2.3.2.1.2.3.1.2 "><p>备份存储单元的端口号。</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="HA00029.html">管理备份存储单元（适用于1.5.0版本）</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

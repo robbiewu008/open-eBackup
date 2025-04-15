@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   BaseUtilService,
   I18NService,
@@ -57,10 +57,18 @@ export class RegisterComponent implements OnInit {
     ...this.baseUtilService.nameErrorTip,
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64])
   };
-  typeOptions = this.dataMapService.toArray('Mysql_Cluster_Type').map(item => {
-    item.isLeaf = true;
-    return item;
-  });
+  typeOptions = this.dataMapService
+    .toArray('Mysql_Cluster_Type')
+    .filter(item => {
+      if (this.appUtilsService.isDistributed) {
+        return item.value !== DataMap.Mysql_Cluster_Type.eapp.value;
+      }
+      return true;
+    })
+    .map(item => {
+      item.isLeaf = true;
+      return item;
+    });
 
   constructor(
     private appUtilsService: AppUtilsService,

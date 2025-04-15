@@ -12,10 +12,10 @@
 */
 package openbackup.data.access.framework.protection.service.repository;
 
+import com.google.common.base.CaseFormat;
+
 import openbackup.data.access.framework.protection.service.repository.strategies.RepositoryStrategy;
 import openbackup.data.protection.access.provider.sdk.enums.RepositoryProtocolEnum;
-
-import com.google.common.base.CaseFormat;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;

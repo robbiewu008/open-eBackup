@@ -1,0 +1,249 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Restoring an Exchange Database">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164649784.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200050529">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Restoring an Exchange Database</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200050529"></a><a name="EN-US_TOPIC_0000002200050529"></a>
+
+<h1 class="topictitle1">Restoring an Exchange Database</h1>
+<div><p>This section describes how to use a copy to restore a database that has been backed up to the original or a new location.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_ul698511719473"><li id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_li198944918478">Before the restoration, ensure that the Exchange Server service and related dependent services are running properly. For details about the corresponding services, see <a href="https://learn.microsoft.com/en-us/exchange/plan-and-deploy/deployment-ref/services-overview?view=exchserver-2019" target="_blank" rel="noopener noreferrer">Overview of Exchange services on Exchange servers</a>.</li><li id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_en-us_topic_0000001806524390_li42661234120">Before the restoration, ensure that the <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_text3709153812404">OceanProtect</span> system time is the same as the client time. Otherwise, data may be lost after log restoration.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><ul><li>For restoration to the original or a new location, ensure that the target location has sufficient space. Otherwise, the restoration will fail.</li><li>Before the restoration, unmount the database to be restored manually or automatically.</li><li>Log copies do not support database user-level restoration.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Database Restoration Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199964685_uicontrol201131546165412"><b><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199964685_text4113184695420"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199964685_text1311384665413"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199964685_text843804914500"><strong>Applications</strong></span> &gt; <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199964685_text1781814011566"><strong>Exchange</strong></span></b></span>.</span></li><li><span>Search for copies by database resource or copy. This section describes how to search for copies by database resource.</span><p><p>On the <strong>Resources</strong> tab page, locate the database to be restored by database name and then click the name.</p>
+</p></li><li><span>Select the year, month, and day in sequence to find the copy.</span><p><p>If <span><img src="en-us_image_0000002200050745.png"></span> is displayed below a month or date, copies exist in the month or on the date.</p>
+</p></li><li><span>Specify the time point.</span></li><li><span>In the row where the copy resides, choose <span class="uicontrol"><b>More &gt; Restore</b></span>.</span><p><ul><li>Restoring the database to its original location<p><a href="#EN-US_TOPIC_0000002200050529__table16163143516351">Table 1</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200050529__table16163143516351"></a><a name="table16163143516351"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200050529__table16163143516351" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Restoring an Exchange database to the original location</caption><colgroup><col style="width:32.53%"><col style="width:67.47%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.53%" id="mcps1.3.4.2.5.2.1.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.47%" id="mcps1.3.4.2.5.2.1.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><div class="p"><strong id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199969673_b10248325438">Tag</strong><div class="note" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199969673_en-us_topic_0000002164660718_note6966434109"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199969673_en-us_topic_0000002164660718_en-us_topic_0000002200147037_p1816719214566"><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199969673_en-us_topic_0000002164660718_en-us_topic_0000002200147037_ph206615454589">This function is available only in 1.6.0 and later versions.</span></p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p>This parameter is displayed when data is restored to a new location.</p>
+<p>You can filter databases by tag.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p>Single-Node Systems/Availability Groups</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002200050529__p1168434218436">Target single-node system or availability group for restoration.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p>Log File Generation Time</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><div class="p">If you select a log file generation time point, all log files generated at and before this time point will be restored.<div class="note"><span class="notetitle"> NOTE: </span><div class="notebody"><p>By default, the system displays five log file generation time points, including the specified time point, two log file generation time points immediately preceding the specified time point, and two log file generation time points immediately following the specified time point. If no log file was generated at the specified time point, the log file generation time point closest to the specified one is selected by default.</p>
+<ul><li>If the specified time point is the one when the first or last log file in the target log copy was generated, the system displays only the time points when the first or last three log files in the copy were generated.</li><li>If the specified time point is the one when the second or the last but one log file in the target log copy was generated, the system displays only the time points when the first or last four log files in the copy were generated.</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p>Automatic Database Unmount Before Restoration</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><div class="p">If this function is enabled, the target database is automatically unmounted before restoration and cannot be used.<div class="note" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_note55671514165919"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_p142261721229">If this function is disabled and the target database is in the mounted state, the restoration will fail.</p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p>Automatic Database Mount After Restoration</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p>After the restoration is complete, the target database is in the unmounted state. If this function is enabled, the target database is automatically mounted.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p>Database Name</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p>New database name after restoration.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p><span>Script to Run Before Restoration</span></p>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002200050529__p460553957">You can set <span id="EN-US_TOPIC_0000002200050529__text1358816124015"><strong>Script to Run Before Restoration</strong></span>, <span id="EN-US_TOPIC_0000002200050529__text18847162810407"><strong>Script to Run upon Restoration Success</strong></span>, and <span id="EN-US_TOPIC_0000002200050529__text09251338144015"><strong>Script to Run upon Restoration Failure</strong></span> only when restoring a single-node database system.</p>
+<div class="p">You can execute custom scripts of the bat type based on your needs before a restoration job is executed, or after the restoration job is successfully or fails to be executed. If the script is stored in the <strong id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_b87783397821737">DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty</strong> directory, you only need to enter the script name. If the script is stored in another directory, you need to enter the absolute path of the script.<div class="note" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_note2110172314715"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_p2011012319717">If <span class="uicontrol" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_uicontrol128133372811"><b><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_text1081312373820">Script to Run upon Restoration Success</span></b></span> is configured, the status of the restoration job is displayed as <span class="uicontrol" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_uicontrol1181363711811"><b><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_text14813103719816">Successful</span></b></span> on the <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_text154052245811">OceanProtect</span> even if the script fails to be executed. Check whether the job details contain a message indicating that the post-processing script fails to be executed. If yes, modify the script in a timely manner. </p>
+</div></div>
+</div>
+<p></p>
+<p></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p><span>Script to Run upon Restoration Success</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.5.2.1.1.2.2.3.1.1 "><p><span>Script to Run upon Restoration Failure</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li><li>Restoring the database to a new location<p><a href="#EN-US_TOPIC_0000002200050529__en-us_topic_0000001263936798_table93951625101715">Table 2</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200050529__en-us_topic_0000001263936798_table93951625101715"></a><a name="en-us_topic_0000001263936798_table93951625101715"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000001263936798_table93951625101715" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Restoring an Exchange database to a new location</caption><colgroup><col style="width:32.53%"><col style="width:67.47%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="32.53%" id="mcps1.3.4.2.5.2.1.2.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.47%" id="mcps1.3.4.2.5.2.1.2.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p>Single-Node Systems/Availability Groups</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>Target single-node system or availability group for restoration.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p>Database file path.</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>Absolute path of the .edb file of the target database for restoration. The drive letter of the path must exist.</p>
+<p>Example: <em>C:\Mailbox\dbname\dbname.edb</em></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p>Log file path</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>Absolute path of the directory where the .log file of the target database for restoration resides. The drive letter of the path must exist.</p>
+<p>Example: <em>C:\Mailbox\dbname</em></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p>Log File Generation Time</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>If you select a log file generation time point, all log files generated at and before this time point will be restored.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p>Automatic Database Unmount Before Restoration</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><div class="p">If this function is enabled, the target database is automatically unmounted before restoration and cannot be used.<div class="note" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_note55671514165919_1"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_p142261721229_1">If this function is disabled and the target database is in the mounted state, the restoration will fail.</p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p>Automatic Database Mount After Restoration</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>After the restoration is complete, the target database is in the unmounted state. If this function is enabled, the target database is automatically mounted.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p>Database Name</p>
+</td>
+<td class="cellrowborder" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>New database name after restoration.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p><span>Script to Run Before Restoration</span></p>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" width="67.47%" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.2 "><p>You can set <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_text1358816124015"><strong>Script to Run Before Restoration</strong></span>, <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_text18847162810407"><strong>Script to Run upon Restoration Success</strong></span>, and <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_text09251338144015"><strong>Script to Run upon Restoration Failure</strong></span> only when restoring a single-node database system.</p>
+<div class="p">You can execute custom scripts of the bat type based on your needs before a restoration job is executed, or after the restoration job is successfully or fails to be executed. If the script is stored in the <strong id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_b87783397821737_1">DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty</strong> directory, you only need to enter the script name. If the script is stored in another directory, you need to enter the absolute path of the script.<div class="note" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_note2110172314715_1"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_p2011012319717_1">If <span class="uicontrol" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_uicontrol128133372811_1"><b><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_text1081312373820_1">Script to Run upon Restoration Success</span></b></span> is configured, the status of the restoration job is displayed as <span class="uicontrol" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_uicontrol1181363711811_1"><b><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_text14813103719816_1">Successful</span></b></span> on the <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_text154052245811_1">OceanProtect</span> even if the script fails to be executed. Check whether the job details contain a message indicating that the post-processing script fails to be executed. If yes, modify the script in a timely manner. </p>
+</div></div>
+</div>
+<p></p>
+<p></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p><span>Script to Run upon Restoration Success</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.5.2.1.2.2.2.3.1.1 "><p><span>Script to Run upon Restoration Failure</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ul>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Database User-Level Restoration</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199964685_uicontrol201131546165412_1"><b><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199964685_text4113184695420_1"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199964685_text1311384665413_1"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199964685_text843804914500_1"><strong>Applications</strong></span> &gt; <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002199964685_text1781814011566_1"><strong>Exchange</strong></span></b></span>.</span></li><li><span>Search for copies by database resource or copy. This section describes how to search for copies by database resource.</span><p><p>On the <strong>Resources</strong> tab page, locate the database to be restored by database name and then click the name.</p>
+</p></li><li><span>Select the year, month, and day in sequence to find the copy.</span><p><p>If <span><img src="en-us_image_0000002164809724.png"></span> is displayed under a month or date, copies exist in the month or date.</p>
+</p></li><li><span>In the row where the copy resides, choose <span class="uicontrol"><b>More &gt; User-Level Restore</b></span>.</span><p><ul><li>Restoration to the original location<ol type="a"><li>View and confirm the target single-node system or availability group.</li><li id="EN-US_TOPIC_0000002200050529__li1768222217497">Select the mailbox to be restored.</li><li id="EN-US_TOPIC_0000002200050529__li4196652104911">Set advanced parameters.<p id="EN-US_TOPIC_0000002200050529__p13859473521"><a name="EN-US_TOPIC_0000002200050529__li4196652104911"></a><a name="li4196652104911"></a><a href="#EN-US_TOPIC_0000002200050529__table171912019135210">Table 3</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200050529__table171912019135210"></a><a name="table171912019135210"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200050529__table171912019135210" frame="border" border="1" rules="all"><caption><b>Table 3 </b>Advanced parameters for user-level restoration</caption><colgroup><col style="width:32.53%"><col style="width:67.47%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002200050529__row1119251925213"><th align="left" class="cellrowborder" valign="top" width="32.53%" id="mcps1.3.5.2.4.2.1.1.1.3.2.2.3.1.1"><p id="EN-US_TOPIC_0000002200050529__p1619281913527">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.47%" id="mcps1.3.5.2.4.2.1.1.1.3.2.2.3.1.2"><p id="EN-US_TOPIC_0000002200050529__p1019251910528">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002200050529__row171927198520"><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.5.2.4.2.1.1.1.3.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002200050529__p1519211915218"><span id="EN-US_TOPIC_0000002200050529__text76561128102">Script to Run Before Restoration</span></p>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" width="67.47%" headers="mcps1.3.5.2.4.2.1.1.1.3.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002200050529__p169823813104">You can set <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_text1358816124015_1"><strong>Script to Run Before Restoration</strong></span>, <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_text18847162810407_1"><strong>Script to Run upon Restoration Success</strong></span>, and <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_text09251338144015_1"><strong>Script to Run upon Restoration Failure</strong></span> only when restoring a single-node database system.</p>
+<div class="p" id="EN-US_TOPIC_0000002200050529__p76391019144416">You can execute custom scripts of the bat type based on your needs before a restoration job is executed, or after the restoration job is successfully or fails to be executed. If the script is stored in the <strong id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_b87783397821737_2">DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty</strong> directory, you only need to enter the script name. If the script is stored in another directory, you need to enter the absolute path of the script.<div class="note" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_note2110172314715_2"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_p2011012319717_2">If <span class="uicontrol" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_uicontrol128133372811_2"><b><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_text1081312373820_2">Script to Run upon Restoration Success</span></b></span> is configured, the status of the restoration job is displayed as <span class="uicontrol" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_uicontrol1181363711811_2"><b><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_text14813103719816_2">Successful</span></b></span> on the <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_text154052245811_2">OceanProtect</span> even if the script fails to be executed. Check whether the job details contain a message indicating that the post-processing script fails to be executed. If yes, modify the script in a timely manner. </p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200050529__row51931219165217"><td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.1.1.1.3.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002200050529__p1119312199526"><span id="EN-US_TOPIC_0000002200050529__text2050788433">Script to Run upon Restoration Success</span></p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200050529__row1819331914524"><td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.1.1.1.3.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002200050529__p219341955210"><span id="EN-US_TOPIC_0000002200050529__text697710312020">Script to Run upon Restoration Failure</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ol>
+</li><li>Restoration to a new location<ol type="a"><li>Select the target single-node system or availability group.</li><li>Select the mailbox to be restored.</li><li>Set advanced parameters.<p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_p13859473521"><a href="#EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_table171912019135210">Table 4</a> describes the related parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_table171912019135210"></a><a name="en-us_topic_0000002200050529_table171912019135210"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_table171912019135210" frame="border" border="1" rules="all"><caption><b>Table 4 </b>Advanced parameters for user-level restoration</caption><colgroup><col style="width:32.53%"><col style="width:67.47%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_row1119251925213"><th align="left" class="cellrowborder" valign="top" width="32.53%" id="mcps1.3.5.2.4.2.1.2.1.3.2.2.3.1.1"><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_p1619281913527">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="67.47%" id="mcps1.3.5.2.4.2.1.2.1.3.2.2.3.1.2"><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_p1019251910528">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_row171927198520"><td class="cellrowborder" valign="top" width="32.53%" headers="mcps1.3.5.2.4.2.1.2.1.3.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_p1519211915218"><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_text76561128102">Script to Run Before Restoration</span></p>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" width="67.47%" headers="mcps1.3.5.2.4.2.1.2.1.3.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_p169823813104">You can set <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_en-us_topic_0000002200050529_text1358816124015"><strong>Script to Run Before Restoration</strong></span>, <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_en-us_topic_0000002200050529_text18847162810407"><strong>Script to Run upon Restoration Success</strong></span>, and <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_en-us_topic_0000002200050529_text09251338144015"><strong>Script to Run upon Restoration Failure</strong></span> only when restoring a single-node database system.</p>
+<div class="p" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_p76391019144416">You can execute custom scripts of the bat type based on your needs before a restoration job is executed, or after the restoration job is successfully or fails to be executed. If the script is stored in the <strong id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_en-us_topic_0000002200050629_b87783397821737">DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty</strong> directory, you only need to enter the script name. If the script is stored in another directory, you need to enter the absolute path of the script.<div class="note" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_en-us_topic_0000002200050629_note2110172314715"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_en-us_topic_0000002200050629_p2011012319717">If <span class="uicontrol" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_en-us_topic_0000002200050629_uicontrol128133372811"><b><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_en-us_topic_0000002200050629_text1081312373820">Script to Run upon Restoration Success</span></b></span> is configured, the status of the restoration job is displayed as <span class="uicontrol" id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_en-us_topic_0000002200050629_uicontrol1181363711811"><b><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_en-us_topic_0000002200050629_text14813103719816">Successful</span></b></span> on the <span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_en-us_topic_0000002200050629_text154052245811">OceanProtect</span> even if the script fails to be executed. Check whether the job details contain a message indicating that the post-processing script fails to be executed. If yes, modify the script in a timely manner. </p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_row51931219165217"><td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.1.2.1.3.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_p1119312199526"><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_text2050788433">Script to Run upon Restoration Success</span></p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_row1819331914524"><td class="cellrowborder" valign="top" headers="mcps1.3.5.2.4.2.1.2.1.3.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_p219341955210"><span id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050529_text697710312020">Script to Run upon Restoration Failure</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li></ol>
+</li></ul>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Follow-up Procedure</h4><p id="EN-US_TOPIC_0000002200050529__en-us_topic_0000002200050629_p88701326556">After the restoration, you need to update the user mailbox status at the production end and create an Active Directory domain user to connect to the restored mailbox to verify the restored user mailbox data. For details, see <a href="en-us_topic_0000002164809464.html">Verifying the Restored User Mailbox Data (Applicable to Microsoft Exchange Server 2010)</a> or <a href="en-us_topic_0000002200136141.html">Verifying the Restored User Mailbox Data (Applicable to Microsoft Exchange Server 2013 and Later Versions)</a>.</p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164649784.html">Recovery</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

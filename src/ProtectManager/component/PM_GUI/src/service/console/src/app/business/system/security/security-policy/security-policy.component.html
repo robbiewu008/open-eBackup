@@ -316,13 +316,8 @@
                   {{'common_alarms_info_label'|i18n}}
                 </lv-form-label>
                 <lv-form-control [lvErrorTip]="customTipsErrorTip">
-                 <textarea
-                   lv-input
-                   formControlName="userDefNodes"
-                   [placeholder]= "userDefinedInfoPlaceholder"
-                   maxlength="511"
-                   rows="4"
-                 ></textarea>
+                  <textarea lv-input formControlName="userDefNodes" [placeholder]="userDefinedInfoPlaceholder"
+                    maxlength="511" rows="4"></textarea>
                 </lv-form-control>
               </lv-form-item>
             </ng-container>
@@ -330,12 +325,12 @@
         </div>
       </div>
       <ng-template #logInfoTipsTpl>
-        <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_policy_login_info_tips_label' | i18n }}" lvTooltipTheme="light"
-           class="configform-constraint" lvColorState='true'></i>
+        <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_policy_login_info_tips_label' | i18n }}"
+          lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
       </ng-template>
       <ng-template #userDefInfoTipsTpl>
-        <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_policy_user_defined_info_tips_label' | i18n }}" lvTooltipTheme="light"
-           class="configform-constraint" lvColorState='true'></i>
+        <i lv-icon="aui-icon-help" lv-tooltip="{{ 'system_policy_user_defined_info_tips_label' | i18n }}"
+          lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
       </ng-template>
       <div class="aui-block aui-gutter-column-md"
         [ngClass]="{'security-right-4-container': isCyberEngine || isDataBackup}">
@@ -385,7 +380,7 @@
       </div>
 
 
-      <ng-container *ngIf="!isCyberEngine && !isDataBackup">
+      <ng-container *ngIf="!isCyberEngine && !isDataBackup && !isDecouple">
         <div class="aui-block aui-gutter-column-md update-storage-password-container">
           <div class="aui-header-2">
             <h2>
@@ -431,7 +426,8 @@
               </button>
             </lv-group>
           </div>
-          <lv-datatable [lvData]='passwordData' #passwordTable [lvPaginator]='page' lvSize="small">
+          <lv-datatable [lvData]='passwordData' #passwordTable [lvPaginator]='page' lvSize="small"
+            [lvScroll]="{y:'220px'}">
             <thead>
               <tr>
                 <th>
@@ -464,7 +460,7 @@
           <td><span lv-overflow>
               <span lv-overflow>{{item.password}}</span>
             </span></td>
-          <td width="250px">
+          <td width="236px">
             <span class="aui-link" (click)='deleteRow(item)'>{{'common_delete_label' | i18n}}</span>
           </td>
         </ng-template>
@@ -480,7 +476,7 @@
               </lv-form-control>
             </lv-form>
           </td>
-          <td width="250px">
+          <td width="236px">
             <lv-group [lvGutter]="'24px'">
               <a (click)='saveData(item)' [ngClass]="{'aui-link': formGroupMap[item.id] && formGroupMap[item.id].valid,
                             'aui-link-disabled': formGroupMap[item.id] && formGroupMap[item.id].invalid}">
@@ -536,7 +532,8 @@
             </lv-group>
           </div>
           <div class='access-ctrl-container'>
-            <lv-datatable [lvData]='ipData' [lvScroll]='ipTableScroll.edit' #ipTable [lvPaginator]='page2' lvSize="small">
+            <lv-datatable [lvData]='ipData' [lvScroll]='ipTableScroll.edit' #ipTable [lvPaginator]='page2'
+              lvSize="small">
               <thead>
                 <tr>
                   <th>
@@ -557,10 +554,10 @@
                 </ng-container>
               </tbody>
             </lv-datatable>
-          </div>
-          <div class="aui-paginator-wrap">
-            <lv-paginator lvPageSize="10" #page2 [hidden]="!ipTable.renderData.length" [lvPageSizeOptions]='sizeOptions'
-              lvMode="simple"></lv-paginator>
+              <div class="aui-paginator-wrap">
+                <lv-paginator lvPageSize="10" #page2 [hidden]="!ipTable.renderData.length" [lvPageSizeOptions]='sizeOptions'
+                  lvMode="simple"></lv-paginator>
+              </div>
           </div>
         </div>
 
@@ -593,7 +590,7 @@
           <td>
             <span lv-overflow>{{item.securityIp}}</span>
           </td>
-          <td width="160px">
+          <td width="130px">
             <span class="aui-link" (click)='deleteIpRow(item)'>{{'common_delete_label' | i18n}}</span>
           </td>
         </ng-template>
@@ -603,14 +600,15 @@
             <lv-form [formGroup]="ipFormGroupMap[item.id]" [lvLabelColon]='false'>
               <lv-form-control #lvFormControl>
                 <lv-group lvGutter='6px'>
-                  <input lv-input class="ip-tb-input" formControlName="securityIp" (ngModelChange)="ipFocus(item)" />
+                  <input lv-input class="notify-tb-input" formControlName="securityIp"
+                    (ngModelChange)="ipFocus(item)" />
                   <i *ngIf="visibleIpErrorTip" [lv-tooltip]="currentIpErrorTip" [lvTooltipVisible]="true"
                     lvTooltipPosition="right" lv-icon="lv-icon-status-failed"></i>
                 </lv-group>
               </lv-form-control>
             </lv-form>
           </td>
-          <td width="160px">
+          <td width="120px">
             <lv-group [lvGutter]="'24px'">
               <a (click)='saveIpData(item)' [ngClass]="{'aui-link': ipFormGroupMap[item.id] && ipFormGroupMap[item.id].valid,
                   'aui-link-disabled': ipFormGroupMap[item.id] && ipFormGroupMap[item.id].invalid}">

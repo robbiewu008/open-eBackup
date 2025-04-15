@@ -22,7 +22,7 @@
             <i [lv-icon]="item.icon" [lvColorState]="true"></i>
         </ng-container>
         <span
-            [ngClass]="{'cluster': item.clusterId, 'category': !item.clusterId, 'aui-link-disabled': item.status === 28, 'actived':currentCluster?.clusterName === item.clusterName }"
+            [ngClass]="{'cluster': item.clusterId, 'category': !item.clusterId, 'aui-link-disabled': item.status === 28, 'actived':currentCluster?.clusterName === item.clusterName, 'cluster-link':item.clusterId && item.status !== 28 }"
             (click)="reload(item)" lv-overflow>
             {{item.clusterName}}
         </span>

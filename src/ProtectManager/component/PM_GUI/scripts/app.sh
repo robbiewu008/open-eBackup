@@ -28,6 +28,7 @@ PROTECT_MANAGER_I18N_EN_CODE_PATH="${PROTECT_MANAGER_I18N_PATH}/en-us/error-code
 PROTECT_MANAGER_I18N_ZH_ALARM_PATH="${PROTECT_MANAGER_I18N_PATH}/zh-cn/alarm"
 PROTECT_MANAGER_I18N_EN_ALARM_PATH="${PROTECT_MANAGER_I18N_PATH}/en-us/alarm"
 PROTECT_MANAGER_WHITE_BOX_RESOURCES_PATH="${PROTECT_MANAGER_WHITE_BOX_PATH}/resources"
+APP_CONF_WCC="/app/gui/conf/wcc"
 GUI_BASE_PATH="/app/gui/"
 ROOT_SCRIPT="/script"
 
@@ -80,7 +81,6 @@ if [[ ! -d "${PROTECT_MANAGER_I18N_ZH_CODE_PATH}" ]]; then
   mkdir -p "${PROTECT_MANAGER_I18N_ZH_CODE_PATH}"
   chmod 770 "${PROTECT_MANAGER_I18N_ZH_CODE_PATH}"
 fi
-
 
 if [[ ! -d "${PROTECT_MANAGER_I18N_EN_CODE_PATH}" ]]; then
   sudo ${ROOT_SCRIPT}/change_permission.sh change_owner_nobody_nobody  "${PROTECT_MANAGER_I18N_PATH}"
@@ -259,16 +259,23 @@ isHas=`ifconfig |grep "cbri1601"`
 if [ "${DEPLOY_TYPE}" = "d5" ]; then
     # 安全一体机d5场景使用eth1网桥
     ip=${POD_IP}
-    echo 'Asia/Shanghai' > "${PROTECT_MANAGER_PATH}/timezone"
+    if [[ -f "${PROTECT_MANAGER_PATH}/timezone" ]]; then
+          rm -rf "${PROTECT_MANAGER_PATH}/timezone"
+    fi
+    if [[ -f "/etc/timezone" ]]; then
+          rm -rf "/etc/timezone"
+    fi
 elif [[ ! -z "${isHas}" ]]; then
     ip=`ifconfig cbri1601 | grep "inet " | awk '{print $2}'` &> /dev/null
     timezoneJson=`sudo ${ROOT_SCRIPT}/curl_dorado_timezone.sh`
     timezones=`getJsonValuesByAwk "${timezoneJson}" "CMO_SYS_TIME_ZONE_NAME" "Asia/Shanghai"`
     echo "local timezone is $timezoneJson"
     echo "${timezones}" | tr -d '"' > "${PROTECT_MANAGER_PATH}/timezone"
+    sudo ${ROOT_SCRIPT}/mount_oper.sh mount_bind "${PROTECT_MANAGER_PATH}/timezone" "/etc/timezone"
 else
     ip="0.0.0.0"
     echo 'Asia/Shanghai' > "${PROTECT_MANAGER_PATH}/timezone"
+    sudo ${ROOT_SCRIPT}/mount_oper.sh mount_bind "${PROTECT_MANAGER_PATH}/timezone" "/etc/timezone"
 fi
 
 
@@ -336,8 +343,8 @@ function init_gui_common() {
     done
 }
 
-sudo ${ROOT_SCRIPT}/mount_oper.sh mount_bind "${PROTECT_MANAGER_PATH}/timezone" "/etc/timezone"
 sudo ${ROOT_SCRIPT}/mount_oper.sh mount_bind "${PROTECT_MANAGER_WHITE_BOX_PATH}" "/app/gui/frontend/console/assets/whitebox"
+sudo ${ROOT_SCRIPT}/mount_oper.sh mount_bind "${PROTECT_MANAGER_KMC_PATH}" "${APP_CONF_WCC}"
 
 # 处理白牌资源包
 oem

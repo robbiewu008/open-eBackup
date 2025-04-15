@@ -13,7 +13,7 @@
 
 <div class="login-container" [ngClass]="{'default_bg':!whitebox.isWhitebox,'whitebox_bg':whitebox.isWhitebox}">
   <div class="login-top">
-    <aui-logo-title class="logo"></aui-logo-title>
+    <aui-logo-title class="logo" [isWhiteColor]="true"></aui-logo-title>
     <div class="language" (click)="toggleLanguage()">{{ languageLabel }}</div>
   </div>
   <div class="login-content" *ngIf="!isModifyPasswd">
@@ -122,7 +122,7 @@
       <lv-form-item>
         <lv-form-label></lv-form-label>
         <lv-form-control [lvErrorTip]="baseUtilService.pwdErrorTip">
-          <input [lv-tooltip]="pwdComplexTipTpl" lvTooltipTheme="light" lvTooltipPosition="topLeft" lv-input
+          <input [lv-tooltip]="pwdComplexTipTpl" lvTooltipTheme="light" lvTooltipPosition="left" lvTooltipTrigger="focus" lv-input
             lvSize="large" type="password" autocomplete="new-password" placeholder="{{ newPasswordLabel }}"
             formControlName="newPassword" (keydown.enter)="modify($event)" (focus)="setNewPasswordValidator()"
             (ngModelChange)='resetErrorMessage()' />

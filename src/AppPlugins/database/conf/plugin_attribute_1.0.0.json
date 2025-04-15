@@ -1,5 +1,5 @@
 {
-  "application": "TiDB-cluster,TiDB-database,TiDB-table,OceanBase-cluster,OceanBase-tenant,TDSQL-clusterInstance,TDSQL-clusterGroup,TDSQL-cluster,Exchange-group,Exchange-database,Exchange-single-node,Exchange-mailbox,TPOPSGaussDBProject,TPOPSGaussDBInstance,HCSGaussDBProject,HCSGaussDBInstance,GoldenDB-cluster,GoldenDB-clusterInstance,GeneralDb,Dameng-singleNode,Dameng-cluster,GaussDBT,GaussDBT-single,MySQL-instance,MySQL-cluster,MySQL-database,MySQL-clusterInstance,SQLServer-database,SQLServer-instance,SQLServer-alwaysOn,SQLServer-clusterInstance,SQLServer-cluster,DB2,PostgreInstance,PostgreClusterInstance,KingBaseInstance,KingBaseClusterInstance,Redis,DWS-cluster,DWS-database,DWS-schema,DWS-table,OpenGauss,OpenGauss-instance,OpenGauss-database,ClickHouse,DB2-database,DB2-tablespace,DB2-instance,DB2-clusterInstance,Oracle,Oracle-cluster,Oracle-clusterInstance,MongoDB-single,MongoDB-cluster,RDSforMySQL-database,RDSforMySQL-instance,SAPHANA-instance,SAPHANA-database,Informix-service,Informix-singleInstance,Informix-clusterInstance,NDMP,NDMP-server,NDMP-BackupSet,KubernetesClusterCommon,KubernetesNamespaceCommon,KubernetesDatasetCommon,ADDS",
+  "application": "TiDB-cluster,TiDB-database,TiDB-table,OceanBase-cluster,OceanBase-tenant,TDSQL-clusterInstance,TDSQL-clusterGroup,TDSQL-cluster,Exchange-group,Exchange-database,Exchange-single-node,Exchange-mailbox,TPOPSGaussDBProject,TPOPSGaussDBInstance,HCSGaussDBProject,HCSGaussDBInstance,GoldenDB-cluster,GoldenDB-clusterInstance,GeneralDb,Dameng-singleNode,Dameng-cluster,GaussDBT,GaussDBT-single,MySQL-instance,MySQL-cluster,MySQL-database,MySQL-clusterInstance,SQLServer-database,SQLServer-instance,SQLServer-alwaysOn,SQLServer-clusterInstance,SQLServer-cluster,DB2,PostgreInstance,PostgreClusterInstance,AntDBInstance,AntDBClusterInstance,KingBaseInstance,KingBaseClusterInstance,Redis,DWS-cluster,DWS-database,DWS-schema,DWS-table,OpenGauss,OpenGauss-instance,OpenGauss-database,ClickHouse,DB2-database,DB2-tablespace,DB2-instance,DB2-clusterInstance,Oracle,Oracle-pdb,Oracle-cluster,Oracle-clusterInstance,MongoDB-single,MongoDB-cluster,RDSforMySQL-database,RDSforMySQL-instance,SAPHANA-instance,SAPHANA-database,Informix-service,Informix-singleInstance,Informix-clusterInstance,NDMP,NDMP-server,NDMP-BackupSet,KubernetesClusterCommon,KubernetesNamespaceCommon,KubernetesDatasetCommon,ADDS,SAP_ON_ORACLE_SINGLE",
   "name": "GeneralDBPlugin",
   "application_version": [
     {
@@ -11,15 +11,21 @@
   "mount": {
     "DWS-table": "nfsvers=3,rw,bg,soft,nointr,rsize=1048576,wsize=1048576,tcp,timeo=600,retrans=3,nolock",
     "DWS-table_LinkEncry": "sec=krb5p,vers=4,rw,bg,soft,nointr,rsize=1048576,wsize=1048576,tcp,timeo=600,retrans=3,nolock",
-    "Oracle": "rw,bg,hard,nointr,rsize=262144,wsize=262144,tcp,actimeo=0,timeo=600,nolock,sync",
-    "Oracle-cluster": "rw,bg,hard,nointr,rsize=262144,wsize=262144,tcp,actimeo=0,timeo=600,nolock,sync",
-    "Oracle-clusterInstance": "rw,bg,hard,nointr,rsize=262144,wsize=262144,tcp,actimeo=0,timeo=600,nolock,sync",
-    "Oracle_aix": "rw,bg,hard,nointr,noac,rsize=262144,wsize=262144,timeo=600",
-    "Oracle-cluster_aix": "rw,bg,hard,nointr,noac,rsize=262144,wsize=262144,timeo=600",
-    "Oracle-clusterInstance_aix": "rw,bg,hard,nointr,noac,rsize=262144,wsize=262144,timeo=600",
+    "Oracle": "vers=3,rw,bg,hard,nointr,rsize=262144,wsize=262144,tcp,actimeo=0,timeo=600,nolock,sync",
+    "Oracle-pdb": "vers=3,rw,bg,hard,nointr,rsize=262144,wsize=262144,tcp,actimeo=0,timeo=600,nolock,sync",
+    "Oracle-cluster": "vers=3,rw,bg,hard,nointr,rsize=262144,wsize=262144,tcp,actimeo=0,timeo=600,nolock,sync",
+    "Oracle-clusterInstance": "vers=3,rw,bg,hard,nointr,rsize=262144,wsize=262144,tcp,actimeo=0,timeo=600,nolock,sync",
+    "Oracle_aix": "vers=3,rw,bg,hard,nointr,noac,rsize=262144,wsize=262144,timeo=600",
+    "Oracle-cluster_aix": "vers=3,rw,bg,hard,nointr,noac,rsize=262144,wsize=262144,timeo=600",
+    "Oracle-clusterInstance_aix": "vers=3,rw,bg,hard,nointr,noac,rsize=262144,wsize=262144,timeo=600",
     "SAPHANA-database": "nfsvers=3,rw,bg,soft,nointr,rsize=1048576,wsize=1048576,tcp,timeo=600,retrans=3,nolock",
     "OceanBase-cluster": "nfsvers=4.1,rw,sync,lookupcache=positive,hard,timeo=600,wsize=1048576,rsize=1048576,namlen=255",
     "OceanBase-tenant": "nfsvers=4.1,rw,sync,lookupcache=positive,hard,timeo=600,wsize=1048576,rsize=1048576,namlen=255"
+  },
+  "mount_restore": {
+    "Oracle_aix": "vers=3,rw,bg,hard,nointr,noac,rsize=262144,wsize=262144,timeo=600,cio",
+    "Oracle-cluster_aix": "vers=3,rw,bg,hard,nointr,noac,rsize=262144,wsize=262144,timeo=600,cio",
+    "Oracle-clusterInstance_aix": "vers=3,rw,bg,hard,nointr,noac,rsize=262144,wsize=262144,timeo=600,cio"
   },
   "run_account": "root"
 }

@@ -23,15 +23,17 @@
 #include "File.h"
 #include "filter/CtrlFileFilter.h"
 #include "ScanMgr.h"
-#include "PluginUtilities.h"
 #include "config_reader/ConfigIniReader.h"
 #include "constant/ErrorCode.h"
 #include "system/System.hpp"
 #include "common/EnvVarManager.h"
 #include "common/Thread.h"
 #include "host/OsIdentifier.h"
+#include "job/ChannelManager.h"
 
 using namespace std;
+using namespace Module;
+
 namespace FilePlugin {
 namespace {
     constexpr int REPORT_PROGRESS_TO_PM_INTERVAL = 30;
@@ -47,7 +49,13 @@ namespace {
     constexpr uint32_t NUMBER120 = 120;
     constexpr uint32_t NUMBER100 = 100;
     constexpr uint32_t NUMBER10 = 10;
+    constexpr uint32_t NUMBER9 = 9;
+    constexpr uint32_t NUMBER8 = 8;
+    constexpr uint32_t NUMBER7 = 7;
+    constexpr uint32_t NUMBER6 = 6;
     constexpr uint32_t NUMBER5 = 5;
+    constexpr uint32_t NUMBER4 = 4;
+    constexpr uint32_t NUMBER3 = 3;
     constexpr uint32_t NUMBER2 = 2;
     constexpr uint32_t NUMBER1 = 1;
     constexpr uint32_t NUMBER0 = 0;
@@ -63,17 +71,27 @@ namespace {
     constexpr auto RESTORE_OPTION_REPLACE = "REPLACE";
     constexpr auto SCANNER_STAT = "restore_scanner_status.json";
 
+    const std::string LVS_COMMAND_PATH = "/usr/sbin/lvs";
+    const std::string BMR_SUCCEED_FLAG_SUFFIX = "_bmr_succeed";
+    const std::string BMR_LIVE_OS_FLAG_PATH = "/etc/databackup-bmr-livecd";
+
     struct RestoreAdvancedparamters {
         string failedScript;
         string postScript;
         string preScript;
         string restoreOption;
+        string channels = "1";  // 恢复设置的通道数，默认为1
+        string isOSRestore;
+        string rebootSystemAfterRestore;
 
         BEGIN_SERIAL_MEMEBER
         SERIAL_MEMBER_TO_SPECIFIED_NAME(failedScript, failed_script)
         SERIAL_MEMBER_TO_SPECIFIED_NAME(postScript, post_script)
         SERIAL_MEMBER_TO_SPECIFIED_NAME(preScript, pre_script)
         SERIAL_MEMBER_TO_SPECIFIED_NAME(restoreOption, restoreOption)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(channels, channels)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(isOSRestore, is_OS_restore)
+        SERIAL_MEMBER_TO_SPECIFIED_NAME(rebootSystemAfterRestore, reboot_system_after_restore)
         END_SERIAL_MEMEBER
     };
 
@@ -102,6 +120,7 @@ int HostRestore::PrerequisiteJob()
     HCP_Log(INFO, MODULE) << "Enter HostRestore PrerequisiteJob" << HCPENDLOG;
     m_restoreJobInfo = dynamic_pointer_cast<AppProtect::RestoreJob>(m_jobCommonInfo->GetJobInfo());
     HCP_Log(INFO, MODULE) << "m_restoreJobInfo->jobId is " << m_restoreJobInfo->jobId << HCPENDLOG;
+    GetRestoreType();
     int ret = PrerequisiteJobInner();
     if (ret != Module::SUCCESS) {
         ReportJobDetails(make_tuple(JobLogLevel::TASK_LOG_ERROR, SubJobStatus::FAILED, PROGRESS100));
@@ -133,6 +152,13 @@ int HostRestore::GenerateSubJob()
     }
     if (ret != Module::SUCCESS) {
         ReportJobDetails(make_tuple(JobLogLevel::TASK_LOG_ERROR, SubJobStatus::FAILED, PROGRESS100));
+#ifdef __linux__
+        OsRestoreInfo config{};
+        OsRestore osRestoreTask(config);
+        if (osRestoreTask.CleanFstabAndMountAfterFailed() != Module::SUCCESS) {
+            ERRLOG("osRestoreTask CleanFstabAndMountAfterFailed process failed ");
+        }
+#endif
         HCP_Log(ERR, MODULE) << "Restore Generate Sub Job failed jobId: " << m_restoreJobInfo->jobId << HCPENDLOG;
     } else {
         ReportJobDetails(make_tuple(JobLogLevel::TASK_LOG_INFO, SubJobStatus::COMPLETED, PROGRESS100));
@@ -148,6 +174,14 @@ int HostRestore::ExecuteSubJob()
 {
     HCP_Log(INFO, MODULE) << "Enter HostRestore restore ExecuteSubJob" << HCPENDLOG;
     m_restoreJobInfo = dynamic_pointer_cast<AppProtect::RestoreJob>(m_jobCommonInfo->GetJobInfo());
+
+    string jobId = GetParentJobId();
+    string subJobId = GetSubJobId();
+    std::shared_ptr<void> defer(nullptr, [&](...) {
+        ChannelManager::getInstance().removeSubJob(jobId, subJobId);
+        INFOLOG("remove subJob from map, jobId: %s, subJobId: %s", jobId.c_str(), subJobId.c_str());
+    });
+
     if (GetExecuteSubJobType() != Module::SUCCESS) {
         ReportJobDetails(make_tuple(JobLogLevel::TASK_LOG_ERROR, SubJobStatus::FAILED, PROGRESS100));
         HCP_Log(ERR, MODULE) << "Get execute SubJobType failed, jobId: " << m_restoreJobInfo->jobId << HCPENDLOG;
@@ -172,6 +206,13 @@ int HostRestore::ExecuteSubJob()
         }
         ReportJobDetailsWithLabelAndErrcode(make_tuple(JobLogLevel::TASK_LOG_ERROR, SubJobStatus::FAILED, PROGRESS100),
             "nas_plugin_hetro_restore_data_fail_label", errCode);
+#ifdef __linux__
+        OsRestoreInfo config{};
+        OsRestore osRestoreTask(config);
+        if (osRestoreTask.CleanFstabAndMountAfterFailed() != Module::SUCCESS) {
+            ERRLOG("osRestoreTask CleanFstabAndMountAfterFailed process failed ");
+        }
+#endif
         HCP_Log(ERR, MODULE) << "Restore ExecuteSubJob failed jobId: " << m_restoreJobInfo->jobId << HCPENDLOG;
     } else {
         ReportJobDetails(make_tuple(JobLogLevel::TASK_LOG_INFO, SubJobStatus::COMPLETED, PROGRESS100));
@@ -197,12 +238,71 @@ int HostRestore::PostJob()
     return ret;
 }
 
-int HostRestore::PrerequisiteJobInner() const
+int HostRestore::PrerequisiteJobInner()
 {
     HCP_Log(DEBUG, MODULE) << "prerequisite sub task, task id is " << m_restoreJobInfo->jobId << HCPENDLOG;
+    RestoreAdvancedparamters restoreAdvancedparamters;
+    if (!Module::JsonHelper::JsonStringToStruct(m_restoreJobInfo->extendInfo, restoreAdvancedparamters)) {
+        HCP_Log(ERR, MODULE) << "Convert to RestoreAdvancedparamters json failed." << HCPENDLOG;
+        return Module::FAILED;
+    }
+#ifdef __linux__
+    INFOLOG("restoreAdvancedparamters.isOSRestore == %s", restoreAdvancedparamters.isOSRestore.c_str());
+    INFOLOG("restoreAdvancedparamters.rebootSystemAfterRestore == %s",
+        restoreAdvancedparamters.rebootSystemAfterRestore.c_str());
+
+    if (restoreAdvancedparamters.isOSRestore == "true") {
+        if (!CheckBMRCompatible()) {
+            ReportJobLabel(JobLogLevel::TASK_LOG_ERROR, "file_plugin_prerequisitejob_checkBMRcompatible_fail_label");
+            return Module::FAILED;
+        }
+        ReportJobLabel(JobLogLevel::TASK_LOG_INFO, "file_plugin_prerequisitejob_checkBMRcompatible_success_label");
+    }
+#endif
     PluginUtils::CreateDirectory(m_failureRecordRoot);
     return Module::SUCCESS;
 }
+
+#ifdef __linux__
+bool HostRestore::CheckBMRCompatible()
+{
+    INFOLOG("Enter CheckBMRCompatible");
+    m_numberCopies =  m_restoreJobInfo->copies.size();
+    int ret = Module::SUCCESS;
+    if (m_aggregateRestore) {
+        ret = GetRepoInfoForAggregate();
+    } else {
+        ret = GetRepoInfo();
+    }
+    if (ret != Module::SUCCESS) {
+        ERRLOG("failed to get Repo info, job id is %s", m_restoreJobInfo->jobId.c_str());
+        return false;
+    }
+    if (!PluginUtils::IsPathExists(BMR_LIVE_OS_FLAG_PATH)) {
+        ERRLOG("not suppport to perform BMR on non live os, %s not exists", BMR_LIVE_OS_FLAG_PATH.c_str());
+        return false;
+    }
+    // check platform compatible
+    std::vector<std::string> output;
+    std::vector<std::string> errput;
+    if (Module::runShellCmdWithOutput(INFO, MODULE, 0, "uname -m", {}, output, errput) != 0 || output.empty()) {
+        ERRLOG("uknown platform, uname -m exec failed");
+        return false;
+    }
+    std::string currentOsPlatform = output.front();
+    std::string copyOsPlatform = PluginUtils::ReadFileContent(PluginUtils::PathJoin(m_sysInfoPath, "cpu_arch"));
+    const char* trimStr = " \t\n\r\f\v";
+    currentOsPlatform.erase(currentOsPlatform.find_last_not_of(trimStr) + NUMBER1);
+    currentOsPlatform.erase(NUMBER0, currentOsPlatform.find_first_not_of(trimStr));
+    copyOsPlatform.erase(copyOsPlatform.find_last_not_of(trimStr) + NUMBER1);
+    copyOsPlatform.erase(NUMBER0, copyOsPlatform.find_first_not_of(trimStr));
+    if (currentOsPlatform != copyOsPlatform) {
+        ERRLOG("platform missmatch (%s) (%s)", currentOsPlatform.c_str(), copyOsPlatform.c_str());
+        return false;
+    }
+    return true;
+}
+#endif
 
 int HostRestore::GenerateSubJobInner()
 {
@@ -365,6 +465,19 @@ int HostRestore::InitAggregateGenerateJobInfo()
     if (InitialReportSpeedInfo() != Module::SUCCESS) {
         return Module::FAILED;
     }
+#ifdef __linux__
+    RestoreAdvancedparamters restoreAdvancedparamters;
+    if (!Module::JsonHelper::JsonStringToStruct(m_restoreJobInfo->extendInfo, restoreAdvancedparamters)) {
+        HCP_Log(ERR, MODULE) << "Convert to RestoreAdvancedparamters json failed." << HCPENDLOG;
+        return Module::FAILED;
+    }
+    if (restoreAdvancedparamters.isOSRestore == "true") {
+        if (!InitDiskMapInfo() || !OSConfigRestore()) {
+            ERRLOG("OSConfigRestore failed! ");
+            return Module::FAILED;
+        }
+    }
+#endif
     return Module::SUCCESS;
 }
 
@@ -409,6 +522,8 @@ int HostRestore::GetRepoInfoForAggregate()
 #endif
         m_dataFsPathList.push_back(copyDataPath);
         m_metaFsPathList.push_back(copyMetaPath);
+        m_sysInfoPath = PluginUtils::PathJoin(copyMetaPath, "sys_info");
+        m_lvmInfoPath = PluginUtils::PathJoin(m_sysInfoPath, "lvm_info/");
         
         HCP_Log(INFO, MODULE) << "the StorageRepository["<< i << "]: "
                               << " dataPath is: " << copyDataPath
@@ -458,15 +573,15 @@ int HostRestore::RecordControlFilePathForAggregate()
 int HostRestore::CreateSrcDirForAggregate() const
 {
     HCP_Log(DEBUG, MODULE) << "Enter CreateSrcDirForAggregate"<< HCPENDLOG;
-    if (!PluginUtils::CreateDirectory(m_scanContrlFilePath)) {
+    if (!PluginUtils::SafeCreateDirectory(m_scanContrlFilePath, m_cacheFsPath)) {
         return Module::FAILED;
     }
-    if (!PluginUtils::CreateDirectory(m_restoreContrlFilePath)) {
+    if (!PluginUtils::SafeCreateDirectory(m_restoreContrlFilePath, m_cacheFsPath)) {
         return Module::FAILED;
     }
     for (uint32_t i = 0; i < m_numberCopies; ++i) {
         string dcaheAndFcachePath = m_dcacheAndFcachePathForCopies[i];
-        if (!PluginUtils::CreateDirectory(dcaheAndFcachePath)) {
+        if (!PluginUtils::SafeCreateDirectory(dcaheAndFcachePath, m_cacheFsPath)) {
             return Module::FAILED;
         }
     }
@@ -670,12 +785,24 @@ int HostRestore::MonitorScannerProgress(int volumeOrder)
         HCP_Log(DEBUG, MODULE) << "Monitoring scanner ....." << HCPENDLOG;
         m_scannerStatus = m_scanner->GetStatus();
         HCP_Log(INFO, MODULE) << "SCANNER_STATUS is : " << static_cast<int>(m_scannerStatus) << HCPENDLOG;
+        if (m_scannerStatus == SCANNER_STATUS::ABORTED) {
+            HCP_Log(WARN, MODULE) << "scaner abort,status is :" << static_cast<int>(m_scannerStatus) << HCPENDLOG;
+            return Module::SUCCESS;
+        }
         if (static_cast<int>(m_scannerStatus) < 0) {
             HCP_Log(ERR, MODULE) << "scaner run failed,status is :" << static_cast<int>(m_scannerStatus) << HCPENDLOG;
             break;
         }
         if (m_scannerStatus == SCANNER_STATUS::COMPLETED) {
             return Module::SUCCESS;
+        }
+
+        if (IsAbortJob()) {
+            HCP_Log(INFO, MODULE) << "Scanner - Abort is invocked for taskid: " << m_jobId
+                << ", subtaskid: " << m_jobId << HCPENDLOG;
+            if (SCANNER_STATUS::SUCCESS != m_scanner->Abort()) {
+                WARNLOG("Scanner Abort is failed");
+            }
         }
         ReportJobDetails(make_tuple(JobLogLevel::type::TASK_LOG_INFO, SubJobStatus::RUNNING, PROGRESS0));
         Module::SleepFor(std::chrono::seconds(SLEEP_TEN_SECONDS));
@@ -739,11 +866,34 @@ int HostRestore::ExecuteSubJobInner()
 int HostRestore::PostJobInner()
 {
     HCP_Log(DEBUG, MODULE) << "Post sub task, task id is " << m_restoreJobInfo->jobId << HCPENDLOG;
+    RestoreAdvancedparamters restoreAdvancedparamters;
+    if (!Module::JsonHelper::JsonStringToStruct(m_restoreJobInfo->extendInfo, restoreAdvancedparamters)) {
+        HCP_Log(ERR, MODULE) << "Convert to RestoreAdvancedparamters json failed." << HCPENDLOG;
+        return Module::FAILED;
+    }
     MergeBackupFailureRecords();
     GetCacheRepositoryPath();
     DeleteReportSpeedInfo();
     DeleteSrcDirForRestore();  // 删除子任务的
     ReportJobDetails(make_tuple(JobLogLevel::type::TASK_LOG_INFO, SubJobStatus::COMPLETED, PROGRESS100));
+#ifdef __linux__
+    if (restoreAdvancedparamters.isOSRestore == "true") {
+        std::string bmrSucceedFlagFilePath = PluginUtils::PathJoin("/tmp", m_restoreJobInfo->jobId + BMR_SUCCEED_FLAG_SUFFIX);
+        INFOLOG("After-RebootSystem's bmrSucceedFlagFilePath: %s", bmrSucceedFlagFilePath.c_str());
+        if (!PluginUtils::IsPathExists(bmrSucceedFlagFilePath)) {
+            WARNLOG("succeed flag %s not detected, BMR fail", bmrSucceedFlagFilePath.c_str());
+        } else if (restoreAdvancedparamters.rebootSystemAfterRestore == "true") {
+            OsRestoreInfo config{};
+            config.sysInfoPath = m_sysInfoPath;
+            config.jobId = m_restoreJobInfo->jobId;
+            OsRestore rebootTask(config);
+            if (!rebootTask.RebootSystem()) {
+                ERRLOG("rebootTask.RebootSystem failed. ");
+                return Module::FAILED;
+            }
+        }
+    }
+#endif
     return Module::SUCCESS;
 }
 
@@ -753,10 +903,24 @@ int HostRestore::InitGenerateJobInfo()
         HCP_Log(ERR, MODULE) << "failed to get Repo info, job id is " << m_restoreJobInfo->jobId << HCPENDLOG;
         return Module::FAILED;
     }
+
     HCP_Log(DEBUG, MODULE) << "Enter InitJobInfo, job id is " << m_restoreJobInfo->jobId << HCPENDLOG;
     m_scanContrlFilePath = PluginUtils::PathJoin(m_cacheFsPath, m_restoreJobInfo->jobId, "scan", "ctrl");
     m_restoreContrlFilePath = PluginUtils::PathJoin(m_cacheFsPath, m_restoreJobInfo->jobId, "restore", "ctrl");
     m_restoreMetaPath = PluginUtils::PathJoin(m_cacheFsPath, m_restoreJobInfo->jobId, "all_meta", "0");
+#ifdef __linux__
+    RestoreAdvancedparamters restoreAdvancedparamters;
+    if (!Module::JsonHelper::JsonStringToStruct(m_restoreJobInfo->extendInfo, restoreAdvancedparamters)) {
+        HCP_Log(ERR, MODULE) << "Convert to RestoreAdvancedparamters json failed." << HCPENDLOG;
+        return Module::FAILED;
+    }
+    if (restoreAdvancedparamters.isOSRestore == "true") {
+        if (!InitDiskMapInfo() || !OSConfigRestore()) {
+            ERRLOG("OSConfigRestore failed! ");
+            return Module::FAILED;
+        }
+    }
+#endif
     // 如果扫描重新下发，跳过创建目录和解压阶段
     CheckScanRedo();
     if (!m_scanRedo) {
@@ -779,6 +943,87 @@ int HostRestore::InitGenerateJobInfo()
     }
     return Module::SUCCESS;
 }
+
+#ifdef __linux__
+bool HostRestore::InitDiskMapInfo()
+{
+    std::string extJsonString = m_restoreJobInfo->extendInfo;
+    INFOLOG("Extend info json string: %s", extJsonString.c_str());
+    Json::Value value;
+    if (!Module::JsonHelper::JsonStringToJsonValue(extJsonString, value)) {
+        ERRLOG("Convert to extJsonValue failed.");
+        return false;
+    }
+    if (!(value.isObject() && value.isMember("diskMap") && value["diskMap"].isString())) {
+        ERRLOG("json change failed");
+        return false;
+    }
+    std::string DiskMapInfoSet = value["diskMap"].asString();
+    if (!Module::JsonHelper::JsonStringToJsonValue(DiskMapInfoSet, value)) {
+        ERRLOG("diskMapJsonString change failed");
+        return false;
+    }
+    for (auto val : value) {
+        DiskMapInfo diskMapInfo;
+        if (!Module::JsonHelper::JsonValueToStruct(val, diskMapInfo)) {
+            ERRLOG("Json change failed");
+            continue;
+        }
+        INFOLOG("Diskmap info : sourceDiskName %s, sourceDiskSize %llu, targetDiskName %s, targetDiskSize %llu",
+            diskMapInfo.sourceDiskName.c_str(),
+            diskMapInfo.sourceDiskSize,
+            diskMapInfo.targetDiskName.c_str(),
+            diskMapInfo.targetDiskSize);
+        m_diskMapInfoSet.push_back(diskMapInfo);
+    }
+    return true;
+}
+#endif
+
+#ifdef __linux__
+bool HostRestore::OSConfigRestore()
+{
+    OsRestoreInfo config{};
+    config.sysInfoPath = m_sysInfoPath;
+    config.jobId = m_restoreJobInfo->jobId;
+    OsRestore osRestoreTask(config);
+    if (osRestoreTask.CleanFstabAndMountAfterFailed() != Module::SUCCESS) {
+        ERRLOG("osRestoreTask CleanFstabAndMountAfterFailed process failed ");
+    }
+    INFOLOG("Enter cleaning residual lvm pv/vg/lv");
+    std::vector<std::string> output;
+    std::vector<std::string> errput;
+    if (!PluginUtils::IsPathExists(LVS_COMMAND_PATH)) {
+        INFOLOG("not lvm environment, %s not exists, skip.", LVS_COMMAND_PATH.c_str());
+        return true;
+    }
+    std::string cmd = R"(lvs --noheadings | awk '{print "/dev/"$2"/"$1}' | xargs -i lvremove -f {}; )"
+        R"(vgs --noheadings | awk '{print $1}' | xargs -i vgremove -f {}; )"
+        R"(pvs --noheadings | awk '{print $1}' | xargs -i pvremove -f {})";
+    if (Module::runShellCmdWithOutput(INFO, MODULE, 0, cmd, {}, output, errput) != 0) {
+        WARNLOG("cleaning residual lvm pv/vg/lv failed, cmd:%s", cmd.c_str());
+    }
+    INFOLOG("Exit cleaning residual lvm pv/vg/lv");
+    // dmsetup remove_all
+    cmd = "dmsetup remove_all";
+    INFOLOG("dmsetup remove_all");
+    if (Module::runShellCmdWithOutput(INFO, MODULE, 0, cmd, {}, output, errput) != 0) {
+        WARNLOG("dmsetup remove_all failed, cmd:%s", cmd.c_str());
+    }
+    INFOLOG("+++ meta path:%s", m_metaFsPath.c_str());
+
+    osRestoreTask.SetDiskMap(m_diskMapInfoSet);
+    INFOLOG("OSRecovery DiskMapping Success!");
+
+    if (!osRestoreTask.Start()) {
+        ERRLOG("OSRecovery Start Failed!");
+        ReportJobLabel(JobLogLevel::TASK_LOG_ERROR, "file_plugin_generatesubjob_OSRecovery_fail_label");
+        return false;
+    }
+    ReportJobLabel(JobLogLevel::TASK_LOG_INFO, "file_plugin_generatesubjob_OSRecovery_success_label");
+    return true;
+}
+#endif
 
 int HostRestore::GetExecuteSubJobType()
 {
@@ -834,6 +1079,24 @@ int HostRestore::FinalReportStatictisInfo()
         HCP_Log(ERR, MODULE) << "failed to get Repo info, job id is " << m_restoreJobInfo->jobId << HCPENDLOG;
         return Module::FAILED;
     }
+#ifdef __linux__
+    RestoreAdvancedparamters restoreAdvancedparamters;
+    if (!Module::JsonHelper::JsonStringToStruct(m_restoreJobInfo->extendInfo, restoreAdvancedparamters)) {
+        HCP_Log(ERR, MODULE) << "Convert to RestoreAdvancedparamters json failed." << HCPENDLOG;
+        return Module::FAILED;
+    }
+    if (restoreAdvancedparamters.isOSRestore == "true") {
+        OsRestoreInfo config{};
+        config.sysInfoPath = m_sysInfoPath;
+        config.jobId = m_restoreJobInfo->jobId;
+        OsRestore osRestoreTask(config);
+        if (!osRestoreTask.OSRestoreRepairGrub()) {
+            ReportJobLabel(JobLogLevel::TASK_LOG_ERROR, "file_plugin_executesubjob_repair_grub_fail_label");
+            return Module::FAILED;
+        }
+        ReportJobLabel(JobLogLevel::TASK_LOG_INFO, "file_plugin_executesubjob_repair_grub_success_label");
+    }
+#endif
     return ReportRestoreCompletionStatus();
 }
 
@@ -850,16 +1113,16 @@ int HostRestore::ReportRestoreCompletionStatus()
     if (mainBackupStats.noOfDirFailed != 0 || mainBackupStats.noOfFilesFailed != 0) {
         ReportJobMoreDetails(JobLogLevel::TASK_LOG_WARNING, SubJobStatus::RUNNING, PROGRESS0,
                              "file_plugin_host_restore_data_completed_with_warn_label",
-                             to_string(mainBackupStats.noOfDirCopied),
-                             to_string(mainBackupStats.noOfFilesCopied),
+                             to_string(mainBackupStats.noOfDirCopied + mainBackupStats.skipDirCnt),
+                             to_string(mainBackupStats.noOfFilesCopied + mainBackupStats.skipFileCnt + mainBackupStats.noOfFilesWriteSkip),
                              PluginUtils::FormatCapacity(mainBackupStats.noOfBytesCopied),
                              to_string(mainBackupStats.noOfDirFailed),
                              to_string(mainBackupStats.noOfFilesFailed));
     } else {
         ReportJobMoreDetails(JobLogLevel::TASK_LOG_INFO, SubJobStatus::RUNNING, PROGRESS0,
                              "file_plugin_host_restore_data_completed_label",
-                             to_string(mainBackupStats.noOfDirCopied),
-                             to_string(mainBackupStats.noOfFilesCopied),
+                             to_string(mainBackupStats.noOfDirCopied + mainBackupStats.skipDirCnt),
+                             to_string(mainBackupStats.noOfFilesCopied + mainBackupStats.skipFileCnt + mainBackupStats.noOfFilesWriteSkip),
                              PluginUtils::FormatCapacity(mainBackupStats.noOfBytesCopied));
     }
     return Module::SUCCESS;
@@ -888,12 +1151,25 @@ int HostRestore::InitExecuteJobInfo()
         return Module::FAILED;
     }
 
-    m_restorePath = m_restoreJobInfo->targetObject.name;
+    RestoreAdvancedparamters restoreAdvancedparamters;
+    if (!Module::JsonHelper::JsonStringToStruct(m_restoreJobInfo->extendInfo, restoreAdvancedparamters)) {
+        HCP_Log(ERR, MODULE) << "Convert to RestoreAdvancedparamters json failed." << HCPENDLOG;
+        return Module::FAILED;
+    }
+    if (restoreAdvancedparamters.isOSRestore == "true") {
+        m_restorePath = "/bmr_os_restore";
+        if (!PluginUtils::CreateDirectory(m_restorePath)) {
+            return Module::FAILED;
+        }
+    } else {
+        m_restorePath = m_restoreJobInfo->targetObject.name;
+    }
 #ifdef WIN32
     if (m_restorePath == "/") {
         m_restorePath = "";
     }
 #endif
+
     HCP_Log(INFO, MODULE) << "m_restorePath is: " << m_restorePath << HCPENDLOG;
     return Module::SUCCESS;
 }
@@ -950,9 +1226,13 @@ int HostRestore::GetRepoInfo()
     m_dataFsPath = m_dataFs.path[(m_numberOfSubTask++) % m_dataFs.path.size()];
     m_metaFsPath = m_metaFs.path[0];
     m_scanStatusPath = PluginUtils::PathJoin(m_cacheFsPath, SCANNER_STAT);
+    m_backupCopyInfoFilePath = PluginUtils::PathJoin(m_metaFsPath, BACKUP_COPY_METAFILE);
     m_metaOriPath = PluginUtils::PathJoin(m_cacheFsPath, m_restoreJobInfo->jobId, "all_meta");
-    INFOLOG("cachePath: %s, dataPath: %s, metaPath: %s, scanStatusPath: %s", m_cacheFsPath.c_str(),
-        m_dataFsPath.c_str(), m_metaFsPath.c_str(), m_scanStatusPath.c_str());
+    m_sysInfoPath = PluginUtils::PathJoin(m_metaFsPath, "sys_info");
+    m_lvmInfoPath = PluginUtils::PathJoin(m_sysInfoPath, "lvm_info/");
+    INFOLOG("cachePath: %s, dataPath: %s, metaPath: %s, scanStatusPath: %s, m_metaOriPath: %s, m_sysInfoPath: %s",
+        m_cacheFsPath.c_str(), m_dataFsPath.c_str(), m_metaFsPath.c_str(), m_scanStatusPath.c_str(),
+        m_metaOriPath.c_str(), m_sysInfoPath.c_str());
 
     HCP_Log(INFO, MODULE) << "Exit GetRepoInfo" << HCPENDLOG;
     return Module::SUCCESS;
@@ -1037,13 +1317,13 @@ int HostRestore::UntarWholePackage(string zipPath, string targetPath) const
 int HostRestore::CreateSrcDir() const
 {
     HCP_Log(DEBUG, MODULE) << "Enter CreateSrcDir." << HCPENDLOG;
-    if (!PluginUtils::CreateDirectory(m_scanContrlFilePath)) {
+    if (!PluginUtils::SafeCreateDirectory(m_scanContrlFilePath, m_cacheFsPath)) {
         return Module::FAILED;
     }
-    if (!PluginUtils::CreateDirectory(m_restoreContrlFilePath)) {
+    if (!PluginUtils::SafeCreateDirectory(m_restoreContrlFilePath, m_cacheFsPath)) {
         return Module::FAILED;
     }
-    if (!PluginUtils::CreateDirectory(m_restoreMetaPath)) {
+    if (!PluginUtils::SafeCreateDirectory(m_restoreMetaPath, m_cacheFsPath)) {
         return Module::FAILED;
     }
     HCP_Log(DEBUG, MODULE) << "create scanContrlFilePath and restoreContrlFilePath success." << HCPENDLOG;
@@ -1063,8 +1343,10 @@ int HostRestore::GetMetaZipDirList(string targetPath)
     for (size_t i = 0; i < tempMetaZipDirList.size(); ++i) {
         string metaZipPath = tempMetaZipDirList[i];
         INFOLOG("Get meta zip path: %s", metaZipPath.c_str());
+        // 全量恢复这里不从failed_volume里拿是因为扫描的metafile是全量的， failed_volume是sourcePrimaryVolume的子集
+        // 增量恢复是直接使用备份的时候的lastCtrl, 所以需要把failed_volume也加进来
         if (metaZipPath.find("Volume") != string::npos) {
-            if (metaZipPath.find("failed") != string::npos) {
+            if (!m_incrementalRestore && metaZipPath.find("failed") != string::npos) {
                 INFOLOG("skip failedVolume.");
                 continue;
             }
@@ -1217,7 +1499,7 @@ void HostRestore::FillScanConfig(ScanConfig& scanConfig, int volumeOrder)
     scanConfig.curDcachePath  = m_currentMetaZipDirFullPathList[volumeOrder];
     scanConfig.metaPathForCtrlFiles = PluginUtils::PathJoin(m_scanContrlFilePath, GetDiffDir(scanConfig.curDcachePath));
 
-    PluginUtils::CreateDirectory(scanConfig.metaPathForCtrlFiles);
+    PluginUtils::SafeCreateDirectory(scanConfig.metaPathForCtrlFiles, m_cacheFsPath);
     
     scanConfig.scanType = ScanJobType::CONTROL_GEN;
     scanConfig.scanIO = IOEngine::DEFAULT;
@@ -1359,6 +1641,13 @@ int HostRestore::GenerateRestoreExecuteSubJob(vector<string> contrlFileList, boo
             HCP_Log(ERR, MODULE) << "Init subJOb failed by contrlFileFullPath" << HCPENDLOG;
             return Module::FAILED;
         }
+
+        if (IsAbortJob()) {
+            HCP_Log(INFO, MODULE) << "Backup - Abort is invocked for taskid: " << m_jobId
+                << ", subtaskid: " << m_jobId << HCPENDLOG;
+            return Module::SUCCESS;
+        }
+
         subJobList.push_back(subJob);
         TempContrlFileList.push_back(contrlFileFullPath);
 
@@ -1450,7 +1739,7 @@ void HostRestore::GetSubJobInfoByFileName(const string &fileName, string &subTas
         subTaskType = SUBJOB_TYPE_DATACOPY_COPY_PHASE;
         subTaskPrio = SUBJOB_TYPE_DATACOPY_COPY_PHASE_PRIO;
     } else {
-        HCP_Log(ERR, MODULE) << "Get SubJob Type By FileName failed" << HCPENDLOG;
+        HCP_Log(WARN, MODULE) << "Get SubJob Type By FileName failed" << HCPENDLOG;
     }
     if (m_aggregateRestore) {
         subTaskPrio = m_orderNumberForCopies * SUBJOB_TYPE_AGGREGATE_BASE_PRIO + subTaskPrio;
@@ -1624,6 +1913,15 @@ int HostRestore::StartToRestore()
 }
 
 #ifdef WIN32
+bool HostRestore::ReadBackupCopyInfo(HostBackupCopy& hostBackupCopy)
+{
+    if (!JsonFileTool::ReadFromFile(m_backupCopyInfoFilePath, hostBackupCopy)) {
+        WARNLOG("Read Backup Copy meta info from file(%s) failed.", m_backupCopyInfoFilePath.c_str());
+        return false;
+    }
+    return true;
+}
+
 void HostRestore::FillRestoreConfigForWin32(
     BackupParams& backupParams,
     const std::string& resourcePath,
@@ -1651,10 +1949,10 @@ void HostRestore::FillRestoreConfigForPosix(
     backupParams.srcEngine = BackupIOEngine::POSIX;
     backupParams.dstEngine = BackupIOEngine::POSIX;
     HostBackupAdvanceParams posixBackupAdvanceParams {};
-    posixBackupAdvanceParams.threadNum = Module::ConfigReader::getInt("FilePluginConfig", "PosixReaderThreadNum");
-    posixBackupAdvanceParams.maxMemory = Module::ConfigReader::getInt("FilePluginConfig", "PosixMaxMemory");
+    posixBackupAdvanceParams.threadNum = Module::ConfigReader::getInt("FilePluginConfig", "HostReaderThreadNum");
+    posixBackupAdvanceParams.maxMemory = Module::ConfigReader::getInt("FilePluginConfig", "HostMaxMemory");
     backupParams.srcAdvParams = make_shared<HostBackupAdvanceParams>(posixBackupAdvanceParams);
-    posixBackupAdvanceParams.threadNum = Module::ConfigReader::getInt("FilePluginConfig", "PosixWriterThreadNum");
+    posixBackupAdvanceParams.threadNum = Module::ConfigReader::getInt("FilePluginConfig", "HostWriterThreadNum");
     backupParams.dstAdvParams = make_shared<HostBackupAdvanceParams>(posixBackupAdvanceParams);
     backupParams.scanAdvParams.metaFilePath = m_subJobPathsInfo.dcacheAndFcachePath;
     dynamic_pointer_cast<HostBackupAdvanceParams>(backupParams.srcAdvParams)->dataPath = resourcePath;
@@ -1686,29 +1984,7 @@ void HostRestore::FillRestoreConfig(BackupParams& backupParams)
 #endif
 
     CommonParams commonParams {};
-#ifdef WIN32
-    commonParams.writeExtendAttribute = false;
-#else
-    commonParams.writeExtendAttribute = true;
-#endif
-    commonParams.metaPath = m_subJobPathsInfo.metaFilePath;
-    commonParams.jobId = m_restoreJobInfo->jobId;
-    commonParams.subJobId = m_subJobInfo->subJobId;
-    commonParams.reqID = subJobRequestId;
-    commonParams.failureRecordRootPath = m_failureRecordRoot;
-    commonParams.restoreReplacePolicy = m_coveragePolicy;
-    commonParams.skipFailure = true;
-    commonParams.writeSparseFile = true; // if have sparse info in metafile then restore with sparse way
-    commonParams.writeMeta = true;
-    commonParams.writeAcl = true;
-
-#ifdef SOLARIS
-    if (!OsIdentifier::CheckSolarisVersionCompatible(m_metaFsPath)) {
-        WARNLOG("copy imcompatible, disable writeAcl");
-        commonParams.writeAcl = false;
-    }
-#endif
-
+    FillCommonParams(commonParams, subJobRequestId);
     backupParams.commonParams = commonParams;
     HCP_Log(INFO, MODULE) << "resourcePath is: " << resourcePath <<
         "destinationPath is:" << destinationPath <<
@@ -1729,7 +2005,7 @@ int HostRestore::SpecialDealRestoreConfig(BackupParams& backupParams)
         backupParams.commonParams.maxAggregateFileSize = m_maxSizeAfterAggregate;
         backupParams.commonParams.maxFileSizeToAggregate = m_maxSizeToAggregate;
         backupParams.commonParams.aggregateThreadNum =
-            Module::ConfigReader::getInt("FilePluginConfig", "PosixAggregatorThreadNum");
+            Module::ConfigReader::getInt("FilePluginConfig", "HostAggregatorThreadNum");
         HCP_Log(DEBUG, MODULE) << "commonParams aggregateThreadNum is: "
                           << backupParams.commonParams.aggregateThreadNum << HCPENDLOG;
     } else {
@@ -1764,7 +2040,7 @@ void HostRestore::ReportCopyPhaseStart()
     hostTaskInfo.startTime = PluginUtils::GetCurrentTimeInSeconds();
     m_startTime = hostTaskInfo.startTime;  // set start time to calculate speed
     if (!ShareResourceManager::GetInstance().UpdateResource(ShareResourceType::GENERAL, speedId, hostTaskInfo)) {
-        ERRLOG("Update hostTaskInfo failed.");
+        WARNLOG("Update hostTaskInfo failed.");
     }
     ShareResourceManager::GetInstance().Signal(ShareResourceType::GENERAL, speedId);
 }
@@ -1785,8 +2061,8 @@ HostCommonService::MONITOR_BACKUP_RES_TYPE HostRestore::MonitorRestoreJobStatus(
             INFOLOG("backup statistics last update time: %ld", statLastUpdateTime);
             m_backupStats = tmpStats;
         } else if ((m_backupStatus == BackupPhaseStatus::INPROGRESS) &&
-            (tmpStats.noOfFilesCopied + tmpStats.noOfFilesFailed != tmpStats.noOfFilesToBackup) &&
-            (PluginUtils::GetCurrentTimeInSeconds() - statLastUpdateTime >
+            (tmpStats.noOfFilesToBackup == 0 || (tmpStats.noOfFilesCopied + tmpStats.noOfFilesFailed !=
+            tmpStats.noOfFilesToBackup)) && (PluginUtils::GetCurrentTimeInSeconds() - statLastUpdateTime >
             Module::ConfigReader::getInt("FilePluginConfig", "BACKUP_STUCK_TIME"))) {
             UpdateSubBackupStats(true);
             HandleMonitorStuck(jobStatus);
@@ -1799,7 +2075,7 @@ HostCommonService::MONITOR_BACKUP_RES_TYPE HostRestore::MonitorRestoreJobStatus(
             HCP_Log(INFO, MODULE) << "Backup - Abort is invocked for taskid: " << m_jobId
                 << ", subtaskid: " << m_jobId << HCPENDLOG;
             if (BackupRetCode::SUCCESS != m_backup->Abort()) {
-                HCP_Log(ERR, MODULE) << "backup Abort is failed" << HCPENDLOG;
+                HCP_Log(WARN, MODULE) << "backup Abort is failed" << HCPENDLOG;
             }
         }
         ReportJobDetails(make_tuple(JobLogLevel::TASK_LOG_INFO, SubJobStatus::RUNNING, PROGRESS0));
@@ -1906,7 +2182,7 @@ bool HostRestore::CalcuMainBackupStats(BackupStatistic& mainBackupStats) const
                 m_restoreJobInfo->jobId.c_str(), path.c_str(), subJobId.c_str());
             return false;
         }
-        mainBackupStats = CalcuSumStructBackupStatistic(mainBackupStats, subStats);
+        mainBackupStats = mainBackupStats + subStats;
     }
     return true;
 }
@@ -2071,5 +2347,49 @@ inline bool HostRestore::GetIgnoreFailed()
     int ig = Module::ConfigReader::getInt("FilePluginConfig", "RESTORE_SUBJOB_IGNORE_FAILED");
     bool ignoreFailed = ig > 0 ? true : false;
     return ignoreFailed;
+}
+
+void HostRestore::FillCommonParams(CommonParams &commonParams, size_t subJobRequestId)
+{
+#ifdef WIN32
+    commonParams.writeExtendAttribute = false;
+#else
+    commonParams.writeExtendAttribute = true;
+#endif
+    commonParams.metaPath = m_subJobPathsInfo.metaFilePath;
+    commonParams.jobId = m_restoreJobInfo->jobId;
+    commonParams.subJobId = m_subJobInfo->subJobId;
+    commonParams.reqID = subJobRequestId;
+    commonParams.failureRecordRootPath = m_failureRecordRoot;
+    commonParams.restoreReplacePolicy = m_coveragePolicy;
+    commonParams.skipFailure = true;
+    commonParams.writeSparseFile = true; // if have sparse info in metafile then restore with sparse way
+    commonParams.writeMeta = true;
+    commonParams.writeAcl = true;
+    commonParams.discardReadError = true;
+#ifdef WIN32
+    HostBackupCopy hostBackupCopy;
+    ReadBackupCopyInfo(hostBackupCopy);
+    if (hostBackupCopy.m_adsmetaFileVersion == 0) {
+        commonParams.adsProcessType = AdsProcessType::ADS_PROCESS_TYPE_FROM_BACKUP;
+    }
+    INFOLOG("backupParams.commonParams.adsProcessType is:%d", commonParams.adsProcessType);
+#endif
+    Json::Value params;
+    if (Module::JsonHelper::JsonStringToJsonValue(m_restoreJobInfo->extendInfo, params) &&
+        params.isMember("trimPrefix")) {
+        commonParams.trimWriterPrefix = params["trimPrefix"].asString();
+    }
+    if (Module::ConfigReader::getInt("FilePluginConfig", "BACKUP_READ_FAILED_DISCARD") == 0) {
+        WARNLOG("discard read error option enabled! jobId %s, subJobId %s", m_jobId.c_str(), m_subJobId.c_str());
+        commonParams.discardReadError = false;
+    }
+
+#ifdef SOLARIS
+    if (!OsIdentifier::CheckSolarisVersionCompatible(m_metaFsPath)) {
+        WARNLOG("copy imcompatible, disable writeAcl");
+        commonParams.writeAcl = false;
+    }
+#endif
 }
 }

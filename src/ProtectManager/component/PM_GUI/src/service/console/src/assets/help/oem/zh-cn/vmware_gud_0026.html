@@ -1,0 +1,87 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤4：获取VMware证书">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="vmware_gud_0018.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="vmware_gud_0026">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤4：获取VMware证书</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="vmware_gud_0026"></a><a name="vmware_gud_0026"></a>
+  <h1 class="topictitle1">步骤4：获取VMware证书</h1>
+  <div>
+   <p>注册VMware待保护环境时，建议导入待保护环境的CA证书，否则系统将无法验证其所访问设备的信息，安全性存在风险。本节介绍如何获取VMware待保护环境的CA证书。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ul>
+     <li>方式1：向VMware管理员获取。</li>
+     <li>方式2：自行下载：
+      <ol>
+       <li>当待保护环境为独立ESXi主机时，请执行本步骤，查看ESXi主机是否被vCenter Server管理过。否则，请跳过本步骤。
+        <div class="p">
+         操作以ESXi 8.0版本为例进行说明：
+         <ol type="a">
+          <li>使用浏览器，登录ESXi。<p>登录地址：<strong>https://</strong><em>ESXi的管理IP地址</em></p></li>
+          <li>在<span class="uicontrol">“主机 &gt; 管理 &gt; 安全和用户 &gt; 证书”</span>中查看<span class="uicontrol">“颁发者”</span>参数。<pre class="screen">OU=VMware Engineering,O=<strong>vcenter21.hw.com</strong>,ST=California,C=US,DC=local,DC=vsphere,CN=CA</pre>
+           <ul>
+            <li>如果<span class="uicontrol">“颁发者”</span>参数存在vCenter Server的域名（如上述示例中vCenter Server的域名为<strong>vcenter21.hw.com</strong>），表示ESXi主机被vCenter Server管理过，则ESXi主机的证书由该vCenter Server颁发，请继续执行<a href="#vmware_gud_0026__li2083185225310">2</a>。</li>
+            <li>如果<span class="uicontrol">“颁发者”</span>参数不存在vCenter Server的域名，表示ESXi主机从未被vCenter Server管理过，则请向VMware管理员获取CA证书，无需执行后续步骤。</li>
+           </ul></li>
+         </ol>
+        </div></li>
+       <li id="vmware_gud_0026__li2083185225310"><a name="vmware_gud_0026__li2083185225310"></a><a name="li2083185225310"></a>使用浏览器，打开vCenter Server登录地址。<p><a name="vmware_gud_0026__li2083185225310"></a><a name="li2083185225310"></a>登录地址：<strong>https://</strong><em>vCenter Server的域名</em></p></li>
+       <li>在界面右侧单击“下载受信任的根CA证书”，下载证书压缩包至本地任意目录。<p>如果下载时浏览器出现乱码的情况，建议：</p>
+        <ul>
+         <li>方式1：更换其他浏览器（如：Internet Explorer）尝试下载。</li>
+         <li>方式2：在乱码页面空白处单击鼠标右键，在弹出的菜单中选择“另存为”，将证书压缩包保存至本地。</li>
+        </ul></li>
+       <li>解压证书压缩包，参考以下步骤修改证书文件的后缀：
+        <ul>
+         <li>VMware vSphere 6.0版本，查找到<span class="uicontrol">“*.0”</span>格式的证书文件，修改证书格式为<span class="uicontrol">“.0.pem”</span>。</li>
+         <li>VMware vSphere 6.5，6.7，7.<em>x</em>或8.0版本，查找到<span class="uicontrol">“*.crt”</span>格式的证书文件，修改证书格式为<span class="uicontrol">“.pem”</span>。
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <p>当存在多个<span class="uicontrol">“*.crt”</span>文件时，双击打开<span class="uicontrol">“*.crt”</span>文件，证书信息中<span class="uicontrol">“颁发给”</span>和<span class="uicontrol">“颁发者”</span>均为<span class="uicontrol">“CA”</span>时，即为要查找的<span class="uicontrol">“*.crt”</span>证书文件。</p>
+           </div>
+          </div></li>
+        </ul></li>
+      </ol></li>
+    </ul>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="vmware_gud_0018.html">备份VMware虚拟机</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

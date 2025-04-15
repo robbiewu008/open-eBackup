@@ -59,6 +59,15 @@ public:
         return this->m_jobHandle;
     };
 
+    void SetJobHandle(std::shared_ptr<JobHandle> jobHandle)
+    {
+        if (jobHandle == nullptr) {
+            ERRLOG("JobHandle is null.");
+            return;
+        }
+        m_jobHandle = jobHandle;
+    };
+
     /**
      *  @brief 任务的前置钩子，用于不同引擎的差异化处理
      *
@@ -349,6 +358,30 @@ public:
     }
 
     /**
+     *  @brief 节点是否可执行当前任务
+     *
+     *  @param job [IN]任务参数
+     *  @return 错误码：0 可执行，非0 不可执行
+     */
+    virtual int32_t AllowDelCopyInLocalNode(const AppProtect::DelCopyJob &job, ActionResult& returnValue)
+    {
+        return SUCCESS;
+    }
+
+    /**
+     *  @brief 节点是否可执行当前备份子任务
+     *
+     *  @param job [IN]主任务参数
+     *  @param subJob [IN]子任务参数
+     *  @return 错误码：0 可执行，非0 不可执行
+     */
+    virtual int32_t AllowDelCopySubJobInLocalNode(const AppProtect::DelCopyJob& job,
+        const AppProtect::SubJob& subJob, ActionResult& returnValue)
+    {
+        return SUCCESS;
+    }
+
+    /**
      * @brief 获取指定卷之前创建的所有快照
      *
      * @param volInfo 卷信息
@@ -438,9 +471,14 @@ public:
         m_reportArgs.clear();
     }
 
-    virtual int32_t ActiveSnapConsistency(const SnapshotInfo &m_snapshotInfo)
+    virtual int32_t ActiveSnapConsistency(const SnapshotInfo &m_snapshotInfo, int32_t &erroCode)
     {
         return SUCCESS;
+    }
+
+    virtual void SetLiveMountType(const LivemountType &livemountType)
+    {
+        m_livemountType = livemountType;
     }
 
     virtual void SetXNNEsn(const std::string &esn, const std::string &taskId) final
@@ -498,6 +536,24 @@ public:
     virtual void SetNoTasksArgs(const std::vector<std::string> &argsList)
     {
         m_noTasksArgs = argsList;
+        m_isSetArgs = true;
+    }
+
+    virtual void ThrowPluginException(
+        const int32_t &code = FAILED,
+        const std::string &message = "",
+        const std::vector<std::string> &codeParam = {})
+    {
+        AppProtect::AppProtectPluginException exception;
+        exception.__set_code(code);
+        exception.__set_message(message);
+        exception.__set_codeParams(codeParam);
+        throw exception;
+    }
+
+    virtual bool IfDeleteAllSnapshotWhenFailed()
+    {
+        return false;
     }
 
 protected:
@@ -543,9 +599,11 @@ protected:
     std::vector<std::string> m_reportArgs;
     ReportJobDetailsParam m_reportParam;
     std::vector<std::string> m_noTasksArgs;
+    bool m_isSetArgs { false };
     /* X Series all-in-one Box ESN */
     std::string m_xNNEsn;
     std::string m_snapDescription;
+    LivemountType m_livemountType = LivemountType::UNKNOWN;
 
     std::string m_jobId;
     std::string m_subJobId;

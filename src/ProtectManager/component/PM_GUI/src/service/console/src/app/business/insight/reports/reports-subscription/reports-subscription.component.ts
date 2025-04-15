@@ -1,23 +1,25 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
   Input,
   OnInit,
+  Output,
   TemplateRef,
   ViewChild
 } from '@angular/core';
@@ -27,9 +29,13 @@ import {
   DataMap,
   DataMapService,
   getPermissionMenuItem,
+  hasReportSubscriptionPermission,
   I18NService,
   MODAL_COMMON,
+  ResourceSetApiService,
+  ResourceSetType,
   ScheduleReportService,
+  SYSTEM_TIME,
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -46,9 +52,11 @@ import {
   assign,
   cloneDeep,
   each,
+  filter,
   includes,
   intersection,
   isEmpty,
+  map as _map,
   reject,
   set,
   size,
@@ -66,6 +74,12 @@ import { CreateSubscriptionComponent } from './create-subscription/create-subscr
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
+  @Input() allSelectionMap;
+  @Input() data;
+  @Input() isDetail;
+  @Input() isResourceSet = false;
+  @Output() allSelectChange = new EventEmitter<any>();
+
   name;
   formGroup;
   tableConfig: TableConfig;
@@ -84,7 +98,11 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
     DataMap.Report_Type.recoveryDrillJob.value
   ];
 
-  @Input() activeIndex;
+  timeZone = SYSTEM_TIME.timeZone;
+  isAllSelect = false; // 用来标记是否全选
+  allSelectDisabled = true;
+  buttonLabel = this.i18n.get('system_resourceset_all_select_label');
+
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
   @ViewChild('typeTpl', { static: true })
   typeTpl: TemplateRef<any>;
@@ -102,6 +120,7 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
   emailsTpl: TemplateRef<any>;
   @ViewChild('generatedPlanTpl', { static: true })
   generatedPlanTpl: TemplateRef<any>;
+
   constructor(
     public i18n: I18NService,
     private cdr: ChangeDetectorRef,
@@ -110,6 +129,7 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
     public baseUtilService: BaseUtilService,
     private drawModalService: DrawModalService,
     private batchOperateService: BatchOperateService,
+    private resourceSetService: ResourceSetApiService,
     private warningMessageService: WarningMessageService,
     private scheduleReportService: ScheduleReportService
   ) {}
@@ -119,6 +139,12 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    if (
+      this.isResourceSet &&
+      !!this.allSelectionMap[ResourceSetType.ReportSubscription]?.isAllSelected
+    ) {
+      this.isAllSelect = true;
+    }
     this.initConfig();
   }
 
@@ -144,9 +170,19 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
       delete: {
         id: 'delete',
         disableCheck: data => {
-          return !size(data) || size(data) > 100;
+          return (
+            !size(data) ||
+            size(data) > 100 ||
+            size(
+              filter(data, val => {
+                return hasReportSubscriptionPermission(val);
+              })
+            ) !== size(data)
+          );
         },
-        disabledTips: this.i18n.get('insight_report_delete_tips_label'),
+        disabledTips: this.i18n.get(
+          'insight_report_subscription_delete_tips_label'
+        ),
         label: this.i18n.get('common_delete_label'),
         onClick: data => this.deleteRes(data)
       },
@@ -155,7 +191,14 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
         // permission: OperateItems.Protection,
         label: this.i18n.get('insight_execute_now_label'),
         disableCheck: data => {
-          return size(data) !== 1;
+          return (
+            size(data) !== 1 ||
+            size(
+              filter(data, val => {
+                return hasReportSubscriptionPermission(val);
+              })
+            ) !== size(data)
+          );
         },
         onClick: ([data]) =>
           this.executeTassk(data, 'RunOnceReportTaskUsingGet')
@@ -194,7 +237,7 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
       {
         key: 'externalClusterName',
         name: this.i18n.get('common_data_source_label'),
-        width: 400
+        width: 250
       },
       {
         key: 'timeRange',
@@ -226,12 +269,14 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
       {
         key: 'preExecTime',
         name: this.i18n.get('insight_report_pre_task_time_label'),
-        cellRender: this.preExecTimeTpl
+        cellRender: this.preExecTimeTpl,
+        width: 180
       },
       {
         key: 'nextExecTime',
         name: this.i18n.get('insight_report_next_task_time_label'),
-        cellRender: this.nextExecTimeTpl
+        cellRender: this.nextExecTimeTpl,
+        width: 180
       },
       {
         key: 'operation',
@@ -248,16 +293,22 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
       }
     ];
 
+    if (this.isResourceSet) {
+      cols.pop();
+    }
+
     this.tableConfig = {
       table: {
         autoPolling: CommonConsts.TIME_INTERVAL,
         compareWith: 'policyId',
         columns: cols,
-        rows: {
-          selectionMode: 'multiple',
-          selectionTrigger: 'selector',
-          showSelector: true
-        },
+        rows: this.isDetail
+          ? null
+          : {
+              selectionMode: 'multiple',
+              selectionTrigger: 'selector',
+              showSelector: true
+            },
         colDisplayControl: {
           ignoringColsType: 'hide'
         },
@@ -266,6 +317,12 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
         },
         selectionChange: selection => {
           this.selectionData = selection;
+          if (this.isResourceSet) {
+            set(this.allSelectionMap, ResourceSetType.ReportSubscription, {
+              data: this.selectionData
+            });
+            this.allSelectChange.emit();
+          }
         },
         trackByFn: (index, item) => {
           return item.uuid;
@@ -273,11 +330,36 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
       }
     };
 
+    if (this.isResourceSet) {
+      delete this.tableConfig.table.autoPolling;
+    }
+
     this.optsConfig = getPermissionMenuItem([
       opts.create,
       opts.executeTask,
       opts.delete
     ]);
+  }
+
+  allSelect(turnPage?) {
+    // 用于资源集全选资源
+    const isAllSelected = !!turnPage ? !this.isAllSelect : this.isAllSelect;
+    set(this.allSelectionMap, ResourceSetType.ReportSubscription, {
+      isAllSelected
+    });
+    this.selectionData = isAllSelected ? [...this.tableData.data] : [];
+    each(this.tableData.data, item => {
+      item.disabled = isAllSelected;
+    });
+    this.dataTable.setSelections(cloneDeep(this.selectionData));
+    this.isAllSelect = isAllSelected;
+    this.buttonLabel = this.i18n.get(
+      isAllSelected
+        ? 'system_resourceset_cancel_all_select_label'
+        : 'system_resourceset_all_select_label'
+    );
+    this.allSelectChange.emit();
+    this.cdr.detectChanges();
   }
 
   search() {
@@ -312,6 +394,34 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
   }
 
   formatGeneratedPlan(data) {
+    const timeLabel = this.datePipe.transform(
+      data.execTime,
+      'HH:mm:ss',
+      this.timeZone
+    );
+    return this.i18n.isEn
+      ? this.formatPlanInEnglish(data, timeLabel)
+      : this.formatPlanInOtherLanguages(data, timeLabel);
+  }
+
+  formatPlanInEnglish(data, timeLabel) {
+    switch (data.intervalUnit) {
+      case DataMap.reportGeneratedIntervalUnit.day.value:
+        return `At ${timeLabel} every ${data.execInterval} days`;
+      case DataMap.reportGeneratedIntervalUnit.week.value:
+        return `At ${timeLabel} on ${data.daysOfWeek
+          .map(item => this.dataMapService.getLabel('dayOfWeek', String(item)))
+          .join(', ')} ${this.i18n.get('common_english_of_every_week_label')}`;
+      case DataMap.reportGeneratedIntervalUnit.month.value:
+        return `At ${timeLabel} on days ${data.daysOfMonth.join(
+          ', '
+        )} ${this.i18n.get('common_english_of_every_month_label')}`;
+      default:
+        return '';
+    }
+  }
+
+  formatPlanInOtherLanguages(data, timeLabel) {
     let plan = this.i18n.get('protection_every_label');
     switch (data.intervalUnit) {
       case DataMap.reportGeneratedIntervalUnit.day.value:
@@ -327,8 +437,10 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
           this.i18n.get('common_month_lower_label') +
           data.daysOfMonth.join(',');
         break;
+      default:
+        return '';
     }
-    plan += ' ' + this.datePipe.transform(data.execTime, 'HH:mm:ss');
+    plan += ' ' + timeLabel;
     return plan;
   }
 
@@ -380,7 +492,7 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
 
   private batchDeleteReport(data) {
     this.warningMessageService.create({
-      content: this.i18n.get('insight_report_delete_label'),
+      content: this.i18n.get('insight_delete_report_subscription_label'),
       onOK: () => {
         this.batchOperateService.selfGetResults(
           item => {
@@ -423,6 +535,13 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
       pageSize: filters.paginator.pageSize || CommonConsts.PAGE_SIZE,
       akLoading: !args?.isAutoPolling ?? true
     };
+
+    if (this.isDetail) {
+      assign(params, {
+        resourceSetId: this.data[0].uuid
+      });
+    }
+
     if (!isEmpty(filters.conditions_v2)) {
       const conditionsTemp = JSON.parse(filters.conditions_v2);
       if (conditionsTemp.policyName) {
@@ -451,7 +570,62 @@ export class ReportsSubscriptionComponent implements OnInit, AfterViewInit {
           total: res.total,
           data: res.records
         };
+
+        if (this.isResourceSet) {
+          this.allSelectDisabled = res.total === 0;
+          if (
+            !!this.allSelectionMap[ResourceSetType.ReportSubscription]
+              ?.isAllSelected
+          ) {
+            this.allSelect(false);
+          }
+          this.dataCallBack();
+        }
+
         this.cdr.detectChanges();
       });
+  }
+
+  dataCallBack() {
+    // 用于资源集各类情况下的资源回显
+    if (
+      !isEmpty(this.allSelectionMap[ResourceSetType.ReportSubscription]?.data)
+    ) {
+      // 重新进入时回显选中的数据
+      this.selectionData = cloneDeep(
+        this.allSelectionMap[ResourceSetType.ReportSubscription].data
+      );
+      this.dataTable.setSelections(cloneDeep(this.selectionData));
+    }
+
+    if (
+      !!this.data &&
+      isEmpty(this.allSelectionMap[ResourceSetType.ReportSubscription]?.data) &&
+      !this.isDetail
+    ) {
+      this.getSelectedData();
+    }
+  }
+
+  getSelectedData() {
+    // 用于修改时回显
+    const params: any = {
+      resourceSetId: this.data[0].uuid,
+      scopeModule: ResourceSetType.ReportSubscription,
+      type: ResourceSetType.ReportSubscription
+    };
+    this.resourceSetService.queryResourceObjectIdList(params).subscribe(res => {
+      set(this.allSelectionMap, ResourceSetType.ReportSubscription, {
+        data: _map(res, item => {
+          return { policyId: item };
+        })
+      });
+      this.selectionData = cloneDeep(
+        this.allSelectionMap[ResourceSetType.ReportSubscription].data
+      );
+      this.dataTable.setSelections(cloneDeep(this.selectionData));
+      this.allSelectChange.emit();
+      this.cdr.detectChanges();
+    });
   }
 }

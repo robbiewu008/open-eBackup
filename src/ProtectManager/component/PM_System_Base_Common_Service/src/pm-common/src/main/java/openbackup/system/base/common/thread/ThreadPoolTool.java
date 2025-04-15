@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.common.thread;
 
-import openbackup.system.base.common.utils.ExceptionUtil;
-
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.utils.ExceptionUtil;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

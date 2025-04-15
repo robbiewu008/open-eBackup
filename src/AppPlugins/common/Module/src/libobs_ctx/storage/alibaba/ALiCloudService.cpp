@@ -34,6 +34,7 @@ const long CHECK_CONNECTION_CONNECTTIMEOUT_MS = 10000;
 const int SCHEMA_IN_URL_INDEX = 1;
 const int IP_IN_URL_INDEX = 2;
 const int PORT_IN_URL_INDEX = 3;
+const int ONCE_LIST_NUM = 200;
 }  // namespace
 
 std::unique_ptr<OssClient> ALiCloudService::InitBasicOptions(ClientConfiguration& option)
@@ -116,9 +117,9 @@ bool ALiCloudService::CheckRetryAndWait(
         HCP_Log(WARN, MODULE_NAME) << "request failed, need retry, retry time " << retryCount << HCPENDLOG;
         sleep(retryConfig.retryInterval);
         return true;
-    } else {
-        return false;
     }
+    HCP_Log(ERR, MODULE_NAME) << "request failed, retry reachs the max times: " << retryConfig.retryNum << HCPENDLOG;
+    return false;
 }
 
 bool ALiCloudService::SplitUrl(const std::string &url, std::string &protocol, std::string &ip, unsigned int &port)
@@ -155,8 +156,33 @@ OBSResult ALiCloudService::CheckConnect(const std::unique_ptr<CheckConnectReques
     listBucketsRequest->retryConfig = request->retryConfig;
 
     std::unique_ptr<ListBucketsResponse> listBucketsResponse;
+    ListBucketsOutcome outcome;
+    ClientConfiguration option;
+    option.requestTimeoutMs = CHECK_CONNECTION_CONNECTTIMEOUT_MS;
+    option.connectTimeoutMs = CHECK_CONNECTION_CONNECTTIMEOUT_MS;
+    std::unique_ptr<OssClient> client = InitBasicOptions(option);
+    if (client == nullptr) {
+        HCP_Log(ERR, MODULE_NAME) << "client is nullptr" << HCPENDLOG;
+        result.result = ResultType::FAILED;
+        return result;
+    }
 
-    return ListBuckets(listBucketsRequest, listBucketsResponse);
+    int retryCount = 0;
+    AlibabaCloud::OSS::ListBucketsRequest aLiRequest;
+    do {
+        outcome = client->ListBuckets(aLiRequest);
+        if (outcome.isSuccess()) {
+            HCP_Log(DEBUG, MODULE_NAME) << "checkConnect success, marker: " <<
+                outcome.result().NextMarker() << HCPENDLOG;
+            result.result = ResultType::SUCCESS;
+            return result;
+        } else {
+            HCP_Log(ERR, MODULE_NAME) << "list bucket failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
+        }
+    } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
+
+    return result;
 }
 
 OBSResult ALiCloudService::ListBuckets(
@@ -180,28 +206,39 @@ OBSResult ALiCloudService::ListBuckets(
         return result;
     }
 
+    bool isTruncated = false;  // true: Not all results are returned. false: All results have been returned.
     int retryCount = 0;
+    AlibabaCloud::OSS::ListBucketsRequest aLiRequest;
+    aLiRequest.setMaxKeys(ONCE_LIST_NUM);
+
+    ListServiceData data;
     do {
-        AlibabaCloud::OSS::ListBucketsRequest aLiRequest;
         outcome = client->ListBuckets(aLiRequest);
         if (outcome.isSuccess()) {
             std::vector<Bucket> buckets = outcome.result().Buckets();
-            ListServiceData data;
-            data.bucketListSize = buckets.size();
-            for (int i = 0; i < data.bucketListSize; i++) {
+            for (int i = 0; i < buckets.size(); i++) {
                 data.bucketList.push_back(buckets[i].Name());
             }
-            resp = std::make_unique<ListBucketsResponse>(data);
-            if (resp == nullptr) {
-                HCP_Log(ERR, MODULE_NAME) << "make unique for ListBucketsResponse failed" << HCPENDLOG;
-                result.result = ResultType::FAILED;
-                break;
-            }
+            data.bucketListSize += buckets.size();
+            isTruncated = outcome.result().IsTruncated();
+            aLiRequest.setMarker(outcome.result().NextMarker());
+            HCP_Log(DEBUG, MODULE_NAME) << "isTruncated: " << isTruncated
+                                        << ", marker: " << outcome.result().NextMarker() << HCPENDLOG;
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "list bucket failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "list bucket failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
-    } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
-    
+    } while (isTruncated || CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
+
+    if (result.IsSucc()) {
+        resp = std::make_unique<ListBucketsResponse>(data);
+        if (resp == nullptr) {
+            HCP_Log(ERR, MODULE_NAME) << "make unique for ListBucketsResponse failed" << HCPENDLOG;
+            result.result = ResultType::FAILED;
+            return result;
+        }
+    }
+    HCP_Log(INFO, MODULE_NAME) << "list buckets end, size: " << data.bucketList.size() << HCPENDLOG;
     return result;
 }
 
@@ -251,7 +288,8 @@ OBSResult ALiCloudService::GetBucketACL(
             resp->ownerId = outcome.result().Owner().Id();
             resp->ownerDisplayName = outcome.result().Owner().DisplayName();
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "get bucket acl failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "get bucket acl failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -298,7 +336,16 @@ OBSResult ALiCloudService::ListObjects(
                     << " nextMarker - " << resp->nextMarker << " size of content - " << resp->contents.size()
                     << " size of commonPrefixes - " << resp->commonPrefixes.size() << HCPENDLOG;
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "list object failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "list object failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
+            std::string aliErrorCode = outcome.error().Code();
+            if (aliErrorCode == "AccessDenied") {
+                HCP_Log(ERR, MODULE_NAME) << "AccessDenied Occurred" << HCPENDLOG;
+                result.result = ResultType::FAILED;
+                result.errorCode = outcome.error().Code();
+                result.errorDesc = outcome.error().Message();
+                break;
+            }
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -350,7 +397,8 @@ OBSResult ALiCloudService::GetObjectMetaData(const std::unique_ptr<GetObjectMeta
                 break;
             }
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "get object meta failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "get object meta failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -402,11 +450,32 @@ OBSResult ALiCloudService::GetObjectACL(
             resp->ownerId = outcome.result().Owner().Id();
             resp->ownerDisplayName = outcome.result().Owner().DisplayName();
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "get object acl failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "get object acl failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
     return result;
+}
+
+int64_t ALiCloudService::ReadFromBuffer(const GetObjectOutcome &outcome, const std::unique_ptr<GetObjectRequest> &request)
+{
+    int64_t readLen = 0;
+    do {
+        outcome.result().Content()->read(
+            reinterpret_cast<char *>(request->buffer + readLen), request->byteCount - readLen);
+        if (outcome.result().Content()->good() || outcome.result().Content()->eof()) {
+            readLen += outcome.result().Content()->gcount();
+            if (readLen == request->byteCount) {
+                break;
+            }
+        } else {
+            HCP_Log(ERR, MODULE_NAME) << "buffer read failed" << HCPENDLOG;
+            return -1;
+        }
+    } while (!outcome.result().Content()->eof());
+    HCP_Log(DEBUG, MODULE_NAME) << "read total size: " << readLen << HCPENDLOG;
+    return readLen;
 }
 
 OBSResult ALiCloudService::GetObject(
@@ -435,31 +504,36 @@ OBSResult ALiCloudService::GetObject(
     aliRequest.setVersionId(request->versionId);
     int64_t start = static_cast<int64_t>(request->startByte);
     int64_t end = static_cast<int64_t>(request->startByte + request->byteCount);
-    aliRequest.setRange(start, end, true);
+    aliRequest.setRange(start, end - 1, true);
     GetObjectOutcome outcome;
+    bool iostreamERR = false;
     int retryCount = 0;
     do {
+        iostreamERR = false;
         outcome = client->GetObject(aliRequest);
         if (outcome.isSuccess()) {
+            if (outcome.result().Content() == nullptr || ReadFromBuffer(outcome, request) < 0) {
+                ++retryCount;
+                iostreamERR = true;
+                HCP_Log(WARN, MODULE_NAME) << "Read data failed" << HCPENDLOG;
+                continue;
+            }
+
             resp = std::make_unique<GetObjectResponse>();
             if (resp == nullptr) {
                 HCP_Log(ERR, MODULE_NAME) << "make unique for GetObjectResponse failed" << HCPENDLOG;
                 result.result = ResultType::FAILED;
                 break;
             }
-            if (outcome.result().Content() == nullptr) {
-                break;
-            }
-            while (outcome.result().Content()->good()) {
-                outcome.result().Content()->read(reinterpret_cast<char*>(request->buffer), request->bufferSize);
-            }
+
             SaveObjectMetaData(outcome.result().Metadata(), resp);
             HCP_Log(DEBUG, MODULE_NAME) << "key:" << request->key << "LastModified:" << resp->lastModified
                 << "etag:" << resp->etag << "size:" << resp->size << HCPENDLOG;
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "get object acl failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "get object failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
-    } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
+    } while (iostreamERR || CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
     return result;
 }
@@ -551,7 +625,8 @@ OBSResult ALiCloudService::CreateBucket(const std::unique_ptr<CreateBucketReques
         if (outcome.isSuccess()) {
             HCP_Log(DEBUG, MODULE_NAME) << "create bucket success" << HCPENDLOG;
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "create bucket failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "create bucket failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -618,7 +693,8 @@ OBSResult ALiCloudService::MultiPartUploadObject(const std::unique_ptr<MultiPart
                 break;
             }
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "multi part upload object failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "multi part upload object failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -657,7 +733,8 @@ OBSResult ALiCloudService::SetObjectACL(const std::unique_ptr<SetObjectACLReques
         if (outcome.isSuccess()) {
             HCP_Log(DEBUG, MODULE_NAME) << "set object acl success" << HCPENDLOG;
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "set object acl failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "set object acl failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -695,7 +772,8 @@ OBSResult ALiCloudService::SetBucketACL(const std::unique_ptr<SetBucketACLReques
         if (outcome.isSuccess()) {
             HCP_Log(DEBUG, MODULE_NAME) << "set bucket acl success" << HCPENDLOG;
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "set bucket acl failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "set bucket acl failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -733,7 +811,8 @@ OBSResult ALiCloudService::SetObjectMetaData(const std::unique_ptr<SetObjectMeta
         if (outcome.isSuccess()) {
             HCP_Log(DEBUG, MODULE_NAME) << "set object meta success" << HCPENDLOG;
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "set object meta failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "set object meta failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -779,7 +858,8 @@ OBSResult ALiCloudService::GetUploadId(
             }
             resp->uploadId = outcome.result().UploadId();
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "get upload id failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "get upload id failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -828,7 +908,8 @@ OBSResult ALiCloudService::PutObjectPart(const std::unique_ptr<PutObjectPartRequ
             resp->startByte = request->startByte + request->partSize;
             resp->etag = outcome.result().ETag();
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "put object part failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "put object part failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -881,7 +962,8 @@ OBSResult ALiCloudService::CompletePutObjectPart(
         if (outcome.isSuccess()) {
             HCP_Log(DEBUG, MODULE_NAME) << "complete put object part success" << HCPENDLOG;
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "complete put object part failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "complete put object part failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -907,7 +989,8 @@ OBSResult ALiCloudService::AbortPutObjectPart(const std::unique_ptr<CompletePutO
         if (outcome.isSuccess()) {
             HCP_Log(DEBUG, MODULE_NAME) << "abort put object part success" << HCPENDLOG;
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "abort put object part failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "abort put object part failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -944,7 +1027,8 @@ OBSResult ALiCloudService::DeleteBucket(const std::unique_ptr<DeleteBucketReques
         if (outcome.isSuccess()) {
             HCP_Log(DEBUG, MODULE_NAME) << "delete bucket success" << HCPENDLOG;
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "delete bucket failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "delete bucket failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -981,7 +1065,8 @@ OBSResult ALiCloudService::DeleteObject(const std::unique_ptr<DeleteObjectReques
         if (outcome.isSuccess()) {
             HCP_Log(DEBUG, MODULE_NAME) << "delete object success" << HCPENDLOG;
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "delete object failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "delete object failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -1029,7 +1114,8 @@ OBSResult ALiCloudService::PutObject(
             resp->startByte = request->startByte + request->partSize;
             resp->etag = outcome.result().ETag();
         } else {
-            HCP_Log(ERR, MODULE_NAME) << "put object failed." << outcome.error().Code() << HCPENDLOG;
+            HCP_Log(ERR, MODULE_NAME) << "put object failed." << outcome.error().Code()
+                                      << ", request id:" << outcome.error().RequestId() << HCPENDLOG;
         }
     } while (CheckRetryAndWait(request->retryConfig, ++retryCount, outcome, result));
 
@@ -1060,11 +1146,6 @@ void ALiCloudService::SaveObjectContent(
     const std::string& delimiter, const ObjectSummaryList& objectList, std::vector<ListObjectsContent>& contents)
 {
     for (auto const &obj : objectList) {
-        if (IsEndsWith(obj.Key(), delimiter)) {
-            // 以 delimiter 结尾的是目录
-            HCP_Log(DEBUG, MODULE_NAME) << "Skip " << obj.Key() << HCPENDLOG;
-            continue;
-        }
         ListObjectsContent tmpContent;
         tmpContent.key = obj.Key();
         tmpContent.lastModified = UtcToTimestamp(obj.LastModified());

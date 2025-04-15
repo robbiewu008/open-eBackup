@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   Component,
@@ -27,6 +27,7 @@ import {
 } from 'app/shared';
 import {
   AccessPointControllerService,
+  AntiRansomwarePolicyApiService,
   CopyControllerService,
   MediaSetApiService
 } from 'app/shared/api/services';
@@ -37,7 +38,13 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
-import { CAPACITY_UNIT, DataMap, WormStatusEnum } from 'app/shared/consts';
+import {
+  CAPACITY_UNIT,
+  copyFormat,
+  DataMap,
+  SYSTEM_TIME,
+  WormStatusEnum
+} from 'app/shared/consts';
 import {
   CookieService,
   DataMapService,
@@ -48,6 +55,7 @@ import {
   RestoreParams,
   RestoreService
 } from 'app/shared/services/restore.service';
+import { isHideWorm } from 'app/shared/utils';
 import {
   assign,
   cloneDeep,
@@ -60,6 +68,7 @@ import {
   isEmpty,
   isNumber,
   isString,
+  isUndefined,
   map,
   reduce,
   reject,
@@ -68,10 +77,11 @@ import {
   unionBy
 } from 'lodash';
 import { Subject, Subscription, timer } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { finalize, switchMap, takeUntil } from 'rxjs/operators';
 import { AppUtilsService } from '../../services/app-utils.service';
 import { DownloadFlrFilesComponent } from '../download-flr-files/download-flr-files.component';
 import { ExportFilesService } from '../export-files/export-files.component';
+import { FileTreeComponent } from '../file-tree/file-tree.component';
 
 @Component({
   selector: 'aui-copy-data-detail',
@@ -87,7 +97,7 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
   data;
   formItems = [];
   verifyItems = [];
-
+  expirationTime;
   isViewParentCopy = false;
   isClickedFilesetFile = false;
   isIndexCreating = false;
@@ -101,7 +111,13 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
   copyStatus = DataMap.copydata_validStatus;
   fileIndex = DataMap.CopyData_fileIndex;
   copyDataGeneratedType = DataMap.CopyData_generatedType;
-
+  wormTips = {
+    ['worm_expiration_time']: this.i18n.get(
+      'common_worm_expiration_time_detail_tips_label'
+    ),
+    ['worm_clock']: this.i18n.get('common_worm_clock_tips_label'),
+    ['remain_time']: this.i18n.get('common_remain_time_tips_label')
+  };
   treeTableData = [];
   treeTableSelection = [];
   tableColumns = [
@@ -143,6 +159,9 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
   @ViewChild('groupDataTable', { static: false })
   groupDataTable: ProTableComponent;
 
+  @ViewChild('fileTree', { static: false })
+  fileTreeComponent: FileTreeComponent;
+
   cloudArchivalDesc = this.i18n.get('explore_cloud_archive_file_desc_label');
   downloadFlrFilesComponent = new DownloadFlrFilesComponent(
     this.exportFilesService
@@ -182,7 +201,8 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
     private capacityCalculateLabel: CapacityCalculateLabel,
     private mediaSetApi: MediaSetApiService,
     public appUtilsService: AppUtilsService,
-    private copyControllerService: CopyControllerService
+    private copyControllerService: CopyControllerService,
+    private antiRansomwarePolicyApiService: AntiRansomwarePolicyApiService
   ) {}
 
   ngOnInit() {
@@ -194,7 +214,14 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
     this.getIncrementalData();
     this.initVerifyStatus(this.data);
     this.initTapeTable();
-    this.afterModalClose();
+    // 支持worm并且保留时间不是永久的才去查
+    if (
+      !isHideWorm(this.data, this.i18n) &&
+      this.data.worm_status === DataMap.copyDataWormStatus[3].value &&
+      !!this.data.worm_expiration_time
+    ) {
+      this.getWormClock();
+    }
 
     if (
       includes(
@@ -331,6 +358,101 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
       WormStatusEnum.SET_SUCCESS,
       WormStatusEnum.SET_FAILED
     ].includes(row?.worm_status);
+  }
+
+  getWormClock() {
+    const tmpPro = JSON.parse(this.data.properties);
+    // 两种副本，快照格式或者目录格式
+    const isSnapshot =
+      isUndefined(tmpPro?.format) ||
+      [copyFormat.snapshot, copyFormat.external].includes(tmpPro?.format);
+    let tmpFileSystem;
+    let tmpFileSystemName;
+    let tmpSnapshotName;
+    // 目前没有的只有vmware虚拟机，另一类文件系统名取法
+    if (isUndefined(tmpPro?.format)) {
+      tmpFileSystemName = tmpPro?.vmware_metadata?.disk_info[0].DISKDEVICENAME;
+      if (isSnapshot) {
+        tmpSnapshotName =
+          tmpPro?.vmware_metadata?.disk_info[0].DISKSNAPSHOTDEVICENAME;
+      }
+    } else {
+      tmpFileSystem = find(tmpPro.repositories, {
+        type:
+          this.data.source_copy_type === DataMap.CopyData_Backup_Type.log.value
+            ? 3
+            : 1
+      }).remotePath[0];
+      tmpFileSystemName = tmpFileSystem.path.split('/')[1];
+      if (isSnapshot) {
+        tmpSnapshotName = tmpPro.snapshots[0].id.split('@')[1];
+      }
+    }
+
+    let offsetNum;
+    if (SYSTEM_TIME.offset > 0) {
+      if (SYSTEM_TIME.offset >= 10) {
+        offsetNum = '+' + SYSTEM_TIME.offset;
+      } else {
+        offsetNum = `+0${SYSTEM_TIME.offset}`;
+      }
+    } else {
+      if (SYSTEM_TIME.offset <= -10) {
+        offsetNum = SYSTEM_TIME.offset;
+      } else {
+        offsetNum = `-0${SYSTEM_TIME.offset.toString().slice(-1)}`;
+      }
+    }
+    const timezoneOffset = `${offsetNum}:00`;
+    const expirationDate = new Date(
+      this.data.worm_expiration_time + timezoneOffset
+    );
+    const expirationTimestamp = expirationDate.getTime();
+    this.expirationTime = expirationTimestamp;
+    this.antiRansomwarePolicyApiService
+      .getWormClockTime({
+        fileSystemName: tmpFileSystemName,
+        isSnapshot: isSnapshot,
+        deviceEsn: this.data.device_esn,
+        snapshotName: tmpSnapshotName ?? null,
+        vStoreId: '0',
+        wormExpireTime: expirationTimestamp,
+        storageUnitId: this.data.storage_unit_id
+      })
+      .subscribe((res: any) => {
+        this.setWormClockValue(res);
+      });
+  }
+
+  getDuration(msTime) {
+    const time = isNaN(msTime) ? 0 : msTime / 1000;
+    const day = Math.floor(time / 60 / 60 / 24);
+    const hour = Math.round(time / 60 / 60) % 24;
+    const dayLabel =
+      day > 1
+        ? `${day} ${this.i18n.get('common_days_label')}`
+        : `${day} ${this.i18n.get('common_day_lower_label')}`;
+    const hourLabel =
+      hour > 1
+        ? `${hour} ${this.i18n.get('common_hours_label')}`
+        : `${hour} ${this.i18n.get('common_hour_lower_label')}`;
+    return dayLabel + ' ' + hourLabel;
+  }
+
+  private setWormClockValue(res: any) {
+    this.formItems.map(item => {
+      each(item, val => {
+        if (val.key === 'worm_clock') {
+          val.value = this.datePipe.transform(
+            res,
+            'yyyy-MM-dd HH:mm:ss',
+            SYSTEM_TIME.timeZone
+          );
+        } else if (val.key === 'remain_time') {
+          val.value = this.getDuration(this.expirationTime - res);
+        }
+      });
+    });
   }
 
   getWormLabel(row) {
@@ -471,11 +593,6 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
           value: this.data.status
         },
         {
-          key: 'location',
-          label: this.i18n.get('common_location_label'),
-          value: this.data.location
-        },
-        {
           key: 'backup_type',
           label: this.i18n.get('common_copy_type_label'),
           value: this.data?.source_copy_type || this.data.backup_type
@@ -489,6 +606,28 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
             DataMap.Resource_Type.virtualMachine.value
         },
         {
+          key: 'worm_status',
+          label: this.i18n.get('explore_worm_th_label'),
+          value: this.data.worm_status || 1,
+          hidden: this.appUtilsService.isDistributed
+        },
+        {
+          key: 'worm_clock',
+          label: this.i18n.get('common_worm_clock_label'),
+          hidden: this.appUtilsService.isDistributed
+        },
+        {
+          key: 'expiration_time',
+          label: this.i18n.get('common_expriration_time_label'),
+          value:
+            this.data.retention_type === 1
+              ? '--'
+              : this.datePipe.transform(
+                  this.data.expiration_time,
+                  'yyyy-MM-dd HH:mm:ss'
+                )
+        },
+        {
           key: 'esn',
           label: this.i18n.get('common_equipment_esn_label'),
           value: this.getEsn(),
@@ -497,17 +636,38 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
             DataMap.CopyData_generatedType.replicate.value
         },
         {
-          key: 'cluster_name',
-          label: this.i18n.get('system_servers_label'),
-          value: this.data.cluster_name,
-          hidden: !this.isOceanProtect || this.appUtilsService.isDistributed
+          key: 'size',
+          label: this.i18n.get('insight_job_databeforereduction_label'),
+          value: this.getCopySize()
         }
       ],
       [
         {
-          key: 'worm_status',
-          label: this.i18n.get('explore_worm_th_label'),
-          value: this.data.worm_status || 1
+          key: 'location',
+          label: this.i18n.get('common_location_label'),
+          value: this.data.location
+        },
+        {
+          key: 'generated_by',
+          label: this.i18n.get('common_generated_type_label'),
+          value: this.data.generated_by
+        },
+        {
+          key: 'cluster_name',
+          label: this.i18n.get('system_servers_label'),
+          value: this.data.cluster_name,
+          hidden: !this.isOceanProtect || this.appUtilsService.isDistributed
+        },
+        {
+          key: 'worm_expiration_time',
+          label: this.i18n.get('common_worm_expiration_time_label'),
+          value: this.data.worm_expiration_time,
+          hidden: this.appUtilsService.isDistributed
+        },
+        {
+          key: 'remain_time',
+          label: this.i18n.get('common_remain_time_label'),
+          hidden: this.appUtilsService.isDistributed
         },
         {
           key: 'indexed',
@@ -529,27 +689,6 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
           )
         },
         {
-          key: 'generated_by',
-          label: this.i18n.get('common_generated_type_label'),
-          value: this.data.generated_by
-        },
-        {
-          key: 'expiration_time',
-          label: this.i18n.get('common_expriration_time_label'),
-          value:
-            this.data.retention_type === 1
-              ? '--'
-              : this.datePipe.transform(
-                  this.data.expiration_time,
-                  'yyyy-MM-dd HH:mm:ss'
-                )
-        },
-        {
-          key: 'size',
-          label: this.i18n.get('insight_job_databeforereduction_label'),
-          value: this.getCopySize()
-        },
-        {
           key: 'isBackupAcl',
           label: this.i18n.get('explore_acl_backup_label'),
           value: this.getIsBackupAcl(),
@@ -563,7 +702,7 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
     const deployType = this.i18n.get('deploy_type');
     if (['d3', 'd4', 'cloudbackup'].includes(deployType)) {
       this.formItems[1] = this.formItems[1].filter(
-        item => item.key !== 'worm_status'
+        item => !['worm_status', 'worm_expiration_time'].includes(item.key)
       );
     }
   }
@@ -584,6 +723,10 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
     const size = parseFloat(sizeStr.substring(0, sizeStr.indexOf('.') + 3));
     const unit = trim(sizeStr.replace(/[0-9.]/g, ''));
     return `${size} ${unit}`;
+  }
+
+  getWormTipsLabel(key) {
+    return get(this.wormTips, key, false);
   }
 
   getIsBackupAcl() {
@@ -841,6 +984,13 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
   }
 
   getVmFilePath(paths, isTable?) {
+    // 手动输入路径无需任何处理
+    if (
+      this.fileTreeComponent?.pathMode ===
+      this.fileTreeComponent?.modeMap?.fromTag
+    ) {
+      return paths;
+    }
     let filterPaths = [];
     let childPaths = [];
     if (isTable && !paths[0].nodeName) {
@@ -882,48 +1032,68 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
         node.path === '/'
           ? `${node.path}${node.nodeName}`
           : `${node.path}/${node.nodeName}`,
-      akOperationTips: false
+      akOperationTips: false,
+      akLoading: false
     };
     if (!isEmpty(this.data.device_esn)) {
       assign(params, {
         memberEsn: this.data.device_esn
       });
     }
-    this.copyControllerService.ListCopyCatalogs(params).subscribe(res => {
-      each(res.records, (item: any) => {
-        item = extendNodeParams(node, item);
+    // 已索引的副本，请求下一页需要传上一页最后一条数据的sort值
+    const sortValue = node.children[node.children.length - 2]?.sort;
+    if (params.pageNo > 0 && !isEmpty(sortValue)) {
+      assign(params, {
+        searchAfter: sortValue
       });
-      if (isArray(node.children) && !isEmpty(node.children)) {
-        node.children = [
-          ...reject(node.children, n => {
-            return n.isMoreBtn;
-          }),
-          ...res.records
-        ];
-      } else {
-        node.children.push(...res.records);
-      }
-      if (res.totalCount > size(node.children)) {
-        const moreClickNode = {
-          label: `${this.i18n.get('common_more_label')}...`,
-          contentToggleIcon: '',
-          isMoreBtn: true,
-          hasChildren: false,
-          isLeaf: true,
-          children: null,
-          parent: node,
-          startPage: Math.floor(
-            size(node.children) / CommonConsts.MAX_PAGE_SIZE
-          )
-        };
-        node.children = [...node.children, moreClickNode];
-      }
+    }
+    node.isLoading = true;
+    // 解决点击更多的时候节点没有加载状态
+    if (params.pageNo > 0) {
       this.treeTableData = [...this.treeTableData];
-      this.isViewParentCopy =
-        this.activeIndex &&
-        this.data.generated_by ===
-          this.copyDataGeneratedType.cloudArchival.value;
-    });
+    }
+    this.copyControllerService
+      .ListCopyCatalogs(params)
+      .pipe(
+        finalize(() => {
+          node.isLoading = false;
+        })
+      )
+      .subscribe(res => {
+        each(res.records, (item: any) => {
+          item = extendNodeParams(node, item);
+        });
+        if (isArray(node.children) && !isEmpty(node.children)) {
+          node.children = [
+            ...reject(node.children, n => {
+              return n.isMoreBtn;
+            }),
+            ...res.records
+          ];
+        } else {
+          node.children.push(...res.records);
+        }
+        if (res.totalCount > size(node.children)) {
+          const moreClickNode = {
+            label: `${this.i18n.get('common_more_label')}...`,
+            contentToggleIcon: '',
+            isMoreBtn: true,
+            hasChildren: false,
+            isLeaf: true,
+            children: null,
+            parent: node,
+            startPage: Math.floor(
+              size(node.children) / CommonConsts.MAX_PAGE_SIZE
+            )
+          };
+          node.children = [...node.children, moreClickNode];
+        }
+        this.treeTableData = [...this.treeTableData];
+        this.isViewParentCopy =
+          this.activeIndex &&
+          this.data.generated_by ===
+            this.copyDataGeneratedType.cloudArchival.value;
+      });
   }
 
   trackByIndex(index, item) {
@@ -995,7 +1165,12 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
 
   expandedChange(node) {
     const moreBtn = find(node.children, { isMoreBtn: true });
+
     if (!!size(node.children) && !moreBtn) {
+      return;
+    }
+
+    if (moreBtn && !node.expanded) {
       return;
     }
 
@@ -1134,7 +1309,8 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
         fineGrainedData: item
           ? this.getVmFilePath(item, true)
           : this.getVmFilePath(this.treeTableSelection),
-        fileRestore: true
+        fileRestore: true,
+        closeDetailFn: () => this.modal.close()
       });
     } else {
       params.copyData = assign({}, this.data, {
@@ -1148,15 +1324,23 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
   }
 
   downloadFile(datas) {
-    const filterPaths = this.getVmFileDownloadPath(cloneDeep(datas));
-    const paths = [];
-    each(filterPaths, node => {
-      paths.push(
-        node.path === '/'
-          ? `${node.path}${node.nodeName}`
-          : `${node.path}/${node.nodeName}`
-      );
-    });
+    let paths = [];
+    // 手动输入路径无需任何处理
+    if (
+      this.fileTreeComponent?.pathMode ===
+      this.fileTreeComponent?.modeMap?.fromTag
+    ) {
+      paths = [...datas];
+    } else {
+      const filterPaths = this.getVmFileDownloadPath(cloneDeep(datas));
+      each(filterPaths, node => {
+        paths.push(
+          node.path === '/'
+            ? `${node.path}${node.nodeName}`
+            : `${node.path}/${node.nodeName}`
+        );
+      });
+    }
     if (!size(paths)) {
       return;
     }
@@ -1182,25 +1366,5 @@ export class CopyDataDetailComponent implements OnInit, OnDestroy {
 
   updateModalHeader() {
     this.modal.setProperty({ lvHeader: this.headerTpl });
-  }
-
-  afterModalClose() {
-    if (
-      this.data.resource_sub_type === DataMap.Resource_Type.virtualMachine.value
-    ) {
-      const extendClose = this.modal.getInstance().lvAfterClose;
-      this.modal.getInstance().lvAfterClose = () => {
-        extendClose.call(this);
-        // 如果浏览了文件，需要关闭索引
-        if (!this.hasActiveFileTab) {
-          return;
-        }
-        this.copyControllerService
-          .CloseCopyGuestSystem({
-            copyId: this.data.uuid
-          })
-          .subscribe(() => {});
-      };
-    }
   }
 }

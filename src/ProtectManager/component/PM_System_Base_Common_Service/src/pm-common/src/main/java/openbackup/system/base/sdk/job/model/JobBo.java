@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.sdk.job.model;
 
-import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
 import lombok.Data;
+import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import java.util.List;
 

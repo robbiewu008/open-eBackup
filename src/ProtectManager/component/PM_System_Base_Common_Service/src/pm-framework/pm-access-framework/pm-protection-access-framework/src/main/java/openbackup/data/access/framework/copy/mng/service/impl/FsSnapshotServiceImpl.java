@@ -13,6 +13,9 @@
 package openbackup.data.access.framework.copy.mng.service.impl;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dee.DeeFsSnapshotRestApi;
 import openbackup.data.access.client.sdk.api.framework.dee.model.CreateFsSnapshotRequest;
 import openbackup.data.access.framework.copy.mng.constant.CopyPropertiesKeyConstant;
@@ -24,14 +27,11 @@ import openbackup.data.protection.access.provider.sdk.backup.BackupObject;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.enums.CopyFormatEnum;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.job.util.JobUpdateUtil;
 import openbackup.system.base.sdk.protection.model.PolicyBo;
 import openbackup.system.base.sdk.protection.model.SlaBo;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
@@ -94,9 +94,11 @@ public class FsSnapshotServiceImpl implements FsSnapshotService {
         String policy = redisValue.get(CopyConstants.POLICY);
         PolicyBo policyBo = JSONObject.fromObject(policy).toBean(PolicyBo.class);
         if (policyBo != null && policyBo.getRetention() != null) {
-            createFsSnapshotRequest.setRetentionDuration(policyBo.getRetention().getRetentionDuration());
             createFsSnapshotRequest.setRetentionType(policyBo.getRetention().getRetentionType());
             createFsSnapshotRequest.setDurationUnit(policyBo.getRetention().getDurationUnit());
+            if (policyBo.getRetention().getRetentionDuration() != null) {
+                createFsSnapshotRequest.setRetentionDuration(policyBo.getRetention().getRetentionDuration());
+            }
         }
 
         String slaString = redisValue.get(CopyConstants.SLA);

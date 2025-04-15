@@ -36,6 +36,10 @@ protected:
     virtual void ListNativeResource(
         FilePlugin::FileResourceInfo& resourceInfo,
         const FilePlugin::ListResourceParam& listResourceParam) = 0;
+
+    virtual void ListDiskResource(
+        FilePlugin::FileResourceInfo& resourceInfo,
+        const FilePlugin::ListResourceParam& listResourceParam);
  
     virtual void ListAggregateResource(
         FilePlugin::FileResourceInfo& resourceInfo,
@@ -52,10 +56,15 @@ protected:
         appException.__set_message(message);
         throw appException;
     }
- 
+    virtual void TransformResultForVolume(AppProtect::ResourceResultByPage& returnValue,
+        const FilePlugin::FileResourceInfo& resourceInfo);
+    virtual void TransformResultForDisk(AppProtect::ResourceResultByPage& returnValue,
+        const FilePlugin::FileResourceInfo& resourceInfo);
 private:
+    void TransformResultForNative(AppProtect::ResourceResultByPage& returnValue,
+        const FilePlugin::FileResourceInfo& resourceInfo);
     void TransformResult(AppProtect::ResourceResultByPage& returnValue,
-                         const FilePlugin::FileResourceInfo& resourceInfo);
+        const FilePlugin::FileResourceInfo& resourceInfo);
 };
  
 using AppManagerPtr = std::unique_ptr<ApplicationManager>;

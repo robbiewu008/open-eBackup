@@ -137,7 +137,7 @@ CTRL_FILE_RETCODE XMetaParser::WriteHeader()
         return CTRL_FILE_RETCODE::FAILED;
     }
     m_writeFd.flush();
-    HCP_Log(INFO, MODULE) << "Write Header completed for metafile: " << m_fileName << HCPENDLOG;
+    HCP_Log(DEBUG, MODULE) << "Write Header completed for metafile: " << m_fileName << HCPENDLOG;
     return CTRL_FILE_RETCODE::SUCCESS;
 }
 
@@ -357,6 +357,10 @@ CTRL_FILE_RETCODE XMetaParser::ReadXMetaFieldFromBuffer(uint64_t offset, XMetaFi
         ERRLOG("tlv length is zero");
         return CTRL_FILE_RETCODE::FAILED;
     }
+    if (tlvLen > FOUR_MB) {
+        ERRLOG("Invalid tlv length: %u", tlvLen);
+        return CTRL_FILE_RETCODE::FAILED;
+    }
     char* value = new char[tlvLen];
     if (memcpy_s(value, tlvLen, bufferPtr, tlvLen) != 0) {
         delete[] value;
@@ -543,6 +547,7 @@ CTRL_FILE_RETCODE XMetaParser::FillReadCache(uint64_t offset, uint32_t readLen)
     m_readFd.read(m_readCache, readLen);
     if ((!m_readFd.eof()) && (!m_readFd.good())) {
         m_readFd.close();
+        HCP_Log(ERR, MODULE) << "m_readFd read failed: " << m_readFd.gcount() << ", readLen:" << readLen << HCPENDLOG;
         CTRL_FILE_RETCODE ret = FileOpen<std::ifstream>(m_readFd, std::ios::in | std::ios::binary);
         if (ret != CTRL_FILE_RETCODE::SUCCESS) {
             return CTRL_FILE_RETCODE::FAILED;
@@ -554,6 +559,8 @@ CTRL_FILE_RETCODE XMetaParser::FillReadCache(uint64_t offset, uint32_t readLen)
         m_readFd.read(m_readCache, readLen);
         if ((!m_readFd.eof()) && (!m_readFd.good())) {
             m_readFd.close();
+            HCP_Log(ERR, MODULE) << "m_readFd read failed: " << m_readFd.gcount() << ", readLen:" << readLen
+                                 << HCPENDLOG;
             return CTRL_FILE_RETCODE::FAILED;
         }
     }
@@ -596,10 +603,14 @@ CTRL_FILE_RETCODE XMetaParser::ReadXMetaFieldFromReadCache(uint64_t offset, XMet
     }
     field.m_xMetaType = xMetaType;
     bufferPtr += sizeof(uint16_t);
-	tlvLen = le32toh(*(uint32_t *)bufferPtr);
+    tlvLen = le32toh(*(uint32_t *)bufferPtr);
     bufferPtr += sizeof(uint32_t);
     if (tlvLen == 0) {
         ERRLOG("tlv length is zero");
+        return CTRL_FILE_RETCODE::FAILED;
+    }
+    if (tlvLen > FOUR_MB) {
+        ERRLOG("Invalid tlv length: %u", tlvLen);
         return CTRL_FILE_RETCODE::FAILED;
     }
     char* value = new char[tlvLen];
@@ -713,6 +724,9 @@ uint64_t XMetaParser::WriteXMeta(vector<XMetaField> &entry)
     m_writeBuffer << tlvBuffer.str();
     uint64_t totalLenWritten = sizeof(uint32_t) + sizeof(uint32_t) + lenOfAllTlvs;
     m_offset += totalLenWritten;
+    if (m_writeBuffer.tellp() > BINARY_MAX_BUFFER_SIZE) {
+        FlushToFile();
+    }
     return totalLenWritten;
 }
 
@@ -739,7 +753,7 @@ CTRL_FILE_RETCODE XMetaParser::FlushToFile()
     m_writeBuffer.str("");
     m_writeBuffer.clear();
     m_writeFd.flush();
-    HCP_Log(INFO, MODULE) << "Metafile flush data completed filename: " << m_fileName
+    HCP_Log(DEBUG, MODULE) << "Metafile flush data completed filename: " << m_fileName
         << " offset: " << m_writeFd.tellp() << " offset variable: " << m_offset << HCPENDLOG;
     return CTRL_FILE_RETCODE::SUCCESS;
 }

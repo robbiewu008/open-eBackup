@@ -1,0 +1,67 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Failed to Restore an OpenStack Cloud Server Because the Host Where the Client Is Installed Is Faulty for a Long Time">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164656978.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200143313">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Failed to Restore an OpenStack Cloud Server Because the Host Where the Client Is Installed Is Faulty for a Long Time</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200143313"></a><a name="EN-US_TOPIC_0000002200143313"></a>
+
+<h1 class="topictitle1">Failed to Restore an OpenStack Cloud Server Because the Host Where the Client Is Installed Is Faulty for a Long Time</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>During the restoration of an OpenStack cloud server, the host where the client is installed is faulty or powered off, and the host is not restored from the fault or powered on within 5 minutes. As a result, the restoration job fails, and the disks of the OpenStack cloud server are lost.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Causes</h4><p>For cloud disk restoration, the host where the client is installed unmounts the cloud disk from the cloud server and mounts the disk to it. During the restoration, if the host where the client is installed is faulty or powered off and no other host is available to take over the restoration job, the job fails and the disks of the OpenStack cloud server are lost.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Use PuTTY to log in to any OpenStack node using the management IP address as user <strong>fsp</strong>.</span></li><li><span>Run the following command to switch to user <strong>root</strong>:</span><p><pre class="screen">su - root</pre>
+</p></li><li><span>Run the <strong>source set_env</strong> command to import environment variables, select <strong>openstack environment variable of cloud_admin (keystone v3)</strong>, and enter the password of user <strong>cloud_admin</strong> (obtained from the environment administrator).</span></li><li id="EN-US_TOPIC_0000002200143313__li122355914818"><a name="EN-US_TOPIC_0000002200143313__li122355914818"></a><a name="li122355914818"></a><span>Run the following command to query the ID of the host (host where the client is installed) to which the cloud disk is mounted:</span><p><pre class="screen">cinder show<em> volume-id</em></pre>
+<p><em>volume-id</em> indicates the ID of the lost cloud disk. You can view the ID in the restoration job.</p>
+<p>In the command output, <span class="uicontrol"><b>attached_servers</b></span> specifies the ID of the host where the client is installed.</p>
+</p></li><li><span>Run the following command to unmount the cloud disk from the host where the client is installed:</span><p><pre class="screen">nova volume-detach <em>server-id volume-id</em></pre>
+<p><em>server-id</em> indicates the ID of the host where the client is installed obtained in <a href="#EN-US_TOPIC_0000002200143313__li122355914818">4</a>.</p>
+</p></li><li><span>Run the following command to mount the cloud disk to the cloud server again:</span><p><pre class="screen">nova volume-attach <em>server-id volume-id</em></pre>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>When mounting a system disk to a cloud server, set the drive letter to <strong>/dev/vda</strong> to ensure that the system disk can be found when the server starts. Run the following command to mount the system disk:</p>
+<pre class="screen">nova volume-attach <em>server-id volume-id</em> /dev/vda</pre>
+</div></div>
+</p></li><li><span>Perform the restoration job again.</span></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Suggestions</h4><p>When creating a restoration job, you are advised to specify multiple hosts where the client is installed to execute the restoration job. If one host becomes faulty, other hosts can take over the restoration job. In addition, if a host becomes faulty but recovers within 5 minutes, the system will re-execute or resume the restoration job to ensure that the job can be successfully executed.</p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164656978.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

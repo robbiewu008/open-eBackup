@@ -12,6 +12,8 @@
 */
 package openbackup.db2.protection.access.provider.resource;
 
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.resource.BrowseEnvironmentResourceConditions;
@@ -32,14 +34,13 @@ import openbackup.db2.protection.access.service.Db2TablespaceService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.utils.UUIDGenerator;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.StreamUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -134,6 +135,7 @@ public class Db2ClusterProvider implements EnvironmentProvider {
                 clusterEnvironmentService.checkClusterNodeCountLimit(agentsNum, Db2Constants.DPF_NODE_MAX_COUNT);
                 break;
             case POWER_HA:
+            case RHEL_HA:
                 clusterEnvironmentService.checkClusterNodeCountLimit(agentsNum, Db2Constants.POWER_HA_NODE_MAX_COUNT);
                 break;
             case HADR:
@@ -172,18 +174,86 @@ public class Db2ClusterProvider implements EnvironmentProvider {
 
     @Override
     public void validate(ProtectedEnvironment environment) {
-        instanceResourceService.healthCheckClusterInstanceOfEnvironment(environment,
-            ClusterInstanceOnlinePolicy.ALL_NODES_ONLINE);
-        List<ProtectedResource> agents = environment.getDependencies().get(DatabaseConstants.AGENTS);
-        boolean isOffline = agents.stream()
-            .flatMap(StreamUtil.match(ProtectedEnvironment.class))
-            .anyMatch(childNode -> LinkStatusEnum.OFFLINE.getStatus()
-                .toString()
-                .equals(EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(childNode)));
+        boolean isOffline;
+
+        // HA集群主节点在线，即为在线
+        if (Db2ClusterTypeEnum.POWER_HA.getType().equals(environment.getExtendInfoByKey(DatabaseConstants.CLUSTER_TYPE))
+            || Db2ClusterTypeEnum.RHEL_HA.getType()
+            .equals(environment.getExtendInfoByKey(DatabaseConstants.CLUSTER_TYPE))) {
+            isOffline = validateHaCluster(environment);
+        } else {
+            // 除HA集群外，所有节点都在线即为在线
+            instanceResourceService.healthCheckClusterInstanceOfEnvironment(environment,
+                ClusterInstanceOnlinePolicy.ALL_NODES_ONLINE);
+            List<ProtectedResource> agents = environment.getDependencies().get(DatabaseConstants.AGENTS);
+
+            isOffline = agents.stream()
+                .flatMap(StreamUtil.match(ProtectedEnvironment.class))
+                .anyMatch(childNode -> LinkStatusEnum.OFFLINE.getStatus()
+                    .toString()
+                    .equals(EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(childNode)));
+        }
         if (isOffline) {
             log.error("The db2 cluster health check fail. uuid: {}", environment.getUuid());
             throw new LegoCheckedException(CommonErrorCode.HOST_OFFLINE, "Cluster host is offLine.");
         }
+    }
+
+    private boolean validateHaCluster(ProtectedEnvironment environment) {
+        // 检查集群下的集群实例的在线状态
+        List<ProtectedResource> clusterInstance = getProtectedResources(environment);
+        clusterInstance.forEach(this::healthCheckHaClusterInstanceByAgent);
+
+        // 检查集群实例下的单实例在线状态
+        instanceResourceService.healthCheckSubInstance(environment);
+
+        // 集群关联的代理主机有一台在线，即为在线
+        List<ProtectedResource> agents = environment.getDependencies().get(DatabaseConstants.AGENTS);
+        return agents.stream()
+            .flatMap(StreamUtil.match(ProtectedEnvironment.class))
+            .allMatch(childNode -> LinkStatusEnum.OFFLINE.getStatus()
+                .toString()
+                .equals(EnvironmentLinkStatusHelper.getLinkStatusAdaptMultiCluster(childNode)));
+    }
+
+    private void healthCheckHaClusterInstanceByAgent(ProtectedResource resource) {
+        try {
+            ProtectedResource fullResource = resourceService.getResourceById(resource.getUuid())
+                .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "This resource not exist."));
+            ProtectedResource primaryNode = db2instanceService.queryHadrPrimaryNode(fullResource);
+            instanceResourceService.healthCheckSingleInstanceByAgent(primaryNode, getEnvironment(primaryNode));
+            resource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY,
+                LinkStatusEnum.ONLINE.getStatus().toString());
+        } catch (LegoCheckedException | LegoUncheckedException | FeignException e) {
+            log.error("This sub resource health check is fail.", e);
+            resource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY,
+                LinkStatusEnum.OFFLINE.getStatus().toString());
+        } finally {
+            instanceResourceService.updateResourceStatus(resource);
+        }
+    }
+
+    private ProtectedEnvironment getEnvironment(ProtectedResource protectedResource) {
+        return protectedResource.getDependencies()
+            .get(DatabaseConstants.AGENTS)
+            .stream()
+            .flatMap(StreamUtil.match(ProtectedEnvironment.class))
+            .findFirst()
+            .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "This environment not exist."));
+    }
+
+    private List<ProtectedResource> getProtectedResources(ProtectedEnvironment environment) {
+        Map<String, Object> conditions = new HashMap<>();
+        conditions.put(DatabaseConstants.PARENT_UUID, environment.getUuid());
+        PageListResponse<ProtectedResource> data;
+        List<ProtectedResource> resources = new ArrayList<>();
+        int pageNo = 0;
+        do {
+            data = resourceService.query(pageNo, IsmNumberConstant.HUNDRED, conditions);
+            resources.addAll(data.getRecords());
+            pageNo++;
+        } while (data.getRecords().size() >= IsmNumberConstant.HUNDRED);
+        return resources;
     }
 
     @Override

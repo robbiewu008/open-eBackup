@@ -12,6 +12,7 @@
 */
 package openbackup.database.base.plugin.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentDetailDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.ListResourceReq;
@@ -38,8 +39,6 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.StreamUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
@@ -88,6 +87,8 @@ public class GeneralDbResourceProvider implements ResourceProvider {
 
     @Override
     public void beforeCreate(ProtectedResource resource) {
+        // 检查数据库是否已注册
+        checkDbIsRegistered(resource);
         // 检查数据库是否已在 SAP HANA 应用中注册
         checkDbIsRegisteredInSapHana(resource);
     }
@@ -137,6 +138,16 @@ public class GeneralDbResourceProvider implements ResourceProvider {
         updateCheckAfterSupport(resource, confMap);
         // 恢复要删除的dependency
         Optional.ofNullable(resource.getDependencies()).ifPresent(e -> e.putAll(toDeleteDependencies));
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> hosts = resourceService.queryDependencyResources(true,
+            GeneralDbConstant.DEPENDENCY_HOST_KEY, Collections.singletonList(resource.getUuid()));
+        dependencies.put(GeneralDbConstant.DEPENDENCY_HOST_KEY, hosts);
+        resource.setDependencies(dependencies);
+        return true;
     }
 
     private Map<String, List<ProtectedResource>> excludeToBeDeleteDependency(ProtectedResource resource) {
@@ -422,6 +433,7 @@ public class GeneralDbResourceProvider implements ResourceProvider {
             .stream()
             .filter(e -> resource.getName().equalsIgnoreCase(e.getName()))
             .filter(e -> isResourceInDbContainsHost(e, hosts))
+            .filter(e -> script.equals(GeneralDbConstant.EXTEND_SCRIPT_VAL_SAPHANA) && isSameSystemId(resource, e))
             .map(ResourceBase::getUuid)
             .collect(Collectors.toSet());
         // 修改场景需要移除自身
@@ -489,6 +501,43 @@ public class GeneralDbResourceProvider implements ResourceProvider {
         return resource.getExtendInfoByKey(GeneralDbConstant.EXTEND_SCRIPT_KEY);
     }
 
+    private void checkDbIsRegistered(ProtectedResource resource) {
+        Map<String, Object> conditions = new HashMap<>();
+        conditions.put(DatabaseConstants.RESOURCE_TYPE, ResourceTypeEnum.DATABASE.getType());
+        conditions.put(DatabaseConstants.SUB_TYPE, ResourceSubTypeEnum.GENERAL_DB.getType());
+        conditions.put(GeneralDbConstant.DATABASE_TYPE_DISPLAY, GeneralDbConstant.DATABASE_TYPE_DISPLAY_SAP_HANA);
+        List<ProtectedResource> protectedResources = queryAllResources(conditions);
+        if (protectedResources.isEmpty()) {
+            return;
+        }
+        String dbName = resource.getName();
+        String systemId = GeneralDbUtil.getSystemIdFromCustomParams(
+                resource.getExtendInfoByKey(GeneralDbConstant.EXTEND_CUSTOM_PARAM));
+        List<String> agentIds = Arrays.asList(
+                resource.getExtendInfoByKey(GeneralDbConstant.EXTEND_RELATED_HOST_IDS).split(","));
+        for (ProtectedResource tmpResource : protectedResources) {
+            // 判断 database name
+            if (!dbName.toUpperCase(Locale.ROOT).equals(tmpResource.getName().toUpperCase(Locale.ROOT))) {
+                continue;
+            }
+            // 判断 system id
+            String tmpSystemId = GeneralDbUtil.getSystemIdFromCustomParams(
+                    tmpResource.getExtendInfoByKey(GeneralDbConstant.EXTEND_CUSTOM_PARAM));
+            if (!systemId.toLowerCase(Locale.ROOT).equals(tmpSystemId.toLowerCase(Locale.ROOT))) {
+                continue;
+            }
+            // 判断 agents
+            List<String> tmpAgentIds = Arrays.asList(
+                    tmpResource.getExtendInfoByKey(GeneralDbConstant.EXTEND_RELATED_HOST_IDS).split(","));
+            if (!CollectionUtils.intersection(tmpAgentIds, agentIds).isEmpty()) {
+                log.error("This general database is registered, registered resource name: {}, "
+                        + "uuid: {}.", tmpResource.getName(), tmpResource.getUuid());
+                throw new LegoCheckedException(GeneralDbErrorCode.RESOURCE_IS_REGISTERED,
+                        "This general database is registered.");
+            }
+        }
+    }
+
     private void checkDbIsRegisteredInSapHana(ProtectedResource resource) {
         Map<String, Object> conditions = new HashMap<>();
         conditions.put(DatabaseConstants.RESOURCE_TYPE, ResourceTypeEnum.DATABASE.getType());
@@ -526,5 +575,13 @@ public class GeneralDbResourceProvider implements ResourceProvider {
                         "This general database is registered in sap hana databases.");
             }
         }
+    }
+
+    private boolean isSameSystemId(ProtectedResource resourceA, ProtectedResource resourceB) {
+        String sidA = GeneralDbUtil.getSystemIdFromCustomParams(
+                resourceA.getExtendInfoByKey(GeneralDbConstant.EXTEND_CUSTOM_PARAM));
+        String sidB = GeneralDbUtil.getSystemIdFromCustomParams(
+                resourceB.getExtendInfoByKey(GeneralDbConstant.EXTEND_CUSTOM_PARAM));
+        return sidA.equals(sidB);
     }
 }

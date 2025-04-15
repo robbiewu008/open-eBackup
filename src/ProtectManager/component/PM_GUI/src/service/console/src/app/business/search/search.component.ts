@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,6 +19,7 @@ import {
   CookieService,
   DataMap,
   DataMapService,
+  E6000SupportAppValue,
   FileLevelSearchManagementService,
   GlobalService,
   I18NService,
@@ -26,7 +27,11 @@ import {
   ResourceService,
   SearchRange
 } from 'app/shared';
-import { FilterType, NodeType } from 'app/shared/consts/search.const';
+import {
+  FilterType,
+  NodeType,
+  SearchResource
+} from 'app/shared/consts/search.const';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import {
@@ -50,6 +55,7 @@ import {
 } from 'lodash';
 import { FileListComponent } from './file-list/file-list.component';
 import { ResourceListComponent } from './resource-list/resource-list.component';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'aui-search',
   templateUrl: './search.component.html',
@@ -80,6 +86,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       item.isLeaf = true;
       return item;
     });
+  tagLoading = false;
   nodeTypeOptions = this.dataMapService
     .toArray('Global_Search_Node_Type')
     .map(item => {
@@ -124,6 +131,10 @@ export class SearchComponent implements OnInit, OnDestroy {
       {
         value: `${FilterType.HyperV}`,
         label: this.i18n.get('common_hyperv_label')
+      },
+      {
+        value: `${FilterType.NutanixVm}`,
+        label: this.i18n.get('common_nutanix_label')
       },
       {
         value: `${FilterType.HDFSFileset}`,
@@ -182,7 +193,11 @@ export class SearchComponent implements OnInit, OnDestroy {
         label: this.i18n.get('protection_volume_label')
       },
       {
-        value: DataMap.Resource_Type.oracle.value,
+        value: `${DataMap.Resource_Type.AntDB.value},${DataMap.Resource_Type.AntDBInstance.value},${DataMap.Resource_Type.AntDBClusterInstance.value}`,
+        label: this.i18n.get('common_antdb_label')
+      },
+      {
+        value: `${DataMap.Resource_Type.oracle.value},${DataMap.Resource_Type.oracleCluster.value}`,
         label: this.i18n.get('common_oracle_label')
       },
       {
@@ -223,7 +238,8 @@ export class SearchComponent implements OnInit, OnDestroy {
       },
       {
         value: `${DataMap.Resource_Type.ExchangeSingle.value},${DataMap.Resource_Type.ExchangeGroup.value},${DataMap.Resource_Type.ExchangeDataBase.value},${DataMap.Resource_Type.ExchangeDataBase.value},${DataMap.Resource_Type.ExchangeEmail.value}`,
-        label: this.i18n.get('common_exchange_label')
+        label: this.i18n.get('common_exchange_label'),
+        hidden: this.appUtilsService.isDistributed
       },
       {
         value: `${DataMap.Resource_Type.KingBaseCluster.value},${DataMap.Resource_Type.KingBaseInstance.value},${DataMap.Resource_Type.KingBaseClusterInstance.value}`,
@@ -262,6 +278,10 @@ export class SearchComponent implements OnInit, OnDestroy {
         label: this.i18n.get('SAP HANA')
       },
       {
+        value: `${DataMap.Resource_Type.Saponoracle.value},${DataMap.Resource_Type.saponoracleDatabase.value}`,
+        label: this.i18n.get('common_sap_on_oracle_label')
+      },
+      {
         value: `${DataMap.Resource_Type.generalDatabase.value}`,
         label: this.i18n.get('protection_general_database_label')
       },
@@ -284,6 +304,10 @@ export class SearchComponent implements OnInit, OnDestroy {
       {
         value: `${DataMap.Resource_Type.hyperVCluster.value},${DataMap.Resource_Type.hyperVHost.value},${DataMap.Resource_Type.hyperVVm.value},${DataMap.Resource_Type.hyperVScvmm.value}`,
         label: this.i18n.get('common_hyperv_label')
+      },
+      {
+        value: `${DataMap.Resource_Type.nutanixCluster.value},${DataMap.Resource_Type.nutanixHost.value},${DataMap.Resource_Type.nutanixVm.value}`,
+        label: this.i18n.get('common_nutanix_label')
       },
       {
         value: `${DataMap.Resource_Type.Kubernetes.value},${DataMap.Resource_Type.KubernetesNamespace.value},${DataMap.Resource_Type.KubernetesStatefulset.value}`,
@@ -355,6 +379,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     ],
     this.i18n.get('deploy_type')
   );
+  labelRefreshStore$: Subscription = new Subscription();
 
   @ViewChild(ResourceListComponent, { static: false })
   resourceListComponent: ResourceListComponent;
@@ -398,6 +423,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       'currentCluster',
       encodeURIComponent(JSON.stringify(this.currentCluster))
     );
+    this.labelRefreshStore$.unsubscribe();
   }
 
   ngOnInit() {
@@ -407,6 +433,37 @@ export class SearchComponent implements OnInit, OnDestroy {
         v => v.value === SearchRange.LABELS
       );
     }
+
+    if (this.appUtilsService.isDistributed) {
+      this.resourceTypeFilters[
+        this.searchOptions.RESOURCES
+      ] = this.resourceTypeFilters[
+        this.searchOptions.RESOURCES
+      ].filter(resource =>
+        E6000SupportAppValue.some(item =>
+          resource.value.split(',').includes(item)
+        )
+      );
+
+      const supprotFilterType = [
+        FilterType.Fileset,
+        FilterType.VimVirtualMachine,
+        FilterType.NasShare,
+        FilterType.FusionCompute,
+        FilterType.FusionOneCompute,
+        FilterType.OpenstackCloudServer,
+        FilterType.HCSCloudHost
+      ];
+      this.resourceTypeFilters[
+        this.searchOptions.COPIES
+      ] = this.resourceTypeFilters[this.searchOptions.COPIES].filter(resource =>
+        supprotFilterType.some(item =>
+          resource.value.split(',').includes(String(item))
+        )
+      );
+      this.resourceTypeOption = this.resourceTypeFilters[this.activeIndex];
+    }
+
     assign(this.resourceTypeFilters, {
       [this.searchOptions.LABELS]: this.resourceTypeFilters[
         this.searchOptions.RESOURCES
@@ -424,19 +481,19 @@ export class SearchComponent implements OnInit, OnDestroy {
     } else {
       this.currentCluster = currentCluster;
     }
-
+    this.getStore();
     this.initForm();
     this.initResValues();
     this.getAdvanceParams();
-    this.getLabelOptions();
+    this.getLabelOptions(false);
   }
 
-  getLabelOptions() {
+  getLabelOptions(akLoading?) {
     const extParams = {
       startPage: CommonConsts.PAGE_START_EXTRA,
-      akLoading: true
+      akLoading: akLoading
     };
-
+    this.tagLoading = true;
     this.appUtilsService.getResourceByRecursion(
       extParams,
       params => this.labelApiService.queryLabelUsingGET(params),
@@ -449,9 +506,16 @@ export class SearchComponent implements OnInit, OnDestroy {
             isLeaf: true
           };
         });
+        this.tagLoading = false;
         this.labelOptions = arr;
       }
     );
+  }
+
+  getStore() {
+    this.labelRefreshStore$ = this.globalService
+      .getState('labelResearch')
+      .subscribe(() => this.getLabelOptions(false));
   }
 
   initForm() {
@@ -670,7 +734,8 @@ export class SearchComponent implements OnInit, OnDestroy {
         `${FilterType.HCSCloudHost}`,
         `${FilterType.OpenstackCloudServer}`,
         `${FilterType.APSCloudServer}`,
-        `${FilterType.CnwareVm}`
+        `${FilterType.CnwareVm}`,
+        `${FilterType.NutanixVm}`
       ]
     });
   }

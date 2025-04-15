@@ -30,23 +30,23 @@ export Compile_image="Y"
 export OPENSOURCE_BUILD="Y"
 
 # 外置插件包编译
-cd ${WORKSPACE}/REST_API/src
-sh ProtectAgent/component/protectagent/protectagent/Agent/ci/script/build_pkg_opensource.sh
+cd ${code_path}/src
+sh ProtectAgent/component/protectagent/protectagent/Agent/ci/script/build_pkg_opensource.sh || exit 1
 
 # 镜像模块编译
 
-cd ${WORKSPACE}/REST_API/src
-sh Infrastructure_OM/infrastructure/script/build_opensource.sh mspkg
+cd ${code_path}/src
+sh Infrastructure_OM/infrastructure/script/build_opensource.sh mspkg || exit 1
 
-cd ${WORKSPACE}/REST_API/src
-sh ProtectManager/CI/script/build_opensource.sh ${binary_path}/ "$@"
+cd ${code_path}/src
+sh ProtectManager/CI/script/build_opensource.sh ${binary_path}/ "$@" || exit 1
 
-cd ${WORKSPACE}/REST_API/src
-sh DataMoveEngine/build/build_opensource.sh ${binary_path}/
+cd ${code_path}/src
+sh DataMoveEngine/build/build_opensource.sh ${binary_path}/ || exit 1
 
 
 # build final pkg
-cd ${WORKSPACE}/REST_API/src
+cd ${code_path}/src
 
 
 # INF & PM 大包
@@ -55,7 +55,7 @@ export BUILD_MODULE=system_pm
 export BUILD_PKG_TYPE=OpenSource
 
 # 镜像制作
-sh DPAProduct/CI/script/Package_100P.sh
+sh DPAProduct/CI/script/Package_100P.sh || exit 1
 
 # DME 大包
 # open-eBackup_1.x.0_MediaServer.tgz
@@ -63,5 +63,5 @@ export BUILD_MODULE=system_dme
 export BUILD_PKG_TYPE=OpenSource
 
 # 镜像制作
-sh DPAProduct/CI/script/Package_100P.sh
+sh DPAProduct/CI/script/Package_100P.sh || exit 1
 

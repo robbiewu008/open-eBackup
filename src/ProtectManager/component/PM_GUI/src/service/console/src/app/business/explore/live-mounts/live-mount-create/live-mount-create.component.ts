@@ -1,19 +1,21 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { MessageboxService, ModalRef } from '@iux/live';
 import {
+  BaseUtilService,
   DataMap,
   GlobalService,
   I18NService,
@@ -22,7 +24,10 @@ import {
   MODAL_COMMON,
   WarningMessageService
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { assign, filter, first, intersection, size } from 'lodash';
+import { LiveMountOptionsComponent as CnwareLiveMountOptionsComponent } from '../cnware/live-mount-options/live-mount-options.component';
+import { LiveMountSummaryComponent as CnwareLiveMountSummaryComponent } from '../cnware/live-mount-summary/live-mount-summary.component';
 import { LiveMountOptionsComponent as FilesetLiveMountOptionsComponent } from '../fileset/live-mount-options/live-mount-options.component';
 import { LiveMountSummaryComponent as FilesetLiveMountSummaryComponent } from '../fileset/live-mount-summary/live-mount-summary.component';
 import { LiveMountOptionsComponent as NasSharedLiveMountOptionsComponent } from '../nas-shared/live-mount-options/live-mount-options.component';
@@ -31,8 +36,6 @@ import { LiveMountOptionsComponent as OracleLiveMountOptionsComponent } from '..
 import { LiveMountSummaryComponent as OracleLiveMountSummaryComponent } from '../oracle/live-mount-summary/live-mount-summary.component';
 import { LiveMountOptionsComponent as VMwareLiveMountOptionsComponent } from '../vmware/live-mount-options/live-mount-options.component';
 import { LiveMountSummaryComponent as VMwareLiveMountSummaryComponent } from '../vmware/live-mount-summary/live-mount-summary.component';
-import { LiveMountOptionsComponent as CnwareLiveMountOptionsComponent } from '../cnware/live-mount-options/live-mount-options.component';
-import { LiveMountSummaryComponent as CnwareLiveMountSummaryComponent } from '../cnware/live-mount-summary/live-mount-summary.component';
 import { SelectCopyDataComponent } from './select-copy-data/select-copy-data.component';
 import { SelectResourceComponent } from './select-resource/select-resource.component';
 
@@ -84,7 +87,10 @@ export class LiveMountCreateComponent implements OnInit {
 
   constructor(
     public modal: ModalRef,
-    private i18n: I18NService,
+    public baseUtilService: BaseUtilService,
+    public appUtilsService: AppUtilsService,
+    private fb: FormBuilder,
+    public i18n: I18NService,
     private datePipe: DatePipe,
     private globalService: GlobalService,
     private messageBox: MessageboxService,
@@ -240,7 +246,8 @@ export class LiveMountCreateComponent implements OnInit {
       } else if (
         !!size(
           intersection(this.componentData.childResourceType, [
-            DataMap.Resource_Type.fileset.value
+            DataMap.Resource_Type.fileset.value,
+            DataMap.Resource_Type.volume.value
           ])
         )
       ) {
@@ -248,6 +255,7 @@ export class LiveMountCreateComponent implements OnInit {
           JSON.parse(
             this.componentData?.selectionCopy?.resource_properties || '{}'
           )['environment_os_type'] === DataMap.Os_Type.windows.value;
+        this.filesetLiveMountOptionsComponent.addHcsWindowsUser();
         this.filesetLiveMountOptionsComponent.setValidForm();
         this.filesetLiveMountOptionsComponent.hostOptions = filter(
           this.filesetLiveMountOptionsComponent.hostOptionsCache,
@@ -258,6 +266,32 @@ export class LiveMountCreateComponent implements OnInit {
             )['environment_os_type']
         );
         this.filesetLiveMountOptionsComponent.formGroup.updateValueAndValidity();
+        if (
+          !!size(
+            intersection(this.componentData.childResourceType, [
+              DataMap.Resource_Type.volume.value
+            ])
+          )
+        ) {
+          const properties = JSON.parse(
+            this.componentData?.selectionCopy?.properties || '{}'
+          );
+          const volumeArray = properties.volumeInfoSet;
+          this.filesetLiveMountOptionsComponent.volumeTableData = {
+            data: volumeArray.map(item => {
+              return assign(item, {
+                name: item.mountPoint,
+                fileSystem: item.mountType,
+                volumeFormGroup: this.fb.group({
+                  path: new FormControl('', {
+                    validators: this.baseUtilService.VALID.maxLength(256)
+                  })
+                })
+              });
+            }),
+            total: size(volumeArray)
+          };
+        }
       } else if (
         !!size(
           intersection(this.componentData.childResourceType, [
@@ -411,23 +445,7 @@ export class LiveMountCreateComponent implements OnInit {
         lvWidth: MODAL_COMMON.normalWidth,
         lvContent: this.confirmTpl,
         lvOk: () => {
-          this.liveMountApiService
-            .createLiveMountUsingPOST({
-              liveMountObject: this.componentData.requestParams
-            })
-            .subscribe(
-              res => {
-                this.modal.close();
-                this.isLoading = false;
-                this.globalService.emitStore({
-                  action: LiveMountAction.Create,
-                  state: ''
-                });
-              },
-              err => {
-                this.isLoading = false;
-              }
-            );
+          this.executeLiveMount();
         },
         lvCancel: () => {
           this.isLoading = false;
@@ -440,6 +458,39 @@ export class LiveMountCreateComponent implements OnInit {
       return;
     }
 
+    if (
+      this.appUtilsService.isDistributed &&
+      this.componentData?.selectionCopy?.generated_by ===
+        DataMap.CopyData_generatedType.replicate.value &&
+      !!size(
+        intersection(this.componentData.childResourceType, [
+          DataMap.Resource_Type.oracle.value,
+          DataMap.Resource_Type.MySQLInstance.value,
+          DataMap.Resource_Type.tdsqlInstance.value,
+          DataMap.Resource_Type.virtualMachine.value
+        ])
+      )
+    ) {
+      this.warningMessageService.create({
+        header: this.i18n.get('explore_distributed_live_mount_header_label'),
+        width: MODAL_COMMON.normalWidth,
+        content: this.i18n.get('explore_distributed_live_mount_tip_label'),
+        onOK: () => {
+          this.executeLiveMount();
+        },
+        onCancel: () => {
+          this.isLoading = false;
+        },
+        lvAfterClose: () => {
+          this.isLoading = false;
+        }
+      });
+    } else {
+      this.executeLiveMount();
+    }
+  }
+
+  private executeLiveMount() {
     this.liveMountApiService
       .createLiveMountUsingPOST({
         liveMountObject: this.componentData.requestParams

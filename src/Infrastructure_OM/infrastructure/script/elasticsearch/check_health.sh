@@ -16,15 +16,13 @@
 # See the MPL v2 for more details.
 ########################################
 
-function check_application_and_port()
-{
-    netstat -tunple | grep elasticsearch_port >> /dev/null &&
-    ps aux | grep elasticsearch | grep -v grep >> /dev/null
+function check_application_and_port() {
+  netstat -tunple | grep elasticsearch_port >>/dev/null &&
+    ps aux | grep elasticsearch | grep -v grep >>/dev/null
 }
 
-function main()
-{
-    check_application_and_port
+function main() {
+  check_application_and_port
 }
 
 main

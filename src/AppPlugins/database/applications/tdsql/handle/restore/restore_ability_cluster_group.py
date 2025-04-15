@@ -110,10 +110,11 @@ class RestoreAbilityClusterGroup:
             raise Exception(f"Failed to parse job param file for {err_code}") from err_code
         if not body_param:
             raise Exception(f"Failed to parse job param file is none")
-        restore_inst = RestoreClusterGroup(req_id, job_id, sub_id, data, body_param)
-        result = restore_inst.do_post()
-        if not result:
-            output.code = ExecuteResultEnum.INTERNAL_ERROR
+        try:
+            RestoreClusterGroup(req_id, job_id, sub_id, data, body_param).do_post()
+        except Exception as ex:
+            log.error(f"Failed to execute post job, umount or unlink failed,job_id: {job_id}, exp: {ex}")
+            return ExecuteResultEnum.INTERNAL_ERROR
         output_result_file(req_id, output.dict(by_alias=True))
         return ExecuteResultEnum.SUCCESS
 

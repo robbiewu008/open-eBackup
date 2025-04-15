@@ -12,21 +12,28 @@
 */
 package openbackup.clickhouse.plugin.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.clickhouse.plugin.constant.ClickHouseConstant;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceFeature;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.provider.DatabaseResourceProvider;
-
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ClickHouse资源供应器
@@ -35,6 +42,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class ClickHouseResourceProvider extends DatabaseResourceProvider {
+    private ResourceService resourceService;
+
     /**
      * DatabaseResourceProvider
      *
@@ -45,9 +54,26 @@ public class ClickHouseResourceProvider extends DatabaseResourceProvider {
         super(providerManager, pluginConfigManager);
     }
 
+    @Autowired
+    public void setResourceService(ResourceService resourceService) {
+        this.resourceService = resourceService;
+    }
+
     @Override
     public boolean applicable(ProtectedResource protectedResource) {
         return ResourceSubTypeEnum.CLICK_HOUSE.equalsSubType(protectedResource.getSubType());
+    }
+
+    /**
+     * 资源重名检查配置
+     *
+     * @return clickhouse表集注册重名检查配置
+     */
+    @Override
+    public ResourceFeature getResourceFeature() {
+        ResourceFeature resourceFeature = new ResourceFeature();
+        resourceFeature.setShouldCheckResourceNameDuplicate(false);
+        return resourceFeature;
     }
 
     @Override
@@ -69,5 +95,33 @@ public class ClickHouseResourceProvider extends DatabaseResourceProvider {
     @Override
     public void beforeUpdate(ProtectedResource resource) {
         beforeCreate(resource);
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        if (ResourceTypeEnum.CLUSTER.equalsType(resource.getType())) {
+            Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+            List<ProtectedResource> children = resourceService.queryDependencyResources(true,
+                DatabaseConstants.CHILDREN, Collections.singletonList(resource.getUuid()));
+            for (ProtectedResource child : children) {
+                Map<String, List<ProtectedResource>> childDependencies = new HashMap<>();
+                List<ProtectedResource> agents = resourceService.queryDependencyResources(true,
+                    DatabaseConstants.AGENTS, Collections.singletonList(child.getUuid()));
+                childDependencies.put(DatabaseConstants.AGENTS, agents);
+                child.setDependencies(childDependencies);
+            }
+            dependencies.put(DatabaseConstants.CHILDREN, children);
+            resource.setDependencies(dependencies);
+            return true;
+        } else if (ResourceTypeEnum.TABLESET.equalsType(resource.getType())) {
+            Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+            List<ProtectedResource> children = resourceService.queryDependencyResources(true,
+                DatabaseConstants.CHILDREN, Collections.singletonList(resource.getUuid()));
+            dependencies.put(DatabaseConstants.CHILDREN, children);
+            resource.setDependencies(dependencies);
+            return true;
+        } else {
+            return true;
+        }
     }
 }

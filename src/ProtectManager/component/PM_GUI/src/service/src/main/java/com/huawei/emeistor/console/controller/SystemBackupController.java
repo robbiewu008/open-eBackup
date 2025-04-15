@@ -14,6 +14,7 @@ package com.huawei.emeistor.console.controller;
 
 import com.huawei.emeistor.console.contant.CommonErrorCode;
 import com.huawei.emeistor.console.contant.ConfigConstant;
+import com.huawei.emeistor.console.controller.request.UploadSystemBackupRequest;
 import com.huawei.emeistor.console.exception.LegoCheckedException;
 import com.huawei.emeistor.console.exterattack.ExterAttack;
 import com.huawei.emeistor.console.util.ExceptionUtil;
@@ -39,7 +40,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
@@ -107,16 +107,13 @@ public class SystemBackupController extends AdvBaseController {
      *
      * @param request 请求
      * @param response 响应
-     * @param file MultipartFile
-     * @param isNeedSignVerify 是否验签
-     * @param password 加密密码
+     * @param uploadSystemBackupRequest 上传镜像文件请求体
      * @throws IOException IO异常
      */
     @ExterAttack
     @PostMapping("/images")
     public void uploadBackup(HttpServletRequest request, HttpServletResponse response,
-        @RequestParam("file") MultipartFile file, @RequestParam(value = "password", required = false) String password,
-        @RequestParam(value = "needSignVerify", defaultValue = "true") boolean isNeedSignVerify) throws IOException {
+                             UploadSystemBackupRequest uploadSystemBackupRequest) throws IOException {
         log.info("uploadBackup start");
         // 请求转发
         HttpHeaders headers = requestUtil.getForwardHeaderAndValidCsrf();
@@ -124,22 +121,23 @@ public class SystemBackupController extends AdvBaseController {
         restTemplate.exchange(sysbackupApi + SEARCH_DEFAULT_POLICY, HttpMethod.GET, httpEntity1, Map.class);
 
         // 1、创建本地中转文件
-        verifyFileName(Objects.requireNonNull(file.getOriginalFilename()));
+        verifyFileName(Objects.requireNonNull(uploadSystemBackupRequest.getFile().getOriginalFilename()));
         String folderPath = UPLOAD_TEMP_PATH + SYSBACKUP + System.currentTimeMillis() + "/";
-        File localFile = this.createLocalTempFile(file, folderPath);
+        File localFile = this.createLocalTempFile(uploadSystemBackupRequest.getFile(), folderPath);
         try {
             log.info("local file created, uploadBackup start");
             // 2、转发base_common服务处理
             HttpEntity<MultiValueMap<String, FileSystemResource>> httpEntity = this.buildUploadHttpEntity(request,
                 localFile);
             ResponseEntity<Object> responseEntity;
-            if (org.apache.commons.lang3.StringUtils.isBlank(password)) {
+            if (org.apache.commons.lang3.StringUtils.isBlank(uploadSystemBackupRequest.getPassword())) {
                 responseEntity = restTemplate.postForEntity(super.normalizeForString(sysbackupApi + SYSBACKUP_IMAGES),
                     httpEntity, Object.class);
             } else {
                 responseEntity = restTemplate.postForEntity(super.normalizeForString(
-                        sysbackupApi + SYSBACKUP_IMAGES + "?password=" + password
-                            + "&needSignVerify=" + isNeedSignVerify),
+                        sysbackupApi + SYSBACKUP_IMAGES + "?password=" + uploadSystemBackupRequest.getPassword()
+                            + "&needSignVerify=" + uploadSystemBackupRequest.isNeedSignVerify() + "&superDmPwd="
+                            + uploadSystemBackupRequest.getSuperDmPwd()),
                     httpEntity, Object.class);
             }
             response.setStatus(responseEntity.getStatusCodeValue());

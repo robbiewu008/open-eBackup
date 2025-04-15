@@ -12,6 +12,8 @@
 */
 package openbackup.data.protection.access.provider.sdk.resourcegroup.resp;
 
+import com.huawei.oceanprotect.system.base.label.entity.LabelVo;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,4 +48,10 @@ public class ResourceGroupVo {
     private String userId;
 
     private List<ResourceGroupMemberVo> resourceGroupMembers;
+
+    private List<LabelVo> labelList;
+
+    private String groupType;
+
+    private String extendStr;
 }

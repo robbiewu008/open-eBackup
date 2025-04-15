@@ -12,10 +12,10 @@
   -->
 
 <div class="common-sub-aui-fullpage">
-    <div class="common-sub-header">
+    <div class="common-sub-header" *ngIf="!isPrivateCloud">
         <aui-sub-app-card [subApp]="subApp" [typeTitle]="typeTitle"></aui-sub-app-card>
     </div>
-    <div class="common-sub-content">
+    <div [ngClass]="{'common-sub-content': !isPrivateCloud, 'private-sub-content': isPrivateCloud}">
         <router-outlet></router-outlet>
     </div>
 </div>

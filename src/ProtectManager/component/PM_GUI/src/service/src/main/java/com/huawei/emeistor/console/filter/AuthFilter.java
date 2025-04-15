@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -44,6 +45,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Slf4j
 public class AuthFilter extends OncePerRequestFilter {
+    private final String guiPath = "/app/gui/frontend";
+
     @Value("#{'${security.auth.white.list.uri}'.split(',')}")
     private List<String> authWhiteListUri;
 
@@ -64,7 +67,12 @@ public class AuthFilter extends OncePerRequestFilter {
         throws ServletException, IOException {
         String uri = request.getRequestURI();
         if (whiteBox.contains(uri)) {
-            response.setStatus(HttpStatus.SC_NOT_FOUND);
+            File file = new File(guiPath + uri);
+            if (file.exists()) {
+                filterChain.doFilter(request, response);
+            } else {
+                response.setStatus(HttpStatus.SC_NOT_FOUND);
+            }
         } else if (authWhiteListUri.contains(uri) || authWhiteListStatic.contains(uri) || isMatchStaticRegex(uri)
             || isAuth()) {
             filterChain.doFilter(request, response);

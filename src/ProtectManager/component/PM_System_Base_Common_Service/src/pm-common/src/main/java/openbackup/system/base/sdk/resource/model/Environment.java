@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = {"password"})
 public class Environment extends ResourceEntity {
     /**
      * host offline

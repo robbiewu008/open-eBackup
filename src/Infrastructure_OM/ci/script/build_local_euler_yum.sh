@@ -15,9 +15,9 @@
 # See the MPL v2 for more details.
 ########################################
 
-PACKAGE1="EulerOS_Server_V200R011C00SPC500B750.tar.gz"
+PACKAGE1="EulerOS_Server_V200R012C00SPC500B750.tar.gz"
 PACKAGE2="devel_tools.tar.gz"
-PACKAGE5="EulerOS-Virtual-V200R011C00SPC500B062-aarch64.tar.gz"
+PACKAGE5="EulerOS-Virtual-V200R012C00SPC502B016-aarch64.tar.gz"
 PACKAGE6="Euler_compile_RPMS-aarch64.tar.gz"
 
 CURRENT_PATH=$(cd `dirname $0`; pwd)

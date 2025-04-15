@@ -12,31 +12,31 @@
   -->
 
 <h2 class='aui-gutter-column-md'>{{ 'explore_snapshot_detection_label' | i18n }}</h2>
-<div class="list-container">
+<div class="list-container" width="100%">
     <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
 </div>
 <ng-template #statisticsTpl let-item>
-    <span class="statistics-tag protected-background"
+    <span class="statistics-tag protected-background protected"
         (click)="getRepicasDetail(item)">
         <span class="statistics-label">{{'common_protected_label' | i18n}}</span>
-        <span class='count-label'>{{item.protectedCount}}</span>
+        <span class='count-label'>{{item.protectedCount > 999 ? '999+' : item.protectedCount}}</span>
     </span>
     <span class="statistics-tag unprotected-background"
         (click)="getRepicasDetail(item)">
         <span class="statistics-label">{{'common_unprotected_label' | i18n}}</span>
-        <span class='count-label'>{{item.unprotectedCount}}</span>
+        <span class='count-label'>{{item.unprotectedCount > 999 ? '999+' : item.unprotectedCount}}</span>
     </span>
 </ng-template>
 
 <ng-template #lunStatisticsTpl let-item>
-    <span class="statistics-tag protected-background"
+    <span class="statistics-tag protected-background protected"
         (click)="getRepicasDetail(item)">
         <span class="statistics-label">{{'common_protected_label' | i18n}}</span>
-        <span class='count-label'>{{item.protectedCount}}</span>
+        <span class='count-label'>{{item.protectedCountLun > 999 ? '999+' : item.protectedCountLun}}</span>
     </span>
     <span class="statistics-tag unprotected-background"
         (click)="getRepicasDetail(item)">
         <span class="statistics-label">{{'common_unprotected_label' | i18n}}</span>
-        <span class='count-label'>{{item.unprotectedCount}}</span>
+        <span class='count-label'>{{item.unprotectedCountLun > 999 ? '999+' : item.unprotectedCountLun}}</span>
     </span>
 </ng-template>

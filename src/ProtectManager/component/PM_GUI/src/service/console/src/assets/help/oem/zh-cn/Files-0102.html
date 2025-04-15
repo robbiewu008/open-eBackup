@@ -1,0 +1,86 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="应用临时快照文件删除失败">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="Files-0095.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="Files-0102">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>应用临时快照文件删除失败</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="Files-0102"></a><a name="Files-0102"></a>
+  <h1 class="topictitle1">应用临时快照文件删除失败</h1>
+  <div>
+   <div class="section" id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_section530911285414">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_p10852124919310">当执行文件集一致性备份时，任务事件中出现“删除文件集快照失败”，同时产生相应告警。</p>
+   </div>
+   <div class="section" id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_section5495182563111">
+    <h4 class="sectiontitle">可能原因</h4>
+    <ol id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_ol20913202163219">
+     <li id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_li1391310219320">快照挂载路径被占用导致无法卸载快照</li>
+     <li id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_li20913226323">备份过程中生产数据变化量大于快照大小，导致快照被占满</li>
+    </ol>
+   </div>
+   <div class="section" id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_section3655105336">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <p id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_p0710135193213"><strong id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_b5116828103219">Linux文件集</strong></p>
+    <ol id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_ol179105501323">
+     <li id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_li159101050153220"><span>根据事件内容获取残留的快照名<span style="color:#282B33;">snapshot_name</span>，例如：<span style="color:#282B33;">/dev/date/snap_lv1_97fd62d2-4074-496a-82f5-4e054b17c2f6</span>。</span></li>
+     <li id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_li20339195617345"><span>登录客户端所在主机。</span></li>
+     <li id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_li1076162610560"><span>执行<strong id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_b15316204116563">df -m</strong>命令，查看残留的快照。</span></li>
+     <li id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_li1971616108334"><span>执行<strong id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_b167161617133417">umount -l </strong><em style="color:#282B33;" id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_i172841719345">snapshot_name</em>命令<span style="color:#282B33;">，卸载已挂载的快照，若快照已被卸载可忽略</span>。</span></li>
+     <li id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_li613673953413"><span>执行<strong id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_b2985133783519">lvremove -f </strong><em id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_i242913381353"><span style="color:#282B33;">snapshot_name</span></em>命令<span style="color:#282B33;">，删除残留快照。</span></span></li>
+    </ol>
+    <p id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_p16832144123515"><strong id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_b6680165310352">AIX文件集</strong></p>
+    <ol id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_ol371545693516">
+     <li id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_li1371565673511"><span>根据事件内容获取残留的快照名<span style="color:#282B33;">snapshot_name</span>，例如：<span style="color:#282B33;">/dev/fslv08。</span></span></li>
+     <li id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_li10199173920368"><span>登录客户端所在主机。</span></li>
+     <li id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_li365813311576"><span>执行<strong id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_b4658931175715">df -m</strong>命令，查看残留的快照。</span></li>
+     <li id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_li1972413063619"><span>执行<strong id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_b8141157133613">umount -f </strong><em style="color:#282B33;" id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_i648515612373">snapshot_name</em>命令<span style="color:#282B33;">，卸载已挂载的快照，若快照已被卸载可忽略。</span></span></li>
+     <li id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_li15119151919372"><span>执行<strong id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_b173931136143711">snapshot -d </strong><em style="color:#282B33;" id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_i57121183810">snapshot_name</em>命令<span style="color:#282B33;">，删除残留快照。</span></span></li>
+    </ol>
+   </div>
+   <div class="section" id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_section590752117443">
+    <h4 class="sectiontitle">建议与总结</h4>
+    <p id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_p15225181517409">无。</p>
+   </div>
+   <div class="section" id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_section1227093194410">
+    <h4 class="sectiontitle">参考信息</h4>
+    <p id="Files-0102__zh-cn_topic_0000002164614264_zh-cn_topic_0000001957156785_p1622554024412">无。</p>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="Files-0095.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

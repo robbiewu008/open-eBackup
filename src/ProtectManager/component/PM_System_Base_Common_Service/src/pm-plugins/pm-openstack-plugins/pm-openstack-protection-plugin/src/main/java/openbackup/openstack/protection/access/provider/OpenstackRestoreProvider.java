@@ -12,9 +12,17 @@
 */
 package openbackup.openstack.protection.access.provider;
 
+import openbackup.openstack.protection.access.constant.OpenstackConstant;
+
+import com.alibaba.fastjson.JSON;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.access.framework.resource.persistence.dao.ProtectedResourceMapper;
+import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentListener;
 import openbackup.data.access.framework.core.common.util.RestoreUtil;
 import openbackup.data.protection.access.provider.sdk.anti.ransomware.CopyRansomwareService;
+import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnum;
@@ -26,21 +34,17 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreInterceptorProvider;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
-import openbackup.openstack.protection.access.constant.OpenstackConstant;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
+import openbackup.system.base.common.utils.VersionRangeChecker;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.MessageTemplate;
-
-import com.alibaba.fastjson.JSON;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +91,8 @@ public class OpenstackRestoreProvider implements RestoreInterceptorProvider {
 
     private CopyRansomwareService copyRansomwareService;
 
+    private ProtectedResourceMapper protectedResourceMapper;
+
     public OpenstackRestoreProvider(ResourceService resourceService, CopyRestApi copyRestApi,
         MessageTemplate<String> messageTemplate) {
         this.resourceService = resourceService;
@@ -97,6 +103,11 @@ public class OpenstackRestoreProvider implements RestoreInterceptorProvider {
     @Autowired
     public void setCopyRansomwareService(CopyRansomwareService copyRansomwareService) {
         this.copyRansomwareService = copyRansomwareService;
+    }
+
+    @Autowired
+    public void setProtectedResourceMapper(ProtectedResourceMapper protectedResourceMapper) {
+        this.protectedResourceMapper = protectedResourceMapper;
     }
 
     @Override
@@ -138,6 +149,11 @@ public class OpenstackRestoreProvider implements RestoreInterceptorProvider {
         if (OpenstackConstant.VOLUME_RESTORE.equals(restoreLevel)
                 && RestoreLocationEnum.ORIGINAL.equals(task.getTargetLocation())) {
             checkSubObjectsNotEmpty(task);
+        }
+
+        // 整机恢复场景下不可以选1.3版本及以下的代理
+        if (OpenstackConstant.VM_RESTORE.equals(restoreLevel)) {
+            filterAgentVersion(task);
         }
         log.info("end Openstack restore interception.taskId:{}, targetId:{}", taskId, targetId);
         return task;
@@ -292,5 +308,23 @@ public class OpenstackRestoreProvider implements RestoreInterceptorProvider {
                 throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, "illegal parameter");
             }
         }
+    }
+
+    private void filterAgentVersion(RestoreTask task) {
+        List<Endpoint> agents = task.getAgents();
+        if (VerifyUtil.isEmpty(agents)) {
+            return;
+        }
+        List<String> ids = agents.stream().map(Endpoint::getId).collect(Collectors.toList());
+        List<ProtectedResourcePo> protectedResources = protectedResourceMapper.listResourceByUuid(
+            ids);
+        Map<String, String> versionMap = protectedResources.stream()
+            .collect(Collectors.toMap(ProtectedResourcePo::getUuid, ProtectedResourcePo::getVersion));
+        List<Endpoint> agentsFilter = agents.stream().filter(agent -> VersionRangeChecker
+            .isFeatureSupportedCompareWithMinor(VersionRangeChecker.FEATURE_OPENSTACK_RESTORE_VM,
+                versionMap.get(agent.getId()), false)).collect(Collectors.toList());
+        task.setAgents(agentsFilter);
+        log.info("op vm restore can't select agent <= 1.3, job:{},orgSize:{},newSize:{},",
+            task.getRequestId(), agents.size(), agentsFilter.size());
     }
 }

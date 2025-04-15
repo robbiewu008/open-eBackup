@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -36,6 +36,7 @@ import {
   ProtectedEnvironmentApiService,
   ProtectedResourceApiService,
   RoleOperationMap,
+  SetTagType,
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -68,6 +69,7 @@ import { combineLatest } from 'rxjs';
 import { ClusterDetailComponent } from './cluster-detail/cluster-detail.component';
 import { RegisterClusterComponent } from './register-cluster/register-cluster.component';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
+import { GetLabelOptionsService } from '../../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-clusters',
@@ -101,7 +103,8 @@ export class ClustersComponent implements OnInit, AfterViewInit {
     private warningMessageService: WarningMessageService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit() {
@@ -129,9 +132,10 @@ export class ClustersComponent implements OnInit, AfterViewInit {
     if (!isEmpty(filters.conditions_v2)) {
       const conditionsTemp = JSON.parse(filters.conditions_v2);
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
@@ -277,15 +281,18 @@ export class ClustersComponent implements OnInit, AfterViewInit {
       },
       {
         key: 'agents',
-        name: this.i18n.get('protection_proxy_host_label'),
+        name: this.i18n.get('protection_client_label'),
         cellRender: this.agentsTpl
       },
       {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -332,6 +339,7 @@ export class ClustersComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable?.setSelections([]);

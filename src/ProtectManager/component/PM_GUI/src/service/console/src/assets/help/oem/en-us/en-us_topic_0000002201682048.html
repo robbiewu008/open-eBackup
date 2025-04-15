@@ -1,0 +1,186 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Pod Configuration in the Production Environment for Application-Consistent Backup (PostgreSQL as the Containerized Application)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164749778.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002201682048">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Pod Configuration in the Production Environment for Application-Consistent Backup (PostgreSQL as the Containerized Application)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002201682048"></a><a name="EN-US_TOPIC_0000002201682048"></a>
+  <h1 class="topictitle1">Pod Configuration in the Production Environment for Application-Consistent Backup (PostgreSQL as the Containerized Application)</h1>
+  <div>
+   <p>If there are multiple pre- or post-processing commands for creating a snapshot for a PVC, you can write multiple pre-executed commands to the same script and save the script to the persistent directory of a container. Running the script to execute multiple commands simplifies the command input process.</p>
+   <p>The following are examples of the pre- and post-processing commands:</p>
+   <pre class="screen">#Pre-processing command script
+#!/bin/bash
+#Save the table locking command to the <strong>/tmp/op_lock_pgsql.sql</strong> file. The table locking command is used to ensure that all tables in public mode in the PostgreSQL database are locked during the container backup process.
+#Note: Set the sleep time in the <strong>SELECT pg_sleep(time);</strong> command to a large value to ensure that these tables are locked during the container backup process. In the post-processing script, a command is used to stop table locking.
+echo "begin;DO \$\$ DECLARE    row record; BEGIN   FOR row IN SELECT tablename FROM pg_tables WHERE schemaname = 'public'  LOOP  EXECUTE 'LOCK TABLE ' || quote_ident(row.tablename) || ' IN EXCLUSIVE MODE';  END LOOP; END \$\$; SELECT pg_sleep(3000); commit;" &gt; /tmp/op_lock_pgsql.sql;
+#Store the output of the SQL statement for locking tables, which helps you determine whether the tables are locked successfully.
+file_path="/tmp/DataBackup.txt"
+rm -rf "$file_path"
+#Switch to an OS user who has the permission to use the PSQL tool to connect to the database.
+#Note: This operation is not required if user <strong>root</strong> can use the PSQL tool to connect to the database.
+#su - postgres &lt;&lt;'END'
+#You can place some commands (optional) that can be executed only in the environment after user switching. For example, you can run the following command to configure the environment variable <strong>PGPASSWORD</strong>. As such, you can directly access the database without entering the password for subsequent operations. <strong>postgres</strong> refers to the user password. Replace it with the actual password.
+#export PGPASSWORD='postgres'
+#Use the PSQL tool to connect to the database and run the following command to forcibly trigger a checkpoint to write the transaction data that has been committed before tables are locked but is not flushed to disks into disks.
+#Note: <strong>myuser</strong> indicates the database username, <strong>mydb</strong> indicates the database instance name, <strong>127.0.0.1</strong> indicates the IP address of the database instance, and <strong>5432</strong> (default) indicates the port number of the database instance. Change them based on actual conditions.
+if psql -U myuser -d mydb -h 127.0.0.1 -p 5432 -c "checkpoint;" 2&gt;/dev/null; then
+#If the PostgreSQL database is successfully connected, lock the tables.
+#The following command is used to connect to the database using the PSQL tool and obtain all database names.
+    output=$(psql -U myuser -d mydb -h 127.0.0.1 -p 5432 -c "SELECT datname FROM pg_database;")
+#Save the default separator of the current shell. After the table locking command is executed, the separator is restored.
+    OLD_IFS="$IFS" 
+    IFS=$'\n'
+#Lock all tables in the public schema in all databases saved in <em>output</em>.
+#Note: In exclusive mode, these tables are locked so that they cannot be modified or deleted by other sessions. However, other sessions can still read the contents of these tables.
+    index=0
+    while read -r line; do
+    if [ "${index}" != 0 ] &amp;&amp; [ "${index}" != 1 ]; then
+        prefix="("
+        suffix="rows)"
+        if [[ $line != $prefix* ]] &amp;&amp; [[ $line != *"$suffix" ]]; then
+            line=$(echo "$line" | sed 's/^ *//;s/ *$//')
+            eval "psql -U myuser -d $line -h 127.0.0.1 -p 5432 -f /tmp/op_lock_pgsql.sql &gt;&gt; /tmp/DataBackup.txt 2&gt;&amp;1 &amp;"
+        fi
+    fi
+    (( index++ ))
+    done &lt;&lt;&lt; "$output"
+#Perform loop check on the content of the <strong>file_path</strong> file. If the number of <strong>BEGIN</strong> field occurrences is the same as that of <strong>DO</strong> field occurrences in the file, all tables are locked successfully.
+#Note: Table locking can be performed only after all user transactions are complete. The time for successfully locking tables cannot be estimated. You can determine whether all tables are successfully locked by checking the execution results of table locking statements in the <strong>file_path</strong> file.
+    while true; do
+        # Obtain the number of <strong>DO</strong> occurrences in the file.
+        count_begin=$(grep -o "BEGIN" "$file_path" | wc -l)
+        count_do=$(grep -o "DO" "$file_path" | wc -l)
+
+        # If the number of <strong>DO</strong> field occurrences reaches the number of <strong>BEGIN</strong> field occurrences, the loop exits.
+        if [ "$count_do" -ge "$count_begin" ]; then
+            #echo "Exit the script because the number of <strong>DO</strong> field occurrences reaches the number of <strong>BEGIN</strong> field occurrences."
+            break
+        fi
+
+# Wait 1 second.
+        sleep 10
+    done
+    IFS="$OLD_IFS"#Restore the default separator configuration of shell.
+#The tables are locked successfully.
+    echo "200"
+#The system invokes the sleep function for a period of time to prevent the database tables from being unlocked after the pre-processing script is executed.
+    sleep 3000
+else
+#Failed to connect to the database.
+    echo "0"
+fi
+#If user switching has been performed by running the <strong>su - postgres</strong> command, run the <strong>exit</strong> command to exit the user after the script is executed. Otherwise, you do not need to run the <strong>exit</strong> command.
+#exit
+#END</pre>
+   <pre class="screen">#Post-processing command script
+#!/bin/bash
+#Switch to an OS user who has the permission to use the PSQL tool to connect to the database.
+#Note: This operation is not required if user <strong>root</strong> can use the PSQL tool to connect to the database.
+#su - postgres &lt;&lt;'END'
+#(Optional) You can place some commands that can be executed only in the environment after user switching. For example, you can run the following command to configure the environment variable <strong>PGPASSWORD</strong>. As such, you can directly access the database without entering the password for subsequent operations. <strong>postgres</strong> refers to the user password. Replace it with the actual password.
+#export PGPASSWORD='postgres'
+#Use the PSQL tool to connect to the database and run the following command to forcibly trigger a checkpoint to write the transaction data that has been committed before tables are locked but is not flushed to disks into disks.
+#Note: <strong>myuser</strong> indicates the database username, <strong>mydb</strong> indicates the database instance name, <strong>127.0.0.1</strong> indicates the IP address of the database instance, and <strong>5432</strong> (default) indicates the port number of the database instance. Change them based on actual conditions.
+if psql -U myuser -d mydb -h 127.0.0.1 -p 5432 -c "SELECT 1;" 2&gt;/dev/null; then
+#Connect to the database and obtain the information about the process that contains <strong>pg_sleep</strong>.
+    processes=$(psql -U myuser -d mydb -h 127.0.0.1 -p 5432 -t -c "SELECT pid, state FROM pg_stat_activity WHERE query LIKE '%pg_sleep%'")
+#Check whether the process information is obtained.
+    if [ -z "$processes" ]; then
+        echo "No process containing <strong>pg_sleep</strong> is found."
+    else
+#Traverse each process and terminate all processes that contain <strong>pg_sleep</strong>.
+        while read -r line; do
+            pid=$(echo $line | awk '{print $1}')
+            if [ -n "$pid" ]; then
+                echo "Stopping the process: $pid"
+                psql -U myuser -d mydb -h 127.0.0.1 -p 5432 -c "SELECT pg_terminate_backend($pid);"
+            fi
+        done &lt;&lt;&lt; "$processes"
+    fi
+#If you need to stop execution of the pre-processing script in advance, forcibly stop the sleep process in the pre-processing script. In the command, set <strong>grep</strong> based on the execution result of <strong>ps -ef</strong> in the actual environment, and change the field printed in <strong>awk</strong> based on the <strong>PID</strong> column in the execution result of <strong>ps -ef</strong>.
+    pid=$(ps -ef | grep "/bin/bash /var/lib/postgresql/backup/dataprotect_pgsql_consistency_pre_script.sh" | grep -v grep | awk '{print $1}')  
+    [ ! $pid ] &amp;&amp; echo "pid is null" &amp;&amp; echo "0" &amp;&amp; exit
+#Forcibly stop the sleep process in the pre-processing script to unlock the PostgreSQL database.
+    subtree=$(pstree -p $pid) subtree=$(pstree -p $pid)  
+    right_str=${subtree##*\(}  
+    sleep_pid=${right_str%*)}  
+    kill -9 $sleep_pid
+    kill -9 $pid
+#The unlocking is successful.
+    echo "200"
+else
+#Failed to connect to the database.
+    echo "0"
+fi
+#If user switching has been performed by running the <strong>su - postgres</strong> command, run the <strong>exit</strong> command to exit the user after the script is executed. Otherwise, you do not need to run the <strong>exit</strong> command.
+#exit
+#END</pre>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Upload the scripts to any persistent directory in the container and run the following commands on the container page to add permissions to the script files. In this example, the pre-processing script location is <strong>/var/lib/postgresql/backup/dataprotect_pgsql_consistency_pre_script.sh</strong> and the post-processing script location is <strong>/var/lib/postgresql/backup/dataprotect_pgsql_consistency_post_script.sh</strong>. Modify the content based on the actual script locations.</span><p></p><pre class="screen">chmod +x <em>/var/lib/postgresql/backup/dataprotect_pgsql_consistency_pre_script.sh</em>
+chmod +x <em>/var/lib/postgresql/backup/dataprotect_pgsql_consistency_post_script.sh</em></pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000002201682048__li118601214115616"><a name="EN-US_TOPIC_0000002201682048__li118601214115616"></a><a name="li118601214115616"></a><span>Run the following command to log in to the PostgreSQL database:</span><p></p><pre class="screen">psql -U <em>myuser</em> -d <em>mydb</em> -h <em>127.0.0.1</em> -p <em>5432</em></pre> <p><strong>myuser</strong> indicates the database username, <strong>mydb</strong> indicates the database instance name, <strong>127.0.0.1</strong> indicates the IP address of the database instance, and <strong>5432</strong> (default) indicates the port number of the database instance. Change them based on actual conditions.</p> <p>If the following information is displayed, the database is successfully accessed. In this case, go to <a href="#EN-US_TOPIC_0000002201682048__li1861151414569">4</a>. Otherwise, go to <a href="#EN-US_TOPIC_0000002201682048__li1861191420565">3</a>.</p> <p><span><img src="en-us_image_0000002237710573.png"></span></p> <p></p></li>
+     <li id="EN-US_TOPIC_0000002201682048__li1861191420565"><a name="EN-US_TOPIC_0000002201682048__li1861191420565"></a><a name="li1861191420565"></a><span>Run the following command to switch to the user (for example, <strong>postgres</strong>) for installing the PostgreSQL database and run the command in <a href="#EN-US_TOPIC_0000002201682048__li118601214115616">2</a>:</span><p></p><pre class="screen">su - <em>postgres</em></pre>
+      <ul>
+       <li>If the command output indicates that the database is successfully accessed, cancel the annotation of the following command and proceed to <a href="#EN-US_TOPIC_0000002201682048__li1861151414569">4</a>.<pre class="screen">#su - postgres &lt;&lt;'END'</pre></li>
+       <li>If the command output indicates that the database fails to be accessed, contact Huawei technical engineers.</li>
+      </ul> <p></p></li>
+     <li id="EN-US_TOPIC_0000002201682048__li1861151414569"><a name="EN-US_TOPIC_0000002201682048__li1861151414569"></a><a name="li1861151414569"></a><span>Modify all related contents in the scripts and save the settings.</span><p></p>
+      <ul>
+       <li>Change the parameter values in the following command provided based on actual conditions. <strong>myuser</strong> indicates the database username, <strong>mydb</strong> indicates the database name, <strong>127.0.0.1</strong> indicates the IP address of the database instance, and <strong>5432</strong> (default) indicates the port number of the database instance.<pre class="screen">psql -U myuser -d mydb -h 127.0.0.1 -p 5432</pre></li>
+       <li>Replace <strong>postgres</strong> in the command with the actual password of the user.<pre class="screen">export PGPASSWORD='<em>postgres</em>'</pre></li>
+       <li>In the following operations, the pre-processing script location <strong>/var/lib/postgresql/backup/dataprotect_pgsql_consistency_pre_script.sh</strong> and post-processing script location <strong>/var/lib/postgresql/backup/dataprotect_pgsql_consistency_post_script.sh</strong> are used as examples. You can modify the content based on the actual script locations.</li>
+      </ul> <p></p></li>
+     <li><span>Add pod labels and annotations by referring to <a href="en-us_topic_0000002164589986.html">Pod Configuration in the Production Environment for Application-Consistent Backup (General)</a>. The following shows examples of the pre- and post-processing commands entered when you add annotations:</span><p></p><pre class="screen">#Pre-processing command
+kubectl annotate pod -l <strong><em>label=value </em></strong>-n <strong><em>namespace</em></strong> pre.hook.dataprotect.backup.io/command='["/bin/sh", "-c","<em>/var/lib/postgresql/backup/dataprotect_pgsql_consistency_pre_script.sh</em>"]'
+#Post-processing command
+kubectl annotate pod -l <strong><em>label=value</em></strong><em> </em>-n <strong><em>namespace</em></strong> post.hook.dataprotect.backup.io/command='["/bin/sh", "-c","<em>/var/lib/postgresql/backup/dataprotect_pgsql_consistency_post_script.sh</em>"]'</pre>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>To ensure that the pre- and post-processing commands can be executed properly, the script locations in the commands must be the same as the actual locations to which the scripts are uploaded.</p>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164749778.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

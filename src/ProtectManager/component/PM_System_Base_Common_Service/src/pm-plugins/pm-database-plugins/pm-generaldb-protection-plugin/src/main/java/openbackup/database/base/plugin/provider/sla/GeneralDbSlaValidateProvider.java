@@ -12,9 +12,6 @@
 */
 package openbackup.database.base.plugin.provider.sla;
 
-import openbackup.data.protection.access.provider.sdk.resource.ResourceExtendInfoService;
-import openbackup.data.protection.access.provider.sdk.resource.model.ProtectedResourceExtendInfo;
-import openbackup.data.protection.access.provider.sdk.sla.SlaValidateProvider;
 import com.huawei.oceanprotect.sla.sdk.constants.SlaConstants;
 import com.huawei.oceanprotect.sla.sdk.dto.SlaBase;
 import com.huawei.oceanprotect.sla.sdk.dto.UpdateSlaCommand;
@@ -22,6 +19,16 @@ import com.huawei.oceanprotect.sla.sdk.enums.PolicyAction;
 import com.huawei.oceanprotect.sla.sdk.enums.PolicyType;
 import com.huawei.oceanprotect.sla.sdk.validator.PolicyLimitConfig;
 import com.huawei.oceanprotect.sla.sdk.validator.SlaValidateConfig;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceExtendInfoService;
+import openbackup.data.protection.access.provider.sdk.resource.model.ProtectedResourceExtendInfo;
+import openbackup.data.protection.access.provider.sdk.sla.SlaValidateProvider;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -31,13 +38,6 @@ import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.resource.ProtectObjectRestApi;
 import openbackup.system.base.sdk.resource.model.ProtectedObjectInfo;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -89,6 +89,8 @@ public class GeneralDbSlaValidateProvider implements SlaValidateProvider {
                 .setLimit(PolicyLimitConfig.of(PolicyAction.DIFFERENCE_INCREMENT,
                         SlaConstants.DIFFERENCE_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
                 .setLimit(PolicyLimitConfig.of(PolicyAction.LOG, SlaConstants.LOG_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
+                .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION_LOG,
+                        SlaConstants.REPLICATION_LOG_POLICY_COUNT_LIMIT))
                 .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION, SlaConstants.REPLICATION_POLICY_COUNT_LIMIT))
                 .setLimit(PolicyLimitConfig.of(PolicyAction.ARCHIVING, SlaConstants.ARCHIVE_POLICY_COUNT_LIMIT));
         return slaValidateConfig;

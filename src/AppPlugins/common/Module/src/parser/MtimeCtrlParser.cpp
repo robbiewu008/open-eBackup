@@ -14,9 +14,9 @@
 #define __STDC_FORMAT_MACROS
 #endif
 #include "MtimeCtrlParser.h"
+#include <cinttypes>
 #include "Log.h"
 #include "securec.h"
-#include <cinttypes>
 
 using namespace std;
 using namespace Module;
@@ -84,20 +84,20 @@ CTRL_FILE_RETCODE MtimeCtrlParser::GetHeader(MtimeCtrlParser::Header &header)
     return CTRL_FILE_RETCODE::SUCCESS;
 }
 
-CTRL_FILE_RETCODE MtimeCtrlParser::ValidateEntry(vector<string> lineContents, string line)
+CTRL_FILE_RETCODE MtimeCtrlParser::ValidateEntry(const vector<string> &lineContents, const string &line) const
 {
     if (lineContents.empty() || line.empty()) {
         return CTRL_FILE_RETCODE::FAILED;
     }
     uint32_t lineContentsVecSize = lineContents.size();
     if (lineContentsVecSize < CTRL_FILE_OFFSET_11) {
-        HCP_Log(ERR, MODULE) << "Control Entry for dir has less columns. Line: "
+        HCP_Log(WARN, MODULE) << "Control Entry for dir has less columns. Line: "
             << line << "File: " << m_fileName << HCPENDLOG;
         return CTRL_FILE_RETCODE::FAILED;
     }
     uint32_t commaCount = (uint32_t) atoi(lineContents[CTRL_FILE_NUMBER_ZERO].c_str());
     if (lineContentsVecSize != (CTRL_FILE_OFFSET_11 + commaCount)) {
-        HCP_Log(ERR, MODULE) << "Mtime file has Wrong Entries, Line: "
+        HCP_Log(WARN, MODULE) << "Mtime file has Wrong Entries, Line: "
             << line << ", File: " << m_fileName << HCPENDLOG;
         return CTRL_FILE_RETCODE::FAILED;
     }
@@ -123,6 +123,8 @@ CTRL_FILE_RETCODE MtimeCtrlParser::ReadEntry(MtimeCtrlEntry &mtimeEntry)
         boost::algorithm::split(lineContents, line, boost::is_any_of(","), boost::token_compress_off);
         if (ValidateEntry(lineContents, line) == CTRL_FILE_RETCODE::SUCCESS) {
             break;
+        } else if (HandleBreakLine(lineContents, line) == CTRL_FILE_RETCODE::SUCCESS) {
+            break;
         }
         line.clear();
         lineContents.clear();
@@ -138,6 +140,36 @@ CTRL_FILE_RETCODE MtimeCtrlParser::ReadEntry(MtimeCtrlEntry &mtimeEntry)
     }
 
     return CTRL_FILE_RETCODE::SUCCESS;
+}
+
+/* 处理存在换行符的名称，直到获取到正常行为止 */
+CTRL_FILE_RETCODE MtimeCtrlParser::HandleBreakLine(vector<string> &lineContents, std::string &ctlFileLine)
+{
+    std::string tmpLine {};
+    std::streampos currentPositon = m_readBuffer.tellg();
+    while (true) {
+        tmpLine.clear();
+        currentPositon = m_readBuffer.tellg();
+        getline(m_readBuffer, tmpLine);
+        // 读到正常的行，说明当前处理的数据为无效错误数据，把pos调整回原来的位置，返回失败
+        if (IsNormalEntry(lineContents, tmpLine)) {
+            m_readBuffer.seekg(currentPositon);
+            return CTRL_FILE_RETCODE::INVALID_CONTENT;
+        } else {
+            // 说明是截断的行，拼接并增加换行符
+            ctlFileLine = ctlFileLine + "\n" + tmpLine;
+            // 拼接后的得到有效的数据，返回成功，否则继续
+            if (IsNormalEntry(lineContents, ctlFileLine)) {
+                return CTRL_FILE_RETCODE::SUCCESS;
+            }
+        }
+    }
+}
+
+bool MtimeCtrlParser::IsNormalEntry(vector<string> &lineContents, const std::string& ctlFileLine) const
+{
+    boost::algorithm::split(lineContents, ctlFileLine, boost::is_any_of(","), boost::token_compress_off);
+    return ValidateEntry(lineContents, ctlFileLine) == CTRL_FILE_RETCODE::SUCCESS;
 }
 
 void MtimeCtrlParser::TranslateEntry(vector<string> &lineContents, MtimeCtrlEntry &mtimeEntry)
@@ -209,13 +241,13 @@ CTRL_FILE_RETCODE MtimeCtrlParser::WriteEntry(MtimeCtrlEntry &mtimeEntry)
 void MtimeCtrlParser::PrintEntry(MtimeCtrlEntry& mtimeEntry)
 {
     DBGLOG("write to mtime ctrl - %s", m_fileName.c_str());
-	DBGLOG("write mtimeEntry - m_absPath: %s, ctime: %llu, atime: %llu, mtime: %llu, btime: %llu,"
-		"uid: %lu, gid: %lu, attr: %lu, mode: %lu, subDirsCnt: %lu",
-		mtimeEntry.m_absPath.c_str(), mtimeEntry.m_ctime, mtimeEntry.m_atime,
-		mtimeEntry.m_mtime, mtimeEntry.m_btime, mtimeEntry.m_uid, mtimeEntry.m_gid,
-		mtimeEntry.m_attr,
-		mtimeEntry.m_mode,
-		mtimeEntry.m_subDirsCnt);
+    DBGLOG("write mtimeEntry - m_absPath: %s, ctime: %llu, atime: %llu, mtime: %llu, btime: %llu,"
+        "uid: %lu, gid: %lu, attr: %lu, mode: %lu, subDirsCnt: %lu",
+        mtimeEntry.m_absPath.c_str(), mtimeEntry.m_ctime, mtimeEntry.m_atime,
+        mtimeEntry.m_mtime, mtimeEntry.m_btime, mtimeEntry.m_uid, mtimeEntry.m_gid,
+        mtimeEntry.m_attr,
+        mtimeEntry.m_mode,
+        mtimeEntry.m_subDirsCnt);
 }
 #endif
 CTRL_FILE_RETCODE MtimeCtrlParser::ReadHeader()

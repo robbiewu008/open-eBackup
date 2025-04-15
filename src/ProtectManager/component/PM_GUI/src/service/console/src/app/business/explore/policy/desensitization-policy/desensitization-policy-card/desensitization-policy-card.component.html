@@ -11,7 +11,8 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="policy-card">
+<lv-card class="policy-card" lvType="{{showOptItems ? 'shadow' : 'border'}}" [lvChecked]="isChecked"
+    [ngClass]="{'list-width': showOptItems,'modal-width':!showOptItems}">
     <div class="aui-operation card-operation">
         <h2 class="policy-name" lv-overflow>{{cardItem.name}}</h2>
         <ng-container *ngIf="showOptItems">
@@ -46,4 +47,4 @@
             </div>
         </div>
     </div>
-</div>
+</lv-card>

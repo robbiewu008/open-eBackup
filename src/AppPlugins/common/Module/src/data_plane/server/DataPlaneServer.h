@@ -42,7 +42,7 @@ public:
 protected:
     virtual void HandleReceivedMessage(std::shared_ptr<Session> session,
                                        std::shared_ptr<Protocol::Message> message,
-                                       Protocol::MessageType messageType) = 0;
+                                       std::shared_ptr<Protocol::MessageHeader> msgHeader) = 0;
 
     virtual void OnNewSessionAccepted(std::shared_ptr<Session> session) = 0;
 

@@ -14,5 +14,5 @@
 <div *ngIf="!isNoData" id="capacity-diction-chart"></div>
 
 <div *ngIf="isNoData" class="empty-box">
-  <lv-empty lvDescription="暂无数据"></lv-empty>
+  <lv-empty [lvDescription]="'common_home_no_data_label' | i18n"></lv-empty>
 </div>

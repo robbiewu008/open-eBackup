@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -304,7 +304,7 @@ export class VmwareComponent implements OnInit, OnDestroy {
     }
     this.environmentsService
       .queryResourcesV1EnvironmentsGet({
-        pageSize: CommonConsts.PAGE_SIZE_OPTIONS[2],
+        pageSize: CommonConsts.PAGE_SIZE_MAX,
         pageNo: startPage,
         conditions: JSON.stringify({
           type:
@@ -359,7 +359,7 @@ export class VmwareComponent implements OnInit, OnDestroy {
           }
         });
         startPage++;
-        if (res.total - startPage * CommonConsts.PAGE_SIZE_OPTIONS[2] > 0) {
+        if (res.total - startPage * CommonConsts.PAGE_SIZE_MAX > 0) {
           this.getTreeData(null, startPage);
           return;
         }
@@ -447,7 +447,7 @@ export class VmwareComponent implements OnInit, OnDestroy {
   getExpandedChangeData(startPage, event) {
     this.virtualResourceService
       .queryResourcesV1VirtualResourceGet({
-        pageSize: CommonConsts.PAGE_SIZE_OPTIONS[2],
+        pageSize: CommonConsts.PAGE_SIZE_MAX,
         pageNo: startPage,
         conditions: JSON.stringify({
           parent_uuid: event.uuid
@@ -487,9 +487,14 @@ export class VmwareComponent implements OnInit, OnDestroy {
           }
         });
         startPage++;
-        if (res.total - startPage * CommonConsts.PAGE_SIZE_OPTIONS[2] > 0) {
+        if (res.total - startPage * CommonConsts.PAGE_SIZE_MAX > 0) {
           this.getExpandedChangeData(startPage, event);
           return;
+        }
+        // 如果没有值+去掉
+        if (isEmpty(event.children)) {
+          event.children = null;
+          event.isLeaf = true;
         }
         this.treeData = [...this.treeData];
         this.cdr.detectChanges();
@@ -517,8 +522,17 @@ export class VmwareComponent implements OnInit, OnDestroy {
 
   nodeCheck(e) {
     let tabIdList = [ResourceType.VM, ResourceType.HOST, ResourceType.CLUSTER];
-    // 树节点的选中项为主机时，右侧只展示VMware
-    if (e.node.type === ResourceType.HOST) {
+    // 树节点的选中项为主机时，右侧只展示VMware，新增资源池和VAPP只展示虚拟机
+    if (
+      e.node.type === ResourceType.HOST ||
+      includes(
+        [
+          DataMap.Resource_Type.virtualApp.value,
+          DataMap.Resource_Type.resourcePool.value
+        ],
+        e.node.sub_type
+      )
+    ) {
       tabIdList = [ResourceType.VM];
       if (this.activeIndex !== ResourceType.VM) {
         this.pageSize = CommonConsts.PAGE_SIZE;

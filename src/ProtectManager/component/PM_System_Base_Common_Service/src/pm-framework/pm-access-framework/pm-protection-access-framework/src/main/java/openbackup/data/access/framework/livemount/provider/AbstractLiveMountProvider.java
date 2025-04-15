@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.livemount.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dee.DeeLiveMountRestApi;
 import openbackup.data.access.client.sdk.api.framework.dee.model.OcLiveMountCloneReq;
 import openbackup.data.access.client.sdk.api.framework.dee.model.OcLiveMountTaskReq;
@@ -46,8 +47,6 @@ import openbackup.system.base.sdk.livemount.model.Performance;
 import openbackup.system.base.sdk.resource.EnvironmentRestApi;
 import openbackup.system.base.sdk.resource.model.Environment;
 import openbackup.system.base.service.DeployTypeService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -293,6 +292,7 @@ public abstract class AbstractLiveMountProvider implements LiveMountProvider {
         String backupId = copyProperties.getString(BACKUP_ID);
         LiveMountModifyParam param = new LiveMountModifyParam();
         param.setBackupId(backupId);
+        param.setMountedCopyId(mountedCopyId);
         param.setAppType(copy.getResourceSubType());
         Performance performance = performanceValidator.loadPerformance(performanceProperties);
         LiveMountPerformance liveMountPerformance = JSONObject.cast(performance, LiveMountPerformance.class);
@@ -301,7 +301,7 @@ public abstract class AbstractLiveMountProvider implements LiveMountProvider {
     }
 
     /**
-     * modify live mount qos
+     * remove live mount qos
      *
      * @param mountedCopyId mounted copy id
      */
@@ -311,6 +311,7 @@ public abstract class AbstractLiveMountProvider implements LiveMountProvider {
         String backupId = copyProperties.getString(BACKUP_ID);
         LiveMountRemoveQosParam param = new LiveMountRemoveQosParam();
         param.setBackupId(backupId);
+        param.setMountedCopyId(mountedCopyId);
         param.setAppType(copy.getResourceSubType());
         removeLiveMountQos(param);
     }

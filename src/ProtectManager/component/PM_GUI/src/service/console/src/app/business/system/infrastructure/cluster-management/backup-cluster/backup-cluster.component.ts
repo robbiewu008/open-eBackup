@@ -1,22 +1,16 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import {
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MenuItem } from '@iux/live';
 import {
   CapacityCalculateLabel,
@@ -28,13 +22,13 @@ import {
   DataMapService,
   getAccessibleViewList,
   getPermissionMenuItem,
+  GROUP_COMMON,
   I18NService,
   LocalStorageApiService,
   MODAL_COMMON,
   MultiClusterStatus,
   OperateItems,
-  WarningMessageService,
-  GROUP_COMMON
+  WarningMessageService
 } from 'app/shared';
 import {
   BackupClustersApiService,
@@ -90,9 +84,15 @@ export class BackupClusterComponent implements OnInit, OnDestroy {
   progressBarColor = [[0, '#6C92FA']];
 
   addMemberNodeLabel = this.i18n.get('common_create_label');
-  primaryNodeLabel = this.i18n.get('system_backup_cluster_primary_node_label');
-  memberNodeLabel = this.i18n.get('system_backup_cluster_member_node_label');
-  standbyNodeLabel = this.i18n.get('system_backup_cluster_standby_node_label');
+  primaryNodeLabel = this.i18n.get(
+    'system_backup_cluster_primary_node_low_label'
+  );
+  memberNodeLabel = this.i18n.get(
+    'system_backup_cluster_member_node_low_label'
+  );
+  standbyNodeLabel = this.i18n.get(
+    'system_backup_cluster_standby_node_low_label'
+  );
   closeLabel = this.i18n.get('common_close_label');
 
   CLUSTER_TYPE = this.dataMapService.getConfig('Cluster_Type');
@@ -109,6 +109,7 @@ export class BackupClusterComponent implements OnInit, OnDestroy {
   modifyMemberNode = true;
   disabledDelete = true;
   hasMemberNode = false;
+  isHasBackupNode = false;
 
   isEn = this.i18n.language === 'zh-cn';
   _empty = isEmpty;
@@ -204,13 +205,7 @@ export class BackupClusterComponent implements OnInit, OnDestroy {
         lvOkDisabled: false,
         lvComponentParams: {
           drawData: {
-            ...data,
-            ipArr:
-              data.role === DataMap.Target_Cluster_Role.primaryNode.value
-                ? data.ipArr
-                : data.displayIp
-                ? [data.displayIp, data.ip]
-                : data.ip
+            ...data
           }
         },
         lvFooter: [
@@ -331,50 +326,35 @@ export class BackupClusterComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe(res => {
+        // 判断赋值不随着筛选或搜索重新赋值
+        if (
+          !this.ipSearchName &&
+          !this.clusterSearchName &&
+          isEmpty(this.theadFilterMap)
+        ) {
+          this.hasMemberNode = !!find(res.records, item =>
+            [
+              this.ROLE_TYPE.backupNode.value,
+              this.ROLE_TYPE.memberNode.value
+            ].includes(item.role)
+          );
+          this.isHasBackupNode = !!find(res.records, {
+            role: this.ROLE_TYPE.backupNode.value
+          });
+        }
         each(res.records, item => {
-          if (item.role === this.ROLE_TYPE.primaryNode.value) {
-            assign(item, {
-              ipArr: item['clusterIp']
-                .replace(/\s/g, '')
-                .replace('[', '')
-                .replace(']', '')
-                .split(',')
-                .sort((a, b) => {
-                  return -1;
-                }),
-              progressBarColor: [[0, ColorConsts.NORMAL]],
-              sizePercent: this.getSizePercent(item)
-            });
-          } else {
-            if (
-              item.role === this.ROLE_TYPE.memberNode.value ||
-              item.role === this.ROLE_TYPE.backupNode.value
-            ) {
-              this.hasMemberNode = true;
-            }
-            const ips = item['clusterIp']
+          assign(item, {
+            ipArr: item['clusterIp']
               .replace(/\s/g, '')
               .replace('[', '')
               .replace(']', '')
               .split(',')
               .sort((a, b) => {
                 return -1;
-              });
-            assign(item, {
-              displayIps: item['clusterIp']
-                .replace(/\s/g, '')
-                .replace('[', '')
-                .replace(']', ''),
-              displayIp: ips[0],
-              ipArr: reject(ips, (v, index) => {
-                return !index;
-              }).sort((a, b) => {
-                return -1;
               }),
-              progressBarColor: [[0, ColorConsts.NORMAL]],
-              sizePercent: this.getSizePercent(item)
-            });
-          }
+            progressBarColor: [[0, ColorConsts.NORMAL]],
+            sizePercent: this.getSizePercent(item)
+          });
         });
         if (!this.localCluster) {
           this.localCluster = find(res.records, {
@@ -552,9 +532,11 @@ export class BackupClusterComponent implements OnInit, OnDestroy {
               DataMap.netplaneStatus.deleteFailed.value
             ],
             data.netPlaneSettingStatus
-          ) ||
-          !data.netPlaneSettingStatus ||
-          this.hasMemberNode,
+          ) || !data.netPlaneSettingStatus,
+        disabled: this.isHasBackupNode,
+        tips: this.isHasBackupNode
+          ? this.i18n.get('system_modify_internal_network_plane_info_tip_label')
+          : '',
         onClick: (d: any) => {
           this.drawmodalservice.create(
             assign({}, MODAL_COMMON.drawerOptions, {
@@ -577,7 +559,12 @@ export class BackupClusterComponent implements OnInit, OnDestroy {
                 return new Promise(resolve => {
                   this.warningMessageService.create({
                     content: this.i18n.get(
-                      'system_modify_internal_network_plane_info_label'
+                      'system_modify_internal_network_plane_info_label',
+                      [
+                        this.i18n.get(
+                          'system_backup_cluster_primary_node_lowcase_label'
+                        )
+                      ]
                     ),
                     width: 700,
                     onOK: () => {
@@ -709,6 +696,84 @@ export class BackupClusterComponent implements OnInit, OnDestroy {
                 });
             }
           });
+        }
+      },
+      {
+        id: 'modifyInternalCommmunicationNetworkPlane',
+        label: this.i18n.get(
+          'system_modify_internal_communication_network_plane_label'
+        ),
+        permission: OperateItems.DeletingTargetCluster,
+        hidden:
+          !includes(
+            [
+              DataMap.netplaneStatus.settingCompleted.value,
+              DataMap.netplaneStatus.modifyFailed.value,
+              DataMap.netplaneStatus.deleteFailed.value
+            ],
+            data.netPlaneSettingStatus
+          ) || !data.netPlaneSettingStatus,
+        disabled:
+          this.isHasBackupNode && data.role === this.ROLE_TYPE.backupNode.value,
+        tips:
+          this.isHasBackupNode && data.role === this.ROLE_TYPE.backupNode.value
+            ? this.i18n.get(
+                'system_modify_internal_network_plane_info_tip_label'
+              )
+            : '',
+        onClick: (d: any) => {
+          this.drawmodalservice.create(
+            assign({}, MODAL_COMMON.drawerOptions, {
+              lvModalKey: 'modifyInternalCommunicationNetworkPlane',
+              lvHeader: this.i18n.get(
+                'system_modify_internal_communication_network_plane_label'
+              ),
+              lvWidth: MODAL_COMMON.xLargeWidth - 50,
+              lvContent: AddNetworkComponent,
+              lvOkDisabled: true,
+              lvComponentParams: {
+                drawData: data,
+                isModify: [
+                  DataMap.netplaneStatus.settingCompleted.value,
+                  DataMap.netplaneStatus.modifyFailed.value,
+                  DataMap.netplaneStatus.deleteFailed.value
+                ].includes(data.netPlaneSettingStatus)
+              },
+              lvOk: modal => {
+                return new Promise(resolve => {
+                  this.warningMessageService.create({
+                    content: this.i18n.get(
+                      'system_modify_internal_network_plane_info_label',
+                      [
+                        this.i18n.get(
+                          'system_backup_cluster_member_node_lowcase_label'
+                        )
+                      ]
+                    ),
+                    width: 700,
+                    onOK: () => {
+                      const content = modal.getContentComponent() as AddNetworkComponent;
+                      content.onOK().subscribe(
+                        () => {
+                          resolve(true);
+                          this.getNode();
+                        },
+                        () => {
+                          resolve(false);
+                        }
+                      );
+                    },
+                    onCancel: () => resolve(false),
+                    lvAfterClose: result => {
+                      if (result && result.trigger === 'close') {
+                        resolve(false);
+                      }
+                    }
+                  });
+                });
+              }
+            })
+          );
         }
       }
     ];

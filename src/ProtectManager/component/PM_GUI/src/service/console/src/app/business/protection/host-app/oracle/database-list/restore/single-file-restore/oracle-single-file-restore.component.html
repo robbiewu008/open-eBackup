@@ -50,7 +50,7 @@
         <lv-collapse-panel [lvTitle]="item.title" [lvExtra]="totalTpl">
           <lv-tabs [(lvActiveIndex)]="tableDataArr[i].activeIndex" class="aui-tab">
             <lv-tab [lvTitle]="selectTitleTpl" [lvId]="'selecting'">
-              <lv-group lvGutter="8px"class="mgb-8">
+              <lv-group lvGutter="8px" class="mgb-8">
                 <button lv-button [disabled]="!tableDataArr[i].selectedLength" lv-popover
                         [lvPopoverContent]="batchRestoreLocationTpl" lvPopoverTrigger="click" lvPopoverTheme="light"
                         lvPopoverPosition="bottom" #batchRestoreLocationPopover="lvPopover" (click)="openPopover(i)">
@@ -59,12 +59,15 @@
                 <button lv-button (click)="resetAllRestoreLocation(i)">
                   {{'common_reset_label' | i18n}}
                 </button>
+                  <button lv-button (click)="selectAllFilesChange(i)">
+                      {{(isAllCheck(i) ? 'system_resourceset_cancel_all_select_label':'system_resourceset_all_select_label') | i18n}}
+                  </button>
               </lv-group>
               <lv-pro-table [config]="getSelectTableConfig(item)" [data]="item.data" #selectingTable></lv-pro-table>
               <aui-database-config [formGroup]="formGroup" [rowCopy]="rowCopy" *ngIf="item.id === 'param'"></aui-database-config>
             </lv-tab>
             <ng-template #selectTitleTpl>
-              <span>{{'protection_sla_optional_tooltip_step_label'|i18n}}（{{tableDataArr[i].data.total}}）</span>
+              <span>{{'common_select_available_label'|i18n}}（{{tableDataArr[i].data.total}}）</span>
             </ng-template>
             <lv-tab [lvTitle]="selectedTitleTpl" [lvId]="'selected'">
               <button class="mgb-8" lv-button [disabled]="!tableDataArr[i].selectedLength" (click)="deleteAllItems(i)">

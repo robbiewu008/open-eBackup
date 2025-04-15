@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -21,6 +21,7 @@ import {
 } from '@angular/core';
 import {
   CookieService,
+  DataMapService,
   ExternalSystemService,
   getPermissionMenuItem,
   I18NService,
@@ -60,6 +61,7 @@ export class ExternalAssociatedSystemsComponent
 
   constructor(
     public i18n: I18NService,
+    public dataMapService: DataMapService,
     public drawModalService: DrawModalService,
     public externalSystemService: ExternalSystemService,
     public cdr?: ChangeDetectorRef,
@@ -94,7 +96,6 @@ export class ExternalAssociatedSystemsComponent
         id: 'jump',
         label: this.i18n.get('common_goto_external_system_label'),
         permission: OperateItems.JumpExternalAssociatedSystem,
-        disableCheck: data => data[0].type === 'dpa',
         onClick: data => this.jump(data[0])
       },
       {
@@ -134,12 +135,22 @@ export class ExternalAssociatedSystemsComponent
         name: this.i18n.get('common_ip_label')
       },
       {
+        key: 'status',
+        name: this.i18n.get('common_status_label'),
+        cellRender: {
+          type: 'status',
+          config: this.dataMapService.toArray('resource_LinkStatus')
+        }
+      },
+      {
         key: 'uuid',
-        name: this.i18n.get('common_uuid_label')
+        name: this.i18n.get('common_uuid_label'),
+        width: 300
       },
       {
         key: 'port',
-        name: this.i18n.get('common_port_label')
+        name: this.i18n.get('common_port_label'),
+        width: 150
       },
       {
         key: 'username',
@@ -174,10 +185,22 @@ export class ExternalAssociatedSystemsComponent
   }
 
   jump(data) {
-    // dpa跳转功能先屏蔽
     if (data.type === 'dpa') {
-      return;
+      this.jumpToDPA(data);
+    } else {
+      this.jumpToEBackup(data);
     }
+  }
+
+  jumpToDPA(data) {
+    // DPA跳转用ip+端口跳转
+    const url = `https://${encodeURI(data.endpoint)}:${encodeURI(
+      toString(data.port)
+    )}`;
+    window.open(url, '_blank');
+  }
+
+  jumpToEBackup(data) {
     this.externalSystemService
       .GenerateExternalSystemToken({ uuid: data.uuid })
       .subscribe(res => {

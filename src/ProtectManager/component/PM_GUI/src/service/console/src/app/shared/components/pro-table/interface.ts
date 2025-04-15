@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { TemplateRef, TrackByFunction } from '@angular/core';
 import {
   BaseSortConfig,
@@ -91,6 +91,7 @@ export interface TableConfig {
       | {
           /* 被忽略的列在下拉列表中的处理方式 */
           ignoringColsType: 'hide' | 'disable';
+          tdAlign?: string | boolean;
         }
       | boolean;
     /* 获取列表数据 */
@@ -101,6 +102,8 @@ export interface TableConfig {
     colDisplayChange?: (displayCols: string[]) => any;
     /* 表头搜索下发前函数 */
     filterChangeBefore?: () => any;
+    // 滚动回调事件
+    scrollEnd?: () => any;
   };
 }
 
@@ -115,8 +118,8 @@ export interface TableCols {
   width?: number | string;
   /* 列名称对齐方式 */
   thAlign?: 'left' | 'right' | 'center';
-  // fixLeft?: string | boolean;
-  // fixRight?: string | boolean;
+  fixLeft?: string | boolean;
+  fixRight?: string | boolean;
   /* 列显示/隐藏初始化配置，'ignoring'为排除项 */
   hidden?: boolean | 'ignoring';
   /* 列过滤器配置 */
@@ -270,6 +273,7 @@ export interface Filters {
 export interface TableData {
   data: any[];
   total: number;
+  keepScroll?: boolean;
 }
 
 export type CellRenderType =

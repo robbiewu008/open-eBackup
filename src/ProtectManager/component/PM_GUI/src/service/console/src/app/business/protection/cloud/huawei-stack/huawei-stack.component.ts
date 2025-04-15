@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
@@ -53,6 +53,7 @@ import {
   isFunction,
   isNumber,
   mapValues,
+  remove,
   uniqueId
 } from 'lodash';
 import { Observable, Subject, Subscription, forkJoin, of, timer } from 'rxjs';
@@ -81,6 +82,10 @@ export class HuaweiStackComponent implements OnInit, OnDestroy {
   cloudGroupTotal = 0;
   isAuthCase = false;
   isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
+
+  // 对接了服务化的OP环境
+  isHcsOp =
+    this.cookieService.get('serviceProduct') === CommonConsts.serviceProduct;
 
   destroy$ = new Subject();
   // 后台修改后，hcs左侧树查询，展开时传子资源的subType
@@ -181,7 +186,7 @@ export class HuaweiStackComponent implements OnInit, OnDestroy {
       {
         id: 'connectivityTest',
         divide: true,
-        disable: this.isAuthCase || !hasResourcePermission(data),
+        disabled: this.isAuthCase || !hasResourcePermission(data),
         permission: OperateItems.ManualBackup,
         label: this.i18n.get('protection_connectivity_test_label'),
         onClick: () => {
@@ -404,6 +409,10 @@ export class HuaweiStackComponent implements OnInit, OnDestroy {
           tab.resourceTotal = 0;
         });
       }
+      // 服务化线上线下共存处理
+      if (this.isHcsOp) {
+        this.getProjectTreeNode(event, true);
+      }
       this.virtualScroll.getScrollParam(
         240,
         Page_Size_Options.Three,
@@ -415,10 +424,16 @@ export class HuaweiStackComponent implements OnInit, OnDestroy {
   }
 
   getShowData(type): Observable<any> {
+    const conditions = {
+      type,
+      subType: this.isHcsOp
+        ? [ResourceType.HCSProject, DataMap.Job_Target_Type.hcsEnvOp.value]
+        : ResourceType.HCSProject
+    };
     const params = {
       pageNo: CommonConsts.PAGE_START,
-      pageSize: CommonConsts.PAGE_SIZE * 10,
-      conditions: JSON.stringify({ type, subType: ResourceType.HCSProject })
+      pageSize: CommonConsts.PAGE_SIZE_MAX,
+      conditions: JSON.stringify(conditions)
     };
     let curData = [];
     return this.protectedResourceApiService.ListResources(params).pipe(
@@ -426,13 +441,13 @@ export class HuaweiStackComponent implements OnInit, OnDestroy {
         curData = [of(response)];
 
         const totalCount = response.totalCount;
-        const pageCount = Math.ceil(totalCount / (CommonConsts.PAGE_SIZE * 10));
-        for (let i = 2; i <= pageCount; i++) {
+        const pageCount = Math.ceil(totalCount / CommonConsts.PAGE_SIZE_MAX);
+        for (let i = 1; i <= pageCount - 1; i++) {
           curData.push(
             this.protectedResourceApiService.ListResources({
               pageNo: i,
-              pageSize: CommonConsts.PAGE_SIZE * 10,
-              conditions: JSON.stringify({ type })
+              pageSize: CommonConsts.PAGE_SIZE_MAX,
+              conditions: JSON.stringify(conditions)
             })
           );
         }
@@ -441,21 +456,27 @@ export class HuaweiStackComponent implements OnInit, OnDestroy {
     );
   }
 
-  getProjectTreeNode(event?) {
+  getProjectTreeNode(event?, hasEcs?) {
     this.getShowData(ResourceType.PROJECT).subscribe(res => {
       const totalData = [];
       for (const item of res) {
         totalData.push(...item.records);
       }
+      if (hasEcs) {
+        remove(
+          totalData,
+          item => !!find(this.treeData, { uuid: item.rootUuid })
+        );
+      }
       if (isEmpty(totalData)) {
         return;
       }
 
-      this.assembleAuthTree(totalData, event);
+      this.assembleAuthTree(totalData, event, hasEcs);
     });
   }
 
-  assembleAuthTree(data, event) {
+  assembleAuthTree(data, event, hasEcs) {
     const map = new Map();
     map.set('root', []);
     const rootPathObj = {};
@@ -507,12 +528,17 @@ export class HuaweiStackComponent implements OnInit, OnDestroy {
         depth: 0,
         expanded: rootPathObj[item][2] !== 'HcsEnvOp',
         uuid: rootPathObj[item][0] || uniqueId(),
-        type: DataMap.Resource_Type.HCS.value
+        type: DataMap.Resource_Type.HCS.value,
+        subType: rootPathObj[item][2]
       };
       treeObj.push(rootItem);
       this.generateTree(map, rootItem, data);
     }
-    this.treeData = treeObj;
+    if (hasEcs) {
+      this.treeData = [...this.treeData, ...treeObj];
+    } else {
+      this.treeData = treeObj;
+    }
 
     if (this.treeData.length) {
       if (!this.treeSelection.length) {
@@ -526,6 +552,7 @@ export class HuaweiStackComponent implements OnInit, OnDestroy {
       }
       this.initMoreMenus();
       this.getTableData(event);
+      this.nodeCheck({ node: this.treeSelection[0] }, true);
     } else {
       this.tabs.forEach(tab => {
         tab.tableData = [];
@@ -533,6 +560,12 @@ export class HuaweiStackComponent implements OnInit, OnDestroy {
         tab.resourceTotal = 0;
       });
     }
+    this.virtualScroll.getScrollParam(
+      240,
+      Page_Size_Options.Three,
+      Table_Size.Default,
+      'hcs-tree'
+    );
     this.cdr.detectChanges();
   }
 
@@ -587,40 +620,10 @@ export class HuaweiStackComponent implements OnInit, OnDestroy {
 
   initMoreMenus() {
     this.moreMenus.forEach(item => {
-      if (item.id === 'resourceAuth') {
-        item.disabled = this.treeSelection.find(node => {
-          return (
-            !!node.userId ||
-            !!node.slaId ||
-            !includes(
-              [
-                DataMap.Resource_Type.HCS.value,
-                DataMap.Resource_Type.Project.value,
-                DataMap.Resource_Type.Tenant.value
-              ],
-              node.rootNodeType
-            ) ||
-            this.isAuthCase
-          );
-        });
-      } else if (item.id === 'resourceReclaiming') {
-        item.disabled = this.treeSelection.find(node => {
-          return (
-            !node.userId ||
-            !includes(
-              [
-                DataMap.Resource_Type.HCS.value,
-                DataMap.Resource_Type.Project.value,
-                DataMap.Resource_Type.Tenant.value
-              ],
-              node.rootNodeType
-            ) ||
-            this.isAuthCase
-          );
-        });
-      } else {
-        item.disabled = this.isAuthCase;
-      }
+      item.disabled =
+        this.isAuthCase ||
+        (!hasResourcePermission(this.treeSelection[0] || {}) &&
+          item.id !== 'environmentInfo');
     });
   }
 
@@ -718,9 +721,12 @@ export class HuaweiStackComponent implements OnInit, OnDestroy {
     return nodeResource['icon'] + '';
   }
 
-  nodeCheck(e) {
+  nodeCheck(e, isTabShow = false) {
     let tabIdList = [ResourceType.CLOUD_HOST];
-    if (e.node.type === ResourceType.HCS) {
+    if (
+      e.node.type === ResourceType.HCS &&
+      e.node.subType !== DataMap.Job_Target_Type.hcsEnvOp.value
+    ) {
       tabIdList = [
         ResourceType.TENANT,
         ResourceType.PROJECT,
@@ -738,9 +744,11 @@ export class HuaweiStackComponent implements OnInit, OnDestroy {
         this.activeIndex = ResourceType.CLOUD_HOST;
       }
     });
-    this.treeNodeClick = true;
-    this.initMoreMenus();
-    this.getTableData(null);
+    if (!isTabShow) {
+      this.treeNodeClick = true;
+      this.initMoreMenus();
+      this.getTableData(null);
+    }
   }
 
   beforeSelected = item => {

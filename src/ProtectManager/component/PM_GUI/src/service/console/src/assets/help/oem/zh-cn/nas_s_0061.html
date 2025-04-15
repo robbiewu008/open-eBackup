@@ -1,0 +1,288 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="恢复NAS共享">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="nas_s_0056.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="nas_s_0061">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>恢复NAS共享</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="nas_s_0061"></a><a name="nas_s_0061"></a>
+  <h1 class="topictitle1">恢复NAS共享</h1>
+  <div>
+   <p>当需要对已备份的NAS共享进行恢复时，可以参考本节恢复NAS共享至原位置或新位置。</p>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <p id="nas_s_0061__nas_s_0059_p13356226151412"><span id="nas_s_0061__nas_s_0059_text143181219121420">本产品</span>支持使用备份副本、复制副本（不支持恢复至原位置）进行恢复，支持恢复至原位置或新位置。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li id="nas_s_0061__li632210479486">如果将NAS共享恢复到新位置，需要先将新位置的NAS共享，或者NAS共享所在的存储设备注册到<span id="nas_s_0061__text5542395141">本产品</span>。支持的存储设备类型如下所示。
+      <ul id="nas_s_0061__ul571916508480">
+       <li id="nas_s_0061__nas_s_0059_zh-cn_topic_0000001792360666_li3415133617174">OceanStor Dorado V700R001</li>
+       <li id="nas_s_0061__nas_s_0059_zh-cn_topic_0000001792360666_li1739551514266">OceanStor V700R001</li>
+       <li id="nas_s_0061__nas_s_0059_zh-cn_topic_0000001792360666_li984654311123">OceanStor Dorado 6.x</li>
+       <li id="nas_s_0061__nas_s_0059_zh-cn_topic_0000001792360666_li151737411958">OceanStor 6.x</li>
+       <li id="nas_s_0061__nas_s_0059_zh-cn_topic_0000001792360666_li72988389413">OceanProtect 1.3.0及之后版本</li>
+       <li id="nas_s_0061__nas_s_0059_li15575172132717">OceanStor V5</li>
+       <li id="nas_s_0061__nas_s_0059_li632419162715">OceanStor Pacific</li>
+       <li id="nas_s_0061__nas_s_0059_li207631011131214">NetApp ONTAP</li>
+      </ul></li>
+     <li id="nas_s_0061__li17945216184613">如果将NAS共享恢复到新位置，需要先在新位置的存储设备侧为<span id="nas_s_0061__text11734103918143">本产品</span>配置访问权限。详细操作请参见<a href="nas_s_0025.html">步骤4：配置访问权限（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</a>。操作时，请为目标NAS共享配置客户端或者增加用户。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li id="nas_s_0061__li0198134611381"><span>选择<span class="uicontrol" id="nas_s_0061__zh-cn_topic_0000002199964685_uicontrol1387642214492">“<span id="nas_s_0061__zh-cn_topic_0000002199964685_text18761122134919">数据利用</span> &gt; <span id="nas_s_0061__zh-cn_topic_0000002199964685_text087662214918">副本数据</span> &gt; 文件系统 &gt; <span id="nas_s_0061__zh-cn_topic_0000002199964685_text2897115217345">NAS共享</span>”</span>。</span><p></p>
+      <div class="note" id="nas_s_0061__zh-cn_topic_0000002199964685_note1634925131911">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="nas_s_0061__zh-cn_topic_0000002199964685_p1934182521913">对于1.5.0版本，请选择<span class="uicontrol" id="nas_s_0061__zh-cn_topic_0000002199964685_uicontrol08045348196">“<span id="nas_s_0061__zh-cn_topic_0000002199964685_text980410346197">数据利用</span> &gt; <span id="nas_s_0061__zh-cn_topic_0000002199964685_text4804183441910">副本数据</span> &gt; 文件服务 &gt; <span id="nas_s_0061__zh-cn_topic_0000002199964685_text20804834141911">NAS共享</span>”</span>。</p>
+       </div>
+      </div> <p></p></li>
+     <li id="nas_s_0061__li87691438131514"><span>支持以NAS共享资源维度或以副本维度查找副本，本节以NAS共享资源维度为例进行说明。</span><p></p><p id="nas_s_0061__p142551140161511">在“<span id="nas_s_0061__text6827103218214">资源</span>”页签，根据NAS共享名称查找到需要恢复的NAS共享，并单击NAS共享名称。</p> <p></p></li>
+     <li><span>在<span class="uicontrol" id="nas_s_0061__nas_s_0059_uicontrol1812414562220">“<span id="nas_s_0061__nas_s_0059_text18993182162710">副本数据</span>”</span>页面，依次选择年、月、天找到副本。</span><p></p><p id="nas_s_0061__nas_s_0059_p9918150182310">当时间上显示<span><img id="nas_s_0061__nas_s_0059_image886000161711" src="zh-cn_image_0000002200131661.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>在副本所在的行，单击<span class="uicontrol" id="nas_s_0061__nas_s_0059_uicontrol4705161613273">“<span id="nas_s_0061__nas_s_0059_text04951528155216">更多</span> &gt; <span id="nas_s_0061__nas_s_0059_text12444191814117">恢复</span>”</span>。</span></li>
+     <li><span>对于1.6.0版本，当副本为<span class="uicontrol" id="nas_s_0061__nas_s_0059_uicontrol184781526184619">“磁带归档副本自动索引”</span>开关打开生成的磁带归档副本时，在恢复时需要选择<span class="uicontrol" id="nas_s_0061__nas_s_0059_uicontrol159431826474">“是否直接恢复”</span>，其他副本跳过本步骤。<span class="uicontrol" id="nas_s_0061__nas_s_0059_uicontrol1261712213413">“是否直接恢复”</span>开关默认打开，此时磁带归档副本直接恢复，不会生成中间文件，节省空间，当关掉开关后，恢复会生成中间文件，占用空间，但恢复速度会变快。</span></li>
+     <li><span>恢复NAS共享至原位置或新位置。</span><p></p>
+      <ul>
+       <li>恢复至原位置。<p>相关参数说明如<a href="#nas_s_0061__table1452025982813">表1</a>所示。</p>
+        <div class="tablenoborder">
+         <a name="nas_s_0061__table1452025982813"></a><a name="table1452025982813"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="nas_s_0061__table1452025982813" frame="border" border="1" rules="all">
+          <caption>
+           <b>表1 </b>恢复至原位置参数说明
+          </caption>
+          <colgroup>
+           <col style="width:13.569999999999999%">
+           <col style="width:86.42999999999999%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="13.569999999999999%" id="mcps1.3.4.2.6.2.1.1.2.2.3.1.1"><p>参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="86.42999999999999%" id="mcps1.3.4.2.6.2.1.1.2.2.3.1.2"><p>说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span>位置</span></p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>NAS共享所在的位置，用户无法修改。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p id="nas_s_0061__p1546219412123">通道数</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>执行恢复任务时，在客户端上能够同时执行的子任务数，NAS共享的通道数默认为10，最大可设置为40。</p> <p>通道数越大，备份性能越好，相应占用客户端的CPU和内存越多，每个通道占用约200MB内存，同时也会提高对NAS共享的访问速率。</p> <p>对于1.5.0版本，客户端部署到<span id="nas_s_0061__nas_s_0029_text1999610369555">本产品</span>时，由于容器资源有限，建议适当调低通道数的配置。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p id="nas_s_0061__p13142117151214">客户端</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p id="nas_s_0061__p1014247111216">选择执行备份任务的客户端。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p><span>覆盖规则</span></p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p>当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。</p>
+             <ul>
+              <li><span>直接替换已经存在的文件</span></li>
+              <li><span>忽略已存在的文件</span></li>
+              <li><span>只替换比恢复文件更旧的文件</span></li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.1 "><p id="nas_s_0061__p1197904335715">文件恢复顺序</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.1.2.2.3.1.2 "><p id="nas_s_0061__p6979124310575">文件恢复时的文件名排序。开关默认关闭，当开关打开时，支持按照字典序或逆字典序两种方式进行恢复。</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>恢复至新位置。<p>当恢复到<span>OceanStor V5</span>、OceanStor Pacific或者NetApp ONTAP时，相关参数说明如<a href="#nas_s_0061__zh-cn_topic_0000001792520482_table429861453516">表2</a>所示。</p>
+        <div class="tablenoborder">
+         <a name="nas_s_0061__zh-cn_topic_0000001792520482_table429861453516"></a><a name="zh-cn_topic_0000001792520482_table429861453516"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="nas_s_0061__zh-cn_topic_0000001792520482_table429861453516" frame="border" border="1" rules="all">
+          <caption>
+           <b>表2 </b>恢复至<span>OceanStor V5</span>、OceanStor Pacific或者NetApp ONTAP参数说明
+          </caption>
+          <colgroup>
+           <col style="width:13.569999999999999%">
+           <col style="width:86.42999999999999%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="13.569999999999999%" id="mcps1.3.4.2.6.2.1.2.2.2.3.1.1"><p>参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="86.42999999999999%" id="mcps1.3.4.2.6.2.1.2.2.2.3.1.2"><p>说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span>存储设备</span></p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>选择新位置所在的存储设备。</p>
+             <div class="note">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <p id="nas_s_0061__p105412525318">通过<a href="nas_s_0024.html">（可选）步骤5：注册NAS共享</a>注册的NAS共享归属于“otherDevice”存储设备。</p>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span>共享名称</span></p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>选择访问文件系统的共享名称。如果没有可用的共享，单击“<span>注册</span>”添加新的NAS共享。注册NAS共享的参数说明请参见<a href="nas_s_0024.html#nas_s_0024__table1929515516558">表1</a>。</p>
+             <div class="note">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <ul>
+                <li><span style="color:#282B33;">对于NFS共享，请确认当前设备具备NFS共享目录的读写权限，并且开启了no_root_squash选项。</span>配置NFS共享访问权限的详细操作，请参见<a href="nas_s_0025.html">步骤4：配置访问权限（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</a>。</li>
+                <li>对于CIFS共享，请确认当前设备具备CIFS共享目录的读写权限，推荐使用Administrator组中的用户进行备份，否则只能备份具有读写权限的文件和目录。配置CIFS共享访问权限的详细操作，请参见<a href="nas_s_0025.html">步骤4：配置访问权限（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</a>。</li>
+                <li>对于NFS/CIFS共享，请确认当前共享所属的文件系统的安全风格和备份的共享所属的文件系统的安全风格一致，否则会存在文件权限变更的风险。</li>
+                <li id="nas_s_0061__li455841518615">如果存储设备选择的是“otherDevice”，若没有共享名称可选时，需要先单击<span class="uicontrol" id="nas_s_0061__uicontrol743075417202">“注册”</span>，完成注册后，单击<span class="uicontrol" id="nas_s_0061__uicontrol10630846192012">“确定”</span>，下拉框即可看到有共享名称，注册共享名称的参数说明请参见<a href="nas_s_0024.html#nas_s_0024__table1929515516558">表1</a>。</li>
+                <li id="nas_s_0061__li12311351311">当使用CIFS共享恢复时，若原副本文件归属的用户在恢复的目标存储中不存在，则此用户的权限将无法恢复。用户信息查看请参见<a href="zh-cn_topic_0000002164804940.html">查看用户信息</a>。</li>
+               </ul>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p>通道数</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>执行恢复任务时，在客户端上能够同时执行的子任务数，NAS共享的通道数默认为10，最大可设置为40。</p> <p>通道数越大，备份性能越好，相应占用客户端的CPU和内存越多，每个通道占用约200MB内存，同时也会提高对NAS共享的访问速率。</p> <p>对于1.5.0版本，客户端部署到<span id="nas_s_0061__nas_s_0029_text1999610369555_1">本产品</span>时，由于容器资源有限，建议适当调低通道数的配置。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p>客户端</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>选择执行备份任务的客户端。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p><span>覆盖规则</span></p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。</p>
+             <ul>
+              <li><span>直接替换已经存在的文件</span></li>
+              <li><span>忽略已存在的文件</span></li>
+              <li><span>只替换比恢复文件更旧的文件</span></li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.1 "><p>文件恢复顺序</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.2.2.3.1.2 "><p>文件恢复时的文件名排序。开关默认关闭，当开关打开时，支持按照字典序或逆字典序两种方式进行恢复。</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div> <p>当恢复到OceanStor Dorado V700R001、OceanStor V700R001、OceanStor Dorado 6.x、OceanStor 6.x或OceanProtect 1.3.0及之后的版本时，相关参数说明如<a href="#nas_s_0061__zh-cn_topic_0000001792520482_table1248313820599">表3</a>所示。</p>
+        <div class="tablenoborder">
+         <a name="nas_s_0061__zh-cn_topic_0000001792520482_table1248313820599"></a><a name="zh-cn_topic_0000001792520482_table1248313820599"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="nas_s_0061__zh-cn_topic_0000001792520482_table1248313820599" frame="border" border="1" rules="all">
+          <caption>
+           <b>表3 </b>恢复至OceanStor Dorado V700R001、OceanStor V700R001、OceanStor Dorado 6.x、OceanStor 6.x或OceanProtect 1.3.0及之后的版本参数说明
+          </caption>
+          <colgroup>
+           <col style="width:13.569999999999999%">
+           <col style="width:86.42999999999999%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" valign="top" width="13.569999999999999%" id="mcps1.3.4.2.6.2.1.2.4.2.3.1.1"><p>参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" width="86.42999999999999%" id="mcps1.3.4.2.6.2.1.2.4.2.3.1.2"><p>说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><span>存储设备</span></p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>选择新位置所在的存储设备。</p>
+             <div class="note">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <p>通过<a href="nas_s_0024.html">（可选）步骤5：注册NAS共享</a>注册的NAS共享归属于“otherDevice”存储设备。</p>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><span>文件系统</span></p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>选择恢复目标文件系统。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><span>共享名称</span></p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>选择恢复目标文件系统的共享名称。</p>
+             <div class="note">
+              <span class="notetitle"> 说明： </span>
+              <div class="notebody">
+               <ul>
+                <li><span style="color:#282B33;">对于NFS共享，请确认当前设备具备NFS共享目录的读写权限，并且开启了no_root_squash选项。</span>配置NFS共享访问权限的详细操作，请参见<a href="nas_s_0025.html">步骤4：配置访问权限（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</a>。</li>
+                <li>对于CIFS共享，请确认当前设备具备CIFS共享目录的读写权限，推荐使用Administrator组中的用户进行备份，否则只能备份具有读写权限的文件和目录。配置CIFS共享访问权限的详细操作，请参见<a href="nas_s_0025.html">步骤4：配置访问权限（适用于OceanStor V5/OceanStor Pacific/NetApp ONTAP）</a>。</li>
+                <li>对于NFS/CIFS共享，请确认当前共享所属的文件系统的安全风格和备份的共享所属的文件系统的安全风格一致，否则会存在文件权限变更的风险。</li>
+                <li>如果存储设备选择的是“otherDevice”，若没有共享名称可选时，需要先单击<span class="uicontrol" id="nas_s_0061__nas_s_0061_uicontrol743075417202">“注册”</span>，完成注册后，单击<span class="uicontrol" id="nas_s_0061__nas_s_0061_uicontrol10630846192012">“确定”</span>，下拉框即可看到有共享名称，注册共享名称的参数说明请参见<a href="nas_s_0024.html#nas_s_0024__table1929515516558">表1</a>。</li>
+                <li>当使用CIFS共享恢复时，若原副本文件归属的用户在恢复的目标存储中不存在，则此用户的权限将无法恢复。用户信息查看请参见<a href="zh-cn_topic_0000002164804940.html">查看用户信息</a>。</li>
+               </ul>
+               <p><span style="color:#282B33;">请确认该共享的共享协议（NFS/CIFS），与副本所在文件系统的共享协议相同，否则恢复时将丢失文件权限信息。如副本所在的文件系统的共享协议为NFS，如果恢复时，选择的共享名称为CIFS共享协议，恢复后将丢失文件系统的NFS权限信息。</span></p>
+              </div>
+             </div></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p>域名/IP</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>访问NAS共享的域名或者业务IP地址。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p>通道数</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>执行恢复任务时，在客户端上能够同时执行的子任务数，NAS共享的通道数默认为10，最大可设置为40。</p> <p>通道数越大，备份性能越好，相应占用客户端的CPU和内存越多，每个通道占用约200MB内存，同时也会提高对NAS共享的访问速率。</p> <p>对于1.5.0版本，客户端部署到<span id="nas_s_0061__nas_s_0029_text1999610369555_2">本产品</span>时，由于容器资源有限，建议适当调低通道数的配置。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p>客户端</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>选择执行备份任务的客户端。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><span>认证方式</span></p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>文件系统的认证方式。当备份副本选择的共享协议为CIFS时，展示此选项。参数说明请参见<a href="nas_s_0024.html#nas_s_0024__table1929515516558">表1</a>。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p><span>覆盖规则</span></p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>当恢复路径中存在同名文件时，选择替换或跳过已存在的文件。</p>
+             <ul>
+              <li><span>直接替换已经存在的文件</span></li>
+              <li><span>忽略已存在的文件</span></li>
+              <li><span>只替换比恢复文件更旧的文件</span></li>
+             </ul></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" valign="top" width="13.569999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.1 "><p>文件恢复顺序</p></td>
+            <td class="cellrowborder" valign="top" width="86.42999999999999%" headers="mcps1.3.4.2.6.2.1.2.4.2.3.1.2 "><p>文件恢复时的文件名排序。开关默认关闭，当开关打开时，支持按照字典序或逆字典序两种方式进行恢复。</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+      </ul> <p></p></li>
+     <li id="nas_s_0061__li1168243513296"><span>单击<span class="uicontrol" id="nas_s_0061__uicontrol8682163517294">“<span id="nas_s_0061__text923644131319">确定</span>”</span>。在执行恢复副本数据的操作前，请先确认恢复的目标位置有足够的剩余空间用于恢复。确认方法如下：</span><p></p>
+      <ul id="nas_s_0061__ul698861123720">
+       <li id="nas_s_0061__li17226131513373">全量副本恢复要求：目标位置剩余空间≥全量副本缩减前数据量，全量副本缩减前数据量通过查看该备份任务在<span class="uicontrol" id="nas_s_0061__uicontrol18893135113394">“任务信息”</span>中的<span class="uicontrol" id="nas_s_0061__uicontrol6781131216406">“缩减前数据量”</span>。</li>
+       <li id="nas_s_0061__li3988191115372">永久增量副本或增量副本恢复要求：目标位置剩余空间≥此次永久增量副本或增量副本到上一次全量副本的所有副本缩减前数据量总和，缩减前数据量总和是这些副本备份任务在<span class="uicontrol" id="nas_s_0061__uicontrol2061203754116">“任务信息”</span>中的<span class="uicontrol" id="nas_s_0061__uicontrol561253514498">“缩减前数据量”</span>之和。</li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="nas_s_0056.html">恢复</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

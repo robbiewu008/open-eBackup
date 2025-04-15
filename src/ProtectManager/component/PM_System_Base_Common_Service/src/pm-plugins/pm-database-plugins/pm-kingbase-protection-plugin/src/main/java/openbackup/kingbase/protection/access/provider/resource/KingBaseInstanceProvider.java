@@ -12,12 +12,14 @@
 */
 package openbackup.kingbase.protection.access.provider.resource;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceCheckContext;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceConnectionCheckProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.service.InstanceResourceService;
 import openbackup.system.base.common.constants.CommonErrorCode;
@@ -28,10 +30,12 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,6 +49,8 @@ public class KingBaseInstanceProvider implements ResourceProvider {
 
     private final InstanceResourceService instanceResourceService;
 
+    private ResourceService resourceService;
+
     /**
      * KingBaseInstanceProvider
      *
@@ -54,6 +60,11 @@ public class KingBaseInstanceProvider implements ResourceProvider {
     public KingBaseInstanceProvider(ProviderManager providerManager, InstanceResourceService instanceResourceService) {
         this.providerManager = providerManager;
         this.instanceResourceService = instanceResourceService;
+    }
+
+    @Autowired
+    public void setResourceService(ResourceService resourceService) {
+        this.resourceService = resourceService;
     }
 
     @Override
@@ -117,5 +128,15 @@ public class KingBaseInstanceProvider implements ResourceProvider {
     @Override
     public boolean applicable(ProtectedResource protectedResource) {
         return ResourceSubTypeEnum.KING_BASE_INSTANCE.equalsSubType(protectedResource.getSubType());
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> agents = resourceService.queryDependencyResources(true, DatabaseConstants.AGENTS,
+            Collections.singletonList(resource.getUuid()));
+        dependencies.put(DatabaseConstants.AGENTS, agents);
+        resource.setDependencies(dependencies);
+        return true;
     }
 }

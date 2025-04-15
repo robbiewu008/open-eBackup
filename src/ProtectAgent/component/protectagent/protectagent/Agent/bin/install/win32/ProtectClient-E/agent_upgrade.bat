@@ -1,4 +1,5 @@
 @echo off
+:: 
 ::  This file is a part of the open-eBackup project.
 ::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 ::  If a copy of the MPL was not distributed with this file, You can obtain one at
@@ -9,6 +10,7 @@
 ::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
 ::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 ::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+::
 rem ########################################################################
 rem #
 rem #  %~1:installtion package path
@@ -30,6 +32,7 @@ set AGENT_NEWPKG_TMP_PATH=%AGENT_NEWPKG_ROOT_PATH%\tmp
 set AGENT_NEWPKG_INSTALL_CONF_PATH=%AGENT_NEWPKG_PLACE_PATH%\conf
 
 set LOGFILE_PATH=%AGENT_NEWPKG_PLACE_PATH%\agent_upgrade.log
+set COPYLOG_PATH=%AGENT_NEWPKG_PLACE_PATH%\agent_robocopy.log
 
 rem ------------------- in use pkg ------------------------------
 set XML_CFG_EXE=%IN_USE_AGENT_ROOT_PATH%\bin\xmlcfg.exe
@@ -53,6 +56,7 @@ set USER_ID=
 set IS_SUCC=0
 set LOOP_COUNT=0
 set IS_IMPORTCRL=0
+set IS_CLEAN=0
 
 if exist "%LOGFILE_PATH%" (
     del "%LOGFILE_PATH%"
@@ -105,7 +109,7 @@ if NOT %errorlevel% EQU 0 (
     exit /b 1
 )
 call :Log "Exec BackupInstalled function succ."
-echo "    step7.1: succ"
+echo "    step7.1: backup agent data succesfully."
 
 echo "    step7.2: Upgrade Handle is in progress"
 call :Log "Exec SetUpgradeConfig function."
@@ -117,27 +121,27 @@ if NOT %errorlevel% EQU 0 (
     exit /b 1
 )
 call :Log "Exec SetUpgradeConfig function succ."
-echo "    step7.2: succ"
+echo "    step7.2: configure agent upgrade successfully."
 
 call :Log "Exec uninstall.bat"
 call "%IN_USE_AGENT_MANAGER_PATH%\uninstall.bat" upgrade
 if NOT %errorlevel% EQU 0 (
-    echo "    step7.3: Exec uninstall.bat failed, and begin exec RollBack funciton"
-    call :Log "Exec uninstall.bat failed, and begin exec RollBack funciton"
+    echo "    step7.3: Exec uninstall.bat failed, and begin exec RollBack function"
+    call :Log "Exec uninstall.bat failed, and begin exec RollBack function"
     call :RollBack
     if NOT !errorlevel! EQU 0 (
-        echo "    step7.3: Exec uninstall.bat failed, and exec RollBack funciton failed"
-        call :Log "Exec uninstall.bat failed, and exec RollBack funciton failed"
+        echo "    step7.3: Exec uninstall.bat failed, and exec RollBack function failed"
+        call :Log "Exec uninstall.bat failed, and exec RollBack function failed"
         call :ExecExit
         exit /b 1
     ) else (
-        call :Log "Exec uninstall.bat failed, and exec RollBack funciton succeed"
+        call :Log "Exec uninstall.bat failed, and exec RollBack function succeed"
         call :ExecExit
         exit /b 2
     )
 )
 call :Log "Exec uninstall.bat succ."
-echo "    step7.3: succ"
+echo "    step7.3: uninstall agent successfully."
 
 call :Log "Exec install.bat"
 call "%AGENT_NEWPKG_PLACE_PATH%\install.bat" upgrade
@@ -145,44 +149,47 @@ if %errorlevel% EQU 0 (
     call :CheckUpgradeResult
 )
 if NOT %errorlevel% EQU 0 (
-    echo "    step7.4: Exec install.bat failed, and exec RollBack funciton"
-    call :Log "Exec install.bat failed, and exec RollBack funciton"
+    echo "    step7.4: Exec install.bat failed, and exec RollBack function"
+    call :Log "Exec install.bat failed, and exec RollBack function"
     call :RollBack
     if NOT !errorlevel! EQU 0 (
-        echo "    step7.4: Exec install.bat failed, and exec RollBack funciton failed"
-        call :Log "Exec install.bat failed, and exec RollBack funciton failed"
+        echo "    step7.4: Exec install.bat failed, and exec RollBack function failed"
+        call :Log "Exec install.bat failed, and exec RollBack function failed"
         call :ExecExit
         exit /b 1
     ) else (
-        call :Log "Exec install.bat failed, and exec RollBack funciton succeed"
+        call :Log "Exec install.bat failed, and exec RollBack function succeed"
         call :ExecExit
         exit /b 2
     )
 )
 call :Log "Exec install.bat succ."
-echo "    step7.4: succ"
+echo "    step7.4: install agent successfully."
 
 call :Log "Exec UpgradeAfterWork function"
 call :UpgradeAfterWork
 if NOT %errorlevel% EQU 0 (
-    echo "    step7.5: Exec UpgradeAfterWork function failed, and exec RollBack funciton"
-    call :Log "Exec UpgradeAfterWork function failed, and exec RollBack funciton"
+    echo "    step7.5: Exec UpgradeAfterWork function failed, and exec RollBack function"
+    call :Log "Exec UpgradeAfterWork function failed, and exec RollBack function"
     call :RollBack
     if NOT !errorlevel! EQU 0 (
-        echo "    step7.5: Exec UpgradeAfterWork function failed, and exec RollBack funciton failed"
-        call :Log "Exec UpgradeAfterWork function failed, and exec RollBack funciton failed"
+        echo "    step7.5: Exec UpgradeAfterWork function failed, and exec RollBack function failed"
+        call :Log "Exec UpgradeAfterWork function failed, and exec RollBack function failed"
         call :ExecExit
         exit /b 1
     ) else (
-        call :Log "Exec UpgradeAfterWork function failed, and exec RollBack funciton succeed"
+        call :Log "Exec UpgradeAfterWork function failed, and exec RollBack function succeed"
         call :ExecExit
         exit /b 2
     )
 )
-echo "    step7.5: succ"
+echo "    step7.5: configure agent successfully."
+call :Log "step7.5: configure agent successfully."
 
 set IS_SUCC=1
 call :Log "Exec ExecExit function"
+rem when upgrade succeed, clean tmp files
+set IS_CLEAN=1
 call :ExecExit
 exit /b 0
 
@@ -208,11 +215,10 @@ goto :EOF
 :BackupInstalled
     rem backup installed Agent
     if exist "%OLD_AGENT_BACKUP_PATH%" (
-        rd /s /q  "%OLD_AGENT_BACKUP_PATH%" > nul
+        rd /s /q  "%OLD_AGENT_BACKUP_PATH%" >> %LOGFILE_PATH% 2>&1
     )
-    md "%OLD_AGENT_BACKUP_PATH%"
-    xcopy /e/h/k/x/o/q/y "%IN_USE_AGENT_MANAGER_PATH%\*" "%OLD_AGENT_BACKUP_PATH%" > nul 
-    if NOT %errorlevel% EQU 0 (
+    robocopy "%IN_USE_AGENT_MANAGER_PATH%" "%OLD_AGENT_BACKUP_PATH%"  /E /PURGE /NP /LOG:%COPYLOG_PATH% /NDL /NFL /Z /R:5 /W:5
+    if NOT %errorlevel% LEQ 7 (
         call :Log "Backup installed Agent failed."
         exit /b 1
     )
@@ -220,27 +226,24 @@ goto :EOF
 
     rem backup plugin file
     call :BackupPluginFiles
-    if NOT %errorlevel% EQU 0 (
-        call :Log "Backup plugin files failed."
-        exit /b 1
-    )
+
     call :Log "Backup plugin files successfully."
 
     rem backup client.conf of new package
     if exist "%NEW_AGENT_BACKUP_PATH%" (
-        rd /s /q  "%NEW_AGENT_BACKUP_PATH%" > nul
+        rd /s /q  "%NEW_AGENT_BACKUP_PATH%" >> %LOGFILE_PATH% 2>&1
     )
     md "%NEW_AGENT_BACKUP_PATH%"
     md "%NEW_AGENT_BACKUP_PATH%\conf\"
-    copy /y "%AGENT_NEWPKG_INSTALL_CONF_PATH%\client.conf" "%NEW_AGENT_BACKUP_PATH%\conf\" > nul && (
+    copy /y "%AGENT_NEWPKG_INSTALL_CONF_PATH%\client.conf" "%NEW_AGENT_BACKUP_PATH%\conf\" >> %LOGFILE_PATH% 2>&1 && (
         call :Log "Backup upgrade package client.conf succ"
     )
 
     rem backup cert file in new pkg
-    copy /y "%AGENT_NEWPKG_INSTALL_CONF_PATH%\ca.crt.pem" "%NEW_AGENT_BACKUP_PATH%\conf\" > nul
-    copy /y "%AGENT_NEWPKG_INSTALL_CONF_PATH%\client.crt.pem" "%NEW_AGENT_BACKUP_PATH%\conf\" > nul
-    copy /y "%AGENT_NEWPKG_INSTALL_CONF_PATH%\client.pem" "%NEW_AGENT_BACKUP_PATH%\conf\" > nul
-    copy /y "%AGENT_NEWPKG_INSTALL_CONF_PATH%\agentca.crt.pem" "%NEW_AGENT_BACKUP_PATH%\conf\" > nul
+    copy /y "%AGENT_NEWPKG_INSTALL_CONF_PATH%\ca.crt.pem" "%NEW_AGENT_BACKUP_PATH%\conf\" >> %LOGFILE_PATH% 2>&1
+    copy /y "%AGENT_NEWPKG_INSTALL_CONF_PATH%\client.crt.pem" "%NEW_AGENT_BACKUP_PATH%\conf\" >> %LOGFILE_PATH% 2>&1
+    copy /y "%AGENT_NEWPKG_INSTALL_CONF_PATH%\client.pem" "%NEW_AGENT_BACKUP_PATH%\conf\" >> %LOGFILE_PATH% 2>&1
+    copy /y "%AGENT_NEWPKG_INSTALL_CONF_PATH%\agentca.crt.pem" "%NEW_AGENT_BACKUP_PATH%\conf\" >> %LOGFILE_PATH% 2>&1
 
     call :Log "Call GetSNMPCfg function"
     rem backup SNMP config
@@ -319,19 +322,19 @@ goto :EOF
             echo %%a=%%b>> "%AGENT_NEWPKG_TMP_PATH%\cfg.tmp"
         )
     )
-    move /y "%AGENT_NEWPKG_TMP_PATH%\cfg.tmp" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\client.conf" >nul
+    move /y "%AGENT_NEWPKG_TMP_PATH%\cfg.tmp" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\client.conf" >> %LOGFILE_PATH% 2>&1
 
     rem replace certification, use the certification of old agent
     if exist "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\nginx\conf\pmca.pem" (
-        copy /y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\nginx\conf\pmca.pem" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\ca.crt.pem" > nul
-        copy /y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\nginx\conf\agentca.pem" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\agentca.crt.pem" > nul
+        copy /y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\nginx\conf\pmca.pem" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\ca.crt.pem" >> %LOGFILE_PATH% 2>&1
+        copy /y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\nginx\conf\agentca.pem" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\agentca.crt.pem" >> %LOGFILE_PATH% 2>&1
     ) else (
         rem Compatible certificate system upgrade
-        copy /y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\nginx\conf\bcmagentca.pem" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\ca.crt.pem" > nul
-        copy /y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\nginx\conf\bcmagentca.pem" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\agentca.crt.pem" > nul
+        copy /y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\nginx\conf\bcmagentca.pem" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\ca.crt.pem" >> %LOGFILE_PATH% 2>&1
+        copy /y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\nginx\conf\bcmagentca.pem" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\agentca.crt.pem" >> %LOGFILE_PATH% 2>&1
     )
-    copy /y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\nginx\conf\server.pem" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\client.crt.pem" > nul
-    copy /y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\nginx\conf\server.key" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\client.pem" > nul
+    copy /y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\nginx\conf\server.pem" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\client.crt.pem" >> %LOGFILE_PATH% 2>&1
+    copy /y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\nginx\conf\server.key" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\client.pem" >> %LOGFILE_PATH% 2>&1
 
     exit /b 0
 goto :EOF
@@ -364,14 +367,18 @@ goto :EOF
         call :Log "Closed process[%~1] timeout."
         exit /b 1
     )
-	for /f "tokens=1-6" %%a in (' tasklist ^| findstr "%~1" ') do (
-		if not "%%a" EQU "" (
-			taskkill /f /pid %%b 1>nul 2>nul
-			timeout 1 /NOBREAK > nul
-            set /a LOOP_COUNT+=1
-			goto :loopcheckprocess
-		)
-	)
+    for /f "tokens=1-6" %%a in (' tasklist ^| findstr "%~1" ') do (
+        if not "%%a" EQU "" (
+            if not "%%b" EQU "" (
+                taskkill /f /t /pid %%b  >> %LOGFILE_PATH% 2>&1
+                timeout 1 /NOBREAK  >> %LOGFILE_PATH% 2>&1
+                set /a LOOP_COUNT+=1
+                goto :loopcheckprocess
+            ) else (
+                call :Log "process %~1 isn't running."
+            )
+        )
+    )
     call :Log "Process[%~1] is closed."
     exit /b 0
 goto :EOF
@@ -398,10 +405,10 @@ goto :EOF
     rem backup failed log in upgrade 
     call :Log "Exec RollBack funciton, in RollBack."
     if exist "%IN_USE_AGENT_ROOT_PATH%\log\agent_uninstall.log" (
-        copy /y "%IN_USE_AGENT_ROOT_PATH%\log\agent_uninstall.log" %AGENT_NEWPKG_PLACE_PATH%\agent_uninstall_in_upgrade.log > nul
+        copy /y "%IN_USE_AGENT_ROOT_PATH%\log\agent_uninstall.log" %AGENT_NEWPKG_PLACE_PATH%\agent_uninstall_in_upgrade.log  >> %LOGFILE_PATH% 2>&1
     )
     if exist "%AGENT_ROOT_PATH%\log\agent_install.log" (
-        copy /y "%AGENT_ROOT_PATH%\log\agent_install.log" %AGENT_NEWPKG_PLACE_PATH%\agent_install_in_upgrade.log > nul
+        copy /y "%AGENT_ROOT_PATH%\log\agent_install.log" %AGENT_NEWPKG_PLACE_PATH%\agent_install_in_upgrade.log  >> %LOGFILE_PATH% 2>&1
     )
 
     rem stop Agent
@@ -425,14 +432,14 @@ goto :EOF
     rem restore Agent
     call :Log "Restore installed Agent, in RollBack."
     if exist "%AGENT_MANAGER_PATH%" (
-        rd /s /q  "%AGENT_MANAGER_PATH%" > nul
+        rd /s /q  "%AGENT_MANAGER_PATH%"  >> %LOGFILE_PATH% 2>&1
     )
     if exist "%IN_USE_AGENT_MANAGER_PATH%" (
-        rd /s /q  "%IN_USE_AGENT_MANAGER_PATH%" > nul
+        rd /s /q  "%IN_USE_AGENT_MANAGER_PATH%"  >> %LOGFILE_PATH% 2>&1
     )
     md "%IN_USE_AGENT_MANAGER_PATH%"
-    xcopy /e/h/k/x/o/q/y "%OLD_AGENT_BACKUP_PATH%\*" "%IN_USE_AGENT_MANAGER_PATH%" > nul
-    echo Y | Cacls "%IN_USE_AGENT_MANAGER_PATH%" /T /E /R Users >nul 2>&1
+    xcopy /e/h/k/x/o/q/y "%OLD_AGENT_BACKUP_PATH%\*" "%IN_USE_AGENT_MANAGER_PATH%"  >> %LOGFILE_PATH% 2>&1
+    echo Y | Cacls "%IN_USE_AGENT_MANAGER_PATH%" /T /E /R Users  >> %LOGFILE_PATH% 2>&1
 
     rem start Agent
     call :Log "Exec agent_start.bat, in RollBack."
@@ -463,7 +470,16 @@ goto :EOF
     if exist "%AGENT_NEWPKG_TMP_PATH%\Backup.conf" (
         del "%AGENT_NEWPKG_TMP_PATH%\Backup.conf"
     )
+    if exist "%AGENT_NEWPKG_TMP_PATH%\Mount.conf" (
+        del "%AGENT_NEWPKG_TMP_PATH%\Mount.conf"
+    )
     for /f %%a in ('call "%XML_CFG_EXE%" read System "log_level"') do (echo log_level=%%a>> "%AGENT_NEWPKG_TMP_PATH%\System.conf")
+    for /f %%a in ('call "%XML_CFG_EXE%" read System "log_count"') do (echo log_count=%%a>> "%AGENT_NEWPKG_TMP_PATH%\System.conf")
+    for /f %%a in ('call "%XML_CFG_EXE%" read System "log_max_size"') do (echo log_max_size=%%a>> "%AGENT_NEWPKG_TMP_PATH%\System.conf")
+    for /f %%a in ('call "%XML_CFG_EXE%" read System "log_keep_time"') do (echo log_keep_time=%%a>> "%AGENT_NEWPKG_TMP_PATH%\System.conf")
+
+    for /f %%a in ('call "%XML_CFG_EXE%" read Monitor rdagent "logfile_size"') do (echo logfile_size=%%a>> "%AGENT_NEWPKG_TMP_PATH%\Monitor.conf")
+    for /f %%a in ('call "%XML_CFG_EXE%" read Monitor rdagent "logfile_size_alarm_threshold"') do (echo logfile_size_alarm_threshold=%%a>> "%AGENT_NEWPKG_TMP_PATH%\Monitor.conf")
     
     for /f %%a in ('call "%XML_CFG_EXE%" read SNMP "engine_id"') do (echo engine_id=%%a>> "%AGENT_NEWPKG_TMP_PATH%\SNMP.conf")
     for /f %%a in ('call "%XML_CFG_EXE%" read SNMP "context_name"') do (echo context_name=%%a>> "%AGENT_NEWPKG_TMP_PATH%\SNMP.conf")
@@ -477,6 +493,8 @@ goto :EOF
 
     for /f %%a in ('call "%XML_CFG_EXE%" read Backup "archive_threshold"') do (echo archive_threshold=%%a>> "%AGENT_NEWPKG_TMP_PATH%\Backup.conf")
     for /f %%a in ('call "%XML_CFG_EXE%" read Backup "archive_thread_timeout"') do (echo archive_thread_timeout=%%a>> "%AGENT_NEWPKG_TMP_PATH%\Backup.conf")
+
+    for /f %%a in ('call "%XML_CFG_EXE%" read Mount "win_mount_public_path"') do (echo win_mount_public_path=%%a>> "%AGENT_NEWPKG_TMP_PATH%\Mount.conf")
     exit /b 0
 goto :EOF
 
@@ -496,14 +514,24 @@ goto :EOF
     for /f "delims== tokens=1,2" %%a in ('type "%AGENT_NEWPKG_TMP_PATH%\System.conf"') do ( 
         call "%AGENT_ROOT_PATH%\bin\xmlcfg.exe" write System %%a "%%b"
     )
+    for /f "delims== tokens=1,2" %%a in ('type "%AGENT_NEWPKG_TMP_PATH%\Monitor.conf"') do ( 
+        call "%AGENT_ROOT_PATH%\bin\xmlcfg.exe" write Monitor rdagent %%a "%%b"
+    )
     for /f "delims== tokens=1,2" %%a in ('type "%AGENT_NEWPKG_TMP_PATH%\SNMP.conf"') do ( 
         call "%AGENT_ROOT_PATH%\bin\xmlcfg.exe" write SNMP %%a "%%b"
     )
     for /f "delims== tokens=1,2" %%a in ('type "%AGENT_NEWPKG_TMP_PATH%\Backup.conf"') do ( 
         call "%AGENT_ROOT_PATH%\bin\xmlcfg.exe" write Backup %%a "%%b"
     )
+    for /f "delims== tokens=1,2" %%a in ('type "%AGENT_NEWPKG_TMP_PATH%\Mount.conf"') do (
+        if not "%%b" == "Section" (
+            call "%AGENT_ROOT_PATH%\bin\xmlcfg.exe" write Mount %%a %%b
+        )
+    )
     del "%AGENT_NEWPKG_TMP_PATH%\SNMP.conf"
+    del "%AGENT_NEWPKG_TMP_PATH%\Monitor.conf"
     del "%AGENT_NEWPKG_TMP_PATH%\Backup.conf" 
+    del "%AGENT_NEWPKG_TMP_PATH%\Mount.conf" 
     exit /b 0
 goto :EOF
 
@@ -530,7 +558,7 @@ goto :EOF
     call :RestoreOneFile "%NEW_AGENT_BACKUP_PATH%\conf\client.crt.pem" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\"
     call :RestoreOneFile "%NEW_AGENT_BACKUP_PATH%\conf\agentca.crt.pem" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\"
     if exist "%NEW_AGENT_BACKUP_PATH%\conf\client.conf" (
-        copy /y "%NEW_AGENT_BACKUP_PATH%\conf\client.conf" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\" > nul
+        copy /y "%NEW_AGENT_BACKUP_PATH%\conf\client.conf" "%AGENT_NEWPKG_INSTALL_CONF_PATH%\"  >> %LOGFILE_PATH% 2>&1
     )
 
     call :RestorePluginFiles
@@ -539,18 +567,18 @@ goto :EOF
 goto :EOF
 
 :RestoreSQLite
-    xcopy /e/h/k/x/o/q/y "%AGENT_NEWPKG_ROOT_PATH%\db\*" "%NEW_AGENT_BACKUP_PATH%\db\" > nul
+    xcopy /e/h/k/x/o/q/y "%AGENT_NEWPKG_ROOT_PATH%\db\*" "%NEW_AGENT_BACKUP_PATH%\db\" >> %LOGFILE_PATH% 2>&1
 
-    xcopy /e/h/k/x/o/q/y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\db\*" "%AGENT_NEWPKG_ROOT_PATH%\db\" > nul
+    xcopy /e/h/k/x/o/q/y "%OLD_AGENT_BACKUP_PATH%\ProtectClient-E\db\*" "%AGENT_NEWPKG_ROOT_PATH%\db\"  >> %LOGFILE_PATH% 2>&1
     call "%AGENT_NEWPKG_BIN_PATH%\agent_upgrade_sqlite.bat" "%AGENT_NEWPKG_ROOT_PATH%\db\" "%AGENT_ROOT_PATH%\db\"
     if NOT %errorlevel% EQU 0 (
         call :Log "Exec agent_upgrade_sqlite.bat failed"
         exit /b 1
     )
 
-    xcopy /e/h/k/x/o/q/y "%NEW_AGENT_BACKUP_PATH%\db\*" "%AGENT_NEWPKG_ROOT_PATH%\db\" > nul
+    xcopy /e/h/k/x/o/q/y "%NEW_AGENT_BACKUP_PATH%\db\*" "%AGENT_NEWPKG_ROOT_PATH%\db\" >> %LOGFILE_PATH% 2>&1
 
-    copy /y "%AGENT_NEWPKG_ROOT_PATH%\log\agent_upgrade_sqlite.log" "%AGENT_NEWPKG_PLACE_PATH%" >nul
+    copy /y "%AGENT_NEWPKG_ROOT_PATH%\log\agent_upgrade_sqlite.log" "%AGENT_NEWPKG_PLACE_PATH%" >> %LOGFILE_PATH% 2>&1
     exit /b 0
 goto :EOF
 
@@ -582,12 +610,12 @@ rem copy or merge file from old dir to new dir
         if exist "!newFilePath!" (
             rem merge log file
             set tmpFilePath=!AGENT_COPY_MERGE_PATH!\!fileName!
-            copy /y  !oldFilePath!  !tmpFilePath! > nul
+            copy /y  !oldFilePath!  !tmpFilePath!  >> %LOGFILE_PATH% 2>&1
             type !newFilePath! >> !tmpFilePath!
-            copy /y  !tmpFilePath!  !newFilePath! > nul
+            copy /y  !tmpFilePath!  !newFilePath!  >> %LOGFILE_PATH% 2>&1
         ) else (
             rem copy log file
-            copy /y !oldFilePath!  !newFilePath! > nul
+            copy /y !oldFilePath!  !newFilePath!  >> %LOGFILE_PATH% 2>&1
         )
     )
     call :Log "Merge srcDir %oldDirPath% to dstDir %newDirPath% finish."
@@ -617,13 +645,19 @@ goto :EOF
 :BackupPluginFiles
     if exist "%OLD_AGENT_BACKUP_PATH%\Plugins\GeneralDBPlugin\bin\applications\common\sqlite" (
         md "%BACKUP_COPY_PATH%\Plugins\GeneralDBPlugin\sqlite"
-        xcopy /e/h/k/x/o/q/y  "%OLD_AGENT_BACKUP_PATH%\Plugins\GeneralDBPlugin\bin\applications\common\sqlite" "%BACKUP_COPY_PATH%\Plugins\GeneralDBPlugin\sqlite" > nul
+        xcopy /e/h/k/x/o/q/y  "%OLD_AGENT_BACKUP_PATH%\Plugins\GeneralDBPlugin\bin\applications\common\sqlite" "%BACKUP_COPY_PATH%\Plugins\GeneralDBPlugin\sqlite"  >> %LOGFILE_PATH% 2>&1
+        if NOT %errorlevel% EQU 0 (
+            call :Log "Backup plugin files failed."
+            exit /b 1
+        )
     )
 goto :EOF
 
 :RestorePluginFiles
     if exist "%BACKUP_COPY_PATH%\Plugins\GeneralDBPlugin\sqlite" (
-        xcopy /e/h/k/x/o/q/y  "%BACKUP_COPY_PATH%\Plugins\GeneralDBPlugin\sqlite\*" "%PLUGIN_DIR%\GeneralDBPlugin\bin\applications\common\sqlite" > nul
+        if exist "%PLUGIN_DIR%\GeneralDBPlugin\bin\applications\common\sqlite" (
+            xcopy /e/h/k/x/o/q/y  "%BACKUP_COPY_PATH%\Plugins\GeneralDBPlugin\sqlite\*" "%PLUGIN_DIR%\GeneralDBPlugin\bin\applications\common\sqlite"  >> %LOGFILE_PATH% 2>&1
+        )
     )
 goto :EOF
 

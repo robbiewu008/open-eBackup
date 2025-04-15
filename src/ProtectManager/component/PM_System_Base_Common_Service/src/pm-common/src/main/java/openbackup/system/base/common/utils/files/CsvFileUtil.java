@@ -35,6 +35,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -218,6 +219,16 @@ public class CsvFileUtil extends AbstractFileUtil {
             }
             closeStream(pw, osw, fos);
         }
+    }
+
+    /**
+     * 写文件
+     *
+     * @param dataLst      需要写入文件的数据
+     * @param keepIndexSet 截取后需要保留的列号集合
+     */
+    @Override
+    protected void writeToFile(List<List<String>> dataLst, Set<Integer> keepIndexSet) {
     }
 
     @Override

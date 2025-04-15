@@ -12,6 +12,7 @@
 */
 package openbackup.access.framework.resource.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.lock.ResourceDistributedLockService;
 import openbackup.access.framework.resource.util.ResourceUtil;
 import openbackup.data.access.framework.core.manager.ProviderManager;
@@ -31,6 +32,7 @@ import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.query.SessionService;
 import openbackup.system.base.sdk.common.model.AllowRestoreObject;
 import openbackup.system.base.sdk.common.model.UuidObject;
+import openbackup.system.base.sdk.resource.model.UpdateCopyUserObjectReq;
 import openbackup.system.base.sdk.resource.model.UpdateRestoreObjectReq;
 import openbackup.system.base.sdk.user.enums.OperationTypeEnum;
 import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
@@ -38,8 +40,6 @@ import openbackup.system.base.security.context.Context;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.security.journal.Logging;
 import openbackup.system.base.security.permission.Permission;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
@@ -385,5 +385,23 @@ public class CommonResourceAccessController {
                 }
             }
         }
+    }
+
+    /**
+     * 修改副本归属用户（同时修改配额）
+     *
+     * @param updateCopyUserObjectReq 更新副本归属用户请求体
+     */
+    @ExterAttack
+    @PutMapping("/action/update-copy-user")
+    @Permission(
+        roles = {Constants.Builtin.ROLE_SYS_ADMIN, Constants.Builtin.ROLE_AUDITOR},
+        enableCheckAuth = false, checkRolePermission = true)
+    @Logging(name = "0x20640332004C", target = "Resource",
+        details = {"$1?.resourceId", "$1?.userId"})
+    public void updateCopyUser(@RequestBody UpdateCopyUserObjectReq updateCopyUserObjectReq) {
+        log.info("Start update resourceId: {}, userId: {}", updateCopyUserObjectReq.getResourceId(),
+            updateCopyUserObjectReq.getUserId());
+        resourceService.updateCopyUser(updateCopyUserObjectReq);
     }
 }

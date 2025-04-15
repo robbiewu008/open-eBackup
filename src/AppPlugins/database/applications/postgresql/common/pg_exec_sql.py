@@ -82,7 +82,7 @@ class ExecPgSql(object):
         if not os.path.exists(p_sql_path):
             LOGGER.error("Param psql path not exist!")
             return CmdRetCode.EXEC_ERROR.value, "", "Param psql path not exist."
-        if not PostgreCommonUtils.check_os_name(os_user_name, p_sql_path, self.enable_root)[0]:
+        if not PostgreCommonUtils.check_os_user(os_user_name, p_sql_path, self.enable_root)[0]:
             return CmdRetCode.EXEC_ERROR.value, "", "Os username is not exist."
         if not check_utils.is_ip_address(self._service_ip):
             LOGGER.error("Service ip is incorrect!")
@@ -118,7 +118,7 @@ class ExecPgSql(object):
         if not os.path.exists(p_sql_path):
             LOGGER.error("Param psql path not exist!")
             return CmdRetCode.EXEC_ERROR.value, "", "Param psql path not exist."
-        if not PostgreCommonUtils.check_os_name(os_user_name, p_sql_path, self.enable_root)[0]:
+        if not PostgreCommonUtils.check_os_user(os_user_name, p_sql_path, self.enable_root)[0]:
             return CmdRetCode.EXEC_ERROR.value, "", "Os username is not exist."
         if not check_utils.is_ip_address(self._service_ip):
             LOGGER.error("Service ip is incorrect!")
@@ -179,6 +179,13 @@ class ExecPgSql(object):
             cmd_result = process.after
             break
         return CmdRetCode.EXEC_SUCCESS.value, cmd_result, ""
+
+    def exec_backup_cmd_catch_error(self, os_user_name, sql_cmd, timeout=-1, pager_off=False):
+        try:
+            return self.exec_backup_cmd(os_user_name, sql_cmd, timeout, pager_off)
+        except Exception as e:
+            LOGGER.error(e, exc_info=True)
+            return CmdRetCode.CONFIG_ERROR.value, "", "Base backup done, but archive mode error."
 
     def exec_sql_cmd_pass(self, exec_cmd, timeout=-1):
         db_pwd = get_env_variable(f"job_protectObject_auth_authPwd_{self._pid}")

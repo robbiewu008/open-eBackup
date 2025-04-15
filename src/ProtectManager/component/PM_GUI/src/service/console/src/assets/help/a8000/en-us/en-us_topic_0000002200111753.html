@@ -1,0 +1,118 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 3: Registering a Nutanix Virtualization Environment">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164625404.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200111753">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 3: Registering a Nutanix Virtualization Environment</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200111753"></a><a name="EN-US_TOPIC_0000002200111753"></a>
+
+<h1 class="topictitle1">Step 3: Registering a Nutanix Virtualization Environment</h1>
+<div><p>Before performing Nutanix backup and restoration, you must register the Nutanix virtualization environment with the <span>OceanProtect</span>.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><p>After registering the Nutanix virtualization environment, you can view information about Nutanix VMs on the management page and protect them.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>A storage pool has been added to the Nutanix platform to be protected, and the target host to be protected and the host where the client is installed use the same storage pool.</li><li>You have registered a user on the Nutanix platform and added user permissions. Otherwise, the backup fails due to insufficient permissions.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200111753__en-us_topic_0000002199964685_uicontrol3746193475217"><b><span id="EN-US_TOPIC_0000002200111753__en-us_topic_0000002199964685_text14746113419525"><strong>Protection</strong></span> &gt; Virtualization &gt; Nutanix</b></span>.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> and register the Nutanix virtualization platform.</span><p><div class="p"><a href="#EN-US_TOPIC_0000002200111753__table613227155112">Table 1</a> lists the Nutanix virtualization platform registration information.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200111753__table613227155112"></a><a name="table613227155112"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200111753__table613227155112" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Nutanix virtualization platform registration information</caption><colgroup><col style="width:25.6%"><col style="width:74.4%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.6%" id="mcps1.3.4.2.2.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.4%" id="mcps1.3.4.2.2.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>User-defined name of the Nutanix virtualization platform.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>IP Address/Domain Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Management IP address or domain name of the Nutanix virtualization platform.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Port</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Port number used by the <span>OceanProtect</span> to communicate with the Nutanix virtualization platform.</p>
+<p>The default port number is <strong>9440</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Register a username and password, and add user permissions on the Nutanix platform. For details, see <a href="en-us_topic_0000002200026117.html">Step 1: Registering a User with the Nutanix Virtualization Platform and Adding User Permissions</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Password</strong></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Clients</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Select the client used for backup and restoration.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><strong>Resource Scanning Interval</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>Interval for the system to automatically scan for resources.</p>
+<p>The default interval is 1 hour, and the value ranges from 1 to 72 hours.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Certificate Verification</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>This function is enabled by default. When you register a Nutanix environment to be protected, the system verifies the information about the devices to be accessed. After this function is disabled, security risks may exist in the communication between the system and Nutanix. Exercise caution when performing this operation.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Certificate</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>After <span class="uicontrol"><b><span><strong>Certificate Verification</strong></span></b></span> is enabled, import the certificate obtained in <a href="en-us_topic_0000002164785140.html">Step 2: Obtaining the Nutanix Certificate</a>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.6%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p><span><strong>Revocation List</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.4%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>After the certificate revocation list (CRL) is imported, the system checks whether the client certificate has been revoked. If the certificate has been revoked, cluster registration fails.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span><p><p>After the registration is successful, information about the registered Nutanix virtualization environment is displayed on the left of the page.</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164625404.html">Backing Up the Nutanix Virtualization Environment</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

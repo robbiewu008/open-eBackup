@@ -11,58 +11,59 @@
   MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
   -->
 
-<div class="tip-container" *ngIf="!rowCopy.isSearchRestore">
+<div class="tip-container" *ngIf="!rowCopy.isSearchRestore && !isFileSystemApp">
   {{ fileLevelRestoreTips }}
 </div>
 <div class="restore-tree">
   <ng-container *ngIf="!rowCopy.isSearchRestore">
-    <lv-group [lvColumns]="['auto', '10px', 'auto']">
-      <div class="file-level-restore-tree fileset-list-tree margin-space file-level-tree-scroll">
-        <lv-group lvGutter="20px" class="padding-10">
-          <span class="aui-text-label">{{
-            'protection_selected_copy_label' | i18n
-            }}</span>
-          <span>{{
-            rowCopy.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss'
-            }}</span>
-        </lv-group>
-        <lv-group lvGutter="10px" class="padding-10" [lvColumns]="['auto', '480px']"
-          *ngIf="rowCopy.resource_sub_type === dataMap.Resource_Type.DWS_Cluster.value">
-          <span class="aui-text-label">{{
-            'common_database_label' | i18n
-            }}</span>
-          <lv-select [lvOptions]='databaseOptions' lvValueKey='value' [(ngModel)]='database'
-            (ngModelChange)='getSchema($event)' #lvSelect>
-          </lv-select>
-        </lv-group>
-        <lv-group lvGutter="10px" class="padding-10" [lvColumns]="['auto', '480px']"
-        *ngIf="[
-                dataMap.Resource_Type.OceanBaseCluster.value
-              ].includes(rowCopy.resource_sub_type)">
-        <span class="aui-text-label">{{
-          'common_single_tenant_label' | i18n
-          }}</span>
-        <lv-select [lvOptions]='tenantOptions' [(ngModel)]='tenant' (ngModelChange)="getSchema('/'+ tenant.label)" #lvSelectTenant>
-        </lv-select>
-      </lv-group>
-        <ng-container *ngIf="isDameng">
-          <ng-container *ngTemplateOutlet="dameng"> </ng-container>
-        </ng-container>
-        <ng-container *ngIf="!isDameng">
-          <ng-container *ngTemplateOutlet="allFileTreeData"> </ng-container>
-        </ng-container>
-
-        <lv-group lvGutter="8px" class="select-count" *ngIf="
-            selectedLength > 0 &&
-            !(
-              [
-                dataMap.Resource_Type.Hive.value,
-                dataMap.Resource_Type.Elasticsearch.value
-              ].includes(rowCopy.resource_type) ||
-              [ dataMap.Resource_Type.ClickHouse.value ].includes(rowCopy.resource_sub_type)
-            ) || total <= 200 &&
-            selectedLength > 0
-          ">
+    <!-- 文件系统类恢复 -->
+    <ng-container *ngIf="isFileSystemApp">
+      <lv-form class="aui-gutter-column-md">
+        <lv-form-item>
+          <lv-form-label>
+            {{'protection_selected_copy_label' | i18n}}
+          </lv-form-label>
+          <lv-form-control>
+            {{rowCopy.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss'}}
+          </lv-form-control>
+        </lv-form-item>
+        <!-- 恢复对象 -->
+        <h3 class="aui-gutter-column-sm">{{'protection_recovery_object_label' | i18n}}</h3>
+        <lv-alert lvType="info">
+          {{'protection_manual_path_tip_label' | i18n}}
+        </lv-alert>
+        <lv-form-item>
+          <lv-form-label>
+            {{'protection_path_mode_label' | i18n}}
+          </lv-form-label>
+          <lv-form-control>
+            <lv-radio-group [(ngModel)]="pathMode" [lvGroupName]="'group'" (ngModelChange)="pathModeChange()">
+              <lv-group [lvGutter]="'20px'">
+                <lv-radio [lvValue]="modeMap.fromTree">
+                  {{ 'protection_path_from_tree_label' | i18n }}
+                </lv-radio>
+                <lv-radio [lvValue]="modeMap.fromTag">
+                  {{ 'protection_path_from_input_label' | i18n }}
+                </lv-radio>
+              </lv-group>
+            </lv-radio-group>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="pathMode === modeMap.fromTag">
+          <lv-form-label lvRequired>
+            {{'protection_path_from_input_title_label' | i18n}}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_path_placeholder_tip_label' | i18n}}"
+              lvColorState='true'></i>
+          </lv-form-label>
+          <lv-form-control>
+            <aui-manual-input-path [rowCopy]="rowCopy" (pathChange)="pathChange($event)"></aui-manual-input-path>
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form>
+      <!-- 恢复对象表格 -->
+      <div class="source-table file-level-restore-tree" *ngIf="pathMode === modeMap.fromTree">
+        <ng-container *ngTemplateOutlet="allFileTreeData"> </ng-container>
+        <lv-group lvGutter="8px" class="select-count" *ngIf="selectedLength > 0 ">
           <span class="aui-text-label">{{
             'common_selected_label' | i18n: []:true
             }}</span>
@@ -71,59 +72,43 @@
             }}</span>
         </lv-group>
       </div>
-      <div class="arrow-container"></div>
-      <div class="file-level-restore-tree hcs-restore-list-tree">
-        <div style="height: 52px;" *ngIf="rowCopy.resource_sub_type === dataMap.Resource_Type.DWS_Cluster.value || isOceanBase"></div>
-        <ng-container *ngIf="i18n.language === language.CN">
-          <lv-group lvGutter="10px" class="padding-10" [lvColumns]="['auto', '250px', '100px']" *ngIf="!isOceanBase">
-            <span class="aui-text-label">{{
-              'protection_restore_target_label' | i18n
-              }}</span>
-            <input [ngModel]="inputTarget" lv-input class="restore-target-input"
-              placeholder="{{ 'protection_target_input_tips_label' | i18n }}" readOnly [disabled]='isDameng' />
-            <button (click)="selectRecoveryTarget()" lv-button [disabled]='isDameng'>
-              {{ 'common_new_select_label' | i18n }}
-            </button>
-          </lv-group>
-          <lv-group lvGutter="10px" class="padding-10" *ngIf="isOceanBase">
-            <span class="aui-text-label">{{
-              'protection_restore_target_label' | i18n
-              }}</span>
-            <lv-select [lvOptions]='clusterOptions' [(ngModel)]='cluster' #lvSelectCluster (ngModelChange)='getTargetResourcePoolOptions(cluster.value)'>
-            </lv-select>
-          </lv-group>
-        </ng-container>
-        <ng-container *ngIf="i18n.language !== language.CN">
-          <lv-group lvGutter="10px" class="padding-10" [lvColumns]="['180px', 'auto', '110px']" *ngIf="!isOceanBase">
-            <span class="aui-text-label">{{
-              'protection_restore_target_label' | i18n
-              }}</span>
-            <input [ngModel]="inputTarget" lv-input class="restore-target-input" [disabled]='isDameng' placeholder="{{selectTips}}"
-              readOnly lv-overflow />
-            <button (click)="selectRecoveryTarget()" lv-button [disabled]='isDameng'>
-              {{ 'common_new_select_label' | i18n }}
-            </button>
-          </lv-group>
-          <lv-group lvGutter="10px" class="padding-10" *ngIf="isOceanBase">
-            <span class="aui-text-label">{{
-              'protection_restore_target_label' | i18n
-              }}</span>
-            <lv-select [lvOptions]='clusterOptions' [(ngModel)]='cluster' (ngModelChange)='getTargetResourcePoolOptions(cluster.value)'
-              #lvSelectCluster>
-            </lv-select>
-          </lv-group>
-        </ng-container>
-        <ng-container *ngIf="isDameng">
-          <ng-container *ngTemplateOutlet="damengTargetLocation"> </ng-container>
-        </ng-container>
-        <ng-container *ngIf="!isDameng && !isOceanBase">
-          <ng-container *ngTemplateOutlet="selectedFileTreeData"> </ng-container>
-        </ng-container>
-        <ng-container *ngIf="!isDameng && isOceanBase">
-          <ng-container *ngTemplateOutlet="oceanBaseTargetLocation"> </ng-container>
-        </ng-container>
-
-
+      <!-- 恢复目标位置 -->
+      <h3 class="aui-gutter-column-sm target-title">{{'protection_recovery_target_label' | i18n}}</h3>
+      <lv-form [ngClass]="{'aui-gutter-column-md': !isShowTrim}">
+        <lv-form-item>
+          <lv-form-label lvRequired>
+            {{'protection_restore_target_label' | i18n}}
+          </lv-form-label>
+          <lv-form-control>
+            <lv-group lvGutter="8px">
+              <input [ngModel]="inputTarget" lv-input class="filesystem-target-input"
+                placeholder="{{ 'protection_target_input_tips_label' | i18n }}" readOnly />
+              <button (click)="selectRecoveryTarget()" lv-button>
+                {{ 'common_new_select_label' | i18n }}
+              </button>
+            </lv-group>
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="isShowTrim">
+          <lv-form-label>
+            {{'common_destination_path_label' | i18n}}
+          </lv-form-label>
+          <lv-form-control>
+            {{targetParams?.requestParams
+            ?.targetObject}}
+          </lv-form-control>
+        </lv-form-item>
+      </lv-form>
+      <lv-group *ngIf="isShowTrim" class="aui-gutter-column-md" lvGutter="4px">
+        <lv-checkbox [(ngModel)]="isTrimPrefix">
+          {{'explore_fileset_keep_original_path_label' | i18n}}
+        </lv-checkbox>
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_fileset_file_level_restore_trim_tip_label' | i18n}}"
+          lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+      </lv-group>
+      <!-- 恢复目标表格 -->
+      <div class="target-table file-level-restore-tree">
+        <ng-container *ngTemplateOutlet="selectedFileTreeData"></ng-container>
         <lv-group lvGutter="8px" class="select-count" *ngIf="mountedSelection">
           <span class="aui-text-label">{{
             'common_selected_label' | i18n: []:true
@@ -131,7 +116,137 @@
           <span class="aui-text-label">{{ mountedSelection?.name }}</span>
         </lv-group>
       </div>
-    </lv-group>
+    </ng-container>
+    <ng-container *ngIf="!isFileSystemApp">
+      <lv-group [lvColumns]="['auto', '10px', 'auto']">
+        <div class="file-level-restore-tree fileset-list-tree margin-space file-level-tree-scroll">
+          <lv-group lvGutter="20px" class="padding-10">
+            <span class="aui-text-label">{{
+              'protection_selected_copy_label' | i18n
+              }}</span>
+            <span>{{
+              rowCopy.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss'
+              }}</span>
+          </lv-group>
+          <lv-group lvGutter="10px" class="padding-10" [lvColumns]="['auto', '480px']"
+            *ngIf="rowCopy.resource_sub_type === dataMap.Resource_Type.DWS_Cluster.value">
+            <span class="aui-text-label">{{
+              'common_database_label' | i18n
+              }}</span>
+            <lv-select [lvOptions]='databaseOptions' lvValueKey='value' [(ngModel)]='database'
+              (ngModelChange)='getSchema($event)' #lvSelect>
+            </lv-select>
+          </lv-group>
+          <lv-group lvGutter="10px" class="padding-10" [lvColumns]="['auto', '480px']" *ngIf="[
+                  dataMap.Resource_Type.OceanBaseCluster.value
+                ].includes(rowCopy.resource_sub_type)">
+            <span class="aui-text-label">{{
+              'common_single_tenant_label' | i18n
+              }}</span>
+            <lv-select [lvOptions]='tenantOptions' [(ngModel)]='tenant' (ngModelChange)="getSchema('/'+ tenant.label)"
+              #lvSelectTenant>
+            </lv-select>
+          </lv-group>
+          <ng-container *ngIf="isDameng">
+            <ng-container *ngTemplateOutlet="dameng"> </ng-container>
+          </ng-container>
+          <ng-container *ngIf="!isDameng">
+            <ng-container *ngTemplateOutlet="allFileTreeData"> </ng-container>
+          </ng-container>
+
+          <lv-group lvGutter="8px" *ngIf="
+            selectedLength > 0 &&
+            !(
+              [
+                dataMap.Resource_Type.Hive.value,
+                dataMap.Resource_Type.Elasticsearch.value
+              ].includes(rowCopy.resource_type) ||
+              [
+              dataMap.Resource_Type.ClickHouse.value,
+              dataMap.Resource_Type.SQLServerGroup.value,
+              dataMap.Resource_Type.SQLServerInstance.value,
+              dataMap.Resource_Type.SQLServerClusterInstance.value
+               ].includes(rowCopy.resource_sub_type)
+            ) || total <= 200 &&
+            selectedLength > 0
+          ">
+            <span class="aui-text-label">{{
+              'common_selected_label' | i18n: []:true
+              }}</span>
+            <span class="aui-text-label">{{
+              'protection_selected_object_count_label' | i18n: [selectedLength]
+              }}</span>
+          </lv-group>
+        </div>
+        <div class="arrow-container"></div>
+        <div class="file-level-restore-tree hcs-restore-list-tree">
+          <div style="height: 52px;"
+            *ngIf="rowCopy.resource_sub_type === dataMap.Resource_Type.DWS_Cluster.value || isOceanBase"></div>
+          <ng-container *ngIf="i18n.language === language.CN">
+            <lv-group lvGutter="10px" class="padding-10" [lvColumns]="['auto', '250px', '100px']" *ngIf="!isOceanBase">
+              <span class="aui-text-label">{{
+                'protection_restore_target_label' | i18n
+                }}</span>
+              <input [ngModel]="inputTarget" lv-input class="restore-target-input"
+                placeholder="{{ 'protection_target_input_tips_label' | i18n }}" readOnly [disabled]='isDameng' />
+              <button (click)="selectRecoveryTarget()" lv-button [disabled]='isDameng'>
+                {{ 'common_new_select_label' | i18n }}
+              </button>
+            </lv-group>
+            <lv-group lvGutter="10px" class="padding-10" *ngIf="isOceanBase">
+              <span class="aui-text-label text-wrap">{{
+                'protection_restore_target_label' | i18n
+                }}</span>
+              <lv-select [lvOptions]='clusterOptions' [(ngModel)]='cluster' #lvSelectCluster
+                (ngModelChange)='getTargetResourcePoolOptions(cluster.value)'>
+              </lv-select>
+            </lv-group>
+          </ng-container>
+          <ng-container *ngIf="i18n.language !== language.CN">
+            <lv-group lvGutter="10px" class="padding-10" [lvColumns]="['180px', 'auto', '110px']" *ngIf="!isOceanBase">
+              <span class="aui-text-label">{{
+                'protection_restore_target_label' | i18n
+                }}</span>
+              <input [ngModel]="inputTarget" lv-input class="restore-target-input" [disabled]='isDameng'
+                placeholder="{{selectTips}}" readOnly lv-overflow />
+              <button (click)="selectRecoveryTarget()" lv-button [disabled]='isDameng'>
+                {{ 'common_new_select_label' | i18n }}
+              </button>
+            </lv-group>
+            <lv-group lvGutter="10px" class="padding-10" *ngIf="isOceanBase">
+              <span class="aui-text-label text-wrap">{{
+                'protection_restore_target_label' | i18n
+                }}</span>
+              <lv-select [lvOptions]='clusterOptions' [(ngModel)]='cluster'
+                (ngModelChange)='getTargetResourcePoolOptions(cluster.value)' #lvSelectCluster>
+              </lv-select>
+            </lv-group>
+          </ng-container>
+          <ng-container *ngIf="isDameng">
+            <ng-container *ngTemplateOutlet="damengTargetLocation"> </ng-container>
+          </ng-container>
+          <ng-container *ngIf="!isDameng && !isOceanBase">
+            <ng-container *ngTemplateOutlet="selectedFileTreeData"> </ng-container>
+          </ng-container>
+          <ng-container *ngIf="!isDameng && isOceanBase">
+            <ng-container *ngTemplateOutlet="oceanBaseTargetLocation"> </ng-container>
+          </ng-container>
+
+
+          <lv-group lvGutter="8px" class="select-count" *ngIf="mountedSelection && ![
+          dataMap.Resource_Type.DWS_Cluster.value,
+          dataMap.Resource_Type.DWS_Database.value,
+          dataMap.Resource_Type.DWS_Schema.value,
+          dataMap.Resource_Type.DWS_Table.value
+        ].includes(childResType)">
+            <span class="aui-text-label">{{
+              'common_selected_label' | i18n: []:true
+              }}</span>
+            <span class="aui-text-label">{{ mountedSelection?.name }}</span>
+          </lv-group>
+        </div>
+      </lv-group>
+    </ng-container>
   </ng-container>
   <ng-container *ngIf="rowCopy.isSearchRestore">
     <div>
@@ -165,8 +280,9 @@
 
 <ng-template #allFileTreeData>
   <lv-treetable #lvTreeTable1 [lvData]="originalFileData" lvSelectionMode="multiple" [(lvSelection)]="originalSelection"
-    [lvScroll]="{ y: '644px' }" (lvSelectionChange)="selectionChange()"
-    [lvSelectionAssociate]="selectionAssociate" [lvPaginator]="page" [lvCompareWith]="_get(dataSearchKey,rowCopy.resource_sub_type,null)">
+    [lvScroll]="isFileSystemApp ? { y: '644px'} : { y: '684px' }" (lvSelectionChange)="selectionChange()"
+    [lvSelectionAssociate]="selectionAssociate" [lvPaginator]="page"
+    [lvCompareWith]="getDataCompareWithKey(rowCopy.resource_sub_type)">
     <!--  如果不传compareWith字段，默认比较地址，page点击分页后会导致已选择数据回显异常  -->
     <thead>
       <tr>
@@ -178,16 +294,17 @@
               dataMap.Resource_Type.DWS_Table.value
             ].includes(childResType)" lvCellKey="name">
           {{ 'common_name_label' | i18n }}
-          <i lv-icon="lv-icon-search" [lvColorState]="true" lv-popover [lvPopoverContent]="searchTpl" lvPopoverTheme="light"
-            lvPopoverPosition="bottom" lvPopoverTrigger="click" #searchPopover="lvPopover" [ngClass]="{active: !!name?.length}"
-            *ngIf="[
+          <i lv-icon="lv-icon-search" [lvColorState]="true" lv-popover [lvPopoverContent]="searchTpl"
+            lvPopoverTheme="light" lvPopoverPosition="bottom" lvPopoverTrigger="click" #searchPopover="lvPopover"
+            [ngClass]="{active: !!name?.length}" *ngIf="[
                       dataMap.Resource_Type.DWS_Cluster.value,
                       dataMap.Resource_Type.DWS_Database.value,
                       dataMap.Resource_Type.DWS_Schema.value,
                       dataMap.Resource_Type.DWS_Table.value,
                       dataMap.Resource_Type.ElasticsearchBackupSet.value,
                       dataMap.Resource_Type.tidbCluster.value,
-                      dataMap.Resource_Type.tidbDatabase.value
+                      dataMap.Resource_Type.tidbDatabase.value,
+                      dataMap.Resource_Type.OceanBaseCluster.value
                     ].includes(childResType)"></i>
         </th>
       </tr>
@@ -248,6 +365,26 @@
       </ng-template>
     </tbody>
   </lv-treetable>
+  <lv-paginator #page *ngIf="
+    (
+      [
+        dataMap.Resource_Type.Hive.value,
+        dataMap.Resource_Type.Elasticsearch.value
+      ].includes(rowCopy.resource_type) ||
+      [
+        dataMap.Resource_Type.ClickHouse.value,
+        dataMap.Resource_Type.SQLServerGroup.value,
+        dataMap.Resource_Type.SQLServerClusterInstance.value,
+        dataMap.Resource_Type.SQLServerInstance.value,
+        dataMap.Resource_Type.tidbDatabase.value,
+        dataMap.Resource_Type.tidbCluster.value
+      ].includes(rowCopy.resource_sub_type)
+    )
+    &&
+    total > 200
+    " [lvTotal]="total" [lvMode]="'simple'" [lvPageSize]="200" [lvShowPageSizeOptions]="false" [lvShowSelected]="true"
+    [lvSelected]="originalSelection.length" (lvPageChange)="turnPage($event)"></lv-paginator>
+
 </ng-template>
 
 <ng-template #dameng>
@@ -272,8 +409,9 @@
 </ng-template>
 
 <ng-template #selectedFileTreeData>
-  <lv-treetable #lvTreeTable2 [lvData]="selectFileData" lvVirtualScroll [lvScroll]="{ y: '644px' }"
-    lvVirtualMinBuffer="96px" [lvVirtualTrackBy]="trackByIndex">
+  <lv-treetable #lvTreeTable2 [lvData]="selectFileData" lvVirtualScroll
+    [lvScroll]="isFileSystemApp ? { y: '644px'} : { y: '684px' }" lvVirtualMinBuffer="96px"
+    [lvVirtualTrackBy]="trackByIndex">
     <thead>
       <tr>
         <th lvCellKey="name">
@@ -387,20 +525,20 @@
                   <lv-group [lvColumns]="['auto', '130px']" lvGutter="8px" class="tree-group">
                     <div lv-overflow class="file-container" [ngClass]="{ 'row-checked': rowChecked(item) }">
                       <i lv-icon="{{ item.icon }}" [lvColorState]="true"
-                        *ngIf="rowCopy.resource_sub_type !== dataMap.Resource_Type.HiveBackupSet.value"></i>
+                        *ngIf="rowCopy.resource_sub_type !== dataMap.Resource_Type.HiveBackupSet.value && !!item?.icon"></i>
                       {{
                       childResType ===
                       dataMap.Resource_Type.HBaseBackupSet.value
                       ? item.label
+                      : isDwsNew
+                      ? getDwsDisplayName(item)
                       : item.name
                       }}
                     </div>
-                    <div class="file-info-container" *ngIf="item.path !== '/'">
-                      <p *ngIf="
-                          item.type === restoreFileType.File ||
-                          item.type === restoreFileType.Link ||
-                          item.type === 'table'
-                        ">
+                    <div class="file-info-container" *ngIf="item.path !== '/' && item.type === restoreFileType.File ||
+                    item.type === restoreFileType.Link ||
+                    item.type === 'table'">
+                      <p>
                         {{
                         item.size
                         | capacityCalculateLabel
@@ -409,11 +547,7 @@
                         : true
                         }}
                       </p>
-                      <p class="aui-text-desc" *ngIf="
-                          item.type === restoreFileType.File ||
-                          item.type === restoreFileType.Link ||
-                          item.type === 'table'
-                        ">
+                      <p class="aui-text-desc">
                         {{ item.modifyTime }}
                       </p>
                     </div>
@@ -457,52 +591,34 @@
 
 <ng-template #oceanBaseTargetLocation>
   <lv-datatable [lvData]='[{}]' #lvTreeTable3>
-      <thead>
+    <thead>
+      <tr>
+        <th>
+          {{ 'protection_new_tenant_label' | i18n }}
+          <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_oceanbase_restore_tenant_tips_label' | i18n}}"
+            lvTooltipTheme="light" lvColorState="true"></i>
+        </th>
+        <th>
+          {{ 'protection_vm_resource_pool_label' | i18n}}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container>
         <tr>
-          <th>
-            {{ 'protection_new_tenant_label' | i18n }}
-            <i
-              lv-icon="aui-icon-help"
-              lv-tooltip="{{'protection_oceanbase_restore_tenant_tips_label' | i18n}}"
-              lvTooltipTheme="light"
-              lvColorState="true"
-            ></i>
-          </th>
-          <th>
-            {{ 'protection_vm_resource_pool_label' | i18n}}
-          </th>
+          <td>
+            <input lv-input type="text" [(ngModel)]="targetName" [ngClass]="{'valid-tenant': showTenantError}"
+              (ngModelChange)="disabledOkbtn($event)" style="width: 2.3rem;" />
+          </td>
+          <td>
+            <lv-select [lvOptions]="targetResourcePoolOptions" [(ngModel)]="resourcePool"
+              (ngModelChange)="disabledOkbtn()" style="width: 2.5rem;"> </lv-select>
+          </td>
         </tr>
-      </thead>
-      <tbody>
-        <ng-container >
-          <tr>
-            <td>
-              <input lv-input type="text" [(ngModel)]="targetName" [ngClass]="{'valid-tenant': showTenantError}" (ngModelChange)="disabledOkbtn($event)" style="width: 2.3rem;"/>
-            </td>
-            <td>
-              <lv-select [lvOptions]="targetResourcePoolOptions" [(ngModel)]="resourcePool" (ngModelChange)="disabledOkbtn()" style="width: 2.5rem;"> </lv-select>
-            </td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </lv-datatable>
+      </ng-container>
+    </tbody>
+  </lv-datatable>
 </ng-template>
-
-<lv-paginator #page *ngIf="
-    (
-      [
-        dataMap.Resource_Type.Hive.value,
-        dataMap.Resource_Type.Elasticsearch.value
-      ].includes(rowCopy.resource_type) ||
-      [
-        dataMap.Resource_Type.ClickHouse.value
-      ].includes(rowCopy.resource_sub_type)
-    )
-    &&
-    total > 200
-    " [lvTotal]="total" [lvMode]="'simple'" [lvPageSize]="200" [lvShowPageSizeOptions]="false"
-  style="z-index: 2;width: 50%;position: relative;bottom: 36px;left: 6px;" [lvShowSelected]="true"
-  [lvSelected]="originalSelection.length" (lvPageChange)="turnPage($event)"></lv-paginator>
 
 <ng-template #dateTpl let-item>
   <lv-group class='aui-date'>
@@ -515,6 +631,5 @@
 </ng-template>
 
 <ng-template #searchTpl>
-  <lv-search [(ngModel)]="name" (lvSearch)="searchSource($event)" [lvFocus]="true"
-      style="width: 200px;"></lv-search>
+  <lv-search [(ngModel)]="name" (lvSearch)="searchSource($event)" [lvFocus]="true" style="width: 200px;"></lv-search>
 </ng-template>

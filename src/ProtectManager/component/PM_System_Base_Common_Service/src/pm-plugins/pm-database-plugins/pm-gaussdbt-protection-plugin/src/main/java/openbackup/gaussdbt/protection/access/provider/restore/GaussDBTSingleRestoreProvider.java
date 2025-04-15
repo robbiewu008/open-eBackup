@@ -12,6 +12,7 @@
 */
 package openbackup.gaussdbt.protection.access.provider.restore;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.enums.RestoreLocationEnum;
 import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
@@ -29,10 +30,10 @@ import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -51,6 +52,9 @@ public class GaussDBTSingleRestoreProvider extends AbstractDbRestoreInterceptorP
     private final CopyRestApi copyRestApi;
 
     private final GaussDBTSingleService gaussDBTSingleService;
+
+    @Autowired
+    private DeployTypeService deployTypeService;
 
     public GaussDBTSingleRestoreProvider(CopyRestApi copyRestApi, GaussDBTSingleService gaussDBTSingleService) {
         this.copyRestApi = copyRestApi;
@@ -116,6 +120,11 @@ public class GaussDBTSingleRestoreProvider extends AbstractDbRestoreInterceptorP
         JSONObject copyResource = getCopyResource(task.getCopyId());
         advanceParams.put(DatabaseConstants.COPY_PROTECT_OBJECT_VERSION_KEY,
             copyResource.getString(DatabaseConstants.VERSION));
+        log.info("gaussDBT single restore isPacific:{}", deployTypeService.isPacific());
+        if (deployTypeService.isPacific()) {
+            // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+            advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
+        }
         task.setAdvanceParams(advanceParams);
     }
 

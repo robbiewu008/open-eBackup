@@ -100,7 +100,7 @@ class ClusterNodesChecker:
 
     @staticmethod
     def query_clup_cluster():
-        sql_cmd = "select cluster_id,cluster_data from clup_cluster;"
+        sql_cmd = "select cluster_id,cluster_data,state from clup_cluster;"
         return_code, std_out, st_err = execute_cmd(cmd_format("su - {} -c {}", 'csumdb', f'psql -c \"{sql_cmd}\"'))
         if return_code != CMDResult.SUCCESS:
             LOGGER.error(f"Query clupserver error. error out: {st_err}")
@@ -115,6 +115,7 @@ class ClusterNodesChecker:
                 columns = row.split("|")
                 clup_cluster.cluster_id = columns[0].strip()
                 clup_cluster.cluster_data = json.loads(columns[1].strip())
+                clup_cluster.cluster_state = columns[2].strip()
                 clusters.append(clup_cluster)
         return clusters
 
@@ -129,6 +130,11 @@ class ClusterNodesChecker:
                     param = self.query_clup_server_cluster()
                 else:
                     param = self.clup_query_cluster()
+            elif self.deploy_type == InstallDeployType.CLUP and self.check_type == "CheckApplication":
+                if self.extend_info.get(PgConst.ACTION_TYPE) == PgConst.QUERY_CLUP_SERVER:
+                    param = self.clup_query_cluster_status()
+                else:
+                    param = self.clup_check_application()
             else:
                 param = self._check_cluster_nodes()
         except Exception as e:
@@ -162,7 +168,7 @@ class ClusterNodesChecker:
         clusters = self.query_clup_cluster()
         for cluster in clusters:
             cluster_data = cluster.cluster_data
-            if self.virtual_ip in cluster_data.get('vip'):
+            if self.virtual_ip == cluster_data.get('vip'):
                 if self.check_username_pwd(cluster_data):
                     result = QueryClupClusterResponse(name=self.env.get('name'), subType='PostgreClusterInstance')
                     result.extend_info = {
@@ -172,8 +178,23 @@ class ClusterNodesChecker:
                     }
                     return result
                 cluster_id = cluster.cluster_id
+                cluster_state = cluster.cluster_state
                 break
-        return self.query_clup_cluster_db(cluster_id)
+        return self.query_clup_cluster_db(cluster_id, cluster_state)
+
+    def clup_query_cluster_status(self):
+        self.rep_user = self.application.get("auth", {}).get("extendInfo", {}).get("dbStreamRepUser", "repl")
+        clusters = self.query_clup_cluster()
+        for cluster in clusters:
+            cluster_data = cluster.cluster_data
+            if self.virtual_ip == cluster_data.get('vip'):
+                if self.check_username_pwd(cluster_data) or cluster.cluster_state == PgConst.CLUP_SERVER_OFFLINE:
+                    return ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR.value,
+                                        bodyErr=PgConst.CLUP_SERVER_OFFLINE, message='query success.')
+                return ActionResult(code=ExecuteResultEnum.SUCCESS.value, bodyErr=cluster.cluster_state,
+                                    message='query success.')
+        return ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR.value, bodyErr=ErrorCode.LOGIN_FAILED,
+                            message="Login denied.")
 
     def check_username_pwd(self, cluster_data):
         db_user_name = get_env_variable(f"application_auth_authKey_{self.pid}")
@@ -183,7 +204,7 @@ class ClusterNodesChecker:
                 PostgreCommonUtils.to_db_text(db_pwd) != cluster_data.get('db_pass') or
                 PostgreCommonUtils.to_db_text(db_stream_rep_pwd) != cluster_data.get('repl_pass'))
 
-    def query_clup_cluster_db(self, cluster_id):
+    def query_clup_cluster_db(self, cluster_id, cluster_state):
         sql_cmd = f"select pgdata,is_primary,host,port,db_detail from clup_db where cluster_id = '{cluster_id}';"
         return_code, std_out, st_err = execute_cmd(cmd_format("su - {} -c {}", 'csumdb', f'psql -c \"{sql_cmd}\"'))
         if return_code != CMDResult.SUCCESS:
@@ -191,6 +212,7 @@ class ClusterNodesChecker:
             raise Exception("Query clup db failed")
         clup_dbs = []
         result = QueryClupClusterResponse(name=self.env.get('name'), subType='PostgreClusterInstance')
+        result.extend_info["clupClusterState"] = cluster_state
         if len(std_out) > 0:
             split_lines = std_out.splitlines()
             for index, row in enumerate(split_lines):
@@ -205,6 +227,7 @@ class ClusterNodesChecker:
                 db_detail = json.loads(columns[4].strip())
                 clup_db.pg_bin_path = db_detail.get('pg_bin_path')
                 clup_db.version = db_detail.get('version')
+                clup_db.os_user = db_detail.get('os_user')
                 clup_dbs.append(clup_db)
                 clup_cluster_node_info = ClupClusterNodeInfo(endpoint=columns[2].strip(),
                                                              subType=self.application.get('subType'),
@@ -229,6 +252,41 @@ class ClusterNodesChecker:
             clup_server_node_info = ClusterNodeInfo(endpoint=clup_server)
             result.nodes.append(clup_server_node_info)
         return result
+
+    def clup_check_application(self):
+        LOGGER.info(f"Begin to check the application of clup cluster by clup server, pid: {self.pid}")
+        clup_db = self.clup_query_cluster()
+        if clup_db.extend_info.get('code', ExecuteResultEnum.SUCCESS) == ExecuteResultEnum.INTERNAL_ERROR:
+            LOGGER.error(f"Login denied! pid: {self.pid}")
+            param = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, bodyErr=ErrorCode.LOGIN_FAILED,
+                                 message="Login denied.")
+            return param
+        if clup_db.nodes[0].extend_info.get('os_user') != self.os_username:
+            LOGGER.error(f"Checkout user: {self.os_username} failed!pid: {self.pid}")
+            param = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, bodyErr=ErrorCode.LOGIN_FAILED,
+                                 message="Login denied.")
+            return param
+        result = [
+            f"{domain_2_ip(i.extend_info.get('host'))}:{i.extend_info.get('port')}"
+            for i in clup_db.nodes
+            if i.extend_info.get('host') and i.extend_info.get('port')
+        ]
+        node_list = self.nodes.split(",")
+        if len(result) != len(node_list):
+            LOGGER.error("Missing or redundant cluster nodes.")
+            return ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, bodyErr=ErrorCode.CHECK_CLUSTER_FAILED,
+                                message="Missing or redundant cluster nodes.")
+        res = set(result)
+        node_list = set(node_list)
+        if not res.difference(node_list):
+            LOGGER.info(f"Success to check cluster pid: {self.pid}")
+            self.version = clup_db.nodes[0].extend_info.get('version')
+            return ActionResult(code=ExecuteResultEnum.SUCCESS, bodyErr=ExecuteResultEnum.SUCCESS,
+                                message=json.dumps({"version": self.version}))
+        LOGGER.error("Nodes not belong to a cluster.")
+        param = ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, bodyErr=ErrorCode.CHECK_CLUSTER_FAILED,
+                             message="Nodes not belong to a cluster.")
+        return param
 
     def check_application(self, nodes):
         LOGGER.info(f"Already get nodes: {nodes}, pid: {self.pid}")
@@ -420,7 +478,7 @@ class ClusterNodesChecker:
         if not check_utils.is_ip_address(self.virtual_ip):
             return ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, bodyErr=ErrorCode.CHECK_CONNECTIVITY_FAILED,
                                 message=f"The virtual ip invalid!")
-        if not PostgreCommonUtils.check_os_name(self.os_username, self.client_path, self.enable_root)[0]:
+        if not PostgreCommonUtils.check_os_user(self.os_username, self.client_path, self.enable_root)[0]:
             return ActionResult(code=ExecuteResultEnum.INTERNAL_ERROR, bodyErr=ErrorCode.USER_IS_NOT_EXIST,
                                 message=f"Os username is not exist!")
         return ActionResult(code=ExecuteResultEnum.SUCCESS, bodyErr=ExecuteResultEnum.SUCCESS,

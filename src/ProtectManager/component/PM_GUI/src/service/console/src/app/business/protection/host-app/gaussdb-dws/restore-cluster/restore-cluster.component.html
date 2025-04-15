@@ -12,6 +12,8 @@
   -->
 
 <lv-form [formGroup]="formGroup" class="formGroup" lvKeepRequiredWidth>
+    <lv-alert lvType="info" *ngIf="!isOriginAllowRestore">{{'protection_not_allowed_restore_tip_label' |
+        i18n}}</lv-alert>
     <lv-form-item>
         <lv-form-label>
             {{'protection_restore_to_label' | i18n}}
@@ -52,9 +54,9 @@
             </lv-form-control>
         </lv-form-item>
         <div class="tips">
-            <i lv-icon="lv-icon-status-info" class="type-icon"></i>
-            <span class="aui-text-desc">
-                {{'protection_dws_cluster_tip_label' | i18n}}
+            <i style="display: inline-block; margin-right: 4px;" lv-icon="lv-icon-status-info" lvColorState='true'
+                [ngClass]="{'type-icon':(!i18n.isEn && !isNormalRestore) ||(!i18n.isEn && isNormalRestore),'type-icon-en':i18n.isEn && !isNormalRestore,'type-icon-normal-en': i18n.isEn && isNormalRestore}"></i>
+            <span style="display: inline-block; width: 96%;" [innerHTML]="restoreClusterTip">
             </span>
         </div>
     </ng-container>

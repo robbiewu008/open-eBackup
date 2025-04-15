@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
@@ -56,6 +56,8 @@ export class InstanceRestoreComponent implements OnInit {
   resourceData;
   targetPath = '';
   location = this.i18n.get('common_location_label');
+  isResourceCmdb = false;
+  isResourceCmdbStandby = false;
 
   constructor(
     public i18n: I18NService,
@@ -194,6 +196,13 @@ export class InstanceRestoreComponent implements OnInit {
     this.resourceData = isString(this.rowCopy.resource_properties)
       ? JSON.parse(this.rowCopy.resource_properties)
       : {};
+    this.isResourceCmdb =
+      this.resourceData?.extendInfo?.deployType ===
+      DataMap.Deployment_Type.cmdb.value;
+    this.isResourceCmdbStandby =
+      this.resourceData?.extendInfo?.deployType ===
+        DataMap.Deployment_Type.standby.value &&
+      includes(this.resourceData?.extendInfo?.clusterVersion, 'PanWeiDB');
   }
   getClusters(recordsTemp?: any[], startPage?: number, labelParams?: any) {
     const conditions = {
@@ -229,9 +238,19 @@ export class InstanceRestoreComponent implements OnInit {
           version = properties.protectObject.type;
         }
         recordsTemp = recordsTemp.filter(item => {
+          const nodesNum = JSON.parse(item.extendInfo.nodes).length;
+          const isCmdb =
+            item?.extendInfo?.deployType === DataMap.Deployment_Type.cmdb.value;
+          const isCmdbStandby =
+            item?.extendInfo?.deployType ===
+              DataMap.Deployment_Type.standby.value &&
+            includes(item?.extendInfo?.clusterVersion, 'PanWeiDB');
+
           return (
             item.extendInfo.clusterVersion === version &&
-            JSON.parse(item.extendInfo.nodes).length === nodeNum
+            (nodesNum === nodeNum ||
+              (isCmdb && this.isResourceCmdb) ||
+              (isCmdbStandby && this.isResourceCmdbStandby))
           );
         });
         this.clusterOptions = map(recordsTemp, item => {

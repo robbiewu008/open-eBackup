@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.config;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.util.KeyToolUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,8 +42,8 @@ import javax.net.ssl.TrustManagerFactory;
 @Slf4j
 @Component
 public class InternalSslSocketFactory {
-    private static SSLSocketFactory internalTrustingSslSocketFactory;
-    private static final Object LOCK = new Object();
+    private SSLSocketFactory internalTrustingSslSocketFactory;
+    private final Object LOCK = new Object();
 
     /**
      * KeyStore密钥文件

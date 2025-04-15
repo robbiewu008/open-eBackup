@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { FILE_FORMAT } from './system.const';
 //  通用常量
 export const CommonConsts = {
@@ -29,6 +29,8 @@ export const CommonConsts = {
   TIME_INTERVAL_SESSION_OUT: 61 * 1e3,
 
   TIME_INTERVAL_JOB_COUNT: 67 * 1e3,
+  // 并发数10
+  CONCURRENT_NUM: 10,
 
   MAX_PAGE_SIZE: 200,
   // HCS用户类型
@@ -72,6 +74,9 @@ export const CommonConsts = {
   // 表格操作列定宽
   TABLE_OPERATION_WIDTH: '144px',
 
+  // 批量禁用保护最大选中规格数量
+  DEACTIVE_PROTECTION_MAX: 100,
+
   // 公共规则定义
   REGEX: {
     name: /^[\u4e00-\u9fa5a-zA-Z_]{1}[\u4e00-\u9fa5a-zA-Z_0-9-]{0,63}$/,
@@ -94,12 +99,13 @@ export const CommonConsts = {
     sftpNameBegin: /^[a-zA-Z_]/,
     sftpNameCombination: /^[a-zA-Z_0-9]+$/,
     clusterName: /^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\.\w-]{3,31}$/,
+    targetClusterName: /^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\.\w-]{3,255}$/,
     storagePoolName: /^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\.\w-]{3,63}$/,
     description: /^[\u4e00-\u9fa5\w-\.]*$/,
     backupName: /^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]{3,31}$/,
     nameWithAllowedDots: /^[a-zA-Z0-9_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\.\w-]*$/,
     contextEngineId: /^[0-9A-F]+$/,
-    windowsPath: /^[a-zA-Z]:(\\[\w\u4e00-\u9fa5\s]+)+/,
+    windowsPath: /^[a-zA-Z]:(\\[^\\/<>|:*?"]*)+$/,
     linuxPath: /^\/+.*$/,
     unixPath: /^(\/[^\/\\|\;\&\$\<\>\`\'\{\}\(\)\,\[\]\~\*\?\!\s]{1,2048})+$|^\/$/,
     linuxScript: /^.+[\.]{1}(sh){1}$/,
@@ -134,7 +140,9 @@ export const CommonConsts = {
     urlHttpsReg: /https:\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/,
     urlReg: /(https|http):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/,
     openstackUserName: /^[a-zA-Z_0-9-]+$/,
-    cnwareName: /^[\u4e00-\u9fa5a-z0-9A-Z\\_.-]+$/
+    cnwareName: /^[\u4e00-\u9fa5a-z0-9A-Z\\_.-]+$/,
+    winInvalidFileName: /[/\\:*?"<>|]/,
+    UUID: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
   }
 };
 
@@ -178,6 +186,12 @@ export const quaDrantTableOther = {
   }
 };
 
+export const copyFormat = {
+  snapshot: 0,
+  innerDirectory: 1,
+  external: 2
+};
+
 export const MultiCluster = {
   isMulti: false,
   esn: '',
@@ -196,7 +210,8 @@ export const SupportLicense = {
 export const Scene = {
   Register: 1,
   Backup: 2,
-  Restore: 3
+  Restore: 3,
+  Protect: 4
 };
 
 // 屏蔽的功能
@@ -204,7 +219,9 @@ export const Features = {
   StorageResources: 'StorageResources', // 存储资源
   ClusterType: 'ClusterType', // 集群类型
   SplitTableBackup: 'SplitTableBackup', // 分裂表备份
-  LogBackup: 'LogBackup' // 日志备份
+  LogBackup: 'LogBackup', // 日志备份
+  ConsistencySnapshot: 'ConsistencySnapshot', //一致性快照
+  SnapshotGeneration: 'SnapshotGeneration' //生成快照
 };
 
 export const ColorConsts = {
@@ -237,15 +254,36 @@ export const JobColorConsts = {
 };
 
 export const HelpUrlCode = {
-  host: '0000001839224445',
-  database: '0000001918630660',
-  bigdata: '0000001948269721',
-  virtualization: '0000001918470736',
-  container: '0000001918630668',
-  cloud: '0000001948269725',
-  application: '0000001918470740',
-  fileservice: '0000001918630672',
-  baremetal: '0000001873679157'
+  zh: {
+    host: 'helpcenter_000008',
+    database: 'zh-cn_topic_0000002164767482',
+    bigdata: 'zh-cn_topic_0000002200094133',
+    virtualization: 'zh-cn_topic_0000002200094081',
+    container: 'zh-cn_topic_0000002164607766',
+    cloud: 'zh-cn_topic_0000002164607810',
+    application: 'zh-cn_topic_0000002200094085',
+    fileservice: 'zh-cn_topic_0000002164767498',
+    baremetal: 'zh-cn_topic_0000002164767498'
+  },
+  en: {
+    host: 'en-us_topic_0000002164629176',
+    database: 'en-us_topic_0000002164767482',
+    bigdata: 'en-us_topic_0000002200094133',
+    virtualization: 'en-us_topic_0000002200094081',
+    container: 'en-us_topic_0000002164607766',
+    cloud: 'en-us_topic_0000002164607810',
+    application: 'en-us_topic_0000002200094085',
+    fileservice: 'en-us_topic_0000002164767498',
+    baremetal: 'en-us_topic_0000002164767498'
+  }
+};
+
+// 设置标签的类型
+export const SetTagType = {
+  Resource: 'RESOURCE',
+  ResourceGroup: 'RESOURCE_GROUP',
+  Sla: 'SLA',
+  Agent: 'AGENT'
 };
 
 // 容量单位
@@ -393,6 +431,14 @@ export const ASYNC_TASK_URL_WHITE_LIST = [
   {
     url: '^/console/rest/v1/live-mount/cyber$',
     method: 'post'
+  },
+  {
+    url: '^/console/rest/v2/resources/[0-9a-zA-Z-]+/action/scan$',
+    method: 'put'
+  },
+  {
+    url: '^/console/rest/v2/resources/[0-9a-zA-Z-]+/hcs/action/scan$',
+    method: 'put'
   }
 ];
 export interface WizardStepDataHandler {
@@ -489,7 +535,8 @@ export enum WormStatusEnum {
   UNSET = 1,
   SETTING = 2,
   SET_SUCCESS = 3,
-  SET_FAILED = 4
+  SET_FAILED = 4,
+  EXPIRATION = 5
 }
 
 export enum GenerationType {
@@ -538,6 +585,7 @@ export const cyberEngineMap = {
   '0x206403330001.alarm.name': 'insight_cyberengine_create_title_sla_label',
   '0x206403330003.alarm.name': 'insight_cyberengine_modify_title_sla_label',
   common_live_mount_label: 'common_restore_shared_path_label',
+  common_live_mount_lower_label: 'common_restore_shared_path_label',
   job_log_live_mount_execute_label: 'common_log_live_mount_execute_label',
   job_log_live_mount_request_label: 'common_log_live_mount_request_label',
   nas_plugin_livemount_nfs_mountinfo_label:
@@ -595,7 +643,9 @@ export const cyberEngineMap = {
   common_copy_data_label: 'common_hyperdetect_copy_data_label',
   job_log_live_mount_delete_clone_copy_label:
     'job_log_live_mount_delete_clone_snapshot_label',
-  job_log_live_mount_copy_clone_label: 'job_log_live_mount_snapshot_clone_label'
+  job_log_live_mount_copy_clone_label:
+    'job_log_live_mount_snapshot_clone_label',
+  common_sla_label: 'common_intelligent_detection_policy_label'
 };
 
 export const distributedMap = {
@@ -615,3 +665,23 @@ export const dataBackupX3000Map = {
   '0x206403440003.alarm.desc': 'common_create_worm_policy_desc_label',
   '0x206403440003.alarm.desc.detail': 'common_create_worm_policy_desc_label'
 };
+
+export const CUSTOM_VERSION = {
+  version: ''
+};
+
+export const SYSTEM_TIME = {
+  hasLoad: false,
+  timeZone: 'UTC+08:00',
+  offset: 0,
+  sysTime: '',
+  userSystemTime: 0
+};
+
+export enum ThemeEnum {
+  light = 'light',
+  dark = 'dark',
+  auto = 'auto'
+}
+
+export const THEME_TRIGGER_ACTION = 'theme_trigger_action';

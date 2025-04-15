@@ -127,6 +127,7 @@ static void StructToJson(const HostAddress& st, Json::Value& jsonValue)
 {
     Module::JsonHelper::TypeToJsonValue(st.ip, jsonValue["ip"]);
     Module::JsonHelper::TypeToJsonValue(st.port, jsonValue["port"]);
+    Module::JsonHelper::TypeToJsonValue(st.supportProtocol, jsonValue["supportProtocol"]);
 }
 
 static void StructToJson(const StorageRepository& st, Json::Value& jsonValue)
@@ -445,7 +446,7 @@ static void StructToJson(const AppProtect::OracleDBInfo& st, Json::Value& jsonVa
     Module::JsonHelper::TypeToJsonValue(st.archThreshold, jsonValue["archThreshold"]);
 }
 
-static void StructToJson(const std::vector<AppProtect::OracleDBInfo>& infos, Json::Value& jsonValue)
+static void StructToJson(const std::vector<AppProtect::OracleDBInfo> &infos, Json::Value &jsonValue)
 {
     for (const auto& info : infos) {
         Json::Value value;

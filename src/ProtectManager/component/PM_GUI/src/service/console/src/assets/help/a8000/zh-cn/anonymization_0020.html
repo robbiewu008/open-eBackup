@@ -1,0 +1,101 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="脱敏规则类型说明">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="helpcenter_000092.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="anonymization_0020">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>脱敏规则类型说明</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="anonymization_0020"></a><a name="anonymization_0020"></a>
+
+<h1 class="topictitle1">脱敏规则类型说明</h1>
+<div><p>本节介绍<span>OceanProtect</span>支持的脱敏规则类型。</p>
+<p>系统预置的脱敏规则类型如<a href="#anonymization_0020__table29452017144310">表1</a>所示。</p>
+
+<div class="tablenoborder"><a name="anonymization_0020__table29452017144310"></a><a name="table29452017144310"></a><table cellpadding="4" cellspacing="0" summary="" id="anonymization_0020__table29452017144310" frame="border" border="1" rules="all"><caption><b>表1 </b>预置脱敏规则类型说明</caption><colgroup><col style="width:29.03%"><col style="width:70.97%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="29.03%" id="mcps1.3.3.2.3.1.1"><p>脱敏规则类型</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="70.97%" id="mcps1.3.3.2.3.1.2"><p>规则说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Shuffling</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span>变换位置，多行间随机颠倒次序。适用于任意类型数据。</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Format-Preserving</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span>使用格式保留加密算法对字符串加密，密文字符范围由参数指定。仅适用于字符型数据。</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Full-Mask</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span>将敏感信息全部掩盖，掩盖字符和掩盖后字符长度由参数指定。仅适用于字符型数据。</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Partial-Mask</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span>掩盖敏感信息中的部分内容，掩盖字符、掩盖起止位置、掩盖后字符长度由参数指定。仅适用于字符型数据。</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>PII-Type</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span>用识别出的敏感数据名称替换敏感数据内容。仅适用于字符型数据。</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Numeric-Range</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span>从指定范围内随机选择一个数值替换原数值，数值范围由参数指定。仅适用于数值型数据。</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Fixed-Number</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span>使用指定数值替换原数值，指定数值由参数指定。仅适用于数值型数据。</span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="29.03%" headers="mcps1.3.3.2.3.1.1 "><p>Noise-Adding</p>
+</td>
+<td class="cellrowborder" valign="top" width="70.97%" headers="mcps1.3.3.2.3.1.2 "><p><span>在原有的数值的基础上增加或减少一个随机数。仅适用于数值型数据。</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="helpcenter_000092.html">数据脱敏</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

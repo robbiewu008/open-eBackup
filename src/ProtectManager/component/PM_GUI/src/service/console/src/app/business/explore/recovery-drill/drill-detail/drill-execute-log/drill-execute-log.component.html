@@ -59,7 +59,7 @@
 
 <ng-template #startTimeTpl let-item>
     <span lv-overflow>
-        {{item.startTime | date: 'yyyy-MM-dd HH:mm:ss' | nil}}
+        {{item.startTime | date: 'yyyy-MM-dd HH:mm:ss':timeZone | nil}}
     </span>
 </ng-template>
 

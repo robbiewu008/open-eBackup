@@ -12,14 +12,13 @@
 */
 package openbackup.system.base.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.validator.constants.RegexpConstants;
 import openbackup.system.base.sdk.infrastructure.InfrastructureRestApi;
 import openbackup.system.base.sdk.infrastructure.model.InfraResponseWithError;
 import openbackup.system.base.sdk.infrastructure.model.beans.NodeControllerInfo;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -43,8 +42,8 @@ public class IpValidator {
      * @return true/false 如果ip为A8000内部ip，返回true。
      */
     public boolean isIpInA8000(String ip) {
-        InfraResponseWithError<NodeControllerInfo> infraResponseWithError =
-            infrastructureRestApi.getNodeInfoByPodIp(ip);
+        InfraResponseWithError<NodeControllerInfo> infraResponseWithError = infrastructureRestApi
+                .getNodeInfoByPodIp(ip);
         if (infraResponseWithError != null && infraResponseWithError.getError() == null) {
             log.debug("The ip is in A8000");
             return true;

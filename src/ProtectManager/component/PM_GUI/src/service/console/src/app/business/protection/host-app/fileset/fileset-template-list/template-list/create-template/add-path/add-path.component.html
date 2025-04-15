@@ -18,6 +18,7 @@
             <lv-input-lint class="user-desc">
                 <textarea rows="5" formControlName="paths" lv-input style="resize: vertical;"
                     placeholder="{{'protection_path_placeholder_label' | i18n}}"
+                    lvMaxLength ='10000'
                     [lvAutosize]="{ minRows: 4, maxRows: 8 }"></textarea>
             </lv-input-lint>
         </lv-form-control>

@@ -1,0 +1,83 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoration Is Successful but the VM Fails to Start After the VM Is Successfully Restored to the Original Location">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164814002">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoration Is Successful but the VM Fails to Start After the VM Is Successfully Restored to the Original Location</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164814002"></a><a name="EN-US_TOPIC_0000002164814002"></a>
+  <h1 class="topictitle1">Restoration Is Successful but the VM Fails to Start After the VM Is Successfully Restored to the Original Location</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>A full backup copy is used to restore a VMware VM to the original location on a new host. After the restoration is successful and the new VM is successfully started, one of the following exceptions occurs:</p>
+    <ul>
+     <li>The operating system fails to start. If information similar to the following is displayed when the operating system starts, the <strong>/dev/sdc1</strong> partition cannot be mounted. In practice, the partition may be mounted on another device.<pre class="screen">EXT4-fs (sdc1): no journal found</pre></li>
+     <li>The system enters the emergency mode. In emergency mode, run the <strong>journal -p err</strong> command. If information similar to the following is displayed, the boot partition cannot be mounted:<pre class="screen">failed to mount /boot</pre></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p>A disk fails to be mounted in the full copy because the <strong>inode</strong> information in the first block group of the disk is modified.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol>
+     <li><span>Check whether the problem is caused by the failure to mount some data disks or system disks on the VM.</span><p></p>
+      <div class="p">
+       This section uses the <strong>/dev/sdc1</strong> device as an example. In the actual situation, other devices may be not found.
+       <ol type="a">
+        <li>Log in to the protected VM and enter the maintenance mode as prompted.</li>
+        <li>Run the following command to check whether automatic mounting upon system startup has been enabled for the faulty disk:<pre class="screen">cat /etc/fstab</pre> <p>If information similar to the following is displayed, automatic mounting upon system startup has been enabled:</p> <pre class="screen">/dev/sdc1    /opt/hr/sdc1                 ext3     defaults       0 0</pre></li>
+        <li>Run the following command to check whether the disk is mounted:<pre class="screen">mount | grep "dev/sd"</pre> <p>If the mounting information about <strong>/dev/sdc1</strong> does not exist, the disk is not mounted.</p></li>
+        <li>Run the following command to check whether the device exists:<pre class="screen">fdisk -l | grep "<em>dev/sdc1</em>"</pre> <p>If no command output is displayed, the disk does not exist.</p></li>
+        <li>If the disk exists but is not mounted, go to <a href="#EN-US_TOPIC_0000002164814002__li13985042204812">2</a>. Otherwise, contact technical support for assistance.</li>
+       </ol>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164814002__li13985042204812"><a name="EN-US_TOPIC_0000002164814002__li13985042204812"></a><a name="li13985042204812"></a><span>Run the following command to restore the disk. Wait with patience as this process may take a long time.</span><p></p>
+      <ul>
+       <li>If the XFS file system is used, run the following commands:<pre class="screen">xfs_repair -L <em>/dev/sdc1</em></pre> <pre class="screen">xfs_repair <em>/dev/sdc1</em></pre></li>
+       <li>For other file systems, run the following command:<pre class="screen">fsck -v <em>/dev/sdc1</em></pre></li>
+      </ul> <p></p></li>
+     <li><span>Run the following command to restart the VM:</span><p></p><pre class="screen">reboot</pre> <p></p></li>
+     <li><span>Run the following command to check whether the disk is mounted successfully:</span><p></p><pre class="screen">mount | grep "<em>/dev/sdc1</em>"</pre> <p>If you can access the operating system and the mounting information about <strong>/dev/sdc1</strong> exists, the fault is rectified.</p> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

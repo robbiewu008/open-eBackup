@@ -12,12 +12,6 @@
 */
 package openbackup.mysql.resources.access.sla;
 
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
-import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
-import openbackup.data.protection.access.provider.sdk.sla.SlaValidateProvider;
-import openbackup.database.base.plugin.common.DatabaseConstants;
-import openbackup.mysql.resources.access.common.MysqlConstants;
-import openbackup.mysql.resources.access.common.MysqlErrorCode;
 import com.huawei.oceanprotect.sla.sdk.constants.SlaConstants;
 import com.huawei.oceanprotect.sla.sdk.dto.PolicyDto;
 import com.huawei.oceanprotect.sla.sdk.dto.SlaBase;
@@ -26,14 +20,19 @@ import com.huawei.oceanprotect.sla.sdk.enums.PolicyAction;
 import com.huawei.oceanprotect.sla.sdk.validator.PolicyLimitConfig;
 import com.huawei.oceanprotect.sla.sdk.validator.SlaValidateConfig;
 
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
+import openbackup.data.protection.access.provider.sdk.sla.SlaValidateProvider;
+import openbackup.database.base.plugin.common.DatabaseConstants;
+import openbackup.mysql.resources.access.common.MysqlConstants;
+import openbackup.mysql.resources.access.common.MysqlErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.resource.ProtectObjectRestApi;
 import openbackup.system.base.sdk.resource.model.ProtectedObjectInfo;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -86,14 +85,16 @@ public class MysqlSlaValidator implements SlaValidateProvider {
 
         // Mysql共需要配置四种备份类型（全量，差异增量，累积增量，日志）/复制/归档
         slaValidateConfig.getSpecificationConfig()
-            .setLimit(PolicyLimitConfig.of(PolicyAction.FULL, SlaConstants.FULL_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
-            .setLimit(PolicyLimitConfig.of(PolicyAction.DIFFERENCE_INCREMENT,
-                SlaConstants.DIFFERENCE_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
-            .setLimit(PolicyLimitConfig.of(PolicyAction.CUMULATIVE_INCREMENT,
-                SlaConstants.CUMULATIVE_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
-            .setLimit(PolicyLimitConfig.of(PolicyAction.LOG, SlaConstants.LOG_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
-            .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION, SlaConstants.REPLICATION_POLICY_COUNT_LIMIT))
-            .setLimit(PolicyLimitConfig.of(PolicyAction.ARCHIVING, SlaConstants.ARCHIVE_POLICY_COUNT_LIMIT));
+                .setLimit(PolicyLimitConfig.of(PolicyAction.FULL, SlaConstants.FULL_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
+                .setLimit(PolicyLimitConfig.of(PolicyAction.DIFFERENCE_INCREMENT,
+                        SlaConstants.DIFFERENCE_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
+                .setLimit(PolicyLimitConfig.of(PolicyAction.CUMULATIVE_INCREMENT,
+                        SlaConstants.CUMULATIVE_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
+                .setLimit(PolicyLimitConfig.of(PolicyAction.LOG, SlaConstants.LOG_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
+                .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION_LOG,
+                        SlaConstants.REPLICATION_LOG_POLICY_COUNT_LIMIT))
+                .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION, SlaConstants.REPLICATION_POLICY_COUNT_LIMIT))
+                .setLimit(PolicyLimitConfig.of(PolicyAction.ARCHIVING, SlaConstants.ARCHIVE_POLICY_COUNT_LIMIT));
         log.info("set MySQL sla PolicyLimitConfig success.");
         return slaValidateConfig;
     }

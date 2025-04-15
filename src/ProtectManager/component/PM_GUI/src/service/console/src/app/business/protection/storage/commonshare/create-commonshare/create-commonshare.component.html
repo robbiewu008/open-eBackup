@@ -17,13 +17,14 @@
         <lv-form-control [lvErrorTip]="nameErrorTip">
             <input lv-input type="text" formControlName="name" />
         </lv-form-control>
-    </lv-form-item> 
+    </lv-form-item>
     <!-- 文件系统名称 -->
     <lv-form-item>
         <lv-form-label lvRequired>
             {{ 'protection_file_system_name_label' | i18n }}
             <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_commonshare_file_system_name_tip_label'  | i18n}}"
-                lvTooltipTheme="light" class="configform-constraint" lvColorState='true' lvTooltipClassName="customer-name"></i>
+                lvTooltipTheme="light" class="configform-constraint" lvColorState='true'
+                lvTooltipClassName="customer-name"></i>
         </lv-form-label>
         <lv-form-control [lvErrorTip]="filesystemNameErrorTip">
             <input lv-input type="text" formControlName="filesystemName" />
@@ -42,8 +43,8 @@
     <lv-form-item>
         <lv-form-label>
             {{'common_limit_rate_policy_single_label' | i18n}}
-            <i lv-icon="aui-icon-help" lv-tooltip="{{'common_limit_rate_policy_tip_label' | i18n}}"
-            lvTooltipTheme="light" lvTooltipPosition="right" class="configform-constraint" lvColorState='true'></i>
+            <aui-router-jump-help [routerUrl]="ratePolicyRouterUrl"
+                helpTips="{{ 'common_limit_rate_policy_tip_label' | i18n }}"></aui-router-jump-help>
         </lv-form-label>
         <lv-form-control>
             <lv-select [lvOptions]="qosNames" formControlName="qos_id" lvValueKey="uuid" lvShowClear>

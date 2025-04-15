@@ -28,13 +28,18 @@
 #include "utils/PluginUtilities.h"
 #include "system/System.hpp"
 #include "common/Thread.h"
+#include "thrift_interface/ApplicationProtectPlugin_types.h"
 
 namespace {
-    constexpr auto STAT_TIMEOUT_MILLSEC = 100;
+    constexpr auto STAT_TIMEOUT_MICROSEC = 100000;  // 100毫秒时延
     constexpr auto NUM10 = 10;
+    const uint64_t ONE_KB = 1024LLU;
+    const uint64_t ONE_MB = 1024LLU * ONE_KB;
+    const uint64_t ONE_TB = 1024LLU * ONE_GB;
 }
 
 using namespace std;
+using namespace AppProtect;
 
 namespace {
     constexpr auto MODULE = "PosixHandler";
@@ -79,11 +84,113 @@ void PosixHandler::ListNativeResource(
     return;
 }
 
+void PosixHandler::ListDiskResource(
+    FilePlugin::FileResourceInfo& resourceInfo,
+    const FilePlugin::ListResourceParam& listResourceParam)
+{
+    INFOLOG("ENTER POSIX ListDiskResource");
+    resourceInfo.totalCount =0;
+
+#ifdef __linux__
+    int pageNo = listResourceParam.pageNo;
+    int pageSize = listResourceParam.pageSize;
+    
+    if (!GetTargetDiskInfo(resourceInfo)) {
+        ERRLOG("GetTargetDiskInfo failed!");
+        return;
+    }
+#endif
+
+    return;
+}
+
+void PosixHandler::TransformResultForDisk(AppProtect::ResourceResultByPage& returnValue,
+    const FilePlugin::FileResourceInfo& resourceInfo)
+{
+    INFOLOG("ENTER TransformResultForDisk");
+    returnValue.total = resourceInfo.totalCount;
+    for (auto resourceInfo : resourceInfo.diskResourceDetailVec) {
+        ApplicationResource resource;
+        resource.__set_id(std::to_string(returnValue.total));
+        std::string extendInfo;
+        if (!Module::JsonHelper::StructToJsonString(resourceInfo, extendInfo)) {
+            ERRLOG("Failed to get result of disk!");
+            continue;
+        }
+        resource.__set_extendInfo(extendInfo);
+        returnValue.items.push_back(resource);
+    }
+    return;
+}
+
+bool PosixHandler::GetTargetDiskInfo(FilePlugin::FileResourceInfo& resourceInfo)
+{
+    // 执行裸机恢复前，获取目标磁盘名称和大小，存放到set中，如：sda 100G
+    std::string cmd = "lsblk -o NAME,TYPE,SIZE -b | awk '$2==\"disk\" {print $1 \":\" $3}'";
+    std::vector<std::string> paramList;
+    std::vector<std::string> stdOutput;
+    std::vector<std::string> errOutput;
+
+    int ret = Module::runShellCmdWithOutput(INFO, MODULE, 0, cmd, paramList, stdOutput, errOutput);
+    if (ret != 0) {
+        ERRLOG("GetSourceDiskInfo failed! %d", ret);
+        for (auto msg : errOutput) {
+            WARNLOG("errmsg : %s", msg.c_str());
+        }
+        return false;
+    }
+
+    for (std::string& diskStr : stdOutput) {
+        INFOLOG("detected disk and its size: %s", diskStr.c_str());
+        std::string::size_type pos = diskStr.find(':');
+        std::string diskName = diskStr.substr(0, pos);
+        std::string diskSizeStr = diskStr.substr(pos + 1);
+        uint64_t diskSize = GetDiskSize(diskSizeStr);
+        FileDiskResourceInfo diskInfo;
+        diskInfo.diskId = "";
+        diskInfo.diskName = diskName;
+        diskInfo.diskSize = diskSize;
+        resourceInfo.diskResourceDetailVec.push_back(diskInfo);
+        ++resourceInfo.totalCount;
+    }
+
+    return true;
+}
+
+uint64_t PosixHandler::GetDiskSize(std::string diskSizeStr)
+{
+    size_t index = 0;
+    for (size_t i = 0; i < diskSizeStr.size(); ++i) {
+        if (std::isalpha(diskSizeStr[i])) {
+            index = i;
+            break;
+        }
+    }
+    if (index == 0) {
+        return std::stoull(diskSizeStr);
+    }
+    uint64_t diskSize = std::stoull(diskSizeStr.substr(0, index));
+    switch (diskSizeStr[index]) {
+        case 'T':
+            diskSize *= ONE_TB;
+            break;
+        case 'G':
+            diskSize *= ONE_GB;
+            break;
+        case 'M':
+            diskSize *= ONE_MB;
+            break;
+        default:
+            break;
+    }
+    return diskSize;
+}
+
 
 struct NonBlockStatResult {
     // in
     std::string             path;
-    int                     timeoutMillsec  { STAT_TIMEOUT_MILLSEC };
+    int                     timeoutMicrosec  { STAT_TIMEOUT_MICROSEC };
     // out
     bool                    returned    { false };
     bool                    valid       { false };
@@ -100,15 +207,14 @@ static void BlockingStat(std::shared_ptr<NonBlockStatResult> stRetPtr)
     }
     stRetPtr->returned = true;
 }
- 
+
 static bool NonBlockingStat(std::shared_ptr<NonBlockStatResult> stRetPtr)
 {
-    int timeout = stRetPtr->timeoutMillsec;
+    int timeout = stRetPtr->timeoutMicrosec;
     int timer = 0;
     std::thread t = std::thread(&BlockingStat, stRetPtr);
-    Module::SleepFor(std::chrono::milliseconds(NUM10));
     while (!stRetPtr->returned) {
-        Module::SleepFor(std::chrono::milliseconds(NUM10));
+        Module::SleepFor(std::chrono::microseconds(NUM10));
         timer += NUM10;
         if (timer >= timeout) {
             t.detach();
@@ -145,7 +251,7 @@ void PosixHandler::BrowseFolderByPage(
             DBGLOG("skip special resource %s", absPath.c_str());
             continue;
         }
-        auto stRetPtr = std::make_shared<NonBlockStatResult>(NonBlockStatResult{ absPath, STAT_TIMEOUT_MILLSEC });
+        auto stRetPtr = std::make_shared<NonBlockStatResult>(NonBlockStatResult{ absPath, STAT_TIMEOUT_MICROSEC });
         if (!NonBlockingStat(stRetPtr)) {
             WARNLOG("Non blocking stat path: %s failed", absPath.c_str());
             continue;
@@ -353,6 +459,23 @@ void PosixHandler::ListVolumeResource(
 #else
     WARNLOG("ListVolumeResource not implemented on this platform!");
 #endif
+}
+
+void PosixHandler::TransformResultForVolume(ResourceResultByPage& returnValue,
+    const FileResourceInfo& resourceInfo)
+{
+    returnValue.total = resourceInfo.totalCount;
+    for (auto resourceInfo : resourceInfo.resourceDetailVec) {
+        ApplicationResource resource;
+        resource.__set_id(std::to_string(returnValue.total));
+        std::string extendInfo;
+        if (!Module::JsonHelper::StructToJsonString(resourceInfo, extendInfo)) {
+            ERRLOG("Failed to get result of volume!");
+            continue;
+        }
+        resource.__set_extendInfo(extendInfo);
+        returnValue.items.push_back(resource);
+    }
 }
 
 }

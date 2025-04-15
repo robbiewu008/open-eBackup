@@ -21,30 +21,48 @@
     </div>
     <div class="aui-block aui-paginator-container">
         <div class="aui-operation">
-            <lv-group [lvGutter]="groupCommon.middleRowGutter">
-                <button lv-button lvType="primary" (click)="clientRegister()" auiRolePermission
-                    [rolePermission]="roleOperationMap.manageClient" lv-popover [lvPopoverClosable]="true"
-                    lvPopoverContent="{{'protection_guide_host_tip_label' | i18n}}" lvPopoverPosition="bottom"
-                    lvPopoverClassName="customer-guide-tip-bk" lvPopoverTrigger="customize"
-                    [(lvPopoverVisible)]="registerTipShow" [lvPopoverBeforeClose]="lvPopoverBeforeClose">
-                    {{ 'common_register_label' | i18n }}
-                </button>
-                <button lv-button (click)="updateAgent()" [disabled]="updateAgentBtnDisabled" pmpermission
-                    pmOperation='ModifyProtection'>
-                    {{ 'protection_update_agent_label' | i18n }}
-                </button>
-                <button lv-button (click)="downloadBackupProxy(selection)" auiRolePermission
-                    [rolePermission]="roleOperationMap.manageClient">
-                    {{ 'protection_protect_agent_pkg_mangament_label' | i18n }}
-                </button>
-                <button lv-button lv-dropdown [lvDropdownMenus]="moreMenus" *ngIf="moreMenus | find: 'hidden': false">
-                    <span>{{'common_more_label' | i18n}}</span>
-                    <i #lvDropdownTrigger lv-icon="lv-icon-triangle-down"></i>
-                </button>
+            <lv-group lvGutter='16px'>
+                <lv-group [lvGutter]="groupCommon.middleRowGutter">
+                    <button lv-button lvType="primary" (click)="clientRegister()" auiRolePermission
+                        [rolePermission]="roleOperationMap.manageClient" lv-popover [lvPopoverClosable]="true"
+                        lvPopoverContent="{{'protection_guide_host_tip_label' | i18n}}" lvPopoverPosition="bottom"
+                        lvPopoverClassName="customer-guide-tip-bk" lvPopoverTrigger="customize"
+                        [(lvPopoverVisible)]="registerTipShow" [lvPopoverBeforeClose]="lvPopoverBeforeClose">
+                        {{ 'common_register_label' | i18n }}
+                    </button>
+                    <button lv-button (click)="updateAgent()" [disabled]="updateAgentBtnDisabled" pmpermission
+                        pmOperation='ModifyProtection'>
+                        {{ 'protection_update_agent_label' | i18n }}
+                    </button>
+                    <button lv-button (click)="downloadBackupProxy(selection)" auiRolePermission
+                        [rolePermission]="roleOperationMap.manageClient">
+                        {{ 'protection_protect_agent_pkg_mangament_label' | i18n }}
+                    </button>
+                    <button lv-button (click)="SynchronizingConfigurations()" auiRolePermission
+                        [rolePermission]="roleOperationMap.manageClient">
+                        {{ 'protection_agent_update_backup_service_ip_label' | i18n }}
+                    </button>
+                    <button lv-button lv-dropdown [lvDropdownMenus]="moreMenus" *ngIf="moreMenus | find: 'hidden': false">
+                        <span>{{'common_more_label' | i18n}}</span>
+                        <i #lvDropdownTrigger lv-icon="lv-icon-triangle-down"></i>
+                    </button>
+                </lv-group>
+                <div class="solid-line"></div>
+                <section class="content-section-column">
+                    <lv-radio-group [ngModel]="showMode" (ngModelChange)="changeMode($event)" [lvGroupName]="'RG-a'">
+                        <lv-group>
+                            <ng-container *ngFor="let item of modeOps">
+                                <lv-radio [lvViewType]="'button'" [lvValue]="item.value">{{item.label}}</lv-radio>
+                            </ng-container>
+            
+                        </lv-group>
+                    </lv-radio-group>
+                </section>
             </lv-group>
+            
             <lv-group [lvGutter]="groupCommon.middleRowGutter">
                 <lv-search [lvFocus]="true" [(ngModel)]="queryName" (lvSearch)="searchByName($event)"
-                    lvPlaceHolder="{{'common_search_type_label'|i18n:['common_host_label'|i18n]}}">
+                    lvPlaceHolder="{{'common_search_type_label'|i18n:['protection_clients_lowercase_label'|i18n]}}">
                 </lv-search>
                 <button class="aui-button-icon" lv-button lvSize="auto" (click)="refresh()">
                     <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>
@@ -97,8 +115,8 @@
                                         [filterTitle]="col.label"></aui-custom-table-search>
                                 </div>
                                 <div lvCustom *ngIf="col.key === 'labelList'">
-                                    <aui-custom-table-search (search)="searchByLabel($event)"
-                                        [filterTitle]="col.label"></aui-custom-table-search>
+                                    <aui-custom-table-filter (filter)="searchByLabel($event)"
+                                        [filterTitle]="col.label"></aui-custom-table-filter>
                                 </div>
                             </th>
                         </ng-container>
@@ -135,7 +153,7 @@
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'link_status'">
                                                 <div class="link_status">
-                                                    <aui-status [value]="item.link_status"
+                                                    <aui-status [value]="getLinkStatus(item)"
                                                         type="resource_Host_LinkStatus">
                                                     </aui-status>
                                                     <ng-container *ngIf="isMulti">
@@ -166,7 +184,7 @@
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'version'">
                                                 <lv-group lvGutter="6px">
-                                                    <span lv-overflow>{{ item.version | nil}}</span>
+                                                    <span lv-overflow>{{ item.version  | nil}}</span>
                                                     <span
                                                         *ngIf="item.extendInfo?.agentUpgradeable === '1' && 1 === item.link_status">
                                                         <i lv-icon="aui-icon-version-update" [lvColorState]="true"
@@ -204,9 +222,8 @@
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'src_deduption'">
                                                 <span lv-overflow>
-                                                    {{ (item.extendInfo?.src_deduption === 'true' ?
-                                                    'protection_switch_enabled_label' :
-                                                    'protection_switch_disabled_label') | i18n}}
+                                                    {{ (item.extendInfo?.src_deduption === 'true' ? 'common_yes_label' :
+                                                    'common_no_label')  | i18n}}
                                                 </span>
                                             </ng-container>
                                             <ng-container *ngSwitchCase="'log_level'">

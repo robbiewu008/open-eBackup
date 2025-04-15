@@ -18,7 +18,7 @@
       <input lv-input type="text" formControlName="clusterName" />
     </lv-form-control>
   </lv-form-item>
-  <ng-container *ngIf=" !isEdit || (isEdit && [1, 2].includes(drawData.generatedType))">
+  <ng-container *ngIf=" !isEdit || (isEdit && [1].includes(drawData.generatedType))">
     <lv-form-item>
       <lv-form-label lvRequired>{{
         'common_equipment_type_label' | i18n
@@ -26,6 +26,12 @@
       <lv-form-control>
         <lv-select [lvOptions]='deviceTypeOptions' formControlName="deviceType" lvValueKey="value"
           [lvDisabled]="!!drawData"></lv-select>
+        <span *ngIf="formGroup.get('deviceType').value === dataMap.poolStorageDeviceType.OceanProtectX.value">
+          <i lv-icon="lv-icon-status-info" lvColorState='true' class="type-icon"></i>
+          <span class="text-middle"
+            style="margin-left:4px">{{(isDecouple?'common_equipment_type_tip_label':'common_equipment_type_xseries_tip_label')
+            | i18n}}</span>
+        </span>
       </lv-form-control>
     </lv-form-item>
     <lv-form-item *ngIf="formGroup.get('deviceType').value !== dataMap.poolStorageDeviceType.Server.value">

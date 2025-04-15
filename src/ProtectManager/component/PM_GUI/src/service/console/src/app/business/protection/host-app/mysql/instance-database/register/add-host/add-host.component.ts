@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { ModalRef } from '@iux/live';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
@@ -141,6 +141,24 @@ export class AddHostComponent implements OnInit {
           ),
           this.baseUtilService.VALID.maxLength(2048)
         ]
+      }),
+      toolPath: new FormControl('', {
+        validators: [
+          this.baseUtilService.VALID.name(
+            CommonConsts.REGEX.templatLinuxPath,
+            false
+          ),
+          this.baseUtilService.VALID.maxLength(2048)
+        ]
+      }),
+      libraryPath: new FormControl('', {
+        validators: [
+          this.baseUtilService.VALID.name(
+            CommonConsts.REGEX.templatLinuxPath,
+            false
+          ),
+          this.baseUtilService.VALID.maxLength(2048)
+        ]
       })
     });
 
@@ -151,7 +169,9 @@ export class AddHostComponent implements OnInit {
         port: this.rowData.extendInfo?.instancePort,
         userName: this.rowData.auth?.authKey,
         charset: this.rowData.extendInfo?.charset,
-        configPath: this.rowData.extendInfo?.myCnfPath
+        configPath: this.rowData.extendInfo?.myCnfPath,
+        toolPath: this.rowData.extendInfo?.toolPath,
+        libraryPath: this.rowData.extendInfo?.libraryPath
       });
     }
   }
@@ -230,6 +250,16 @@ export class AddHostComponent implements OnInit {
             'extendInfo.myCnfPath',
             this.formGroup.value.configPath
           );
+          set(
+            this.data[0],
+            'extendInfo.toolPath',
+            this.formGroup.value.toolPath
+          );
+          set(
+            this.data[0],
+            'extendInfo.libraryPath',
+            this.formGroup.value.libraryPath
+          );
           this.data[0].port = this.formGroup.value.port;
         } else {
           let name = `${this.name}${index++}`;
@@ -249,7 +279,9 @@ export class AddHostComponent implements OnInit {
               instancePort: this.formGroup.value.port,
               isTopInstance: InstanceType.NotTopinstance,
               charset: this.formGroup.value.charset,
-              myCnfPath: this.formGroup.value.configPath
+              myCnfPath: this.formGroup.value.configPath,
+              toolPath: this.formGroup.value.toolPath,
+              libraryPath: this.formGroup.value.libraryPath
             },
             dependencies: {
               agents: [{ uuid: item }]

@@ -174,12 +174,12 @@ public interface CopyRestApi {
     }
 
     /**
-     * 通过资源ID和gn值以及备份类型(比如全量)查询该副本之前的所有备份副本（不包含本副本）
+     * 通过资源ID和gn值以及备份类型(比如全量)查询该副本之前的最近一个备份副本（不包含本副本）
      *
      * @param resourceId resourceId
      * @param gn gn值
      * @param backupType 副本类型
-     * @return 副本集合
+     * @return 最近一个备份副本
      */
     default Optional<Copy> queryLatestFullBackupCopies(String resourceId, int gn, int backupType) {
         Map<String, Object> conditions = new HashMap<>();
@@ -240,6 +240,7 @@ public interface CopyRestApi {
     default List<Copy> queryCopiesByStorageUnit(String unitId) {
         Map<String, Object> filterMap = new HashMap<>();
         filterMap.put("storage_unit_id", unitId);
+        filterMap.put("generated_by", CopyGeneratedByEnum.COPY_GENERATED_BY_REPLICATION_AND_BACKUP_AND_LIVE_MOUNT);
         List<Copy> copyList = new ArrayList<>();
         BasePage<Copy> basePage;
         int count = 0;
@@ -360,12 +361,15 @@ public interface CopyRestApi {
      * @return 条件
      */
     default Map<String, Object> getQueryParams(Map<String, Object> filter, String resourceId, String range) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Map<String, Object> condition = new HashMap<>(Optional.ofNullable(filter).orElse(Collections.emptyMap()));
         condition.put("resource_id", resourceId);
         condition.put("generated_by", CopyGeneratedByEnum.BY_BACKUP.value());
         if (range != null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(Date.from(Instant.now()));
+            Calendar calendarEnd = Calendar.getInstance();
+            Calendar calendarStart = Calendar.getInstance();
+            calendarEnd.setTime(Date.from(Instant.now()));
+            calendarStart.setTime(calendarEnd.getTime());
             HashMap<String, Integer> calendarMap = new HashMap<String, Integer>() {
                 {
                     put("hour", Calendar.HOUR);
@@ -376,22 +380,9 @@ public interface CopyRestApi {
                 }
             };
             Integer calendarEnum = calendarMap.get(range);
-            if (calendarEnum == Calendar.WEEK_OF_YEAR) {
-                calendar.add(calendarEnum, -2);
-            } else {
-                calendar.add(calendarEnum, -1);
-            }
-            HashMap<String, String> rangMap = new HashMap<String, String>() {
-                {
-                    put("hour", "yyyy-MM-dd HH");
-                    put("date", "yyyy-MM-dd");
-                    put("week", "yyyy-w");
-                    put("month", "yyyy-MM");
-                    put("year", "yyyy");
-                }
-            };
-            String format = rangMap.get(range);
-            condition.put(range, new SimpleDateFormat(format).format(calendar.getTime()));
+            calendarStart.add(calendarEnum, -1);
+            condition.put("starts_time", sdf.format(calendarStart.getTime()));
+            condition.put("ends_time", sdf.format(calendarEnd.getTime()));
         }
         return condition;
     }
@@ -405,6 +396,19 @@ public interface CopyRestApi {
     @ExterAttack
     @PostMapping("/internal/copies")
     UuidObject saveCopy(@RequestBody CopyInfo copyInfo);
+
+
+    /**
+     * save copy
+     *
+     * @param copyInfo copy info
+     * @param override 是否覆盖副本
+     * @return uuid object
+     */
+    @ExterAttack
+    @PostMapping("/internal/copies")
+    UuidObject saveCopy(@RequestBody CopyInfo copyInfo, @RequestParam("override") boolean override);
+
 
     /**
      * save batch copy list
@@ -449,6 +453,21 @@ public interface CopyRestApi {
     void deleteCopy(@PathVariable("copy_id") String copyId, @RequestParam("user_id") String userId,
         @RequestParam("is_forced") Boolean isForced, @RequestParam("is_associated") Boolean isAssociated,
         @RequestParam("job_type") String jobType);
+
+    /**
+     * delete copy
+     *
+     * @param userId userId
+     * @param isForced 是否强删
+     * @param isAssociated 是否关联删除
+     * @param jobType 任务类型
+     * @param copyList 副本列表
+     */
+    @DeleteMapping("/internal/async/copies")
+    void asyncDeleteCopy(@RequestParam("user_id") String userId,
+        @RequestParam("is_forced") Boolean isForced, @RequestParam("is_associated") Boolean isAssociated,
+        @RequestParam("job_type") String jobType,
+        @RequestParam("copy_list") List<String> copyList);
 
     /**
      * only delete copy in databse
@@ -505,6 +524,29 @@ public interface CopyRestApi {
      */
     default void updateCopyIndexStatus(String copyId, String indexStatus) {
         updateCopyIndexStatus(copyId, indexStatus, "");
+    }
+
+    /**
+     * update copy browse mount status
+     *
+     * @param copyId copy id
+     * @param browse_mount_status browse mount status
+     * @param errorCode error code
+     */
+    @PutMapping("/internal/copies/{copy_id}/browse-mount-status")
+    void updateCopyBrowseMountStatus(
+        @PathVariable("copy_id") String copyId,
+        @RequestParam("browse_mount_status") String browse_mount_status,
+        @RequestParam(value = "error_code", required = false, defaultValue = "") String errorCode);
+
+    /**
+     * update copy browse mount
+     *
+     * @param copyId copy id
+     * @param status status
+     */
+    default void updateCopyBrowseMountStatus(String copyId, String status) {
+        updateCopyBrowseMountStatus(copyId, status, "");
     }
 
     /**
@@ -788,6 +830,22 @@ public interface CopyRestApi {
      */
     @PutMapping("/internal/archive/dispatch")
     void dispatchArchive(@RequestBody ArchiveMsg msg);
+
+    /**
+     * 内部接口是否允许创建归档任务
+     *
+     * @param resourceId 资源id
+     * @param storageId 存储id
+     * @param copyId 副本id
+     * @param isSupportLog 是否支持日志
+     *
+     * @return 是否允许创建归档任务
+     */
+    @ExterAttack
+    @GetMapping("/internal/archive/is-allow-create-archive-job")
+    boolean isAllowCreateArchiveJob(@RequestParam("resource_id") String resourceId,
+        @RequestParam("storage_id") String storageId, @RequestParam("copy_id") String copyId,
+        @RequestParam("is_query_log_copy") boolean isSupportLog);
 
     /**
      * 查询用户域下指定资源索引状态的副本

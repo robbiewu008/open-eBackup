@@ -15,6 +15,7 @@ package openbackup.data.access.framework.protection.service.archive;
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
 import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.system.base.label.service.LabelService;
 import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,6 +43,7 @@ import openbackup.data.protection.access.provider.sdk.enums.RepositoryProtocolEn
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.enums.RetentionTypeEnum;
 import openbackup.system.base.common.enums.TimeUnitEnum;
+import openbackup.system.base.common.enums.WormValidityTypeEnum;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.msg.NotifyManager;
 import openbackup.system.base.common.utils.JSONArray;
@@ -51,6 +53,8 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.copy.model.CopyInfo;
 import openbackup.system.base.sdk.copy.model.CopyStatus;
+import openbackup.system.base.sdk.copy.model.CopyStorageUnitStatus;
+import openbackup.system.base.sdk.copy.model.CopyWormStatus;
 import openbackup.system.base.sdk.job.constants.JobProgress;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
@@ -102,6 +106,9 @@ public class ArchiveTaskService {
 
     @Autowired
     private ResourceSetApi resourceSetApi;
+
+    @Autowired
+    private LabelService labelService;
 
     /**
      * 归档任务服务构造函数
@@ -189,6 +196,8 @@ public class ArchiveTaskService {
         final CopyInfo copyInfo = buildArchiveCopy(requestId, extendsInfo);
         internalApiHub.getCopyRestApi().saveCopy(copyInfo);
         resourceSetApi.createCopyResourceSetRelation(copyInfo.getUuid(), copyInfo.getParentCopyUuid(), Strings.EMPTY);
+        // 设置副本继承资源的标签
+        labelService.setCopyLabel(copyInfo.getUuid(), copyInfo.getResourceId());
         final ArchiveContext archiveContext = contextManager.getArchiveContext(requestId);
         updateDataBeforeReduction(archiveContext.getJobId(), copyInfo.getProperties());
         userQuotaManager.increaseUsedQuota(requestId, copyInfo);
@@ -201,12 +210,18 @@ public class ArchiveTaskService {
         final String originalCopyId = archiveContext.getOriginalCopyId();
         final Copy originalCopy = internalApiHub.getCopyRestApi().queryCopyByID(originalCopyId, true);
         BeanUtils.copyProperties(originalCopy, copyInfo);
+        // 归档设置默认未设置
+        copyInfo.setWormStatus(CopyWormStatus.UNSET.getStatus());
+        copyInfo.setWormExpirationTime(null);
+        copyInfo.setWormValidityType(WormValidityTypeEnum.WORM_NOT_OPEN.getType());
+        copyInfo.setWormDurationUnit(null);
         copyInfo.setParentCopyUuid(originalCopyId);
         final String archiveCopyId = archiveContext.getArchiveCopyId()
             .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST,
                 "archive copy id can not find in context"));
         copyInfo.setUuid(archiveCopyId);
         copyInfo.setStatus(CopyStatus.NORMAL.getValue());
+        copyInfo.setStorageUnitStatus(CopyStorageUnitStatus.ONLINE.getValue());
         copyInfo.setIsReplicated(originalCopy.getGeneratedBy().equals(CopyGeneratedByEnum.BY_REPLICATED.value()));
         copyInfo.setIsArchived(true);
         final String nowDatetimeStr = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
@@ -275,6 +290,10 @@ public class ArchiveTaskService {
         repositories.add(baseStorageRepository);
         propertyJson.put(CopyPropertiesKeyConstant.KEY_REPOSITORIES, repositories);
         propertyJson.put(CopyPropertiesKeyConstant.SIZE, extendsInfo.get(JobExtendInfoKeys.DATA_BEFORE_REDUCTION));
+        // 将手动归档填的参数放到副本的properties里面
+        propertyJson.put(CopyPropertiesKeyConstant.IS_MANUAL_ARCHIVE, archiveContext.getManualArchiveTag());
+        propertyJson.put(CopyPropertiesKeyConstant.MANUAL_ARCHIVE_POLICY,
+                JSONObject.writeValueAsString(archiveContext.getPolicy()));
         copyInfo.setProperties(propertyJson.toString());
     }
 

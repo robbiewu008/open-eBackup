@@ -14,6 +14,7 @@
 #include "define/Types.h"
 #include "define/Defines.h"
 #include "common/MpString.h"
+#include "securec.h"
 namespace {
     constexpr auto MODULE = "NFSCONTEXT_WRAPPER";
     const int MP_FAILED = 1;
@@ -42,7 +43,7 @@ NfsContextWrapper::NfsContextWrapper(const NfsContextWrapper &obj)
     m_nfsContext = obj.m_nfsContext;
 }
 
-NfsContextWrapper &NfsContextWrapper::operator=(const NfsContextWrapper &obj)
+NfsContextWrapper& NfsContextWrapper::operator=(const NfsContextWrapper &obj)
 {
     if (this != &obj) {
         m_nfsContext = obj.m_nfsContext;
@@ -182,7 +183,12 @@ char* NfsContextWrapper::GetRidOfSepInPathName(char *rawPath)
         return nullptr;
     }
     char *pathName = (char *)malloc((pathNameLen + 1) * sizeof(char));
-    strncpy(pathName, rawPath + lPos - 1, pathNameLen);
+    errno_t err = strncpy_s(pathName, pathNameLen + 1, rawPath + lPos - 1, pathNameLen);
+    if (err != EOK) {
+        free(pathName);
+        HCP_Log(ERR, MODULE) << "strncpy_s failed." << HCPENDLOG;
+        return nullptr;
+    }
     pathName[pathNameLen] = 0;
     DBGLOG("Get Rid Of Sep In PathName: %d %d, Len: %d, get new path: %s, old path: %s",
         lPos, rPos, pathNameLen, pathName, rawPath);
@@ -1355,6 +1361,20 @@ int NfsContextWrapper::NfsUnlinkAsyncLock(const char *path, nfs_cb cb, void *pri
 {
     std::lock_guard<std::mutex> lk(mtx);
     return NfsUnlinkAsync(path, cb, privateData);
+}
+
+int NfsContextWrapper::NfsUnlinkAsyncWithParentFh(const char *path, struct nfsfh *fh, nfs_cb cb, void *privateData)
+{
+    if (m_isDestroy) {
+        HCP_Log(ERR, MODULE) << "Nfscontext destroyed" << HCPENDLOG;
+        return MP_FAILED;
+    }
+    int ret = nfs_unlink_async2(m_nfsContext, fh, path, cb, privateData);
+    if (ret != 0) {
+        HCP_Log(ERR, MODULE) << "NfsUnlinkAsync2 failed , ret :" << ret
+            << ", error :" << nfs_get_error(m_nfsContext) << HCPENDLOG;
+    }
+    return ret;
 }
 
 uint64_t NfsContextWrapper::GetNfsReadMaxSize()

@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "taskmanager/externaljob/ClearMountPointsJob.h"
 
 #ifdef WIN32
@@ -183,9 +195,9 @@ bool ClearMountPointsJob::ExecClearMountPoints()
         WARNLOG("Failed to get job ID path.");
         return true;
     }
-
     DeleteRunningJobIDPath(vecJobIDFolderPath);
     for (auto iter : vecJobIDFolderPath) {
+        DBGLOG("The jobID path will be clean:%s.", iter.c_str());
         vector<mp_string> vecMountPoints;
         mp_int32 jobIDDirChangeElapsedTime = 0;
         ret = GetMountPointsPath(iter, vecMountPoints);
@@ -233,6 +245,7 @@ mp_void ClearMountPointsJob::DeleteRunningJobIDPath(list<mp_string> &jobIDFolder
     for (const auto& tempJob : runJobs) {
         runJobIDList.insert(tempJob->GetData().mainID);
     }
+    GetTaskIdFrompath(jobIDFolderPathList);
     for (auto iter = jobIDFolderPathList.begin(); iter != jobIDFolderPathList.end();) {
         if (runJobIDList.find((*iter).substr((*iter).find_last_of(PATH_SEPARATOR) + 1)) != runJobIDList.end()) {
             jobIDFolderPathList.erase(iter++);
@@ -342,6 +355,22 @@ mp_int32 ClearMountPointsJob::UmountAndDeleteJobFloder(mp_string &jobFloderPath,
     CRootCaller rootCaller;
     ret = rootCaller.Exec((mp_int32)ROOT_COMMAND_SCRIPT_CLEAR_MOUNT_POINT, scriptParam.str(), NULL);
     return MP_SUCCESS;
+}
+
+mp_void ClearMountPointsJob::GetTaskIdFrompath(list<mp_string> &jobIDFolderPathList)
+{
+    std::regex reg("[[:alnum:]]{8}-[[:alnum:]]{4}-[[:alnum:]]{4}-[[:alnum:]]{4}-[[:alnum:]]{12}"
+        "([_A-Za-z0-9]*){0,1}");
+    std::smatch match;
+    for (auto iter = jobIDFolderPathList.begin(); iter != jobIDFolderPathList.end();) {
+        std::regex_search((*iter), match, reg);
+        DBGLOG("The jobID path will be clean:%s, the match result is %s", (*iter).c_str(), match.str(0).c_str());
+        if (match.size() <= 0) {
+            jobIDFolderPathList.erase(iter++);
+        } else {
+            ++iter;
+        }
+    }
 }
 #endif
 }

@@ -122,12 +122,12 @@ public:
     /**
     * Write directory meta which will write to buffer and return current offset.
     */
-    uint16_t WriteDirectoryMeta(DirMeta &dirMeta);
+    uint16_t WriteDirectoryMeta(const DirMeta &dirMeta);
 
     /**
     * Write file meta which will write to buffer and return current offset.
     */
-    uint16_t WriteFileMeta(FileMeta &fMeta);
+    uint16_t WriteFileMeta(const FileMeta &fMeta);
 
     /**
     * Read directory meta for a given offset.
@@ -267,10 +267,10 @@ private:
     */
     CTRL_FILE_RETCODE ValidateMetaFile(uint64_t offset, uint16_t readLen);
 
-    void TranslateToLittleEndian(DirMeta &dirMeta, DirMeta &dirMetaInLe);
-    void TranslateToHostEndian(DirMeta &dirMeta, DirMeta &dirMetaInHost);
-    void TranslateToLittleEndian(FileMeta &fMeta, FileMeta &fMetaInLe);
-    void TranslateToHostEndian(FileMeta &fMeta, FileMeta &fMetaInHost);
+    void TranslateToLittleEndian(const DirMeta &dirMeta, DirMeta &dirMetaInLe);
+    void TranslateToHostEndian(const DirMeta &dirMeta, DirMeta &dirMetaInHost);
+    void TranslateToLittleEndian(const FileMeta &fMeta, FileMeta &fMetaInLe);
+    void TranslateToHostEndian(const FileMeta &fMeta, FileMeta &fMetaInHost);
     void TranslateDirMetaV10(DirMetaV10 &dirMeta, DirectoryMetaReadWrite &dirMetaRw);
     CTRL_FILE_RETCODE TranslateFileMetaV10(FileMetaV10 &fMeta, FileMetaReadWrite &fMetaRw);
     void PrintFileMeta(const FileMeta& fileMeta);

@@ -12,6 +12,8 @@
 */
 package openbackup.system.base.service;
 
+import java.util.List;
+
 /**
  * 更新ip路由服务
  *
@@ -21,9 +23,20 @@ public interface IpRuleService {
      * 在底座上给网卡添加到指定目的ip的路由
      *
      * @param destinationIp 目的地ip
+     * @param port 目的地端口号
      * @param taskType 任务类型
      */
-    void addIpRule(String destinationIp, String taskType);
+    void addIpRule(String destinationIp, String port, String taskType);
+
+    /**
+     * 在底座上给网卡添加到指定目的ip的路由
+     *
+     * @param destinationIp 目的地ip
+     * @param port 目的地端口号
+     * @param taskType 任务类型
+     * @param srcIpList 逻辑端口ip
+     */
+    void addIpRule(String destinationIp, String port, String taskType, List<String> srcIpList);
 
     /**
      * 在底座上删除到指定目的ip的路由
@@ -37,15 +50,17 @@ public interface IpRuleService {
      * 只在本控上添加路由
      *
      * @param destinationIp 目的地ip
+     * @param port 目的地端口
      * @param taskType 任务类型
      */
-    void addIpRuleLocal(String destinationIp, String taskType);
+    void addIpRuleLocal(String destinationIp, int port, String taskType);
 
     /**
      * 只在本控上删除路由
      *
      * @param destinationIp 目的地ip
+     * @param port 目的地端口
      * @param taskType 任务类型
      */
-    void deleteIpRuleLocal(String destinationIp, String taskType);
+    void deleteIpRuleLocal(String destinationIp, int port, String taskType);
 }

@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "apps/dws/XBSAServer/BsaSession.h"
 #include "apps/dws/XBSAServer/BsaSessionManager.h"
 #include "apps/dws/XBSAServer/BsaTransManager.h"
@@ -43,10 +55,6 @@ EXTER_ATTACK mp_int32 BsaSession::Init(
     const BsaObjectOwner& objectOwner, const mp_string env[BSA_ENV_BUTT], mp_uint32 envSize)
 {
     INFOLOG("This session's app type is %d", m_appType);
-    if (CreateTaskManage() != MP_SUCCESS) {
-        ERRLOG("Create task manage fail.");
-        return MP_FAILED;
-    }
     mp_int32 ret = strcpy_s(m_owner.bsa_ObjectOwner, BSA_MAX_BSAOBJECT_OWNER, objectOwner.bsaObjectOwner.c_str());
     if (ret != 0) {
         ERRLOG("strcpy_s bsaObjectOwner fail!bsaHandle=%lld,ret=%d", m_bsaHandle, ret);
@@ -65,6 +73,11 @@ EXTER_ATTACK mp_int32 BsaSession::Init(
     }
     for (mp_int32 i = 0; i < BSA_ENV_BUTT; i++) {
         SetEnv((BsaEnv)i, env[i]);
+    }
+
+    if (CreateTaskManage() != MP_SUCCESS) {
+        ERRLOG("Create task manage fail.");
+        return MP_FAILED;
     }
 
     m_timerHandle = CTimer::GetInstance().StartTimer(timeoutMs, SessionTimeOutCb, m_bsaHandle, NULL);
@@ -87,6 +100,7 @@ mp_int32 BsaSession::CreateTaskManage()
             INFOLOG("This session's app type is %d", m_appType);
             break;
         }
+        case BSA_AppType::BSA_GBASE_8S:
         case BSA_AppType::BSA_INFORMIX: {
             m_appTaskManager = std::make_shared<InformixTaskManage>();
             break;
@@ -97,8 +111,16 @@ mp_int32 BsaSession::CreateTaskManage()
             break;
         }
         case BSA_AppType::BSA_TPOPS: {
-            m_appTaskManager = std::make_shared<TpopsTaskManage>();
-            INFOLOG("This session's app type is %d", m_appType);
+            mp_string backupType = m_envs[BSA_TPOPS_JOB_TYPE];
+            std::vector<std::string> vecTmp;
+            CMpString::StrSplit(vecTmp, backupType, '=');
+            backupType = vecTmp.back();
+            backupType.pop_back();
+            std::transform(backupType.begin(), backupType.end(), backupType.begin(), [](unsigned char c) {
+                return std::tolower(c);
+            });
+            m_appTaskManager = std::make_shared<TpopsTaskManage>(backupType);
+            INFOLOG("This session's app type is %d, job type is %s", m_appType, backupType.c_str());
             break;
         }
         default: {
@@ -220,6 +242,7 @@ mp_int32 BsaSession::UpdateTaskWhenCreateObject(const BsaObjectDescriptor &objDe
         ERRLOG("App task manager is null.");
         return MP_FAILED;
     }
+
     return m_appTaskManager->UpdateTaskWhenCreateObject(objDesc);
 }
 mp_int32 BsaSession::UpdateTaskWhenQueryObject(const BsaQueryDescriptor &objDesc)

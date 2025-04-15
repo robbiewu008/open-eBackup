@@ -70,7 +70,8 @@ RUN chown 15013:nobody /context/src/app/common/security/kmc_util.pyc /context/sr
     && mv "/context/src/mount_oper.sh" "/script" \
     && chmod 550 "/script/mount_oper.sh" \
     && chown root:root "/script/mount_oper.sh" \
-    && rm -rf /root/.config/pip
+    && rm -rf /root/.config/pip \
+    && rm -rf /etc/localtime
 
 
 USER 15013

@@ -1,0 +1,61 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="设置Windows服务器进入目录服务修复模式（GUI）">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="ActiveDirectory-00084.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ActiveDirectory-00089">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>设置Windows服务器进入目录服务修复模式（GUI）</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ActiveDirectory-00089"></a><a name="ActiveDirectory-00089"></a>
+
+<h1 class="topictitle1">设置Windows服务器进入目录服务修复模式（GUI）</h1>
+<div><p id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_p977173054912">恢复Active Directory，需要把Active Directory所在的Windows服务器设置为目录服务修复模式（DSRM）。</p>
+<ol id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_ol191373619508"><li id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_li7131936115010"><span>重启Windows服务器，在开机界面显示windows图标前，按F8，进入“Advanced Boot Options”界面；</span></li><li id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_li51323611503"><span>选择“Directory Services Repair Mode”，如<a href="#ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig1737111478559">图1</a>所示；</span><p><div class="p" id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_p746014145214">如果没有“Directory Services Repair Mode”，选择“Repair Your Computer”，进入修复模式；<div class="fignone" id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig1737111478559"><a name="ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig1737111478559"></a><a name="zh-cn_topic_0000001839194585_fig1737111478559"></a><span class="figcap"><b>图1 </b>“Advanced Boot Options”界面</span><br><span><img id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_image183925054116" src="zh-cn_image_0000001803349964.png"></span></div>
+</div>
+<div class="note" id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_note0644163335311"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_p13342124415320">成功进入修复模式后，后续的操作中如果需要重启服务器，都不需要重新选择进入修复模式。</p>
+</div></div>
+</p></li><li id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_li16136360506"><span>启动流程进入到图形界面“Choose an option”，选择“Troubleshoot”，如<a href="#ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig340517919567">图2</a>所示；</span><p><div class="fignone" id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig340517919567"><a name="ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig340517919567"></a><a name="zh-cn_topic_0000001839194585_fig340517919567"></a><span class="figcap"><b>图2 </b>开机界面-Choose an option</span><br><span><img id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_image1630835315404" src="zh-cn_image_0000001792395572.png"></span></div>
+</p></li><li id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_li613153655010"><span>再选择“Startup Settings”（如<a href="#ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig19803328195615">图3</a>），选择“启用安全模式”，单击“确认”（如<a href="#ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig5948174815566">图4</a>）。</span><p><div class="fignone" id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig19803328195615"><a name="ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig19803328195615"></a><a name="zh-cn_topic_0000001839194585_fig19803328195615"></a><span class="figcap"><b>图3 </b>开机界面-Advanced options</span><br><span><img id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_image1247017498403" src="zh-cn_image_0000001839194697.png"></span></div>
+<div class="p" id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_p153921637145415"><div class="fignone" id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig5948174815566"><a name="ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig5948174815566"></a><a name="zh-cn_topic_0000001839194585_fig5948174815566"></a><span class="figcap"><b>图4 </b>开机界面-Startup Settings</span><br><span><img id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_image556144594015" src="zh-cn_image_0000001792555312.png"></span></div>
+</div>
+</p></li><li id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_li121433695016"><span>重新启动后，还是要在界面显示windows图标前，按F8，选择进入“Directory Services Repair Mode”，继续启动流程；</span></li><li id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_li61413665013"><span>启动后进入到登录界面，选择“Other user”，使用管理员登录（如<a href="#ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig19691172611572">图5</a>）；</span><p><div class="fignone" id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig19691172611572"><a name="ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig19691172611572"></a><a name="zh-cn_topic_0000001839194585_fig19691172611572"></a><span class="figcap"><b>图5 </b>登录界面</span><br><span><img id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_image6220102417279" src="zh-cn_image_0000001849989001.png"></span></div>
+</p></li><li id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_li6141136185017"><span>成功进入目录服务修复模式后，桌面界面四个角会显示Safe Mode（如<a href="#ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig154552556572">图6</a>）。</span><p><div class="fignone" id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig154552556572"><a name="ActiveDirectory-00089__zh-cn_topic_0000001839194585_fig154552556572"></a><a name="zh-cn_topic_0000001839194585_fig154552556572"></a><span class="figcap"><b>图6 </b>安全模式界面</span><br><span><img id="ActiveDirectory-00089__zh-cn_topic_0000001839194585_image4105536184013" src="zh-cn_image_0000001792395584.png"></span></div>
+</p></li></ol>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="ActiveDirectory-00084.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

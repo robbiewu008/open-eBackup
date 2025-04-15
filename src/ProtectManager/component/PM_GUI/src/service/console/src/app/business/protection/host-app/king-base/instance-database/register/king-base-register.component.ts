@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -84,7 +84,8 @@ export class KingBaseRegisterComponent implements OnInit {
   tableConfig: TableConfig;
   formGroup: FormGroup;
   extendsAuth = {};
-
+  pathHelp = this.i18n.get('protection_kingbase_client_path_help_label');
+  ipAddressHelp = this.i18n.get('protection_kingbase_ip_help_label');
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip,
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64])
@@ -385,6 +386,21 @@ export class KingBaseRegisterComponent implements OnInit {
     }, 0);
   }
 
+  pathHelpHover() {
+    this.appUtilsService.openSpecialHelp(
+      this.i18n.isEn
+        ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002200106653.html'
+        : `/console/assets/help/a8000/zh-cn/index.html#kingbase-00011.html`
+    );
+  }
+
+  ipAddressHelpHover() {
+    this.appUtilsService.openSpecialHelp(
+      this.i18n.isEn
+        ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002200106653.html'
+        : `/console/assets/help/a8000/zh-cn/index.html#kingbase-00011.html`
+    );
+  }
   getProxyOptions(uuid) {
     if (!uuid) {
       return;

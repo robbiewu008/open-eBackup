@@ -43,7 +43,7 @@
     <h2 class="header">{{'protection_object_set_label' | i18n}}</h2>
     <lv-group lvGutter="8px">
         <div class="hive-all-table">
-            <div class="table-header">
+            <div class="custom-table-header">
                 {{'protection_selectable_object_label' | i18n}}
             </div>
             <lv-datatable [lvData]="tableData" #lvTable [lvScroll]="{ y: '420px' }" [lvPaginator]="pageA" lvSize="small"
@@ -171,7 +171,7 @@
                                     <lv-group lvDirection="vertical" lvGutter="7px" style="width: 80%;">
                                         <lv-multi-autocomplete [(ngModel)]="item.data" [lvAllowNewItem]="true"
                                             [lvShowNoData]="false" [lvDisabled]="disabled" class="filter-input"
-                                            lvPlaceholder="{{'common_plus_enter_label' | i18n}}prefix"
+                                            lvPlaceholder="{{'common_plus_enter_label' | i18n}}{{i18n.isEn?' ':''}}prefix"
                                             (ngModelChange)="ngModelChange($event, item)" [lvTagTemplate]="prefixTpl"
                                             [ngClass]="{'red-object-bucket':item?.error}">
                                         </lv-multi-autocomplete>
@@ -210,7 +210,7 @@
 </ng-template>
 
 <ng-template #prefixTipTpl>
-    <span [innerHTML]="prefixTipLabel"></span>
+    <span [innerHTML]="(isAps? prefixTipApsLabel: prefixTipLabel)"></span>
 </ng-template>
 
 <ng-template #titleTemplate>

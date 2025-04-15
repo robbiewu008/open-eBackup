@@ -25,7 +25,6 @@
   <div class="job-chart-container">
     <div id="job-chart"></div>
     <div class="job-tags">
-      <lv-group [lvColumns]='["96px", "96px", "96px"]' class="job-count-row">
         <div class="job-tag">
           <p class="job-count">
             <i class="status-dot" [ngStyle]="{ background: jobColorConsts.PENDING }"></i>
@@ -67,7 +66,6 @@
           </p>
           <p class="aui-text-desc">{{ 'common_fail_label' | i18n }}</p>
         </div>
-      </lv-group>
     </div>
   </div>
 </div>

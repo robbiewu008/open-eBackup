@@ -23,7 +23,8 @@
         <result column="type" property="type"/>
         <result column="sub_type" property="subType"/>
         <result column="path" property="path"/>
-        <result column="created_time" property="createdTime"/>
+        <result column="created_time" property="createdTime"
+                typeHandler="openbackup.system.base.common.typehandler.TimestampTypeHandler"/>
         <result column="parent_name" property="parentName"/>
         <result column="parent_uuid" property="parentUuid"/>
         <result column="root_uuid" property="rootUuid"/>
@@ -93,5 +94,8 @@
             parameterType="java.lang.String">
         <include refid="SELECT_SQL"/>
         where r.uuid = #{uuid}
+    </select>
+    <select id="getAllSubTypeList" resultType="java.lang.String">
+        select sub_type from resources group by sub_type
     </select>
 </mapper>

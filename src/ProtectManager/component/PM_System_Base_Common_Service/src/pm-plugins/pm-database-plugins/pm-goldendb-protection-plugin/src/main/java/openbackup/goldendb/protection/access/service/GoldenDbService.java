@@ -12,6 +12,7 @@
 */
 package openbackup.goldendb.protection.access.service;
 
+import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.goldendb.protection.access.dto.cluster.Node;
@@ -50,7 +51,7 @@ public interface GoldenDbService {
      * @param environment 受保护环境
      * @return 是否连接
      */
-    boolean singleConnectCheck(MysqlNode mysqlNode, ProtectedEnvironment environment);
+    AgentBaseDto singleConnectCheck(MysqlNode mysqlNode, ProtectedEnvironment environment);
 
     /**
      * 获取单个节点的连通性

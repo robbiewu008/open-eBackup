@@ -12,6 +12,7 @@
 */
 package openbackup.postgre.protection.access.provider.resource;
 
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
@@ -20,11 +21,13 @@ import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CheckAppReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.NodeInfo;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
+import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceConstants;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.service.InstanceResourceService;
 import openbackup.postgre.protection.access.common.PostgreConstants;
@@ -32,6 +35,7 @@ import openbackup.postgre.protection.access.common.PostgreErrorCode;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
@@ -45,6 +49,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -63,11 +69,37 @@ public class PostgreClusterInstanceProvider implements ResourceProvider {
 
     private final AgentUnifiedService agentUnifiedService;
 
+    private final ResourceService resourceService;
+
     public PostgreClusterInstanceProvider(ProtectedEnvironmentService protectedEnvironmentService,
-        InstanceResourceService instanceResourceService, AgentUnifiedService agentUnifiedService) {
+        InstanceResourceService instanceResourceService, AgentUnifiedService agentUnifiedService,
+        ResourceService resourceService) {
         this.protectedEnvironmentService = protectedEnvironmentService;
         this.instanceResourceService = instanceResourceService;
         this.agentUnifiedService = agentUnifiedService;
+        this.resourceService = resourceService;
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> children = resourceService.queryDependencyResources(true, DatabaseConstants.CHILDREN,
+            Collections.singletonList(resource.getUuid()));
+        children.stream().forEach(child -> {
+            Map<String, List<ProtectedResource>> childDependencies = new HashMap<>();
+            List<ProtectedResource> agents = resourceService.queryDependencyResources(true, DatabaseConstants.AGENTS,
+                Collections.singletonList(child.getUuid()));
+            childDependencies.put(DatabaseConstants.AGENTS, agents);
+            child.setDependencies(childDependencies);
+        });
+        dependencies.put(DatabaseConstants.CHILDREN, children);
+        List<ProtectedResource> clupServers = resourceService.queryDependencyResources(true,
+            PostgreConstants.CLUP_SERVERS, Collections.singletonList(resource.getUuid()));
+        if (CollectionUtils.isNotEmpty(clupServers)) {
+            dependencies.put(PostgreConstants.CLUP_SERVERS, clupServers);
+        }
+        resource.setDependencies(dependencies);
+        return true;
     }
 
     @Override
@@ -157,6 +189,9 @@ public class PostgreClusterInstanceProvider implements ResourceProvider {
                 childNode.getExtendInfo().put(DatabaseConstants.SERVICE_IP, nodeInfo.getEndpoint());
                 childNode.getExtendInfo()
                     .put(DatabaseConstants.INSTANCE_PORT, MapUtils.getString(extendInfo, DatabaseConstants.PORT));
+                childNode.getExtendInfo()
+                    .put(PostgreConstants.ARCHIVE_DIR,
+                        MapUtils.getString(resource.getExtendInfo(), PostgreConstants.ARCHIVE_DIR));
                 canFind = true;
                 break;
             }
@@ -203,6 +238,41 @@ public class PostgreClusterInstanceProvider implements ResourceProvider {
         }
     }
 
+    private void checkClupCluster(ProtectedResource resource) {
+        ProtectedEnvironment environment = protectedEnvironmentService.getEnvironmentById(resource.getParentUuid());
+        List<ProtectedResource> clupServers = environment.getDependencies().get(PostgreConstants.CLUP_SERVERS);
+        ProtectedEnvironment clupServerEnvironment = protectedEnvironmentService.getEnvironmentById(
+            clupServers.get(IsmNumberConstant.ZERO).getUuid());
+        AgentBaseDto checkResult = checkClusterInstance(resource, clupServerEnvironment);
+        if (Long.parseLong(checkResult.getErrorCode()) != DatabaseConstants.SUCCESS_CODE) {
+            JSONObject jsonObject = JSONObject.fromObject(checkResult.getErrorMessage());
+            throw new LegoCheckedException(Long.parseLong(jsonObject.getString("bodyErr")),
+                jsonObject.getString("message"));
+        }
+        setPostgreClusterInstanceVersion(resource, checkResult);
+        resource.setPath(resource.getEnvironment().getEndpoint());
+        try {
+            Map<String, List<NodeInfo>> appEnvMap = getClupClusterInfo(resource, environment);
+            resource.getDependencies()
+                .get(DatabaseConstants.CHILDREN)
+                .forEach(childNode -> buildClusterNodeRole(childNode, appEnvMap));
+        } catch (LegoCheckedException | NullPointerException e) {
+            log.error("Create postgre cluster instance check error", ExceptionUtil.getErrorMessage(e));
+            throw new LegoCheckedException(CommonErrorCode.RESOURCE_LINK_STATUS_OFFLINE,
+                "target environment is offline.");
+        }
+        List<ProtectedResource> children = resource.getDependencies().get(DatabaseConstants.CHILDREN);
+        // 如果没有主节点直接报错
+        Optional<ProtectedResource> childOptional = children.stream()
+            .filter(
+                item -> StringUtils.equals(PostgreConstants.PRIMARY, item.getExtendInfo().get(DatabaseConstants.ROLE)))
+            .findFirst();
+        if (!childOptional.isPresent()) {
+            throw new LegoCheckedException(CommonErrorCode.RESOURCE_LINK_STATUS_OFFLINE,
+                "target environment is offline.");
+        }
+    }
+
     @Override
     public void beforeCreate(ProtectedResource resource) {
     }
@@ -212,16 +282,79 @@ public class PostgreClusterInstanceProvider implements ResourceProvider {
         resource.setVersion(messageMap.get(DatabaseConstants.VERSION));
     }
 
+    private AgentBaseDto checkClusterInstance(ProtectedResource resource, ProtectedEnvironment environment) {
+        AppEnv appEnv = BeanTools.copy(environment, AppEnv::new);
+        Map<String, String> extendInfo = Optional.ofNullable(appEnv.getExtendInfo()).orElseGet(HashMap::new);
+        extendInfo.put(DatabaseConstants.ALL_NODES, getAllNodes(resource));
+        extendInfo.putAll(resource.getExtendInfo());
+        appEnv.setExtendInfo(extendInfo);
+        appEnv.setSubType(resource.getEnvironment().getSubType());
+        Application application = BeanTools.copy(environment, Application::new);
+        application.setSubType(resource.getSubType());
+        if (VerifyUtil.isEmpty(application.getAuth())) {
+            application.setAuth(resource.getAuth());
+        }
+        return checkClusterInstance(appEnv, application);
+    }
+
+    private String getAllNodes(ProtectedResource resource) {
+        return resource.getDependencies()
+            .get(DatabaseConstants.CHILDREN)
+            .stream()
+            .map(this::getIpAndPort)
+            .collect(Collectors.joining(DatabaseConstants.SPLIT_CHAR));
+    }
+
+    private String getIpAndPort(ProtectedResource subInstance) {
+        return subInstance.getExtendInfoByKey(DatabaseConstants.SERVICE_IP) + DatabaseConstants.IP_PORT_SPLIT_CHAR
+            + subInstance.getExtendInfoByKey(DatabaseConstants.INSTANCE_PORT);
+    }
+
+    private AgentBaseDto checkClusterInstance(AppEnv appEnv, Application application) {
+        CheckAppReq checkAppReq = new CheckAppReq();
+        checkAppReq.setAppEnv(appEnv);
+        checkAppReq.setApplication(application);
+        AgentBaseDto agentBaseDto;
+        try {
+            agentBaseDto = agentUnifiedService.check(application.getSubType(), appEnv.getEndpoint(), appEnv.getPort(),
+                checkAppReq);
+        } catch (LegoCheckedException e) {
+            long errorCode = CommonErrorCode.AGENT_NETWORK_ERROR;
+            if (!VerifyUtil.isEmpty(e.getMessage())) {
+                ActionResult actionResult = JSONObject.toBean(e.getMessage(), ActionResult.class);
+                errorCode = Long.parseLong(actionResult.getBodyErr());
+            }
+            log.error("Cluster instance check fail. name: {}", appEnv.getName());
+            throw new LegoCheckedException(errorCode, "Cluster instance check fail.");
+        } catch (LegoUncheckedException | FeignException e) {
+            log.error("Cluster instance check fail. name: {}", appEnv.getName());
+            throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR, "Cluster instance check fail.");
+        }
+        return agentBaseDto;
+    }
+
+    private void buildClusterNodeRole(ProtectedResource childNode, Map<String, List<NodeInfo>> appEnvMap) {
+        NodeInfo nodeInfo = appEnvMap.get(childNode.getExtendInfoByKey(DatabaseConstants.SERVICE_IP))
+            .get(IsmNumberConstant.ZERO);
+        Map<String, String> extendInfo = nodeInfo.getExtendInfo();
+        String role = StringUtils.equals(MapUtils.getString(extendInfo, PostgreConstants.IS_PRIMARY),
+            PostgreConstants.PRIMARY) ? PostgreConstants.PRIMARY : PostgreConstants.SLAVE;
+        childNode.getExtendInfo().put(DatabaseConstants.ROLE, role);
+    }
+
     @Override
     public void beforeUpdate(ProtectedResource resource) {
         log.info("Start update postgre cluster instance check. resource name: {}", resource.getName());
         resource.setEnvironment(protectedEnvironmentService.getEnvironmentById(resource.getParentUuid()));
         resource.getExtendInfo().put(DatabaseConstants.VIRTUAL_IP, resource.getEnvironment().getEndpoint());
-
-        // check实例端口是否被修改
-        instanceResourceService.checkClusterInstancePortIsChanged(resource);
-
-        checkCluster(resource);
+        String installDeployType = resource.getExtendInfo().get(PostgreConstants.INSTALL_DEPLOY_TYPE);
+        if (StringUtils.equals(installDeployType, PostgreConstants.CLUP)) {
+            checkClupCluster(resource);
+        } else {
+            // check实例端口是否被修改
+            instanceResourceService.checkClusterInstancePortIsChanged(resource);
+            checkCluster(resource);
+        }
         resource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY, LinkStatusEnum.ONLINE.getStatus().toString());
         log.info("End update postgre cluster instance check. resource name: {}", resource.getName());
     }

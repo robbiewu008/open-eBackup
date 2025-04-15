@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   Component,
@@ -20,10 +20,10 @@ import {
   ViewChild
 } from '@angular/core';
 import {
-  DefaultRoles,
   I18NService,
   MODAL_COMMON,
-  ResourceSetApiService
+  ResourceSetApiService,
+  SpecialRoleIds
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
 import {
@@ -32,7 +32,7 @@ import {
   TableCols
 } from 'app/shared/components/pro-table';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
-import { assign, find, isEmpty } from 'lodash';
+import { assign, cloneDeep, find, isEmpty } from 'lodash';
 import { CreateResourcesetComponent } from '../../../resource-set/create-resourceset/create-resourceset.component';
 
 @Component({
@@ -67,12 +67,13 @@ export class ApplyResourceComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.defaultRoleId = this.formGroup.get('roleId').value;
+    this.selected = this.roleList[0].roleId;
+    this.isNotLoginRole = SpecialRoleIds.includes(this.selected);
     this.initConfig();
   }
 
   ngAfterViewInit() {
     this.dataTable.fetchData();
-    this.selected = this.roleList[0].roleId;
     this.resetSelection();
     this.invalidEmit();
   }
@@ -83,6 +84,9 @@ export class ApplyResourceComponent implements OnInit, AfterViewInit {
         id: 'create',
         label: this.i18n.get('system_create_resource_set_label'),
         type: 'primary',
+        disableCheck: () => {
+          return this.isNotLoginRole;
+        },
         onClick: () => this.create()
       }
     ];
@@ -137,7 +141,7 @@ export class ApplyResourceComponent implements OnInit, AfterViewInit {
       assign(conditionsTemp, { ...JSON.parse(filters.conditions_v2) });
     }
     assign(params, { conditions: JSON.stringify(conditionsTemp) });
-    this.resourceSetService.QueryResourceSet(params).subscribe(res => {
+    this.resourceSetService.queryResourceSet(params).subscribe(res => {
       if (this.isNotLoginRole) {
         res.records.forEach(item =>
           assign(item, {
@@ -163,9 +167,11 @@ export class ApplyResourceComponent implements OnInit, AfterViewInit {
         lvOk: modal => {
           return new Promise(resolve => {
             const content = modal.getContentComponent() as CreateResourcesetComponent;
+            const formValue = content.formGroup.value;
             content.onOK().subscribe({
-              next: () => {
+              next: res => {
                 resolve(true);
+                res = this.selectNewResourceSet(res, formValue);
                 this.dataTable.fetchData();
               },
               error: () => {
@@ -178,13 +184,30 @@ export class ApplyResourceComponent implements OnInit, AfterViewInit {
     );
   }
 
+  private selectNewResourceSet(res: any, formValue: any) {
+    res = JSON.parse(res || '{}');
+    const tmpNewResourceSet = {
+      ...res,
+      name: formValue.name,
+      description: formValue.desc
+    };
+    // 新创出来的资源集默认选中
+    if (this.resourceSetMap.has(this.selected)) {
+      this.resourceSetMap.set(this.selected, [
+        ...this.resourceSetMap.get(this.selected),
+        tmpNewResourceSet
+      ]);
+    } else {
+      this.resourceSetMap.set(this.selected, tmpNewResourceSet);
+    }
+    this.dataTable.setSelections(
+      cloneDeep(this.resourceSetMap.get(this.selected))
+    );
+    this.invalidEmit();
+    return res;
+  }
+
   resetSelection() {
-    this.isNotLoginRole = [
-      DefaultRoles.rdAdmin.roleId,
-      DefaultRoles.drAdmin.roleId,
-      DefaultRoles.audit.roleId,
-      DefaultRoles.sysAdmin.roleId
-    ].includes(this.selected);
     this.tableData.data.forEach(item => (item.disabled = this.isNotLoginRole));
     this.dataTable.setSelections(this.resourceSetMap.get(this.selected));
     const roleName = find(this.roleList, { roleId: this.selected }).roleName;
@@ -204,12 +227,7 @@ export class ApplyResourceComponent implements OnInit, AfterViewInit {
       !this.roleList.every(
         item =>
           item.roleId === this.defaultRoleId ||
-          [
-            DefaultRoles.rdAdmin.roleId,
-            DefaultRoles.drAdmin.roleId,
-            DefaultRoles.audit.roleId,
-            DefaultRoles.sysAdmin.roleId
-          ].includes(item.roleId) ||
+          SpecialRoleIds.includes(item.roleId) ||
           this.resourceSetMap.get(item.roleId).length
       )
     );

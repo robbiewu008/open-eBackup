@@ -12,6 +12,7 @@
 */
 package openbackup.oracle.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.access.framework.core.manager.ProviderManager;
@@ -41,8 +42,6 @@ import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -75,6 +74,16 @@ public class OracleSingleNodeDatabaseProvider implements ResourceProvider {
         this.instanceResourceService = instanceResourceService;
         this.oracleBaseService = oracleBaseService;
         this.agentUnifiedService = agentUnifiedService;
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        Map<String, List<ProtectedResource>> dependencies = new HashMap<>();
+        List<ProtectedResource> agents = resourceService.queryDependencyResources(true, DatabaseConstants.AGENTS,
+                Collections.singletonList(resource.getUuid()));
+        dependencies.put(DatabaseConstants.AGENTS, agents);
+        resource.setDependencies(dependencies);
+        return true;
     }
 
     @Override

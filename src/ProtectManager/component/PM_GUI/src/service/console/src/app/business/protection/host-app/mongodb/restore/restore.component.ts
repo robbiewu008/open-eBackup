@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -21,7 +21,7 @@ import {
   RestoreApiV2Service,
   RestoreV2LocationType
 } from 'app/shared';
-import { assign, filter, get, includes, isNumber, map } from 'lodash';
+import { assign, each, filter, includes, isNumber, set } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -40,6 +40,7 @@ export class RestoreComponent implements OnInit {
   restoreToNewLocationOnly = false;
   clusterOptions = [];
   instanceOptions = [];
+  isCopySetLog = false;
 
   constructor(
     private fb: FormBuilder,
@@ -82,22 +83,53 @@ export class RestoreComponent implements OnInit {
             recordsTemp,
             item => item.version === this.resource.version
           );
-          this.clusterOptions = map(recordsTemp, item => {
-            return assign(item, {
-              value: item.uuid,
-              key: item.uuid,
-              label: item.name,
-              isLeaf: true
-            });
-          });
+          const clusterArray = [];
+          this.parseCluster(recordsTemp, clusterArray);
+          this.clusterOptions = clusterArray;
           return;
         }
         this.getCluster(recordsTemp, startPage);
       });
   }
 
+  private parseCluster(recordsTemp: any[], clusterArray: any[]) {
+    each(recordsTemp, item => {
+      // 副本集的日志副本不能恢复到非副本集的单实例去,原位置也不行
+      if (
+        this.isCopySetLog &&
+        item.uuid === this.resource.uuid &&
+        item.extendInfo?.singleType !==
+          DataMap.mongoDBSingleInstanceType.copySet.value
+      ) {
+        this.restoreToNewLocationOnly = true;
+        this.formGroup.get('restoreTo').setValue(RestoreV2LocationType.NEW);
+      }
+      if (
+        (this.isCopySetLog &&
+          item.extendInfo?.singleType ===
+            DataMap.mongoDBSingleInstanceType.copySet.value) ||
+        !this.isCopySetLog
+      ) {
+        clusterArray.push(
+          assign(item, {
+            value: item.uuid,
+            key: item.uuid,
+            label: item.name,
+            isLeaf: true
+          })
+        );
+      }
+    });
+  }
+
   initForm() {
     this.resource = JSON.parse(this.rowCopy?.resource_properties || '{}');
+    this.isCopySetLog =
+      this.resource.sub_type ===
+        DataMap.Resource_Type.MongodbSingleInstance.value &&
+      this.resource.extendInfo?.singleType ===
+        DataMap.mongoDBSingleInstanceType.copySet.value &&
+      this.rowCopy.source_copy_type === DataMap.CopyData_Backup_Type.log.value;
     this.restoreToNewLocationOnly =
       includes(
         [DataMap.CopyData_generatedType.replicate.value],
@@ -147,6 +179,9 @@ export class RestoreComponent implements OnInit {
         start_instance_user: this.formGroup.value.startInstanceUser || ''
       }
     };
+    if (this.rowCopy?.restoreTimeStamp) {
+      set(params, 'extendInfo.restoreTimestamp', this.rowCopy.restoreTimeStamp);
+    }
     return params;
   }
 

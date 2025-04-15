@@ -67,6 +67,11 @@ public class AgentUpdateRequest {
      */
     private long newPackageSize;
 
+    /**
+     * 安装命令
+     */
+    private String packageType;
+
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("AgentUpdateRequest{");
@@ -78,6 +83,7 @@ public class AgentUpdateRequest {
         sb.append(", newPackageSize='").append(newPackageSize).append('\'');
         sb.append(", canUseProxy=").append(canUseProxy);
         sb.append(", certSecretKey exist ? =").append(StringUtils.isNotBlank(certSecretKey)).append('\'');
+        sb.append(", packageType=").append(packageType);
         sb.append('}');
         return sb.toString();
     }

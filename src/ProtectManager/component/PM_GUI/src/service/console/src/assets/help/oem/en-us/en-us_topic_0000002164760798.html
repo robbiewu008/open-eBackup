@@ -1,0 +1,214 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Creating an Archive SLA for Replication Copies">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164760802.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164760798">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Creating an Archive SLA for Replication Copies</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164760798"></a><a name="EN-US_TOPIC_0000002164760798"></a>
+  <h1 class="topictitle1">Step 1: Creating an Archive SLA for Replication Copies</h1>
+  <div>
+   <p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_p121201013191420">If you need to archive a replication copy, create an archive SLA in the target cluster.</p>
+   <div class="section" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_section15371826121012">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_p52691739154914">The archive storage has been connected to the <span id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_text418110267111">product</span> cluster where the replication copy resides. For details, see <a href="en-us_topic_0000002164601018.html#EN-US_TOPIC_0000002164601018">Step 1: Adding Archive Storage</a>.</p>
+   </div>
+   <div class="section" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_section32344304103">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_ol112221128161219">
+     <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li149381918143112"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002199964685_uicontrol8111821122820"><b>Protection &gt; Protection Policies &gt; SLAs</b></span>.</span></li>
+     <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li19913158161519"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_uicontrol1321914175213"><b>Create</b></span>.</span></li>
+     <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li632243103212"><span>Enter an SLA name.</span></li>
+     <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li6674114017375"><span>Select an application type for the SLA to be created.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_ol71011061385">
+       <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li16667553151916">Click the <span class="uicontrol" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_uicontrol133282219211"><b>Applications</b></span> icon.</li>
+       <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li874192611325">Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_uicontrol111981759171912"><b>Specific to application &gt; Copies &gt; Replication Copy</b></span>.</li>
+       <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li158271347172012">Click <span class="uicontrol" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_uicontrol1745371881113"><b>OK</b></span>.</li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li148724933815"><span>Configure the archive policy.</span><p></p>
+      <ol type="a" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_ol187761825123814">
+       <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li35291622193815">Click the <span class="uicontrol" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_uicontrol426818339216"><b>Archive Policy</b></span> icon.</li>
+       <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li1244710220390">Set parameters of the archive policy.<p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p0630115485415"><a name="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li1244710220390"></a><a name="en-us_topic_0000002200147013_en-us_topic_0000001140003755_li1244710220390"></a>Click <span class="uicontrol" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_uicontrol10934231171917"><b>Add</b></span> on the right of the page to create an archive policy. A maximum of four archive policies can be created, and data can be archived to a maximum of four archive storage devices.</p>
+        <div class="p" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_p16913201623311">
+         <a href="#EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_table461492220220">Table 1</a> describes the related parameters. 
+         <div class="tablenoborder">
+          <a name="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_table461492220220"></a><a name="en-us_topic_0000002200147013_en-us_topic_0000001140003755_table461492220220"></a>
+          <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_table461492220220" frame="border" border="1" rules="all">
+           <caption>
+            <b>Table 1 </b>Archive parameters
+           </caption>
+           <colgroup>
+            <col style="width:30.620000000000005%">
+            <col style="width:69.38%">
+           </colgroup>
+           <thead align="left">
+            <tr id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_row11614722142210">
+             <th align="left" class="cellrowborder" valign="top" width="30.620000000000005%" id="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_p761472217223">Parameter</p></th>
+             <th align="left" class="cellrowborder" valign="top" width="69.38%" id="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_p106141622152216">Description</p></th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_row1961432220228">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_p36142022182215"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b1476595111916">Name</strong></p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p1269417381911">The system has set a default name for the archive policy. You can also customize a name for the archive policy.</p></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_row131066587500">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p76251913181910"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b124019568915">Archive Storage Type</strong></p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p3978173931914">Options are <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b41295219271">Object Storage</strong> or <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b20121052152710">Tape Library</strong>.</p></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_row1161413229221">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p0398122171912"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b9723759398">Archive Storage</strong></p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 ">
+              <ul id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_ul16248205204410">
+               <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_li078744584316">If <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b8815104222620">Archive Storage Type</strong> is set to <span class="parmvalue" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_parmvalue18114194311511"><b>Object Storage</b></span>, select added object storage, or click <span class="uicontrol" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_uicontrol1971818559393"><b>Add</b></span> to add one.</li>
+               <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_li113522047134319">If <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b260579152118">Archive Storage Type</strong> is set to <span class="uicontrol" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_uicontrol17606792212"><b>Tape Library</b></span>, select a node.</li>
+              </ul></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_row162541717125619">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p584879192016"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b10186193141015">Media Set</strong></p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p361910402251">If <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b1143191282119">Archive Storage Type</strong> is set to <span class="uicontrol" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_uicontrol444612202118"><b>Tape Library</b></span>, select a media set. You can also click <span class="uicontrol" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_uicontrol0231114132117"><b>Add</b></span> to create a media set.</p></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_row156144229228">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p131701720202010"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b15282105181013">Archive Time</strong></p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 ">
+              <div class="p" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_p1061419221227">
+               Set the archive time. Options are as follows:
+               <ul id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_ul20614112292215">
+                <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li961432262213"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_b1854910215282">Periodically</strong>
+                 <ul id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_ul661462213226">
+                  <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li384887142516"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_b147711268187">Interval</strong>: Data is archived every <em id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_i97742610182">XX</em> minutes, hours, days, or weeks.</li>
+                  <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li961410225225"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_b4820175716220">First Run At</strong>: time when the first archive job is executed.<p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_p3220183916251">If the start time is earlier than the current device time, the archive job is executed immediately after a protection plan is created.</p></li>
+                 </ul></li>
+                <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li2614152216227"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_b111494816289">Immediately after successful replication</strong><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_p106141722132214">The archive job is executed immediately after a replication job is executed.</p></li>
+                <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li6614152217224"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_b189511311192820">Specified time after copy generation</strong><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p17973133185018"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_b179125416252">Time</strong>: An archive job is executed <em id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_i69138415256">XX</em> days after a copy is generated. The value ranges from 1 to 365 days.</p></li>
+               </ul>
+              </div></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_row18831182494213">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p12800333182014"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b111601939165710">Archive &amp; Retention Rules</strong></p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 ">
+              <div class="p" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p1331522611175">
+               Select the replication copy that you need to archive and set the retention period for archive copies.
+               <div class="note" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_note948392917176">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <ul id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_ul6217428463">
+                  <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_li2851103119619">If <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b9844658975">Archive Storage Type</strong> is set to <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b128191958103811">Tape Library</strong>, only archive rules can be configured. The retention rule is subject to the retention policy of the tape.</li>
+                  <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_li32171828360">If multiple options are selected, copies on any date specified by these options are archived, and the obtained archive copies are retained for the longest period specified in these options.</li>
+                 </ul>
+                </div>
+               </div>
+               <ul id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001091370109_ul6461175912421">
+                <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_li1815184993013"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_b792610019270">Archive specified copies</strong>: An archive policy can be specified and the copy retention period can be set. Archive policies are described as follows:
+                 <ul id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_ul1193014332306">
+                  <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_li393063317305"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_b761716439277">Only the latest copy</strong><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p893019338306">In each archive job, only the copy generated by the last replication job is archived.</p></li>
+                  <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_li10930203320309"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_b106331518182810">All unarchived copies</strong><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p8930123320308">All copies that have not been archived are archived each time.</p></li>
+                 </ul></li>
+                <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_li169914211296"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_b36561640122815">Archive on the specified date</strong>: Specify a date and set the copy retention period. You can select multiple options of the following:
+                 <ul id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_ul15411165794010">
+                  <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_li241110576407">Select the replication copies generated in month <em id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_i1839414173013">x</em> of each year for archiving. The archive copies are retained for <em id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_i1339111423010">x</em> years (the retention period can be 1 to 70 years).</li>
+                  <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_li156079239417">Select the first or last replication copy of each month for archiving. The archive copies are retained for <em id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_i9491022141419">x</em> months (the retention period can be 1 to 840 months).</li>
+                  <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_li7824743184118">Select the replication copies generated on a specified day of each week for archiving. The archive copies are retained for <em id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_i849112233153">x</em> weeks (the retention period can be 1 to 3650 weeks).
+                   <div class="note" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_note250102619369">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_p19502026133610">If <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b12562195819124">Archive Storage Type</strong> is set to <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b951016544813">Tape Library</strong>, the retention period of archive copies cannot be specified, but is subject to the retention policy setting of the corresponding media set.</p>
+                    </div>
+                   </div></li>
+                 </ul></li>
+               </ul>
+              </div></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_row127091115184014">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 ">
+              <div class="p" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p10306125164014">
+               <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b1466519130620">Drivers</strong>
+               <div class="note" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_note754320443218">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_en-us_topic_0000002164820434_en-us_topic_0000001839143213_p8320153562113">This parameter is available only in 1.6.0 and later versions.</p>
+                </div>
+               </div>
+              </div></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 ">
+              <div class="p" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p330617259402">
+               This parameter (value range: <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b4770966376">1</strong> to <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b1657835153715">32</strong>) is displayed only when you select <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b1844434134817">Tape Library</strong> for <strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b183012591975">Archive Storage Type</strong>.
+               <div class="note" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_note765316318178">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_p06531331181715">The larger the number of drives, the more the tape library drives occupied by archive jobs or jobs that use archive copies for restoration, and the better the performance.</p>
+                </div>
+               </div>
+              </div></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_row6615172214228">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p832884816201"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b1766782151012">Rate Limiting Policy</strong></p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p45761953142812">Average maximum amount of data that can be transmitted per second in an archive job. If a tape library serves as the archive storage, no rate limiting policy can be configured.</p> <p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p208941559135816">Select the created rate limiting policy. For details about how to create a rate limiting policy, see <a href="en-us_topic_0000002164760774.html#EN-US_TOPIC_0000002164760774">Step 5: (Optional) Creating a Rate Limiting Policy</a>.</p></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_row868013124114">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p10332184842419"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b1746093015109">Network Acceleration</strong></p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p86809384114">After this function is enabled, Bottleneck Bandwidth and Round-trip propagation time (BBR) network acceleration can be used. You are advised to enable this function when the network latency is greater than or equal to 20 ms. If a tape library serves as the archive storage, network acceleration cannot be configured.</p></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_row799724420116">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p5770111102519"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b104341634141011">Job Failure Alarm</strong></p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p1795191617298">After this function is enabled, an alarm is automatically sent if a job fails and is automatically cleared after successful execution.</p></td>
+            </tr>
+            <tr id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_row66151022122214">
+             <td class="cellrowborder" valign="top" width="30.620000000000005%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p1171411212253"><strong id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_b16462738131017">Automatic Retry</strong></p></td>
+             <td class="cellrowborder" valign="top" width="69.38%" headers="mcps1.3.3.2.5.2.1.2.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p20534926102917">After this function is enabled, the system automatically retries if a periodic archive job fails.</p>
+              <div class="p" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_p81581024103019">
+               The number of retries ranges from 1 to 3, and the waiting time ranges from 1 to 30 minutes. For example, if the number of retries is set to 3 and the wait time is set to 5 minutes, the system retries for a total of three times at an interval of 5 minutes.
+               <div class="note" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_en-us_topic_0000001091370109_note8686631815">
+                <span class="notetitle"> NOTE: </span>
+                <div class="notebody">
+                 <p id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000002164660726_en-us_topic_0000001091370109_p14686173218">During automatic retry, the system creates an archive job.</p>
+                </div>
+               </div>
+              </div></td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div></li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_en-us_topic_0000001140003755_li649983114125"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002164760798__en-us_topic_0000002200147013_uicontrol1844250153117"><b>OK</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002164760802.html">Archiving GaussDB T Replication Copies</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

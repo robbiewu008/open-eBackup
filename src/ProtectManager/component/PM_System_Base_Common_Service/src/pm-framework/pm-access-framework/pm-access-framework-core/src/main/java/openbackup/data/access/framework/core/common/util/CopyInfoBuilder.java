@@ -12,18 +12,24 @@
 */
 package openbackup.data.access.framework.core.common.util;
 
+import com.huawei.oceanprotect.sla.sdk.enums.PolicyAction;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.constants.CopyInfoConstants;
+import openbackup.data.access.framework.core.common.enums.BackupExecuteTypeEnum;
+import openbackup.data.protection.access.provider.sdk.backup.BackupTypeConstants;
 import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
 import openbackup.data.protection.access.provider.sdk.enums.CopyFeatureEnum;
 import openbackup.data.protection.access.provider.sdk.resource.Resource;
 import openbackup.system.base.common.enums.RetentionTypeEnum;
 import openbackup.system.base.common.enums.TimeUnitEnum;
+import openbackup.system.base.common.enums.WormValidityTypeEnum;
+import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.protection.model.PolicyBo;
 import openbackup.system.base.sdk.protection.model.RetentionBo;
 import openbackup.system.base.sdk.protection.model.SlaBo;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,6 +37,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 副本信息构造器
@@ -70,6 +77,38 @@ public class CopyInfoBuilder {
         copy.setDurationUnit(retention.getDurationUnit());
         copy.setExpirationTime(computeExpirationTime(timeStamp, TimeUnitEnum.getByUnit(retention.getDurationUnit()),
             retention.getRetentionDuration()));
+    }
+
+    /**
+     * build worm Retention Info
+     *
+     * @param copy 副本
+     * @param policyBo 策略数据
+     * @param timeStamp time stamp
+     */
+    public static void buildWormRetentionInfo(CopyInfoBo copy, PolicyBo policyBo, long timeStamp) {
+            Integer wormValidityType = policyBo.getWormValidityType();
+            if (!VerifyUtil.isEmpty(wormValidityType)) {
+                copy.setWormValidityType(wormValidityType);
+            }
+            if (wormValidityType == null || WormValidityTypeEnum.WORM_NOT_OPEN.getType().equals(wormValidityType)) {
+                return;
+            }
+            RetentionBo retention = policyBo.getRetention();
+            if (WormValidityTypeEnum.CUSTOM_RETENTION_TIME.getType().equals(wormValidityType)) {
+                copy.setWormRetentionDuration(retention.getWormRetentionDuration());
+                copy.setWormDurationUnit(retention.getWormDurationUnit());
+            } else {
+                copy.setWormDurationUnit(retention.getDurationUnit());
+                if (!VerifyUtil.isEmpty(retention.getRetentionDuration())) {
+                    copy.setWormRetentionDuration(retention.getRetentionDuration());
+                }
+            }
+        if (!VerifyUtil.isEmpty(copy.getWormDurationUnit())) {
+            copy.setWormExpirationTime(
+                computeExpirationTime(timeStamp, TimeUnitEnum.getByUnit(copy.getWormDurationUnit()),
+                    copy.getWormRetentionDuration()));
+        }
     }
 
     /**
@@ -127,6 +166,17 @@ public class CopyInfoBuilder {
      */
     public CopyInfoBuilder setLocation(String location) {
         copy.setLocation(location);
+        return this;
+    }
+
+    /**
+     * 设置副本存储单元状态
+     *
+     * @param status 状态
+     * @return CopyInfoBuilder
+     */
+    public CopyInfoBuilder setStorageUnitStatus(Integer status) {
+        copy.setStorageUnitStatus(status);
         return this;
     }
 
@@ -284,6 +334,94 @@ public class CopyInfoBuilder {
             // 按数量保留副本，保留时间与永久保留一致
             copy.setRetentionType(RetentionTypeEnum.QUANTITY.getType());
         }
+        return this;
+    }
+
+
+    /**
+     * 设置副本保留信息
+     *
+     * @param sla sla
+     * @param policyBo sla policy
+     * @param timeStamp 副本生成时间
+     * @param context 任务redis上下文信息
+     * @param abBackupType 备份类型
+     * @return CopyInfoBuilder
+     * */
+    public CopyInfoBuilder setRetentionInfo(Map<String, String> context, int abBackupType, SlaBo sla, PolicyBo policyBo,
+        long timeStamp) {
+        copy.setSlaName(sla.getName());
+        PolicyBo targetBo = getPolicyBoWhetherManualToFull(context, abBackupType, sla, policyBo);
+        RetentionTypeEnum retentionType = getPolicyRetentionType(targetBo).orElse(null);
+        if (targetBo == null || RetentionTypeEnum.PERMANENT.equals(retentionType)) {
+            // 执行的备份类型在SLA中未开启或者保留策略为永久保留
+            copy.setRetentionType(RetentionTypeEnum.PERMANENT.getType());
+        } else if (RetentionTypeEnum.TEMPORARY.equals(retentionType)) {
+            // 执行的备份类型在SLA中开启，根据SLA计算副本有效期
+            buildRetentionInfo(copy, targetBo, timeStamp);
+        } else {
+            // 按数量保留副本，保留时间与永久保留一致
+            copy.setRetentionType(RetentionTypeEnum.QUANTITY.getType());
+        }
+        return this;
+    }
+
+    private Optional<RetentionTypeEnum> getPolicyRetentionType(PolicyBo policyBo) {
+        if (policyBo == null || policyBo.getRetention() == null) {
+            return Optional.empty();
+        }
+        return Optional.of(RetentionTypeEnum.getByType(policyBo.getRetention().getRetentionType()));
+    }
+
+    private boolean checkManualTaskConvertToFull(Map<String, String> context, int abBackupType, PolicyBo policyBo) {
+        if (BackupTypeConstants.FULL.getAbBackupType() != abBackupType || PolicyAction.FULL.getAction()
+            .equals(policyBo.getAction())) {
+            return false;
+        }
+        String executeType = context.get(ContextConstants.EXECUTE_TYPE);
+        return !VerifyUtil.isEmpty(executeType) && BackupExecuteTypeEnum.MANUAL.getType().equals(executeType);
+    }
+
+    /**
+     * 手动备份时策略为框架生成。当选择增量、差异备份且没有对应sla策略时,副本保留时间为永久保留（跟随全量过期）。
+     * 此时如果备份任务转为全量备份，需要更换为全量备份的策略。
+     *
+     * @param context 任务上下文
+     * @param abBackupType ab备份类型
+     * @param sla sla
+     * @param policyBo 策略
+     * @return 副本使用的策略
+     */
+    private PolicyBo getPolicyBoWhetherManualToFull(Map<String, String> context, int abBackupType, SlaBo sla,
+        PolicyBo policyBo) {
+        if (VerifyUtil.isEmpty(policyBo) || VerifyUtil.isEmpty(policyBo.getRetention())) {
+            return policyBo;
+        }
+        boolean isManualToFull = checkManualTaskConvertToFull(context, abBackupType, policyBo);
+        if (!isManualToFull) {
+            return policyBo;
+        }
+        if (!RetentionTypeEnum.PERMANENT.getType().equals(policyBo.getRetention().getRetentionType())) {
+            return policyBo;
+        }
+        Optional<PolicyBo> fullPolicy = sla.getPolicyList()
+            .stream()
+            .filter(policy -> PolicyAction.FULL.getAction().equals(policy.getAction()))
+            .findFirst();
+        return fullPolicy.orElse(policyBo);
+    }
+
+    /**
+     * 设置副本WORM保留信息
+     *
+     * @param sla sla
+     * @param policyBo sla policy
+     * @param timeStamp 副本生成时间
+     * @return CopyInfoBuilder
+     * */
+    public CopyInfoBuilder setWormRetentionInfo(SlaBo sla, PolicyBo policyBo, long timeStamp) {
+        // 执行的备份类型在SLA中开启，根据SLA计算副本有效期
+        buildWormRetentionInfo(copy, policyBo, timeStamp);
         return this;
     }
 

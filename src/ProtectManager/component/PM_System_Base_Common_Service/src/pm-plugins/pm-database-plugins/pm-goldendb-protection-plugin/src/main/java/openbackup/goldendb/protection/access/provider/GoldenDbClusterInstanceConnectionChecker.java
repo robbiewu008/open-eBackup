@@ -12,6 +12,9 @@
 */
 package openbackup.goldendb.protection.access.provider;
 
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.access.framework.resource.service.provider.UnifiedResourceConnectionChecker;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
@@ -30,10 +33,6 @@ import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.BeanTools;
 
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -46,6 +45,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -84,8 +84,8 @@ public class GoldenDbClusterInstanceConnectionChecker extends UnifiedResourceCon
      */
     @Override
     public boolean applicable(ProtectedResource object) {
-        return Objects.nonNull(object)
-            && ResourceSubTypeEnum.GOLDENDB_CLUSETER_INSTANCE.getType().equals(object.getSubType());
+        return Objects.nonNull(object) && ResourceSubTypeEnum.GOLDENDB_CLUSETER_INSTANCE.getType()
+            .equals(object.getSubType());
     }
 
     /**
@@ -95,23 +95,23 @@ public class GoldenDbClusterInstanceConnectionChecker extends UnifiedResourceCon
      * @return key为集群节点，value为集群节点对应的主机列表
      */
     @Override
-    public Map<ProtectedResource, List<ProtectedEnvironment>>
-        collectConnectableResources(ProtectedResource environment) {
+    public Map<ProtectedResource, List<ProtectedEnvironment>> collectConnectableResources(
+        ProtectedResource environment) {
         log.info("GoldenDB cluster instance ConnectionChecker,collectConnectableResources,environment.uuid: {}",
             environment.getUuid());
         Authentication auth = environment.getAuth();
         Map<ProtectedResource, List<ProtectedEnvironment>> nodeHostMap = new LinkedHashMap<>();
-        List<MysqlNode> computeNodes =
-            Optional.ofNullable(goldenDbService.getComputeNode(BeanTools.copy(environment, ProtectedEnvironment::new)))
-                .orElseGet(Collections::emptyList);
-        List<Gtm> gtms =
-            Optional.ofNullable(goldenDbService.getGtmNode(BeanTools.copy(environment, ProtectedEnvironment::new)))
-                .orElseGet(Collections::emptyList);
+        List<MysqlNode> computeNodes = Optional.ofNullable(
+                goldenDbService.getComputeNode(BeanTools.copy(environment, ProtectedEnvironment::new)))
+            .orElseGet(Collections::emptyList);
+        List<Gtm> gtms = Optional.ofNullable(
+                goldenDbService.getGtmNode(BeanTools.copy(environment, ProtectedEnvironment::new)))
+            .orElseGet(Collections::emptyList);
         collectComputeResource(auth, nodeHostMap, computeNodes);
         collectGtmResource(auth, nodeHostMap, gtms);
         ProtectedEnvironment cluster = goldenDbService.getEnvironmentById(environment.getParentUuid());
-        Map<ProtectedResource, List<ProtectedEnvironment>> clusterMap =
-            goldenDbClusterConnectionChecker.collectConnectableResources(cluster);
+        Map<ProtectedResource, List<ProtectedEnvironment>> clusterMap
+            = goldenDbClusterConnectionChecker.collectConnectableResources(cluster);
         nodeHostMap.putAll(clusterMap);
         return nodeHostMap;
     }
@@ -177,13 +177,27 @@ public class GoldenDbClusterInstanceConnectionChecker extends UnifiedResourceCon
     @Override
     public List<ActionResult> collectActionResults(List<CheckReport<Object>> checkReport, Map<String, Object> context) {
         log.info("To deal with goldenDB collectActionResults");
-
         // 父类获得的结果
         List<ActionResult> results = super.collectActionResults(checkReport, context);
-
+        AtomicBoolean managerFlag = new AtomicBoolean(false);
+        for (ActionResult result : results) {
+            try {
+                Map agentPluginMsg = JsonUtil.read(result.getMessage(), Map.class);
+                String nodeType = String.valueOf(agentPluginMsg.get(GoldenDbConstant.NODE_TYPE));
+                if (nodeType.equals("managerNode") && result.getCode() == 0) {
+                    managerFlag.set(true);
+                    log.info("check manager node success {}", result.getMessage());
+                }
+            } catch (Exception e) {
+                managerFlag.set(false);
+                log.error("can not get result, {}", e);
+                break;
+            }
+        }
         // 插件指定要处理的异常
-        List<ActionResult> mismatchResult =
-            results.stream().filter(it -> it.getCode() == GoldenDbConstant.NODE_TYPE_MISMATCH).map(it -> {
+        List<ActionResult> mismatchResult = results.stream()
+            .filter(it -> it.getCode() == GoldenDbConstant.NODE_TYPE_MISMATCH)
+            .map(it -> {
                 ActionResult actionResult = new ActionResult();
                 actionResult.setCode(it.getCode());
                 actionResult.setMessage(it.getMessage());
@@ -191,10 +205,13 @@ public class GoldenDbClusterInstanceConnectionChecker extends UnifiedResourceCon
                 log.info("get plugin error information {}", it.getMessage());
                 actionResult.setDetailParams(getParameters(it.getMessage()));
                 return actionResult;
-            }).collect(Collectors.toList());
+            })
+            .collect(Collectors.toList());
         log.info("goldenDB node type mismatch size is {}", mismatchResult.size());
-        List<ActionResult> missComponentResult =
-            results.stream().filter(it -> it.getCode() == GoldenDbConstant.MISS_COMPONENT).map(it -> {
+
+        List<ActionResult> missComponentResult = results.stream()
+            .filter(it -> it.getCode() == GoldenDbConstant.MISS_COMPONENT)
+            .map(it -> {
                 ActionResult actionResult = new ActionResult();
                 actionResult.setCode(it.getCode());
                 actionResult.setMessage(it.getMessage());
@@ -204,16 +221,26 @@ public class GoldenDbClusterInstanceConnectionChecker extends UnifiedResourceCon
                 List<String> pluginParameter = (List<String>) hash.get(GoldenDbConstant.PARAMETERS);
                 actionResult.setDetailParams(pluginParameter);
                 return actionResult;
-            }).collect(Collectors.toList());
+            })
+            .collect(Collectors.toList());
         log.info("goldenDB node type misComponent size is {}", missComponentResult.size());
 
+        return getCommonResults(results, mismatchResult, managerFlag, missComponentResult);
+    }
+
+    private static List<ActionResult> getCommonResults(List<ActionResult> results, List<ActionResult> mismatchResult,
+        AtomicBoolean managerFlag, List<ActionResult> missComponentResult) {
         // 插件没有指定要处理的异常
         List<ActionResult> commonResults = results.stream()
             .filter(it -> it.getCode() != GoldenDbConstant.NODE_TYPE_MISMATCH
                 && it.getCode() != GoldenDbConstant.MISS_COMPONENT)
             .collect(Collectors.toList());
         commonResults.addAll(mismatchResult);
-        commonResults.addAll(missComponentResult);
+        if (!managerFlag.get()) {
+            log.error("no available goldenDB manager node.");
+            commonResults.addAll(missComponentResult);
+        }
+        log.info("goldenDB commonResults size is {}", commonResults.size());
         return commonResults;
     }
 
@@ -226,8 +253,8 @@ public class GoldenDbClusterInstanceConnectionChecker extends UnifiedResourceCon
         String user = split[LegoNumberConstant.ZERO];
         String nodeType = split[LegoNumberConstant.ONE];
         String agentUuid = split[LegoNumberConstant.TWO];
-        String dataType =
-            nodeType.substring(0, nodeType.length() - GoldenDbConstant.SUB_NODE_LENGTH).toUpperCase(Locale.ENGLISH);
+        String dataType = nodeType.substring(0, nodeType.length() - GoldenDbConstant.SUB_NODE_LENGTH)
+            .toUpperCase(Locale.ENGLISH);
         String endpoint = goldenDbService.getResourceById(agentUuid).getEndpoint();
         log.info("End of obtaining parameters.");
         return Arrays.asList(dataType, endpoint, user, nodeType);

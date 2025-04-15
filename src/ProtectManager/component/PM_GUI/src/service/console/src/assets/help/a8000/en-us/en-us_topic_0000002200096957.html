@@ -1,0 +1,65 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 2: Creating and Configuring a Mount Directory">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200011389.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200096957">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 2: Creating and Configuring a Mount Directory</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200096957"></a><a name="EN-US_TOPIC_0000002200096957"></a>
+
+<h1 class="topictitle1">Step 2: Creating and Configuring a Mount Directory</h1>
+<div><p>During backup and restoration, the <span>OceanProtect</span> needs to mount the file system for storing backup data to the corresponding directory. This section describes how to create and configure the mount directory. The file system for storing backup data is automatically mounted to this directory.</p>
+<div class="section"><h4 class="sectiontitle">Creating a Mount Directory</h4><p>Perform the following operations on all nodes in the Elasticsearch cluster:</p>
+<ol><li><span>Use PuTTY to log in to a node.</span></li><li><span>Run the <strong>su - root</strong> command on the node to switch to user <strong>root</strong>.</span></li><li id="EN-US_TOPIC_0000002200096957__li6805181319216"><a name="EN-US_TOPIC_0000002200096957__li6805181319216"></a><a name="li6805181319216"></a><span>Run the following command to create the <strong>/mnt/databackup/ElasticSearchBackupSet</strong> directory:</span><p><pre class="screen">mkdir -p /mnt/databackup/ElasticSearchBackupSet</pre>
+</p></li><li><span>Run the following command to change the owning user and user group of the directory created in <a href="#EN-US_TOPIC_0000002200096957__li6805181319216">3</a> to those of the Elasticsearch installation directory. For details about how to obtain the owning user and user group of the Elasticsearch installation directory, see <a href="en-us_topic_0000002164770318.html">Preparing for Backup</a>. In the command, <em>username</em> indicates the username, and <em>usergroup</em> indicates the owning user group.</span><p><pre class="screen">chown -R <em>username</em>:<em>usergroup</em> /mnt/databackup/ElasticSearchBackupSet</pre>
+</p></li><li><span>Run the following command to check whether the owning user and user group of the directory are changed successfully:</span><p><pre class="screen">ll /mnt/databackup |grep -w ElasticSearchBackupSet</pre>
+<div class="p">Assume that the user and user group names are both <span class="parmvalue"><b>elasticsearch</b></span>. If the modification is successful, information similar to the following will be displayed:<pre class="screen">dr-xr-xr-x 2 elasticsearch elasticsearch 4096 Dec 19	11:58 ElasticSearchBackupSet/</pre>
+</div>
+</p></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Configuring the Mount Directory</h4><p>This section uses FusionInsight Manager 8.2.0 as an example to describe related operations. The operations vary depending on the big data platform. For details, see the product documentation of the corresponding big data platform.</p>
+<ol><li><span>Log in to FusionInsight Manager using a browser.</span></li><li><span>Choose <span class="uicontrol"><b>Cluster &gt; Elasticsearch</b></span>.</span></li><li><span>Choose <span class="uicontrol"><b>Configurations &gt; All Configurations</b></span>.</span></li><li><span>Select <span class="uicontrol"><b>Self-Definition</b></span> for Elasticsearch service and Elasticsearch roles in sequence, and set the names and values to the self-defined configuration.</span><p><p>Name: <strong>path.repo</strong>. Value: <strong>/srv/BigData/elasticsearch/nas,/mnt/databackup/ElasticSearchBackupSet</strong>.</p>
+<div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p><strong>path.repo</strong> indicates the snapshot repository of the Elasticsearch cluster. <strong>/srv/BigData/elasticsearch/nas</strong> is the default snapshot repository, and <strong>/mnt/databackup/ElasticSearchBackupSet</strong> is the snapshot repository added in this configuration.</p>
+</div></div>
+</p></li><li><span>Add the following content to the <strong>elasticsearch.yml</strong> file in the Elasticsearch installation directory of each node in the Elasticsearch cluster.</span><p><pre class="screen">path.repo: /mnt/databackup/ElasticSearchBackupSet</pre>
+</p></li><li><span>After the configuration is complete, ensure that no service is running on the production end and restart the Elasticsearch service. The configuration takes effect after the restart is successful.</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200011389.html">Backing Up an Elasticsearch Cluster</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

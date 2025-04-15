@@ -23,13 +23,12 @@ import java.util.stream.Collectors;
 /**
  * DSwareApiImpl
  *
+ * @since 2024-08-27
  */
 public class DSwareApiImpl implements DSwareApi {
     private static Method createVolumeMethod;
 
     private static Method deleteVolumeMethod;
-
-    private static Method deleteVolumeWithTypeMethod;
 
     private static Method queryVolumeMethod;
 
@@ -100,8 +99,6 @@ public class DSwareApiImpl implements DSwareApi {
             String.class, int.class, int.class, int.class);
         deleteVolumeMethod = dswareApiImplClass.getMethod(ToolsContances.CMD_NAME_DELETE_VOLUME, String[].class,
             String.class);
-        deleteVolumeWithTypeMethod = dswareApiImplClass.getMethod(ToolsContances.CMD_NAME_DELETE_VOLUME, String[].class,
-            String.class, int.class);
         queryVolumeMethod = dswareApiImplClass.getMethod(ToolsContances.CMD_NAME_QUERY_VOLUME, String[].class,
             String.class);
         queryAllVolumeMethod = dswareApiImplClass.getMethod(ToolsContances.CMD_NAME_QUERY_ALL_VOLUME, String[].class,
@@ -157,11 +154,6 @@ public class DSwareApiImpl implements DSwareApi {
     @Override
     public void deleteVolume(String[] dsaIps, String volName) {
         invoke(deleteVolumeMethod, apiImplObj, dsaIps, volName);
-    }
-
-    @Override
-    public void deleteVolume(String[] dsaIps, String volName, int deleteType) {
-        invoke(deleteVolumeWithTypeMethod, apiImplObj, dsaIps, volName, deleteType);
     }
 
     @Override

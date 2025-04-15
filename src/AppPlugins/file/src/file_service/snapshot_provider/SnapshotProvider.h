@@ -28,7 +28,8 @@ public:
     * @param isCrossVolume 是否跨卷打快照
     * @return SnapshotResult  快照创建结果.
     */
-    virtual SnapshotResult CreateSnapshot(const std::string& filePath, bool isCrossVolume) = 0;
+    virtual SnapshotResult CreateSnapshot(const std::string& filePath, bool isCrossVolume,
+        const std::string& snapshotPercent) = 0;
 
     /**
     * 根据指定文件查询对应的快照.

@@ -17,8 +17,6 @@
 #include "protect_engines/hcs/utils/HCSTokenMgr.h"
 #include "protect_engines/hcs/common/HcsMacros.h"
 #include "protect_engines/hcs/common/HcsConstants.h"
-#include "protect_engines/hcs/api/cinder/model/ActiveSnapConsistencyRequest.h"
-#include "protect_engines/hcs/api/cinder/model/ActiveSnapConsistencyResponse.h"
 #include "protect_engines/hcs/api/cinder/model/ShowSnapshotListRequest.h"
 #include "protect_engines/hcs/api/cinder/model/ShowSnapshotListResponse.h"
 #include "protect_engines/openstack/api/cinder/CinderClient.h"
@@ -35,9 +33,12 @@ public:
     std::string m_lunID;    // 快照 lunID
     std::string m_sn;       // 快照 sn
 
+    std::string m_snapName;    // 分布式快照名称
+
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_lunID, lun_id)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_sn, sn)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_snapName, snap_name)
     END_SERIAL_MEMEBER
 };
 
@@ -48,7 +49,6 @@ public:
     virtual ~HcsCinderClient() {};
 
     bool CheckParams(ModelBase& model) override;
-    std::shared_ptr<ActiveSnapConsistencyResponse> ActiveSnapConsistency(ActiveSnapConsistencyRequest &request);
     std::shared_ptr<GetSnapshotResponse> GetSnapshot(GetSnapshotRequest &request) override;
     std::shared_ptr<ShowSnapshotListResponse> ShowSnapshotList(ShowSnapshotListRequest &request);
 

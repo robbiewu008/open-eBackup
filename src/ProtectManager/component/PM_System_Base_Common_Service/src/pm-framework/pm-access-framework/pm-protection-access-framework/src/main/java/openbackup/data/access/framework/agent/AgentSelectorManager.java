@@ -12,6 +12,9 @@
 */
 package openbackup.data.access.framework.agent;
 
+import com.huawei.oceanprotect.system.base.user.service.UserService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.constant.CopyResourcePropertiesConstant;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.protection.common.constants.AgentKeyConstant;
@@ -26,9 +29,6 @@ import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.json.JSONObjectCovert;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
-import com.huawei.oceanprotect.system.base.user.service.UserService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -77,6 +77,7 @@ public class AgentSelectorManager implements SelectorManager {
      * @param parameters 扩展参数
      * @return 代理
      */
+    @Override
     public List<Endpoint> selectAgentByResource(
             ProtectedResource resource, String jobType, Map<String, String> parameters) {
         AgentSelectParam agentSelectParam =

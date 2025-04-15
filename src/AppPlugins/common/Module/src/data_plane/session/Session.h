@@ -59,21 +59,25 @@ public:
     bool IsConnected() const;
 
     void TurnDelayOff();
+    void ConfigureTcpKeepAlive();
 
     bool Connect(const boost::asio::ip::tcp::resolver::results_type& endpoints);
     bool Disconnect();
     bool Handshake();
     void SendMessage(const Protocol::Message& message);
     void SendAsyncMessage(const std::shared_ptr<Protocol::Message>& message,
-                          const std::function<void(const boost::system::error_code& error, std::size_t)>& finalHandler);
+                          const std::function<void(const boost::system::error_code& error, std::size_t,
+                          bool)>& finalHandler);
     boost::optional<Protocol::Message> ReceiveMessage();
     void ReceiveAsyncMessage(const std::function<void(std::shared_ptr<Protocol::Message>,
-                                                      Protocol::MessageType)>& finalHandler);
+                                                      std::shared_ptr<Protocol::MessageHeader>, bool)>& finalHandler);
 
     void StartDeadlineTimer(const boost::posix_time::seconds& seconds);
     void StopDeadlineTimer();
 
     bool HandleError(const boost::system::error_code& error, boost::string_view message);
+
+    uint16_t GetSequecenNumber();
 
 private:
     bool VerifyCertificate(bool preverified, boost::asio::ssl::verify_context& context);
@@ -103,6 +107,7 @@ private:
     mutable std::mutex m_readQueueMutex;
     std::queue<std::function<void()>> m_readQueue;
 
+    mutable std::recursive_mutex m_disconnectMutex;
     bool m_isServer;
     std::unique_ptr<boost::asio::ssl::stream<boost::asio::ip::tcp::socket>> m_sslSocket;
     std::unique_ptr<boost::asio::ip::tcp::socket> m_socket;
@@ -111,6 +116,7 @@ private:
     std::function<void(Session*)> m_onDisconnectCallback;
 
     bool m_connected;
+    uint16_t m_sequnceNumber = 0;
 };
 }
 

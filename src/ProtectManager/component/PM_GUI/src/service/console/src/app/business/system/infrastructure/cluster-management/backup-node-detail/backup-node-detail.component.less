@@ -13,6 +13,7 @@
 }
 
 .size-percent {
+  margin-top: 10px;
   color: #a4a7b0;
   font-size: 10px;
   text-align: right;
@@ -33,10 +34,8 @@
   margin-bottom: 40px;
   margin-top: 20px;
   .box {
+    display: flex;
     .lv-form-item {
-      display: inline-block;
-    }
-    .lv-form-label {
       margin-left: 30px;
     }
   }
@@ -96,12 +95,13 @@ h2 {
   flex-flow: wrap;
   .node-card {
     width: 40%;
-    border: solid 1px #b8becc;
+    border: solid 1px var(--live-angular-color-border-regular);
     margin-right: 20px;
     margin-bottom: 20px;
-    padding: 20px;
+    padding: 16px;
+    border-radius: 4px;
     .card-header {
-      border-bottom: 1px dashed #b8becc;
+      border-bottom: 1px dashed var(--live-angular-color-border-regular);
       padding-bottom: 10px;
       div {
         margin-top: 5px;

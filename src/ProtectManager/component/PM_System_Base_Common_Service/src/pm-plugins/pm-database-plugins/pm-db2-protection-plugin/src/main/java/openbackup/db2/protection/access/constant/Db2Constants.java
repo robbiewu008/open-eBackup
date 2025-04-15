@@ -40,7 +40,7 @@ public class Db2Constants {
     /**
      * powerHA集群允许最大节点规格数
      */
-    public static final int POWER_HA_NODE_MAX_COUNT = 2;
+    public static final int POWER_HA_NODE_MAX_COUNT = 3;
 
     /**
      * HADR集群允许最大节点规格数
@@ -71,4 +71,69 @@ public class Db2Constants {
      * 数据量大小的健值
      */
     public static final String DATA_SIZE_KEY = "dataSize";
+
+    /**
+     * 前端下发给PM的扩展字段，用于判断日志备份是否需要转全量
+     */
+    public static final String AUTO_FULL_BACKUP = "autoFullBackup";
+
+    /**
+     * PM下发给agent的扩展字段，用于判断日志备份是否需要转全量
+     */
+    public static final String IS_CHECK_BACKUP_JOB_TYPE = "isCheckBackupJobType";
+
+    /**
+     * END_TIME
+     */
+    public static final String END_TIME = "endTime";
+
+    /**
+     * BEGIN_TIME
+     */
+    public static final String BEGIN_TIME = "beginTime";
+
+    /**
+     * AGENT_ID
+     */
+    public static final String UUID = "uuid";
+
+    /**
+     * extendInfo
+     */
+    public static final String EXTENDINFO = "extendInfo";
+
+    /**
+     * clusterType
+     */
+    public static final String CLUSTERTYPE = "clusterType";
+
+    /**
+     * deleteLog
+     */
+    public static final String DELETELOG = "deleteLog";
+
+    /**
+     * false
+     */
+    public static final String FALSE = "false";
+
+    /**
+     * databaseName
+     */
+    public static final String DATABASENAME = "databaseName";
+
+    /**
+     * userName
+     */
+    public static final String USERNAME = "userName";
+
+    /**
+     * cachePath
+     */
+    public static final String CACHEPATH = "cachePath";
+
+    /**
+     * sinceTimeStamp
+     */
+    public static final String SINCETIMESTAMP = "sinceTimeStamp";
 }

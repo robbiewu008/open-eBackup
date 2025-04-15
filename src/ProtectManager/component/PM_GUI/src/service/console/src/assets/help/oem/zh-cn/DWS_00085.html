@@ -1,0 +1,114 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="恢复集群">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="DWS_00082.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="DWS_00085">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>恢复集群</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="DWS_00085"></a><a name="DWS_00085"></a>
+  <h1 class="topictitle1">恢复集群</h1>
+  <div>
+   <p>当需要对已备份的GaussDB(DWS)集群进行恢复时，可以参考本节恢复GaussDB(DWS)集群至原位置或新位置。</p>
+   <div class="section" id="DWS_00085__zh-cn_topic_0000001397321757_section651825162917">
+    <h4 class="sectiontitle">背景信息</h4>
+    <p id="DWS_00085__zh-cn_topic_0000001397321757_p6873141491714">支持使用备份副本、复制副本进行恢复。支持恢复至原位置（复制副本不支持恢复至原位置）或新位置。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="DWS_00085__zh-cn_topic_0000002199964685_uicontrol879104212548">“<span id="DWS_00085__zh-cn_topic_0000002199964685_text1079164214547">数据利用</span> &gt; <span id="DWS_00085__zh-cn_topic_0000002199964685_text1679164255414">副本数据</span> &gt; <span id="DWS_00085__zh-cn_topic_0000002199964685_text364514912581">大数据</span> &gt; <span id="DWS_00085__zh-cn_topic_0000002199964685_text1416113393018">GaussDB(DWS)</span>”</span>。</span></li>
+     <li id="DWS_00085__zh-cn_topic_0000001397321757_li888616341964"><span>您可以以GaussDB(DWS)资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p></p><p id="DWS_00085__zh-cn_topic_0000001397321757_p624620403810">在<span class="uicontrol" id="DWS_00085__uicontrol816218529113">“资源”</span>页签，根据资源名称查找到需要恢复的资源，并单击资源名称。</p> <p></p></li>
+     <li id="DWS_00085__zh-cn_topic_0000001397321757_li182120214713"><span>依次选择年、月、天找到副本。</span><p></p><p id="DWS_00085__zh-cn_topic_0000001397321757_p9918150182310">当时间上显示<span><img id="DWS_00085__zh-cn_topic_0000001397321757_image669318410309" src="zh-cn_image_0000002167398698.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>指定集群副本进行恢复。</span><p></p>
+      <ol type="a">
+       <li>单击要恢复的集群副本所在行的“更多 &gt; 恢复”。</li>
+       <li>恢复GaussDB(DWS)集群至原位置或新位置。
+        <div class="p" id="DWS_00085__zh-cn_topic_0000001397321757_p6368171033117">
+         相关参数说明如<a href="#DWS_00085__zh-cn_topic_0000001397321757_table13681910173115">表1</a>。 
+         <div class="tablenoborder">
+          <a name="DWS_00085__zh-cn_topic_0000001397321757_table13681910173115"></a><a name="zh-cn_topic_0000001397321757_table13681910173115"></a>
+          <table cellpadding="4" cellspacing="0" summary="" id="DWS_00085__zh-cn_topic_0000001397321757_table13681910173115" frame="border" border="1" rules="all">
+           <caption>
+            <b>表1 </b>目标位置说明
+           </caption>
+           <colgroup>
+            <col style="width:32.019999999999996%">
+            <col style="width:67.97999999999999%">
+           </colgroup>
+           <thead align="left">
+            <tr id="DWS_00085__zh-cn_topic_0000001397321757_row15368121073117">
+             <th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.1"><p id="DWS_00085__zh-cn_topic_0000001397321757_p183681310193120">参数</p></th>
+             <th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.2"><p id="DWS_00085__zh-cn_topic_0000001397321757_p16368121015315">说明</p></th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr id="DWS_00085__zh-cn_topic_0000001397321757_row103681710113115">
+             <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.1 "><p id="DWS_00085__zh-cn_topic_0000001397321757_p636851013114">恢复至</p></td>
+             <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.2 "><p id="DWS_00085__zh-cn_topic_0000001397321757_p113681710143113">选择恢复至<span class="uicontrol" id="DWS_00085__zh-cn_topic_0000001397321757_uicontrol2368161003111">“原位置”</span>或<span class="uicontrol" id="DWS_00085__zh-cn_topic_0000001397321757_uicontrol1336819106318">“新位置”</span>。</p></td>
+            </tr>
+            <tr id="DWS_00085__zh-cn_topic_0000001397321757_row113681810193113">
+             <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.1 "><p id="DWS_00085__zh-cn_topic_0000001397321757_p1036814104312">位置</p></td>
+             <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.2 "><p id="DWS_00085__zh-cn_topic_0000001397321757_p11368110193111">当选择恢复至<span class="uicontrol" id="DWS_00085__zh-cn_topic_0000001397321757_uicontrol13368710153111">“原位置”</span>时，显示原位置。</p></td>
+            </tr>
+            <tr id="DWS_00085__zh-cn_topic_0000001397321757_row236821003111">
+             <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.1 "><p id="DWS_00085__zh-cn_topic_0000001397321757_p12368610193113">目标集群</p></td>
+             <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.2 "><p id="DWS_00085__zh-cn_topic_0000001397321757_p1136881063111">当选择恢复至<span class="uicontrol" id="DWS_00085__zh-cn_topic_0000001397321757_uicontrol136861033116">“新位置”</span>时，选择需要恢复的目标集群。您需要确认已将目标集群的安装配置文件（mppdb-install-config.xml，如果安装配置文件不为该名称，请重命名为该名称）复制到目标集群每个节点的/opt/huawei/目录下，并确保数据库用户有可读权限，否则会恢复失败。</p></td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div></li>
+       <li>单击<span class="uicontrol">“确定”</span>，并根据界面提示完成确认。
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>请确认恢复目标位置正确，且恢复目标位置剩余空间应大于恢复副本缩减前大小。</p>
+         </div>
+        </div></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="DWS_00082.html">恢复GaussDB(DWS)</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

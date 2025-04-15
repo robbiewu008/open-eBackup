@@ -138,6 +138,12 @@ class MySQLErrorCode:
     # xtrabackup 不支持 INSTANT ADD/DROP COLUMN
     UNSUPPORTED_INSTANT_COLUMN = 1677876740
 
+    # 日志连续性检查
+    BINLOG_CHECK_FAILED = 1577213584
+
+    # 不建议使用单库备份
+    NOT_SUPPORT_DATABASE_BACKUP = 1677876741
+
 
 class MySQLCode(Enum):
     """

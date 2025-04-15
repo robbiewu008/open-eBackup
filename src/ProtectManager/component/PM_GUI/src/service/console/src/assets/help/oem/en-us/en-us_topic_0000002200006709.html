@@ -1,0 +1,130 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: (Optional) Creating a Fileset Template">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002199972213.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200006709">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: (Optional) Creating a Fileset Template</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200006709"></a><a name="EN-US_TOPIC_0000002200006709"></a>
+  <h1 class="topictitle1">Step 1: (Optional) Creating a Fileset Template</h1>
+  <div>
+   <p>If you want to protect files in the same path on multiple hosts and the rules for filtering the files to be protected are the same on the hosts, you can create a fileset template by referring to this section. You can use a template to create filesets for multiple hosts in batches, improving the configuration efficiency.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200006709__en-us_topic_0000002199964685_uicontrol1535113494115"><b><span id="EN-US_TOPIC_0000002200006709__en-us_topic_0000002199964685_text735434144116"><strong>Protection</strong></span> &gt; File Systems &gt; Filesets</b></span>.</span><p></p>
+      <div class="note" id="EN-US_TOPIC_0000002200006709__en-us_topic_0000002199964685_note12707194325517">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="EN-US_TOPIC_0000002200006709__en-us_topic_0000002199964685_p370854395513">For 1.5.0, choose <span class="uicontrol" id="EN-US_TOPIC_0000002200006709__en-us_topic_0000002199964685_uicontrol117931445568"><b><span id="EN-US_TOPIC_0000002200006709__en-us_topic_0000002199964685_text197938425615"><strong>Protection</strong></span> &gt; Bare Metal &gt; Filesets</b></span>.</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Templates</strong></span></b></span>.</span></li>
+     <li><span>Click <span class="uicontrol"><b><span><strong>Create</strong></span></b></span> to create a template.</span><p></p><p><a href="#EN-US_TOPIC_0000002200006709__en-us_topic_0000001172683312_table635115223177">Table 1</a> describes the related parameters.</p>
+      <div class="tablenoborder">
+       <a name="EN-US_TOPIC_0000002200006709__en-us_topic_0000001172683312_table635115223177"></a><a name="en-us_topic_0000001172683312_table635115223177"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200006709__en-us_topic_0000001172683312_table635115223177" frame="border" border="1" rules="all">
+        <caption>
+         <b>Table 1 </b>Fileset template parameters
+        </caption>
+        <colgroup>
+         <col style="width:16.99%">
+         <col style="width:26.740000000000002%">
+         <col style="width:56.269999999999996%">
+        </colgroup>
+        <thead align="left">
+         <tr>
+          <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.2.2.3.2.2.2.4.1.1"><p>Parameter</p></th>
+          <th align="left" class="cellrowborder" valign="top" id="mcps1.3.2.2.3.2.2.2.4.1.2"><p>Description</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>Name</p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.2 "><p>User-defined template name, which contains a maximum of 32 characters.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>OS</p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.2 "><p>Select the OS of the host where the fileset to be protected resides.</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>File Path</p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.2 "><p>Click <span><strong>Add</strong></span>, enter the absolute path of the file to be protected, and click <strong>OK</strong>.</p> <p>If you want to protect files in multiple paths, click <span><strong>Add</strong></span> to add other paths. You can add a maximum of 64 paths and add paths in batches, which are separated with commas (,).</p></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" rowspan="2" valign="top" width="16.99%" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>Filter Rule</p> <p></p> <p></p> <p></p> <p></p></td>
+          <td class="cellrowborder" valign="top" width="26.740000000000002%" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>File</p></td>
+          <td class="cellrowborder" valign="top" width="56.269999999999996%" headers="mcps1.3.2.2.3.2.2.2.4.1.2 "><p>Select the files to be included or excluded. For details about the file types that can be filtered, see <a href="en-us_topic_0000002164605910.html#EN-US_TOPIC_0000002164605910__en-us_topic_0000001218047555_section875992475510">File Types That Can Be Filtered</a>.</p> <p>The rules for filtering files are as follows:</p>
+           <ul>
+            <li>Enter the full path of the file.</li>
+            <li>When multiple paths are configured, click <span class="uicontrol"><b><span><strong>Save</strong></span></b></span> before entering a new path.</li>
+            <li>The path can contain the wildcard character <strong>*</strong>.</li>
+           </ul></td>
+         </tr>
+         <tr>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>Directory</p></td>
+          <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.3.2.2.2.4.1.1 "><p>Directories to be included or excluded. Click <span class="uicontrol"><b><span><strong>Save</strong></span></b></span>.</p> <p>The rules for filtering directories are as follows:</p>
+           <ul>
+            <li>Enter the full path of the directory.</li>
+            <li>When multiple paths are configured, click <span class="uicontrol"><b><span><strong>Save</strong></span></b></span> before entering a new path.</li>
+            <li>The path can contain the wildcard character <strong>*</strong>.</li>
+           </ul></td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+      <div class="note" id="EN-US_TOPIC_0000002200006709__en-us_topic_0000001172683312_note418821735818">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <div class="p" id="EN-US_TOPIC_0000002200006709__en-us_topic_0000001172683312_p1162952215820">
+         When multiple filtering rules are set, you can determine whether the rules take effect based on the following rules:
+         <ul id="EN-US_TOPIC_0000002200006709__en-us_topic_0000001172683312_ul86299228580">
+          <li id="EN-US_TOPIC_0000002200006709__en-us_topic_0000001172683312_li15526150172217">If only inclusion conditions exist, the logic relationship between multiple inclusion conditions is <span class="uicontrol" id="EN-US_TOPIC_0000002200006709__uicontrol17278940512"><b>AND</b></span>. That is, the search results filtered based on all the selected conditions will be displayed.</li>
+          <li id="EN-US_TOPIC_0000002200006709__en-us_topic_0000001172683312_li186794317268">If only exclusion conditions exist, the logic relationship between multiple exclusion conditions is <span class="uicontrol" id="EN-US_TOPIC_0000002200006709__uicontrol105171923597"><b>AND</b></span>. That is, the search results filtered based on all the selected conditions will be displayed.</li>
+          <li id="EN-US_TOPIC_0000002200006709__en-us_topic_0000001172683312_li1862915229582">If both inclusion and exclusion conditions exist, exclusion is determined in the inclusion conditions.</li>
+         </ul>
+        </div>
+       </div>
+      </div> <p></p></li>
+     <li><span>Click <span class="uicontrol"><b><span>OK</span></b></span>.</span></li>
+    </ol>
+   </div>
+   <p></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002199972213.html">Backing Up a Fileset</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,127 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Modifying an Internal Communication Network">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200118333.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="documenttype" content="usermanual">
+<meta name="prodname" content="csbs">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164791744">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Modifying an Internal Communication Network</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164791744"></a><a name="EN-US_TOPIC_0000002164791744"></a>
+
+<h1 class="topictitle1">Modifying an Internal Communication Network</h1>
+<div><p>This section describes how to modify the internal communication network of an active node.</p>
+<div class="section"><h4 class="sectiontitle">Precautions</h4><ul><li>After the internal communication network is added and member nodes are added, the internal communication network of the standby node cannot be modified. If you need to modify the configuration, remove the standby node from the HA members by referring to <a href="en-us_topic_0000002164632032.html">Removing an HA Member</a> before making modifications. After the modifications are complete, add the standby node to the HA members by referring to <a href="en-us_topic_0000002200118373.html">Adding HA Members</a> to restore the active/standby status.</li><li>Before modifying the internal communication network of a member node, log in to DeviceManager of the member node, check that the logical port of the internal communication network has been created, and then modify the internal communication network of the active node. You can check this as follows:<ol><li>Log in to DeviceManager by referring to <a href="en-us_topic_0000002241048877.html">Logging In to DeviceManager</a>.</li><li>Choose <strong>Services</strong> &gt; <strong>Network</strong> &gt; <strong>Logical Ports</strong>.</li><li>Check that the logical port of the internal communication network of the member node has been created.</li></ol>
+</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="menucascade" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002164632044_menucascade31053579148"><b><span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002164632044_uicontrol41059577142"><span id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002164632044_text1054020121612"><strong>System</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002164632044_uicontrol154661958121418"><span id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002164632044_text8757278167"><strong>Infrastructure</strong></span></span></b> &gt; <b><span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002164632044_uicontrol54471544151"><span id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002164632044_text1631251418164"><strong>Cluster Management</strong></span></span></b></span>.</span></li><li><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002164632044_uicontrol1161813395168"><b><span id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002164632044_text353374216166"><strong>Backup Cluster</strong></span></b></span>.</span></li><li><span>In the row that contains the target active node, choose <span class="menucascade"><b><span class="uicontrol">More</span></b> &gt; <b><span class="uicontrol">Modify Internal Communication Network</span></b></span>.</span></li><li><span>Configure the internal communication network.</span><p><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p112498365583"><a href="#EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_table1271775219581">Table 1</a> describes the parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_table1271775219581"></a><a name="en-us_topic_0000002200118337_table1271775219581"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_table1271775219581" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Internal communication network parameters</caption><colgroup><col style="width:27.51%"><col style="width:72.49%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_row671735210582"><th align="left" class="cellrowborder" valign="top" width="27.51%" id="mcps1.3.3.2.4.2.2.2.3.1.1"><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p127170527585">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="72.49%" id="mcps1.3.3.2.4.2.2.2.3.1.2"><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p14717105210582">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_row1671716529587"><td class="cellrowborder" valign="top" width="27.51%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p1850122675214">IP Address Type</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.49%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p950162665220">The value can be <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol4501162610524"><b>IPv4</b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol55015269529"><b>IPv6</b></span>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_row5717175255813"><td class="cellrowborder" valign="top" width="27.51%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p11501172611521">Subnet Mask</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.49%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p65012269528">Subnet mask of the IPv4 address of the internal communication network.</p>
+<div class="note" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_note450192645218"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p1950118268527">This parameter is available only when <strong id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_b16581274291">IP Address Type</strong> is set to <strong id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_b258177192919">IPv4</strong>.</p>
+</div></div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_row15190524915"><td class="cellrowborder" valign="top" width="27.51%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p128231221797">Prefix</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.49%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p1823023915">Prefix of the IPv6 address of the internal communication network.</p>
+<div class="note" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_note182317217910"><span class="notetitle"> NOTE: </span><div class="notebody"><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p38231421592">This parameter is available only when <strong id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_b1494524162914">IP Address Type</strong> is set to <strong id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_b59451441162916">IPv6</strong>.</p>
+</div></div>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_row97178526583"><td class="cellrowborder" valign="top" width="27.51%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p138362301630">IP Address1</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.49%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p150162614524">User-defined IP address 1 of the internal communication network, which is used as the IP address of the internal database. Ensure that this address is different from other IP addresses. Otherwise, an IP network conflict occurs.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_row4677100615"><td class="cellrowborder" valign="top" width="27.51%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p166832818319">IP Address2</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.49%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p1567612426615">User-defined IP address 2 of the internal communication network, which is used as the IP address of the internal infrastructure. Ensure that this address is different from other IP addresses. Otherwise, an IP network conflict occurs.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_row105601815118"><td class="cellrowborder" valign="top" width="27.51%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p19485114617">Gateway</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.49%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p195601811211">Gateway of the internal communication network.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_row1895291817"><td class="cellrowborder" valign="top" width="27.51%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p11924719611">Enable VLAN</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.49%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p15227685919">This option is deselected by default. Before selecting this option, ensure that the VLAN has been configured for the service. After this option is selected, the configured service ports will apply to the VLAN.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_row19633719804"><td class="cellrowborder" valign="top" width="27.51%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p186331219705">VLAN ID</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.49%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p1363321911019">This parameter is required after <strong id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_b799351464415">Enable VLAN</strong> is selected. This ID is a new ID defined by the user when the VLAN is configured.</p>
+<p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p11738192021312">The VLAN ID ranges from 1 to 4094. There can be one or more VLAN IDs. Use commas (,) to separate multiple VLAN IDs.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_row13874315101"><td class="cellrowborder" valign="top" width="27.51%" headers="mcps1.3.3.2.4.2.2.2.3.1.1 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p4874510108">Port Type</p>
+</td>
+<td class="cellrowborder" valign="top" width="72.49%" headers="mcps1.3.3.2.4.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p1087415101014">The value can be <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol487917374114"><b><span id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_text0324135641118"><strong>Ethernet Port</strong></span></b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol2127491215"><b><span id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_text27091153127"><strong>Bond port</strong></span></b></span>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>After selecting <strong id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_b1364717387011">Port Type</strong>, select service ports in the <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol299760201715"><b>Available Ports</b></span> area. You can select one or more ports to configure service ports. In the <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol4460153101611"><b>Selected Ports</b></span> area, click <span><img id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_image12321110183" src="en-us_image_0000002164791804.png"></span> in the row where the port to be removed resides to remove it from the <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol1816013477188"><b>Selected Ports</b></span> area, or click <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol197077118194"><b>Delete All</b></span> to remove all ports from the <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol682619781918"><b>Selected Ports</b></span> area.</span><p><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p154109180412">After selecting <strong id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_b544813511174">Port Type</strong>, you can perform the following operations:</p>
+<ul id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_ul4168101284719"><li id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_li161691123478">Port selection: You can select <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol1843105516496"><b>Creating a port</b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol239791105017"><b>Reusing the configured port</b></span>.</li><li id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_li6280184155013"><strong id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_b458011617451">Port Sharing</strong> (optional): This option is available when <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol225594865817"><b>Port Type</b></span> is set to <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol5712779428"><b><span id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_text137124754218"><strong>Bond port</strong></span></b></span>. If <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol756410491518"><b>Port Sharing</b></span> is enabled, the number of required ports can be reduced, but the reliability of the internal communication network decreases.</li></ul>
+<div class="note" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_note89765103387"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p4727041145210">If multiple sets of the <span id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_text1278956184819">OceanProtect</span> form a cluster, reserve two additional IP addresses for each node to synchronize configuration information in the cluster.</p>
+</div></div>
+<p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p1271751711314">For details about the minimum number of ports that need to be selected for each controller of different device types in different scenarios, see <a href="en-us_topic_0000002164632000.html">Minimum Number of Ports Selected per Controller on the Internal Communication Network</a>.</p>
+</p></li><li><span>(Optional) In the <strong id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_b20216112113214">Advanced</strong> area, select <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol1417910172019"><b>Configure Route</b></span> to configure a route for the internal communication network. Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol13785123742017"><b>Add</b></span> to add the corresponding route. The route type can be <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol45422057811331"><b>Network segment route</b></span>, <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol213070986411331"><b>Host route</b></span>, or <span class="uicontrol" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_uicontrol205092273511331"><b>Default route</b></span>.</span><p><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p1302194392420"></p>
+<div class="p" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p1676518467244"><div class="note" id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_note1176813248236"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p id="EN-US_TOPIC_0000002164791744__en-us_topic_0000002200118337_p1076862410236">If a gateway has been configured for the logical port, default routes cannot be added.</p>
+</div></div>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li><li><span>The <span class="uicontrol"><b><span><strong>Danger</strong></span></b></span> dialog box is displayed. Confirm the information, select <span class="uicontrol"><b><span><strong>I have read and understand the consequences associated with performing this operation.</strong></span></b></span>, and click <span class="uicontrol"><b>OK</b></span>.</span><p><p><span><img src="en-us_image_0000002164791800.png"></span></p>
+<p></p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200118333.html">Managing an Internal Communication Network (Applicable to 1.6.0 and Later Versions)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

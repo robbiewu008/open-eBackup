@@ -51,4 +51,7 @@ public class VmInfo extends ResourceEntity {
 
     @JsonProperty("alias_value")
     private String aliasValue;
+
+    @JsonProperty("firmware")
+    private String firmware;
 }

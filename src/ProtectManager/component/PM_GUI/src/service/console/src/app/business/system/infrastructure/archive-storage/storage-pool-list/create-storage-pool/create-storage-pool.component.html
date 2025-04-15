@@ -119,8 +119,7 @@
         </lv-group>
     </lv-group>
     <div class="tape-no-data" *ngIf="!libraries.length">
-        <i lv-icon="aui-icon-no-data"></i>
-        <div class="no-data-label">{{'common_no_data_label' | i18n}}</div>
+        <lv-empty></lv-empty>
     </div>
     <div class="alarm-switch">
         <span class="capacity-alarm-threshold">{{insufficientLabel}}</span>

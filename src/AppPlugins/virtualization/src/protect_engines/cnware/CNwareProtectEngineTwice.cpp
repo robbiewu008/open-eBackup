@@ -21,6 +21,7 @@
 #include <config_reader/ConfigIniReader.h>
 #include "protect_engines/cnware/common/ErrorCode.h"
 #include "repository_handlers/factory/RepositoryFactory.h"
+#include "common/Utils.h"
 #include "CNwareProtectEngine.h"
 
 using namespace VirtPlugin;
@@ -62,6 +63,7 @@ const std::string RESTORE_LOCATION_NEW = "new";
 const std::string CURRENT_BOOT_DISK = "YES";
 const std::string DEFAULT_PREALLOCATION = "off";
 const std::string STATUS_BEGINNING_RUNNING = "0\%2C1";
+const std::string UNKOWN_AGENT = "Unknown_agent";
 const int32_t STATUS_BEGINNING = 0;
 const int32_t STATUS_RUNNING = 1;
 const std::string TASK_MIGRATE_CODE = "domain.migrate";
@@ -650,12 +652,16 @@ int32_t CNwareProtectEngine::LoadCopyVolumeMatadata(const std::string &volId, Vo
     return SUCCESS;
 }
 
-bool CNwareProtectEngine::CheckTaskStatus(const std::string &taskId)
+bool CNwareProtectEngine::CheckTaskStatus(const std::string &taskId, const bool cache)
 {
     QueryTaskRequest req;
     req.SetTaskId(taskId);
     SetCommonInfo(req);
-
+    std::string LastTaskFile = m_cacheRepoPath + VIRT_PLUGIN_LAST_TASK_INFO;
+    if (cache && Utils::SaveToFileWithRetry(m_cacheRepoHandler, LastTaskFile, taskId) !=
+        SUCCESS) {
+        ERRLOG("Save LastTaskFile failed.");
+    }
     int32_t taskStatus = static_cast<int>(CNwareTaskStatus::CNWARE_TASK_STARTED);
     std::shared_ptr<QueryTaskResponse> response;
     uint32_t times = 0;
@@ -710,7 +716,7 @@ int32_t CNwareProtectEngine::AddNfs(const std::string &name,
     }
     WARNLOG("AddNfs GetTaskId %s in host failed: %s, %s", response->GetTaskId().c_str(),
             hostId.c_str(), m_jobId.c_str());
-    if (!CheckTaskStatus(response->GetTaskId())) {
+    if (!CheckTaskStatus(response->GetTaskId(), true)) {
         ERRLOG("AddNfs %s in host failed: %s, %s", nfsIp.c_str(),
             hostId.c_str(), m_jobId.c_str());
         return FAILED;
@@ -782,11 +788,25 @@ int32_t CNwareProtectEngine::GetResourceId(const std::string &name,
     return FAILED;
 }
 
-int32_t CNwareProtectEngine::GetStorageId(const std::string &hostId, const std::string &name, std::string &storageId)
+int32_t CNwareProtectEngine::GetStorageId(const std::string &hostId, const std::string &resourceId,
+    const std::string &name, const NameType &nameType, std::string &storageId)
 {
-    INFOLOG("Enter");
+    StoragePool storagePool;
+    if (GetResStoragePool(hostId, resourceId, name, nameType, storagePool) != SUCCESS) {
+        ERRLOG("GetStoragePool(%s) succeed, %s", name.c_str(), m_jobId.c_str());
+        return FAILED;
+    }
+    storageId = storagePool.m_id;
+    return SUCCESS;
+}
+
+int32_t CNwareProtectEngine::GetResStoragePool(const std::string &hostId, const std::string &resourceId,
+    const std::string &name, const NameType &nameType, StoragePool &storagePool)
+{
+    DBGLOG("Enter");
     CNwareRequest req;
     SetCommonInfo(req);
+    req.SetResourceId(name);
     if (m_cnwareClient == nullptr) {
         ERRLOG("GetStorageId m_cnwareClient pointer failed.");
         return FAILED;
@@ -801,15 +821,15 @@ int32_t CNwareProtectEngine::GetStorageId(const std::string &hostId, const std::
     do {
         start++;
         std::shared_ptr<StoragePoolResponse> response = m_cnwareClient->GetStoragePoolInfo(
-            req, hostId, "", start, pageNum);
+            req, hostId, "", nameType, start);
         if (response == nullptr) {
             ERRLOG("GetStorageId failed.");
             return FAILED;
         }
         total = response->GetStoragePoolInfo().m_total;
         for (const auto &pool : response->GetStoragePoolInfo().m_data) {
-            if (pool.m_name == name) {
-                storageId = pool.m_id;
+            if (pool.m_storageResourceId == resourceId) {
+                storagePool = pool;
                 DBGLOG("GetStorageId(%s) %s succeed, %s", name.c_str(), pool.m_id.c_str(),
                     m_jobId.c_str());
                 return SUCCESS;
@@ -822,7 +842,7 @@ int32_t CNwareProtectEngine::GetStorageId(const std::string &hostId, const std::
 
 int32_t CNwareProtectEngine::RefreshStoragePool(const std::string &storageId)
 {
-    INFOLOG("Enter");
+    DBGLOG("Enter");
     CNwareRequest req;
     SetCommonInfo(req);
     if (m_cnwareClient == nullptr) {
@@ -844,7 +864,7 @@ int32_t CNwareProtectEngine::RefreshStoragePool(const std::string &storageId)
 
 int32_t CNwareProtectEngine::ScanNfsStorage(const std::string &storeId)
 {
-    INFOLOG("Enter");
+    DBGLOG("Enter");
     CNwareRequest req;
     SetCommonInfo(req);
     if (m_cnwareClient == nullptr) {
@@ -864,10 +884,47 @@ int32_t CNwareProtectEngine::ScanNfsStorage(const std::string &storeId)
     return SUCCESS;
 }
 
-int32_t CNwareProtectEngine::CreateStoragePool(const std::string &name,
+bool CNwareProtectEngine::CheckPoolExists(std::string &liveStorageName, const std::string &hostId,
+    const std::string &resourceId, std::string &storageId)
+{
+    DBGLOG("Enter");
+    // 获取存储池信息
+    StoragePool storagePool;
+    if (GetResStoragePool(m_application.id, resourceId, m_livemountRepoPath, NameType::Resource,
+        storagePool) != SUCCESS) {
+        ERRLOG("GetResourceId(%s) no exist. %s", m_livemountRepoPath.c_str(), m_jobId.c_str());
+        return false;
+    }
+    liveStorageName = storagePool.m_name;
+    storageId = storagePool.m_id;
+    return true;
+}
+
+int32_t CNwareProtectEngine::CreateStoragePool(std::string &liveStorageName,
+    const std::string &hostId, const std::string &resourceId, std::string &storageId)
+{
+    DBGLOG("Enter");
+    if (CheckPoolExists(liveStorageName, hostId, resourceId, storageId)) {
+        WARNLOG("StoragePool has existed.");
+        return SUCCESS;
+    }
+    if (DoCreateStoragePool(liveStorageName, hostId, resourceId)) {
+        ERRLOG("DoCreateStoragePool(%s) by resource(%s) failed.",
+            liveStorageName.c_str(), resourceId.c_str());
+        return FAILED;
+    }
+    // 获取存储池id
+    if (GetStorageId(m_application.id, resourceId, liveStorageName, NameType::PoolName, storageId) != SUCCESS) {
+        ERRLOG("GetResourceId(%s). %s", m_livemountRepoPath.c_str(), m_jobId.c_str());
+        return FAILED;
+    }
+    return SUCCESS;
+}
+
+int32_t CNwareProtectEngine::DoCreateStoragePool(const std::string &name,
     const std::string &hostId, const std::string &resourceId)
 {
-    INFOLOG("Enter");
+    DBGLOG("Enter");
     AddNfsStorageRequest req;
     SetCommonInfo(req);
     if (!req.SetNfsStorageReq(name, hostId, resourceId)) {
@@ -883,7 +940,7 @@ int32_t CNwareProtectEngine::CreateStoragePool(const std::string &name,
         ERRLOG("CreateStoragePool response pointer null. %s", m_jobId.c_str());
         return FAILED;
     }
-    if (!CheckTaskStatus(response->GetTaskId())) {
+    if (!CheckTaskStatus(response->GetTaskId(), true)) {
         ERRLOG("CreateStoragePool %s in host failed: %s, %s", resourceId.c_str(),
             hostId.c_str(), m_jobId.c_str());
         return FAILED;
@@ -922,6 +979,7 @@ int32_t CNwareProtectEngine::CheckBeforeMount()
         ERRLOG("Check vm name failed. %s", m_jobId.c_str());
         return FAILED;
     }
+
     if (GetIpStrForLivemount() != SUCCESS) {
         ERRLOG("Get IpStr For Livemount failed. %s", m_jobId.c_str());
         return FAILED;
@@ -942,8 +1000,13 @@ int32_t CNwareProtectEngine::CreateLiveMount(const VMInfo &copyVm, VMInfo &newVm
         ERRLOG("Get new vm machine name failed.");
         return FAILED;
     }
+    m_tempLiveName = CNWARE_LIVEMOUNT_PREFIX + m_jobId;
     std::string storeId;
     std::string storageId;
+    if (PrepareStorage(storeId, storageId) != SUCCESS) {
+        ERRLOG("Get new vm machine name failed.");
+        return FAILED;
+    }
     int32_t iRet = DoCreateLiveMount(copyVm, newVm, storeId, storageId);
     SaveLiveMountStorageInfo(newVm, storeId, storageId);
     return iRet;
@@ -984,19 +1047,48 @@ int32_t CNwareProtectEngine::PrepareStorageDevice(std::string &storeId)
         ERRLOG("ScanNfsStorage(%s). %s", storeId.c_str(), m_jobId.c_str());
         m_reportArgs = std::vector<std::string>{m_application.name};
         m_reportParam.label = CNwareErrorCode::CNWARE_SCAN_STORAGE_FAILED_LABEL;
-        m_reportParam.level = JobLogLevel::TASK_LOG_ERROR;
-        return FAILED;
+        m_reportParam.level = JobLogLevel::TASK_LOG_WARNING;
     }
     return SUCCESS;
 }
 
-int32_t CNwareProtectEngine::PrepareStoragePool(const std::string &storeId, std::string &resourceId,
-    std::string &storageId, std::string &liveStorageName)
+int32_t CNwareProtectEngine::GetResourceIdRetry(const std::string &storeId, std::string &resourceId)
 {
     // 获取对应data仓资源Id
     DBGLOG("GetResourceId(%s). %s", m_livemountRepoPath.c_str(), m_jobId.c_str());
-    if (GetResourceId(m_livemountRepoPath, storeId, resourceId) != SUCCESS) {
-        ERRLOG("GetResourceId(%s). %s", m_livemountRepoPath.c_str(), m_jobId.c_str());
+    // 扫描存储文件系统
+    int iRet {SUCCESS};
+    int retryNums {0};
+    do {
+        ++retryNums;
+        iRet = GetResourceId(m_livemountRepoPath, storeId, resourceId);
+        if (iRet != SUCCESS) {
+            ERRLOG("Not find resource(%s). %s", m_livemountRepoPath.c_str(), m_jobId.c_str());
+            ApplicationLabelType labelParam;
+            labelParam.params = std::vector<std::string>{storeId, m_livemountRepoPath};
+            labelParam.label = CNwareErrorCode::CNWARE_RESOURCE_NOT_FIND_LABEL;
+            labelParam.level = JobLogLevel::TASK_LOG_WARNING;
+            ReportJobDetail(labelParam);
+
+            ScanNfsStorage(storeId);
+            VirtPlugin::Utils::SleepSeconds(COMMON_WAIT_TIME);
+        }
+    } while (iRet != SUCCESS && retryNums < MAX_EXEC_COUNT);
+
+    return iRet;
+}
+int32_t CNwareProtectEngine::PrepareStoragePool(const std::string &storeId, std::string &resourceId,
+    std::string &storageId, std::string &liveStorageName)
+{
+    bool flag {false};
+    Utils::Defer _(nullptr, [&](...) {
+        if (!flag) {
+            RemoveStorage(storageId);
+        }
+    });
+    if (GetResourceIdRetry(storeId, resourceId) != SUCCESS) {
+        ERRLOG("GetResourceIdRetry(%s) in store(%s). %s",
+            m_livemountRepoPath.c_str(), storeId.c_str(), m_jobId.c_str());
         return FAILED;
     }
     // 创建对应存储池，关联目标主机
@@ -1004,7 +1096,7 @@ int32_t CNwareProtectEngine::PrepareStoragePool(const std::string &storeId, std:
     labelParam.label = CNwareErrorCode::CNWARE_CREATE_STORAGE_POOL_LABEL;
     ReportJobDetail(labelParam);
     if (CreateStoragePool(liveStorageName, m_application.id,
-        resourceId) != SUCCESS) {
+        resourceId, storageId) != SUCCESS) {
         ERRLOG("CreateStoragePool(%s) from resourceId(%s). %s", liveStorageName.c_str(),
             resourceId.c_str(), m_jobId.c_str());
         labelParam.label = CNwareErrorCode::CNWARE_CREATE_STORAGE_POOL_FAILED_LABEL;
@@ -1012,23 +1104,17 @@ int32_t CNwareProtectEngine::PrepareStoragePool(const std::string &storeId, std:
         ReportJobDetail(labelParam);
         return FAILED;
     }
-    // 获取存储池id
-    if (GetStorageId(m_application.id, liveStorageName, storageId) != SUCCESS) {
-        ERRLOG("GetResourceId(%s). %s", m_livemountRepoPath.c_str(), m_jobId.c_str());
-        return FAILED;
-    }
-        // 刷新存储池配置
+    // 刷新存储池配置
     if (RefreshStoragePool(storageId)) {
         ERRLOG("RefreshStoragePool(%s). %s", storageId.c_str(), m_jobId.c_str());
         m_reportParam.label = CNwareErrorCode::CNWARE_REFRESH_STORAGE_POOL_FAILED_LABEL;
-        m_reportParam.level = JobLogLevel::TASK_LOG_ERROR;
-        return FAILED;
+        m_reportParam.level = JobLogLevel::TASK_LOG_WARNING;
     }
+    flag = true;
     return SUCCESS;
 }
 
-int32_t CNwareProtectEngine::DoCreateLiveMount(const VMInfo &copyVm, VMInfo &newVm,
-    std::string &storeId, std::string &storageId)
+int32_t CNwareProtectEngine::PrepareStorage(std::string &storeId, std::string &storageId)
 {
     if (PrepareStorageDevice(storeId) != SUCCESS) {
         ERRLOG("Prepare cnware storage device failed. %s", m_jobId.c_str());
@@ -1043,15 +1129,37 @@ int32_t CNwareProtectEngine::DoCreateLiveMount(const VMInfo &copyVm, VMInfo &new
         ERRLOG("Prepare cnware storage pool failed. %s", m_jobId.c_str());
         return FAILED;
     }
-    std::string hostId {};
-    std::string hostName {};
+    m_livemountStoreName = liveStorageName;
+    return SUCCESS;
+}
+
+std::string CNwareProtectEngine::GetAppHostId()
+{
+    std::string hostName;
     if (m_application.subType == "CNwareHost") {
-        hostId = m_application.id;
         hostName = m_application.name;
     } else if (m_application.subType == "CNwareVm") {
-        hostId = m_application.parentId;
         hostName = m_application.parentName;
     }
+    return hostName;
+}
+
+std::string CNwareProtectEngine::GetAppHostName()
+{
+    std::string hostId;
+    if (m_application.subType == "CNwareHost") {
+        hostId = m_application.id;
+    } else if (m_application.subType == "CNwareVm") {
+        hostId = m_application.parentId;
+    }
+    return hostId;
+}
+
+int32_t CNwareProtectEngine::DoCreateLiveMount(const VMInfo &copyVm, VMInfo &newVm,
+    std::string &storeId, std::string &storageId)
+{
+    std::string hostId = GetAppHostId();
+    std::string hostName = GetAppHostName();
     newVm.m_location = hostId;
     newVm.m_locationName = hostName;
     // 根据磁盘创建即时挂载临时虚拟机
@@ -1059,12 +1167,13 @@ int32_t CNwareProtectEngine::DoCreateLiveMount(const VMInfo &copyVm, VMInfo &new
     labelParam.label = CNwareErrorCode::CNWARE_CREATE_MACHINE_LABEL;
     labelParam.params = std::vector<std::string>{hostName, m_config.m_name};
     ReportJobDetail(labelParam);
-    if (BuildLiveVm(copyVm, newVm, hostId, storageId, liveStorageName) != SUCCESS) {
-        ERRLOG("BuildLiveVm(%s) from resourceId(%s). %s", liveStorageName.c_str(),
-            resourceId.c_str(), m_jobId.c_str());
+    if (BuildLiveVm(copyVm, newVm, storageId, m_livemountStoreName) != SUCCESS) {
+        ERRLOG("BuildLiveVm(%s) from storage(%s). %s", m_tempLiveName.c_str(),
+            storageId.c_str(), m_jobId.c_str());
         labelParam.label = CNwareErrorCode::CNWARE_CREATE_MACHINE_FAILED_LABEL;
         labelParam.level = JobLogLevel::TASK_LOG_ERROR;
         ReportJobDetail(labelParam);
+        RemoveStorage(storageId);
         return FAILED;
     }
     return SUCCESS;
@@ -1096,7 +1205,7 @@ bool CNwareProtectEngine::FormLiveVolumeMap(const VMInfo &liveVm, const std::str
                     m_jobId.c_str());
                 DomainDiskDevicesReq diskReq;
                 diskReq.mBus = DISK_BUS_MAP[vol.m_type];
-                diskReq.mCache = std::stoi(vol.m_volumeType);
+                diskReq.mCache = Module::SafeStoi(vol.m_volumeType);
                 diskReq.mPreallocation = PREALLOCATION_OFF;
                 diskReq.mOldPool = storageName;
                 diskReq.mOldVol = live.m_name;
@@ -1194,10 +1303,32 @@ int32_t CNwareProtectEngine::ShutDownBridgeInterface(const std::string &vmId)
     return SUCCESS;
 }
 
-int32_t CNwareProtectEngine::BuildLiveVm(const VMInfo &liveVm, VMInfo &newVm, const std::string &hostId,
+int32_t CNwareProtectEngine::PostOperationLiveMount(const VMInfo &liveVm, VMInfo &newVm,
+    const DomainListResponse &dInfo)
+{
+    WaitVMTaskEmpty(dInfo.id);
+    if (!ModifyLiveDevBoots(dInfo, liveVm)) {
+        ERRLOG("Modify VM(%s) dev boots failed. %s", dInfo.id.c_str(), m_jobId.c_str());
+        return FAILED;
+    }
+    if (ProcessBridgeInterface(newVm.m_uuid, liveVm) != SUCCESS) {
+        ERRLOG("Process BridgeInterface on vm(%s). %s", newVm.m_uuid.c_str(), m_taskId.c_str());
+        return FAILED;
+    }
+    GetVMDiskInfoRequest reqVol;
+    SetCommonInfo(reqVol);
+    reqVol.SetDomainId(newVm.m_uuid);
+    std::shared_ptr<GetVMDiskInfoResponse> respVol = m_cnwareClient->GetVMDiskInfo(reqVol);
+    if (respVol == nullptr || !SetVolListInfo2VMInfo(respVol->GetInfo(), newVm)) {
+        ERRLOG("Get VM vol list info failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    return SUCCESS;
+}
+
+int32_t CNwareProtectEngine::DoBuildLiveVm(const VMInfo &liveVm, VMInfo &newVm,
     const std::string &storageId, const std::string &storageName)
 {
-    INFOLOG("Enter");
     // 入参为副本虚拟机信息，将id置零，防止创建失败后，误删原虚拟机
     if (!FormLiveVolumeMap(liveVm, storageId, storageName)) {
         return FAILED;
@@ -1211,23 +1342,31 @@ int32_t CNwareProtectEngine::BuildLiveVm(const VMInfo &liveVm, VMInfo &newVm, co
     }
     newVm.m_name = addDomainInfo.mName;
     createVmReq.SetDomainInfo(addDomainInfo);
+    createVmReq.SetMachineName(m_tempLiveName);
     std::shared_ptr<BuildNewVMResponse> response = m_cnwareClient->BuildNewClient(createVmReq);
-    if (response == nullptr || !CheckTaskStatus(response->GetTaskId())) {
+    if (response == nullptr || !CheckTaskStatus(response->GetTaskId(), true)) {
         ERRLOG("Create vm failed.");
         return FAILED;
     }
+    return SUCCESS;
+}
+
+int32_t CNwareProtectEngine::BuildLiveVm(const VMInfo &liveVm, VMInfo &newVm,
+    const std::string &storageId, const std::string &storageName)
+{
+    int32_t iRet = CheckVMNameUnique(m_tempLiveName);
+    if (iRet == SUCCESS && DoBuildLiveVm(liveVm, newVm, storageId, storageName)) {
+        ERRLOG("DoBuildLiveVm vm failed.");
+        return FAILED;
+    }
     DomainListResponse dInfo;
-    if (QueryVmInfoByName(newVm.m_name, dInfo) != SUCCESS) {
+    if (QueryVmInfoByName(m_tempLiveName, dInfo) != SUCCESS) {
         ERRLOG("QueryVmIdByName vm failed.");
         return FAILED;
     }
     newVm.m_uuid = dInfo.id;
-    if (!ModifyLiveDevBoots(dInfo, liveVm)) {
-        ERRLOG("Modify VM(%s) dev boots failed. %s", dInfo.id.c_str(), m_jobId.c_str());
-        return FAILED;
-    }
-    if (ProcessBridgeInterface(newVm.m_uuid, liveVm) != SUCCESS) {
-        ERRLOG("Process BridgeInterface on vm(%s). %s", newVm.m_uuid.c_str(), m_taskId.c_str());
+    if (iRet == SUCCESS && PostOperationLiveMount(liveVm, newVm, dInfo)) {
+        ERRLOG("PostOperationLiveMount vm failed.");
         return FAILED;
     }
     Json::Value extend;
@@ -1235,17 +1374,9 @@ int32_t CNwareProtectEngine::BuildLiveVm(const VMInfo &liveVm, VMInfo &newVm, co
     extend["storageId"] = storageId;
     Json::FastWriter writer;
     newVm.m_extendInfo = writer.write(extend);
-
-    GetVMDiskInfoRequest reqVol;
-    SetCommonInfo(reqVol);
-    reqVol.SetDomainId(newVm.m_uuid);
-    std::shared_ptr<GetVMDiskInfoResponse> respVol = m_cnwareClient->GetVMDiskInfo(reqVol);
-    if (respVol == nullptr || !SetVolListInfo2VMInfo(respVol->GetInfo(), newVm)) {
-        ERRLOG("Get VM vol list info failed, %s", m_taskId.c_str());
-        return FAILED;
-    }
-    INFOLOG("Create vm(%s) id(%s) in host(%s) success. %s", newVm.m_name.c_str(),
-        newVm.m_uuid.c_str(), hostId.c_str(), m_jobId.c_str());
+    INFOLOG("Create vm(%s) id(%s) success. %s", m_tempLiveName.c_str(),
+        newVm.m_uuid.c_str(), m_jobId.c_str());
+    m_machineNeedRename = true;
     return SUCCESS;
 }
 
@@ -1298,21 +1429,13 @@ void CNwareProtectEngine::SetConfigInfo(AddDomainRequest &domainInfo)
     if (!m_config.m_config.m_cpu.m_useOriginal) {
         DBGLOG("Get new vm m_cpu info %s. %s", m_config.m_config.m_cpu.m_core.c_str(),
             m_config.m_config.m_cpu.m_socket.c_str());
-        domainInfo.mCpuInfo.mCore = std::stoi(m_config.m_config.m_cpu.m_socket);
-        domainInfo.mCpuInfo.mSockets = std::stoi(m_config.m_config.m_cpu.m_core) /
-            std::stoi(m_config.m_config.m_cpu.m_socket);
+        domainInfo.mCpuInfo.mCore = Module::SafeStoi(m_config.m_config.m_cpu.m_socket);
+        domainInfo.mCpuInfo.mSockets = Module::SafeStoi(m_config.m_config.m_cpu.m_core) /
+            Module::SafeStoi(m_config.m_config.m_cpu.m_socket);
 
         cpuNums = domainInfo.mCpuInfo.mCore * domainInfo.mCpuInfo.mSockets;
         DBGLOG("Get new vm m_cpu info %d. %d", domainInfo.mCpuInfo.mCore,
             domainInfo.mCpuInfo.mSockets);
-        if (!CheckCpuLimit(cpuNums)) {
-            ERRLOG("Check Cpu Limit failed. %s", m_jobId.c_str());
-            ApplicationLabelType labelParam;
-            labelParam.label = CNwareErrorCode::CNWARE_HOST_CPU_LIMIT_LABEL;
-            labelParam.level = JobLogLevel::TASK_LOG_WARNING;
-            labelParam.params = std::vector<std::string>{std::to_string(m_hostCpuCores)};
-            ReportJobDetail(labelParam);
-        }
     }
     WARNLOG("Cpu cores(%d) exceeds current(%d). %s", cpuNums, domainInfo.mCpuInfo.mCurrent, m_jobId.c_str());
     if (cpuNums < domainInfo.mCpuInfo.mCurrent) {
@@ -1323,7 +1446,7 @@ void CNwareProtectEngine::SetConfigInfo(AddDomainRequest &domainInfo)
 
     if (!m_config.m_config.m_memory.m_useOriginal) {
         WARNLOG("Get new vm m_memory info %d.", m_config.m_config.m_memory.m_size);
-        domainInfo.mMemorySize = std::stol(m_config.m_config.m_memory.m_size) * MB;
+        domainInfo.mMemorySize = Module::SafeStol(m_config.m_config.m_memory.m_size) * MB;
     }
 }
 
@@ -1348,11 +1471,16 @@ int32_t CNwareProtectEngine::FormatLiveMachineParam(const VMInfo &vmInfo, AddDom
     DBGLOG("Get FormatLiveMachineParam new vm meta info %s.", vmInfo.m_metadata.c_str());
     domainInfo.mMemorySize = cwVmInfo.m_memory.m_memory;
     domainInfo.mCpuInfo = cwVmInfo.m_cpu;
-    if (!CheckCpuLimit(cwVmInfo.m_cpu.m_cores * cwVmInfo.m_cpu.m_sockets)) {
-        ERRLOG("Check Cpu Limit failed. %s", m_jobId.c_str());
-        return FAILED;
-    }
     SetConfigInfo(domainInfo);
+    SetOsVersion(domainInfo);
+    if (!CheckCpuLimit(domainInfo.mCpuInfo.mSockets * domainInfo.mCpuInfo.mCore)) {
+        ERRLOG("Check Cpu Limit failed. %s", m_jobId.c_str());
+        ApplicationLabelType labelParam;
+        labelParam.label = CNwareErrorCode::CNWARE_HOST_CPU_LIMIT_LABEL;
+        labelParam.level = JobLogLevel::TASK_LOG_WARNING;
+        labelParam.params = std::vector<std::string>{std::to_string(m_hostCpuCores)};
+        ReportJobDetail(labelParam);
+    }
     if (m_application.subType == "CNwareHost") {
         domainInfo.mHostId = m_application.id;
     } else if (m_application.subType == "CNwareVm") {
@@ -1373,6 +1501,27 @@ int32_t CNwareProtectEngine::FormatLiveMachineParam(const VMInfo &vmInfo, AddDom
 
     return SUCCESS;
 }
+int32_t CNwareProtectEngine::PutInMigrateParams(MigrationRequest &migReq,
+    const std::string &domainId, std::shared_ptr<GetVMDiskInfoResponse> &diskResponse)
+{
+    for (const auto &sub : m_subObjects) {
+        if (!AddLiveVolMigReq(diskResponse->GetInfo(), sub, migReq)) {
+            ERRLOG("AddLiveVolMigReq failed. %s", m_jobId.c_str());
+            return FAILED;
+        }
+    }
+    int32_t isSyncWrites = Module::ConfigReader::getInt("CNwareConfig", "DiskSynchronousWrites");
+    int32_t minDown = Module::ConfigReader::getInt("CNwareConfig", "MigrateDownTimeMin");
+    int32_t maxDown = Module::ConfigReader::getInt("CNwareConfig", "MigrateDownTimeMax");
+    if (isSyncWrites == 1) {
+        migReq.SetV2MigReq(m_application.id, minDown, maxDown);
+    } else {
+        migReq.SetMigReq(m_application.id, minDown, maxDown);
+    }
+    
+    migReq.SetDomain(domainId);
+    return SUCCESS;
+}
 
 int32_t CNwareProtectEngine::DoMigrateLiveVolume(const VMInfo &liveVm)
 {
@@ -1384,7 +1533,7 @@ int32_t CNwareProtectEngine::DoMigrateLiveVolume(const VMInfo &liveVm)
         ERRLOG("FormLiveVolumeMap m_cnwareClient nullptr. %s", m_jobId.c_str());
         return FAILED;
     }
-    req.SetQueryName(m_config.m_name);
+    req.SetQueryName(m_tempLiveName);
     std::string storageId;
     std::shared_ptr<GetVMListResponse> response = m_cnwareClient->GetVMList(req);
     if (response == nullptr) {
@@ -1400,24 +1549,37 @@ int32_t CNwareProtectEngine::DoMigrateLiveVolume(const VMInfo &liveVm)
         ERRLOG("GetStorageId failed.");
         return FAILED;
     }
-    for (const auto &sub : m_subObjects) {
-        if (!AddLiveVolMigReq(diskResponse->GetInfo(), sub, migReq)) {
-            ERRLOG("AddLiveVolMigReq failed. %s", m_jobId.c_str());
-            return FAILED;
-        }
+    if (PutInMigrateParams(migReq, response->GetVMList().data[0].id, diskResponse) != SUCCESS) {
+        ERRLOG("PutInMigrateParams failed.");
+        return FAILED;
     }
-    migReq.SetMigReq(m_application.id);
-    migReq.SetDomain(response->GetVMList().data[0].id);
     std::shared_ptr<CNwareResponse> migResponse = m_cnwareClient->MigrateVols(migReq);
     if (migResponse == nullptr) {
         ERRLOG("GetStorageId failed.");
         return FAILED;
     }
-    if (!CheckTaskStatus(migResponse->GetTaskId())) {
+    std::string LastMigrateFile = m_cacheRepoPath + VIRT_PLUGIN_LAST_MIGRATE_INFO;
+    Utils::SaveToFileWithRetry(m_cacheRepoHandler, LastMigrateFile, migResponse->GetTaskId());
+    if (!CheckTaskStatus(migResponse->GetTaskId(), true)) {
         ERRLOG("MigrateVols volume failed, %s", m_taskId.c_str());
         return FAILED;
     }
     return SUCCESS;
+}
+
+bool CNwareProtectEngine::FinishLastMigrate()
+{
+    InitRepoHandler();
+    std::string LastMigrateFile = m_cacheRepoPath + VIRT_PLUGIN_LAST_MIGRATE_INFO;
+    std::string taskId;
+    if (Utils::ReadFile(m_cacheRepoHandler, LastMigrateFile, taskId) !=
+        SUCCESS) {
+        ERRLOG("Read LastTaskFile failed.");
+    }
+    if (!taskId.empty()) {
+        return CheckTaskStatus(taskId);
+    }
+    return false;
 }
 
 int32_t CNwareProtectEngine::MigrateLiveVolume(const VMInfo &liveVm)
@@ -1425,6 +1587,10 @@ int32_t CNwareProtectEngine::MigrateLiveVolume(const VMInfo &liveVm)
     if (m_cnwareClient == nullptr || m_subObjects.empty()) {
         ERRLOG("MigrateLiveVolume ptr nullptr. %s", m_jobId.c_str());
         return FAILED;
+    }
+    if (FinishLastMigrate()) {
+        WARNLOG("Migrate task of vm(%s) has finished.", liveVm.m_uuid.c_str());
+        return SUCCESS;
     }
     ApplicationLabelType labelParam;
     labelParam.label = CNwareErrorCode::CNWARE_VM_MIGRATE_LABEL;
@@ -1768,6 +1934,12 @@ int32_t CNwareProtectEngine::RestoreVolMetadata(VolMatchPairInfo &volPairs, cons
         return SUCCESS;
     }
     std::string vmId = m_restoreLevel == RestoreLevel::RESTORE_TYPE_DISK ? m_application.id : vmInfo.m_uuid;
+
+    if (HealthDomain(vmId) != SUCCESS) {
+        ERRLOG("Health domain(%s) failed, %s", vmId.c_str(),
+            m_taskId.c_str());
+        return FAILED;
+    }
 
     GetVMDiskInfoRequest reqDiskInfo;
     reqDiskInfo.SetDomainId(vmId);
@@ -2127,10 +2299,10 @@ std::string CNwareProtectEngine::GetHostName()
     std::shared_ptr<GetVMInfoResponse> resp = m_cnwareClient->GetVMInfo(req);
     if (resp == nullptr) {
         ERRLOG("Get VM info failed, %s", m_taskId.c_str());
-        return "";
+        return UNKOWN_AGENT;
     }
     m_serverName = std::move(resp->GetInfo().m_name);
     INFOLOG("Set serverName : %s", m_serverName.c_str());
-    return m_serverName;
+    return m_serverName.empty() ? UNKOWN_AGENT : m_serverName;
 }
 }

@@ -37,8 +37,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- **/
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {LocalRedisConfiguration.class, RedissonAutoConfiguration.class, ContextManager.class,
         RedissonClient.class})

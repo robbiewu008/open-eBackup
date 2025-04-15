@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -31,6 +31,7 @@ import { ClustersComponent } from 'app/business/protection/big-data/hbase/cluste
 import { FilesetsComponent } from 'app/business/protection/big-data/hdfs/filesets/filesets.component';
 import { HuaWeiStackListComponent } from 'app/business/protection/cloud/huawei-stack/stack-list/huawei-stack-list.component';
 import { OpenstackListComponent } from 'app/business/protection/cloud/openstack/openstack-list/openstack-list.component';
+import { RegisterComponent as RegisterAntDBInstanceComponent } from 'app/business/protection/database/ant-db/register/register.component';
 import { ClusterComponent as ClickHouseClusterComponent } from 'app/business/protection/host-app/click-house/cluster/cluster.component';
 import { DatabaseComponent as ClickHouseDatabaseComponent } from 'app/business/protection/host-app/click-house/database/database.component';
 import { TabelSetComponent as ClickHouseTablesetComonent } from 'app/business/protection/host-app/click-house/tabel-set/tabel-set.component';
@@ -66,6 +67,7 @@ import { SummaryComponent as TDSQLInstanceComponent } from 'app/business/protect
 import { RegisterClusterComponent as RegisterTidbClusterComponent } from 'app/business/protection/host-app/tidb/register-cluster/register-cluster.component';
 import { RegisterDatabaseComponent as RegisterTidbDatabaseComponent } from 'app/business/protection/host-app/tidb/register-database/register-database.component';
 import { RegisterTableComponent as RegisterTidbTableComponent } from 'app/business/protection/host-app/tidb/register-table/register-table.component';
+import { CreateVolumeComponent } from 'app/business/protection/host-app/volume/create-volume/create-volume.component';
 import { DoradoFileSystemComponent } from 'app/business/protection/storage/dorado-file-system/dorado-file-system.component';
 import { NasSharedComponent } from 'app/business/protection/storage/nas-shared/nas-shared.component';
 import { RegisterNasShareComponent } from 'app/business/protection/storage/nas-shared/register-nas-share/register-nas-share.component';
@@ -98,10 +100,10 @@ import {
   HcsResourceServiceService,
   HostService,
   I18NService,
+  JobAPIService,
   MODAL_COMMON,
   OperateItems,
   OpHcsServiceApiService,
-  Page_Size_Options,
   ProjectedObjectApiService,
   ProtectedEnvironmentApiService,
   ProtectedResourceApiService,
@@ -113,11 +115,11 @@ import {
   SearchResource,
   SnmpApiService,
   SwitchService,
-  Table_Size,
   VirtualResourceService,
   WarningMessageService
 } from 'app/shared';
 import { WarningBatchConfirmsService } from 'app/shared/components/warning-batch-confirm/warning-batch-confirm.component';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { InfoMessageService } from 'app/shared/services/info-message.service';
@@ -138,6 +140,7 @@ import {
   has,
   includes,
   isEmpty,
+  isNil,
   map as _map,
   mapValues,
   omit,
@@ -148,6 +151,8 @@ import {
 } from 'lodash';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { GetLabelOptionsService } from '../../../shared/services/get-labels.service';
+import { SaponoracleRegisterDatabaseComponent } from '../../protection/application/saponoracle/register-database/register-database.component';
 
 @Component({
   selector: 'aui-resource-list',
@@ -289,7 +294,10 @@ export class ResourceListComponent implements OnInit, OnDestroy {
     private registerService: RegisterService,
     private hcsResourceService: HcsResourceServiceService,
     private opHcsServiceApiService: OpHcsServiceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService,
+    private appUtilsService?: AppUtilsService,
+    private jobApiService?: JobAPIService
   ) {}
 
   ngOnDestroy() {
@@ -300,12 +308,6 @@ export class ResourceListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getStore();
     this.getComponent();
-    this.virtualScroll.getScrollParam(
-      350,
-      Page_Size_Options.Three,
-      Table_Size.Default,
-      'search-resource-table'
-    );
   }
 
   getResources() {
@@ -442,7 +444,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
                   DataMap.Resource_Type.ExchangeSingle.value,
                   DataMap.Resource_Type.ExchangeGroup.value,
                   DataMap.Resource_Type.ExchangeDataBase.value,
-                  DataMap.Resource_Type.ExchangeEmail.value
+                  DataMap.Resource_Type.ExchangeEmail.value,
+                  DataMap.Resource_Type.volume.value,
+                  DataMap.Resource_Type.nutanixVm.value
                 ],
                 item.sub_type
               )
@@ -489,7 +493,20 @@ export class ResourceListComponent implements OnInit, OnDestroy {
 
                   if (
                     [
-                      DataMap.Resource_Type.lightCloudGaussdbInstance.value,
+                      DataMap.Resource_Type.lightCloudGaussdbInstance.value
+                    ].includes(item.sub_type)
+                  ) {
+                    assign(resource, {
+                      isAllowRestore: get(
+                        resource,
+                        'extendInfo.isAllowRestore',
+                        'true'
+                      )
+                    });
+                  }
+
+                  if (
+                    [
                       DataMap.Resource_Type.DWS_Database.value,
                       DataMap.Resource_Type.DWS_Schema.value,
                       DataMap.Resource_Type.DWS_Table.value,
@@ -509,7 +526,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
                     includes(
                       [
                         DataMap.Resource_Type.tidbDatabase.value,
-                        DataMap.Resource_Type.tidbTable.value
+                        DataMap.Resource_Type.tidbTable.value,
+                        DataMap.Resource_Type.AntDBInstance.value,
+                        DataMap.Resource_Type.AntDBClusterInstance.value
                       ],
                       item.sub_type
                     )
@@ -563,20 +582,18 @@ export class ResourceListComponent implements OnInit, OnDestroy {
         sub_type: item.subType,
         belong_cluster: item['environment']['name'],
         owned_instance: item.parentName,
-        instanceStatus: DataMap.openGauss_InstanceStatus.offline.value,
-        sync_mode: item.environment.extendInfo.syncMode
+        instanceState: DataMap.openGauss_InstanceStatus.offline.value
       });
     } else {
       assign(item, {
         sub_type: item.subType,
         belong_cluster: item['environment']['name'],
         owned_instance: item.parentName,
-        instanceStatus:
+        instanceState:
           item.extendInfo.instanceState ===
           DataMap.openGauss_InstanceStatus.normal.value
             ? DataMap.openGauss_InstanceStatus.normal.value
-            : DataMap.openGauss_InstanceStatus.offline.value,
-        sync_mode: item.environment.extendInfo.syncMode
+            : DataMap.openGauss_InstanceStatus.offline.value
       });
     }
   }
@@ -968,6 +985,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       case DataMap.Resource_Type.DBBackupAgent.value:
         return this.hostComponent.getOptItems(item);
       case DataMap.Resource_Type.oracle.value:
+      case DataMap.Resource_Type.oracleCluster.value:
         return this.oracleComponent.getOptItems(item);
       case DataMap.Resource_Type.LocalFileSystem.value:
         this.doradoFileSystemComponent.initConfig();
@@ -1171,6 +1189,32 @@ export class ResourceListComponent implements OnInit, OnDestroy {
           return;
         }
       }
+      case DataMap.Resource_Type.AntDBInstance.value:
+      case DataMap.Resource_Type.AntDBClusterInstance.value:
+        this.databaseTemplateComponent.configParams = {
+          activeIndex: DataMap.Resource_Type.AntDB.value,
+          tableCols: [],
+          tableOpts: [
+            'register',
+            'protect',
+            'modifyProtect',
+            'removeProtection',
+            'activeProtection',
+            'deactiveProtection',
+            'recovery',
+            'manualBackup',
+            'connectivityTest',
+            'modify',
+            'deleteResource'
+          ],
+          registerComponent: RegisterAntDBInstanceComponent
+        };
+        this.databaseTemplateComponent.initConfig();
+        return getTableOptsItems(
+          this.databaseTemplateComponent.optItems,
+          item,
+          this.databaseTemplateComponent
+        );
       case DataMap.Resource_Type.saphanaDatabase.value:
         this.databaseTemplateComponent.configParams = {
           activeIndex: DataMap.Resource_Type.saphanaDatabase.value,
@@ -1209,6 +1253,31 @@ export class ResourceListComponent implements OnInit, OnDestroy {
             'deleteResource'
           ],
           registerComponent: RegisterSaphanaInstanceComponent
+        };
+        this.databaseTemplateComponent.initConfig();
+        return getTableOptsItems(
+          this.databaseTemplateComponent.optItems,
+          item,
+          this.databaseTemplateComponent
+        );
+      case DataMap.Resource_Type.saponoracleDatabase.value:
+        this.databaseTemplateComponent.configParams = {
+          activeIndex: DataMap.Resource_Type.saponoracleDatabase.value,
+          tableCols: [],
+          tableOpts: [
+            'register',
+            'protect',
+            'modifyProtect',
+            'removeProtection',
+            'activeProtection',
+            'deactiveProtection',
+            'recovery',
+            'manualBackup',
+            'connectivityTest',
+            'modify',
+            'deleteResource'
+          ],
+          registerComponent: SaponoracleRegisterDatabaseComponent
         };
         this.databaseTemplateComponent.initConfig();
         return getTableOptsItems(
@@ -1856,6 +1925,30 @@ export class ResourceListComponent implements OnInit, OnDestroy {
           item,
           this.databaseTemplateComponent
         );
+      case DataMap.Resource_Type.volume.value:
+        this.databaseTemplateComponent.configParams = {
+          activeIndex: DataMap.Resource_Type.volume.value,
+          tableCols: [],
+          tableOpts: [
+            'register',
+            'protect',
+            'modifyProtect',
+            'removeProtection',
+            'activeProtection',
+            'deactiveProtection',
+            'recovery',
+            'manualBackup',
+            'modify',
+            'deleteResource'
+          ],
+          registerComponent: CreateVolumeComponent
+        };
+        this.databaseTemplateComponent.initConfig();
+        return getTableOptsItems(
+          this.databaseTemplateComponent.optItems,
+          item,
+          this.databaseTemplateComponent
+        );
       case DataMap.Resource_Type.APSCloudServer.value:
       case DataMap.Resource_Type.APSResourceSet.value:
       case DataMap.Resource_Type.APSZone.value:
@@ -1865,6 +1958,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       case DataMap.Resource_Type.hyperVCluster.value:
       case DataMap.Resource_Type.hyperVHost.value:
       case DataMap.Resource_Type.hyperVVm.value:
+      case DataMap.Resource_Type.nutanixCluster.value:
+      case DataMap.Resource_Type.nutanixHost.value:
+      case DataMap.Resource_Type.nutanixVm.value:
         this.baseTableComponent.subType = item.sub_type;
         this.baseTableComponent.initConfig();
         return getTableOptsItems(
@@ -1959,23 +2055,43 @@ export class ResourceListComponent implements OnInit, OnDestroy {
           case DataMap.Resource_Type.ABBackupClient.value:
           case DataMap.Resource_Type.VMBackupAgent.value:
           case DataMap.Resource_Type.DBBackupAgent.value:
-            this.environmentsApiService
-              .queryResourcesV1EnvironmentsGet(params)
+            this.clientManagerApiService
+              .queryAgentListInfoUsingGET(params)
               .subscribe(res => {
-                optItems = this.hostComponent.getOptItems(
-                  first(res.items) || {}
-                );
-                this.openDetail(res, optItems);
+                const host: any = first(res.records) || {};
+                if (!isEmpty(host)) {
+                  const _trustworthiness = get(host, [
+                    'extendInfo',
+                    'trustworthiness'
+                  ]);
+                  assign(host, {
+                    sub_type: host.subType,
+                    protection_status: host.protectionStatus,
+                    link_status: Number(host.linkStatus),
+                    os_type: host.osType,
+                    authorized_user: host.authorizedUser,
+                    trustworthiness: isNil(_trustworthiness)
+                      ? false
+                      : JSON.parse(_trustworthiness)
+                  });
+                  optItems = this.hostComponent.getOptItems(host);
+                }
+                this.openDetail(host, optItems);
               });
             break;
           case DataMap.Resource_Type.oracle.value:
-            this.databasesService
-              .queryResourcesV1DatabasesGet(params)
+          case DataMap.Resource_Type.oracleCluster.value:
+            this.protectedResourceApiService
+              .ShowResource({ resourceId: item.uuid })
               .subscribe(res => {
-                optItems = this.oracleComponent.getOptItems(
-                  first(res.items) || {}
-                );
-                res.items[0]['ip'] = res.items[0].environment_endpoint;
+                extendSlaInfo(res);
+                assign(res, {
+                  sub_type: res.subType,
+                  link_status: res.extendInfo?.linkStatus,
+                  verify_status: res.extendInfo?.verify_status === 'true',
+                  ip: item.path || item.endpoint
+                });
+                optItems = this.oracleComponent.getOptItems(res || {});
                 this.openDetail(res, optItems);
               });
             break;
@@ -2196,6 +2312,29 @@ export class ResourceListComponent implements OnInit, OnDestroy {
             this.databaseTemplateComponent.initConfig();
             this.databaseTemplateComponent.getResourceDetail(res);
             break;
+          case DataMap.Resource_Type.AntDBInstance.value:
+          case DataMap.Resource_Type.AntDBClusterInstance.value:
+            this.databaseTemplateComponent.configParams = {
+              activeIndex: DataMap.Resource_Type.AntDB.value,
+              tableCols: [],
+              tableOpts: [
+                'register',
+                'protect',
+                'modifyProtect',
+                'removeProtection',
+                'activeProtection',
+                'deactiveProtection',
+                'recovery',
+                'manualBackup',
+                'connectivityTest',
+                'modify',
+                'deleteResource'
+              ],
+              registerComponent: RegisterAntDBInstanceComponent
+            };
+            this.databaseTemplateComponent.initConfig();
+            this.databaseTemplateComponent.getResourceDetail(res);
+            break;
           case DataMap.Resource_Type.saphanaInstance.value:
             this.databaseTemplateComponent.configParams = {
               activeIndex: DataMap.Resource_Type.saphanaInstance.value,
@@ -2231,6 +2370,28 @@ export class ResourceListComponent implements OnInit, OnDestroy {
                 'deleteResource'
               ],
               registerComponent: RegisterSaphanaDatabaseComponent
+            };
+            this.databaseTemplateComponent.initConfig();
+            this.databaseTemplateComponent.getResourceDetail(res);
+            break;
+          case DataMap.Resource_Type.saponoracleDatabase.value:
+            this.databaseTemplateComponent.configParams = {
+              activeIndex: DataMap.Resource_Type.saponoracleDatabase.value,
+              tableCols: [],
+              tableOpts: [
+                'register',
+                'protect',
+                'modifyProtect',
+                'removeProtection',
+                'activeProtection',
+                'deactiveProtection',
+                'recovery',
+                'manualBackup',
+                'connectivityTest',
+                'modify',
+                'deleteResource'
+              ],
+              registerComponent: SaponoracleRegisterDatabaseComponent
             };
             this.databaseTemplateComponent.initConfig();
             this.databaseTemplateComponent.getResourceDetail(res);
@@ -2720,6 +2881,29 @@ export class ResourceListComponent implements OnInit, OnDestroy {
             this.databaseTemplateComponent.initConfig();
             this.databaseTemplateComponent.getResourceDetail(res);
             break;
+          case DataMap.Resource_Type.volume.value:
+            assign(res, {
+              sub_type: res.subType
+            });
+            this.databaseTemplateComponent.configParams = {
+              activeIndex: DataMap.Resource_Type.volume.value,
+              tableCols: [],
+              tableOpts: [
+                'protect',
+                'modifyProtect',
+                'removeProtection',
+                'activeProtection',
+                'deactiveProtection',
+                'recovery',
+                'manualBackup',
+                'modify',
+                'deleteResource'
+              ],
+              registerComponent: CreateVolumeComponent
+            };
+            this.databaseTemplateComponent.initConfig();
+            this.databaseTemplateComponent.getResourceDetail(res);
+            break;
           case DataMap.Resource_Type.APSCloudServer.value:
           case DataMap.Resource_Type.APSZone.value:
           case DataMap.Resource_Type.APSResourceSet.value:
@@ -2732,6 +2916,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
           case DataMap.Resource_Type.hyperVCluster.value:
           case DataMap.Resource_Type.hyperVHost.value:
           case DataMap.Resource_Type.hyperVVm.value:
+          case DataMap.Resource_Type.nutanixCluster.value:
+          case DataMap.Resource_Type.nutanixHost.value:
+          case DataMap.Resource_Type.nutanixVm.value:
             this.baseTableComponent.subType = res.subType;
             this.baseTableComponent.initConfig();
             this.baseTableComponent.getResourceDetail(res);
@@ -2741,7 +2928,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
   }
 
   openDetail(res: any, optItems: any[]) {
-    if (!res || !size(res.items)) {
+    if (isEmpty(res)) {
       this.message.error(this.i18n.get('common_resource_not_exist_label'), {
         lvShowCloseButton: true,
         lvMessageKey: 'resNotExistMesageKey'
@@ -2749,7 +2936,6 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const item = first(res.items) as any;
     if (
       includes(
         mapValues(this.drawModalService.modals, 'key'),
@@ -2766,7 +2952,7 @@ export class ResourceListComponent implements OnInit, OnDestroy {
           DataMap.Resource_Type.hostSystem.value,
           DataMap.Resource_Type.virtualMachine.value
         ],
-        item.sub_type
+        res.subType
       )
     ) {
       if (
@@ -2776,14 +2962,20 @@ export class ResourceListComponent implements OnInit, OnDestroy {
             DataMap.Resource_Type.DBBackupAgent.value,
             DataMap.Resource_Type.VMBackupAgent.value
           ],
-          item.sub_type
+          res.subType
         )
       ) {
-        item.subType = DataMap.Resource_Type.ABBackupClient.value;
+        this.detailService.openDetailModal(
+          DataMap.Resource_Type.ABBackupClient.value,
+          {
+            data: { ...res, optItems }
+          }
+        );
+      } else {
+        this.detailService.openDetailModal(res.subType, {
+          data: { ...res, optItems }
+        });
       }
-      this.detailService.openDetailModal(item.subType, {
-        data: { ...item, optItems }
-      });
     }
   }
 
@@ -2816,7 +3008,30 @@ export class ResourceListComponent implements OnInit, OnDestroy {
   getProtectionStatus(item) {
     if (
       includes(
-        [DataMap.Resource_Type.tdsqlCluster.value],
+        [
+          DataMap.Resource_Type.tdsqlCluster.value,
+          DataMap.Resource_Type.goldendbCluter.value,
+          DataMap.Resource_Type.PostgreSQLCluster.value,
+          DataMap.Resource_Type.UBackupAgent.value,
+          DataMap.Resource_Type.SQLServerCluster.value,
+          DataMap.Resource_Type.MySQLCluster.value,
+          DataMap.Resource_Type.dbTwoCluster.value,
+          DataMap.Resource_Type.dbTwoClusterInstance.value,
+          DataMap.Resource_Type.dbTwoInstance.value,
+          DataMap.Resource_Type.informixService.value,
+          DataMap.Resource_Type.Elasticsearch.value,
+          DataMap.Resource_Type.HBase.value,
+          DataMap.Resource_Type.HDFS.value,
+          DataMap.Resource_Type.Hive.value,
+          DataMap.Resource_Type.hyperVCluster.value,
+          DataMap.Resource_Type.hyperVScvmm.value,
+          DataMap.Resource_Type.Kubernetes.value,
+          DataMap.Resource_Type.saphanaInstance.value,
+          DataMap.Resource_Type.gaussdbForOpengaussProject.value,
+          DataMap.Resource_Type.KingBaseCluster.value,
+          DataMap.Resource_Type.OpenGauss.value,
+          DataMap.Resource_Type.ClickHouse.value
+        ],
         item.sub_type || item.subType
       )
     ) {
@@ -2935,7 +3150,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.takeManualBackupService,
       this.protectedResourceApiService,
       this.protectedEnvironmentApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
     this.nasSharedComponent = new NasSharedComponent(
       this.i18n,
@@ -2951,7 +3167,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.batchOperateService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService,
+      this.appUtilsService
     );
     this.hdfsFilesetsComponent = new FilesetsComponent(
       this.i18n,
@@ -2967,7 +3185,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.warningMessageService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService,
+      this.appUtilsService
     );
     this.hbaseBackupSetComponent = new BackupSetComponent(
       this.i18n,
@@ -2982,7 +3202,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.batchOperateService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService,
+      this.appUtilsService
     );
     this.kubernetesClusterComponent = new ClusterComponent(
       this.i18n,
@@ -2995,7 +3217,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.virtualScroll,
       this.protectedEnvironmentApiService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
     this.kubernetesComponent = new BaseTemplateComponent(
       this.i18n,
@@ -3011,7 +3234,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.warningMessageService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
     this.redisClusterComponent = new RedisShowComponent(
       this.i18n,
@@ -3027,7 +3251,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.batchOperateService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService,
+      this.appUtilsService
     );
     this.postgreClusterComponent = new PostgreClusterComponent(
       this.i18n,
@@ -3038,7 +3264,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.batchOperateService,
       this.warningMessageService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
     this.postgreInstanceComponent = new PostgreInstanceDatabaseComponent(
       this.i18n,
@@ -3054,7 +3281,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.batchOperateService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService,
+      this.appUtilsService
     );
     this.kingBaseClusterComponent = new KingBaseClusterComponent(
       this.i18n,
@@ -3066,7 +3295,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.batchOperateService,
       this.warningMessageService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
     this.kingBaseInstanceComponent = new KingBaseInstanceDatabaseComponent(
       this.i18n,
@@ -3082,7 +3312,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.batchOperateService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService,
+      this.appUtilsService
     );
     this.fcListComponent = new FusionListComponent(
       this.i18n,
@@ -3129,7 +3361,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.batchOperateService,
       this.warningMessageService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.appUtilsService,
+      this.getLabelOptionsService
     );
     this.mysqlListComponent = new MySQLListComponent(
       this.i18n,
@@ -3146,7 +3380,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.takeManualBackupService,
       this.protectedEnvironmentApiService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
     this.clickhouseDatabaseComponent = new ClickHouseDatabaseComponent(
       this.i18n,
@@ -3160,7 +3395,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.detailService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService,
+      this.appUtilsService
     );
     this.clickHouseTablesetComonent = new ClickHouseTablesetComonent(
       this.i18n,
@@ -3177,7 +3414,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.warningMessageService,
       this.slaService,
       this.drawModalService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService,
+      this.appUtilsService
     );
     this.clickHouseClusterComonent = new ClickHouseClusterComponent(
       this.i18n,
@@ -3192,7 +3431,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.warningMessageService,
       this.protectedEnvironmentApiService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
     this.instanceDatabaseComponent = new InstanceDatabaseComponent(
       this.i18n,
@@ -3209,7 +3449,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.takeManualBackupService,
       this.protectedResourceApiService,
       this.protectedEnvironmentApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
     this.openGaussComponent = new OpenGaussComponent(
       this.i18n,
@@ -3221,7 +3462,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.detailService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
     this.openGaussClusterComponent = new OpenGaussClusterComponent(
       this.i18n,
@@ -3235,7 +3477,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.warningMessageService,
       this.protectedResourceApiService,
       this.protectedEnvironmentApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
     this.damengComponent = new DamengComponent(
       this.i18n,
@@ -3251,7 +3494,9 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.warningMessageService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService,
+      this.appUtilsService
     );
     this.clustersComponent = new ClustersComponent(
       this.i18n,
@@ -3265,7 +3510,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.protectedEnvironmentApiService,
       this.exceptionService,
       this.message,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
     this.openstackListComponent = new OpenstackListComponent(
       this.i18n,
@@ -3279,7 +3525,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.detailService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
     this.generalDatabaseComponent = new TableTemplateComponent(
       this.i18n,
@@ -3295,15 +3542,19 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.batchOperateService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService,
+      this.appUtilsService
     );
 
     this.databaseTemplateComponent = new DatabaseTemplateComponent(
       this.i18n,
       this.cdr,
       this.slaService,
+      this.jobApiService,
       this.dataMapService,
       this.protectService,
+      this.messageBox,
       this.messageService,
       this.registerService,
       this.drawModalService,
@@ -3313,7 +3564,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.warningMessageService,
       this.takeManualBackupService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
 
     this.objectStorageComponent = new ObjectStorageComponent(
@@ -3326,7 +3578,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.batchOperateService,
       this.warningMessageService,
       this.protectedResourceApiService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
 
     this.mongodbComponent = new MongodbComponent(
@@ -3354,7 +3607,8 @@ export class ResourceListComponent implements OnInit, OnDestroy {
       this.warningMessageService,
       this.batchOperateService,
       this.globalService,
-      this.setResourceTagService
+      this.setResourceTagService,
+      this.getLabelOptionsService
     );
   }
 }

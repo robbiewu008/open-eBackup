@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   Component,
@@ -24,21 +24,15 @@ import {
   DataMap,
   DataMapService,
   I18NService,
-  JobAPIService
+  JobAPIService,
+  SYSTEM_TIME
 } from 'app/shared';
 import { SystemTimeService } from 'app/shared/services/system-time.service';
-import {
-  chunk,
-  cloneDeep,
-  each,
-  first,
-  includes,
-  mapValues,
-  values
-} from 'lodash';
-import { Subject, Subscription, combineLatest, timer } from 'rxjs';
+import { chunk, cloneDeep, each, first, includes, values } from 'lodash';
+import { Subject, Subscription, timer } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { BaseTableComponent } from '../../virtualization-base/base-table/base-table.component';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'aui-group-job-detail',
@@ -50,9 +44,8 @@ export class GroupJobDetailComponent implements OnInit, OnDestroy {
   job;
   isSelectedResource;
   detailData;
-  sysTime;
   dataMap = DataMap;
-  timeZone = 'UTC+08:00';
+  timeZone = SYSTEM_TIME.timeZone;
   jobForms = {};
   _values = values;
   jobDestroy$ = new Subject();
@@ -69,7 +62,8 @@ export class GroupJobDetailComponent implements OnInit, OnDestroy {
     private jobApiService: JobAPIService,
     private systemTimeService: SystemTimeService,
     public modal: ModalRef,
-    public messageService: MessageService
+    public messageService: MessageService,
+    private appUtilsService: AppUtilsService
   ) {}
   ngOnDestroy(): void {
     this.jobDestroy$.next(true);
@@ -97,30 +91,23 @@ export class GroupJobDetailComponent implements OnInit, OnDestroy {
     this.jobSubscription$ = timer(0, 5 * 1e3)
       .pipe(
         switchMap(index => {
-          return combineLatest([
-            this.systemTimeService.getSystemTime(!index),
-            this.jobApiService
-              .queryJobsUsingGET({
-                jobId: this.job?.jobId,
-                akLoading: !index
+          return this.jobApiService
+            .queryJobsUsingGET({
+              jobId: this.job?.jobId,
+              akLoading: !index
+            })
+            .pipe(
+              map(res => {
+                return first(res.records);
               })
-              .pipe(
-                map(res => {
-                  return first(res.records);
-                })
-              )
-          ]);
+            );
         }),
         takeUntil(this.jobDestroy$)
       )
       .subscribe(result => {
-        this.timeZone = result[0].displayName;
-        this.sysTime = new Date(
-          `${result[0].time.replace(/-/g, '/')} ${result[0].displayName}`
-        ).getTime();
         this.job = {
           ...cloneDeep(this.job),
-          ...result[1]
+          ...result
         };
         this.initJobForms();
       });
@@ -167,6 +154,7 @@ export class GroupJobDetailComponent implements OnInit, OnDestroy {
         value = this.dataMapService.getLabel('Job_Target_Type', value);
         break;
       case 'durationTime':
+        const systemTime = this.appUtilsService.getCurrentSysTime();
         value = this.job.getDuration(
           includes(
             [
@@ -177,9 +165,9 @@ export class GroupJobDetailComponent implements OnInit, OnDestroy {
             ],
             this.job.status
           )
-            ? this.sysTime - this.job.startTime < 0
+            ? systemTime - this.job.startTime < 0
               ? 0
-              : this.sysTime - this.job.startTime
+              : systemTime - this.job.startTime
             : this.job.endTime
             ? this.job.endTime - this.job.startTime
             : 0

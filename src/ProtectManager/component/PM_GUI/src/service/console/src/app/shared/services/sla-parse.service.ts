@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Injectable } from '@angular/core';
 import {
   BIG_DATA_ICONS,
@@ -307,10 +307,19 @@ export class SlaParseService {
         is_reserved_latest_snapshot:
           backup.ext_parameters?.is_reserved_latest_snapshot,
         storage_id: backup.ext_parameters?.storage_id,
+        worm_validity_type: backup.worm_validity_type,
+        worm_specified_retention_duration:
+          backup.retention.worm_retention_duration,
+        worm_specified_duration_unit:
+          backup.retention.worm_duration_unit ||
+          DataMap.Interval_Unit.day.value,
         ext_parameters: {
           ...backup.ext_parameters,
           storage_id: backup.ext_parameters?.storage_info?.storage_id,
-          storage_type: backup.ext_parameters?.storage_info?.storage_type
+          storage_type: backup.ext_parameters?.storage_info?.storage_type,
+          device_type:
+            backup.ext_parameters?.storage_info?.device_type ||
+            DataMap.poolStorageDeviceType.OceanProtectX.value
         }
       });
       policy_list.push(backup);
@@ -397,6 +406,7 @@ export class SlaParseService {
           archival.ext_parameters.archiving_scope ||
           DataMap.Archive_Scope.latest.value,
         network_access: archival.ext_parameters.network_access,
+        log_archive: archival.ext_parameters?.log_archive || false,
         alarm_after_failure: archival.ext_parameters.alarm_after_failure,
         auto_retry: archival.ext_parameters.auto_retry,
         auto_retry_times: archival.ext_parameters.auto_retry_times || 3,
@@ -485,12 +495,12 @@ export class SlaParseService {
       }
       const reParams = {
         uuid: replication.uuid,
+        action: replication.action,
         name: replication.name,
         qos_id: replication.ext_parameters.qos_id,
         qos_name: qos ? qos.name : '',
         link_deduplication: replication.ext_parameters.link_deduplication,
         link_compression: replication.ext_parameters.link_compression,
-        is_worm: replication.ext_parameters.is_worm ?? false,
         alarm_after_failure: replication.ext_parameters.alarm_after_failure,
         local_storage_type:
           replication.ext_parameters?.local_storage_type ||
@@ -508,6 +518,7 @@ export class SlaParseService {
         storage_id: replication?.ext_parameters?.storage_info?.storage_id,
         user_id: replication?.ext_parameters?.user_info?.user_id,
         userName: replication?.ext_parameters?.user_info?.username,
+        userType: replication?.ext_parameters?.user_info?.userType,
         replication_target_mode:
           replication?.ext_parameters?.replication_target_mode,
         backupExecuteTrigger:

@@ -79,9 +79,6 @@
                 "
               >
                 <i
-                  [ngClass]="{
-                    'icon-eye-open': item.icon === 'aui-icon-eye-open'
-                  }"
                   lv-icon="{{ item.icon }}"
                   lvTooltipPosition="rightTop"
                   lvTooltipTheme="light"
@@ -109,18 +106,7 @@
             />
           </lv-form-control>
         </lv-form-item>
-        <lv-form-item>
-          <lv-form-label lvRequired>{{ smtpPortLabel }}</lv-form-label>
-          <lv-form-control [lvErrorTip]="rangeErrorTip">
-            <input
-              lv-input
-              type="text"
-              formControlName="port"
-              placeholder="1~65535"
-              class="form-control-input"
-            />
-          </lv-form-control>
-        </lv-form-item>
+
         <lv-form-item>
           <lv-form-label lvRequired>{{ senderEmailLabel }}</lv-form-label>
           <lv-form-control [lvErrorTip]="emailErrorTip">
@@ -158,11 +144,8 @@
               (ngModelChange)="encryptionMethodChange($event)"
               class="form-control-input"
             ></lv-select>
-            <div>
-              <i lv-icon="lv-icon-status-info" class="icon-info"></i>
-              <span class="encription-tip aui-text-help-sm">
-                {{ encriptionTipLabel }}
-              </span>
+            <div class="aui-paginator-wrap">
+              <lv-alert lvType="info" lvClosable="false">{{ encriptionTipLabel }}</lv-alert>
             </div>
           </lv-form-control>
         </lv-form-item>
@@ -175,6 +158,18 @@
               lv-input
               type="text"
               formControlName="sslSmtpPort"
+              placeholder="1~65535"
+              class="form-control-input"
+            />
+          </lv-form-control>
+        </lv-form-item>
+        <lv-form-item *ngIf="(sendeForm.value['protocol'] != 1)">
+          <lv-form-label lvRequired>{{ smtpPortLabel }}</lv-form-label>
+          <lv-form-control [lvErrorTip]="rangeErrorTip">
+            <input
+              lv-input
+              type="text"
+              formControlName="port"
               placeholder="1~65535"
               class="form-control-input"
             />

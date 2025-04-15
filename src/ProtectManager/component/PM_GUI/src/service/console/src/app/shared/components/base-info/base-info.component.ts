@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
@@ -368,6 +368,15 @@ export class BaseInfoComponent implements OnInit, OnDestroy {
         this.removeLinkStatus();
         break;
       }
+      case DataMap.Resource_Type.oraclePDB.value: {
+        this.formItems[0][0].content = this.source.name;
+        this.formItems[0][1].content = `${this.source.parentName}(${this.source.environment?.endpoint})`;
+        this.formItems[0][1].label = this.i18n.get(
+          'protection_host_database_name_label'
+        );
+        this.formItems[0][2].content = this.source.linkStatus;
+        break;
+      }
       case DataMap.Resource_Type.DWS_Table.value: {
         this.formItems[0][0].content = this.source.name;
         this.formItems[0][1].content = this.source.clusterOrHostName;
@@ -401,7 +410,7 @@ export class BaseInfoComponent implements OnInit, OnDestroy {
         this.formItems[0][0].content = this.source.name;
         this.formItems[0][1].content = this.source.environment?.name;
         this.formItems[0][1].label = this.i18n.get(
-          'protection_host_name_label'
+          'protection_client_name_label'
         );
         this.formItems[0][2].content = this.source.environment?.endpoint;
         this.formItems[0][2].label = this.i18n.get('common_ip_address_label');
@@ -523,7 +532,10 @@ export class BaseInfoComponent implements OnInit, OnDestroy {
             {
               key: 'parentName',
               label: this.i18n.get('protection_storage_device_label'),
-              content: this.source.parentName || this.source.parent_name
+              content:
+                this.source.parentName ||
+                this.source.parent_name ||
+                this.source.environment?.name
             },
             {
               key: 'parentIp',
@@ -599,7 +611,7 @@ export class BaseInfoComponent implements OnInit, OnDestroy {
           'insight_report_belong_cluster_label'
         );
         this.formItems[0][2].content =
-          this.source.instanceStatus ===
+          this.source.instanceState ===
           DataMap.openGauss_InstanceStatus.normal.value
             ? 1
             : 0;
@@ -660,17 +672,16 @@ export class BaseInfoComponent implements OnInit, OnDestroy {
         }
         break;
       }
-      case DataMap.Resource_Type.KingBaseClusterInstance.value:
-      case DataMap.Resource_Type.PostgreSQLClusterInstance.value: {
+      case DataMap.Resource_Type.AntDBClusterInstance.value:
+      case DataMap.Resource_Type.AntDBInstance.value: {
         this.formItems[0][0].content = this.source.name;
-        this.formItems[0][1].content = this.source?.environment?.name;
-        this.formItems[0][1].label = this.i18n.get(
-          'protection_host_cluster_name_label'
-        );
-        this.formItems[0][2].content =
+        this.removeType();
+        this.formItems[0][1].content =
           this.source?.linkStatus === '1' ? '0' : '1';
         break;
       }
+      case DataMap.Resource_Type.KingBaseClusterInstance.value:
+      case DataMap.Resource_Type.PostgreSQLClusterInstance.value:
       case DataMap.Resource_Type.KingBaseInstance.value:
       case DataMap.Resource_Type.PostgreSQLInstance.value: {
         this.formItems[0][0].content = this.source.name;
@@ -717,11 +728,17 @@ export class BaseInfoComponent implements OnInit, OnDestroy {
         this.removeLinkStatus();
         break;
       }
-      case DataMap.Resource_Type.cNwareVm.value: {
+      case DataMap.Resource_Type.cNwareVm.value:
+      case DataMap.Resource_Type.nutanixVm.value: {
         this.formItems[0][0].content = this.source.name;
         this.formItems[0][1].content = this.source?.path;
         this.formItems[0][1].label = this.i18n.get('common_location_label');
-        this.formItems[0][2].content = this.source?.status;
+        if (this.sourceType === DataMap.Resource_Type.nutanixVm.value) {
+          this.formItems[0][2].content = this.source?.extendInfo?.status;
+        } else {
+          this.formItems[0][2].content = this.source?.status;
+        }
+
         break;
       }
       case DataMap.Resource_Type.ExchangeSingle.value: {
@@ -756,6 +773,13 @@ export class BaseInfoComponent implements OnInit, OnDestroy {
         this.formItems[0][1].content = this.source.environment?.name;
         this.formItems[0][1].label = '';
         this.formItems[0][2].content = this.source.linkStatus;
+        break;
+      }
+      case DataMap.Resource_Type.saponoracleDatabase.value: {
+        this.formItems[0][0].content = this.source.name;
+        this.formItems[0][1].content = '';
+        this.formItems[0][1].label = '';
+        this.formItems[0][2].content = this.source.extendInfo?.linkStatus;
         break;
       }
     }

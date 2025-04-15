@@ -13,9 +13,10 @@
 package openbackup.gaussdbdws.protection.access.constant;
 
 import com.huawei.oceanprotect.sla.sdk.enums.PolicyAction;
-import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 
 import com.google.common.collect.ImmutableMap;
+
+import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 
 import java.util.Map;
 
@@ -256,4 +257,19 @@ public class DwsConstant {
         DwsConstant.EXTEND_INFO_UNAVAILABLE_VALUE_STATE, LinkStatusEnum.UNAVAILABLE.getStatus().toString(),
         DwsConstant.EXTEND_INFO_DEGRADED_VALUE_STATE, LinkStatusEnum.DEGRADED.getStatus().toString(),
         DwsConstant.EXTEND_INFO_UNSTARTED_VALUE_STATE, LinkStatusEnum.UNSTARTED.getStatus().toString());
+
+    /**
+     * 删除dws最后一个副本的时候，下发所有存储的esn
+     */
+    public static final String ALL_DEVICE_ESN = "allDeviceEsn";
+
+    /**
+     * meta仓类型
+     */
+    public static final int META_REPO_TYPE = 0;
+
+    /**
+     * 删除dws最后一个副本的时候，下发true,其他为false
+     */
+    public static final String IS_NEED_CLEAN_OTHER_NODE = "isNeedCleanOtherNode";
 }

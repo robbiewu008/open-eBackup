@@ -22,22 +22,25 @@ import stat
 import time
 import uuid
 
-from common.const import SubJobStatusEnum, ParamConstant
+from common.const import SubJobStatusEnum, ParamConstant, RepositoryDataTypeEnum
 from common.common import execute_cmd, output_execution_result_ex
 from common.util.check_user_utils import check_os_user
 from common.util.check_utils import check_repo_path
 from common.util.exec_utils import exec_overwrite_file, check_path_valid, exec_append_file, exec_append_newline_file, \
     exec_cat_cmd, su_exec_rm_cmd
 from openGauss.common.error_code import NormalErr
-from openGauss.common.const import logger, RpcParamKey, ResultCode, ProgressInfo, WhitePath
+from openGauss.common.const import logger, RpcParamKey, ResultCode, ProgressInfo, WhitePath, OpenGaussDeployType, \
+    ProtectObject
 from openGauss.common.const import ParamKey
 
 if platform.system().lower() == "linux":
     import pwd
     import grp
 
-INJECTION_CHAR_LIST = ("|", ";", "&", "$", "<", ">", "`", "\\", "'", "\"", "{", "}", "(", ")",
-                       "[", "]", "~", "*", "?", " ", "!", "\n")
+INJECTION_CHAR_LIST = (
+    "|", ";", "&", "$", "<", ">", "`", "\\", "'", "\"", "{", "}", "(", ")",
+    "[", "]", "~", "*", "?", " ", "!", "\n"
+)
 
 
 def path_check(path):
@@ -111,18 +114,165 @@ def set_uuid(*args):
 
 
 def get_repository_dir(repositories, repository_type):
+    find_type = repository_type
+    if repository_type == RepositoryDataTypeEnum.LOG_META_REPOSITORY.value:
+        find_type = RepositoryDataTypeEnum.META_REPOSITORY.value
     for repository_info in repositories:
         ret, present_repository_type = get_value_from_dict(repository_info, ParamKey.REPOSITORY_TYPE)
-        if present_repository_type != repository_type:
+        if present_repository_type != find_type:
             continue
         ret, path_list = get_value_from_dict(repository_info, ParamKey.PATH)
         if not ret or len(path_list) <= 0:
             return ""
         repository_dir = path_list[0]
+        if repository_type == RepositoryDataTypeEnum.LOG_META_REPOSITORY.value and "log" not in repository_dir:
+            continue
         if os.path.isdir(repository_dir) and check_path(repository_dir) \
                 and repository_dir.startswith(WhitePath.MOUNT_PATH):
             return repository_dir
     return ""
+
+
+def copy_sub_dir_backup_name(src_dir, dest_dir, backup_name, start_time=0):
+    logger.info(f"Start copy packing info, src dir {src_dir}, dest dir {dest_dir}, backup name {backup_name}")
+    backup_path = os.path.join("backups", "panwei", backup_name)
+    wal_path = os.path.join("wal", "panwei")
+
+    # 创建目标目录
+    os.makedirs(dest_dir, exist_ok=True)
+
+    # 拷贝日志起始时间
+    copy_start_time = int(time.time()) - (ParamKey.DAY * ParamKey.HOUR * ParamKey.MINUTE)
+    if start_time != 0:
+        copy_start_time = start_time - (ParamKey.HALF_HOUR * ParamKey.MINUTE)
+    logger.info(f"Copy start time: {copy_start_time}")
+
+    # 遍历源目录下的所有数据库组件目录
+    for db_component in os.listdir(src_dir):
+        src_backup_path = os.path.join(src_dir, db_component, backup_path)
+        dest_backup_path = os.path.join(dest_dir, db_component, backup_path)
+        # 检查源备份路径是否存在
+        if os.path.isdir(src_backup_path):
+            # 创建目标备份路径的父目录
+            os.makedirs(os.path.dirname(dest_backup_path), exist_ok=True)
+            # 复制备份文件夹
+            copy_backup_file(dest_backup_path, src_backup_path)
+        else:
+            logger.info(f"Sub dir {src_backup_path} not exist")
+
+        # 拷贝WAL文件
+        src_wal_path = os.path.join(src_dir, db_component, wal_path)
+        dest_wal_path = os.path.join(dest_dir, db_component, wal_path)
+        if os.path.isdir(src_wal_path):
+            os.makedirs(dest_wal_path, exist_ok=True)
+            deal_log_files(copy_start_time, dest_wal_path, src_wal_path)
+        else:
+            logger.info(f"Wal dir {src_wal_path } not exist")
+    logger.info(f"Copy packing info success")
+
+
+def copy_backup_file(dest_backup_path, src_backup_path):
+    try:
+        shutil.copytree(src_backup_path, dest_backup_path)
+        logger.info(f"Copy dir success, src path {src_backup_path}, dest path {dest_backup_path}")
+    except FileExistsError as err:
+        logger.error(f"Copy dir failed, src path {src_backup_path}, dest path {dest_backup_path}, {err}")
+
+
+def deal_log_files(copy_start_time, dest_wal_path, src_wal_path):
+    for log_file in os.listdir(src_wal_path):
+        src_log_file_path = os.path.join(src_wal_path, log_file)
+        if os.path.isfile(src_log_file_path) and os.stat(src_log_file_path).st_mtime > copy_start_time:
+            dest_log_file_path = os.path.join(dest_wal_path, log_file)
+            shutil.copy2(src_log_file_path, dest_log_file_path)
+
+
+def merge_backups(src_dirs, dest_dir, cluster_name: str = "panwei"):
+    """
+    将多个源目录合并到目标目录.
+
+    Args:
+        src_dirs: 源目录路径列表.
+        dest_dir: 目标目录路径.
+        cluster_name: 实例名
+    """
+    logger.info(f"Start to copy src dirs {src_dirs} to dest dir {dest_dir}")
+    backup_path = os.path.join("backups", cluster_name)
+    wal_path = os.path.join("wal", cluster_name)
+    for src_dir in src_dirs:
+        if not os.path.isdir(src_dir):
+            logger.info(f"Merge packing dir not exist {src_dir}")
+            continue
+
+        # 遍历源目录下的所有数据库归档文件
+        copy_sub_dir(backup_path, dest_dir, src_dir, wal_path)
+    logger.info(f"Merge packing info success")
+
+
+def copy_sub_dir(backup_path, dest_dir, src_dir, wal_path):
+    for db_component in os.listdir(src_dir):
+        src_backup_path = os.path.join(src_dir, db_component, backup_path)
+        dest_backup_path = os.path.join(dest_dir, db_component, backup_path)
+        # 检查源备份路径是否存在
+        if os.path.isdir(src_backup_path):
+            # 创建目标备份路径的父目录
+            os.makedirs(os.path.dirname(dest_backup_path), exist_ok=True)
+            # 复制备份文件夹
+            try:
+                copy_first_level(src_backup_path, dest_backup_path)
+                logger.info(f"Copy backup dir success, src path {src_backup_path}, dest path {dest_backup_path}")
+            except Exception as err:
+                logger.error(f"Copy backup dir failed, src path {src_backup_path}, dest path {dest_backup_path}, {err}")
+        else:
+            logger.info(f"Backup sub dir {src_backup_path} not exist")
+
+        # 拷贝WAL文件
+        src_wal_path = os.path.join(src_dir, db_component, wal_path)
+        dest_wal_path = os.path.join(dest_dir, db_component, wal_path)
+        if os.path.isdir(src_wal_path):
+            os.makedirs(dest_wal_path, exist_ok=True)
+            # 复制备份文件夹
+            try:
+                copy_first_level(src_wal_path, dest_wal_path)
+                logger.info(f"Copy wal dir success, src path {src_wal_path}, dest path {dest_wal_path}")
+            except Exception as err:
+                logger.error(f"Copy wal dir failed, src path {src_wal_path}, dest path {dest_wal_path}, {err}")
+        else:
+            logger.info(f"Wal dir {src_wal_path} not exist")
+
+
+def copy_first_level(source_dir, destination_dir):
+    """
+    复制源目录第一层的文件和文件夹到目标目录，保留目标目录原有文件和文件夹。
+
+    Args:
+        source_dir: 源目录路径。
+        destination_dir: 目标目录路径。
+    """
+    if not os.path.exists(source_dir):
+        logger.error(f"Source dir {source_dir} not exist")
+        return
+
+    if not os.path.exists(destination_dir):
+        logger.error(f"Target dir {destination_dir} not exist")
+        return
+
+    for item in os.listdir(source_dir):
+        source_path = os.path.join(source_dir, item)
+        destination_path = os.path.join(destination_dir, item)
+
+        if os.path.isfile(source_path):
+            if not os.path.exists(destination_path):
+                shutil.copy2(source_path, destination_path)
+                logger.info(f"Copy success, source file: {source_path}, target file: {destination_path}")
+            else:
+                logger.info(f"target file exist: {destination_path}, skip")
+        elif os.path.isdir(source_path):
+            if not os.path.exists(destination_path):
+                shutil.copytree(source_path, destination_path)
+                logger.info(f"Copy success, source dir: {source_path}, target dir: {destination_path}")
+            else:
+                logger.info(f"target file exist: {destination_path}, skip")
 
 
 def get_value_from_dict(param, *keys):
@@ -310,9 +460,11 @@ def get_previous_copy_info(protect_obj, job_id):
         return {}
     input_file_name = RpcParamKey.INPUT_FILE_PREFFIX + job_id
     input_file_path = os.path.join(ParamConstant.PARAM_FILE_PATH, input_file_name)
-    input_dict = {RpcParamKey.APPLICATION: protect_obj,
-                  RpcParamKey.TYPES: [RpcParamKey.FULL_COPY, RpcParamKey.INCREMENT_COPY], RpcParamKey.COPY_ID: "",
-                  ParamKey.JOB_ID: job_id}
+    input_dict = {
+        RpcParamKey.APPLICATION: protect_obj,
+        RpcParamKey.TYPES: [RpcParamKey.FULL_COPY, RpcParamKey.INCREMENT_COPY], RpcParamKey.COPY_ID: "",
+        ParamKey.JOB_ID: job_id
+    }
     exec_overwrite_file(input_file_path, input_dict)
     output_file_name = RpcParamKey.OUTPUT_FILE_PREFFIX + job_id
     output_file_path = os.path.join(ParamConstant.RESULT_PATH, output_file_name)
@@ -365,7 +517,9 @@ def execute_cmd_by_user(user_name, env_file, cmd):
     if not partition_cmd.strip():
         return ResultCode.FAILED, "", "empty cmd"
     complete_cmd = f"su - {user_name} -c '{partition_cmd}'"
+    logger.info(f"execute_cmd_by_user: {complete_cmd}")
     ret, stdout, stderr = execute_cmd(complete_cmd)
+    logger.info(f"ret: {ret}, stdout: {stdout}, stderr: {stderr}")
     return ret, stdout, stderr
 
 
@@ -403,6 +557,18 @@ def safe_check_injection_char(*check_values):
     return True
 
 
+def get_env_value(key):
+    global STDIN_VALUE
+    if not STDIN_VALUE:
+        STDIN_VALUE = input()
+    try:
+        value_dict = json.loads(STDIN_VALUE)
+    except Exception:
+        logger.exception("Standard input can not json load.")
+        return ""
+    return value_dict.get(key)
+
+
 def repositories_check(repositories, *repository_types):
     # 只校验挂载仓路径是否存在软链接
     if not isinstance(repositories, list) or len(repositories) == 0:
@@ -430,6 +596,15 @@ def safe_remove_path(path: str):
             logger.error(f"Execute remove file command failed! File path: {path}.")
             return False
     return not os.path.exists(path)
+
+
+def is_cmdb_distribute(deploy_type, database_type):
+    if deploy_type == OpenGaussDeployType.DISTRIBUTED and ProtectObject.CMDB in database_type:
+        logger.info("Cur job is CMDB distributed")
+        return True
+    else:
+        logger.info("Cur job is not CMDB distributed")
+        return False
 
 
 def is_wal_file(file_name):

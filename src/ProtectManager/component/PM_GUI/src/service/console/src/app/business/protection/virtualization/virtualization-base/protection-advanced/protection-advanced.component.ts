@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -25,6 +25,7 @@ import {
   defer,
   each,
   filter,
+  find,
   includes,
   isArray,
   isEmpty,
@@ -53,6 +54,9 @@ export class ProtectionAdvancedComponent implements OnInit {
   applySlaNewLabel: string;
   extParams;
 
+  slaOverwriteHelp: string;
+  slaApplyAllHelp: string;
+
   @ViewChild(ProtectFilterComponent, { static: false })
   ProtectFilterComponent: ProtectFilterComponent;
 
@@ -64,6 +68,16 @@ export class ProtectionAdvancedComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.hiddenProxy =
+      includes(
+        [
+          DataMap.Resource_Type.hyperVVm.value,
+          DataMap.Resource_Type.hyperVHost.value
+        ],
+        this.resourceType
+      ) ||
+      (this.resourceType === DataMap.Resource_Type.vmGroup.value &&
+        this?.resourceData?.sourceType === ResourceType.HYPERV);
     this.getLabel();
     this.initForm();
     this.getProxyOptions();
@@ -71,10 +85,15 @@ export class ProtectionAdvancedComponent implements OnInit {
   }
 
   getProxyOptions() {
+    if (this.hiddenProxy) return;
+
     const extParams = {
       conditions: JSON.stringify({
         type: 'Plugin',
-        subType: [`${ResourceType.CNWARE}Plugin`]
+        subType:
+          this.resourceType === DataMap.Resource_Type.vmGroup.value
+            ? [`${this?.resourceData?.sourceType}Plugin`]
+            : [`${this?.resourceData?.type}Plugin`]
       })
     };
     this.appUtilsService.getResourceByRecursion(
@@ -128,10 +147,31 @@ export class ProtectionAdvancedComponent implements OnInit {
       [
         DataMap.Resource_Type.cNwareCluster.value,
         DataMap.Resource_Type.cNwareHost.value,
-        DataMap.Resource_Type.hyperVHost.value
+        DataMap.Resource_Type.hyperVHost.value,
+        DataMap.Resource_Type.nutanixCluster.value,
+        DataMap.Resource_Type.nutanixHost.value
       ],
       this.resourceType
     );
+    if (
+      includes(
+        [
+          DataMap.Resource_Type.cNwareCluster.value,
+          DataMap.Resource_Type.nutanixCluster.value
+        ],
+        this.resourceType
+      )
+    ) {
+      this.slaOverwriteHelp = this.i18n.get(
+        'protection_overwrite_policy_cluster_help_label'
+      );
+      this.slaApplyAllHelp = this.i18n.get('protection_cluster_sla_help_label');
+    } else {
+      this.slaOverwriteHelp = this.i18n.get(
+        'protection_overwrite_policy_host_help_label'
+      );
+      this.slaApplyAllHelp = this.i18n.get('protection_host_sla_help_label');
+    }
   }
 
   getLabel() {
@@ -156,12 +196,10 @@ export class ProtectionAdvancedComponent implements OnInit {
     this.formGroup.statusChanges.subscribe(() => {
       this.valid$.next(this.formGroup.valid);
     });
-    this.hiddenProxy =
-      this.resourceType === DataMap.Resource_Type.hyperVHost.value;
   }
 
   updateData() {
-    if (!this.resourceData.protectedObject?.extParameters) {
+    if (!this.resourceData?.protectedObject?.extParameters) {
       return;
     }
     const extParameters = isString(
@@ -211,22 +249,20 @@ export class ProtectionAdvancedComponent implements OnInit {
     }
 
     // 索引
-    if (!this.vmFilterShow) {
-      each(
-        [
-          'backup_res_auto_index',
-          'archive_res_auto_index',
-          'enable_security_archive'
-        ],
-        key => {
-          if (this.formGroup.get(key)) {
-            assign(ext_parameters, {
-              [key]: this.formGroup.get(key).value
-            });
-          }
+    each(
+      [
+        'backup_res_auto_index',
+        'archive_res_auto_index',
+        'enable_security_archive'
+      ],
+      key => {
+        if (this.formGroup.get(key)) {
+          assign(ext_parameters, {
+            [key]: this.formGroup.get(key).value
+          });
         }
-      );
-    }
+      }
+    );
 
     return {
       ext_parameters

@@ -1,0 +1,746 @@
+{{/*
+Get running environment
+*/}}
+{{- $environment:= "" }}
+{{- $realreplicas:= "" }}
+{{- if .Values.global }}
+{{- $environment = .Values.global.environment }}
+{{- $realreplicas = .Values.global.replicas }}
+{{- else }}
+{{- $environment = .Values.local.environment }}
+{{- $realreplicas = .Values.local.replicas }}
+{{- end }}
+
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d9" }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: protectengine
+  namespace: dpa
+spec:
+  selector:
+    matchLabels:
+      app: protectengine
+  serviceName: protectengine
+  replicas: {{ $realreplicas }}
+  template:
+    metadata:
+      labels:
+        app: protectengine # has to match .spec.selector.matchLabels
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - protectengine
+              topologyKey: "kubernetes.io/hostname"
+      serviceAccountName: dme-sa
+      securityContext:
+        fsGroup: 99
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: dme-vmware
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+            - name: PGSSLROOTCERT
+              value: {{ .Values.pgsslrootcert }}
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: DEPLOY_TYPE
+              value: d2
+          image: dme_vmware:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          resources:
+            requests:
+              cpu: "0.1"
+              memory: "2G"
+            limits:
+              cpu: "3"
+              memory: "8G"
+          livenessProbe:
+            failureThreshold: 5
+            exec:
+              command:
+                - sh
+                - -c
+                - sh /opt/OceanStor/100P/ProtectEngine-E/dme_vmware/script/dmeservice/check_health.sh dme-vmware
+            initialDelaySeconds: 100
+            periodSeconds: 30
+            timeoutSeconds: 30
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            readOnlyRootFilesystem: true
+            runAsUser: 99
+            capabilities:
+              add:
+                - SYS_ADMIN
+              drop:
+                - MKNOD
+                - SETFCAP
+          volumeMounts:
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - mountPath: /cache
+              name: cache-volume
+            - mountPath: /config
+              name: protectengine-e-conf
+              readOnly: true
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/logpath
+              name: common-path
+            - mountPath: /opt/huawei-data-protection/vmware/bricks/
+              name: metadata-path
+            - mountPath: /opt/huawei-data-protection/vmware/
+              name: metadata-path
+            - mountPath: /etc/common-secret
+              name: vmware-secret
+              readOnly: true
+            - mountPath: /opt/cluster_config
+              name: cluster-conf
+            - mountPath: /opt/network-conf
+              name: network-conf
+            - mountPath: /opt/common-conf
+              name: common-conf
+            - mountPath: /opt/vmware-conf
+              name: vmware-conf
+        - name: dme-nginx
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+            - name: DEPLOY_TYPE
+              value: d2
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          image: dme_nginx:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          resources:
+            requests:
+              cpu: "0.1"
+            limits:
+              cpu: "0.2"
+              memory: "0.1G"
+          livenessProbe:
+            {{- if ne $environment "Dorado" }}
+            tcpSocket:
+              port: {{ .Values.dme_nginx_port }}
+            {{- else }}
+            exec:
+              command:
+                - sh
+                - -c
+                - sh /opt/OceanStor/100P/ProtectEngine-E/nginx/script/check_health.sh dme-nginx
+            {{- end }}
+            initialDelaySeconds: 100
+            periodSeconds: 10
+            failureThreshold: 20
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            runAsUser: 65500
+            readOnlyRootFilesystem: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+          volumeMounts:
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - mountPath: /cache
+              name: cache-volume
+            - mountPath: /config
+              name: protectengine-e-conf
+              readOnly: true
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/logpath
+              name: common-path
+            - mountPath: /opt/network-conf
+              name: network-conf
+        - name: dme-jobmanager
+          env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: ENVIRONMENT
+            value: {{ $environment }}
+          - name: PGSSLROOTCERT
+            value: {{ .Values.pgsslrootcert }}
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: DEPLOY_TYPE
+            value: d2
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          image: dme_jobmanager:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          resources:
+            requests:
+              cpu: "0.1"
+              memory: "1G"
+            limits:
+              cpu: "1"
+              memory: "2G"
+          livenessProbe:
+            failureThreshold: 5
+            exec:
+              command:
+                - sh
+                - -c
+                - sh /opt/OceanStor/100P/ProtectEngine-E/dme_jobmanager/script/dmeservice/check_health.sh dme-jobmanager
+            initialDelaySeconds: 100
+            periodSeconds: 30
+            timeoutSeconds: 30
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            readOnlyRootFilesystem: true
+            runAsUser: 15023
+            capabilities:
+              add:
+                - SYS_ADMIN
+          volumeMounts:
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - mountPath: /cache
+              name: cache-volume
+            - mountPath: /config
+              name: protectengine-e-conf
+              readOnly: true
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/logpath
+              name: common-path
+            - mountPath: /opt/cluster_config
+              name: cluster-conf
+            - mountPath: /opt/network-conf
+              name: network-conf
+            - mountPath: /opt/common-conf
+              name: common-conf
+            - mountPath: /opt/vmware-conf
+              name: vmware-conf
+        - name: dme-replication
+          env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: ENVIRONMENT
+            value: {{ $environment }}
+          - name: PGSSLROOTCERT
+            value: {{ .Values.pgsslrootcert }}
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: DEPLOY_TYPE
+            value: d2
+          image: dme_replication:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          resources:
+            requests:
+              cpu: "0.1"
+              memory: "2G"
+            limits:
+              cpu: "3"
+              memory: "8G"
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            {{- if ne $environment "Dorado" }}
+            privileged: true
+            {{- else }}
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - NET_ADMIN
+              drop:
+                - MKNOD
+                - SETFCAP
+            {{- end }}
+            readOnlyRootFilesystem: true
+            runAsUser: 99
+          livenessProbe:
+            failureThreshold: 5
+            exec:
+              command:
+                - sh
+                - -c
+                - sh /opt/OceanStor/100P/ProtectEngine-E/dme_replication/script/dmeservice/check_health.sh dme-replication
+            initialDelaySeconds: 100
+            periodSeconds: 30
+            timeoutSeconds: 30
+          volumeMounts:
+            - mountPath: /opt/cluster_config
+              name: cluster-conf
+              readOnly: true
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - mountPath: /cache
+              name: cache-volume
+            - mountPath: /config
+              name: protectengine-e-conf
+              readOnly: true
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/logpath
+              name: common-path
+            - mountPath: /opt/huawei-data-protection/metadata/bricks/
+              name: metadata-path
+            - mountPath: /opt/huawei-data-protection/vmware/
+              name: metadata-path
+            - mountPath: /mnt/replication/
+              name: cache-filesystem
+            - mountPath: /opt/network-conf
+              name: network-conf
+            - mountPath: /opt/common-conf
+              name: common-conf
+            - mountPath: /opt/replication-conf
+              name: replication-conf
+        - name: dme-unifiedbackupcontroller
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: MICRO_SERVICE_NAME
+              value: dme_unifiedbackupcontroller
+            - name: SUB_SYSTEM_NAME
+              value: protectengine-e
+            - name: DEPLOY_TYPE
+              value: d2
+            - name: DEPLOY_ENV
+              value: k8s_cluster
+            - name: PREPARE_THREAD_POOL_NUM
+              value: "5"
+            - name: ACTIVE_THREAD_POOL_NUM
+              value: "5"
+            - name: CLEAN_THREAD_POOL_NUM
+              value: "3"
+            - name: POST_THREAD_POOL_NUM
+              value: "5"
+            - name: GLOBAL_THREAD_POOL_NUM
+              value: "10"
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+          image: dme_unifiedbackupcontroller:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          resources:
+            requests:
+              cpu: "0.1"
+              memory: "1G"
+            limits:
+              cpu: "1"
+              memory: "2G"
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              add:
+                - SYS_ADMIN
+              drop:
+                - SETFCAP
+                - KILL
+                - MKNOD
+            readOnlyRootFilesystem: true
+            runAsUser: 15025
+          livenessProbe:
+            failureThreshold: 5
+            exec:
+              command:
+                - sh
+                - -c
+                - sh /opt/OceanStor/100P/ProtectEngine-E/dme_unifiedbackupcontroller/script/check_health.sh dme-unified
+            initialDelaySeconds: 100
+            periodSeconds: 10
+            timeoutSeconds: 10
+          volumeMounts:
+            - mountPath: /opt/cluster_config
+              name: cluster-conf
+            - mountPath: /cache
+              name: ubc-tmp
+            - mountPath: /mnt/repository
+              name: cache-filesystem
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/OceanProtect
+              name: common-path
+            - mountPath: /opt/common-conf
+              name: common-conf
+              readOnly: true
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - mountPath: /etc/common-secret
+              name: ubc-secret
+              readOnly: true
+            - mountPath: /opt/network-conf
+              name: network-conf
+        - name: dme-archive
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: DEPLOY_TYPE
+              valueFrom:
+                configMapKeyRef:
+                  name: common-conf
+                  key: deploy_type
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+            - name: PGSSLROOTCERT
+              value: {{ .Values.pgsslrootcert }}
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          image: dme_archive:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          securityContext:
+            readOnlyRootFilesystem: true
+            privileged: true
+          livenessProbe:
+            failureThreshold: 5
+            exec:
+              command: ['sh','/opt/OceanStor/100P/ProtectEngine-E/dme_archive/script/dmeservice/check_health.sh', 'dme-archive']
+            initialDelaySeconds: 100
+            periodSeconds: 30
+            timeoutSeconds: 30
+          resources:
+            requests:
+              memory: "2G"
+              cpu: "0.1"
+            limits:
+              memory: "8G"
+              cpu: "3"
+          volumeMounts:
+            - mountPath: /opt/cluster_config
+              name: cluster-conf
+              readOnly: true
+            - mountPath: /mnt
+              name: archive-mnt
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - mountPath: /cache
+              name: cache-volume
+            - mountPath: /config
+              name: protectengine-e-conf
+              readOnly: true
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /etc/common-secret
+              name: ubc-secret
+              readOnly: true
+            - mountPath: /opt/logpath
+              name: common-path
+            - mountPath: /opt/huawei-data-protection/vmware/bricks/
+              name: metadata-path
+            - mountPath: /opt/network-conf
+              name: network-conf
+            - mountPath: /opt/common-conf
+              name: common-conf
+            - mountPath: /dev
+              name: device
+        - name: dme-openstorageapi-controller
+          image: dme_openstorageapi_controller:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          resources:
+            requests:
+              memory: "2G"
+              cpu: "0.1"
+            limits:
+              memory: "2G"
+              cpu: "1"
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: MICRO_SERVICE_NAME
+              value: dme_openstorageapi_controller
+            - name: SUB_SYSTEM_NAME
+              value: protectengine-e
+            - name: DEPLOY_TYPE
+              value: d2
+            - name: DEPLOY_ENV
+              value: k8s_cluster
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.dme_openstorageapi_controller_port}}
+            initialDelaySeconds: 100
+            periodSeconds: 10
+            failureThreshold: 20
+            timeoutSeconds: 10
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/OceanProtect
+              name: common-path
+            - mountPath: /opt/common-conf
+              name: common-conf
+              readOnly: true
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+        - name: dme-openstorageapi
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: MICRO_SERVICE_NAME
+              value: dme_openstorageapi
+            - name: SUB_SYSTEM_NAME
+              value: protectengine-e
+            - name: DEPLOY_TYPE
+              value: d2
+            - name: DEPLOY_ENV
+              value: k8s_cluster
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+          image: dme_openstorageapi:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          resources:
+            requests:
+              memory: "2G"
+              cpu: "0.1"
+            limits:
+              memory: "2G"
+              cpu: "1"
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.dme_openstorageapi_port}}
+            initialDelaySeconds: 100
+            periodSeconds: 10
+            failureThreshold: 20
+            timeoutSeconds: 10
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - NET_ADMIN
+              drop:
+                - SETFCAP
+                - KILL
+                - MKNOD
+          volumeMounts:
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/OceanProtect
+              name: common-path
+            - mountPath: /opt/common-conf
+              name: common-conf
+              readOnly: true
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+      initContainers:
+        - name: init-dma
+          image: dme_initcontainer:{{ .Values.global.version }}
+          command:
+            - /bin/bash
+            - -c
+            - |
+              sh /opt/OceanStor/100P/ProtectEngine-E/initcontainer/init_container.sh
+          imagePullPolicy: Never
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN","SYS_MODULE"]
+          volumeMounts:
+            - mountPath: /opt/OceanProtect
+              name: common-path
+            - mountPath: /cache
+              name: cache-volume
+            - mountPath: /opt/huawei-data-protection/vmware/bricks/
+              name: metadata-path
+            - mountPath: /mnt/filesystem/
+              name: cache-filesystem
+            - mountPath: /opt/protectagent
+              name: agent-volume
+            - mountPath: /kmc_conf
+              name: kmc-conf
+            - mountPath: /mnt-agent
+              name: agent-tmp
+            - mountPath: /ubc-tmp
+              name: ubc-tmp
+            - mountPath: /lib/modules
+              name: modules
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: COMPONENT_NAME
+              value: protectengine-e
+            - name: DEPLOY_TYPE
+              valueFrom:
+                configMapKeyRef:
+                  name: common-conf
+                  key: deploy_type
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+      volumes:
+        - name: dme-osa-conf
+          configMap:
+            name: dme-osa-conf
+        - name: kmc-conf
+          configMap:
+            name: kmc-store-conf
+            defaultMode: 0640
+        - name: agent-tmp
+          emptyDir: {}
+        - name: ubc-tmp
+          emptyDir: {}
+        - name: date-config
+          hostPath:
+            path: /etc/localtime
+        - name: cache-volume
+          emptyDir: {}
+        - name: cache-filesystem
+          emptyDir:
+            sizeLimit: 64Mi
+        - name: protectengine-e-conf
+          configMap:
+            name: protectengine-e-conf
+        - name: common-conf
+          configMap:
+            name: common-conf
+        - name: vmware-conf
+          configMap:
+            name: vmware-conf
+        - name: replication-conf
+          configMap:
+            name: replication-conf
+        - name: archive-conf
+          configMap:
+            name: archive-conf
+        - name: cluster-conf
+          configMap:
+            name: cluster-conf
+        - name: network-conf
+          configMap:
+            name: network-conf
+        - name: ubc-secret
+          secret:
+            secretName: common-secret
+            items:
+              - key: cifs_backup.password
+                path: cifs_backup.password
+              - key: data_turbo.password
+                path: data_turbo.password
+        - name: vmware-secret
+          secret:
+            secretName: common-secret
+            items:
+              - key: vm_data_turbo.password
+                path: vm_data_turbo.password
+        - name: archive-mnt
+          emptyDir: {}
+        - name: modules
+          hostPath:
+            path: /lib/modules
+        - name: device
+          hostPath:
+            path: /dev
+        - name: common-path
+          persistentVolumeClaim:
+            claimName: "comm-nas"
+        - name: metadata-path
+          persistentVolumeClaim:
+            claimName: "dme-nas"
+        - name: share-path
+          persistentVolumeClaim:
+            claimName: "dee-nas"
+        - name: agent-volume
+          persistentVolumeClaim:
+            claimName: "agent-nas"
+        - name: pm-path
+          persistentVolumeClaim:
+            claimName: "pm-nas2"
+{{- end }}

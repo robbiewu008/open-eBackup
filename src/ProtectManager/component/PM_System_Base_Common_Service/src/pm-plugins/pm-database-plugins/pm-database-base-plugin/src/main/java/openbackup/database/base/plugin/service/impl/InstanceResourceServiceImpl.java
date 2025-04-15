@@ -13,6 +13,9 @@
 package openbackup.database.base.plugin.service.impl;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
@@ -44,9 +47,6 @@ import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.StreamUtil;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
@@ -224,7 +224,8 @@ public class InstanceResourceServiceImpl implements InstanceResourceService {
             .forEach(childNode -> buildClusterNodeRole(childNode, appEnvMap));
     }
 
-    private AppEnvResponse queryClusterInstanceNodeRoleByAgent(ProtectedResource resource) {
+    @Override
+    public AppEnvResponse queryClusterInstanceNodeRoleByAgent(ProtectedResource resource) {
         ProtectedResource subInstance = getSubInstance(resource);
         AppEnv appEnv = buildAppEnv(resource, subInstance);
         Application application = buildApplication(resource, subInstance);
@@ -365,7 +366,8 @@ public class InstanceResourceServiceImpl implements InstanceResourceService {
         return legoInternalAlarm;
     }
 
-    private void healthCheckSingleInstanceByAgent(ProtectedResource resource, ProtectedEnvironment environment) {
+    @Override
+    public void healthCheckSingleInstanceByAgent(ProtectedResource resource, ProtectedEnvironment environment) {
         CheckAppReq checkAppReq = new CheckAppReq();
         checkAppReq.setAppEnv(BeanTools.copy(environment, AppEnv::new));
         checkAppReq.setApplication(BeanTools.copy(resource, Application::new));
@@ -378,7 +380,8 @@ public class InstanceResourceServiceImpl implements InstanceResourceService {
         }
     }
 
-    private void updateResourceStatus(ProtectedResource resource) {
+    @Override
+    public void updateResourceStatus(ProtectedResource resource) {
         ProtectedResource updateResource = new ProtectedResource();
         updateResource.setUuid(resource.getUuid());
         updateResource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY,
@@ -391,6 +394,11 @@ public class InstanceResourceServiceImpl implements InstanceResourceService {
         ClusterInstanceOnlinePolicy policy) {
         log.info("Enter cluster instance of environment health check. id: {}, subType: {}", environment.getUuid(),
             environment.getSubType());
+        List<ProtectedResource> resources = getProtectedResources(environment);
+        resources.forEach(resource -> healthCheckClusterInstanceByAgent(resource, policy));
+    }
+
+    private List<ProtectedResource> getProtectedResources(ProtectedEnvironment environment) {
         Map<String, Object> conditions = new HashMap<>();
         conditions.put(DatabaseConstants.PARENT_UUID, environment.getUuid());
         PageListResponse<ProtectedResource> data;
@@ -401,7 +409,7 @@ public class InstanceResourceServiceImpl implements InstanceResourceService {
             resources.addAll(data.getRecords());
             pageNo++;
         } while (data.getRecords().size() >= IsmNumberConstant.HUNDRED);
-        resources.forEach(resource -> healthCheckClusterInstanceByAgent(resource, policy));
+        return resources;
     }
 
     private void healthCheckClusterInstanceByAgent(ProtectedResource resource, ClusterInstanceOnlinePolicy policy) {
@@ -482,5 +490,19 @@ public class InstanceResourceServiceImpl implements InstanceResourceService {
         return resourceService.getResourceById(resourceId)
             .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST,
                 "Protected resource not exist. uuid: " + resourceId));
+    }
+
+    @Override
+    public void healthCheckSubInstance(ProtectedEnvironment environment) {
+        List<ProtectedResource> resources = getProtectedResources(environment);
+        for (ProtectedResource resource : resources) {
+            ProtectedResource fullResource = resourceService.getResourceById(resource.getUuid())
+                .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "This resource not exist."));
+            List<ProtectedResource> childrenResource = fullResource.getDependencies().get(DatabaseConstants.CHILDREN);
+            for (ProtectedResource protectedResource : childrenResource) {
+                protectedResource.setEnvironment(getEnvironmentOfInstance(protectedResource));
+                healthCheckSingleInstance(protectedResource);
+            }
+        }
     }
 }

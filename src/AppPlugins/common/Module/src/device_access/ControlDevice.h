@@ -49,7 +49,7 @@ namespace Module {
         IP_V4 = 0
     };
     enum SecurityStyle {
-        NATIVE = 1, NTFS = 2, UNIX = 3
+        MIXED = 0, NATIVE = 1, NTFS = 2, UNIX = 3
     };
 
     struct SnapdiffInfo {
@@ -88,7 +88,7 @@ namespace Module {
         unsigned long long usedSize = -1;
 
         LunParams(std::string vName, bool cpress, bool dd, int pd, unsigned long long sz)
-                : volumeName(vName), Compress(cpress), Dedup(dd), poolid(pd), Size(sz) {}
+            : volumeName(vName), Compress(cpress), Dedup(dd), poolid(pd), Size(sz) {}
 
         LunParams() {}
     };
@@ -105,16 +105,16 @@ namespace Module {
 
     struct SnapshotInfo {
         SnapshotInfo()
-                : id(0),
-                  lunId(0),
-                  lunSizeInBytes(0),
-                  needBackup(true),
-                  hasBackup(false),
-                  snapType(Incremental),
-                  snapShotType(0),
-                  userCapacity(0),
-                  consumedCapacity(0),
-                  timeStamp(0) {}
+            : id(0),
+              lunId(0),
+              lunSizeInBytes(0),
+              needBackup(true),
+              hasBackup(false),
+              snapType(Incremental),
+              snapShotType(0),
+              userCapacity(0),
+              consumedCapacity(0),
+              timeStamp(0) {}
 
         uint64_t id;
         std::string name;
@@ -148,7 +148,8 @@ namespace Module {
     struct SnapshotDiffBitmap {
         SnapshotDiffBitmap() : offset(0), size(0), chunkSize(0) {}
 
-        SnapshotDiffBitmap(unsigned long long uOffset, unsigned long long uSize, unsigned long long uChunkSize) {
+        SnapshotDiffBitmap(unsigned long long uOffset, unsigned long long uSize, unsigned long long uChunkSize)
+        {
             offset = uOffset;
             size = uSize;
             chunkSize = uChunkSize;
@@ -167,7 +168,8 @@ namespace Module {
     struct ControlDeviceInfo {
         ControlDeviceInfo() : poolId(0) {}
 
-        ~ControlDeviceInfo() {
+        ~ControlDeviceInfo()
+        {
             Module::CleanMemoryPwd(password);
             Module::FreeContainer(cert);
         }
@@ -181,7 +183,7 @@ namespace Module {
         std::string cert;
         std::string crl;
         std::string serviceIp;
-        std::string nasUserGroup; //user_or_group
+        std::string nasUserGroup; // user_or_group
         bool compress = true;
         bool dedup = true;
         bool isShowSnapDir = false;
@@ -195,12 +197,17 @@ namespace Module {
         PROTOCOL storagePro;        // storage mount protocol
         int isCapacityBalanceMode;
         SecurityStyle secStyle{UNIX};
+        std::string shareId;
+        std::string fileSystemId;
+        std::string dtreeId;
+        std::string sharePath;
     };
 
     struct HostInfo {
         HostInfo() {}
 
-        ~HostInfo() {
+        ~HostInfo()
+        {
             Module::CleanMemoryPwd(chapPassword);
             Module::FreeContainer(iscsinitor);
         }
@@ -336,110 +343,134 @@ namespace Module {
 
         virtual void Clean() = 0;
 
-        virtual int QuerySnapshot(std::string SnapshotName, std::string &id) {
+        virtual int QuerySnapshot(std::string SnapshotName, std::string &id)
+        {
             return Module::SUCCESS;
         }
 
         // 获取本文件系统所在的控制器，和非本文件系统的控制器
         virtual int
-        GetLifPort(std::vector<std::string> &ownCtlIP, std::vector<std::string> &otherCtlIP, IP_TYPE ipType) {
+        GetLifPort(std::vector<std::string> &ownCtlIP, std::vector<std::string> &otherCtlIP, IP_TYPE ipType)
+        {
             return Module::SUCCESS;
         }
 
-        virtual int LoginIscsiTarget(const std::string &iscsiIP, std::string &iqnNumber) {
+        virtual int LoginIscsiTarget(const std::string &iscsiIP, std::string &iqnNumber)
+        {
             return Module::SUCCESS;
         }
 
-        virtual std::string ScanLunAfterAttach(std::string &lunID) {
+        virtual std::string ScanLunAfterAttach(std::string &lunID)
+        {
             std::string VolumePath;
             return VolumePath;
         }
 
-        virtual ~ControlDevice() {
+        virtual ~ControlDevice()
+        {
             return;
         }
 
         virtual void SetRetryAttr(int _retryTimes = 3, int _retryIntervalTime = 10) {}
 
         virtual int StartSnapshotDiffSession(std::string BaseSnapshotName,
-                                             std::string IncrementalSnapshotName, std::string &sessionId) {
+                                             std::string IncrementalSnapshotName, std::string &sessionId)
+        {
             return Module::SUCCESS;
         }
 
         virtual int GetSnapshotDiffChanges(std::string sessionId, SnapdiffInfo &SnapdiffInfo,
-                                           SnapdiffMetadataInfo metadatInfo[], int metadataListLen) {
+                                           SnapdiffMetadataInfo metadatInfo[], int metadataListLen)
+        {
             return Module::SUCCESS;
         }
 
-        virtual int EndSnapshotDiffSession(std::string sessionId) {
+        virtual int EndSnapshotDiffSession(std::string sessionId)
+        {
             return Module::SUCCESS;
         }
 
-        virtual int SetIsDeleteParentSnapShotFlag(bool flag) {
+        virtual int SetIsDeleteParentSnapShotFlag(bool flag)
+        {
             return Module::FAILED;
         }
 
-        virtual int TestDeviceConnection() {
+        virtual int TestDeviceConnection()
+        {
             return Module::FAILED;
         }
 
-        virtual int SetShareParam(ShareParam &param) {
+        virtual int SetShareParam(ShareParam &param)
+        {
             return Module::SUCCESS;
         }
 
         virtual void SetCurlTimeOut(uint64_t tmpTimeOut = 90) {}
 
     public:
-        void SetResourceName(const std::string &resourceName) {
+        void SetResourceName(const std::string &resourceName)
+        {
             ResourceName = resourceName;
         }
 
-        std::string GetResourceName() {
+        std::string GetResourceName()
+        {
             return ResourceName;
         }
 
-        std::string GetDeviceWWN() {
+        std::string GetDeviceWWN()
+        {
             return Wwn;
         }
 
-        int GetResourceId() {
+        int GetResourceId()
+        {
             return ResourceId;
         }
 
-        bool checkStringIsDigit(const std::string &str) {
+        bool checkStringIsDigit(const std::string &str)
+        {
             return std::all_of(str.begin(), str.end(), ::isdigit);
         }
 
-        void SetIsCapacityBalanceMode(bool flag) {
+        void SetIsCapacityBalanceMode(bool flag)
+        {
             isCapacityBalanceMode = flag;
         }
 
-        void SetIsFileHandleByteAligment(bool flag) {
+        void SetIsFileHandleByteAligment(bool flag)
+        {
             isFileHandleByteAligment = flag;
         }
 
         /* 当证书验证失败时，将libcurl返回的错误码转换为任务上报相关错误码 */
-        int CurlError2HomoError(const int curlError) {
+        int CurlError2HomoError(const int curlError)
+        {
             return (curlError == CERTIFACATE_CURL_ERROR_CODE) ? CERTIFACATE_IS_INVALID : curlError;
         }
 
-        void SetErrorCode(const int errorCode) {
+        void SetErrorCode(const int errorCode)
+        {
             curErrorCode = CurlError2HomoError(errorCode);
         }
 
-        int GetErrorCode() {
+        int GetErrorCode()
+        {
             return curErrorCode;
         }
 
-        void SetExtendInfo(const std::string& errorDes) {
+        void SetExtendInfo(const std::string& errorDes)
+        {
             extendInfo = errorDes;
         }
 
-        std::string  GetExtendInfo() {
+        std::string  GetExtendInfo()
+        {
             return extendInfo;
         }
 
-        DeviceMountInfo GetMountInfo() {
+        DeviceMountInfo GetMountInfo()
+        {
             return MountInfo;
         }
 

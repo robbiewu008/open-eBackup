@@ -21,13 +21,12 @@ SDK_DIR=${binary_path}/PluginSDK/${systemtypeage}/
 AGENT_PKG=${binary_path}/dependency/Linux
 OPENSOURCE_BIN_PATH=${binary_path}/Agent
 
-CURRENT_DIR=$(cd "$(dirname $0)" && pwd)
-
 OUTPUT_DIR=${WORKSPACE}/output/finalpkg/
 if [ ! -d ${OUTPUT_DIR} ];then
     mkdir -p ${OUTPUT_DIR}
 fi
 
+CURRENT_DIR=$(cd "$(dirname $0)" && pwd)
 AGENT_HOME=$(readlink -f "${CURRENT_DIR}/../../../")
 echo AGENT_HOME=$AGENT_HOME
 
@@ -47,9 +46,11 @@ fi
 
 # build
 if [ "${systemtypeage}" != "ASAN" ];then
-    sh ${AGENT_HOME}/Agent/build/get_open_third_party.sh "${binary_path}/ThirdParty"
-    if [ $? != 0 ]; then
-        echo "Get open third party fail."
+    if [ "${packagetype}" != "no_opensrc" ];then
+        sh ${AGENT_HOME}/Agent/build/get_open_third_party.sh "${binary_path}/ThirdParty"
+        if [ $? != 0 ]; then
+            echo "Get open third party fail."
+        fi
     fi
     cd ${AGENT_HOME}/
     source ${AGENT_HOME}/Agent/build/env.sh

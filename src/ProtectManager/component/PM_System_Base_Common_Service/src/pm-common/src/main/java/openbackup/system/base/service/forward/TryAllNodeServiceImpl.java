@@ -12,7 +12,10 @@
 */
 package openbackup.system.base.service.forward;
 
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
@@ -20,9 +23,6 @@ import openbackup.system.base.common.utils.JwtTokenUtils;
 import openbackup.system.base.sdk.infrastructure.InfrastructureRestApi;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.util.RouterServiceUtils;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -56,8 +56,6 @@ public class TryAllNodeServiceImpl implements TryAllNodeService {
 
     private static final long RETRY_DELAY_TIME = 3000L;
 
-    private static final String PM_BASE_POD_NAME = "pm-system-base";
-
     @Qualifier("internalRestTemplate")
     @Autowired
     private RestTemplate internalRestTemplate;
@@ -77,13 +75,13 @@ public class TryAllNodeServiceImpl implements TryAllNodeService {
      */
     @Override
     public ResponseEntity<Object> processTryAllNodeRequest(HttpServletRequest httpRequest,
-        HttpServletResponse httpServletResponse, Object requestBody,
-        boolean isOverwriteBody, ForwardCache forwardCache) {
+            HttpServletResponse httpServletResponse, Object requestBody, boolean isOverwriteBody,
+            ForwardCache forwardCache) {
         log.info("Process try one node request, uri is: {}.", httpRequest.getRequestURI());
         Object body = isOverwriteBody ? requestBody : RouterServiceUtils.getBodyData(httpRequest);
         List<String> ipList = null;
         try {
-            ipList = infrastructureRestApi.getEndpoints(PM_BASE_POD_NAME).getData();
+            ipList = infrastructureRestApi.getEndpoints(Constants.PM_ENDPOINT_NAME).getData();
         } catch (FeignException | LegoCheckedException e) {
             log.error("Get base pod ip failed", ExceptionUtil.getErrorMessage(e));
             throw LegoCheckedException.cast(e);
@@ -97,7 +95,7 @@ public class TryAllNodeServiceImpl implements TryAllNodeService {
                 responseEntity = forwardTryAllNodeRequestByIp(httpRequest, body, uri);
             } catch (Exception e) {
                 log.error("Process try one node request fail, fail ip is: {}.", ipList.get(i),
-                    ExceptionUtil.getErrorMessage(e));
+                        ExceptionUtil.getErrorMessage(e));
                 exception = LegoCheckedException.cast(e);
                 if (i == ipList.size() - 1) {
                     log.error("Process try all node request fail, all node fail.");
@@ -119,10 +117,10 @@ public class TryAllNodeServiceImpl implements TryAllNodeService {
      * @param uri 集群uri
      * @return 转发请求的返回体，连接失败则返回null，由上层函数处理
      */
-    @Retryable(exclude = {LegoCheckedException.class, ResourceAccessException.class},
-        backoff = @Backoff(delay = RETRY_DELAY_TIME))
-    public ResponseEntity<Object> forwardTryAllNodeRequestByIp(HttpServletRequest httpServletRequest,
-        Object body, URI uri) {
+    @Retryable(exclude = {LegoCheckedException.class,
+            ResourceAccessException.class}, backoff = @Backoff(delay = RETRY_DELAY_TIME))
+    public ResponseEntity<Object> forwardTryAllNodeRequestByIp(HttpServletRequest httpServletRequest, Object body,
+            URI uri) {
         try {
             String token = JwtTokenUtils.parsingTokenFromRequest();
             return forwardTryAllNodeRequest(httpServletRequest, body, token, uri);
@@ -132,7 +130,7 @@ public class TryAllNodeServiceImpl implements TryAllNodeService {
             }
             if (exception instanceof RestClientException) {
                 throw new LegoCheckedException(CommonErrorCode.NETWORK_CONNECTION_TIMEOUT, "Network connection failed",
-                    exception);
+                        exception);
             }
             throw new LegoCheckedException("Invoke try all node rest api failed.", exception);
         }
@@ -140,7 +138,7 @@ public class TryAllNodeServiceImpl implements TryAllNodeService {
 
     @ExterAttack
     private ResponseEntity<Object> forwardTryAllNodeRequest(HttpServletRequest httpServletRequest, Object body,
-        String token, URI uri) {
+            String token, URI uri) {
         log.info("Forward try all node request, uri is:{}.", uri.toString());
         HttpHeaders httpHeaders = RouterServiceUtils.buildClusterHeader(httpServletRequest, token);
         httpHeaders.add(HTTP_HEADER_TRY_ALL_NODE, HTTP_HEADER_TRY_ALL_NODE);
@@ -148,11 +146,12 @@ public class TryAllNodeServiceImpl implements TryAllNodeService {
     }
 
     private ResponseEntity<Object> getObjectResponseEntity(HttpServletRequest httpServletRequest, Object body, URI uri,
-        HttpHeaders httpHeaders, RestTemplate restTemplate) {
+            HttpHeaders httpHeaders, RestTemplate restTemplate) {
         HttpEntity<Object> httpEntity = new HttpEntity<>(body, httpHeaders);
         try {
             ResponseEntity<Object> responseEntity = restTemplate.exchange(uri,
-                Objects.requireNonNull(HttpMethod.resolve(httpServletRequest.getMethod())), httpEntity, Object.class);
+                    Objects.requireNonNull(HttpMethod.resolve(httpServletRequest.getMethod())), httpEntity,
+                    Object.class);
             return ResponseEntity.status(responseEntity.getStatusCode()).body(responseEntity.getBody());
         } catch (LegoCheckedException e) {
             log.error("Connect to node by uri fail: {}.", uri, ExceptionUtil.getErrorMessage(e));

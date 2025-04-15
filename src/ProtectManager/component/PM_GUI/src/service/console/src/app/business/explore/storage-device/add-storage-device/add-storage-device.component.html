@@ -43,7 +43,48 @@
       </lv-radio-group>
     </lv-form-control>
   </lv-form-item>
-
+    <div>
+        <div
+                *ngIf="formGroup.value.type === deviceStorageType.OceanStorDorado.value"
+        >
+            <lv-alert lvType="info" [lvClosable]="false" *ngIf="!isCyberEngine; else cyberEngineDoradoVersion">
+                {{ 'protection_dorado_type_tip_label' | i18n }}
+            </lv-alert>
+            <ng-template #cyberEngineDoradoVersion>
+                <lv-alert lvType="info" [lvClosable]="false" class="mgt-4">
+                    {{
+                        'protection_dorado_type_version_tip_label'
+                            | i18n
+                            : [
+                                formGroup.value.detectType ===
+                                storageDeviceDetectType.cyberEngine.value
+                                    ? '6.1.6'
+                                    : '6.1.5'
+                            ]
+                    }}
+                </lv-alert>
+            </ng-template>
+        </div>
+        <div
+                *ngIf="
+          formGroup.value.type === deviceStorageType.OceanStorPacific.value
+        "
+        >
+            <lv-alert lvType="info" [lvClosable]="false">
+                {{'protection_pacific_type_version_tip_label' | i18n }}
+            </lv-alert>
+        </div>
+        <div
+                *ngIf="formGroup.value.type === deviceStorageType.OceanProtect.value"
+                class="tips-info"
+        >
+            <lv-alert lvType="info" [lvClosable]="false">
+                {{
+                    'protection_op_type_version_tip_label' | i18n
+                }}
+            </lv-alert>
+        </div>
+    </div>
   <lv-form-item>
     <lv-form-label lvRequired>{{
       'common_equipment_type_label' | i18n
@@ -56,61 +97,6 @@
         [lvDisabled]="item && item.subType"
       >
       </lv-select>
-      <div
-        *ngIf="formGroup.value.type === deviceStorageType.OceanStorDorado.value"
-        class="tips-info"
-      >
-        <i
-          lv-icon="lv-icon-status-info"
-          lvColorState="true"
-          class="type-icon"
-        ></i>
-        <span *ngIf="!isCyberEngine; else cyberEngineDoradoVersion">
-          {{ 'protection_dorado_type_tip_label' | i18n }}
-        </span>
-        <ng-template #cyberEngineDoradoVersion>
-          <span>
-            {{
-              'protection_dorado_type_version_tip_label'
-                | i18n
-                  : [
-                      formGroup.value.detectType ===
-                      storageDeviceDetectType.cyberEngine.value
-                        ? '6.1.6'
-                        : '6.1.5'
-                    ]
-            }}
-          </span>
-        </ng-template>
-      </div>
-      <div
-        *ngIf="
-          formGroup.value.type === deviceStorageType.OceanStorPacific.value
-        "
-        class="tips-info"
-      >
-        <i
-          lv-icon="lv-icon-status-info"
-          lvColorState="true"
-          class="type-icon"
-        ></i>
-        <span class="mgl-4">{{
-          'protection_pacific_type_version_tip_label' | i18n
-        }}</span>
-      </div>
-      <div
-        *ngIf="formGroup.value.type === deviceStorageType.OceanProtect.value"
-        class="tips-info"
-      >
-        <i
-          lv-icon="lv-icon-status-info"
-          lvColorState="true"
-          class="type-icon"
-        ></i>
-        <span class="mgl-4">{{
-          'protection_op_type_version_tip_label' | i18n
-        }}</span>
-      </div>
     </lv-form-control>
   </lv-form-item>
 
@@ -145,6 +131,11 @@
         />
       </lv-form-control>
     </lv-form-item>
+      <div>
+          <lv-alert lvType="info" [lvClosable]="false">
+              {{ (isCyberEngine ? cyberEngineUserTipsLabel :'protection_add_storage_user_tip_label')|i18n }}
+          </lv-alert>
+      </div>
     <lv-form-item>
       <lv-form-label lvRequired>
         {{ 'common_username_label' | i18n }}
@@ -156,23 +147,6 @@
           formControlName="username"
           autocomplete="new-password"
         />
-        <div
-          class="user-info tips-info"
-          *ngIf="!isCyberEngine; else cyberEngineUserTipsTpl"
-        >
-          <i lv-icon="lv-icon-status-info" lvColorState="true"></i>
-          <span>
-            {{ 'protection_add_storage_user_tip_label' | i18n }}
-          </span>
-        </div>
-        <ng-template #cyberEngineUserTipsTpl>
-          <div class="user-info tips-info">
-            <i lv-icon="lv-icon-status-info" lvColorState="true"></i>
-            <span>
-              {{ cyberEngineUserTipsLabel | i18n }}
-            </span>
-          </div>
-        </ng-template>
       </lv-form-control>
     </lv-form-item>
     <lv-form-item>
@@ -193,7 +167,6 @@
         <ng-template #pwdSuffixTpl>
           <i
             [lv-icon]="pwdVisible ? 'aui-icon-eye-open' : 'aui-icon-eye-close'"
-            [class]="{ 'pos-polyfill': pwdVisible }"
             lvColorState="true"
             (click)="pwdVisible = !pwdVisible"
           ></i>
@@ -206,7 +179,7 @@
       </lv-form-label>
       <lv-form-control>
         <lv-switch formControlName="verify_status"> </lv-switch>
-        <div *ngIf="formGroup.value.verify_status">
+        <div *ngIf="formGroup.value.verify_status" class="mgt-16">
           <lv-form-item>
             <lv-form-label lvRequired>
               {{ 'protection_fc_cert_label' | i18n }}

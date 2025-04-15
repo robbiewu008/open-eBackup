@@ -12,13 +12,14 @@
 */
 package openbackup.db2.protection.access.provider.sla;
 
-import openbackup.data.protection.access.provider.sdk.sla.SlaValidateProvider;
-import openbackup.database.base.plugin.service.impl.SlaValidService;
 import com.huawei.oceanprotect.sla.sdk.constants.SlaConstants;
 import com.huawei.oceanprotect.sla.sdk.dto.SlaBase;
 import com.huawei.oceanprotect.sla.sdk.enums.PolicyAction;
 import com.huawei.oceanprotect.sla.sdk.validator.PolicyLimitConfig;
 import com.huawei.oceanprotect.sla.sdk.validator.SlaValidateConfig;
+
+import openbackup.data.protection.access.provider.sdk.sla.SlaValidateProvider;
+import openbackup.database.base.plugin.service.impl.SlaValidService;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 
 import org.springframework.stereotype.Component;
@@ -46,6 +47,8 @@ public class Db2SlaValidatorProvider implements SlaValidateProvider {
                 SlaConstants.CUMULATIVE_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
             .setLimit(PolicyLimitConfig.of(PolicyAction.LOG, SlaConstants.LOG_BACKUP_POLICY_COUNT_DEFAULT_LIMIT))
             .setLimit(PolicyLimitConfig.of(PolicyAction.ARCHIVING, SlaConstants.ARCHIVE_POLICY_COUNT_LIMIT))
+            .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION_LOG,
+                    SlaConstants.REPLICATION_LOG_POLICY_COUNT_LIMIT))
             .setLimit(PolicyLimitConfig.of(PolicyAction.REPLICATION, SlaConstants.REPLICATION_POLICY_COUNT_LIMIT));
         return sla;
     }

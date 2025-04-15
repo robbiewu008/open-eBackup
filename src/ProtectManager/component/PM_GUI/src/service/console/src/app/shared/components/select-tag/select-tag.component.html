@@ -18,7 +18,8 @@
         </lv-form-label>
         <lv-form-control>
             <lv-select [lvOptions]="labelOptions" lvValueKey="value" formControlName="selectTag" lvMode="multiple"
-                lvShowFilter lvShowCheckAll lvFilterKey="label" lvFilterMode="contains">
+                lvShowFilter lvFilterKey="label" lvFilterMode="contains" [lvVirtualScroll]="labelOptions?.length > 10"
+                       [lvDisabled]="tagLoading" [lvLoading]="tagLoading">
             </lv-select>
         </lv-form-control>
     </lv-form-item>

@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "apps/dws/XBSAServer/TpopsTaskManage.h"
 #include <vector>
 #include "common/Path.h"
@@ -41,6 +53,23 @@ mp_int32 TpopsTaskManage::UpdateTaskWhenCreateObject(const BsaObjectDescriptor &
     queryDesc.objectName.pathName = objDesc.objectName.pathName;
     return UpdateTaskWhenQueryObject(queryDesc);
 }
+
+mp_bool TpopsTaskManage::GetTpopsCacheInfoFile(mp_string &tpopsCacheInfoFile, mp_string &instanceId)
+{
+    mp_string tmpFileName;
+    if (!m_jobType.empty()) {
+        tmpFileName = "xbsa_cacheInfo_info_tpops_" + instanceId + "_" + m_jobType + ".txt";
+    } else {
+        tmpFileName = "xbsa_cacheInfo_info_tpops_" + instanceId + ".txt";
+    }
+    mp_string cacheFile = CPath::GetInstance().GetStmpFilePath(tmpFileName);
+    if (CMpFile::FileExist(cacheFile)) {
+        tpopsCacheInfoFile = tmpFileName;
+        return MP_TRUE;
+    }
+    return MP_FALSE;
+}
+
 mp_int32 TpopsTaskManage::UpdateTaskWhenQueryObject(const BsaQueryDescriptor &objDesc)
 {
     mp_string tpopsPathName = objDesc.objectName.pathName;
@@ -65,13 +94,13 @@ mp_int32 TpopsTaskManage::UpdateTaskWhenQueryObject(const BsaQueryDescriptor &ob
         } else {
             instanceId = elementList[i];
         }
-        mp_string cacheFile = CPath::GetInstance().GetStmpFilePath("xbsa_cacheInfo_info_tpops_" + instanceId + ".txt");
-        if (CMpFile::FileExist(cacheFile)) {
-            tpopsCacheInfoFile = "xbsa_cacheInfo_info_tpops_" + instanceId + ".txt";
+
+        if (GetTpopsCacheInfoFile(tpopsCacheInfoFile, instanceId)) {
             break;
         }
     }
-    INFOLOG("TpopsPathName param split string failed, %s.", tpopsCacheInfoFile.c_str());
+
+    INFOLOG("Tpops job cahce file is %s.", tpopsCacheInfoFile.c_str());
     mp_string cacheFilePath = CPath::GetInstance().GetStmpFilePath(tpopsCacheInfoFile);
     DwsTaskInfoParser parser;
     if (parser.ParseCacheInfo(m_cacheInfo, cacheFilePath) != MP_SUCCESS) {

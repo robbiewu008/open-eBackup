@@ -78,17 +78,16 @@ bool SmbContextWrapper::SmbConnect()
         lock_guard<std::mutex> krbLock(krbMtx);
         SmbSetKrbEnvironment();
     }
+    SmbSetLogCb(SmbLogCb, this);
     HCP_Log(INFO, MODULE) << "smb2_connect_share params, server: " << m_args.server <<
         ", share: " << m_args.share << HCPENDLOG;
+    AddBracketsForIpv6(m_args.server);
     int ret = smb2_connect_share(m_smbContext, m_args.server.c_str(), m_args.share.c_str(), nullptr);
     if (ret != SUCCESS) {
         HCP_Log(ERR, MODULE) << "Failed to connect share." <<
             " err: " << smb2_get_error(m_smbContext) << ", ret:" << ret << HCPENDLOG;
         return false;
     }
-
-    SmbSetLogCb(SmbLogCb, this);
-
     HCP_Log(INFO, MODULE) << "SUCCESS to connect share." << HCPENDLOG;
     return true;
 }
@@ -208,7 +207,8 @@ int SmbContextWrapper::SmbCloseQueryDir(struct smb2_query_directory_data *qd)
     return smb2_close_querydir(m_smbContext, qd);
 }
 
-int SmbContextWrapper::SmbCloseQueryDirAsync(struct smb2_query_directory_data *qd, smb2_command_cb cb, void *privateData)
+int SmbContextWrapper::SmbCloseQueryDirAsync(struct smb2_query_directory_data *qd,
+    smb2_command_cb cb, void *privateData)
 {
     return smb2_close_querydir_async(m_smbContext, qd, cb, privateData);
 }
@@ -373,6 +373,27 @@ int SmbContextWrapper::SmbGetInfoAsync(const char *path, struct SMB2_ALL_INFO *a
     smb2_command_cb cb, void *privateData)
 {
     return smb2_get_info_async(m_smbContext, path, allInfo, cb, privateData);
+}
+
+int SmbContextWrapper::SmbGetDataRange(const char *path, uint64_t fileSize, struct smb2_data_range_node **allInfo)
+{
+    return smb2_query_data_range(m_smbContext, path, fileSize, allInfo);
+}
+
+int SmbContextWrapper::SmbGetDataRangeAsync(const char *path, uint64_t fileSize, struct smb2_data_range_node **allInfo,
+    smb2_command_cb cb, void *privateData)
+{
+    return smb2_query_data_range_async(m_smbContext, path, fileSize, allInfo, cb, privateData);
+}
+
+int SmbContextWrapper::SmbSetSparseFlag(const char *path, struct smb2fh *fh)
+{
+    return smb2_set_sparse_flag(m_smbContext, path, fh);
+}
+
+int SmbContextWrapper::SmbfruncateAsync(struct smb2fh *fh, uint64_t length, smb2_command_cb cb, void *privateData)
+{
+    return smb2_ftruncate_async(m_smbContext, fh, length, cb, privateData);
 }
 
 void SmbContextWrapper::InitPfd(struct pollfd &pfd)
@@ -633,5 +654,23 @@ int SmbContextWrapper::Poll(int expireTime)
     }
 
     return SUCCESS;
+}
+
+void SmbContextWrapper::AddBracketsForIpv6(std::string &ip)
+{
+    if (IsIpv6Addr(ip) && !IsExistBrackets(ip)) {
+        ip = "[" + ip + "]";
+    }
+    DBGLOG("IpString for mount: %s", ip.c_str());
+}
+
+bool SmbContextWrapper::IsIpv6Addr(const std::string &ip)
+{
+    return ip.find(':') != string::npos ? true : false;
+}
+
+bool SmbContextWrapper::IsExistBrackets(const std::string &ip)
+{
+    return ip.find('[') != string::npos && ip.find(']') != string::npos;
 }
 }

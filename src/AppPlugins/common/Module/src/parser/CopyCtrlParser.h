@@ -151,7 +151,7 @@ private:
     uint64_t m_minDataSize = 0;                 /* Minimum data size represented by all entries in this file */
     uint64_t m_dataSize = 0;                    /* Total data size represented by all entries in this file */
     uint32_t m_entries = 0;                     /* Number of file/dir entries in the file */
-    uint32_t m_fileCount = 0;                   /* To track filecount per dir. Will be reset on each dir update*/
+    uint32_t m_fileCount = 0;                   /* To track filecount per dir. Will be reset on each dir update */
 
     time_t m_ctrlFileCreationTime = 0;         /* Ctrl file creation time */
     uint32_t m_ctrlFileTimeElapsed = 0;         /* Time elapsed since control file created */
@@ -163,9 +163,9 @@ private:
     /**
         * Validate a dir-entry or file-entry read from the file
         */
-    CTRL_FILE_RETCODE ValidateEntry(std::vector<std::string> &entry, const std::string &line);
-    CTRL_FILE_RETCODE ValidateDirEntry(std::vector<std::string> &lineContents, const std::string &line);
-    CTRL_FILE_RETCODE ValidateFileEntry(std::vector<std::string> &lineContents, const std::string &line);
+    CTRL_FILE_RETCODE ValidateEntry(const std::vector<std::string> &lineContents, const std::string &line) const;
+    CTRL_FILE_RETCODE ValidateDirEntry(const std::vector<std::string> &lineContents, const std::string &line) const;
+    CTRL_FILE_RETCODE ValidateFileEntry(const std::vector<std::string> &lineContents, const std::string &line) const;
 
     /**
         * Validate header information read from the file
@@ -203,15 +203,20 @@ private:
     void TranslateFileEntry(std::vector<std::string> &fileEntryStringFromFile, CopyCtrlFileEntry &fileEntry);
     void TranslateFileEntryV10(std::vector<std::string> &fileEntryStringFromFile,
         CopyCtrlFileEntry &fileEntry);
-    CTRL_FILE_RETCODE ReadEntryWithLine(CopyCtrlFileEntry &fileEntry, CopyCtrlDirEntry &dirEntry,
-        const std::string& ctlFileLine);
-    void HandleBreakLine(std::string& ctlFileLine);
-    bool IsNormalEntry(const std::string& fileLine);
-    
 
     /**
-        * Get metafile name from metafile index
-        */
+     * 处理存在换行符的名称，直到获取到正常行为止
+     */
+    CTRL_FILE_RETCODE HandleBreakLine(std::vector<std::string> &lineContents, std::string& ctlFileLine);
+
+    /**
+     * 判断是否是有效的entry
+     */
+    bool IsNormalEntry(std::vector<std::string> &lineContents, const std::string& ctlFileLine) const;
+
+    /**
+     * Get metafile name from metafile index
+     */
     std::string GetMetaFileName(uint16_t metaFileIndex);
 
     void PrintCopyCtrlDirEntry(CopyCtrlDirEntry& dirEntry);

@@ -13,10 +13,12 @@
 package openbackup.db2.protection.access.service;
 
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.NodeInfo;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * db2实例服务
@@ -82,4 +84,21 @@ public interface Db2InstanceService {
      * @return 扫描结果
      */
     List<ProtectedResource> scanDatabase(ProtectedResource clusterInstance, ProtectedEnvironment environment);
+
+    /**
+     * 查询HA集群的主节点
+     *
+     * @param clusterInstance 集群实例
+     * @return 集群实例的主节点
+     */
+    ProtectedResource queryHadrPrimaryNode(ProtectedResource clusterInstance);
+
+    /**
+     * 查询主节点
+     *
+     * @param subInstance 子实例
+     * @param subEnv 环境
+     * @return 主节点
+     */
+    Optional<NodeInfo> queryMasterNode(ProtectedResource subInstance, ProtectedEnvironment subEnv);
 }

@@ -18,6 +18,7 @@
 #include <vector>
 #include <memory>
 #include <unordered_set>
+#include "EnumDefines.h"
 #include "common/CleanMemPwd.h"
 #include "BackupConstants.h"
 #include "ArchiveClientBase.h"
@@ -26,125 +27,6 @@
 #ifdef _OBS
 #include "manager/CloudServiceManager.h"
 #endif
-
-enum class BackupRetCode {
-    DESTROY_IN_PROGRESS               = -4,
-    ABORT_IN_PROGRESS                 = -3,
-    DESTROY_FAILED_BACKUP_IN_PROGRESS = -2,
-    FAILED                            = -1,
-    SUCCESS                           =  0,
-    SKIP                              =  1,
-};
-
-enum class BackupPhaseStatus {
-    INPROGRESS                      = 1,
-    ABORT_INPROGRESS                = 2,
-    ABORTED                         = 3,
-    FAILED                          = 4,
-    COMPLETED                       = 5,
-    FAILED_NOACCESS                 = 6,
-    FAILED_NOSPACE                  = 7,
-    FAILED_SEC_SERVER_NOTREACHABLE  = 8,
-    FAILED_PROT_SERVER_NOTREACHABLE = 9,
-    FAILED_NOMEMORY                 = 10,
-};
-
-enum class BackupPhase {
-    COPY_STAGE     = 1,
-    DELETE_STAGE   = 2,
-    HARDLINK_STAGE = 3,
-    DIR_STAGE      = 4,
-    ANTI_STAGE     = 5,
-    UNKNOWN_STAGE  = 6,
-};
-
-enum class BackupType {
-    BACKUP_FULL        = 1,
-    BACKUP_INC         = 2,
-    RESTORE            = 3,
-    FILE_LEVEL_RESTORE = 4,
-    UNKNOWN_TYPE       = 5
-};
-
-enum class BackupPlatform {
-    UNIX             = 1,
-    WINDOWS          = 2,
-    OBJECT           = 3,
-    UNKNOWN_PLATFORM = 4
-};
-
-enum class BackupIOEngine {
-    LIBNFS = 1,
-    LIBSMB = 2,
-    POSIX = 3,
-    WIN32_IO = 4,
-    POSIXAIO = 5,
-    WINDOWSAIO = 6,
-    LIBAIO = 7,
-    LIBS3IO = 8,
-    ARCHIVE_CLIENT = 9,
-    NFS_ANTI_ANSOMWARE = 10,
-    OBJECTSTORAGE = 11,
-    UNKNOWN_ENGINE = 12,
-};
-
-enum class BackupDataFormat {
-    NATIVE         = 1,
-    AGGREGATE      = 2,
-    UNKNOWN_FORMAT = 3
-};
-
-enum class RestoreReplacePolicy {
-    IGNORE_EXIST    = 1,
-    OVERWRITE       = 2,
-    OVERWRITE_OLDER = 3,
-    RENAME          = 4,
-    NONE            = 5
-};
-
-enum class BackupModuleStatus {
-    BACKUP_DEFAULT                                  = 0,
-    BACKUP_INIT                                     = 1,
-    BACKUP_SCAN_COMPLETED                           = 2,
-    BACKUP_STOPPED                                  = 3,
-    BACKUP_MOUNT_FAILED                             = 4,
-    BACKUP_FAILED                                   = 5,
-    BACKUP_COPY_PHASE_INPROGRESS                    = 6,
-    BACKUP_COPY_PHASE_READ_CONTEXT_FILLED           = 7,
-    BACKUP_COPY_PHASE_WRITE_CONTEXT_FILLED          = 8,
-    BACKUP_COPY_PHASE_CONTROLFILE_READ_COMPLETE     = 9,
-    BACKUP_COPY_PHASE_READ_COMPLETE                 = 10,
-    BACKUP_COPY_PHASE_WRITE_COMPLETE                = 11,
-    BACKUP_COPY_PHASE_COMPLETE                      = 12,
-    BACKUP_DELETE_PHASE_INPROGRESS                  = 13,
-    BACKUP_DELETE_PHASE_CONTEXT_FILLED              = 14,
-    BACKUP_DELETE_PHASE_CONTROLFILE_READ_COMPLETE   = 15,
-    BACKUP_DELETE_PHASE_COMPLETE                    = 16,
-    BACKUP_HARDLINK_PHASE_INPROGRESS                = 17,
-    BACKUP_HARDLINK_PHASE_READ_CONTEXT_FILLED       = 18,
-    BACKUP_HARDLINK_PHASE_WRITE_CONTEXT_FILLED      = 19,
-    BACKUP_HARDLINKF_PHASE_READ_COMPLETE            = 20,
-    BACKUP_HARDLINKF_PHASE_WRITE_COMPLETE           = 21,
-    BACKUP_HARDLINKF_PHASE_COMPLETE                 = 22,
-    BACKUP_DIRMTIME_PHASE_INPROGRESS                = 23,
-    BACKUP_DIRMTIME_PHASE_CONTEXT_FILLED            = 24,
-    BACKUP_DIRMTIME_PHASE_CONTROLFILE_READ_COMPLETE = 25,
-    BACKUP_DIRMTIME_PHASE_COMPLETE                  = 26,
-    BACKUP_SUCCESS                                  = 27,
-};
-
-enum class SpecialFileType {
-    REG = 0,        // regular file
-    SLINK,          // soft link
-    BLK,            // block device
-    CHR,            // char device
-    FIFO            // pipe
-};
-
-enum class BackupAntiType {
-    WORM = 0,
-    ENTRPY = 1
-};
 
 #ifdef __cplusplus
 extern "C" {
@@ -215,6 +97,15 @@ struct BackupControlInfo {
     std::atomic<uint64_t> m_aggrRestoreInMemoryFhCnt    {0};        /* Total filehandle in each DirMap enties */
 
     std::shared_ptr<StreamHostFilePendingMap>  m_streamHostFilePendingMap { nullptr };
+
+    std::atomic<uint64_t> m_writeTaskProduce { 0 };
+    std::atomic<uint64_t> m_writeTaskConsume { 0 };
+    std::atomic<uint64_t> m_readTaskProduce { 0 };
+    std::atomic<uint64_t> m_readTaskConsume { 0 };
+    std::chrono::steady_clock::time_point m_lastRecordTime { std::chrono::steady_clock::now() };
+    std::atomic<uint64_t> m_lastFailedFileNum { 0 };
+    std::atomic<uint64_t> m_lastFailedDirNum { 0 };
+    std::atomic<uint64_t> m_lastCopyFileNum { 0 };
 };
 
 struct BackupStats {
@@ -226,24 +117,32 @@ struct BackupStats {
     uint64_t noOfDirCopied      = 0;        /* No of directories copied */
     uint64_t noOfFilesCopied    = 0;        /* No of files copied */
     uint64_t noOfBytesCopied    = 0;        /* No of bytes (in KB) copied */
+    uint64_t skipFileCnt        = 0;        /* No of files skipped */
+    uint64_t skipDirCnt         = 0;        /* No of dir skipped */
     uint64_t noOfDirDeleted     = 0;        /* No of directories deleted */
     uint64_t noOfFilesDeleted   = 0;        /* No of files deleted */
     uint64_t noOfDirFailed      = 0;        /* No of directories failed to be copied/deleted */
     uint64_t noOfFilesFailed    = 0;        /* No of files failed to be copied/deleted */
+    uint64_t readConsume        = 0;        /* No of bloack reader consumed */
+    uint64_t aggregateConsume   = 0;        /* No of bloack aggregater consumed */
+    uint64_t writerConsume      = 0;        /* No of bloack writer consumed */
     uint64_t backupspeed        = 0;        /* Backup speed (in KBps) */
     time_t   startTime          = 0;        /* Start time of backup phase */
     uint64_t noOfSrcRetryCount  = 0;        /* No of src side retry count */
     uint64_t noOfDstRetryCount  = 0;        /* No of dst side retry count */
     uint64_t noOfFailureRecordsWritten = 0; /* No of backup failure records that have been written to file */
-    uint64_t readConsume      = 0;      /* No of bloack reader consumed */
-    uint64_t aggregateConsume = 0;      /* No of bloack aggregater consumed */
-    uint64_t writerConsume    = 0;      /* No of bloack writer consumed */
-
+    uint64_t noOfFilesWriteSkip = 0;    /* No of files skipped to write (Ignore replace policy) */
+    uint64_t noOfReadTaskProduce = 0;   /* No of read task produced */
+    uint64_t noOfReadTaskConsume = 0;   /* No of read task consumed */
+    uint64_t noOfWriteTaskProduce = 0;  /* No of write task produced */
+    uint64_t noOfWriteTaskConsume = 0;  /* No of write task consumed */
     bool operator !=(const BackupStats& other)
     {
         return noOfDirCopied != other.noOfDirCopied ||
             noOfFilesCopied != other.noOfFilesCopied ||
             noOfBytesCopied != other.noOfBytesCopied ||
+            skipFileCnt != other.skipFileCnt ||
+            skipDirCnt != other.skipDirCnt ||
             noOfDirDeleted != other.noOfDirDeleted ||
             noOfFilesDeleted != other.noOfFilesDeleted ||
             noOfDirFailed != other.noOfDirFailed ||
@@ -259,7 +158,12 @@ struct BackupStats {
             noOfFilesToBackup != other.noOfFilesToBackup ||
             noOfBytesToBackup != other.noOfBytesToBackup ||
             noOfDirToDelete != other.noOfDirToDelete ||
-            noOfFilesToDelete != other.noOfFilesToDelete;
+            noOfFilesToDelete != other.noOfFilesToDelete ||
+            noOfFilesWriteSkip != other.noOfFilesWriteSkip ||
+            noOfReadTaskProduce != other.noOfReadTaskProduce ||
+            noOfReadTaskConsume != other.noOfReadTaskConsume ||
+            noOfWriteTaskProduce != other.noOfWriteTaskProduce ||
+            noOfWriteTaskConsume != other.noOfWriteTaskConsume;
     }
 };
 
@@ -304,8 +208,8 @@ struct CommonParams {
     bool        useSubJobSqlite         { false };
     uint32_t    maxErrorFiles           { DEFAULT_ERROR_FILE_CNT };
     uint32_t    maxBufferCnt            { DEFAULT_QUEUE_LENGTH };
-    uint32_t    maxBufferSize           { DEFAULT_QUEUE_SIZE };
-    uint32_t    blockSize               { DEFAULT_BLOCK_SIZE };
+    uint32_t    maxBufferSize           { ::DEFAULT_QUEUE_SIZE };
+    uint32_t    blockSize               { ::DEFAULT_BLOCK_SIZE };
     uint32_t    maxBlockNum             { 0 };
     uint32_t    aggregateThreadNum      { DEFAULT_SYNC_IO_THREAD_NUM };
     uint32_t    maxAggregateFileSize    { DEFAULT_MAX_AGGREGATE_FILE_SIZE };
@@ -315,6 +219,8 @@ struct CommonParams {
     std::vector<std::string> aggregateFileSet;
     BackupDataFormat        backupDataFormat        { BackupDataFormat::UNKNOWN_FORMAT };
     RestoreReplacePolicy    restoreReplacePolicy    { RestoreReplacePolicy::NONE };
+    OrderOfRestore          orderOfFilenames        { OrderOfRestore::OFF };
+    AdsProcessType          adsProcessType          { AdsProcessType::ADS_PROCESS_TYPE_FROM_SCANNER };
 };
 
 struct ScanAdvanceParams {
@@ -381,15 +287,20 @@ struct LibsmbBackupAdvanceParams : public BackupAdvanceParams {
     /* version: 协议版本，包括3.1.1、3.02、3.0、2.1、2.02 */
     std::string version;
 
-    uint32_t maxPendingAsyncReqCnt = DEFAULT_MAX_REQ_COUNT;      /* Max Async requests pending */
+    uint32_t maxPendingAsyncReqCnt = 32;        /* Max Async requests pending */
+
     uint32_t minPendingAsyncReqCnt = DEFAULT_MIN_REQ_COUNT;      /* Min Async requests pending */
     uint32_t maxPendingWriteReqCnt = DEFAULT_MAX_WRITE_COUNT;    /* Max Async write requests pending */
     uint32_t minPendingWriteReqCnt = DEFAULT_MIN_WRITE_COUNT;    /* Min Async write requests pending */
     uint32_t maxPendingReadReqCnt = DEFAULT_MAX_READ_COUNT;      /* Max Async read requests pending */
-    uint32_t minPendingReadReqCnt = DEFAULT_MIN_READ_COUNT;      /* Min Async read requests pending */
-    uint32_t serverCheckMaxCount = DEFAULT_SERVER_CHECK_COUNT;   /* Max Retriable count to initiate Server check */
+    uint32_t minPendingReadReqCnt = DEFAULT_MIN_READ_COUNT;      /* Min Async  requests pending */
+
+    uint32_t serverCheckMaxCount = DEFAULT_SERVER_CHECK_COUNT;       /* Max Retriable count to initiate Server check */
+    
     uint32_t serverCheckSleepTime = DEFAULT_SERVER_CHECK_SLEEP;  /* Max sleep time inbetween server checks */
     uint32_t serverCheckRetry = DEFAULT_SERVER_CHECK_RETRY;      /* Max retries for server check */
+    uint32_t maxOpenedFilehandleCount = 100;
+    uint32_t pollExpiredTime = 100;
 
     std::string rootPath;
 
@@ -433,6 +344,7 @@ struct FailedRecordItem {
     uint32_t errNum;
     uint64_t offset;
     std::string filePath;
+    std::string errMsg;
 
     bool operator<(const FailedRecordItem& other) const
     {
@@ -471,6 +383,7 @@ struct ObsBucket {
     std::string bucketName;
     std::vector<std::string> prefix;
     std::string delimiter;
+    bool encodeEnable { false };
 };
 
 struct ObjectBackupAdvanceParams : public BackupAdvanceParams {
@@ -480,6 +393,7 @@ struct ObjectBackupAdvanceParams : public BackupAdvanceParams {
     uint32_t threadNum { DEFAULT_SYNC_IO_THREAD_NUM };
     uint32_t maxMemory { MEMORY_THRESHOLD_HIGH };
     bool saveMeta { true };
+    std::string excludeMeta; // 排除哪些元数据不备份
 
     Module::StorageConfig authArgs;
     std::vector<ObsBucket> buckets; // 备份的桶及前缀(恢复时也需要填充)
@@ -517,7 +431,7 @@ struct BackupParams {
     std::shared_ptr<BackupAdvanceParams>    dstAdvParams    {nullptr};
     CommonParams                            commonParams    {};
     ScanAdvanceParams                       scanAdvParams   {};
-    BackupType                              backupType      { BackupType::UNKNOWN_TYPE };
+    BackupType                              backupType      { ::BackupType::UNKNOWN_TYPE };
 };
 
 namespace FS_Backup {

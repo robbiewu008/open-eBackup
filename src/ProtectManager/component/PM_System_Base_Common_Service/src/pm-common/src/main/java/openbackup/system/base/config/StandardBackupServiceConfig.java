@@ -12,15 +12,14 @@
 */
 package openbackup.system.base.config;
 
-import openbackup.system.base.common.enums.ServiceType;
-import openbackup.system.base.common.validator.constants.RegexpConstants;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import openbackup.system.base.common.enums.ServiceType;
+import openbackup.system.base.common.validator.constants.RegexpConstants;
 
 import javax.validation.constraints.Pattern;
 

@@ -61,11 +61,14 @@
             <i lv-icon="aui-icon-help" [lv-tooltip]="'protection_hcs_ip_tips_label' | i18n" lvTooltipTheme="light"
                 class="configform-constraint" lvColorState="true"
                 *ngIf="isHcsEnvir && formGroup.get('replicationClusterType')?.value === 1"></i>
+            <i lv-icon="aui-icon-help" [lv-tooltip]="'system_target_cluster_limit_tip_label' | i18n"
+                lvTooltipTheme="light" class="configform-constraint" lvColorState="true"
+                *ngIf="addType===0 && appUtilsService.isDataBackup"></i>
         </lv-form-label>
         <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
             <input lv-input type="text" formControlName="ip"
                 [placeholder]="(isHcsEnvir &&
-            formGroup.get('replicationClusterType')?.value === 1?'system_add_hcs_cluster_domain_placeholder_label'  :'') | i18n" />
+            formGroup.get('replicationClusterType')?.value === 1?'system_add_hcs_cluster_ip_placeholder_label'  :'') | i18n" />
         </lv-form-control>
     </lv-form-item>
     <lv-form-item *ngIf="formGroup.get('replicationClusterType').value !== 1 || !isHcsEnvir">

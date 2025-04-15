@@ -30,99 +30,8 @@
     </div>
 </ng-container>
 <ng-template #elseTemplate>
-    <h3 class="aui-gutter-column-md">
-        {{'protection_selected_restore_file_label' | i18n}}
-    </h3>
-    <div class="file-tree fileset-list-tree vm-file-level-tree-table">
-        <lv-treetable #lvTreeTable1 [lvData]="originalFileData" lvSelectionMode="multiple"
-            [(lvSelection)]="originalSelection" [lvScroll]="{ y: '480px' }" (lvSelectionChange)="selectionChange()"
-            [lvSelectionAssociate]="selectionAssociate" [lvPaginator]="page" lvCompareWith="compareKey">
-            <thead>
-                <tr>
-                    <th lvShowCheckbox lvCellKey="name">
-                        {{ 'common_name_label' | i18n }}
-                        <i lv-icon="lv-icon-search" [lvColorState]="true" [ngClass]="{ active: !!queryKey }" lv-popover
-                            [lvPopoverContent]="keyFilterTpl" lvPopoverPosition="bottom" lvPopoverTrigger="click"
-                            #keyPopover="lvPopover"></i>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <ng-container
-                    *ngTemplateOutlet="bodyContentTpl; context: { $implicit: lvTreeTable1.renderData, level: 0 }">
-                </ng-container>
-
-                <ng-template #bodyContentTpl let-data let-level="level">
-                    <ng-container *ngFor="let item of data">
-                        <ng-container *ngTemplateOutlet="contentTpl; context: { $implicit: item, level: level }">
-                        </ng-container>
-                    </ng-container>
-                </ng-template>
-
-                <ng-template #contentTpl let-item let-level="level">
-                    <tr>
-                        <td [lvShowCheckbox]="!item.isMoreBtn" [lvShowExpanded]="item.children?.length"
-                            [(lvExpanded)]="item.expanded" [lvRowData]="item"
-                            (lvExpandedChange)="getCopySourceTree(item)" [lvDisabled]="item.disabled"
-                            [lvPaddingLeft]="item.isMoreBtn ? level * 24 + 32 + 'px' : level * 24 + 'px'">
-                            <ng-container *ngIf="searchByKeyFlag; else elsePathTemplate">
-                                <div style="width: 650px;">
-                                    <lv-group [lvColumns]="['auto', '130px']" lvGutter="8px" class="tree-group">
-                                        <div lv-overflow class="file-container" *ngIf="item.nodeName">
-                                            <lv-group lvGutter='8px'>
-                                                <i lv-icon="{{ item.icon }}" [lvColorState]="true"></i>
-                                                <span lv-overflow>{{item.nodeName}}</span>
-                                            </lv-group>
-                                            <p class="aui-text-desc" lv-overflow>{{item.path}}</p>
-                                        </div>
-                                        <div class="file-info-container"
-                                            *ngIf="item.nodeType !== nodeType.Folder && item.nodeName !== ''">
-                                            <p>
-                                                {{item.nodeSize | capacityCalculateLabel: '1.1-3':unitconst.BYTE:true}}
-                                            </p>
-                                            <p class="aui-text-desc">{{ item.modifyTime }}</p>
-                                        </div>
-                                    </lv-group>
-                                </div>
-                            </ng-container>
-                            <ng-template #elsePathTemplate>
-                                <div style="width: 456px;">
-                                    <span *ngIf="!item.isMoreBtn">
-                                        <lv-group [lvColumns]="['auto', '130px']" lvGutter="8px" class="tree-group">
-                                            <div lv-overflow class="file-container">
-                                                <i lv-icon="{{ item.icon }}" [lvColorState]="true"></i>
-                                                {{ item.name }}
-                                            </div>
-                                            <div class="file-info-container"
-                                                *ngIf="item.nodeType !== nodeType.Folder && item.nodeName !== ''">
-                                                <p>
-                                                    {{item.nodeSize | capacityCalculateLabel:
-                                                    '1.1-3':unitconst.BYTE:true}}
-                                                </p>
-                                                <p class="aui-text-desc">{{ item.modifyTime }}</p>
-                                            </div>
-                                        </lv-group>
-                                    </span>
-                                    <span *ngIf="item.isMoreBtn" class="aui-link"
-                                        (click)="getCopySourceNode(item.parent, item.startPage)">
-                                        {{ item.name }}
-                                    </span>
-                                </div>
-                            </ng-template>
-                        </td>
-                    </tr>
-                    <ng-container *ngIf="item.expanded && item.children?.length">
-                        <ng-container
-                            *ngTemplateOutlet="bodyContentTpl;context: { $implicit: item.children, level: level + 1 }">
-                        </ng-container>
-                    </ng-container>
-                </ng-template>
-            </tbody>
-        </lv-treetable>
-        <lv-paginator #page *ngIf="searchByKeyFlag && treeTotal > pageSize" [lvPageSize]="pageSize"
-            [lvTotal]="treeTotal" [lvPageIndex]="pageIndex" (lvPageChange)="pageChange($event)"
-            lvMode="simple"></lv-paginator>
-    </div>
+    <aui-file-tree [copy]="rowCopy" [treeData]="originalFileData" (tableSelectionChange)="tableSelectionChange($event)"
+        (treeExpandedChange)="getCopySourceTree($event)" #fileTree></aui-file-tree>
 </ng-template>
 
 <!-- 恢复配置 -->
@@ -165,11 +74,8 @@
                     <lv-form-label lvRequired>
                         {{ (isCloudResource(childResType) ?
                         'protection_restore_cloud_ip_label' : 'protection_restore_vm_ip_label') | i18n}}
-                        <i *ngIf="![dataMap.Resource_Type.openStackCloudServer.value,dataMap.Resource_Type.hyperVVm.value].includes(childResType)"
-                            lv-icon="aui-icon-help" lv-tooltip="{{ (childResType === dataMap.Resource_Type.HCSCloudHost.value ?
-                            'common_hcs_vm_ip_help_label' : 'common_vmtools_help_label') | i18n}}"
-                            lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
-                            lvColorState='true'></i>
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{getIpHelp()}}" lvTooltipPosition="rightTop"
+                            lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
                     </lv-form-label>
                     <lv-form-control>
                         <ng-container *ngTemplateOutlet="vmIpTpl"></ng-container>
@@ -243,7 +149,8 @@
                                     (lvExpandedChange)="openstackExpandedChange($event)" lvShowFilter
                                     lvFilterKey="label" lvFilterMode="contains">
                                     <lv-treeselect-trigger>
-                                        <span>{{ formGroup.value.targetServer[0]?.path | nil }}</span>
+                                        <span>{{ !isEmpty(formGroup.value.targetServer) ?
+                                            formGroup.value.targetServer[0]?.path : '' }}</span>
                                     </lv-treeselect-trigger>
                                 </lv-tree-select>
                                 <p class="aui-text-help-sm" style="line-height: 0.18rem">
@@ -264,7 +171,8 @@
                                     (lvExpandedChange)="apsExpandedChange($event)" lvShowFilter lvFilterKey="label"
                                     lvFilterMode="contains">
                                     <lv-treeselect-trigger>
-                                        <span>{{ formGroup.value.targetServer[0]?.path | nil }}</span>
+                                        <span>{{ !isEmpty(formGroup.value.targetServer) ?
+                                            formGroup.value.targetServer[0]?.path : '' }}</span>
                                     </lv-treeselect-trigger>
                                 </lv-tree-select>
                             </lv-form-control>
@@ -294,28 +202,57 @@
                                     formControlName="vm" lvShowClear lvTreeShowContentIcon
                                     lvPlaceholder="{{'protection_computer_location_disk_tip_label'|i18n}}"
                                     lvVirtualScroll (lvExpandedChange)="expandedChange($event)" lvShowFilter
-                                    lvFilterKey="label" lvFilterMode="contains">
+                                    lvFilterKey="label" lvFilterMode="contains"
+                                    (lvFilterChange)="vmFilterChange($event)">
                                 </lv-tree-select>
                             </lv-form-control>
                         </lv-form-item>
                     </ng-container>
 
                 </ng-container>
+                <!-- 指定路径 -->
+                <lv-form-item>
+                    <lv-form-label>
+                        {{'protection_specified_path_label' | i18n}}
+                        <i lv-icon="aui-icon-help" lvTooltipTheme="light" lvTooltipPosition="bottom"
+                            [lv-tooltip]="helpTpl" class="configform-constraint" lvColorState='true'></i>
+                    </lv-form-label>
+                    <lv-form-control [lvErrorTip]="pathErrorTip">
+                        <input lv-input type="text" formControlName="targetPath"
+                            placeholder="{{'protection_specified_path_placeholder_label' | i18n}}" />
+                    </lv-form-control>
+                </lv-form-item>
                 <lv-form-item>
                     <lv-form-label lvRequired>
                         {{ (isCloudResource(childResType) ?
                         'protection_restore_cloud_ip_label' : 'protection_restore_vm_ip_label') | i18n}}
-                        <i *ngIf="![dataMap.Resource_Type.openStackCloudServer.value,dataMap.Resource_Type.hyperVVm.value].includes(childResType)"
-                            lv-icon="aui-icon-help" lv-tooltip="{{ (childResType === dataMap.Resource_Type.HCSCloudHost.value ?
-                            'common_hcs_vm_ip_help_label' : 'common_vmtools_help_label') | i18n}}"
-                            lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
-                            lvColorState='true'></i>
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{getIpHelp()}}" lvTooltipPosition="rightTop"
+                            lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
                     </lv-form-label>
                     <lv-form-control>
                         <ng-container *ngTemplateOutlet="vmIpTpl"></ng-container>
                     </lv-form-control>
                 </lv-form-item>
             </ng-container>
+            <!-- 操作系统放前面 -->
+            <lv-form-item *ngIf="manualOstype()">
+                <lv-form-label lvRequired>
+                    {{'protection_os_type_label' | i18n}}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="requiredErrorTip">
+                    <lv-select formControlName="osType" [lvOptions]="osTypeOptions" lvValueKey="value">
+                    </lv-select>
+                </lv-form-control>
+            </lv-form-item>
+            <!-- 新增端口 -->
+            <lv-form-item *ngIf="showPort()">
+                <lv-form-label lvRequired>
+                    {{ 'common_port_label' | i18n }}
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="portErrorTip">
+                    <input lv-input type="text" formControlName="port" placeholder="1~65535" />
+                </lv-form-control>
+            </lv-form-item>
             <lv-form-item>
                 <lv-form-label lvRequired>
                     {{(isCloudResource(childResType) ? 'protection_restore_cloud_user_label'
@@ -332,15 +269,6 @@
                 </lv-form-label>
                 <lv-form-control [lvErrorTip]="requiredErrorTip">
                     <aui-inupt-with-eye formControlName="password" [lvPasteAllowed]="false"></aui-inupt-with-eye>
-                </lv-form-control>
-            </lv-form-item>
-            <lv-form-item *ngIf="[dataMap.Resource_Type.openStackCloudServer.value,dataMap.Resource_Type.hyperVVm.value].includes(childResType)">
-                <lv-form-label lvRequired>
-                    {{'protection_os_type_label' | i18n}}
-                </lv-form-label>
-                <lv-form-control [lvErrorTip]="requiredErrorTip">
-                    <lv-select formControlName="osType" [lvOptions]="osTypeOptions" lvValueKey="value">
-                    </lv-select>
                 </lv-form-control>
             </lv-form-item>
             <lv-form-item>
@@ -367,10 +295,29 @@
 
 <ng-template #vmIpTpl>
     <ng-container [formGroup]="formGroup">
-        <lv-select formControlName="vmIp" [lvOptions]='vmIpOptions' lvValueKey="value" [lvPlaceholder]="(vmIpNoData?'protection_restore_vm_ip_select_placeholder_label' :
-           'protection_restore_vm_ip_placeholder_label') | i18n" lvShowFilter lvFilterMode="contains"
-            lvFilterKey='label'>
-        </lv-select>
+        <lv-radio-group formControlName="vmIpType">
+            <lv-group [lvGutter]="'20px'">
+                <lv-radio [lvValue]="vmIpTypeOptions.exist">
+                    {{'protection_vm_restore_select_ip_label' | i18n}}
+                </lv-radio>
+                <lv-radio [lvValue]="vmIpTypeOptions.custom">
+                    {{'protection_vm_restore_input_ip_label' | i18n}}
+                </lv-radio>
+            </lv-group>
+        </lv-radio-group>
+        <ng-container *ngIf="formGroup.value.vmIpType === vmIpTypeOptions.exist; else elseVmIpTemplate">
+            <lv-form-control class="ip-control">
+                <lv-select formControlName="vmIp" [lvOptions]='vmIpOptions' lvValueKey="value" [lvPlaceholder]="(vmIpNoData?'protection_restore_vm_ip_select_placeholder_label' :
+                    'protection_restore_vm_ip_placeholder_label') | i18n" lvShowFilter lvFilterMode="contains"
+                    lvFilterKey='label'>
+                </lv-select>
+            </lv-form-control>
+        </ng-container>
+        <ng-template #elseVmIpTemplate>
+            <lv-form-control class="ip-control" [lvErrorTip]="ipErrorTip">
+                <input lv-input type="text" formControlName="customIp" />
+            </lv-form-control>
+        </ng-template>
     </ng-container>
 </ng-template>
 
@@ -392,6 +339,7 @@
     </div>
 </ng-template>
 
-<ng-template #keyFilterTpl>
-    <lv-search [(ngModel)]="queryKey" (lvSearch)="searchByKey()" [lvFocus]="true"></lv-search>
+<ng-template #helpTpl>
+    <span
+        innerHTML="{{ (isCloudResource(childResType) ? 'protection_cloud_specified_path_help_label' : 'protection_specified_path_help_label') | i18n}}"></span>
 </ng-template>

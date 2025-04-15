@@ -1,0 +1,121 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤2：sys_rman初始化配置">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="kingbase-00012.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="kingbase-00014">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤2：sys_rman初始化配置</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="kingbase-00014"></a><a name="kingbase-00014"></a>
+  <h1 class="topictitle1">步骤2：sys_rman初始化配置</h1>
+  <div>
+   <p>对于1.6.0版本的单机场景需要进行sys_rman初始化配置操作。对于集群场景，需要进行初始化从1.5.0升级到1.6.0版本以及使用1.5.0版本产生的副本进行恢复后再首次进行备份或进行主备切换后需要进行sys_rman初始化配置操作，否则将无法执行备份与恢复。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <p><strong>单机初始化</strong></p>
+    <ol>
+     <li><span>登录Kingbase实例所在主机。</span></li>
+     <li><span>执行以下命令，查看Kingbase数据库安装目录和数据目录。</span><p></p><pre class="screen">ps -ef | grep kingbase</pre> <p>回显如下图所示：</p> <p><span><img src="zh-cn_image_0000002200021113.png"></span></p> <p></p></li>
+     <li><span>执行以下命令修改kingbase.conf文件，后续操作中的数据目录与安装目录请根据实际情况替换。</span><p></p><pre class="screen">vi <em>/</em><em>数据目录</em>/kingbase.conf
+archive_mode = on
+archive_command = ''</pre> <p></p></li>
+     <li><span>执行以下命令重新加载Kingbase配置，以数据库安装用户名<strong>k</strong><strong>ingbase</strong>为例。</span><p></p><pre class="screen">su - <em>kingbase</em>
+<em>/</em><em>安装目录</em>/Server/bin/sys_ctl reload -D <em>/</em><em>数据目录</em>
+exit</pre> <p></p></li>
+     <li><span>执行以下命令，在bin/sys_backup.conf文件中配置节点IP地址和数据库安装目录与数据目录。</span><p></p><pre class="screen">cp <em>/</em><em>安装目录</em>/share/sys_backup.conf <em>/</em><em>安装目录</em>/Server/bin/sys_backup.conf
+cd <em>/</em><em>安装目录</em>/Server/bin
+vi sys_backup.conf
+_target_db_style="single"
+_one_db_ip="<em>当前节点IP地址</em>"
+_repo_ip="<em>当前节点IP地址</em>"
+_single_data_dir="/<em>数据目录</em>"
+_single_bin_dir="/<em>安装目录</em>/Server/bin"</pre> <p></p></li>
+     <li id="kingbase-00014__li524213216920"><a name="kingbase-00014__li524213216920"></a><a name="li524213216920"></a><span>执行以下命令，解压securecmdd文件。</span><p></p><pre class="screen">su - kingbase
+cd <em>/</em><em>安装目录</em>/ClientTools/guitools/DeployTools/zip/
+unzip securecmdd.zip</pre>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>当数据库版本为V8R6C7或V8R6C8时，执行<a href="#kingbase-00014__li524213216920">6</a>~<a href="#kingbase-00014__li31211317446">7</a>，否则请跳过这两个操作步骤。</p>
+       </div>
+      </div> <p></p></li>
+     <li id="kingbase-00014__li31211317446"><a name="kingbase-00014__li31211317446"></a><a name="li31211317446"></a><span>在root用户下，执行以下命令，启用securecmdd文件。</span><p></p><pre class="screen">cd <em>/</em><em>安装目录</em>/ClientTools/guitools/DeployTools/zip/securecmdd/bin/
+sh sys_HAscmdd.sh init
+sh sys_HAscmdd.sh start</pre> <p></p></li>
+     <li><span>执行以下命令完成初始化，以数据库安装用户名<strong>k</strong><strong>ingbase</strong>为例。</span><p></p><pre class="screen">su - <em>kingbase</em>
+cd <em>/</em><em>安装目录</em>/Server/bin
+./sys_backup.sh init</pre> <p></p></li>
+    </ol>
+    <p><strong>集群初始化</strong></p>
+    <ol>
+     <li><span>登录Kingbase实例所在主机。</span></li>
+     <li><span>执行以下命令，查看Kingbase数据库安装目录和数据目录。</span><p></p><pre class="screen">ps -ef | grep kingbase</pre> <p>回显如下图所示：</p> <p><span><img src="zh-cn_image_0000002164780076.png"></span></p> <p></p></li>
+     <li><span>执行以下命令修改主备节点kingbase.conf文件。</span><p></p><pre class="screen">vi /<em>数据目录</em>/kingbase.conf
+archive_mode = on
+archive_command=''</pre> <p></p></li>
+     <li><span>执行以下命令重新加载Kingbase配置，以数据库安装用户名<strong>k</strong><strong>ingbase</strong>为例。</span><p></p><pre class="screen">su - <em>kingbase</em>
+<em>/</em><em>安装目录</em>/Server/bin/sys_ctl reload -D <em>/</em><em>数据目录</em>
+exit</pre> <p></p></li>
+     <li><span>执行以下命令，在主备节点bin/sys_backup.conf文件中配置节点IP地址和数据库安装目录与数据目录。</span><p></p><pre class="screen">cp <em>/</em><em>安装目录</em>/share/sys_backup.conf /<em>安装目录</em>/Server/bin/sys_backup.conf
+cd <em>/</em><em>安装目录</em>/Server/bin
+vi sys_backup.conf
+_target_db_style="cluster"
+_one_db_ip="<em>当前节点IP地址</em>" 
+_repo_ip="<em>当前节点IP地址</em>" 
+_single_data_dir="/<em>数据目录</em>"
+_single_bin_dir="/<em>安装目录</em>/Server/bin"
+_use_scmd=off</pre>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>步骤1~步骤5需要在主备两个节点执行。</p>
+       </div>
+      </div> <p></p></li>
+     <li><span>在repo节点执行以下命令完成初始化，以数据库安装用户名<strong>k</strong><strong>ingbase</strong>为例。</span><p></p><pre class="screen">su - <em>kingbase</em>
+cd <em>/</em><em>安装目录</em>/Server/bin
+./sys_backup.sh init</pre>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>步骤6需要在主节点执行。</p>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="kingbase-00012.html">备份Kingbase实例</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -87,6 +87,7 @@ export class ClientTemplateComponent {
   @Input() data;
   @Input() isDetail;
   @Output() allSelectChange = new EventEmitter<any>();
+  @Output() onNumChange = new EventEmitter<any>();
 
   NumberToFixed = NumberToFixed;
   formGroup: FormGroup;
@@ -252,7 +253,7 @@ export class ClientTemplateComponent {
   isHcsEnvir =
     this.cookieService.get('serviceProduct') === CommonConsts.serviceProduct;
   azOptions = [];
-
+  hasEmitNum = false;
   tableData;
 
   @ViewChild(DatatableComponent, { static: false }) lvTable: DatatableComponent;
@@ -424,6 +425,11 @@ export class ClientTemplateComponent {
         });
         this.total = res.totalCount;
         this.tableData = res.records;
+        if (this.isDetail && !this.tableData?.data && !this.hasEmitNum) {
+          this.onNumChange.emit({ num: res.totalCount });
+          this.hasEmitNum = true;
+        }
+
         if (!isEmpty(this.allSelectionMap[ResourceSetType.Agent]?.data)) {
           // 重新进入时回显选中的数据
           this.selection = this.allSelectionMap[ResourceSetType.Agent]?.data;
@@ -439,19 +445,6 @@ export class ClientTemplateComponent {
           !this.isDetail
         ) {
           this.getSelectedData();
-        }
-
-        const hostUuids = _map(this.tableData, 'uuid');
-        if (!isEmpty(hostUuids)) {
-          this.hostApiService
-            .getUpdateAgentHostV1ResourceHostsUpgradeableVersions({
-              hostUuids,
-              akLoading: false,
-              akDoException: false
-            })
-            .subscribe(() => {
-              this.cdr.detectChanges();
-            });
         }
 
         if (this.isHcsUser) {
@@ -473,7 +466,7 @@ export class ClientTemplateComponent {
       scopeModule: ResourceSetType.Agent,
       type: ResourceSetType.Agent
     };
-    this.resourceSetService.QueryResourceObjectIdList(params).subscribe(res => {
+    this.resourceSetService.queryResourceObjectIdList(params).subscribe(res => {
       set(this.allSelectionMap, ResourceSetType.Agent, {
         data: _map(res, item => {
           return { uuid: item };
@@ -560,12 +553,6 @@ export class ClientTemplateComponent {
       scenario: '0',
       isCluster: false
     });
-
-    if (window['queryDBBackupAgentParams']) {
-      assign(this.filterParams, {
-        ...window['queryDBBackupAgentParams']
-      });
-    }
 
     if (!trim(this.queryName)) {
       delete this.filterParams.name;

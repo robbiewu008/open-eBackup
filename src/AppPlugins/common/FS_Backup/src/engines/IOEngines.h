@@ -51,10 +51,12 @@
 #endif
 
 #include "ArchiveCopyReader.h"
+#include "ArchiveDeleteReader.h"
 #include "ArchiveDirReader.h"
 #include "ArchiveHardlinkReader.h"
 #else
 #include "ArchiveCopyReader.h"
+#include "ArchiveDeleteReader.h"
 #include "ArchiveDirReader.h"
 #include "ArchiveHardlinkReader.h"
 #include "Win32CopyReader.h"

@@ -22,14 +22,7 @@
   </lv-form-item>
   <lv-form-item>
     <lv-form-label lvRequired>
-      {{ 'protection_manage_side_address_label' | i18n }}
-      <i
-        lv-icon="aui-icon-help"
-        lv-tooltip="{{ '' | i18n }}"
-        lvTooltipTheme="light"
-        class="configform-constraint"
-        lvColorState="true"
-      ></i>
+      {{ 'protection_manage_side_url_label' | i18n }}
     </lv-form-label>
     <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
       <input lv-input type="text" formControlName="address" />
@@ -37,14 +30,7 @@
   </lv-form-item>
   <lv-form-item>
     <lv-form-label lvRequired>
-      {{ 'protection_business_side_address_label' | i18n }}
-      <i
-        lv-icon="aui-icon-help"
-        lv-tooltip="{{ '' | i18n }}"
-        lvTooltipTheme="light"
-        class="configform-constraint"
-        lvColorState="true"
-      ></i>
+      {{ 'protection_business_side_url_label' | i18n }}
     </lv-form-label>
     <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
       <input lv-input type="text" formControlName="businessAddress" />
@@ -128,7 +114,7 @@
   </lv-form-item>
   <lv-form-item>
     <lv-form-label lvRequired>
-      {{ 'protection_proxy_host_label' | i18n }}
+      {{ 'protection_clients_label' | i18n }}
       <aui-agent-jumper-tips
         [type]="i18n.get('common_project_label')"
       ></aui-agent-jumper-tips>

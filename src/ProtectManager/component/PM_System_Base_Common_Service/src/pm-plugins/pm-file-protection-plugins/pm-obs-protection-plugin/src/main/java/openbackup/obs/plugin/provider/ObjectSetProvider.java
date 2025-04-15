@@ -12,6 +12,10 @@
 */
 package openbackup.obs.plugin.provider;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.ImmutableMap;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
@@ -26,11 +30,6 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.common.collect.ImmutableMap;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,8 +49,6 @@ public class ObjectSetProvider implements ResourceProvider {
     private static final int MAX_PREFIX_LEN = 1024;
 
     private static final int MAX_PREFIX_NUM = 256;
-
-    private static final int MAX_BUCKET_NUM = 100;
 
     /**
      * 允许创建OBS对象集合的最大数量
@@ -89,25 +86,25 @@ public class ObjectSetProvider implements ResourceProvider {
         String bucketList = resource.getExtendInfoByKey(EnvironmentConstant.KEY_BUCKETLIST);
         if (StringUtils.isNotEmpty(bucketList)) {
             List<BucketInfoEntity> buckets = JsonUtil.read(bucketList, new TypeReference<List<BucketInfoEntity>>() {});
-            if (buckets.size() > MAX_BUCKET_NUM) {
+            checkBucketPrefix(buckets);
+        }
+    }
+
+    private void checkBucketPrefix(List<BucketInfoEntity> buckets) {
+        for (BucketInfoEntity bucket : buckets) {
+            if (CollectionUtils.isEmpty(bucket.getPrefix())) {
+                continue;
+            }
+            if (bucket.getPrefix().size() > MAX_PREFIX_NUM) {
                 throw new LegoCheckedException(CommonErrorCode.ERR_PARAM,
-                    "The OBS set buckets exceeds the maximum num");
+                    "The OBS set prefix exceeds the maximum num");
             }
-            for (BucketInfoEntity bucket : buckets) {
-                if (CollectionUtils.isEmpty(bucket.getPrefix())) {
-                    continue;
-                }
-                if (bucket.getPrefix().size() > MAX_PREFIX_NUM) {
+            bucket.getPrefix().forEach(e -> {
+                if (e.length() > MAX_PREFIX_LEN) {
                     throw new LegoCheckedException(CommonErrorCode.ERR_PARAM,
-                        "The OBS set prefix exceeds the maximum num");
+                        "The OBS set prefix exceeds the maximum length");
                 }
-                bucket.getPrefix().forEach(e -> {
-                    if (e.length() > MAX_PREFIX_LEN) {
-                        throw new LegoCheckedException(CommonErrorCode.ERR_PARAM,
-                            "The OBS set prefix exceeds the maximum length");
-                    }
-                });
-            }
+            });
         }
     }
 
@@ -156,5 +153,10 @@ public class ObjectSetProvider implements ResourceProvider {
             throw new LegoCheckedException(CommonErrorCode.RESOURCE_LINK_STATUS_OFFLINE,
                 "The object storage is offline.");
         }
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        return true;
     }
 }

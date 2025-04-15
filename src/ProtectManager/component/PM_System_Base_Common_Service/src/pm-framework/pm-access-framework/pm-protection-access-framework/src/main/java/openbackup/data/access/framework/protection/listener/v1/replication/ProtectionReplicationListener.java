@@ -18,6 +18,18 @@ import static com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants.US
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterQueryService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterService;
+import com.huawei.oceanprotect.functionswitch.template.service.FunctionSwitchService;
+import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants;
+import com.huawei.oceanprotect.sla.common.constants.SlaConstants;
+import com.huawei.oceanprotect.sla.sdk.enums.ReplicationMode;
+import com.huawei.oceanprotect.system.base.user.service.UserService;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.core.manager.ProviderManager;
@@ -29,17 +41,13 @@ import openbackup.data.protection.access.provider.sdk.backup.Repository;
 import openbackup.data.protection.access.provider.sdk.replication.ReplicationProvider;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import com.huawei.oceanprotect.functionswitch.template.service.FunctionSwitchService;
-import com.huawei.oceanprotect.job.sdk.JobService;
-import com.huawei.oceanprotect.sla.common.constants.ExtParamsConstants;
-import com.huawei.oceanprotect.sla.common.constants.SlaConstants;
-import com.huawei.oceanprotect.sla.sdk.enums.ReplicationMode;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.constants.RedisConstants;
 import openbackup.system.base.common.enums.UserTypeEnum;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.job.JobBo;
+import openbackup.system.base.common.system.SystemConfigConstant;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
@@ -53,14 +61,11 @@ import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.protection.model.PolicyBo;
 import openbackup.system.base.sdk.resource.ResourceRestApi;
 import openbackup.system.base.sdk.resource.model.ResourceEntity;
+import openbackup.system.base.sdk.system.SystemConfigService;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.ApplicationContextService;
-import com.huawei.oceanprotect.system.base.user.service.UserService;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
-import lombok.extern.slf4j.Slf4j;
-
+import openbackup.system.base.util.BeanTools;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.redisson.api.RMap;
@@ -73,6 +78,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,6 +96,13 @@ public class ProtectionReplicationListener {
     private static final String JOB_STATUS_LOG = "job_status_{payload?.job_status|status}_label";
 
     private static final String PROJECT_ID = "project_id";
+
+    private static final long DEFAULT_QUERY_REPLICATION_CLUSTER_TIMEOUT = 300 * 1000L;
+
+    /**
+     * 域外复制时，查询从端集群的缓存
+     */
+    private final Map<String, TargetClusterVoCache> targetClusterVoCacheMap = new ConcurrentHashMap<>();
 
     @Autowired
     private ProviderManager providerManager;
@@ -130,6 +144,9 @@ public class ProtectionReplicationListener {
     @Qualifier("defaultClusterServiceImpl")
     private ClusterService clusterService;
 
+    @Autowired
+    private SystemConfigService systemConfigService;
+
     /**
      * copy replicate
      *
@@ -143,7 +160,9 @@ public class ProtectionReplicationListener {
         JSONObject data = JSONObject.fromObject(payload);
         String requestId = data.getString("request_id");
 
-        checkJobFinished(requestId);
+        if (checkJobFinished(requestId)) {
+            return;
+        }
 
         RMap<String, String> context = redissonClient.getMap(requestId, StringCodec.INSTANCE);
         String jsonStr = context.get("protected_object");
@@ -152,7 +171,10 @@ public class ProtectionReplicationListener {
         PolicyBo policy = data.getBean("policy", PolicyBo.class);
         Repository repository = getRepository(policy, requestId);
         TargetClusterVo targetCluster = getTargetCluster(policy, requestId, repository.getUuid());
-
+        String isDeleteTempUser = data.getString("is_delete_temp_user");
+        if (!VerifyUtil.isEmpty(isDeleteTempUser)) {
+            context.put("is_delete_temp_user", isDeleteTempUser);
+        }
         BackupObject backupObject = buildBackupObject(requestId, context, protectedObject, repository);
         context.put("target_cluster", JSONObject.fromObject(targetCluster).toString());
         List<String> sameChainCopies = Collections.emptyList();
@@ -176,7 +198,7 @@ public class ProtectionReplicationListener {
         String targetUserId = VerifyUtil.isEmpty(projectId) ? Strings.EMPTY : projectId.asText();
         String resourceUserId = userQuotaManager.getUserId(resourceEntity.getUserId(), resourceEntity.getRootUuid());
 
-        // SAML用户进行复制限额
+        // 所有用户进行复制限额
         replicationPreCheck(resourceUserId, targetCluster, targetUserId, policy);
         resetTargetResourceUserId(resourceEntity, targetUserId, resourceUserId);
         ReplicateContext replicateContext = applicationContextService.autowired(
@@ -216,7 +238,7 @@ public class ProtectionReplicationListener {
         TargetClusterVo targetCluster;
         if (isExtra(policy)) {
             log.info("before query target cluster.request id is: {}", requestId);
-            targetCluster = queryTargetCluster(clusterId);
+            targetCluster = queryTargetClusterFromCache(clusterId);
             log.info("Replicate data to target cluster: {}", targetCluster.getClusterId());
         } else {
             targetCluster = clusterQueryService.getMemberClusterDetail().getTargetClusterVo();
@@ -224,13 +246,43 @@ public class ProtectionReplicationListener {
         return targetCluster;
     }
 
-    private void checkJobFinished(String requestId) {
+    private TargetClusterVo queryTargetClusterFromCache(String clusterId) {
+        TargetClusterVoCache targetClusterVoCache = targetClusterVoCacheMap.get(clusterId);
+        if (targetClusterVoCache != null && targetClusterVoCache.getTargetClusterVo() != null
+                && System.currentTimeMillis() - targetClusterVoCache.time < getQueryReplicationClusterCacheTimeout()) {
+            return BeanTools.deepClone(targetClusterVoCache.getTargetClusterVo());
+        }
+        TargetClusterVo targetCluster = queryTargetCluster(clusterId);
+        targetClusterVoCache = new TargetClusterVoCache();
+        targetClusterVoCache.setTargetClusterVo(targetCluster);
+        targetClusterVoCache.setTime(System.currentTimeMillis());
+        targetClusterVoCacheMap.put(clusterId, BeanTools.deepClone(targetClusterVoCache));
+        return targetCluster;
+    }
+
+    private long getQueryReplicationClusterCacheTimeout() {
+        long replicationJobLimitCount = DEFAULT_QUERY_REPLICATION_CLUSTER_TIMEOUT;
+        try {
+            String timeout = systemConfigService.
+                    getConfigValue(SystemConfigConstant.QUERY_REPLICATION_CLUSTER_CACHE_TIMEOUT);
+            if (!VerifyUtil.isEmpty(timeout)) {
+                replicationJobLimitCount = Long.parseLong(timeout);
+            }
+        } catch (Exception e) {
+            log.warn("analyse config value errors, config key is {}",
+                    SystemConfigConstant.QUERY_REPLICATION_CLUSTER_CACHE_TIMEOUT);
+        }
+        return replicationJobLimitCount;
+    }
+
+    private boolean checkJobFinished(String requestId) {
         // 判断任务是否已完成，kafka去重
         JobBo job = jobService.queryJob(requestId);
         if (JobStatusEnum.get(job.getStatus()).finishedStatus()) {
             log.info("Job was already finished.requestId:{}", requestId);
-            return;
+            return true;
         }
+        return false;
     }
 
     private boolean isExtra(PolicyBo policyBo) {
@@ -242,7 +294,7 @@ public class ProtectionReplicationListener {
     private void replicationPreCheck(String resourceUserId, TargetClusterVo targetCluster, String targetUserId,
         PolicyBo policyBo) {
         log.info("Start to replicationPreCheck!resourceUserId:{},clusterId:{}, targetUserId:{}", resourceUserId,
-            targetCluster.getClusterId(), targetCluster);
+            targetCluster.getClusterId(), targetUserId);
 
         if (isExtra(policyBo)) {
             checkExtraRepQuota(policyBo, targetUserId, targetCluster);
@@ -253,6 +305,11 @@ public class ProtectionReplicationListener {
 
     private void checkExtraRepQuota(PolicyBo policyBo, String targetUserId, TargetClusterVo targetCluster) {
         String dpUserName = getDpUserName(policyBo.getExtParameters());
+        // 1.5升级1.6默认是远端设备管理员用户信息
+        if (isReplicationPolicyUpgradeBeforeSix(dpUserName, targetCluster.getUsername()) &&
+                isProjectIdEmpty(targetUserId)) {
+            return;
+        }
         UserPageListResponse<UserResponse> allDPUser = userService.getAllDPUser(
             Integer.parseInt(targetCluster.getClusterId()));
 
@@ -272,10 +329,15 @@ public class ProtectionReplicationListener {
             userQuotaManager.checkHcsUserReplicationQuota(Integer.valueOf(targetCluster.getClusterId()), targetUserId);
             return;
         }
-        if (UserTypeEnum.SAML.getValue().equals(targetUser.getUserType())
-            || UserTypeEnum.DME.getValue().equals(targetUser.getUserType())) {
             checkBackUserQuota(targetCluster, targetUser);
-        }
+    }
+
+    private boolean isReplicationPolicyUpgradeBeforeSix(String dpUserName, String targetUser) {
+        return StringUtils.isEmpty(dpUserName) || dpUserName.equals(targetUser);
+    }
+
+    private boolean isProjectIdEmpty(String projectId) {
+        return VerifyUtil.isEmpty(projectId) || "null".equals(projectId);
     }
 
     private String getDpUserName(JsonNode extParameters) {
@@ -305,17 +367,13 @@ public class ProtectionReplicationListener {
         if (userInnerResponse == null) {
             return;
         }
-        // SAML用户和DME用户复制限额校验备份配额
-        if (UserTypeEnum.SAML.getValue().equals(userInnerResponse.getUserType())) {
-            checkBackUserQuota(targetCluster, userInnerResponse);
-        }
+        checkBackUserQuota(targetCluster, userInnerResponse);
     }
 
     private void checkBackUserQuota(TargetClusterVo targetCluster, UserInnerResponse userInnerResponse) {
         log.info("Start to check backup quota in target cluster!userId:{}", userInnerResponse.getUserId());
-
         // 校验目标端备份额度
-        userQuotaManager.checkSamlUserBackupQuotaInTargetWhenReplication(Integer.valueOf(targetCluster.getClusterId()),
+        userQuotaManager.checkUserBackupQuotaInTargetWhenReplication(Integer.valueOf(targetCluster.getClusterId()),
             userInnerResponse.getUserId());
     }
 
@@ -408,5 +466,12 @@ public class ProtectionReplicationListener {
         String uuid = param.getExternalSystemId();
         repository.setUuid(uuid);
         return repository;
+    }
+
+    @Getter
+    @Setter
+    private static class TargetClusterVoCache {
+        private long time = 0L;
+        private TargetClusterVo targetClusterVo;
     }
 }

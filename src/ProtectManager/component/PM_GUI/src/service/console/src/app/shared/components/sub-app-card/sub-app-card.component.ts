@@ -10,7 +10,8 @@
  * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
  * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  */
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 import {
   CommonConsts,
@@ -35,7 +36,7 @@ import {
   isUndefined,
   map
 } from 'lodash';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, fromEvent } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -60,6 +61,15 @@ export class SubAppCardComponent implements OnInit, OnDestroy {
   helpUrl = '';
   isEmpty = isEmpty;
 
+  tabTipShow = false;
+  tabTipMessage: SafeHtml;
+  hideNextTip = false;
+  resizeSub$: Subscription;
+  currentTabHasShow = false;
+
+  @ViewChild('customDropdown', { static: false }) customDropdown;
+  @ViewChild('appTabs', { static: false }) appTabs;
+
   constructor(
     private router: Router,
     private globalService: GlobalService,
@@ -68,8 +78,16 @@ export class SubAppCardComponent implements OnInit, OnDestroy {
     private appUtilsService: AppUtilsService,
     private resourceApiService: ResourceService,
     private copyControllerService: CopyControllerService,
-    private i18n: I18NService
-  ) {}
+    private i18n: I18NService,
+    private sanitizer: DomSanitizer
+  ) {
+    this.tabTipMessage = this.sanitizer.bypassSecurityTrustHtml(
+      i18n.get('protection_more_app_tab_tip_label', [
+        '<img src="assets/img/mouse.png" class="mouse-img">',
+        '<img src="assets/img/lv-icon-list-unfold.png" class="unfold-img">'
+      ])
+    );
+  }
 
   ngOnDestroy() {
     this.destroy$.next(true);
@@ -80,6 +98,7 @@ export class SubAppCardComponent implements OnInit, OnDestroy {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
+    this.resizeSub$?.unsubscribe();
   }
 
   ngOnInit() {
@@ -91,8 +110,9 @@ export class SubAppCardComponent implements OnInit, OnDestroy {
       this.getCopyData();
       this.setActiveId();
     } else if (includes(['livemount', 'anti'], this.routerType)) {
-      this.checked(first(this.subApp)?.id);
+      this.sortApps();
       this.isSort = true;
+      this.checked(first(this.subApp)?.id);
     } else {
       this.getSummaryProtection();
       this.getStorageState();
@@ -102,6 +122,39 @@ export class SubAppCardComponent implements OnInit, OnDestroy {
     if (this.routerType !== 'copy') {
       this.helpUrl = this.appUtilsService.getHelpUrl();
     }
+    this.showMoreTabTip();
+    this.resizeSub$ = fromEvent(window, 'resize').subscribe(() =>
+      this.showMoreTabTip(false)
+    );
+  }
+
+  showMoreTabTip(isDelay = true) {
+    setTimeout(
+      () => {
+        if (
+          localStorage.getItem('tab_tip') !== 'true' &&
+          !this.currentTabHasShow &&
+          document.getElementsByClassName('lv-tabs-dropdown')?.length
+        ) {
+          this.tabTipShow = true;
+          this.currentTabHasShow = true;
+        } else {
+          this.tabTipShow = false;
+        }
+      },
+      isDelay ? 1e3 : 300
+    );
+  }
+
+  closeTabTip() {
+    if (this.hideNextTip) {
+      localStorage.setItem('tab_tip', 'true');
+    }
+    this.tabTipShow = false;
+  }
+
+  tabExternalTrigger() {
+    this.closeTabTip();
   }
 
   getStorageState() {
@@ -277,13 +330,27 @@ export class SubAppCardComponent implements OnInit, OnDestroy {
               this.checked(jumpApp.id);
             }
           } else {
-            if (includes(map(this.subApp, 'protectionUrl'), this.router.url)) {
+            if (this.checkFirstApp()) {
               this.checked(first(this.subApp)?.id);
               this.setActiveId();
             }
           }
         }
       });
+  }
+
+  getCategoryUrl(url: string): string {
+    const temp = url.split('/');
+    temp.pop();
+    return temp.join('/');
+  }
+
+  checkFirstApp(): boolean {
+    const routerUrlPrefixList = map(this.subApp, item => {
+      return this.getCategoryUrl(item.protectionUrl);
+    });
+    const currentUrlPrefix = this.getCategoryUrl(this.router.url);
+    return includes(routerUrlPrefixList, currentUrlPrefix);
   }
 
   initLocalStorage() {
@@ -402,5 +469,25 @@ export class SubAppCardComponent implements OnInit, OnDestroy {
         ? 'common_to_top_label'
         : 'common_cancel_to_top_label'
     );
+  }
+
+  getMoreApp(app) {
+    return find(this.subApp, item => item.id === app.lvId) || app;
+  }
+
+  getMoreAppColor(app): string {
+    return this.getMoreApp(app)?.color;
+  }
+
+  getMoreAppPrefix(app): string {
+    return this.getMoreApp(app)?.prefix;
+  }
+
+  getMoreAppCount(app): string {
+    return this.getMoreApp(app)?.count;
+  }
+
+  moreAppClick(item) {
+    this.appTabs.dropdownClick({ item });
   }
 }

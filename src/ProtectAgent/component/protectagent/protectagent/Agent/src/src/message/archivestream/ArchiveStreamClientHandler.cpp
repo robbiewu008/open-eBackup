@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "message/archivestream/ArchiveStreamClientHandler.h"
 #include <sstream>
 #include <vector>
@@ -33,6 +45,7 @@ using std::vector;
 
 ArchiveStreamClientHandler::ArchiveStreamClientHandler()
 {
+    INFOLOG("Enter construct.");
     CMpThread::InitLock(&m_reqMsgMutext);
     CMpThread::InitLock(&m_rspMsgMutext);
 
@@ -55,6 +68,7 @@ ArchiveStreamClientHandler::ArchiveStreamClientHandler()
 
 ArchiveStreamClientHandler::~ArchiveStreamClientHandler()
 {
+    INFOLOG("Enter destruct.");
     m_recvExitFlag = MP_TRUE;
     m_sendExitFlag = MP_TRUE;
     m_client.GetConnection().SetRecvExitFlag(MP_TRUE);
@@ -66,6 +80,7 @@ ArchiveStreamClientHandler::~ArchiveStreamClientHandler()
     if (m_sendTid.os_id != 0) {
         (mp_void)CMpThread::WaitForEnd(&m_sendTid, NULL);
     }
+    INFOLOG("recv thread join.");
 #ifdef SUPPORT_SSL
     if (m_pSslCtx != NULL) {
         SSL_CTX_free(m_pSslCtx);
@@ -74,6 +89,7 @@ ArchiveStreamClientHandler::~ArchiveStreamClientHandler()
 #endif
     CMpThread::DestroyLock(&m_reqMsgMutext);
     CMpThread::DestroyLock(&m_rspMsgMutext);
+    INFOLOG("thread destroy.");
 
     CDppMessage *msg = NULL;
     for (std::vector<CDppMessage *>::iterator iter = m_requestMsgs.begin(); iter != m_requestMsgs.end(); ++iter) {
@@ -96,6 +112,7 @@ ArchiveStreamClientHandler::~ArchiveStreamClientHandler()
     }
 
     m_responseMsgs.clear();
+    INFOLOG("Clear msg finish.");
 }
 mp_void ArchiveStreamClientHandler::handleRecevMsg(CDppMessage *msg)
 {
@@ -107,6 +124,8 @@ mp_void ArchiveStreamClientHandler::handleRecevMsg(CDppMessage *msg)
     Json::Value msgBody;
     mp_uint32 cmd = msg->GetCmd();
     mp_uint64 seq = msg->GetOrgSeqNo();
+    DBGLOG("Recieve message cmd=0x%x, seq=%llu.", cmd, seq);
+
     mp_string taskId;
     if (cmd == CMD_ARCHIVE_GET_FILE_DATA_BIN_ACK) {
         std::ostringstream strBuf;
@@ -469,11 +488,18 @@ mp_void ArchiveStreamClientHandler::SendMsq2Svr()
     INFOLOG("Start Send message process.");
     mp_int32 iRet = MP_FAILED;
 
+    uint32_t reportInterval = sendInterTime * sendInterTime;
+    uint32_t checkCount = reportInterval;
     while (!GetSendExitFlag()) {
         CConnection &conn = m_client.GetConnection();
         if (conn.GetLinkState() != LINK_STATE_LINKED) {
             CMpTime::DoSleep(NOCONNECTED_SLEEP);
-            DBGLOG("Not state linked, wait.");
+            if (checkCount < reportInterval) {
+                checkCount++;
+            } else {
+                DBGLOG("Not state linked, wait.");
+                checkCount = 0;
+            }
             continue;
         }
 

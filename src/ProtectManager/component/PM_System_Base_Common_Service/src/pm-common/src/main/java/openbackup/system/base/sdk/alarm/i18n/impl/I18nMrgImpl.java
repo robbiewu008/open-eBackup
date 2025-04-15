@@ -12,6 +12,11 @@
 */
 package openbackup.system.base.sdk.alarm.i18n.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.enums.DeployTypeEnum;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.MessageFormatUtil;
@@ -22,14 +27,9 @@ import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.AdapterUtils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -52,6 +52,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -75,6 +76,8 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
 
     private static final String ENGLISH_LANG = "en";
 
+    private static final String[] EMPTY_ARR = new String[0];
+
     // 大括号匹配符
     private static Pattern bracePattern = Pattern.compile("\\{.*?\\}");
 
@@ -87,14 +90,13 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
     /**
      * 不处理的底座告警，原来定义在read_dorado_alarms_from_local.py中
      */
-    private static final Set<String> NOT_HANDLE_ALARMS = new HashSet<>(Arrays.asList(
-        "0xF0C90001", "0xF0C90002", "0x2064032B0001", "0x2064032B0007", "0x2064032B0008", "0x2064032B0009",
-        "0x2064032B000A", "0x2064032B000B", "0x206400770002", "0x2064032B0016", "0x2064032B0017", "0x2064032B0018",
-        "0x2064032B000C", "0x2064032B000F", "0x2064032B000D", "0x2064032B0011", "0x2064032B000E", "0x2064032B0010",
-        "0x206400770001", "0x2064032B0012", "0x2064032B0015", "0x2064032B0013", "0x2064032B0014", "0x2063032B0001",
-        "0x2013E21C0001", "0x206500C80002", "0x206403430001", "0x206403430002", "0x206403430003", "0x2064032B0019",
-        "0x206403460002", "0x206403460009", "0x20640346000A", "0x2064032C0019", "0x2064032C0017"));
-
+    private static final Set<String> NOT_HANDLE_ALARMS = new HashSet<>(Arrays.asList("0xF0C90001", "0xF0C90002",
+            "0x2064032B0001", "0x2064032B0007", "0x2064032B0008", "0x2064032B0009", "0x2064032B000A", "0x2064032B000B",
+            "0x206400770002", "0x2064032B0016", "0x2064032B0017", "0x2064032B0018", "0x2064032B000C", "0x2064032B000F",
+            "0x2064032B000D", "0x2064032B0011", "0x2064032B000E", "0x2064032B0010", "0x206400770001", "0x2064032B0012",
+            "0x2064032B0015", "0x2064032B0013", "0x2064032B0014", "0x2063032B0001", "0x2013E21C0001", "0x206500C80002",
+            "0x206403430001", "0x206403430002", "0x206403430003", "0x2064032B0019", "0x206403460002", "0x206403460009",
+            "0x20640346000A", "0x2064032C0019", "0x2064032C0017"));
 
     @Autowired
     private DeployTypeService deployTypeService;
@@ -115,7 +117,10 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
     @Override
     public String getString(String key, Locale local) {
         if (VerifyUtil.isEmpty(key)) {
-            return EMPTY_STRING;
+            return DEFAULT_STRING;
+        }
+        if (key.equals(DEFAULT_STRING)) {
+            return key;
         }
 
         Map<Locale, Map<String, String>> resMap = getI18nMap(key, local);
@@ -124,8 +129,33 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
         if (VerifyUtil.isEmpty(i18nMap) || i18nMap.isEmpty()) {
             return DEFAULT_STRING;
         }
+        // 使用一个 Set 来记录访问过的 key，用于检测循环依赖
+        Set<String> visitedKeys = new HashSet<>();
+        String currentValue = key;
 
-        return i18nMap.getOrDefault(key.trim(), DEFAULT_STRING);
+        // 此处会遍历取数值 以避免在label里面嵌套label导致无法拿到最终的label的情况
+        while (!VerifyUtil.isEmpty(currentValue)) {
+            // 如果发现循环依赖，直接返回默认值，避免无限循环
+            if (visitedKeys.contains(currentValue)) {
+                log.warn("Circular reference detected for key: " + currentValue);
+                return DEFAULT_STRING;
+            }
+            visitedKeys.add(currentValue);
+
+            // 从 map 中获取当前 key 对应的 value
+            String nextValue = i18nMap.getOrDefault(currentValue.trim(), DEFAULT_STRING);
+            log.debug("getString: get value:{} by key:{}", nextValue, key);
+            // 如果取到的 value 是默认值，或者不在 map 中，则返回当前值
+            if (DEFAULT_STRING.equals(nextValue) || !i18nMap.containsKey(nextValue)) {
+                return nextValue;
+            }
+
+            // 继续解析新的 key
+            currentValue = nextValue;
+        }
+
+        // 如果 key 是空，则返回默认值
+        return DEFAULT_STRING;
     }
 
     /**
@@ -145,13 +175,23 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
      *
      * @param key 资源key值
      * @param local 本地化语言
-     * @param agrs 参数
+     * @param args 参数
      * @return String 返回值
      */
     @Override
-    public String getString(String key, Locale local, String[] agrs) {
+    public String getString(String key, Locale local, String[] args) {
         String oldValue = getString(key, local);
-        return formatString(key, agrs, oldValue);
+        String[] params =
+            Arrays.stream(args).map(arg -> tryGetString(arg, local)).collect(Collectors.toList()).toArray(EMPTY_ARR);
+        return formatString(key, params, oldValue);
+    }
+
+    private String tryGetString(String arg, Locale local) {
+        String newValue = getString(arg, local);
+        if (StringUtils.isEmpty(newValue) || newValue.equals(DEFAULT_STRING)) {
+            return arg;
+        }
+        return newValue;
     }
 
     @Override
@@ -172,11 +212,8 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
             }
             for (int i = 0; i < args.length; i++) {
                 final String arg = args[i];
-                String internalArg = Optional.of(i)
-                    .map(String::valueOf)
-                    .map(argsMap::getJSONObject)
-                    .map(paramMap -> paramMap.getString(arg))
-                    .orElse(arg);
+                String internalArg = Optional.of(i).map(String::valueOf).map(argsMap::getJSONObject)
+                        .map(paramMap -> paramMap.getString(arg)).orElse(arg);
                 newArgs[i] = internalArg;
             }
         } catch (JSONException | NumberFormatException e) {
@@ -210,7 +247,7 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
     }
 
     private void processUrlList(List<URL> urls, Locale locale, DeployTypeEnum deployTypeEnum,
-        Set<String> excludeAlarmIds, boolean isTransformFormat) {
+            Set<String> excludeAlarmIds, boolean isTransformFormat) {
         if (CollectionUtils.isEmpty(urls)) {
             return;
         }
@@ -226,19 +263,22 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
         processUrlList(AdapterUtils.getAllClassPathEntriesAlarmEn(), Locale.ENGLISH);
         processUrlList(AdapterUtils.getAllClassPathEntriesAlarmZh(), Locale.CHINESE);
 
-        // 底座的告警先加载中文，再加载英文，中文比较全
-        // dorado底座告警
-        processUrlList(AdapterUtils.getDoradoAlarmClassPathEntriesAlarmZn(), Locale.CHINESE, null, NOT_HANDLE_ALARMS,
-            true);
-        processUrlList(AdapterUtils.getDoradoAlarmClassPathEntriesAlarmEn(), Locale.ENGLISH, null, NOT_HANDLE_ALARMS,
-            true);
-        PARAM_EXPLAIN_MAP.clear();
+        // 安全一体机不加载底座omrp
+        if (!deployTypeService.isCyberEngine()) {
+            // 底座的告警先加载中文，再加载英文，中文比较全
+            // dorado底座告警
+            processUrlList(AdapterUtils.getDoradoAlarmClassPathEntriesAlarmZn(), Locale.CHINESE, null,
+                NOT_HANDLE_ALARMS, true);
+            processUrlList(AdapterUtils.getDoradoAlarmClassPathEntriesAlarmEn(), Locale.ENGLISH, null,
+                NOT_HANDLE_ALARMS, true);
+            PARAM_EXPLAIN_MAP.clear();
+        }
 
         // pacific底座告警
         processUrlList(AdapterUtils.getPacificAlarmClassPathEntriesAlarmZn(), Locale.CHINESE, DeployTypeEnum.E6000,
-            NOT_HANDLE_ALARMS, true);
+                NOT_HANDLE_ALARMS, true);
         processUrlList(AdapterUtils.getPacificAlarmClassPathEntriesAlarmEn(), Locale.ENGLISH, DeployTypeEnum.E6000,
-            NOT_HANDLE_ALARMS, true);
+                NOT_HANDLE_ALARMS, true);
         PARAM_EXPLAIN_MAP.clear();
 
         processUrlList(AdapterUtils.getAllOperationTargetClassPathEntriesAlarmEn(), Locale.ENGLISH);
@@ -266,6 +306,8 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
         processUrlList(AdapterUtils.getLabelSearchZh(), Locale.CHINESE);
         processUrlList(AdapterUtils.getLabelSystemEn(), Locale.ENGLISH);
         processUrlList(AdapterUtils.getLabelSystemZh(), Locale.CHINESE);
+        processUrlList(AdapterUtils.getLabelJobZh(), Locale.CHINESE);
+        processUrlList(AdapterUtils.getLabelJobEn(), Locale.ENGLISH);
 
         PARAM_EXPLAIN_MAP.clear();
     }
@@ -281,7 +323,7 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
      */
     @ExterAttack
     private void processJsonRes(URL url, Locale locale, DeployTypeEnum deployTypeEnum, Set<String> excludeAlarmIds,
-        boolean isTransformFormat) {
+            boolean isTransformFormat) {
         Map<Locale, Map<String, String>> resMap;
         if (deployTypeEnum == null) {
             resMap = RES_MAP;
@@ -310,7 +352,7 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
     }
 
     private void resolveAlarmByKey(String key, String[] values, Map<String, String> hashMap, Map<String, String> data,
-        boolean isTransformFormat) {
+            boolean isTransformFormat) {
         values[0] = hashMap.get(key);
         if (isTransformFormat && (key.contains("alarm.desc") || key.contains("alarm.advice"))) {
             String alarmId = getAlarmIdFromKey(key);
@@ -382,21 +424,20 @@ public class I18nMrgImpl implements I18nMrg, InitializingBean {
             int bracketEnd = bracketMatcher.end(1);
             // 找到中括号后，去匹配 []{}
             Matcher braceAndBracketMatcher = braceAndBracketPatter.matcher(detail.substring(bracketStart));
+            int paramIndex = findParamIndex(paramExplainList, bracketContent);
+            if (paramIndex == -1) {
+                paramIndex = bracketIndex;
+            }
             if (braceAndBracketMatcher.find()) {
                 bracketEnd = braceAndBracketMatcher.end(1) + bracketStart;
                 // 大括号的内容， eg: {0:backup;1:restore;2:archive}
                 String braceContent = braceAndBracketMatcher.group(1);
-                fillBraceContent(res, braceContent, bracketIndex);
+                fillBraceContent(res, braceContent, paramIndex);
             }
             // 这里将参数[]或[]{}替换为{0}。统一成备份软件的参数定义形式，以便后续formatString统一解析。
             sb.append(detail, strIndex, bracketStart);
             sb.append("{");
-            int paramIndex = findParamIndex(paramExplainList, bracketContent);
-            if (paramIndex != -1) {
-                sb.append(paramIndex);
-            } else {
-                sb.append(bracketIndex);
-            }
+            sb.append(paramIndex);
             sb.append("}");
             strIndex = bracketEnd;
             bracketIndex++;

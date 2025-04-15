@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -59,13 +59,14 @@ export class DatabaseRestoreComponent implements OnInit {
   clusterOptions = [];
   instanceOptions = [];
   resourceData: any;
+  isDistributed = false; // 判断是否为CMDB分布式集群数据库
 
   restoreLocationType = RestoreV2LocationType;
 
   constructor(
     public i18n: I18NService,
-    private fb: FormBuilder,
     public baseUtilService: BaseUtilService,
+    private fb: FormBuilder,
     private restoreV2Service: RestoreApiV2Service,
     private protectedResourceApiService: ProtectedResourceApiService
   ) {}
@@ -260,7 +261,7 @@ export class DatabaseRestoreComponent implements OnInit {
         targetEnv: this.resourceData.environment_uuid,
         restoreType: this.restoreType,
         targetLocation: this.formGroup.value.restoreTo,
-        targetObject: this.resourceData.parent_uuid,
+        targetObject: this.resourceData.uuid,
         extendInfo: {
           newName: this.formGroup.value.newDataBaseName
         }
@@ -323,7 +324,11 @@ export class DatabaseRestoreComponent implements OnInit {
     this.resourceData = isString(this.rowCopy.resource_properties)
       ? JSON.parse(this.rowCopy.resource_properties)
       : {};
+    this.isDistributed =
+      this.resourceData?.extendInfo?.deployType ===
+      DataMap.Deployment_Type.cmdb.value;
   }
+
   getInstance(cluster, recordsTemp?, startPage?) {
     const params = {
       pageNo: startPage || CommonConsts.PAGE_START,
@@ -364,8 +369,15 @@ export class DatabaseRestoreComponent implements OnInit {
   }
 
   getClusters(recordsTemp?: any[], startPage?: number, labelParams?: any) {
+    const tmpFilter = this.isDistributed
+      ? [DataMap.Deployment_Type.cmdb.value]
+      : [
+          DataMap.Deployment_Type.single.value,
+          DataMap.Deployment_Type.standby.value
+        ];
     const conditions = {
-      subType: [DataMap.Resource_Type.OpenGauss.value]
+      subType: [DataMap.Resource_Type.OpenGauss.value],
+      deployType: [['in'], ...tmpFilter]
     };
     extendParams(conditions, labelParams);
 

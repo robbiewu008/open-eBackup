@@ -103,6 +103,7 @@ private:
     std::string GetVolumeMountPath(const std::string& path) const;
     void GetBackupSubVolumesPath();
     void FillScanConfig(ScanConfig &scanConfig);
+    void FillScanConfigDefault(ScanConfig& scanConfig);
     void FillScanConfigMetaPath(ScanConfig &scanConfig, std::string pathId);
     void FilterAllSubVol(ScanConfig &scanConfig);
     void FilterSubVol(ScanConfig &scanConfig, std::string path, const std::string& prefix = "");
@@ -146,6 +147,8 @@ private:
     bool IsFullBackup() const;
     bool IsSubTaskStatsFileExists() const;
     bool NeedChangeIncToFull();
+    bool CheckPrevMetaExist(const std::string& metaPath);
+    bool UntarMetaFile(const std::string& metaFilePath, const std::string& dstPath);
 
     /* Backup */
     void FillBackupConfig(BackupParams &backupParams, BackupSubJob &backupSubJob);
@@ -194,7 +197,6 @@ private:
     bool UpdateResidualSnapshots(const std::set<std::string>& snapshotInfos);
     void SendAlarmForResidualSnapshots(const std::set<std::string>& snapshotInfos);
     void ClearResidualSnapshotsAndAlarm();
-    bool SetNumOfChannels() const;
 
     std::string LoadSnapshotParentPath() const;
     std::vector<std::string> LoadExcludeFileSystemList() const;
@@ -209,11 +211,18 @@ private:
         const std::unique_ptr<Module::MetaParser>& metaParser);
     bool DoRealBackup(const BackupSubJob& backupSubJob, SubJobStatus::type& jobStatus,
         HostCommonService::MONITOR_BACKUP_RES_TYPE& ret, int retryCnt);
-    bool DoRealScanFailedVolume(const std::vector<std::string>& failedRecords,
-        HostScanStatistics& preScanStats, std::set<std::string>& jobInfoSet);
+    bool DoRealScanFailedVolume(HostScanStatistics& preScanStats, std::set<std::string>& jobInfoSet);
     bool IsErrNeedSkip(const uint32_t errNUm);
     bool ProcessFailedRecordLine(const std::string& line, FailedRecordItem& item);
-
+    void AddUserSelectPath(std::string& notExistPath, std::string& notBackupPath);
+    /* OS restore */
+    bool OsBackupGetSysInfo();
+    void InitAndAddSysPath(std::string& notExistPath, std::string& notBackupPath);
+    int InitSystemVolume();
+    int GetSystemInfo();
+#ifdef __linux__
+    bool CopyDiskInfoToExtend(AggCopyExtendInfo &aggCopyExtendInfo);
+#endif
 private:
     std::shared_ptr<AppProtect::BackupJob> m_backupJobPtr { nullptr };
 
@@ -242,6 +251,9 @@ private:
     std::string m_scanStatusPath;
     bool m_scanRedo {false};
 
+    /* Secondary Storage host's sysInfo path */
+    std::string m_sysInfoPath;
+
     /* Protected HOST Share Information */
     ProtectedFileset m_fileset {};
 
@@ -258,6 +270,7 @@ private:
 
     /* Is scanner restarted */
     bool m_isScannerRestarted { false };
+    bool m_forceChangeToFullScan { false };
 
     /* Backup instance */
     std::unique_ptr<FS_Backup::Backup> m_backup { nullptr };
@@ -299,6 +312,7 @@ private:
 
     static uint32_t m_numberOfSubTask;
     std::vector<std::string> m_excludePathList;
+    std::vector<std::string> m_failedRecords;
     std::string m_volumeName;
     uint64_t m_numberOfFailedFilesScaned {0};
 };

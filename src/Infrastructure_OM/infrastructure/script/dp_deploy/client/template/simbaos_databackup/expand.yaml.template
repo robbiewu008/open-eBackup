@@ -17,7 +17,8 @@ spec:
       internalAddress: {{node.internal_address}}
       serviceAddress: {{node.internal_address}}
       role: {{node.role}}
-      interface: {{node.management_interface}}
+      interface: {{node.internal_interface}}
+      managementInterface: {{node.management_interface}}
       managementAddress: {{node.simbaos_ip}}
       user: {{node.kadmin}}
       password: {{node.kadmin_passwd}}

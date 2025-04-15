@@ -12,13 +12,14 @@
 #
 
 import json
+import pwd
 
 from goldendb.logger import log
 from common.cleaner import clear
 from common.common import check_command_injection_exclude_quote, execute_cmd, execute_cmd_list
-from common.const import SysData
+from common.const import SysData, CMDResult
 from common.util.check_user_utils import check_os_user
-from goldendb.handle.common.const import CMDResult, ClusterInfoStr, ErrorCode, GoldenDBSupportVersion, \
+from goldendb.handle.common.const import ClusterInfoStr, ErrorCode, GoldenDBSupportVersion, \
     GoldenDBNodeStatus, GoldenDBNodeType, GoldenDBNodeService
 from goldendb.handle.common.exec_sql_cmd import get_mysql_db_session
 from goldendb.handle.common.goldendb_exception import ErrCodeException
@@ -51,7 +52,7 @@ class GoldenDBResourceInfo:
             return ''
         cmd = f'su - {os_user} -c "dbtool -cm -qcg"'
         return_code, out_info, err_info = execute_cmd(cmd)
-        if return_code != CMDResult.SUCCESS:
+        if return_code != CMDResult.SUCCESS.value:
             log.error("Get cluster error!")
             return ''
         return out_info
@@ -66,7 +67,7 @@ class GoldenDBResourceInfo:
             return ''
         cmd = f'su - {os_user} -c "dbtool -version"'
         return_code, out_info, err_info = execute_cmd(cmd)
-        if return_code != CMDResult.SUCCESS:
+        if return_code != CMDResult.SUCCESS.value:
             log.error("Get cluster version error!")
             return ''
         for version in GoldenDBSupportVersion:
@@ -182,7 +183,7 @@ class GoldenDBResourceInfo:
             return False
         cmd = f"id -u {os_user}"
         return_code, out_info, err_info = execute_cmd(cmd)
-        if return_code != CMDResult.SUCCESS:
+        if return_code != CMDResult.SUCCESS.value:
             log.error("The os user is not exist!")
             return False
         return True
@@ -198,16 +199,18 @@ class GoldenDBResourceInfo:
         if check_command_injection_exclude_quote(os_user):
             log.error("command injection in os_user!")
             return False
+        user_infos = pwd.getpwnam(os_user)
+        user_uid = user_infos.pw_uid
         # 查询含有my.cnf 和 os_user的进程
-        cmd_get_mysql_cnf = ["ps -ef", f"grep {os_user}", "grep defaults-file"]
+        cmd_get_mysql_cnf = ["ps -eo uid,cmd", f"grep {user_uid}", "grep defaults-file"]
         return_code, out_info, std_err = execute_cmd_list(cmd_get_mysql_cnf)
-        if return_code != CMDResult.SUCCESS:
+        if return_code != CMDResult.SUCCESS.value:
             log.error("Get mysql cnf by os user failed!")
             return False
         # 拿到cnf文件路径
         cnf_path = ""
         for out_info_line in out_info.split(" "):
-            if "--defaults-file=" in out_info_line and f"/{os_user}/" in out_info_line:
+            if "--defaults-file=" in out_info_line:
                 cnf_path = out_info_line.split("=")[1]
         if check_command_injection_exclude_quote(cnf_path):
             log.error("command injection detected in command!")
@@ -218,7 +221,7 @@ class GoldenDBResourceInfo:
         # 查看端口号是否在配置文件中
         cat_cnf_cmd = f"cat {cnf_path}"
         return_code, out_info, std_err = execute_cmd_list([cat_cnf_cmd])
-        if return_code != CMDResult.SUCCESS:
+        if return_code != CMDResult.SUCCESS.value:
             log.error("The get mysql cnf by os user failed!")
             return False
         if port not in out_info:
@@ -231,7 +234,7 @@ class GoldenDBResourceInfo:
         """
         检查管理节点，gtm节点，dn zxmanager节点的服务是否运行
         @:param: os_user zxmanager用户 GTM节点用户 DN节点用户
-        :return: True 正常 False不正常
+        :return: [] 正常 [error services]不正常
         """
         if check_command_injection_exclude_quote(os_user) or not check_os_user(os_user):
             log.error("command injection in os user! The os user(%s) is invalid.", os_user)
@@ -240,7 +243,7 @@ class GoldenDBResourceInfo:
         return_code, out_info, err_info = execute_cmd(cmd)
         # 获取当前节点必须存在的服务列表
         service_list = GoldenDBNodeService.SERVICE_DICT.get(node_type)
-        if return_code != CMDResult.SUCCESS:
+        if return_code != CMDResult.SUCCESS.value:
             log.error(f"The execute get {node_type} service cmd failed!")
             return service_list
         service_error_list = []
@@ -353,7 +356,7 @@ class GoldenDBResourceInfo:
         # 执行命令dbtool -mds -showgtminfos 查看集群GTM使用信息
         cmd = f"su - {os_user} -c 'dbtool -mds -showgtminfos'"
         return_code, gtm_info, err_info = execute_cmd(cmd)
-        if return_code != CMDResult.SUCCESS:
+        if return_code != CMDResult.SUCCESS.value:
             log.error(f"Get gtm info by exec cmd error!")
             return list()
         cluster_gtm_info = GoldenDBResourceInfo.parse_gtm_info(gtm_info)
@@ -363,7 +366,7 @@ class GoldenDBResourceInfo:
             cmd = f"su - {os_user} -c 'dbtool -cm -qc {cluster_id}'"
             return_code, out_info, err_info = execute_cmd(cmd)
             # 执行命令失败
-            if return_code != CMDResult.SUCCESS:
+            if return_code != CMDResult.SUCCESS.value:
                 log.error(f"Get cluster{cluster_id} by exec cmd error!")
                 return list()
             cluster_info, single_grp_flag = GoldenDBResourceInfo.parse_cluster_info(out_info)
@@ -386,7 +389,7 @@ class GoldenDBResourceInfo:
         """
         resource_param = self.param
         user = get_env_variable(f"application_auth_authKey_{self.pid}")
-        pwd = get_env_variable(f"application_auth_authPwd_{self.pid}")
+        password = get_env_variable(f"application_auth_authPwd_{self.pid}")
         node_info = resource_param.get_node_info()
         node_type = node_info.get("nodeType")
         host_ip = node_info.get("ip")
@@ -415,7 +418,7 @@ class GoldenDBResourceInfo:
         # 校验每一个数据节点dataNode的MySQL认证信息
         if node_type != "dataNode":
             return
-        if get_mysql_db_session(host_ip, port, user, pwd) is None:
+        if get_mysql_db_session(host_ip, port, user, password) is None:
             log.error("Check connectivity: auth info error!")
             raise ErrCodeException(ErrorCode.ERROR_AUTH, "Check connectivity: auth info error!")
 

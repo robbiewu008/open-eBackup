@@ -63,6 +63,8 @@ public:
 
     std::string getString(const std::string & sectionName, const std::string & keyName, bool logFlag=true) const;
 
+    std::string GetStringFromAgentXml(const std::string& sectionName, const std::string& keyName) const;
+
     void refresh();
 
     void refresh(const std::vector<std::string>& confFileName);
@@ -87,6 +89,8 @@ public:
     void SetUpdateCnf(bool updateCnf);
     virtual ~ConfigReaderImpl();
     std::string getConfigVersion();
+    std::vector<std::string> getConfigFiles();
+
 private:
     static ConfigReaderImpl * m_pInstance;
     static thread_lock_t m_instMutext;
@@ -133,8 +137,6 @@ private:
     void InitConfigInfos();
 
     void loadConfigFiles();
-
-    std::vector<std::string> getConfigFiles();
 
     bool AddConfigFile(const std::string& name);
 

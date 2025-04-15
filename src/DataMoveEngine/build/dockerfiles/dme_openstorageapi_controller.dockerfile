@@ -12,6 +12,11 @@ RUN useradd dme_openstorageapi_controller -M -N -s /sbin/nologin  -u 19726 -g 99
     chown -R root:99 /usr/local/lib64/python* && \
     rm -rf /usr/bin/restclient && rm -rf /usr/bin/kmcdecrypt && \
     chmod 750 /opt/OceanStor/100P/ProtectEngine-E/dme_openstorageapi_controller \
-    && rm -f /root/.config/pip/pip.conf
+    && rm -f /root/.config/pip/pip.conf \
+    && /opt/FileClient/install/install.sh  /opt/logpath/protectmanager/cert/CA/certs/ca.crt.pem \
+    /opt/logpath/protectmanager/cert/internal/ProtectAgent/client.crt.pem \
+    /opt/logpath/protectmanager/cert/internal/ProtectAgent/client.pem \
+    /opt/logpath/protectmanager/kmc/master.ks /kmc_conf/..data/backup.ks \
+    /opt/logpath/protectmanager/cert/internal/ProtectAgent/client.cnf
 USER 19726
 CMD ["python3","-m","app"]

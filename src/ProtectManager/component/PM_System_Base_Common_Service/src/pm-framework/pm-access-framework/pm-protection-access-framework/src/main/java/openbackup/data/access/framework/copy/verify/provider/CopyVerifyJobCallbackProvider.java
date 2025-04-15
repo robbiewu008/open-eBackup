@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.copy.verify.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.job.JobCallbackProvider;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.VerifyUtil;
@@ -20,8 +21,6 @@ import openbackup.system.base.sdk.copy.model.CopyInfo;
 import openbackup.system.base.sdk.copy.model.CopyStatus;
 import openbackup.system.base.sdk.copy.model.CopyStatusUpdateParam;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

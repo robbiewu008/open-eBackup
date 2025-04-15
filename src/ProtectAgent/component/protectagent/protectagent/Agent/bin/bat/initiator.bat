@@ -1,4 +1,5 @@
 @echo off
+:: 
 ::  This file is a part of the open-eBackup project.
 ::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 ::  If a copy of the MPL was not distributed with this file, You can obtain one at
@@ -9,6 +10,7 @@
 ::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
 ::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 ::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+::
 rem ******Enable Delayed Expansion******
 setlocal EnableDelayedExpansion
 rem  ******************************************************************************************
@@ -30,7 +32,11 @@ set RANDOM_ID=%2
 set AGENT_BIN_PATH=%AGENT_ROOT_PATH%\bin\
 set AGENT_LOG_PATH=%AGENT_ROOT_PATH%\log\
 set AGENT_TMP_PATH=%AGENT_ROOT_PATH%\tmp\
+set WIN_SYSTEM_DISK=%WINDIR:~0,1%
 set FCINFO_BIN_PATH=C:\Windows\System32\
+if not "%WIN_SYSTEM_DISK%" == "" (
+    set FCINFO_BIN_PATH=%WIN_SYSTEM_DISK%:\Windows\System32\
+)
 
 set NEED_LOG_FLG=1
 set ERROR_SCRIPT_EXEC_FAILED=5
@@ -191,7 +197,7 @@ if exist %ALL_INFO% (del /f /q %ALL_INFO%)
 if exist %ISCSI_TMP_FILE% (del /f /q %ISCSI_TMP_FILE%)
 
 if "%EXIT_CODE_NUM%"=="0" (
-    echo "INFO: Query initiator %INPUTINFO%: %INITIATOR_NUM% succ."
+    echo "INFO: Query initiator %INPUTINFO% succ."
     call :Log "INFO: Query initiator %INPUTINFO%: %INITIATOR_NUM% succ."
 ) else (
     echo "ERROR: Query initiator %INPUTINFO% failed."

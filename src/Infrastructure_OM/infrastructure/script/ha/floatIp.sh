@@ -38,9 +38,8 @@ G_MANAGE_FIP_MASK=""
 G_MANAGEMENT_ETH_NAME=""
 IP_FLAG=""
 G_MANAGEMENT_IP=""
-G_PAIR_LOCAL_IP=""
+G_INTERNAL_LOCAL_IP=""
 G_FLOAT_IP_NAME_TAIL=0
-
 
 #******************************************************************#
 # Function: set_floatip
@@ -50,40 +49,43 @@ G_FLOAT_IP_NAME_TAIL=0
 # Return : 0 success
 #      1 failed
 #******************************************************************#
-function set_floatip()
-{
-    if [ $IP_FLAG = 'ipv4' ];then
-        log_info "[${FUNCNAME[0]}(),$LINENO] begin set_floatIP,floatPort:${G_MANAGE_FIP_PORT},floatIP:${G_MANAGE_FLOAT_IP},mask:${G_MANAGE_FIP_MASK}"
-        ping -c 3 ${G_MANAGE_FLOAT_IP} >/dev/null
-        if [ $? -ne 0 ];then
-            sudo ${G_SUDO_SCRIPT_PATH}/ha_sudo.sh set_floatip ${G_MANAGE_FIP_PORT} ${G_MANAGE_FLOAT_IP} ${G_MANAGE_FIP_MASK} ${G_PAIR_LOCAL_IP_RT_ID}
-            if [ $? -ne 0 ];then
-                log_error "[${FUNCNAME[0]}(),$LINENO] set float ip  ${G_MANAGE_FLOAT_IP} failed !"
-                return 1
-            fi
-        else
-            log_warn "[${FUNCNAME[0]}(),$LINENO] ${G_MANAGE_FLOAT_IP} has been used somewhere, please check whether if the floatIP is available "
-        fi
-        log_info "[${FUNCNAME[0]}(),$LINENO] set_floatIP success !"
-        return 0
+function set_floatip() {
+  if [[ ${DEPLOY_TYPE} == "d8" ]]; then
+    log_info "[${FUNCNAME[0]}(),$LINENO] no need to set float ip in databackup"
+    return 0
+  fi
+
+  if [ $IP_FLAG = 'ipv4' ]; then
+    log_info "[${FUNCNAME[0]}(),$LINENO] begin set_floatIP,floatPort:${G_INTERNAL_LOCAL_IP_ETH_NAME},floatIP:${G_MANAGE_FLOAT_IP},mask:${G_INTERNAL_LOCAL_IP_MASK}"
+    ping -c 3 ${G_MANAGE_FLOAT_IP} >/dev/null
+    if [ $? -ne 0 ]; then
+      sudo ${G_SUDO_SCRIPT_PATH}/ha_sudo.sh set_floatip ${G_INTERNAL_LOCAL_IP_ETH_NAME} ${G_MANAGE_FLOAT_IP} ${G_INTERNAL_LOCAL_IP_MASK} ${G_INTERNAL_LOCAL_IP_RT_ID}
+      if [ $? -ne 0 ]; then
+        log_error "[${FUNCNAME[0]}(),$LINENO] set float ip  ${G_MANAGE_FLOAT_IP} failed !"
+        return 1
+      fi
     else
-        log_info "[${FUNCNAME[0]}(),$LINENO] begin set_floatIP,floatPort:${G_MANAGE_FIP_PORT},floatIP:${G_MANAGE_FLOAT_IP},mask:${G_MANAGE_FIP_MASK}"
-        ping6 -c 3 ${G_MANAGE_FLOAT_IP} >/dev/null
-        if [ $? -ne 0 ];then
-            sudo ${G_SUDO_SCRIPT_PATH}/ha_sudo.sh set_floatip ${G_MANAGE_FIP_PORT} ${G_MANAGE_FLOAT_IP} ${G_MANAGE_FIP_MASK} ${G_PAIR_LOCAL_IP_RT_ID}
-            if [ $? -ne 0 ];then
-                log_error "[${FUNCNAME[0]}(),$LINENO] set float ip  ${G_MANAGE_FLOAT_IP} failed !"
-                return 1
-            fi
-        else
-            log_warn "[${FUNCNAME[0]}(),$LINENO]  ${G_MANAGE_FLOAT_IP} has been used somewhere, please check whether if the floatIP is available "
-        fi
-
-        log_info "[${FUNCNAME[0]}(),$LINENO] set_floatIP success! ndsend: ${G_NDSEND} ${G_MANAGE_FIP_PORT} ${G_MANAGE_FLOAT_IP}"
-        return 0
+      log_warn "[${FUNCNAME[0]}(),$LINENO] ${G_MANAGE_FLOAT_IP} has been used somewhere, please check whether if the floatIP is available "
     fi
-}
+    log_info "[${FUNCNAME[0]}(),$LINENO] set_floatIP success !"
+    return 0
+  else
+    log_info "[${FUNCNAME[0]}(),$LINENO] begin set_floatIP,floatPort:${G_INTERNAL_LOCAL_IP_ETH_NAME},floatIP:${G_MANAGE_FLOAT_IP},mask:${G_INTERNAL_LOCAL_IP_MASK}"
+    ping6 -c 3 ${G_MANAGE_FLOAT_IP} >/dev/null
+    if [ $? -ne 0 ]; then
+      sudo ${G_SUDO_SCRIPT_PATH}/ha_sudo.sh set_floatip ${G_INTERNAL_LOCAL_IP_ETH_NAME} ${G_MANAGE_FLOAT_IP} ${G_INTERNAL_LOCAL_IP_MASK} ${G_INTERNAL_LOCAL_IP_RT_ID}
+      if [ $? -ne 0 ]; then
+        log_error "[${FUNCNAME[0]}(),$LINENO] set float ip  ${G_MANAGE_FLOAT_IP} failed !"
+        return 1
+      fi
+    else
+      log_warn "[${FUNCNAME[0]}(),$LINENO]  ${G_MANAGE_FLOAT_IP} has been used somewhere, please check whether if the floatIP is available "
+    fi
 
+    log_info "[${FUNCNAME[0]}(),$LINENO] set_floatIP success! ndsend: ${G_NDSEND} ${G_INTERNAL_LOCAL_IP_ETH_NAME} ${G_MANAGE_FLOAT_IP}"
+    return 0
+  fi
+}
 
 #******************************************************************#
 # Function: repair
@@ -93,16 +95,15 @@ function set_floatip()
 # Return : 0 success
 #      1 failed
 #******************************************************************#
-function repair()
-{
-    log_info "[${FUNCNAME[0]}(),$LINENO] begin repair !"
-    get_floatip_information
-    if [ $? -ne 0 ];then
-        log_error "[${FUNCNAME[0]}(),$LINENO] get_floatip_information failed !"
-        return 1
-    fi
-    set_floatip
-    return $?
+function repair() {
+  log_info "[${FUNCNAME[0]}(),$LINENO] begin repair !"
+  get_floatip_information
+  if [ $? -ne 0 ]; then
+    log_error "[${FUNCNAME[0]}(),$LINENO] get_floatip_information failed !"
+    return 1
+  fi
+  set_floatip
+  return $?
 }
 
 #******************************************************************#
@@ -113,57 +114,73 @@ function repair()
 # Return : 0 running
 #      2 stopped
 #******************************************************************#
-function status()
-{
-    if [ $IP_FLAG = 'ipv4' ];then
-        log_info "[${FUNCNAME[0]}(),$LINENO] begin query floatIP status !"
+function status() {
+  if [[ ${DEPLOY_TYPE} == "d8" ]]; then
+    log_info "[${FUNCNAME[0]}(),$LINENO] no need to check float ip in databackup"
+    return 0
+  fi
 
-        ${G_IP} addr 2> /dev/null | grep "${G_MANAGE_FLOAT_IP}" > /dev/null
-        if [ $? -eq 0 ];then
-            log_info "[${FUNCNAME[0]}(),$LINENO] floatIP has been set !"
-            return 0
-        fi
-        log_info "[${FUNCNAME[0]}(),$LINENO] floatIP has been not set !"
-        return 2
-    else
-        log_info "[${FUNCNAME[0]}(),$LINENO] begin query floatIP status !"
+  if [ $IP_FLAG = 'ipv4' ]; then
+    log_info "[${FUNCNAME[0]}(),$LINENO] begin query floatIP status !"
 
-        ${G_IP} addr 2> /dev/null | grep "${G_MANAGE_FLOAT_IP}" > /dev/null
-        if [ $? -eq 0 ];then
-            log_info "[${FUNCNAME[0]}(),$LINENO] floatIP has been set !"
-            return 0
-        fi
-        log_info "[${FUNCNAME[0]}(),$LINENO] floatIP has not been set !"
-        return 2
+    ${G_IP} addr 2>/dev/null | grep "${G_MANAGE_FLOAT_IP}" >/dev/null
+    if [ $? -eq 0 ]; then
+      log_info "[${FUNCNAME[0]}(),$LINENO] floatIP has been set !"
+      return 0
     fi
+    log_info "[${FUNCNAME[0]}(),$LINENO] floatIP has been not set !"
+    return 2
+  else
+    log_info "[${FUNCNAME[0]}(),$LINENO] begin query floatIP status !"
+
+    ${G_IP} addr 2>/dev/null | grep "${G_MANAGE_FLOAT_IP}" >/dev/null
+    if [ $? -eq 0 ]; then
+      log_info "[${FUNCNAME[0]}(),$LINENO] floatIP has been set !"
+      return 0
+    fi
+    log_info "[${FUNCNAME[0]}(),$LINENO] floatIP has not been set !"
+    return 2
+  fi
 }
 
 #******************************************************************#
-# Function: get_pair_local_ip
+# Function: get_internal_local_ip
 # Description: The function to get the internal communication network ip
 # Input Parameters:
 # None
 # Return : 0 success
 #          1 failed
 #******************************************************************#
-function get_pair_local_ip()
-{
-    pair_ip=`get_pair_ip`
-    if [ "${pair_ip}" == ${G_UNDEFINED_STRING} ]; then
-        log_error "[${FUNCNAME[0]}(),$LINENO] do not find pair local ip."
-        return 1
-    fi
-    for ip in $pair_ip;do
-        ip a  | grep $ip
-        if [ $? -eq 0 ]; then
-            G_PAIR_LOCAL_IP=${ip}
-            G_PAIR_LOCAL_IP_RT_ID=`ip rule | grep "from ${ip} lookup" |  awk -F " " {'print $5'}`
-            log_info "[${FUNCNAME[0]}(),$LINENO] pair local ip is ${ip}. rt is ${G_PAIR_LOCAL_IP_RT_ID}!"
-            return 0
-        fi
-    done
+function get_internal_local_ip() {
+  internal_ip=$(get_internal_ip)
+  if [ "${internal_ip}" == ${G_UNDEFINED_STRING} ]; then
     log_error "[${FUNCNAME[0]}(),$LINENO] do not find internal communication ip."
     return 1
+  fi
+  for ip in $internal_ip; do
+    ip a | grep -q $ip
+    if [ $? -eq 0 ]; then
+      G_INTERNAL_LOCAL_IP=${ip}
+
+      G_INTERNAL_LOCAL_IP_RT_ID=$(ip rule | grep "from ${ip} lookup" | awk -F " " {'print $5'})
+      log_info "[${FUNCNAME[0]}(),$LINENO] internal local ip is ${ip}. rt is ${G_INTERNAL_LOCAL_IP_RT_ID}!"
+
+      G_INTERNAL_LOCAL_IP_ETH_NAME=$(${G_IP} addr 2>/dev/null | grep -n $G_INTERNAL_LOCAL_IP | awk '{print $NF}' | cut -d ":" -f 1)
+      if [ -z $G_INTERNAL_LOCAL_IP_ETH_NAME ]; then
+        log_error "[${FUNCNAME[0]}(),$LINENO] find device_name of internal communication ip faild"
+        return 1
+      fi
+
+      G_INTERNAL_LOCAL_IP_MASK="$(${G_IP} addr 2>/dev/null | grep $G_INTERNAL_LOCAL_IP | awk '{print $2}' | awk -F '/' '{print $2}')"
+      if [ -z $G_INTERNAL_LOCAL_IP_MASK ]; then
+        log_error "[${FUNCNAME[0]}(),$LINENO] find mask of internal communication ip faild"
+        return 1
+      fi
+      return 0
+    fi
+  done
+  log_error "[${FUNCNAME[0]}(),$LINENO] do not find internal communication ip."
+  return 1
 }
 
 #******************************************************************#
@@ -174,53 +191,26 @@ function get_pair_local_ip()
 # Return : 0 success
 #          1 failed
 #******************************************************************#
-function get_floatip_information()
-{
-    if [ $IP_FLAG = 'ipv4' ];then
-        G_MANAGE_FLOAT_IP=`get_float_ip`
-        if [ -z $G_MANAGE_FLOAT_IP ];then
-            log_error "[${FUNCNAME[0]}(),$LINENO] get floatIP address faild"
-            return 1
-        fi
-
-        log_info "[${FUNCNAME[0]}(),$LINENO] floatip=$G_MANAGE_FLOAT_IP"
-        G_MANAGE_FIP_MASK="`${G_IP} addr 2> /dev/null | grep $G_PAIR_LOCAL_IP | awk '{print $2}' | awk -F '/' '{print $2}'`"
-
-        if [ -z $G_MANAGE_FIP_MASK ];then
-            log_error "[${FUNCNAME[0]}(),$LINENO] find mask of managementIP faild"
-            return 1
-        fi
-
-        local gs_pair_eth_name=""
-        gs_pair_eth_name=`${G_IP} a 2> /dev/null | grep -n $G_PAIR_LOCAL_IP | awk '{print $NF}' |cut -d ":" -f 1`
-        if [ -z $gs_pair_eth_name ];then
-            log_error "[${FUNCNAME[0]}(),$LINENO] find device_name of managementIP faild"
-            return 1
-        fi
-
-        G_MANAGE_FIP_PORT=$gs_pair_eth_name
-        log_info "[${FUNCNAME[0]}(),$LINENO] get floatIP info success,floatIP_eth_name=$G_MANAGE_FIP_PORT"
-        return 0
-    else
-        G_MANAGE_FLOAT_IP=`get_float_ip`
-        if [ -z $G_MANAGE_FLOAT_IP ];then
-            log_error "[${FUNCNAME[0]}(),$LINENO] get floatIP address faild"
-            return 1
-        fi
-
-        log_info "[${FUNCNAME[0]}(),$LINENO] floatip=$G_MANAGE_FLOAT_IP"
-
-        local gs_pair_eth_name=""
-        gs_pair_eth_name=`${G_IP} addr 2> /dev/null | grep -n $G_PAIR_LOCAL_IP | awk '{print $NF}' |cut -d ":" -f 1`
-        if [ -z $lin ];then
-            log_error "[${FUNCNAME[0]}(),$LINENO] find device_name line number of managementIP faild"
-            return 1
-        fi
-
-        G_MANAGE_FIP_PORT=$gs_pair_eth_name
-        log_info "[${FUNCNAME[0]}(),$LINENO] get floatIP info success,floatIP_eth_name=$G_MANAGE_FIP_PORT"
-        return 0
+function get_floatip_information() {
+  if [ $IP_FLAG = 'ipv4' ]; then
+    G_MANAGE_FLOAT_IP=$(get_float_ip)
+    if [ -z $G_MANAGE_FLOAT_IP ]; then
+      log_error "[${FUNCNAME[0]}(),$LINENO] get floatIP address faild"
+      return 1
     fi
+
+    log_info "[${FUNCNAME[0]}(),$LINENO] get floatIP info success,floatIP_eth_name=$G_MANAGE_FIP_PORT"
+    return 0
+  else
+    G_MANAGE_FLOAT_IP=$(get_float_ip)
+    if [ -z $G_MANAGE_FLOAT_IP ]; then
+      log_error "[${FUNCNAME[0]}(),$LINENO] get floatIP address faild"
+      return 1
+    fi
+
+    log_info "[${FUNCNAME[0]}(),$LINENO] get floatIP info success,floatIP_eth_name=$G_MANAGE_FIP_PORT"
+    return 0
+  fi
 }
 
 #******************************************************************#
@@ -231,42 +221,45 @@ function get_floatip_information()
 # Return : 0 double mode
 # exit : 0 single mode
 #******************************************************************#
-function check_hamode()
-{
-    G_HA_MODE=`get_ha_mode`
-    if [ "X${G_HA_MODE}" == "Xsingle" ];then
-        log_info "[${FUNCNAME[0]}(),$LINENO] this is single mode"
-        return 1
-    else
-        log_info "[${FUNCNAME[0]}(),$LINENO] this is double mode"
-        return 0
-    fi
+function check_hamode() {
+  G_HA_MODE=$(get_ha_mode)
+  if [ "X${G_HA_MODE}" == "Xsingle" ]; then
+    log_info "[${FUNCNAME[0]}(),$LINENO] this is single mode"
+    return 1
+  else
+    log_info "[${FUNCNAME[0]}(),$LINENO] this is double mode"
+    return 0
+  fi
 
 }
 
-function check_ip_flag()
-{
-    if [[ $G_MANAGE_FLOAT_IP =~ .*:.* ]]; then
-        IP_FLAG="ipv6"
-        G_NDSEND="$(which ndsend)"
-    else
-        IP_FLAG="ipv4"
-    fi
+function check_ip_flag() {
+  if [[ $G_MANAGE_FLOAT_IP =~ .*:.* ]]; then
+    IP_FLAG="ipv6"
+    G_NDSEND="$(which ndsend)"
+  else
+    IP_FLAG="ipv4"
+  fi
 }
 
 function check_ip_conflicts() {
-    local ip=$1
-    local res=$($G_ARPING -I $G_MANAGE_FIP_PORT -D -c 1 $ip | grep "Unicast reply")
+  local ip=$1
+  local float_ip_port=$(${G_IP} addr 2>/dev/null | grep -n $ip | awk '{print $NF}' | cut -d ":" -f 1)
+  if [ -z $float_ip_port ]; then
+    log_error "[${FUNCNAME[0]}(),$LINENO] find device_name of float ip faild"
+    return 1
+  fi
+  local res=$($G_ARPING -I $float_ip_port -D -c 1 $ip | grep "Unicast reply")
 
-    if [ -z "$res" ]; then
-        log_info "[${FUNCNAME[0]}(),$LINENO] not find conflict ip, res is $res."
-        return 0
-    else
-        local mac_address=$(echo ${res} | grep -o  "[a-f0-9A-F]\\([a-f0-9A-F]\\:[a-f0-9A-F]\\)\\{5\\}[a-f0-9A-F]")
-        log_error "[${FUNCNAME[0]}(),$LINENO] ip $ip conflicts, mac address is $mac_address."
-        return 1
-    fi
+  if [ -z "$res" ]; then
+    log_info "[${FUNCNAME[0]}(),$LINENO] not find conflict ip, res is $res."
     return 0
+  else
+    local mac_address=$(echo ${res} | grep -o "[a-f0-9A-F]\\([a-f0-9A-F]\\:[a-f0-9A-F]\\)\\{5\\}[a-f0-9A-F]")
+    log_error "[${FUNCNAME[0]}(),$LINENO] ip $ip conflicts, mac address is $mac_address."
+    return 1
+  fi
+  return 0
 }
 
 #******************************************************************#
@@ -294,93 +287,117 @@ function check_ip_conflicts() {
 #   9 = switching to standby
 #   10 = invaild action
 #******************************************************************#
-function main ()
-{
-    G_MANAGE_FLOAT_IP=`get_float_ip`
-    if [ "$G_MANAGE_FLOAT_IP" == "$G_UNDEFINED_STRING" ];then
-        log_error "[${FUNCNAME[0]}(),$LINENO] get floatIP address failed."
-        exit 1
+function main() {
+  G_MANAGE_FLOAT_IP=$(get_float_ip)
+  if [ "$G_MANAGE_FLOAT_IP" == "$G_UNDEFINED_STRING" ]; then
+    log_error "[${FUNCNAME[0]}(),$LINENO] get floatIP address failed."
+    exit 1
+  fi
+  check_ip_flag
+  check_hamode
+
+  case $1 in
+  status)
+    get_internal_local_ip
+    if [ $? -ne 0 ]; then
+      log_error "[${FUNCNAME[0]}(),$LINENO] get internal ip address failed."
+      exit 1
     fi
-    check_ip_flag
-    check_hamode
-    get_pair_local_ip
-    if [ $? -ne 0 ];then
-        log_error "[${FUNCNAME[0]}(),$LINENO] get internal ip address failed."
-        exit 1
+    sleep $((($RANDOM % 3)))s
+    get_floatip_information
+    if [ $? -ne 0 ]; then
+      exit 2
+    fi
+    # 检查浮动ip是否冲突
+    if [ "$G_ROLE" == "active" ]; then
+      check_ip_conflicts $G_MANAGE_FLOAT_IP
+      if [ $? -ne 0 ]; then
+        process_ha_alarm "create" "EVENT_HA_FLOAT_IP_CONFLICT" $G_RESOURCE_NAME
+      else
+        process_ha_alarm "recover" "EVENT_HA_FLOAT_IP_CONFLICT" $G_RESOURCE_NAME
+      fi
+    fi
+    status
+    exit $?
+    ;;
+  repair)
+    get_internal_local_ip
+    if [ $? -ne 0 ]; then
+      log_error "[${FUNCNAME[0]}(),$LINENO] get internal ip address failed."
+      exit 1
+    fi
+    repair
+    if [ $? -ne 0 ]; then
+      exit 1
+    fi
+    ;;
+  start)
+    get_internal_local_ip
+    if [ $? -ne 0 ]; then
+      log_error "[${FUNCNAME[0]}(),$LINENO] get internal ip address failed."
+      exit 1
+    fi
+    get_floatip_information
+    if [ $? -ne 0 ]; then
+      exit 1
+    fi
+    set_floatip
+    exit $?
+    ;;
+  stop)
+    get_floatip_information
+    sudo ${G_SUDO_SCRIPT_PATH}/ha_sudo.sh unset_floatip ${G_MANAGE_FLOAT_IP}
+    exit 0
+    ;;
+  force-stop)
+    get_floatip_information
+    sudo ${G_SUDO_SCRIPT_PATH}/ha_sudo.sh unset_floatip ${G_MANAGE_FLOAT_IP}
+    exit 0
+    ;;
+  notify)
+    get_internal_local_ip
+    if [ $? -ne 0 ]; then
+      log_error "[${FUNCNAME[0]}(),$LINENO] get internal ip address failed."
+      exit 1
+    fi
+    local event_type=$4
+    if [ $event_type == 1 ]; then
+      ##$1: type, e.g.: create, recover, event
+      ##$2: event name, e.g.: EVENT_HA_STATUS_EXCEPTION
+      ##$3: resource, e.g.: gaussdb, floatIp...
+      log_info "[${FUNCNAME[0]}(),$LINENO] create alarm EVENT_HA_STATUS_EXCEPTION,resource:$G_RESOURCE_NAME"
+    else
+      log_info "[${FUNCNAME[0]}(),$LINENO] recover alarm EVENT_HA_STATUS_EXCEPTION,resource:$G_RESOURCE_NAME"
     fi
 
-    case $1 in
-    status)
-        sleep $[ ( $RANDOM % 3 ) ]s
-        get_floatip_information
-        if [ $? -ne 0 ];then
-            exit 2
-        fi
-        # 检查浮动ip是否冲突
-        if [ "$G_ROLE" == "active" ]; then
-            check_ip_conflicts $G_MANAGE_FLOAT_IP
-            if [ $? -ne 0 ]; then
-                process_ha_alarm "create" "EVENT_HA_FLOAT_IP_CONFLICT" $G_RESOURCE_NAME
-            else
-                process_ha_alarm "recover" "EVENT_HA_FLOAT_IP_CONFLICT" $G_RESOURCE_NAME
-            fi
-        fi
-        status
-        exit $?
-        ;;
-    repair)
-        repair
-        if [ $? -ne 0 ];then
-            exit 1
-        fi
-        ;;
-    start)
-        get_floatip_information
-        if [ $? -ne 0 ];then
-            exit 1
-        fi
-        set_floatip
-        exit $?
-        ;;
-    stop)
-        get_floatip_information
-        sudo ${G_SUDO_SCRIPT_PATH}/ha_sudo.sh unset_floatip ${G_MANAGE_FIP_PORT} ${G_MANAGE_FLOAT_IP} ${G_MANAGE_FIP_MASK} ${G_PAIR_LOCAL_IP_RT_ID}
-        exit 0
-        ;;
-    force-stop)
-        get_floatip_information
-        sudo ${G_SUDO_SCRIPT_PATH}/ha_sudo.sh unset_floatip ${G_MANAGE_FIP_PORT} ${G_MANAGE_FLOAT_IP} ${G_MANAGE_FIP_MASK} ${G_PAIR_LOCAL_IP_RT_ID}
-        exit 0
-        ;;
-    notify)
-        local event_type=$4
-        if [ $event_type == 1 ];then
-            ##$1: type, e.g.: create, recover, event
-            ##$2: event name, e.g.: EVENT_HA_STATUS_EXCEPTION
-            ##$3: resource, e.g.: gaussdb, floatIp...
-            log_info "[${FUNCNAME[0]}(),$LINENO] create alarm EVENT_HA_STATUS_EXCEPTION,resource:$G_RESOURCE_NAME"
-        else
-            log_info "[${FUNCNAME[0]}(),$LINENO] recover alarm EVENT_HA_STATUS_EXCEPTION,resource:$G_RESOURCE_NAME"
-        fi
-
-        exit $?
-        ;;
-    diagnose)
-        if [ "$G_ROLE" == "primary" ]; then
-            sudo ${G_SUDO_SCRIPT_PATH}/ha_sudo.sh ha_clearrmfault ${G_RESOURCE_NAME}
-            if [ $? -ne 0 ];then
-                log_error "[${FUNCNAME[0]}(),$LINENO] ha_client_tool --clearrmfault --name=${G_RESOURCE_NAME} failed!"
-                exit 1
-            fi
-            log_info "[${FUNCNAME[0]}(),$LINENO] ha_client_tool --clearrmfault --name=${G_RESOURCE_NAME} success!"
-        fi
-        exit 0
-        ;;
-    *)
-        echo "Parameter incorrect."
+    exit $?
+    ;;
+  diagnose)
+    get_internal_local_ip
+    if [ $? -ne 0 ]; then
+      log_error "[${FUNCNAME[0]}(),$LINENO] get internal ip address failed."
+      exit 1
+    fi
+    if [ "$G_ROLE" == "primary" ]; then
+      sudo ${G_SUDO_SCRIPT_PATH}/ha_sudo.sh ha_clearrmfault ${G_RESOURCE_NAME}
+      if [ $? -ne 0 ]; then
+        log_error "[${FUNCNAME[0]}(),$LINENO] ha_client_tool --clearrmfault --name=${G_RESOURCE_NAME} failed!"
         exit 1
-        ;;
-    esac
+      fi
+      log_info "[${FUNCNAME[0]}(),$LINENO] ha_client_tool --clearrmfault --name=${G_RESOURCE_NAME} success!"
+    fi
+    exit 0
+    ;;
+  *)
+    get_internal_local_ip
+    if [ $? -ne 0 ]; then
+      log_error "[${FUNCNAME[0]}(),$LINENO] get internal ip address failed."
+      exit 1
+    fi
+    echo "Parameter incorrect."
+    exit 1
+    ;;
+  esac
 }
 
 # 获取脚本入参

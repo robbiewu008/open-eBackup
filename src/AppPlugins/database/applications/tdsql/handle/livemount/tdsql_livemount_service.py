@@ -25,6 +25,8 @@ from tdsql.common.const import ErrorCode
 from tdsql.common.safe_get_information import ResourceParam
 from tdsql.common.tdsql_common import get_std_in_variable
 from tdsql.common.tdsql_common import report_job_details
+from tdsql.common.util import get_mysql_version_path, get_backup_pre_from_defaults_file_path
+from tdsql.handle.common.const import TDSQLReportLabel
 from tdsql.handle.livemount.livemount import live_mount, cancel_live_mount
 from tdsql.logger import log
 
@@ -148,6 +150,7 @@ class LiveMount:
         self._copy_info = self._json_param_object.get("job", {}).get("copy", [])[0]
         self._copy_id = self._json_param_object.get("job", {}).get("copy", [])[0].get("id", "")
         self._host_ip = self._json_param_object.get("job", {}).get("targetEnv", {}).get("endpoint", "")
+        self._oss_url = self._copy_info.get("protectObject", {}).get("extendInfo", {}).get("ossUrl", "")
         self._logdetail = None
         self._err_info = {}
         self._query_progress_interval = 15
@@ -162,6 +165,7 @@ class LiveMount:
         log.warn(f"nodes: {self.nodes}")
         self._set_id = self._cluster_info_.get("id")
         log.info(f"self._set_id: {self._set_id}")
+        self._mysql_version = self.get_mysql_version()
         self._sub_job_name = self._json_param_object.get("job", {}).get("subJob", {}).get("jobName", "")
         self._data_area = self.get_repository(RepositoryDataTypeEnum.DATA_REPOSITORY)
         self._job_status = SubJobStatusEnum.RUNNING
@@ -299,10 +303,17 @@ class LiveMount:
 
     def livemount_task(self):
         mysql_port = self._extend_info.get("mysql_port", 33060)
-        mysql_version = self._mysql_conf_path.split("/")[4]
-        ret, cnf_path = subprocess.getstatusoutput(f"ls /data/tdsql_run/*/{mysql_version}/etc/my_*.cnf | head -1")
+        mysql_version = self._mysql_version
+        backup_pre = get_backup_pre_from_defaults_file_path(self._mysql_conf_path)
+        log.info(f"livemount_task backup_path is {backup_pre}")
+        ret, cnf_path = subprocess.getstatusoutput(f"ls {backup_pre}/*/{mysql_version}/etc/my_*.cnf | head -1")
         log.info(f"the base config file is {cnf_path}")
-        if not cnf_path or not cnf_path.strip().startswith("/data/tdsql_run"):
+        if not cnf_path or not cnf_path.strip().startswith(backup_pre):
+            log_detail = LogDetail(logInfo=TDSQLReportLabel.TDSQL_LIVE_MOUNT_MYSQL_VERSION_NOT_MATCH_LABEL,
+                                   logInfoParam=[self._sub_job_id], logLevel=DBLogLevel.ERROR)
+            sub_dict = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100,
+                                     logDetail=[log_detail], taskStatus=SubJobStatusEnum.FAILED.value)
+            report_job_details(self._pid, sub_dict.dict(by_alias=True))
             log.error("can not find the base cnf path")
             return False
 
@@ -315,8 +326,6 @@ class LiveMount:
             return False
 
         pool_size = 2048
-        basedir = cnf_path[:cnf_path.rindex("/")]
-        basedir = basedir[:basedir.rindex("/")]
         ret = self.mount_local_path()
         if not ret:
             self.unmount_local_path("livemount")
@@ -332,7 +341,7 @@ class LiveMount:
         if ret:
             log.error(f"can not change path /mnt/{self._job_id}/tdsqlbackup to owner tdsql, "
                       f"ret is {ret}, output is {output}")
-        ret = live_mount(mount_path, mysql_port, cnf_path, pool_size, basedir)
+        ret = live_mount(mount_path, mysql_port, cnf_path, pool_size, mysql_version)
         return ret
 
     def cancel_livemount_task(self):
@@ -365,3 +374,11 @@ class LiveMount:
         sub_dict = SubJobDetails(taskId=self._job_id, subTaskId=self._sub_job_id, progress=100,
                                  logDetail=[log_detail], taskStatus=SubJobStatusEnum.FAILED.value)
         report_job_details(self._pid, sub_dict.dict(by_alias=True))
+
+    def get_mysql_version(self):
+        mysql_version = self._copy_info.get("extendInfo", {}).get("mysql_version", "")
+        if not mysql_version:
+            mysql_version = get_mysql_version_path(self._oss_url, self._set_id, "livemount", self._pid)
+        if not mysql_version:
+            mysql_version = get_backup_pre_from_defaults_file_path(self._mysql_conf_path)
+        return mysql_version

@@ -1,0 +1,289 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤8：创建反向复制/级联复制SLA">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="hdfs_00025.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="hdfs_00034">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤8：创建反向复制/级联复制SLA</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="hdfs_00034"></a><a name="hdfs_00034"></a>
+  <h1 class="topictitle1">步骤8：创建反向复制/级联复制SLA</h1>
+  <div>
+   <p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p540441716217">如果您需要配置反向复制（将复制副本复制回源端）或级联复制（将目标端的复制副本复制到其他集群），请参考本节配置复制策略的SLA。否则请忽略。</p>
+   <div class="section" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_section44677417180">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_ol112221128161219">
+     <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_li12267355142219"><span>登录复制副本所在集群的管理界面。</span><p></p><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p16156520184414">复制副本仅支持在目标集群查看、操作。</p> <p></p></li>
+     <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_li149381918143112"><span>选择<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002199964685_uicontrol8111821122820">“保护 &gt; 保护策略 &gt; SLA”</span>。</span></li>
+     <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_li1398744911327"><span>单击<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_uicontrol8280111313316">“<span id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_text649194517339">创建</span>”</span>。</span></li>
+     <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001140003755_li632243103212"><span>自定义SLA的名称。</span></li>
+     <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001140003755_li6674114017375"><span>选择需要创建SLA的应用类型。</span><p></p>
+      <ol type="a" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001140003755_ol71011061385">
+       <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001140003755_li16667553151916">单击<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001140003755_uicontrol16364345183319">“<span id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001140003755_text1149753619468">应用</span>”</span>图标。</li>
+       <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001140003755_li874192611325">选择<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001140003755_uicontrol111981759171912">“<span id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001140003755_text36181344182016">指定应用</span> &gt; 副本 &gt; <span id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001140003755_text884542312198">复制副本</span>”</span>。</li>
+       <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001140003755_li158271347172012">单击<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001140003755_uicontrol95561152115">“确定”</span>。</li>
+      </ol> <p></p></li>
+     <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_li158166713135"><span>单击<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_uicontrol111335151290">“<span id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_text1466823185112">复制策略</span>”</span>图标。</span></li>
+     <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_li3425152010144"><span>配置复制策略信息，完成后单击<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_uicontrol1633894917301">“确定”</span>。</span><p></p><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p1540814915535">单击页面右侧的<span><img id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_image1413010131183" src="zh-cn_image_0000002187118396.png"></span>，可创建多个复制策略，最多允许创建4个。</p> <p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_p10717113412144">相关参数说明如<a href="#hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_table201991821175612">表1</a>。</p>
+      <div class="tablenoborder">
+       <a name="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_table201991821175612"></a><a name="fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_table201991821175612"></a>
+       <table cellpadding="4" cellspacing="0" summary="" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_table201991821175612" frame="border" border="1" rules="all">
+        <caption>
+         <b>表1 </b>复制策略参数说明
+        </caption>
+        <colgroup>
+         <col style="width:20.29%">
+         <col style="width:79.71000000000001%">
+        </colgroup>
+        <thead align="left">
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_row4200621205616">
+          <th align="left" class="cellrowborder" valign="top" width="20.29%" id="mcps1.3.2.2.7.2.3.2.3.1.1"><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_p52001218563">参数</p></th>
+          <th align="left" class="cellrowborder" valign="top" width="79.71000000000001%" id="mcps1.3.2.2.7.2.3.2.3.1.2"><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_p13200152105617">说明</p></th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_row1114619522577">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">
+           <div class="p" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p1314735219573">
+            数据类型
+            <div class="note" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_note87251558457">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_zh-cn_topic_0000002164820434_zh-cn_topic_0000001839143213_p8320153562113">仅1.6.0及后续版本支持设置该参数。</p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 ">
+           <div class="p" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p2075011198589">
+            选择待复制的副本类型，支持选择“数据副本”或“日志副本”。
+            <div class="note" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_note296320467485">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <ul id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_ul1522592194920">
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li922516294913">当指定的应用为“Oracle”或“SQL Server”时，才显示“日志副本”选项。</li>
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li194651143509">由于使用日志副本进行恢复时依赖数据副本，因此创建日志副本复制策略前，请先创建数据副本复制策略。否则，无法使用该日志复制副本执行恢复。</li>
+              </ul>
+             </div>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_row22001321145619">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_p1200182185611">名称</p></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_p62001216563">用户自定义复制策略名称。</p></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_row12962101682515">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p18375152112518">复制模式</p></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p560214353412">仅支持跨域复制，即集群之间进行复制。</p></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_row1520042118562">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_p52000216567">复制目标集群</p></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_p24782191605">复制到的目标集群。</p>
+           <div class="p" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_p42001121155620">
+            选择已添加的目标集群，或单击<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_uicontrol28664506013">“<span id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_text193651191506">添加</span>”</span>，添加新的集群。
+            <ul id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_ul17266194210278">
+             <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_li3998812219">当<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_uicontrol641561815216">“复制目标集群”</span>为复制副本的源端集群时，即为反向复制。</li>
+             <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_li1419217379216">当<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_uicontrol149321939112110">“复制目标集群”</span>为其他集群时，即为级联复制。</li>
+            </ul>
+           </div></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_row9718193411581">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p8718193416581">复制目标端用户</p>
+           <div class="note" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_note1631923514210">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p8320153562113">仅1.6.0及后续版本支持设置该参数。</p>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p16452223212">选择复制目标端的系统管理员或数据保护管理员用户。</p></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_row101471239195820">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p14147173935819">密码</p>
+           <div class="note" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_note922661517424">
+            <span class="notetitle"> 说明： </span>
+            <div class="notebody">
+             <p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002164820502_p8320153562113">仅1.6.0及后续版本支持设置该参数。</p>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p047882152213">填写复制目标端的系统管理员或数据保护管理员用户密码。输入密码后，单击<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_uicontrol171601242183913">“认证”</span>，认证密码的正确性。</p></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_row12166168185911">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p616617819594">指定目标位置</p></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 ">
+           <div class="p" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p193151327162214">
+            <span id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_ph6913192918373">可选择复制的目标位置为备份存储单元或备份存储单元组。当选择备份存储单元组，对备份副本进行首次复制时，系统将从备份存储单元组中选择其中一个备份存储单元，作为复制的目标位置，后续复制时优先选择首次复制使用的备份存储单元。</span>
+            <div class="note" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_note119618230211">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <ul id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_ul19974205194214">
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li117129544426">对于1.5.0版本，复制模式为<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_uicontrol242715110431">“域内”</span>时，才支持设置该参数。</li>
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li199748517429"><span id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_ph17583270376">当备份策略的目标位置指定备份存储单元时，复制策略的目标位置不能为同一备份存储单元。</span></li>
+              </ul>
+             </div>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_row13200202185616">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_p13200821105618">频率</p></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p146961735470">每xx分钟/小时/天/周执行一次复制。</p></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_row159539565019">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p947373725610">复制规则&amp;保留规则</p></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p2954144931916">选择需要复制的复制副本并设置副本的保留时长。</p>
+           <div class="p" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p74571017201913">
+            一旦超过设定的保留时间，系统将自动删除过期的副本。副本保留时长必须大于复制频率。
+            <ul id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_zh-cn_topic_0000001091370109_ul6461175912421">
+             <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li14284119318">复制所有副本：指定从某个时间产生的副本进行复制，并设置副本保留时长。
+              <ul id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_ul8709174274820">
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li16854124684810">复制副本保留x天（支持保留1~25550天）。</li>
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li134729194920">复制副本保留x周（支持保留1~3650周）。</li>
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li23071149174913">复制副本保留x月（支持保留1~840月）。</li>
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li1685424684816">复制副本保留x年（支持保留1~70年）。</li>
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li785454616488">复制副本保留永久。</li>
+              </ul></li>
+             <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li169914211296">复制指定日期的副本：指定日期并设置副本保留时长。以下选项同时可选择多项：
+              <ul id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_ul15411165794010">
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li241110576407">选择每年的x月产生的备份副本进行复制，复制副本保留x年（支持保留1~70年）。</li>
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li156079239417">选择每月的第一个或最后一个备份副本进行复制，复制副本保留x个月（支持保留1~840个月）。</li>
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li7824743184118">选择每周的第x天产生的备份副本进行复制，复制副本保留x个周（支持保留1~3650个周）。</li>
+              </ul>
+              <div class="note" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_note13295163217817">
+               <span class="notetitle"> 说明： </span>
+               <div class="notebody">
+                <ul id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_ul16634174815310">
+                 <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li9869521530">“复制指定日期的副本”仅支持复制指定日期的全量和永久增量（合成全量）备份副本。</li>
+                 <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li1563410481331">如果同时选择了多个选项，待复制副本的时间范围为多个选项的并集，生成的复制副本的保留时长为多个选项中保留时间最久的保留时长。</li>
+                 <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li658617537551">对于1.6.0及后续版本，选择每月的最后一个全量备份副本复制时，当月待复制的全量备份副本的复制任务将在下一个月执行。</li>
+                </ul>
+               </div>
+              </div></li>
+            </ul>
+           </div></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_row07931911102911">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p88157350575">首次执行时间</p></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p4137439103015">首次执行复制任务的开始时间。</p>
+           <div class="p" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p73878488501">
+            如果首次执行时间晚于当前时间，则按照首次执行时间开始复制；如果首次执行时间早于当前时间，则等待下次复制周期到达后进行复制。
+            <div class="note" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_note3459142085219">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <ul id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_zh-cn_topic_0000001607531760_ul28273511414">
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_zh-cn_topic_0000001607531760_li58279510418">请确保客户端所在主机、本地集群和目标集群的设备时间一致。</li>
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_zh-cn_topic_0000001607531760_li1362912714119">如果规划了Air Gap，请确保首次执行时间在目标集群Air Gap复制时间窗内，并确保每次复制任务开始时间均在Air Gap复制时间窗内。如果复制任务在Air Gap复制时间窗内未结束，且Air Gap策略启用了<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_zh-cn_topic_0000001607531760_uicontrol1574053616579">“强制中止复制”</span>，复制任务将会被强制中止且会立即失败。如果确实需要执行完成该复制任务，请暂时关闭目标集群Air Gap策略的<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_zh-cn_topic_0000001607531760_uicontrol0647911025">“强制中止复制”</span>开关。</li>
+              </ul>
+             </div>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_row183501658195610">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_p8351358185612">限速策略</p></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001091370109_p7177174513150">复制任务平均每秒最大传输的数据量。</p> <p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p208941559135816">选择已创建的限速策略，创建限速策略的具体操作请参考<a href="hdfs_00016.html#hdfs_00016">步骤5：（可选）创建限速策略</a>章节。</p></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_row668341472818">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">
+           <div class="p" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p9684191492817">
+            链路重删
+            <div class="note" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_note43214486811">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_p9322048780">对于1.5.0版本，该参数名为“数据重删”。</p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 ">
+           <div class="p" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p1168451482817">
+            开启后，远程复制过程中系统会对副本数据进行重删以提升复制效率。建议开启此开关。
+            <div class="note" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_note19674741123810">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <ul id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_ul1096989193510">
+               <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li135803529411">开启此功能前请确保已开启目标端重删。
+                <ul id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_ul155108557412">
+                 <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li96071722428">如果SLA的备份策略中存在“目标端重删”开关，请打开“目标端重删”，否则将导致链路重删功能不生效。</li>
+                 <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_li18970109163510">如果SLA的备份策略中不存在“目标端重删”开关，则默认已开启目标端重删。</li>
+                </ul></li>
+              </ul>
+             </div>
+            </div>
+           </div></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_row1552751710288">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">
+           <div class="p" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p3527141782816">
+            链路压缩
+            <div class="note" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_note98175196112">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_p188181119191119">对于1.5.0版本，该参数名为“数据压缩”。</p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p103611153215">开启后，远程复制过程中系统会对副本数据进行压缩以提升复制效率。建议开启此开关。</p></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_row9805183081619">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 ">
+           <div class="p" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p659735891618">
+            WORM设置
+            <div class="note" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_note9935149115617">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000002200146989_zh-cn_topic_0000002164660726_p18759163818421">仅1.5.0版本存在此参数。</p>
+             </div>
+            </div>
+           </div></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p956534010557">开启后，生成的副本为WORM副本。WORM副本不支持删除和缩短保留时间。</p></td>
+         </tr>
+         <tr id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_row145141420122810">
+          <td class="cellrowborder" valign="top" width="20.29%" headers="mcps1.3.2.2.7.2.3.2.3.1.1 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p113408251083">任务失败告警</p></td>
+          <td class="cellrowborder" valign="top" width="79.71000000000001%" headers="mcps1.3.2.2.7.2.3.2.3.1.2 "><p id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_p7601371993">开启后，任务执行失败后自动发送告警，下次任务成功后告警自动清除。</p></td>
+         </tr>
+        </tbody>
+       </table>
+      </div> <p></p></li>
+     <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_li14772135418213"><span>单击<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001092505481_uicontrol13919162932">“确定”</span>。</span></li>
+     <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_li585617920201"><span>关联资源到创建的SLA，对复制副本进行反向复制或级联复制。</span><p></p>
+      <ol type="a" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_ol886813284387">
+       <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_zh-cn_topic_0000001090318017_li0198134611381">选择<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_uicontrol137744685812">“<span id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_text9893546125720">数据利用</span> &gt; <span id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_text74373665812">副本数据</span>”</span>，选择相应的应用类型。</li>
+       <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_li133932163911">查找到需要进行反向复制或级联复制的资源，在资源所在行单击<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_uicontrol317419517404">“更多 &gt; 保护”</span>。</li>
+       <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_li98161514402">选择已创建的SLA。</li>
+       <li id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_li1223217327406">单击<span class="uicontrol" id="hdfs_00034__fc_gud_0033_zh-cn_topic_0000002164820502_uicontrol1495920164419">“确定”</span>。</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="hdfs_00025.html">复制HDFS副本</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

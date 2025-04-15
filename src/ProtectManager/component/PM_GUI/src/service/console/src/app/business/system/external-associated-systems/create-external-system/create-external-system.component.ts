@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -55,11 +55,6 @@ export class CreateExternalSystemComponent implements OnInit {
     invalidNameLength: this.i18n.get('common_valid_length_rang_label', [3, 32]),
     invalidName: this.i18n.get('common_valid_name_with_allowed_dots_label')
   });
-  urlErrorTip = {
-    ...this.baseUtilService.requiredErrorTip,
-    invalidName: this.i18n.get('protection_object_url_invalid_label'),
-    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [1024])
-  };
   systemTypeOptions = [
     {
       value: 'ebackup',
@@ -151,21 +146,14 @@ export class CreateExternalSystemComponent implements OnInit {
         ]
       }),
       ak: new FormControl(''),
-      sk: new FormControl(''),
-      location: new FormControl('')
+      sk: new FormControl('')
     });
     this.listenForm();
   }
 
   listenForm() {
     this.formGroup.get('type').valueChanges.subscribe(res => {
-      const allChangeFormItemName = [
-        'username',
-        'password',
-        'ak',
-        'sk',
-        'location'
-      ];
+      const allChangeFormItemName = ['username', 'password', 'ak', 'sk'];
       allChangeFormItemName.forEach(item =>
         this.formGroup.get(item).clearValidators()
       );
@@ -192,13 +180,6 @@ export class CreateExternalSystemComponent implements OnInit {
         this.formGroup
           .get('sk')
           .setValidators([this.baseUtilService.VALID.required()]);
-        this.formGroup
-          .get('location')
-          .setValidators([
-            this.baseUtilService.VALID.required(),
-            this.baseUtilService.VALID.name(CommonConsts.REGEX.urlReg, false),
-            this.baseUtilService.VALID.maxLength(1024)
-          ]);
       }
       allChangeFormItemName.forEach(item =>
         this.formGroup.get(item).updateValueAndValidity()

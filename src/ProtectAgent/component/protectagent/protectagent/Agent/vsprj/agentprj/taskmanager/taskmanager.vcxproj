@@ -41,7 +41,6 @@
     <ClCompile Include="..\..\..\src\src\taskmanager\TaskManager.cpp" />
     <ClCompile Include="..\..\..\src\src\taskmanager\TaskStepLinkTarget.cpp" />
     <ClCompile Include="..\..\..\src\src\taskmanager\TaskStepPrepareNasMedia.cpp" />
-    <ClCompile Include="..\..\..\src\src\taskmanager\TaskStepPreSufScript.cpp" />
     <ClCompile Include="..\..\..\src\src\taskmanager\TaskStepScanDisk.cpp" />
     <ClCompile Include="..\..\..\src\src\taskmanager\TaskStepScript.cpp" />
     <ClCompile Include="..\..\..\src\src\taskmanager\filter\DefaultRemoteHostFilter.cpp" />

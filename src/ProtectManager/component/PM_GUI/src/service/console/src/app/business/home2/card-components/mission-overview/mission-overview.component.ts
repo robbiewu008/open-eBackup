@@ -1,19 +1,21 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, Input, ElementRef, OnInit } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { MenuItem } from '@iux/live';
 import {
   CookieService,
+  GlobalService,
   I18NService,
   JobColorConsts,
   RouterUrl
@@ -22,10 +24,9 @@ import {
   ApiMultiClustersService,
   JobAPIService
 } from 'app/shared/api/services';
-import { Router } from '@angular/router';
-import { DataMap } from 'app/shared/consts';
-import { assign } from 'lodash';
+import { DataMap, JOB_ORIGIN_TYPE } from 'app/shared/consts';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
+import { assign, isNil, toString } from 'lodash';
 
 @Component({
   selector: 'mission-overview',
@@ -33,6 +34,8 @@ import { AppUtilsService } from 'app/shared/services/app-utils.service';
   styleUrls: ['./mission-overview.component.less']
 })
 export class MissionOverviewComponent implements OnInit {
+  tabType = JOB_ORIGIN_TYPE;
+  dataMap = DataMap;
   @Input() cardInfo: any = {};
   timeSelect: string;
   ClusterSelect: string;
@@ -54,12 +57,85 @@ export class MissionOverviewComponent implements OnInit {
   jobsOption;
   jobsChart: any;
   jobStatus = DataMap.Job_status;
-  startTime = 0;
-  endTime = 0;
+  currentTime;
   jobText = this.i18n.get('common_last_24hours_jobs_label');
   isMultiCluster = true;
   jobPeriod = 'lastDay';
   timeMap;
+  abnormalStatus = [DataMap.Job_status.failed.value];
+  selectNum = {
+    total: {
+      id: 'total',
+      activeTab: JOB_ORIGIN_TYPE.EXE,
+      status: []
+    },
+    pending: {
+      id: 'pending',
+      activeTab: JOB_ORIGIN_TYPE.EXE,
+      status: [
+        DataMap.Job_status.pending.value,
+        DataMap.Job_status.redispatch.value,
+        DataMap.Job_status.dispatching.value
+      ]
+    },
+    running: {
+      id: 'running',
+      activeTab: JOB_ORIGIN_TYPE.EXE,
+      status: [
+        DataMap.Job_status.running.value,
+        DataMap.Job_status.initialization.value,
+        DataMap.Job_status.aborting.value
+      ]
+    },
+    success: {
+      id: 'success',
+      activeTab: JOB_ORIGIN_TYPE.HISTORIC,
+      status: [
+        DataMap.Job_status.success.value,
+        DataMap.Job_status.partial_success.value
+      ]
+    },
+    fail: {
+      id: 'fail',
+      activeTab: JOB_ORIGIN_TYPE.HISTORIC,
+      status: [
+        DataMap.Job_status.failed.value,
+        DataMap.Job_status.abnormal.value,
+        DataMap.Job_status.abort_failed.value,
+        DataMap.Job_status.dispatch_failed.value
+      ]
+    },
+    aborted: {
+      id: 'aborted',
+      activeTab: JOB_ORIGIN_TYPE.HISTORIC,
+      status: [
+        DataMap.Job_status.aborted.value,
+        DataMap.Job_status.cancelled.value
+      ]
+    }
+  };
+  taskJobType = {
+    proEnvir: {
+      taskType: DataMap.Job_type.backup_job.value,
+      activeTab: JOB_ORIGIN_TYPE.EXE,
+      isProEnvir: true
+    },
+    backup: {
+      taskType: DataMap.Job_type.backup_job.value,
+      status: null,
+      activeTab: JOB_ORIGIN_TYPE.HISTORIC
+    },
+    duplicate: {
+      taskType: DataMap.Job_type.copy_data_job.value,
+      status: null,
+      activeTab: JOB_ORIGIN_TYPE.HISTORIC
+    },
+    archive: {
+      taskType: DataMap.Job_type.archive_job.value,
+      status: null,
+      activeTab: JOB_ORIGIN_TYPE.HISTORIC
+    }
+  };
 
   constructor(
     private i18n: I18NService,
@@ -68,31 +144,38 @@ export class MissionOverviewComponent implements OnInit {
     private jobAPIService: JobAPIService,
     private multiClustersServiceApi: ApiMultiClustersService,
     public router: Router,
-    public appUtilsService: AppUtilsService
+    public appUtilsService: AppUtilsService,
+    public globalService?: GlobalService
   ) {}
 
   ngOnInit() {
     this.getAllCusterShow();
     this.initData();
-    this.endTime = new Date().getTime();
-    this.startTime = new Date().getTime() - 24 * 3600 * 1000;
     this.refreshData();
   }
 
   refreshData() {
     this.cardInfo.loading = true;
-    Promise.all([
-      this.initAsyncData(),
-      this.changeDuplicateState(),
-      this.getArchiveState(),
-      this.getHistoryBackingUpAbnormalNum(),
-      this.getHistoryDuplicateAbnormalNum(),
-      this.getHistoryArchivingAbnormalNum(),
-      this.getBackingUpNum(),
-      this.getDuplicateNum(),
-      this.getArchivingNum()
-    ]).then(() => {
-      this.cardInfo.loading = false;
+    this.appUtilsService.getSystemTimeLong().subscribe({
+      next: res => {
+        this.currentTime = this.appUtilsService.toSystemTimeLong(new Date(res));
+        Promise.all([
+          this.initAsyncData(),
+          this.changeDuplicateState(),
+          this.getArchiveState(),
+          this.getHistoryBackingUpAbnormalNum(),
+          this.getHistoryDuplicateAbnormalNum(),
+          this.getHistoryArchivingAbnormalNum(),
+          this.getBackingUpNum(),
+          this.getDuplicateNum(),
+          this.getArchivingNum()
+        ]).then(() => {
+          this.cardInfo.loading = false;
+        });
+      },
+      error: () => {
+        this.cardInfo.loading = false;
+      }
     });
   }
 
@@ -103,6 +186,7 @@ export class MissionOverviewComponent implements OnInit {
     this.isMultiCluster =
       !clusterObj ||
       (clusterObj && clusterObj['icon'] === 'aui-icon-all-cluster');
+    return clusterObj;
   }
 
   initData() {
@@ -116,16 +200,12 @@ export class MissionOverviewComponent implements OnInit {
       other: 0,
       totalItem: 0
     };
-    this.endTime = 0;
-    this.startTime = 0;
     this.options = [
       {
         id: 'all',
         label: this.i18n.get('common_all_jobs_label'),
         onClick: data => {
           this.jobText = this.i18n.get('common_all_jobs_label');
-          this.endTime = 0;
-          this.startTime = 0;
           this.jobPeriod = 'all';
           this.initAsyncData();
         }
@@ -135,8 +215,6 @@ export class MissionOverviewComponent implements OnInit {
         label: this.i18n.get('common_last_24hours_jobs_label'),
         onClick: data => {
           this.jobText = this.i18n.get('common_last_24hours_jobs_label');
-          this.endTime = new Date().getTime();
-          this.startTime = new Date().getTime() - 24 * 3600 * 1000;
           this.jobPeriod = 'lastDay';
           this.initAsyncData();
         }
@@ -146,8 +224,6 @@ export class MissionOverviewComponent implements OnInit {
         label: this.i18n.get('common_last_7days_jobs_label'),
         onClick: data => {
           this.jobText = this.i18n.get('common_last_7days_jobs_label');
-          this.endTime = new Date().getTime();
-          this.startTime = new Date().getTime() - 7 * 24 * 3600 * 1000;
           this.jobPeriod = 'lastWeek';
           this.initAsyncData();
         }
@@ -157,9 +233,6 @@ export class MissionOverviewComponent implements OnInit {
         label: this.i18n.get('common_last_1month_jobs_label'),
         onClick: data => {
           this.jobText = this.i18n.get('common_last_1month_jobs_label');
-          this.endTime = new Date().getTime();
-          this.startTime =
-            new Date().getTime() - this.getMonthDays() * 24 * 3600 * 1000;
           this.jobPeriod = 'lastMonth';
           this.initAsyncData();
         }
@@ -168,8 +241,8 @@ export class MissionOverviewComponent implements OnInit {
   }
 
   getMonthDays(): number {
-    const year = new Date().getFullYear();
-    const month = new Date().getMonth();
+    const year = new Date(this.currentTime).getFullYear();
+    const month = new Date(this.currentTime).getMonth();
     return new Date(year, month, 0).getDate();
   }
 
@@ -177,21 +250,21 @@ export class MissionOverviewComponent implements OnInit {
     let startTime;
     let endTime;
     let jobPeriod;
-    endTime = new Date().getTime();
+    endTime = this.currentTime;
     switch (this.cardInfo.selectTime) {
       case 0:
         jobPeriod = 'all';
         break;
       case 3:
-        startTime = new Date().getTime() - 24 * 3600 * 1000;
+        startTime = this.currentTime - 24 * 3600 * 1000;
         jobPeriod = 'lastDay';
         break;
       case 4:
-        startTime = new Date().getTime() - 7 * 24 * 3600 * 1000;
+        startTime = this.currentTime - 7 * 24 * 3600 * 1000;
         jobPeriod = 'lastWeek';
         break;
       case 5:
-        startTime = this.getMonthDays() * 24 * 3600 * 1000;
+        startTime = this.currentTime - this.getMonthDays() * 24 * 3600 * 1000;
         jobPeriod = 'lastMonth';
         break;
     }
@@ -214,13 +287,18 @@ export class MissionOverviewComponent implements OnInit {
       (res.dispatch_failed || 0);
     this.jobItem[DataMap.Job_status.aborted.value] =
       res.aborted + (res.cancelled || 0);
-    this.jobItem[DataMap.Job_status.pending.value] = res.pending;
+    this.jobItem[DataMap.Job_status.pending.value] =
+      res.pending + (res.redispatch || 0) + (res.dispatching || 0);
     this.jobItem.totalItem = res.total;
   }
 
   initAsyncData() {
     return new Promise(resolve => {
-      if (this.isMultiCluster) {
+      // clusterOption为任务卡片的集群节点，其中'所有集群'的value = -1，此时需要走multi接口
+      if (
+        isNil(this.cardInfo.selectcluster) ||
+        this.cardInfo.selectcluster === -1
+      ) {
         const multiParams = {
           akLoading: false,
           jobPeriod: this.getTimeRange().jobPeriod
@@ -232,10 +310,29 @@ export class MissionOverviewComponent implements OnInit {
             resolve(true);
           });
       } else {
+        // 如果切换到具体的集群，就需要根据选中的集群id和type做转发
+        const clusterObj = this.getAllCusterShow();
         let { startTime, endTime } = this.getTimeRange();
         let params: any = {
-          akLoading: false
+          akLoading: false,
+          clustersType: toString(this.cardInfo.selectcluster === 1 ? 1 : 2),
+          clustersId: toString(this.cardInfo.selectcluster)
         };
+        /*
+         * clusterObj有三种情况
+         * clusterObj = null || icon = all-cluster 此时为所有集群，任务总览需要根据选中的节点走转发
+         * clusterObj.clusterType = 1 此时为本地集群，任务总览需要根据选中的节点走转发
+         * clusterObj.clusterType = 2 此时为外部集群，这时任务总览的节点clusterOptions的id和type都为1，所以不能用这个值下发。
+         * 应该使用interceptor的默认id和type下发
+         * */
+        if (
+          clusterObj?.clusterType === DataMap.Cluster_Type.target.value ||
+          this.appUtilsService.isDistributed ||
+          this.appUtilsService.isDecouple
+        ) {
+          delete params.clustersType;
+          delete params.clustersId;
+        }
         if (startTime) {
           params.startTime = startTime;
           params.endTime = endTime;
@@ -301,6 +398,10 @@ export class MissionOverviewComponent implements OnInit {
 
   getBackingUpNum() {
     return new Promise(resolve => {
+      let {
+        startTime: fromStartTime,
+        endTime: toStartTime
+      } = this.getTimeRange();
       this.jobAPIService
         .queryJobsUsingGET({
           akLoading: false,
@@ -313,7 +414,9 @@ export class MissionOverviewComponent implements OnInit {
             this.jobStatus.aborting.value,
             this.jobStatus.dispatching.value,
             this.jobStatus.redispatch.value
-          ]
+          ],
+          fromStartTime,
+          toStartTime
         })
         .subscribe(res => {
           this.backingUpNum = res.totalCount || 0;
@@ -323,6 +426,10 @@ export class MissionOverviewComponent implements OnInit {
   }
   getDuplicateNum() {
     return new Promise(resolve => {
+      let {
+        startTime: fromStartTime,
+        endTime: toStartTime
+      } = this.getTimeRange();
       this.jobAPIService
         .queryJobsUsingGET({
           akLoading: false,
@@ -335,7 +442,9 @@ export class MissionOverviewComponent implements OnInit {
             this.jobStatus.aborting.value,
             this.jobStatus.dispatching.value,
             this.jobStatus.redispatch.value
-          ]
+          ],
+          fromStartTime,
+          toStartTime
         })
         .subscribe(res => {
           this.duplicateNum = res.totalCount || 0;
@@ -345,6 +454,10 @@ export class MissionOverviewComponent implements OnInit {
   }
   getArchivingNum() {
     return new Promise(resolve => {
+      let {
+        startTime: fromStartTime,
+        endTime: toStartTime
+      } = this.getTimeRange();
       this.jobAPIService
         .queryJobsUsingGET({
           akLoading: false,
@@ -357,7 +470,9 @@ export class MissionOverviewComponent implements OnInit {
             this.jobStatus.aborting.value,
             this.jobStatus.dispatching.value,
             this.jobStatus.redispatch.value
-          ]
+          ],
+          fromStartTime,
+          toStartTime
         })
         .subscribe(res => {
           this.archivingNum = res.totalCount || 0;
@@ -388,6 +503,8 @@ export class MissionOverviewComponent implements OnInit {
         })
         .subscribe(res => {
           this.backingUpAbnormalNum = res.totalCount || 0;
+          this.taskJobType.backup.status =
+            this.backingUpAbnormalNum > 0 ? this.abnormalStatus : null;
           resolve(true);
         });
     });
@@ -414,6 +531,8 @@ export class MissionOverviewComponent implements OnInit {
         })
         .subscribe(res => {
           this.duplicateAbnormalNum = res.totalCount || 0;
+          this.taskJobType.duplicate.status =
+            this.duplicateAbnormalNum > 0 ? this.abnormalStatus : null;
           resolve(true);
         });
     });
@@ -440,18 +559,28 @@ export class MissionOverviewComponent implements OnInit {
         })
         .subscribe(res => {
           this.archivingAbnormalNum = res.totalCount || 0;
+          this.taskJobType.archive.status =
+            this.archivingAbnormalNum > 0 ? this.abnormalStatus : null;
           resolve(true);
         });
     });
   }
 
   navigate(params = {}) {
-    this.router.navigate([RouterUrl.InsightJobs], {
-      queryParams: {
-        ...params,
-        cluster: this.cardInfo.selectcluster,
-        time: this.cardInfo.selectTime
-      }
+    if (params['isProEnvir'] && !this.backingUpNum) return;
+    let {
+      startTime: fromStartTime,
+      endTime: toStartTime
+    } = this.getTimeRange();
+    assign(params, {
+      fromStartTime,
+      toStartTime
     });
+    this.appUtilsService.setCacheValue('homeToJob', params);
+    this.globalService.emitStore({
+      action: 'homeToJob',
+      state: true
+    });
+    this.router.navigateByUrl(RouterUrl.InsightJobs);
   }
 }

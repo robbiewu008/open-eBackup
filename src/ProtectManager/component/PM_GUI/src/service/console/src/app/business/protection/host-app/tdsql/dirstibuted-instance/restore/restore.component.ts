@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
@@ -67,7 +67,7 @@ export class RestoreComponent implements OnInit {
   originalMachineOptions = [];
   originalDataNodes;
   proxyOptions = []; // 代理主机
-  cacheProxyOptions; // 代理主机选线的备份；
+  cacheProxyOptions = []; // 代理主机选线的备份；
   originalEnvId;
   originalDRNode;
   constructor(
@@ -129,15 +129,6 @@ export class RestoreComponent implements OnInit {
       this.rowCopy?.resource_status === DataMap.Resource_Status.notExist.value
     ) {
       this.formGroup.get('restoreLocation').setValue(RestoreV2LocationType.NEW);
-    }
-    if (
-      this.formGroup.get('restoreLocation').value ===
-      RestoreV2LocationType.ORIGIN
-    ) {
-      this.getMachineAndHostById(
-        this.originalEnvId,
-        RestoreV2LocationType.ORIGIN
-      );
     }
   }
 
@@ -356,6 +347,15 @@ export class RestoreComponent implements OnInit {
         });
         this.proxyOptions = [...hostArray];
         this.cacheProxyOptions = [...hostArray];
+        if (
+          this.formGroup.get('restoreLocation').value ===
+          RestoreV2LocationType.ORIGIN
+        ) {
+          this.getMachineAndHostById(
+            this.originalEnvId,
+            RestoreV2LocationType.ORIGIN
+          );
+        }
       }
     );
   }

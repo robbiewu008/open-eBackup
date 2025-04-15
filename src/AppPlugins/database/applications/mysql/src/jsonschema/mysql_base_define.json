@@ -603,6 +603,13 @@
         ],
         "pattern": "^[a-zA-Z_0-9-]{0,254}$"
       },
+      "force_optimize": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^[a-zA-Z_0-9-]{0,254}$"
+      },
       "first_backup_esn": {
         "type": "string",
         "pattern": "^[a-zA-Z_0-9-]{0,254}$"

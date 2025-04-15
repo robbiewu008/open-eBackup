@@ -26,4 +26,9 @@ public class StatefulsetConstants {
      *  Statefulset: dataenableengine-server
      */
     public static final String DATAENABLEENGINE = "dataenableengine-server";
+
+    /**
+     *  Statefulset: dataenableengine-server
+     */
+    public static final String PMSYSTEMBASE = "protectmanager-system-base";
 }

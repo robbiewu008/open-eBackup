@@ -23,7 +23,11 @@
             </lv-form-control>
         </lv-form-item>
         <lv-form-item>
-            <lv-form-label lvRequired>{{'protection_restore_target_label' | i18n}}</lv-form-label>
+            <lv-form-label lvRequired>
+                {{'protection_restore_target_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_fc_disk_restore_tip_label' | i18n}}"
+                    lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+            </lv-form-label>
             <lv-form-control>
                 <lv-group lvRowGutter="8px" [lvColumns]='["auto", "100px"]'>
                     <input [ngModel]="inputTarget" lv-input readOnly
@@ -35,6 +39,9 @@
             </lv-form-control>
         </lv-form-item>
     </lv-form>
+    <lv-alert lvType="warning" lvClosable="false" *ngIf="!isOriginPosition && !_isEmpty(bootOptionsWarnTip)">
+        <span>{{bootOptionsWarnTip}}</span>
+    </lv-alert>
     <lv-group class="grid-position">
         <div class="file-level-restore-tree hcs-restore-list-tree margin-space restore-lv-paginator-simple">
             <ng-container *ngTemplateOutlet="allFileData">

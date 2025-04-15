@@ -12,6 +12,7 @@
 */
 package openbackup.gaussdbdws.protection.access.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
@@ -21,8 +22,6 @@ import openbackup.gaussdbdws.protection.access.constant.DwsConstant;
 import openbackup.gaussdbdws.protection.access.service.GaussDBBaseService;
 import openbackup.gaussdbdws.protection.access.util.DwsValidator;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -101,5 +100,10 @@ public class GaussDBDWSSchemaResourceProvider extends DatabaseResourceProvider {
         ResourceFeature resourceFeature = super.getResourceFeature();
         resourceFeature.setSupportedLanFree(false);
         return resourceFeature;
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        return true;
     }
 }

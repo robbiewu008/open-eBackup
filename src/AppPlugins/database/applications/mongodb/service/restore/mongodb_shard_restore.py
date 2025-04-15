@@ -15,7 +15,8 @@ import os
 
 from common.util.exec_utils import su_exec_rm_cmd
 from mongodb import LOGGER
-from mongodb.comm.const import ErrorCode, MongoDBCode, MongoSubJob, ParamField, MongoRoles, MongoTool
+from mongodb.comm.const import ErrorCode, MongoDBCode, MongoSubJob, ParamField, MongoRoles, MongoTool, MongoRolesStatus
+from mongodb.comm.mongo_executor import compare_version, get_mongodb_version
 from mongodb.comm.utils import sort_nodes, get_mkdir_user
 from mongodb.service.restore.mongodb_single_restore import MetaRestore
 
@@ -179,18 +180,19 @@ class ShardRestore(MetaRestore):
             return ret, ret_msg
         origin_path = node.get("dataPath")
         lock_file = os.path.join(origin_path, "mongod.lock")
-        # 启动单实例对象信息;
-        ret, ret_msg = self.start_up_instance_for_args(node=node, lock_file=lock_file, args=args)
-        if not ret:
-            return ErrorCode.INSTANCE_START_ERROR.value, ret_msg
-        # 删除local数据库信息
-        ret, ret_msg = self.snapshot_restore.drop_local_database_update_info(node=node, relative_path=relative_path)
-        if ret:
-            return ErrorCode.CLUSTER_INITIATE_ERROR.value, ret_msg
-        # 重新启动数据库信息
-        body_err_code, msg = self.snapshot_restore.delete_mongod_lock_file(node)
-        if body_err_code:
-            return body_err_code, msg
+        if compare_version(get_mongodb_version('')) or str(MongoRolesStatus.PRIMARY.value) == node.get(ParamField.ROLE):
+            # 启动单实例对象信息;
+            ret, ret_msg = self.start_up_instance_for_args(node=node, lock_file=lock_file, args=args)
+            if not ret:
+                return ErrorCode.INSTANCE_START_ERROR.value, ret_msg
+            # 删除local数据库信息
+            ret, ret_msg = self.snapshot_restore.drop_local_database_update_info(node=node, relative_path=relative_path)
+            if ret:
+                return ErrorCode.CLUSTER_INITIATE_ERROR.value, ret_msg
+            # 重新启动数据库信息
+            body_err_code, msg = self.snapshot_restore.delete_mongod_lock_file(node)
+            if body_err_code:
+                return body_err_code, msg
         ret, ret_msg = self.start_up_instance_for_args(node=node, lock_file=lock_file)
 
         cluster_type = node.get("shardClusterType")

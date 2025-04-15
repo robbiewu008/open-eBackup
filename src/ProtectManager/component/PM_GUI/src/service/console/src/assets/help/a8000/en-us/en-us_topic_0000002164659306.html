@@ -1,0 +1,63 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Resource Scan or Backup and Restoration Jobs Fail, and No Error Message Is Displayed">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200060029.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164659306">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Resource Scan or Backup and Restoration Jobs Fail, and No Error Message Is Displayed</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164659306"></a><a name="EN-US_TOPIC_0000002164659306"></a>
+
+<h1 class="topictitle1">Resource Scan or Backup and Restoration Jobs Fail, and No Error Message Is Displayed</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>During resource scan or backup and restoration, only a job failure message is displayed and no other error message is displayed.</p>
+<p></p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Causes</h4><p>When the load of a CNware management node or compute node is heavy or the number of resources is large (depending on the hardware capability of the compute node), the CNware interface responds slowly. As a result, the backup software fails to invoke the interface due to timeout.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Context</h4><p id="EN-US_TOPIC_0000002164659306__en-us_topic_0000002164630552_p1389433101916">The following operations assume that the default installation directory of the client is <strong id="EN-US_TOPIC_0000002164659306__en-us_topic_0000002164630552_b83801030151211">/opt</strong>. Replace it with the actual installation directory of the client.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Use PuTTY or SSH to log in to the host where the CNware VM client resides.</span></li><li><span>Run the following command to check the connectivity between the host where the client is installed and the production environment. In the command, <em>xxx.xxx.xx.xx</em> indicates the IP address of the CNware management node.</span><p><pre class="screen">ping <em>xxx.xxx.xx.xx</em></pre>
+</p></li><li><span>Run the <strong>cat /<em>opt</em>/DataBackup/ProtectClient/ProtectClient-E/log/Plugins/VirtualizationPlugin/VirtualPlugin.log | grep "Http send request failed. Error is28"</strong> command to query failure logs.</span><p><p>If any command output is displayed, go to <a href="#EN-US_TOPIC_0000002164659306__li59871696516">4</a>. Otherwise, contact technical support engineers.</p>
+</p></li><li id="EN-US_TOPIC_0000002164659306__li59871696516"><a name="EN-US_TOPIC_0000002164659306__li59871696516"></a><a name="li59871696516"></a><span>Run the <strong>vi /<em>opt</em>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/conf/hcpconf.ini</strong> command to open the configuration file.</span></li><li><span>Find the value of <strong>ConnectTimeOut</strong> and <strong>TotalTimeOut</strong> under <strong>General</strong> and increase the value of <strong>TotalTimeOut</strong>. <strong>ConnectTimeOut</strong> and <strong>TotalTimeOut</strong> indicate the timeout interval for establishing an interface connection and the total interface timeout duration, respectively.</span><p><div class="note"><img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span><div class="notebody"><p>Generally, you need to only increase the value of <strong>TotalTimeOut</strong>. If the resource scan or backup and restoration jobs fail to be executed after the value of <strong>TotalTimeOut</strong> is increased, increase the value of <strong>ConnectTimeOut</strong> and try again.</p>
+</div></div>
+</p></li><li><span>Run the <strong>sh /</strong><strong><em>opt</em></strong><strong>/DataBackup/ProtectClient/Plugins/VirtualizationPlugin/stop.sh</strong> command to restart the plug-in.</span></li><li><span>Perform resource scan or backup and restoration jobs again.</span></li></ol>
+</div>
+<p></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200060029.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

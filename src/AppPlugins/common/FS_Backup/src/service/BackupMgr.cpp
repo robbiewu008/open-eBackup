@@ -360,7 +360,7 @@ void* CreateAntiBackupInst(BackupConf backupConf)
         backupParams.dstEngine = BackupIOEngine::NFS_ANTI_ANSOMWARE;
         backupHandle = new (nothrow)AntiRansomware(backupParams);
     } else {
-        ERRLOG("Not included Phase.");
+        WARNLOG("Not included Phase.");
     }
 #endif
     return backupHandle;

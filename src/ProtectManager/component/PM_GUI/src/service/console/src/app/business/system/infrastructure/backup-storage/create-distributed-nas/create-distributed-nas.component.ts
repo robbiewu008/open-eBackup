@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
@@ -29,7 +29,8 @@ import {
   DatatableComponent,
   MessageService,
   ModalRef,
-  OptionItem
+  OptionItem,
+  TransferTableComponent
 } from '@iux/live';
 import {
   BaseUtilService,
@@ -110,6 +111,8 @@ export class CreateDistributedNasComponent implements OnInit {
             : DataMap.poolStorageDeviceType.OceanPacific.value)
       );
     });
+
+  maxSelectedUnit = 3968;
 
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip,
@@ -218,6 +221,23 @@ export class CreateDistributedNasComponent implements OnInit {
     });
   }
 
+  getSourceData(cluster) {
+    if (this.rowData && this.isDistributed) {
+      return cluster.filter(item => {
+        return (
+          item.deviceType === this.rowData.deviceType ||
+          (this.rowData.deviceType ===
+            DataMap.poolStorageDeviceType.Server.value &&
+            item.deviceType === 'BasicDisk')
+        );
+      });
+    }
+    return cluster.filter(
+      item =>
+        item.generatedType === DataMap.backupStorageGeneratedType.local.value
+    );
+  }
+
   getCluster(recordsTemp?: any[], startPage?: number) {
     this.storageUnitService
       .queryBackUnitGET({
@@ -241,6 +261,13 @@ export class CreateDistributedNasComponent implements OnInit {
         ) {
           const cluster = [];
           each(recordsTemp, item => {
+            if (
+              item.deviceType ===
+              DataMap.poolStorageDeviceType.OceanProtectX.value
+            ) {
+              item.totalCapacity = item.totalCapacity / 2;
+              item.usedCapacity = item.usedCapacity / 2;
+            }
             cluster.push({
               uuid: item.id,
               threshold: item['availableCapacityRatio'] || 90,
@@ -252,12 +279,7 @@ export class CreateDistributedNasComponent implements OnInit {
           if (this.appUtilsService.isDecouple) {
             this.sourceData = cluster;
           } else {
-            this.sourceData = cluster.filter(item => {
-              return (
-                item.generatedType ===
-                DataMap.backupStorageGeneratedType.local.value
-              );
-            });
+            this.sourceData = this.getSourceData(cluster);
           }
           this.localSourceData = cluster.filter(item => {
             return (
@@ -344,7 +366,6 @@ export class CreateDistributedNasComponent implements OnInit {
         } else {
           this.selection = [...this.targetData];
         }
-        this.selection.forEach(item => this.checkChange(true, item));
 
         this.cdr.detectChanges();
       });
@@ -378,7 +399,7 @@ export class CreateDistributedNasComponent implements OnInit {
         validators: [
           this.baseUtilService.VALID.required(),
           this.baseUtilService.VALID.minLength(1),
-          this.baseUtilService.VALID.maxLength(32)
+          this.baseUtilService.VALID.maxLength(this.maxSelectedUnit)
         ]
       }),
       localSelected: new FormControl([]),
@@ -387,7 +408,7 @@ export class CreateDistributedNasComponent implements OnInit {
     });
 
     this.formGroup.valueChanges.subscribe(res => {
-      if (this.formGroup.value.selected.length > 32) {
+      if (this.formGroup.value.selected.length > this.maxSelectedUnit) {
         this.messageService.error(
           this.i18n.get('protection_distributed_nas_limit_label'),
           {
@@ -421,11 +442,13 @@ export class CreateDistributedNasComponent implements OnInit {
               .setValidators([
                 this.baseUtilService.VALID.required(),
                 this.validLocalSelection(),
-                this.baseUtilService.VALID.maxLength(32)
+                this.baseUtilService.VALID.maxLength(this.maxSelectedUnit)
               ]);
             this.formGroup
               .get('nonLocalSelected')
-              .setValidators([this.baseUtilService.VALID.maxLength(32)]);
+              .setValidators([
+                this.baseUtilService.VALID.maxLength(this.maxSelectedUnit)
+              ]);
             this.formGroup.get('selected').clearValidators();
           } else {
             this.formGroup
@@ -433,7 +456,7 @@ export class CreateDistributedNasComponent implements OnInit {
               .setValidators([
                 this.baseUtilService.VALID.required(),
                 this.baseUtilService.VALID.minLength(1),
-                this.baseUtilService.VALID.maxLength(32)
+                this.baseUtilService.VALID.maxLength(this.maxSelectedUnit)
               ]);
             this.formGroup.get('localSelected').clearValidators();
             this.formGroup.get('nonLocalSelected').clearValidators();
@@ -458,10 +481,7 @@ export class CreateDistributedNasComponent implements OnInit {
               item.deviceType === 'BasicDisk')
         );
         this.selection = [];
-        this.targetData = [];
-        each(this.sourceData, item => {
-          item.disabled = false;
-        });
+        this.changeTransferData(this.selection);
       });
     } else {
       this.formGroup.get('deviceType').clearValidators();
@@ -509,13 +529,23 @@ export class CreateDistributedNasComponent implements OnInit {
   }
 
   selectionChange(selection) {
+    this.selection = selection;
     this.changeTransferData(selection);
   }
 
-  removeAll() {
+  removeAll(data, panel: TransferTableComponent) {
     this.selection = [];
+    const currentData =
+      this.formGroup.value.hasEnableParallelStorage &&
+      !this.appUtilsService.isDecouple
+        ? [...this.localSourceData, ...this.nonLocalSourceData]
+        : this.sourceData;
+    each(currentData, item => {
+      item.disabled = false;
+    });
     this.changeTransferData(this.selection);
   }
+
   changeTransferData(selectedData) {
     if (
       this.formGroup.value.hasEnableParallelStorage &&
@@ -539,25 +569,12 @@ export class CreateDistributedNasComponent implements OnInit {
     }
   }
 
-  checkChange(event, checkItem) {
-    const currentData =
-      this.formGroup.value.hasEnableParallelStorage &&
-      !this.appUtilsService.isDecouple
-        ? [...this.localSourceData, ...this.nonLocalSourceData]
-        : this.sourceData;
-    each(currentData, item => {
-      if (item.deviceId === checkItem.deviceId && item.id !== checkItem.id) {
-        item.disabled = !!event;
-      }
-    });
-  }
-
   getParms() {
     const content = this.SetStoragePolicyComponent;
     const hasEnable = this.formGroup.get('hasEnableParallelStorage').value;
     let clusterIdList = [];
     if (!hasEnable) {
-      clusterIdList = map(content.tableData, (item, index) => {
+      clusterIdList = map(this.selection, (item, index) => {
         if (content.timeForm.value.storageStrategyType !== 4) {
           return {
             unitId: item.id,
@@ -572,8 +589,7 @@ export class CreateDistributedNasComponent implements OnInit {
         }
       });
     } else {
-      const data = [...this.localTargetData];
-      clusterIdList = map(data, item => {
+      clusterIdList = map(this.selection, item => {
         return {
           unitId: item.id,
           availableCapacityRatio: item.threshold
@@ -608,16 +624,16 @@ export class CreateDistributedNasComponent implements OnInit {
           id: this.rowData.uuid,
           UpdateClusterRepositoryRequestBody: params as any
         })
-        .subscribe(
-          res => {
+        .subscribe({
+          next: res => {
             observer.next();
             observer.complete();
           },
-          err => {
+          error: err => {
             observer.error(err);
             observer.complete();
           }
-        );
+        });
     });
   }
 
@@ -628,16 +644,16 @@ export class CreateDistributedNasComponent implements OnInit {
         .CreateNasDistributionStorage({
           CreateNasDistributionStorageRequestBody: params as any
         })
-        .subscribe(
-          res => {
+        .subscribe({
+          next: res => {
             observer.next();
             observer.complete();
           },
-          err => {
+          error: err => {
             observer.error(err);
             observer.complete();
           }
-        );
+        });
     });
   }
 }

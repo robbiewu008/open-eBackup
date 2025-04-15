@@ -28,24 +28,21 @@
                     {{'common_add_label'|i18n}}
                 </button>
             </lv-group>
-            <lv-group *ngIf="!externalOption?.length" style="margin-top:4px">
+            <lv-group *ngIf="!externalOption?.length && isHcsCrossCloud" style="margin-top:4px">
                 <lv-alert lvType="warning">{{'explore_op_cross_cloud_copy_tip_label' | i18n}}</lv-alert>
             </lv-group>
         </lv-form-control>
     </lv-form-item>
-    <ng-container *ngIf="!isHcsUser">
+    <ng-container *ngIf="!isHcsUser || isHcsCrossCloud">
         <lv-form-item>
             <!-- 指定用户-->
             <lv-form-label lvRequired>
                 {{ 'protection_specify_user_label' | i18n }}
             </lv-form-label>
             <lv-form-control>
-                <lv-select
-                    [lvOptions]="specifyUserOptionsMap[formGroup.value.external_system_id] || []"
-                    formControlName="specifyUser"
-                    lvValueKey="value"
-                    class="retention-input"
-                ></lv-select>
+                <lv-select [lvOptions]="specifyUserOptionsMap[formGroup.value.external_system_id] || []"
+                    formControlName="specifyUser" lvValueKey="value" lvShowFilter lvFilterKey="label"
+                    lvFilterMode="contains" class="retention-input"></lv-select>
             </lv-form-control>
         </lv-form-item>
         <!-- 认证密码-->
@@ -55,15 +52,9 @@
             </lv-form-label>
             <lv-form-control>
                 <lv-group lvGutter="6px">
-                    <aui-inupt-with-eye
-                            formControlName="authPassword"
-                            class="retention-input"
-                    ></aui-inupt-with-eye>
-                    <button
-                        lv-button
-                        [disabled]="!formGroup.value.specifyUser || !formGroup.value.authPassword"
-                        (click)="authPassword()"
-                    >
+                    <aui-inupt-with-eye formControlName="authPassword" class="retention-input"></aui-inupt-with-eye>
+                    <button lv-button [disabled]="!formGroup.value.specifyUser || !formGroup.value.authPassword"
+                        (click)="authPassword()">
                         {{ 'common_auth_label' | i18n }}
                     </button>
                 </lv-group>
@@ -76,48 +67,26 @@
             </lv-form-label>
             <lv-form-control>
                 <lv-group lvGutter="6px">
-                    <lv-select
-                            [lvOptions]="backupStorageTypes()"
-                            formControlName="replication_storage_type"
-                            lvValueKey="value"
-                            [ngClass]="{
+                    <lv-select [lvOptions]="backupStorageTypes()" formControlName="replication_storage_type"
+                        lvValueKey="value" [ngClass]="{
                       'storage-type': !i18n.isEn,
                       'storage-type-en': i18n.isEn
-                    }"
-                            [lvDisabled]="!isAuth"
-                    ></lv-select>
+                    }" [lvDisabled]="!isAuth"></lv-select>
                     <!--指定备份存储单元组-->
-                    <lv-select
-                            *ngIf="
+                    <lv-select *ngIf="
                       formGroup.value.replication_storage_type ===
                       dataMap.backupStorageTypeSla.group.value
-                    "
-                            [lvOptions]="externalStorageMap[formGroup.value.specifyUser] || []"
-                            formControlName="external_group_storage_id"
-                            lvValueKey="value"
-                            class="storage-value"
-                            lvShowFilter
-                            lvFilterKey="label"
-                            lvFilterMode="contains"
-                            lvShowClear
-                            [lvDisabled]="!isAuth"
-                    ></lv-select>
+                    " [lvOptions]="externalStorageMap[formGroup.value.specifyUser] || []"
+                        formControlName="external_group_storage_id" lvValueKey="value" class="storage-value"
+                        lvShowFilter lvFilterKey="label" lvFilterMode="contains" lvShowClear
+                        [lvDisabled]="!isAuth"></lv-select>
                     <!--指定备份存储单元-->
-                    <lv-select
-                            *ngIf="
+                    <lv-select *ngIf="
                       formGroup.value.replication_storage_type ===
                       dataMap.backupStorageTypeSla.unit.value
-                    "
-                            [lvOptions]="externalStorageUnitMap[formGroup.value.specifyUser] || []"
-                            formControlName="replication_storage_id"
-                            lvValueKey="value"
-                            class="storage-value"
-                            lvShowFilter
-                            lvFilterKey="label"
-                            lvFilterMode="contains"
-                            lvShowClear
-                            [lvDisabled]="!isAuth"
-                    ></lv-select>
+                    " [lvOptions]="externalStorageUnitMap[formGroup.value.specifyUser] || []"
+                        formControlName="replication_storage_id" lvValueKey="value" class="storage-value" lvShowFilter
+                        lvFilterKey="label" lvFilterMode="contains" lvShowClear [lvDisabled]="!isAuth"></lv-select>
                 </lv-group>
             </lv-form-control>
         </lv-form-item>
@@ -139,7 +108,7 @@
             <lv-form-column>
                 <lv-form-control [lvErrorTip]="retentionDurationErrorTip">
                     <input lv-input type="text" formControlName="retention_duration" class="retention-input"
-                        placeholder="{{formGroup.get('duration_unit').value=='d'?'1~365':formGroup.get('duration_unit').value=='w'?'1~54':formGroup.get('duration_unit').value=='MO'?'1~24':formGroup.get('duration_unit').value=='p'?'':'1~10'}}" />
+                        [placeholder]="formGroup.get('duration_unit').value !== 'p'? '1~'+repUnitMap[formGroup.value.duration_unit]:''" />
                 </lv-form-control>
             </lv-form-column>
             <lv-form-column>
@@ -152,14 +121,16 @@
         </lv-form-control>
     </lv-form-item>
     <!-- 数据重删、数据压缩 -->
-    <lv-form-item>
-        <lv-form-label>{{'protection_data_redelete_label' | i18n}}</lv-form-label>
+    <lv-form-item *ngIf="!isDistributed">
+        <lv-form-label>{{'protection_link_redelete_label'
+            | i18n}}</lv-form-label>
         <lv-form-control>
             <lv-switch formControlName="link_deduplication"></lv-switch>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item>
-        <lv-form-label>{{'system_data_compression_label' | i18n}}</lv-form-label>
+        <lv-form-label>{{'system_link_compression_label'
+            | i18n}}</lv-form-label>
         <lv-form-control>
             <lv-switch formControlName="link_compression"></lv-switch>
         </lv-form-control>

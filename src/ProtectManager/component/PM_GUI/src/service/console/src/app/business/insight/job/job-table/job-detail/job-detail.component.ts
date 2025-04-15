@@ -1,18 +1,20 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageService } from '@iux/live';
 import {
   CookieService,
   DataMap,
@@ -26,6 +28,7 @@ import {
   RouterUrl,
   SchedulePolicy,
   SLA_BACKUP_NAME,
+  SYSTEM_TIME,
   TaskService
 } from 'app/shared';
 import {
@@ -50,11 +53,13 @@ import {
   isEmpty,
   isUndefined,
   map as _map,
+  padEnd,
   split,
+  toNumber,
   union,
   values
 } from 'lodash';
-import { combineLatest, Subject, Subscription, timer } from 'rxjs';
+import { Subject, Subscription, timer } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { FeedbackResultComponent } from './feedback-result.component';
 import { JobEventComponent } from './job-event/job-event.component';
@@ -70,9 +75,8 @@ import { ReportResultComponent } from './report-result/report-result.component';
 export class JobDetailComponent implements OnInit, OnDestroy {
   time = ['1'];
   job;
-  sysTime;
   dataMap = DataMap;
-  timeZone = 'UTC+08:00';
+  timeZone = SYSTEM_TIME.timeZone;
   jobForms = {};
   extendObject: any = {};
   triggerPolicy: any = {};
@@ -218,9 +222,11 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     public globalService: GlobalService,
     private i18n: I18NService,
     private datePipe: DatePipe,
+    private clipboard: Clipboard,
     private cookieService: CookieService,
     private dataMapService: DataMapService,
     private jobApiService: JobAPIService,
+    private messageService: MessageService,
     private systemTimeService: SystemTimeService,
     private drawModalService: DrawModalService,
     private taskService: TaskService,
@@ -276,13 +282,26 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     }
     if (
       this.job.type === DataMap.Job_type.live_mount_job.value &&
-      this.isOceanProtect
+      this.isOceanProtect &&
+      !this.job?.exerciseId
     ) {
       this.updateMountName();
     }
     this.snapshotRestore =
       this.isCyberEngine &&
       this.job.type === DataMap.Job_type.live_mount_job.value;
+  }
+
+  setSlaApplication(res) {
+    if (
+      !isUndefined(this.jobStrategyComponent) &&
+      this.jobStrategyComponent.sla &&
+      this.jobStrategyComponent.sla.application !== res.application
+    ) {
+      this.jobStrategyComponent.sla = assign(this.jobStrategyComponent.sla, {
+        application: res.application
+      });
+    }
   }
 
   updateSla() {
@@ -299,8 +318,8 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         slaId: sla.slaId,
         akDoException: false
       })
-      .subscribe(
-        res => {
+      .subscribe({
+        next: res => {
           if (!res) {
             this.jumpDisable = true;
             if (!isUndefined(this.jobStrategyComponent)) {
@@ -313,15 +332,18 @@ export class JobDetailComponent implements OnInit, OnDestroy {
               this.jobStrategyComponent.slaName = this.newName;
               this.jobStrategyComponent.slaUpdated = true;
             }
+            this.setSlaApplication(res);
+          } else {
+            this.setSlaApplication(res);
           }
         },
-        err => {
+        error: err => {
           this.jumpDisable = true;
           if (!isUndefined(this.jobStrategyComponent)) {
             this.jobStrategyComponent.isExist = false;
           }
         }
-      );
+      });
   }
 
   updateMountName() {
@@ -334,17 +356,17 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         policyId: mount.policyId,
         akDoException: false
       })
-      .subscribe(
-        res => {
+      .subscribe({
+        next: res => {
           if (res.name !== mount.name) {
             this.newName = res.name;
             this.infoUpdated = true;
           }
         },
-        error => {
+        error: error => {
           this.jumpDisable = true;
         }
-      );
+      });
   }
 
   getJob() {
@@ -354,30 +376,23 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     this.jobSubscription$ = timer(0, 5 * 1e3)
       .pipe(
         switchMap(index => {
-          return combineLatest([
-            this.systemTimeService.getSystemTime(!index),
-            this.jobApiService
-              .queryJobsUsingGET({
-                jobId: this.job?.jobId,
-                akLoading: !index
+          return this.jobApiService
+            .queryJobsUsingGET({
+              jobId: this.job?.jobId,
+              akLoading: !index
+            })
+            .pipe(
+              map(res => {
+                return first(res.records);
               })
-              .pipe(
-                map(res => {
-                  return first(res.records);
-                })
-              )
-          ]);
+            );
         }),
         takeUntil(this.jobDestroy$)
       )
       .subscribe(result => {
-        this.timeZone = result[0].displayName;
-        this.sysTime = new Date(
-          `${result[0].time.replace(/-/g, '/')} ${result[0].displayName}`
-        ).getTime();
         this.job = {
           ...cloneDeep(this.job),
-          ...result[1]
+          ...result
         };
         if (
           this.job.sourceSubType ===
@@ -503,24 +518,26 @@ export class JobDetailComponent implements OnInit, OnDestroy {
       case 'backupType':
         value = this.i18n.get(SLA_BACKUP_NAME[backupType]);
         if (
-          [
-            DataMap.Resource_Type.FusionCompute.value,
-            DataMap.Resource_Type.fusionOne.value,
-            DataMap.Resource_Type.HCSCloudHost.value,
-            DataMap.Resource_Type.openStackCloudServer.value,
-            DataMap.Resource_Type.tdsqlInstance.value
-          ].includes(this.sourceSubType)
-        ) {
-          if (backupType === 'difference_increment') {
-            value = this.i18n.get('protection_incremental_forever_full_label');
-          }
-        }
-        if (
           includes(
             [
               DataMap.Resource_Type.virtualMachine.value,
               DataMap.Resource_Type.clusterComputeResource.value,
-              DataMap.Resource_Type.hostSystem.value
+              DataMap.Resource_Type.hostSystem.value,
+              DataMap.Resource_Type.APSCloudServer.value,
+              DataMap.Resource_Type.APSResourceSet.value,
+              DataMap.Resource_Type.APSZone.value,
+              DataMap.Resource_Type.FusionCompute.value,
+              DataMap.Resource_Type.fusionOne.value,
+              DataMap.Resource_Type.HCSCloudHost.value,
+              DataMap.Resource_Type.openStackCloudServer.value,
+              DataMap.Resource_Type.tdsqlInstance.value,
+              DataMap.Resource_Type.hyperVVm.value,
+              DataMap.Resource_Type.cNwareVm.value,
+              DataMap.Resource_Type.nutanixVm.value,
+              DataMap.Resource_Type.KubernetesStatefulset.value,
+              DataMap.Resource_Type.KubernetesNamespace.value,
+              DataMap.Resource_Type.kubernetesNamespaceCommon.value,
+              DataMap.Resource_Type.kubernetesDatasetCommon.value
             ],
             this.sourceSubType
           ) &&
@@ -551,6 +568,7 @@ export class JobDetailComponent implements OnInit, OnDestroy {
 
         break;
       case 'durationTime':
+        const systemTime = this.appUtilsService.getCurrentSysTime();
         value = this.job.getDuration(
           includes(
             [
@@ -561,9 +579,9 @@ export class JobDetailComponent implements OnInit, OnDestroy {
             ],
             this.job.status
           )
-            ? this.sysTime - this.job.startTime < 0
+            ? systemTime - this.job.startTime < 0
               ? 0
-              : this.sysTime - this.job.startTime
+              : systemTime - this.job.startTime
             : this.job.endTime
             ? this.job.endTime - this.job.startTime
             : 0
@@ -613,7 +631,12 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         value = this.triggerPolicy.interval;
         break;
       case 'copyType':
-        value = this.extendObject?.backupType;
+        // 老版本为backupType
+        value =
+          this.extendObject?.sourceCopyType ?? this.extendObject.backupType;
+        break;
+      case 'restoreTimestamp':
+        value = this.job.restoreTimestamp;
         break;
       default:
         break;
@@ -719,7 +742,9 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         break;
       case DataMap.Job_type.live_mount_job.value:
         right =
-          this.isOceanProtect && !isEmpty(this.extendObject)
+          this.isOceanProtect &&
+          !isEmpty(this.extendObject) &&
+          !this.job?.exerciseId
             ? [
                 'targetLocation',
                 'mountName',
@@ -734,6 +759,7 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         break;
       case DataMap.Job_type.restore_job.value:
         right = ['targetLocation', 'speed'];
+        this.getRestoreTimestamp(right); // 日志恢复选中的时间点
         break;
       case DataMap.Job_type.copy_data_job.value:
         right = [
@@ -761,6 +787,10 @@ export class JobDetailComponent implements OnInit, OnDestroy {
         break;
       default:
         break;
+    }
+
+    if (this.job?.exerciseId) {
+      right = [...right, ...['exerciseName', 'exercisePeriod']];
     }
 
     if (
@@ -795,6 +825,8 @@ export class JobDetailComponent implements OnInit, OnDestroy {
           ? ['sourceName', 'sourceSubType', 'sourceLocation', 'copyType']
           : keys;
         break;
+      case DataMap.Job_type.updateBackupServiceIp.value:
+        keys = ['sourceName', 'sourceSubType'];
       default:
         break;
     }
@@ -887,6 +919,13 @@ export class JobDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  copyJobId(value) {
+    this.clipboard.copy(value);
+    this.messageService.success(this.i18n.get('common_copy_success_label'), {
+      lvShowCloseButton: true
+    });
+  }
+
   getSlaDetail() {
     // 跳转到sla并带筛选
     if (this.jumpDisable) {
@@ -921,5 +960,26 @@ export class JobDetailComponent implements OnInit, OnDestroy {
   getExerciseDetail() {
     this.appUtilsService.setCacheValue('jobToExercise', this.job?.exerciseId);
     this.router.navigateByUrl(RouterUrl.ExploreRecoveryDrill);
+  }
+
+  getRestoreTimestamp(rightCols: string[]) {
+    if (
+      !isEmpty(this.extendObject) &&
+      !isEmpty(this.extendObject?.jobConfig?.restoreTimestamp)
+    ) {
+      let restoreTimestampStr: string = this.extendObject?.jobConfig
+        .restoreTimestamp;
+      const length = restoreTimestampStr.length;
+      if (length > 13) {
+        restoreTimestampStr = restoreTimestampStr.slice(0, 13);
+      } else if (length < 13) {
+        restoreTimestampStr = padEnd(restoreTimestampStr, 13, '0');
+      }
+      const restoreTimestamp: number = toNumber(restoreTimestampStr);
+      if (!isNaN(restoreTimestamp)) {
+        rightCols.push('restoreTimestamp');
+        this.job.restoreTimestamp = restoreTimestamp;
+      }
+    }
   }
 }

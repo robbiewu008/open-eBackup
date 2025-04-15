@@ -1,4 +1,5 @@
 @echo off
+:: 
 ::  This file is a part of the open-eBackup project.
 ::  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
 ::  If a copy of the MPL was not distributed with this file, You can obtain one at
@@ -9,6 +10,7 @@
 ::  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
 ::  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 ::  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+::
 rem ########################################################################
 rem #
 rem #  %~1:modify type
@@ -26,7 +28,11 @@ set CURRENT_PATH=%~dp0
 set AGENT_PACKAGE_PATH=%CURRENT_PATH%\ProtectClient-e\
 set AGENT_NEWPKG_TMP_PATH=%AGENT_PACKAGE_PATH%\ProtectClient-E
 set LOGFILE_PATH=%CURRENT_PATH%\modify.log
+set WIN_SYSTEM_DISK=%WINDIR:~0,1%
 set DEFAULT_INSTALL_PATH=C:
+if not "%WIN_SYSTEM_DISK%" == "" (
+    set DEFAULT_INSTALL_PATH=%WIN_SYSTEM_DISK%:
+)
 set DATA_BACKUP_AGENT_HOME_VAR=
 for /f "tokens=2 delims==" %%a in ('wmic environment where "name='DATA_BACKUP_AGENT_HOME' and username='<system>'" get VariableValue /value') do (
     if not "%%a" == "" (
@@ -45,6 +51,9 @@ set NEW_INSTALL_PATH=%DATA_BACKUP_AGENT_HOME_VAR%\DataBackup\ProtectClient
 set AGENT_PUSHMODIFY_PACKAGE_PATH=%DATA_BACKUP_AGENT_HOME_VAR%\DataBackup\PushModify\
 set LOG_ERR_FILE=%NEW_INSTALL_PATH%\ProtectClient-E\tmp\errormsg.log
 set PLUGINS_DOMAIN_PATH=C:\Windows\System32\drivers\etc\hosts
+if not "%WIN_SYSTEM_DISK%" == "" (
+    set PLUGINS_DOMAIN_PATH=%WIN_SYSTEM_DISK%:\Windows\System32\drivers\etc\hosts
+)
 set BACKUP_PLUGIN_PATH=%DATA_BACKUP_AGENT_HOME_VAR%\DataBackup\BackupPlugin
 
 set MODIFY_TYPE=%~1
@@ -191,6 +200,9 @@ if NOT %errorlevel% EQU 0 (
         exit /b 2
     )
 )
+
+call :RepalceBackupConf
+
 echo "step8: succ"
 
 echo "step9: install new plugins"
@@ -406,6 +418,32 @@ goto :EOF
         call :Log "Copy modify.log failed."
         echo "Collect modify.log failed"
     )
+goto :EOF
+
+:RepalceBackupConf
+    echo Begin to replace the backup DataBackup ProtectAgent Plugin conf.
+    call :Log "Modify: Begin to replace the backup DataBackup ProtectAgent Plugin conf."
+    set tmpPath=!cd!
+    cd !BACKUP_PLUGIN_PATH!
+
+    for /f "delims=" %%d in ('dir /b /ad ^| findstr /i "Plugin"') do (
+        set oldPlugin=%%d
+        set oldPluginExistNow=
+        for /f "delims=" %%e in ('dir /b /ad "!AGENT_PLUGIN_PATH!" ^| findstr /i "%%d"') do (
+            set oldPluginExistNow=%%e
+        )
+        if "!oldPluginExistNow!"=="" (
+            call :Log "%%d not used now."
+        ) else (
+            call :Log "Replace the %%d conf file."
+            xcopy /y "!BACKUP_PLUGIN_PATH!\%%d\plugin_attribute_*.json" "!AGENT_PLUGIN_PATH!\%%d\"
+            xcopy /y /e "!BACKUP_PLUGIN_PATH!\%%d\conf" "!AGENT_PLUGIN_PATH!\%%d\conf"
+        )
+    )
+
+    cd !tmpPath!
+    call :Log "Modify: The backup DataBackup ProtectAgent Plugin conf has been replaced."
+    echo The backup DataBackup ProtectAgent Plugin conf has been replaced successfully.
 goto :EOF
 
 :UninstAllOldPlugins

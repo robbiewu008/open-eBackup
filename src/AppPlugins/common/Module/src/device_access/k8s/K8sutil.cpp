@@ -24,7 +24,8 @@ namespace Module {
 
     namespace k8s {
 
-        std::string GetRandomAvailableNode() {
+        std::string GetRandomAvailableNode()
+        {
             char hostname[MAX_HOSTNAME_LENGTH] = {0};
 
             gethostname(hostname, sizeof(hostname));
@@ -32,7 +33,8 @@ namespace Module {
             return std::string(hostname);
         }
 
-        uint64_t GetCurrentMillis() {
+        uint64_t GetCurrentMillis()
+        {
             std::uint64_t val =
                     std::chrono::duration_cast<std::chrono::milliseconds>(
                             std::chrono::system_clock::now().time_since_epoch()).count();
@@ -40,46 +42,8 @@ namespace Module {
             return val;
         }
 
-//        bool GetAllPodsInfo(PodInfoList &infoList) {
-//            std::string hostName = GetPodNameByEnv("MY_POD_NAME");
-//            std::string podName = TransPodName(hostName);
-//            HCP_Log(DEBUG, MODULE) << DBG(hostName) << DBG(podName) << HCPENDLOG;
-//
-//            MSRestRequest req;
-//            req.httpMethod = "GET";
-//            req.serviceUrl =
-//                    "https://infrastructure.dpa.svc.cluster.local:8088/v1/infra/internal/pod/info?appName=" + podName;
-//            req.isVerify = INTERNAL_VERIFY;
-//            Json::Value rsp;
-//            std::string errorDes;
-//            int iRet = MSRestCLient::Instance().SendReqeust(req, rsp, errorDes);
-//            if (iRet != SUCCESS || !rsp.isArray()) {
-//                HCP_Log(ERR, MODULE) << "get pod info failed, iRet:" << iRet
-//                                     << ", errorDes:" << WIPE_SENSITIVE(errorDes) << HCPENDLOG;
-//                return false;
-//            }
-//            PodsInfo info;
-//            int podNumber = 0;
-//            for (auto &pod : rsp) {
-//                if (!pod.isMember("podName") || !pod.isMember("podStatus") || !pod.isMember("namespace")) {
-//                    HCP_Log(ERR, MODULE) << "pod info is invalid:" << WIPE_SENSITIVE(pod) << HCPENDLOG;
-//                    continue;
-//                }
-//                info.Name = pod["podName"].asString();
-//                info.PodPhase = pod["podStatus"].asString();
-//                info.Namespace = pod["namespace"].asString();
-//                HCP_Log(DEBUG, MODULE) << DBG(info.Name) << DBG(info.PodPhase) << DBG(info.Namespace) << HCPENDLOG;
-//                infoList.PodsInfos.push_back(info);
-//                podNumber++;
-//            }
-//            if (podNumber == 0) {
-//                HCP_Log(ERR, MODULE) << "Pods info is empty" << HCPENDLOG;
-//                return false;
-//            }
-//            return true;
-//        }
-
-        bool GetAllNodesInfo(NodeInfoList &infoList) {
+        bool GetAllNodesInfo(NodeInfoList &infoList)
+        {
             MSRestRequest req;
             req.httpMethod = "GET";
             req.serviceUrl = "https://infrastructure.dpa.svc.cluster.local:8088/v1/infra/collect/node/info";
@@ -96,7 +60,7 @@ namespace Module {
             int nodeNumber = 0;
             for (auto &node : rsp) {
                 if (!node.isMember("hostname") || !node.isMember("nodeStatus")) {
-                    HCP_Log(ERR, MODULE) << "node info is invalid:" << node << HCPENDLOG;
+                    HCP_Log(WARN, MODULE) << "node info is invalid:" << node << HCPENDLOG;
                     continue;
                 }
                 bool ready = false;
@@ -121,29 +85,34 @@ namespace Module {
 
         CacheInfo cacheInfo;
 
-        DBUserPD GetNormalInfo(CacheInfo &cacheUserPD) {
+        DBUserPD GetNormalInfo(CacheInfo &cacheUserPD)
+        {
             std::lock_guard<std::mutex> lockGuard(cacheUserPD.MLock);
             DBUserPD userPD = cacheUserPD.NormalUserInfo;
             return userPD;
         }
 
-        DBUserPD GetSuperInfo(CacheInfo &cacheUserPD) {
+        DBUserPD GetSuperInfo(CacheInfo &cacheUserPD)
+        {
             std::lock_guard<std::mutex> lockGuard(cacheUserPD.MLock);
             DBUserPD userPD = cacheUserPD.SuperUserInfo;
             return userPD;
         }
 
-        void UpdateNormalInfo(CacheInfo &cacheUserPD, DBUserPD userPD) {
+        void UpdateNormalInfo(CacheInfo &cacheUserPD, DBUserPD userPD)
+        {
             std::lock_guard<std::mutex> lockGuard(cacheUserPD.MLock);
             cacheUserPD.NormalUserInfo = userPD;
         }
 
-        void UpdateSuperInfo(CacheInfo &cacheUserPD, DBUserPD userPD) {
+        void UpdateSuperInfo(CacheInfo &cacheUserPD, DBUserPD userPD)
+        {
             std::lock_guard<std::mutex> lockGuard(cacheUserPD.MLock);
             cacheUserPD.SuperUserInfo = userPD;
         }
 
-        bool CheckDBUserPD(bool isNormal, DBUserPD &userPD, bool hasError) {
+        bool CheckDBUserPD(bool isNormal, DBUserPD &userPD, bool hasError)
+        {
             if (userPD.UserName == "" || userPD.PD == "") {
                 HCP_Log(ERR, MODULE) << "Get db user PD failed" << HCPENDLOG;
                 hasError = true;
@@ -170,11 +139,13 @@ namespace Module {
             return true;
         }
 
-        bool GetDBUserPD(bool isNormal, DBUserPD &userPD) {
+        bool GetDBUserPD(bool isNormal, DBUserPD &userPD)
+        {
             MSRestRequest req;
             req.httpMethod = "GET";
             req.serviceUrl =
-                    "https://infrastructure.dpa.svc.cluster.local:8088/v1/infra/secret/info?nameSpace=dpa&secretName=common-secret";
+                "https://infrastructure.dpa.svc.cluster.local:8088/v1/infra/secret/"
+                "info?nameSpace=dpa&secretName=common-secret";
             req.isVerify = INTERNAL_VERIFY;
             Json::Value rsp;
             std::string errorDes;
@@ -205,7 +176,8 @@ namespace Module {
             return true;
         }
 
-        bool GetNormalDBUserPD(DBUserPD &userPD) {
+        bool GetNormalDBUserPD(DBUserPD &userPD)
+        {
             bool ret = GetDBUserPD(true, userPD);
             if (!ret) {
                 HCP_Log(ERR, MODULE) << "Get normal db user PD failed" << HCPENDLOG;
@@ -213,7 +185,8 @@ namespace Module {
             return ret;
         }
 
-        bool GetSuperDBUserPD(DBUserPD &userPD) {
+        bool GetSuperDBUserPD(DBUserPD &userPD)
+        {
             bool ret = GetDBUserPD(false, userPD);
             if (!ret) {
                 HCP_Log(ERR, MODULE) << "Get super db user PD failed" << HCPENDLOG;
@@ -221,27 +194,14 @@ namespace Module {
             return ret;
         }
 
-//        uint32_t GetRunningPodsNum(const std::string podName) {
-//            PodInfoList infoList;
-//            if (!GetAllPodsInfo(infoList)) {
-//                HCP_Log(ERR, MODULE) << "GetAllPodsInfo failed" << HCPENDLOG;
-//                return 0;
-//            }
-//            uint32_t num = 0;
-//            for (auto &it : infoList.PodsInfos) {
-//                if (it.PodPhase == "Running" && it.Name.find(podName) != std::string::npos) {
-//                    num++;
-//                }
-//            }
-//            return num;
-//        }
-
-        std::string GetConfigMapItem(const std::string &cfgName, const std::string &cfgItem) {
+        std::string GetConfigMapItem(const std::string &cfgName, const std::string &cfgItem)
+        {
             MSRestRequest req;
             req.httpMethod = "GET";
             req.serviceUrl =
-                    "https://infrastructure.dpa.svc.cluster.local:8088/v1/infra/configmap/info?nameSpace=dpa&configMap=" +
-                    cfgName;
+                "https://infrastructure.dpa.svc.cluster.local:8088"
+                "/v1/infra/configmap/info?nameSpace=dpa&configMap=" +
+                cfgName;
             req.isVerify = INTERNAL_VERIFY;
             Json::Value rsp;
             std::string errorDes;
@@ -262,12 +222,14 @@ namespace Module {
             return cfgValue;
         }
 
-        void AddConfigMapItem(const std::string &cfgName, const std::string &cfgItem, const std::string &cfgVal) {
+        void AddConfigMapItem(const std::string &cfgName, const std::string &cfgItem, const std::string &cfgVal)
+        {
             HttpRequest req;
             req.method = "POST";
             req.url =
-                    "https://infrastructure.dpa.svc.cluster.local:8088/v1/infra/configmap/create?nameSpace=dpa&configMap=" +
-                    cfgName + "&configKey=" + cfgItem + "&configValue=" + cfgVal;
+                "https://infrastructure.dpa.svc.cluster.local:8088"
+                "/v1/infra/configmap/create?nameSpace=dpa&configMap=" +
+                cfgName + "&configKey=" + cfgItem + "&configValue=" + cfgVal;
             req.isVerify = INTERNAL_VERIFY;
 
             Json::Value rsp;
@@ -279,13 +241,15 @@ namespace Module {
             }
         }
 
-        std::string
-        GetConfigMapItem(const std::string &cfgName, const std::string &cfgItem, const std::string &defaultCfg) {
+        std::string GetConfigMapItem(const std::string &cfgName, const std::string &cfgItem,
+            const std::string &defaultCfg)
+        {
             HttpRequest req;
             req.method = "GET";
             req.url =
-                    "https://infrastructure.dpa.svc.cluster.local:8088/v1/infra/configmap/info?nameSpace=dpa&configMap=" +
-                    cfgName + "&configKey=" + cfgItem;
+                "https://infrastructure.dpa.svc.cluster.local:8088"
+                "/v1/infra/configmap/info?nameSpace=dpa&configMap=" +
+                cfgName + "&configKey=" + cfgItem;
             req.isVerify = INTERNAL_VERIFY;
 
             Json::Value rsp;

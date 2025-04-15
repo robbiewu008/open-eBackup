@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "host/host.h"
 #include <sstream>
 #include <fstream>
@@ -177,7 +189,11 @@ mp_int32 CHost::GetHostExtendInfo(Json::Value& jValue, mp_int32 m_proxyRole)
     } else {
         CIP::GetHostEnv(HOST_ENV_INSTALL_PATH, customInstallPath);
         if (customInstallPath.empty()) {
+#ifdef WIN32
+            customInstallPath = GetSystemDiskChangedPathInWin(AGENT_DEFAULT_INSTALL_DIR);
+#else
             customInstallPath = AGENT_DEFAULT_INSTALL_DIR;
+#endif
         }
     }
     jValue[PARAM_KEY_EXTEND_INTSALL_PATH] = customInstallPath;
@@ -324,7 +340,11 @@ mp_int32 CHost::GetHostSN(mp_string& strSN)
     if (iRet != MP_SUCCESS) {
         COMMLOG(OS_LOG_WARN, "Get host uuid from conf file failed, begin to get uuid.");
 
+#ifdef WIN32
+        mp_string hostsnFile = GetSystemDiskChangedPathInWin(HOSTSN_DIR) + HOSTSN_FILE;
+#else
         mp_string hostsnFile = HOSTSN_DIR + HOSTSN_FILE;
+#endif
         if (!CMpFile::FileExist(hostsnFile)) {
             iRet = CUuidNum::GetUuidNumber(strSN);
             if (iRet != MP_SUCCESS || strSN == "") {
@@ -1265,7 +1285,6 @@ mp_int32 CHost::QueryWwpns(std::vector<mp_string>& vecWwpns)
     mp_int32 iRet = CSystemExec::ExecSystemWithEcho(strCmd, vecRlt);
     if (iRet != MP_SUCCESS) {
         ERRLOG("Exec sys cmd failed, iRet = %d.", iRet);
-        return MP_FAILED;
     }
 
     for (mp_string& item : vecRlt) {
@@ -1649,6 +1668,17 @@ mp_int32 CHost::QueryFusionStorageIP(vector<mp_string>& strFusionStorageIP)
     return MP_FAILED;
 }
 
+mp_int32 CHost::IsSafeDirectory(const mp_string& strInput)
+{
+    // 检查是否包含 ".." 或者以 "/" 开头
+    if (strInput.find("..") != std::string::npos) {
+        COMMLOG(OS_LOG_ERROR, "IsSafeDirectory failed");
+        return MP_FAILED;
+    }
+    COMMLOG(OS_LOG_INFO, "IsSafeDirectory succeed");
+    return MP_SUCCESS;
+}
+
 /* ------------------------------------------------------------
 Description  : 执行第三方脚本
 Input        : fileName -- 脚本名称
@@ -1678,7 +1708,12 @@ mp_int32 CHost::ExecThirdPartyScript(const mp_string& fileName,
     mp_int32 iRettmp = MP_SUCCESS;
     // SecureCom::SysExecScript只获取到bin目录下，需组装至thridparty目录
     mp_string strInput = mp_string(AGENT_THIRDPARTY_DIR) + PATH_SEPARATOR + strFileName;
-
+    // 校验是否存在跨目录
+    iRet = IsSafeDirectory(strInput);
+    if (iRet != MP_SUCCESS) {
+        COMMLOG(OS_LOG_ERROR, "Input Parameter file name exists directory traversal and script execution risk.");
+        return iRet;
+    }
     // 调用时，默认参数设为FALSE，不验证脚本签名
     iRet = SecureCom::SysExecScript(strInput, strParam, &vecResult, MP_FALSE);
     if (iRet != MP_SUCCESS) {
@@ -2083,9 +2118,12 @@ mp_int32 CHost::UpdateManagerServer(const std::vector<mp_string>& vecManagerServ
 {
     INFOLOG("Begin update manager server.");
     mp_string ipStr;
-    std::vector<mp_string>::const_iterator iter = vecManagerServer.begin();
-    for (; iter != vecManagerServer.end(); ++iter) {
-        if (ipStr.find(*iter) == mp_string::npos) {
+    // 对ip列表去重
+    std::set<mp_string> tmpManagerServer(vecManagerServer.begin(), vecManagerServer.end());
+    std::set<mp_string>::const_iterator iter = tmpManagerServer.begin();
+    for (; iter != tmpManagerServer.end(); ++iter) {
+        mp_string tempIp = *iter;
+        if ((CheckIpAddressValid(tempIp) == MP_SUCCESS)) {
             if (ipStr.empty()) {
                 ipStr.append(*iter);
             } else {
@@ -2093,7 +2131,10 @@ mp_int32 CHost::UpdateManagerServer(const std::vector<mp_string>& vecManagerServ
             }
         }
     }
-
+    if (ipStr.empty()) {
+        ERRLOG("No valid ip.");
+        return MP_FAILED;
+    }
     mp_int32 iRet = CConfigXmlParser::GetInstance().SetValue(CFG_BACKUP_SECTION, CFG_ADMINNODE_IP, ipStr);
     if (iRet != MP_SUCCESS) {
         ERRLOG("Write configure failed.");
@@ -2801,7 +2842,7 @@ mp_int32 CHost::GetMemUsageRateLinux(mp_double& sysMemRateRest, mp_uint64& memAv
         if (line.compare(0, SIZE_OF_MEMTOTAL, "MemTotal:") == 0) {
             memTotal = CMpString::SafeStoll(line.substr(SIZE_OF_MEMTOTAL + 1)) / SIZE_KB;
         } else if (line.compare(0, SIZE_OF_MEMAVAILABLE, "MemAvailable:") == 0) {
-            memAvail = CMpString::SafeStoll(line.substr(SIZE_OF_MEMTOTAL + 1)) / SIZE_KB;      // 单位MB
+            memAvail = CMpString::SafeStoll(line.substr(SIZE_OF_MEMAVAILABLE + 1)) / SIZE_KB;      // 单位MB
         }
     }
     sysMemRateRest = (double)memAvail / memTotal * PERCENT;

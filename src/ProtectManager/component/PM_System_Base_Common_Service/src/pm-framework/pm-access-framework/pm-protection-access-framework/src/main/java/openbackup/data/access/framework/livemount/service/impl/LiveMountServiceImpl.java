@@ -12,11 +12,20 @@
 */
 package openbackup.data.access.framework.livemount.service.impl;
 
+import static openbackup.system.base.common.constants.DateFormatConstant.DATE_TIME;
+import static openbackup.system.base.common.constants.DateFormatConstant.DATE_TIME_WITH_T;
+
 import com.huawei.oceanprotect.base.cluster.sdk.enums.StorageUnitTypeEnum;
+import com.huawei.oceanprotect.base.cluster.sdk.service.ClusterBasicService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
+import com.huawei.oceanprotect.client.resource.manager.constant.ProtectAgentErrorCode;
 import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
 import com.huawei.oceanprotect.job.constants.JobPayloadKeys;
 import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.system.base.sdk.devicemanager.openstorage.entity.CreateWindowsUserResponse;
+import com.huawei.oceanprotect.system.base.sdk.devicemanager.openstorage.entity.QueryWindowsUserResponse;
+import com.huawei.oceanprotect.system.base.sdk.devicemanager.openstorage.entity.WindowsUserParam;
+import com.huawei.oceanprotect.system.base.sdk.devicemanager.openstorage.service.DeviceUserService;
 import com.huawei.oceanprotect.system.base.user.common.enums.ResourceSetScopeModuleEnum;
 import com.huawei.oceanprotect.system.base.user.entity.ResourceSetResourceBo;
 import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
@@ -29,7 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.service.CopyAuthVerifyService;
 import openbackup.data.access.framework.copy.mng.service.CopyService;
 import openbackup.data.access.framework.core.dao.CopyMapper;
-import openbackup.data.access.framework.core.entity.CopiesEntity;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.livemount.TopicConstants;
 import openbackup.data.access.framework.livemount.common.LiveMountOperateType;
@@ -59,6 +67,7 @@ import openbackup.data.protection.access.provider.sdk.livemount.LiveMountInterce
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceBase;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.system.base.bean.CopiesEntity;
 import openbackup.system.base.common.constants.AuthOperationEnum;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
@@ -67,14 +76,16 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.livemount.LiveMountEntity;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.NumberUtil;
+import openbackup.system.base.common.utils.StringUtil;
+import openbackup.system.base.common.utils.UserUtils;
 import openbackup.system.base.common.utils.ValidateUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
+import openbackup.system.base.common.utils.security.EncryptorUtil;
 import openbackup.system.base.common.validator.constants.RegexpConstants;
 import openbackup.system.base.query.PageQueryParam;
 import openbackup.system.base.query.PageQueryService;
 import openbackup.system.base.sdk.PageQueryRestApi;
 import openbackup.system.base.sdk.SystemSpecificationService;
-import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.BasePage;
 import openbackup.system.base.sdk.copy.model.Copy;
@@ -93,6 +104,7 @@ import openbackup.system.base.sdk.schedule.ScheduleRestApi;
 import openbackup.system.base.sdk.schedule.model.ScheduleResponse;
 import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
 import openbackup.system.base.service.DeployTypeService;
+import openbackup.system.base.util.OpServiceUtil;
 import openbackup.system.base.util.ProviderRegistry;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -104,12 +116,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.sql.Timestamp;
 import java.text.Normalizer;
+import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -321,6 +336,15 @@ public class LiveMountServiceImpl implements LiveMountService {
 
     @Autowired
     private StorageUnitService storageUnitService;
+
+    @Autowired
+    private DeviceUserService deviceUserService;
+
+    @Autowired
+    private ClusterBasicService clusterBasicService;
+
+    @Autowired
+    private EncryptorUtil encryptorUtil;
 
     private static void addTimeUnitMapping(String unit, String type, ChronoUnit chronoUnit, String format) {
         TIME_UNIT_MAPPING.put(unit, type);
@@ -607,7 +631,8 @@ public class LiveMountServiceImpl implements LiveMountService {
                         .eq(LiveMountEntity::getId, liveMountEntity.getId())
                         .set(LiveMountEntity::getMountJobId, liveMountEntity.getMountJobId())
                         .set(LiveMountEntity::getMountedCopyId, mountedCopy.getUuid())
-                        .set(LiveMountEntity::getMountedCopyDisplayTimestamp, mountedCopy.getDisplayTimestamp())
+                        .set(LiveMountEntity::getMountedCopyDisplayTimestamp,
+                                convertStringToTimestamp(mountedCopy.getDisplayTimestamp()))
                         .set(LiveMountEntity::getMountedSourceCopyId, mountedCopy.getUuid())
                         .set(LiveMountEntity::getCopyId, mountedCopy.getUuid());
         liveMountEntityDao.update(null, wrapper);
@@ -672,8 +697,13 @@ public class LiveMountServiceImpl implements LiveMountService {
             boolean isSupportLogCopy = liveMountServiceProvider.isSupportLogCopy();
             sourceCopy = queryLatestCopy(liveMountEntity, null, isSupportLogCopy);
         }
+        if (VerifyUtil.isEmpty(sourceCopy)) {
+            log.info("There is no new copy need to live mount.");
+            return;
+        }
         boolean isValid = liveMountServiceProvider.isSourceCopyCanBeMounted(sourceCopy, isManualUpdate);
         if (!isValid) {
+            log.info("There is no valid copy can be mounted.");
             return;
         }
         executeLiveMountOnCopyChanged(liveMountEntity, policy, sourceCopy, isManualUpdate);
@@ -979,6 +1009,10 @@ public class LiveMountServiceImpl implements LiveMountService {
             return;
         }
         checkLiveMountStatus(liveMountEntity.getStatus(), LiveMountOperateType.DESTROY);
+        if (OpServiceUtil.isHcsService()) {
+            deleteCifsUser(liveMountEntity);
+        }
+
         LiveMountFlowService provider =
                 providerRegistry.findProvider(LiveMountFlowService.class, liveMountEntity.getResourceSubType(), null);
 
@@ -1013,6 +1047,26 @@ public class LiveMountServiceImpl implements LiveMountService {
                         .set(RESERVE_COPY, isReserveCopy)
                         .set(FORCE_DELETE, isForceDelete);
         scheduleRestApi.createImmediateSchedule(TopicConstants.LIVE_MOUNT_UNMOUNT_REQUEST, params, task);
+    }
+
+    private void deleteCifsUser(LiveMountEntity liveMountEntity) {
+        JSONObject parameter = JSONObject.fromObject(liveMountEntity.getParameters());
+        String cifsUserEnc = parameter.getString(LiveMountConstants.CIFS_USER_HCS);
+        Optional.ofNullable(cifsUserEnc).ifPresent(str -> {
+            String cifsUserStr = encryptorUtil.getDecryptPwd(str);
+            JSONObject cifsUser = JSONObject.fromObject(cifsUserStr);
+            try {
+                deleteHcsCifsUser(cifsUser.getString(LiveMountConstants.CIFS_USER_HCS_NAME),
+                        LiveMountConstants.DEFAULT_VSTORE_ID, null);
+            } catch (LegoCheckedException e) {
+                if (e.getErrorCode() != LiveMountConstants.CIFS_USER_NOT_EXIST_CODE) {
+                    throw e;
+                }
+                log.info("Delete user:{} success.", cifsUser.getString(LiveMountConstants.CIFS_USER_HCS_NAME));
+            } finally {
+                StringUtil.clean(cifsUser.getString(LiveMountConstants.CIFS_USER_HCS_PASS));
+            }
+        });
     }
 
     /**
@@ -1432,21 +1486,66 @@ public class LiveMountServiceImpl implements LiveMountService {
         // 检查副本
         checkSourceCopy(copy);
 
+        if (OpServiceUtil.isHcsService()) {
+            createCifsUserForHcs(liveMountObject);
+        }
         Map.Entry<Copy, List<LiveMountEntity>> entry = createLiveMounts(liveMountObject, copy, policy);
+
         executeLiveMountsOnCreated(entry, policy);
         return entry.getValue().stream().map(LiveMountEntity::getId).collect(Collectors.toList());
     }
 
+    private void createCifsUserForHcs(LiveMountObject liveMountObject) {
+        Map<String, String> map = MapUtils.getMap(liveMountObject.getParameters(), LiveMountConstants.CIFS_USER_HCS);
+        Optional.ofNullable(map).ifPresent(o -> {
+            String userName = o.get(LiveMountConstants.CIFS_USER_HCS_NAME);
+            String password = o.get(LiveMountConstants.CIFS_USER_HCS_PASS);
+            QueryWindowsUserResponse queryWindowsUserResponse = null;
+            try {
+                queryWindowsUserResponse = queryHcsCifsUser(userName, LiveMountConstants.DEFAULT_VSTORE_ID, null);
+            } catch (LegoCheckedException e) {
+                if (e.getErrorCode() != LiveMountConstants.CIFS_USER_NOT_EXIST_CODE) {
+                    log.error("Query user:{} fail.", userName);
+                    throw e;
+                }
+                log.info("User:{} not exist, start create", userName);
+                WindowsUserParam windowsUserParam = new WindowsUserParam();
+                windowsUserParam.setName(userName);
+                windowsUserParam.setPassword(password);
+                windowsUserParam.setVstoreId(LiveMountConstants.DEFAULT_VSTORE_ID);
+                createHcsCifsUser(windowsUserParam);
+            }
+            if (!VerifyUtil.isEmpty(queryWindowsUserResponse)) {
+                throw new LegoCheckedException(ProtectAgentErrorCode.ERR_WORKINGUSER_EXIST, new String[]{userName},
+                        "User exist.");
+            }
+        });
+    }
+
+    @Override
+    public CreateWindowsUserResponse createHcsCifsUser(WindowsUserParam windowsUserParam) {
+        return deviceUserService.createHcsCifsUser(clusterBasicService.getCurrentClusterEsn(),
+                UserUtils.getBusinessUsername(), windowsUserParam).getData();
+    }
+
+    @Override
+    public QueryWindowsUserResponse queryHcsCifsUser(String windowsUsername, String vstoreId, String accountName) {
+        return deviceUserService.queryHcsCifsUser(clusterBasicService.getCurrentClusterEsn(),
+                UserUtils.getBusinessUsername(), windowsUsername, vstoreId, accountName).getData();
+    }
+
+    @Override
+    public void deleteHcsCifsUser(String windowsUsername, String vstoreId, String accountName) {
+        deviceUserService.deleteHcsCifsUser(clusterBasicService.getCurrentClusterEsn(), UserUtils.getBusinessUsername(),
+                windowsUsername, vstoreId, accountName);
+    }
+
     private void checkIsLocalDiskSupportCopy(LiveMountObject liveMountObject) {
         CopiesEntity copiesEntity = copyMapper.selectById(liveMountObject.getCopyId());
-        if (VerifyUtil.isEmpty(copiesEntity.getStorageId())) {
-            return;
-        }
-        StorageUnitVo storageUnitVo = storageUnitService.getStorageUnitById(copiesEntity.getStorageId())
-            .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Storage unit not exist"));
         log.info("Copy subtype is : {} StorageUnit type is: {}", copiesEntity.getResourceSubType(),
-            storageUnitVo.getDeviceType());
-        if (StorageUnitTypeEnum.BASIC_DISK.getType().equals(storageUnitVo.getDeviceType())) {
+            copyService.getStorageInfo(liveMountObject.getCopyId()).getDeviceType());
+        if (StorageUnitTypeEnum.BASIC_DISK.getType()
+            .equals(copyService.getStorageInfo(liveMountObject.getCopyId()).getDeviceType())) {
             throw new LegoCheckedException(CommonErrorCode.LIVE_MOUNT_NOT_SUPPORT_BASIC_DISK,
                 "Local disks do not support instant mounting.");
         }
@@ -1473,6 +1572,27 @@ public class LiveMountServiceImpl implements LiveMountService {
         if (keySet.contains(SHARE_NAME)) {
             checkFileSystemNameRegex(MapUtils.getString(advanceParams, SHARE_NAME));
         }
+    }
+
+    private Timestamp convertStringToTimestamp(String time) {
+        if (time == null) {
+            return new Timestamp(System.currentTimeMillis());
+        }
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_TIME_WITH_T);
+            Date parsedDate = dateFormat.parse(time);
+            return new Timestamp(parsedDate.getTime());
+        } catch (Exception e) {
+            log.error("database dateTime parse error", e);
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_TIME);
+                Date parsedDate = dateFormat.parse(time);
+                return new Timestamp(parsedDate.getTime());
+            } catch (Exception exception) {
+                log.error("database dateTime parse error", exception);
+            }
+        }
+        return new Timestamp(System.currentTimeMillis());
     }
 
     private void checkFileSystemKeepTime(LiveMountObject liveMountObject) {

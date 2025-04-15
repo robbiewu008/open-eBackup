@@ -80,3 +80,14 @@
     <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_subject_user_tip_label' | i18n}}" lvTooltipTheme="light"
         class="operation-help-icon" lvColorState='true'></i>
 </ng-template>
+
+<ng-template #fileTpl let-item>
+    <lv-group lvGutter='8px'>
+        <div lv-overflow>
+            <span>{{ item.file }}</span>
+        </div>
+        <span class="guide-recommend-label honeypot-min-tag" *ngIf="item.honeypotFile">
+            {{'explore_honeypot_file_label' | i18n}}
+        </span>
+    </lv-group>
+</ng-template>

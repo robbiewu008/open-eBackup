@@ -1,0 +1,75 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="How Can I Add a Common User to sudoers? (Applicable to the Linux OS)">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200116753">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>How Can I Add a Common User to sudoers? (Applicable to the Linux OS)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200116753"></a><a name="EN-US_TOPIC_0000002200116753"></a>
+  <h1 class="topictitle1">How Can I Add a Common User to sudoers? (Applicable to the Linux OS)</h1>
+  <div>
+   <p>When installing the client in automatic push mode, if <span class="uicontrol"><b>User Type</b></span> is set to <span class="uicontrol"><b>Common User</b></span>, you need to add the common user to <strong>sudoers</strong> first. Otherwise, client registration will fail. This section uses EulerOS as an example.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Use PuTTY to log in to the host where the client is to be installed as user <strong id="EN-US_TOPIC_0000002200116753__en-us_topic_0000002164790296_en-us_topic_0000002200031305_b916917212">root</strong>.</span></li>
+     <li><span>Run the following command to search for the directory of the <strong>sudoers</strong> configuration file:</span><p></p><pre class="screen">whereis sudoers</pre> <p>Information similar to the following is displayed. <strong>/etc/sudoers</strong> is the directory of the <strong>sudoers</strong> configuration file.</p> <pre class="screen">sudoers: <strong>/etc/sudoers</strong> /etc/sudoers.d /uer/share/man/man5/sudoers.5.gz</pre> <p></p></li>
+     <li><span>Run the following command to query the permission on the <strong>sudoers</strong> configuration file:</span><p></p><pre class="screen">ll /etc/sudoers</pre> <p>If information similar to the following is displayed, user <strong>root</strong> has only the read-only permission on the <strong>sudoers</strong> configuration file. In this case, perform <a href="#EN-US_TOPIC_0000002200116753__li45591852202917">4</a> to grant the write permission on the configuration file to user <strong>root</strong>. If user <strong>root</strong> has the write permission on the configuration file, go to <a href="#EN-US_TOPIC_0000002200116753__li1783801718592">5</a>.</p> <pre class="screen">-r--r-----. 1 root root 20724 Nov 19 21:04 /etc/sudoers</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200116753__li45591852202917"><a name="EN-US_TOPIC_0000002200116753__li45591852202917"></a><a name="li45591852202917"></a><span>Run the following command to grant the write permission on the <strong>sudoers</strong> configuration file:</span><p></p><pre class="screen">chmod u+w /etc/sudoers</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200116753__li1783801718592"><a name="EN-US_TOPIC_0000002200116753__li1783801718592"></a><a name="li1783801718592"></a><span>Run the following commands to back up the source file:</span><p></p><pre class="screen">mkdir /etc/backup_sudoers</pre> <pre class="screen">cp /etc/sudoers /etc/backup_sudoers</pre> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200116753__li4145165012521"><a name="EN-US_TOPIC_0000002200116753__li4145165012521"></a><a name="li4145165012521"></a><span>Run the following command to open the <strong>sudoers</strong> configuration file:</span><p></p><pre class="screen">vim /etc/sudoers</pre> <p></p></li>
+     <li><span>Check whether the <span class="parmname"><b>Defaults requiretty</b></span> field exists in the configuration file. If yes, delete this configuration.</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p><span id="EN-US_TOPIC_0000002200116753__ph848412019206">If the <span class="parmname" id="EN-US_TOPIC_0000002200116753__parmname1261512592520"><b>Defaults requiretty</b></span> field is enabled, the <strong id="EN-US_TOPIC_0000002200116753__b1644719136514">sudo</strong> command can be executed only after you log in to the host through the actual terminal and the client will fail to be installed in automatic push mode.</span></p>
+       </div>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200116753__li188920444274"><a name="EN-US_TOPIC_0000002200116753__li188920444274"></a><a name="li188920444274"></a><span>Add the following content to the configuration file, save the modification, and exit.</span><p></p>
+      <div class="p">
+       Common user <strong>common_user</strong> is used as an example. Replace it with the actual common username used for client installation.
+       <div class="notice">
+        <span class="noticetitle"><img src="public_sys-resources/notice_3.0-en-us.png"> </span>
+        <div class="noticebody">
+         <ul>
+          <li>Modify the configuration file in strict compliance with the requirements. Otherwise, the client may fail to be installed in automatic push mode or the <strong>sudo</strong> command may fail to be executed.</li>
+          <li>In the configuration file, the following added content is divided into three columns in a row. The first and second columns are separated by four characters, and the second and third columns are separated by seven characters. If the following content copied to the configuration file contains line feed characters, manually delete the line feed characters.</li>
+         </ul>
+        </div>
+       </div>
+       <ul>
+        <li>If the sudo non-password-free mode is used, add the following content to the configuration file:<pre class="screen"><em>common_user</em>    ALL=(ALL)       /bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre> <p>Example:</p> <p><span><img src="en-us_image_0000002200031449.png"></span></p></li>
+        <li>If the sudo password-free mode is used, add the following content to the configuration file:<pre class="screen"><em>common_user</em>    ALL=(ALL)       NOPASSWD:/bin/sudo,/bin/command,/bin/date,/usr/bin/unzip,/usr/bin/xz,/usr/bin/touch,/usr/bin/vi,/usr/bin/mkdir,/usr/bin/sftp,/usr/bin/rm,/usr/bin/chown,/usr/bin/chmod,/bin/sh,/bin/bash *push_install_check.sh*,/bin/bash /{dir}/*,/bin/bash *register.sh*</pre></li>
+       </ul>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002200116753__li11391140173419"><a name="EN-US_TOPIC_0000002200116753__li11391140173419"></a><a name="li11391140173419"></a><span>If you have performed <a href="#EN-US_TOPIC_0000002200116753__li45591852202917">4</a> to modify the permission on the <strong>sudoers</strong> configuration file, perform this step to delete the write permission on the file. Otherwise, skip this step.</span><p></p><pre class="screen">chmod u-w /etc/sudoers</pre> <p></p></li>
+     <li><span>View the configuration file to check whether the <span class="parmname"><b>Defaults requiretty</b></span> field is deleted and whether the user added in <a href="#EN-US_TOPIC_0000002200116753__li188920444274">8</a> exists.</span><p></p><pre class="screen">cat /etc/sudoers</pre>
+      <ul>
+       <li>If the modification fails, roll back the configuration file. After confirming that the rollback is successful, repeat <a href="#EN-US_TOPIC_0000002200116753__li4145165012521">6</a> to <a href="#EN-US_TOPIC_0000002200116753__li11391140173419">9</a>.<pre class="screen">cp /etc/backup_sudoers/sudoers /etc/sudoers</pre> <pre class="screen">cat /etc/sudoers</pre></li>
+       <li>If the modification is successful, delete the backup file.<pre class="screen">rm -fr /etc/backup_sudoers</pre></li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+ </body>
+</html>

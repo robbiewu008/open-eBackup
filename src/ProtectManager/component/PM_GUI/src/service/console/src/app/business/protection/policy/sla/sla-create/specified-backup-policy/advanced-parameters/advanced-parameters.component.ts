@@ -1,34 +1,49 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, Input, OnInit } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
   ApplicationType,
   BaseUtilService,
   CommonConsts,
   CookieService,
+  DataMap,
   DataMapService,
   I18NService,
+  ProtectedResourceApiService,
   ProtectResourceAction,
-  QosService
+  QosService,
+  RouterUrl
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   assign,
+  defer,
+  each,
+  filter,
   find,
   first,
   get,
   includes,
+  isEmpty,
   isUndefined,
   map,
   size
@@ -39,16 +54,21 @@ import {
   templateUrl: './advanced-parameters.component.html',
   styleUrls: ['./advanced-parameters.component.less']
 })
-export class AdvancedParametersComponent implements OnInit {
+export class AdvancedParametersComponent implements OnInit, OnChanges {
   find = find;
   size = size;
-  qosNames = [];
+  qosNameOps = [];
   @Input() appType: any;
   @Input() isSlaDetail: boolean;
   @Input() action: any;
+  @Input() application: any;
   @Input() data: any;
+  @Input() qosNames: any;
   @Input() formGroup: FormGroup;
   @Input() isUsed: boolean;
+  @Input() hasArchival: boolean;
+  @Input() hasReplication: boolean;
+  @Output() isDisableBasicDiskWorm = new EventEmitter<any>();
   retryTimesErrorTip = assign({}, this.baseUtilService.rangeErrorTip, {
     invalidRang: this.i18n.get('common_valid_rang_label', [1, 5])
   });
@@ -86,8 +106,10 @@ export class AdvancedParametersComponent implements OnInit {
     invalidInteger: this.i18n.get('common_cannot_decimal_label')
   };
 
+  slaQosName;
   protectResourceAction = ProtectResourceAction;
   applicationType = ApplicationType;
+  proxyOptions = [];
   isRetry = true;
   isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
   isVirtualCloud = false; // 判断是否为一部分虚拟化和云平台应用
@@ -111,7 +133,15 @@ export class AdvancedParametersComponent implements OnInit {
   isBackupGroup = false; // 用于轻量云gauss和hcsgauss的特别参数判断
   isRateLimit = false; // 用于流量控制一类的参数
   isThread = false; // 线程数
-  isDisableQos = false; // 如果选择了本地盘的存储单元就禁止限速策略
+  isDisableBasicDisk = false; // 如果选择了本地盘的存储单元就禁止的功能，目前有限速策略、目标端重删、源端重删
+  isAgents = false; // 判断代理主机
+  isRestartArchive = false; // 判断归档重启
+  isBlockIncrementBackup = false; // 块级增量备份
+  agentsLabel; // 用于详情显示代理主机
+  isKeepSnapshot = false; // HCS保留快照
+
+  // 限速策略路由
+  ratePolicyRouterUrl = RouterUrl.ProtectionLimitRatePolicy;
 
   constructor(
     public i18n: I18NService,
@@ -119,11 +149,22 @@ export class AdvancedParametersComponent implements OnInit {
     public appUtilsService: AppUtilsService,
     private qosServiceApi: QosService,
     private baseUtilService: BaseUtilService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private protectedResourceApiService: ProtectedResourceApiService
   ) {}
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!isEmpty(this.qosNames) && size(this.data)) {
+      this.slaQosName = find(this.qosNames, {
+        uuid: first(map(this.data, 'ext_parameters')).qos_id
+      })?.name;
+    }
+  }
 
   ngOnInit(): void {
-    this.getQosNames();
+    if (!this.isSlaDetail) {
+      this.getQosNames();
+    }
+
     this.updateForm();
     // 根据应用类型增加表单控件
     this.updateSpecialControl();
@@ -132,6 +173,7 @@ export class AdvancedParametersComponent implements OnInit {
 
   updateForm() {
     this.formGroup.addControl('storage_type', new FormControl(''));
+    this.formGroup.addControl('device_type', new FormControl(''));
     this.formGroup.addControl('storage_id', new FormControl(''));
     this.formGroup.addControl('qos_id', new FormControl(''));
     this.formGroup.addControl('alarm_over_time_window', new FormControl(false));
@@ -225,8 +267,7 @@ export class AdvancedParametersComponent implements OnInit {
           ApplicationType.NASFileSystem,
           ApplicationType.NASShare,
           ApplicationType.ObjectStorage,
-          ApplicationType.Fileset,
-          ApplicationType.Volume
+          ApplicationType.Fileset
         ],
         this.appType
       )
@@ -280,6 +321,18 @@ export class AdvancedParametersComponent implements OnInit {
       });
     }
 
+    if (this.appType === ApplicationType.Saponoracle) {
+      this.formGroup.addControl(
+        'channel_number',
+        new FormControl(1, {
+          validators: [
+            this.baseUtilService.VALID.integer(),
+            this.baseUtilService.VALID.rangeValue(1, 254)
+          ]
+        })
+      );
+    }
+
     // 自动索引
     if (
       includes(
@@ -309,7 +362,8 @@ export class AdvancedParametersComponent implements OnInit {
           ApplicationType.HCSCloudHost,
           ApplicationType.OpenStack,
           ApplicationType.ApsaraStack,
-          ApplicationType.HyperV
+          ApplicationType.HyperV,
+          ApplicationType.Nutanix
         ],
         this.appType
       )
@@ -375,7 +429,6 @@ export class AdvancedParametersComponent implements OnInit {
       includes(
         [
           ApplicationType.MySQL,
-          ApplicationType.OpenGauss,
           ApplicationType.GaussDBT,
           ApplicationType.GoldenDB
         ],
@@ -383,18 +436,7 @@ export class AdvancedParametersComponent implements OnInit {
       )
     ) {
       this.isBackupNodeFirst = true;
-      if (
-        includes(
-          [
-            ApplicationType.MySQL,
-            ApplicationType.OpenGauss,
-            ApplicationType.GoldenDB
-          ],
-          this.appType
-        )
-      ) {
-        this.hasBackupNodeTip = true;
-      }
+      this.hasBackupNodeTip = true;
       this.formGroup.addControl('slave_node_first', new FormControl(true));
     }
 
@@ -443,6 +485,27 @@ export class AdvancedParametersComponent implements OnInit {
       this.formGroup.addControl('close_compression', new FormControl(false));
     }
 
+    // 重启归档
+    if (
+      includes(
+        [
+          ApplicationType.LightCloudGaussDB,
+          ApplicationType.GaussDBForOpenGauss
+        ],
+        this.appType
+      )
+    ) {
+      this.isRestartArchive = true;
+      this.formGroup.addControl('restart_archive', new FormControl(false));
+    }
+
+    // 代理主机
+    if (includes([ApplicationType.LightCloudGaussDB], this.appType)) {
+      this.isAgents = true;
+      this.formGroup.addControl('agents', new FormControl([]));
+      this.getAgents();
+    }
+
     // 副本校验
     if (
       includes(
@@ -455,7 +518,8 @@ export class AdvancedParametersComponent implements OnInit {
           ApplicationType.HCSCloudHost,
           ApplicationType.OpenStack,
           ApplicationType.ApsaraStack,
-          ApplicationType.HyperV
+          ApplicationType.HyperV,
+          ApplicationType.Nutanix
         ],
         this.appType
       )
@@ -471,7 +535,8 @@ export class AdvancedParametersComponent implements OnInit {
             ApplicationType.HCSCloudHost,
             ApplicationType.OpenStack,
             ApplicationType.ApsaraStack,
-            ApplicationType.HyperV
+            ApplicationType.HyperV,
+            ApplicationType.Nutanix
           ],
           this.appType
         )
@@ -485,6 +550,20 @@ export class AdvancedParametersComponent implements OnInit {
     if (includes([ApplicationType.DB2], this.appType)) {
       this.isArchiveLogDelete = true;
       this.formGroup.addControl('delete_log', new FormControl(false));
+    }
+
+    // 块级增量备份
+    if (
+      includes(
+        [ApplicationType.HBase, ApplicationType.HDFS, ApplicationType.Hive],
+        this.appType
+      )
+    ) {
+      this.isBlockIncrementBackup = true;
+      this.formGroup.addControl(
+        'is_block_level_incr_backup',
+        new FormControl(false)
+      );
     }
 
     // 日志备份失败后自动转全量
@@ -523,21 +602,12 @@ export class AdvancedParametersComponent implements OnInit {
     }
 
     // 线程数
-    if (includes([ApplicationType.PostgreSQL], this.appType)) {
-      this.isThread = true;
-      this.formGroup.addControl(
-        'thread_number',
-        new FormControl(1, {
-          validators: [
-            this.baseUtilService.VALID.integer(),
-            this.baseUtilService.VALID.rangeValue(1, 256)
-          ]
-        })
-      );
-    }
-
-    // 线程数
-    if (includes([ApplicationType.PostgreSQL], this.appType)) {
+    if (
+      includes(
+        [ApplicationType.PostgreSQL, ApplicationType.AntDB],
+        this.appType
+      )
+    ) {
       this.isThread = true;
       this.formGroup.addControl(
         'thread_number',
@@ -567,7 +637,19 @@ export class AdvancedParametersComponent implements OnInit {
     // 生产存储剩余容量阈值
     if (
       includes(
-        [ApplicationType.KubernetesStatefulSet, ApplicationType.Exchange],
+        [
+          ApplicationType.KubernetesStatefulSet,
+          ApplicationType.Exchange,
+          ApplicationType.HBase,
+          ApplicationType.Hive,
+          ApplicationType.HDFS,
+          ApplicationType.HyperV,
+          ApplicationType.FusionCompute,
+          ApplicationType.HCSCloudHost,
+          ApplicationType.FusionOne,
+          ApplicationType.CNware,
+          ApplicationType.OpenStack
+        ],
         this.appType
       )
     ) {
@@ -579,9 +661,26 @@ export class AdvancedParametersComponent implements OnInit {
           );
           this.createCapacityFormGroup(5, 1, 100);
           break;
+        case ApplicationType.HDFS:
+        case ApplicationType.HBase:
+        case ApplicationType.Hive:
+          this.capacityThresholdToolTip = this.i18n.get(
+            'protection_bigdata_capacity_threshold_tip_label'
+          );
+          this.createCapacityFormGroup(20, 1, 100);
+          break;
+        case ApplicationType.KubernetesStatefulSet:
+          this.createCapacityFormGroup(10, 0, 100);
+          break;
         default:
           this.createCapacityFormGroup();
       }
+    }
+
+    // 保留快照
+    if (includes([ApplicationType.HCSCloudHost], this.appType)) {
+      this.isKeepSnapshot = true;
+      this.formGroup.addControl('keep_snapshot', new FormControl(false));
     }
   }
 
@@ -595,13 +694,7 @@ export class AdvancedParametersComponent implements OnInit {
   }
 
   getDeduplicationTip() {
-    if (this.appType === ApplicationType.NASFileSystem) {
-      return this.i18n.get(
-        'protection_deduplication_nas_filesystem_desc_label'
-      );
-    } else {
-      return this.i18n.get('protection_deduplication_desc_label');
-    }
+    return this.i18n.get('protection_deduplication_desc_label');
   }
 
   getConcurrentTip() {
@@ -634,6 +727,8 @@ export class AdvancedParametersComponent implements OnInit {
       return this.i18n.get('protection_sla_slave_node_first_help_label');
     } else if (this.appType === ApplicationType.OpenGauss) {
       return this.i18n.get('protection_backup_node_preferred_tip_label');
+    } else if (this.appType === ApplicationType.GaussDBT) {
+      return this.i18n.get('protection_sla_dbt_slave_node_first_help_label');
     }
   }
 
@@ -676,7 +771,8 @@ export class AdvancedParametersComponent implements OnInit {
   }
 
   storageTypeChange(e) {
-    this.isDisableQos = e;
+    this.isDisableBasicDisk = e;
+    this.isDisableBasicDiskWorm.emit(e);
   }
 
   updateData() {
@@ -716,6 +812,13 @@ export class AdvancedParametersComponent implements OnInit {
           .get('available_capacity_threshold')
           .setValue(get(data, 'available_capacity_threshold', 5));
       }
+
+      if (includes([ApplicationType.HCSCloudHost], this.appType)) {
+        // 保留快照界面词条改为删除快照，设置反着来
+        this.formGroup
+          .get('keep_snapshot')
+          .setValue(!get(data, 'keep_snapshot', true));
+      }
     }
     this.isRetry = data.auto_retry;
     if (this.appType === ApplicationType.OpenGauss) {
@@ -725,6 +828,52 @@ export class AdvancedParametersComponent implements OnInit {
     }
   }
 
+  getAgents() {
+    const extParams = {
+      conditions: JSON.stringify({
+        type: 'Plugin',
+        subType: [
+          `${DataMap.Resource_Type.lightCloudGaussdbProject.value}Plugin`
+        ]
+      })
+    };
+
+    this.appUtilsService.getResourceByRecursion(
+      extParams,
+      params => this.protectedResourceApiService.ListResources(params),
+      resource => {
+        resource = filter(resource, item => !isEmpty(item.environment));
+        const hostArray = [];
+        each(resource, item => {
+          const tmp = item.environment;
+          if (
+            tmp.extendInfo.scenario === DataMap.proxyHostType.external.value
+          ) {
+            hostArray.push({
+              ...tmp,
+              key: tmp.uuid,
+              value: tmp.uuid,
+              label: `${tmp.name}(${tmp.endpoint})`,
+              isLeaf: true
+            });
+          }
+        });
+        this.proxyOptions = hostArray;
+        if (this.isSlaDetail) {
+          defer(
+            () =>
+              (this.agentsLabel = this.proxyOptions
+                .filter(item =>
+                  includes(this.formGroup.get('agents').value, item.value)
+                )
+                .map(item => item.label)
+                .join(', '))
+          );
+        }
+      }
+    );
+  }
+
   getQosNames() {
     this.qosServiceApi
       .queryResourcesV1QosGet({
@@ -732,7 +881,7 @@ export class AdvancedParametersComponent implements OnInit {
         pageSize: 100
       })
       .subscribe(res => {
-        this.qosNames = map(res.items, (item: any) => {
+        this.qosNameOps = map(res.items, (item: any) => {
           item['isLeaf'] = true;
           item['label'] = item.name;
           return item;

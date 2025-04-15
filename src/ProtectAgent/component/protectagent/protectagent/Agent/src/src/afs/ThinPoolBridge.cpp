@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "afs/ThinPoolBridge.h"
 #include <exception>
 #include "afs/StripeSegment.h"
@@ -394,7 +406,8 @@ int32_t thinPoolBridge::collectDeviceidMap()
             return ret;
         }
 
-        m_map_devid.insert(pair<uint64_t, char *>((devid_node->keys)[index], root_node));
+        uint64_t key = devid_node->keys[index];
+        m_map_devid.insert(std::make_pair(key, root_node));
     }
 
     delete[] devid_node_buf;

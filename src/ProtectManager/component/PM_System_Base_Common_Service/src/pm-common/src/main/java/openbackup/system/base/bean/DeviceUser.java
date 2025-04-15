@@ -73,6 +73,12 @@ public class DeviceUser {
     private boolean isDefaultUser = false;
 
     /**
+     * 是否可用，密码错误时不可用
+     */
+    @JsonProperty("is_useful")
+    private boolean isUseful = true;
+
+    /**
      * 最后更新时间
      */
     @JsonProperty("last_update_time")
@@ -83,4 +89,10 @@ public class DeviceUser {
      */
     @JsonProperty("role")
     private Integer role;
+
+    /**
+     * 认证类型，0：业务认证，1：登录认证
+     */
+    @JsonProperty("auth_type")
+    private Integer authType;
 }

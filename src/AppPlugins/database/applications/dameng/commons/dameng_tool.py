@@ -20,6 +20,7 @@ from common.logger import Logger
 from common.util.check_utils import is_port
 from dameng.commons.common import get_env_value, check_port, cmd_grep, open_grep
 from dameng.commons.const import DamengStrFormat, DamengStrConstant, ArrayIndex
+from dameng.commons.dameng_login import DamengLogin
 from dameng.resource.damengsource import DamengSource
 
 LOGGER = Logger().get_logger("dameng_tool.log")
@@ -52,15 +53,17 @@ class DmSqlTool:
         # 执行sql
         code = self.child.expect(["SQL>"])
         for disql in cmd_list:
+            LOGGER.info(f"Execute sql command: {disql}.")
             self.child.sendline(s=disql)
             code = self.child.expect(["\[-", "SQL>", pexpect.TIMEOUT, pexpect.EOF])
             if code == 1:
                 info = self.child.before
+                LOGGER.info(f"Execute sql command succeeded.")
             else:
                 status = False
                 self.child.expect(["SQL>"])
                 info = self.child.before
-                LOGGER.error(f"Failed to execute the SQL.")
+                LOGGER.error(f"Execute sql command failed, error msg: {info}.")
             info = info.replace("\r\n", "\n")
             result.append(info)
         self.child.close()
@@ -70,21 +73,6 @@ class DmSqlTool:
         LOGGER.info("Start login_database.")
         user = get_env_value(self.userkey)
         password = get_env_value(self.pwdkey)
-        expect_list_dm8 = [
-            ("server", "服务名"), ("username", "用户名"), ("password", "密码"),
-            ("SSL path", "SSL路径"), ("SSL PWD", "SSL密码"), ("UKEY NAME", 'UKEY名称'),
-            ("UKEY PIN", "UKEY PIN码"), ("MPP TYPE", "MPP类型"), ("y/n", "y/n"),
-            ("protocol type", "协议类型"), (f"127.0.0.1:{self.port}", f"127.0.0.1:{self.port}")
-        ]
-        send_list_dm8 = ["login", f"127.0.0.1:{self.port}", user, password, '', '', '', '', mpp_type, '', '']
-        expect_list_dm7 = [
-            ("server", "服务名"), ("username", "用户名"),
-            ("password", "密码"), ("port", "端口号"),
-            ("SSL path", "SSL路径"), ("SSL PWD", "SSL密码"),
-            ("MPP TYPE", "MPP类型"), ("y/n", "y/n"),
-            ("protocol type", "协议类型"), (f"\[127.0.0.1:{self.port}\]", f"\[127.0.0.1:{self.port}\]")
-        ]
-        send_list_dm7 = ["login", "127.0.0.1", user, password, self.port, '', '', mpp_type, '', '']
         if self.version:
             dm_version = self.version
         else:
@@ -98,28 +86,18 @@ class DmSqlTool:
         if not ret:
             clear(password)
             return False, self.child.before
-        login_dict = {
-            "V7": (send_list_dm7, expect_list_dm7),
-            "V8": (send_list_dm8, expect_list_dm8)
-        }
-        ret, info = self.login_dm_all_version(dm_version, login_dict, user_locale)
+        ret, info = self.login_dm_all_version(dm_version, mpp_type, password, user, user_locale)
         clear(password)
         LOGGER.info(f"end login_database port.")
         return ret, info
 
-    def make_exec_child(self, user_locale):
-        cmd = DamengStrFormat.DISQL_LOGIN_PASSWORD.format(self.install_user, self.bin_path)
-        self.child = pexpect.spawn(cmd, timeout=self.timeout, encoding=user_locale)
-        code = self.child.expect(["SQL>", pexpect.TIMEOUT])
-        if code != 0:
-            LOGGER.info(f"Failed to load the disql tool.code: {code}.")
+    def login_dm_all_version(self, dm_version, mpp_type, password, user, user_locale):
+        if f"{dm_version}" not in ["V7", "V8"]:
+            # 不在兼容性版本范围之内
+            LOGGER.error(f"Out of compatibility")
             return False, self.child.before
-        return True, self.child.before
-
-    def login_dm_all_version(self, version, login_dict, user_locale):
-        # 现网存在Dameng 8。7000版本，大版本是8但回显结构为7类型，做此适配
-        login_info_list = login_dict.get(f"{version}", "")
-        ret, info = self.login_dm(login_info_list)
+        ret, info = DamengLogin(child=self.child, user=user, password=password, port=self.port, mpp_type=mpp_type,
+                                version=f"{dm_version}").login()
         if ret:
             LOGGER.info("Login database succ.")
             return ret, info
@@ -130,17 +108,31 @@ class DmSqlTool:
 
             # 如果版本不在兼容性范围内，或者根据版本预期的返回值不匹配，走以下逻辑
             LOGGER.warning(f"dm version and expect list not match")
-            for version, login_info_list in login_dict.items():
+            for version in ["V7", "V8"]:
                 self.child.close()
                 ret, info = self.make_exec_child(user_locale)
                 if not ret:
                     return False, self.child.before
                 LOGGER.warning(f"trying dm {version}")
-                ret, info = self.login_dm(login_info_list)
+                ret, info = DamengLogin(child=self.child, user=user, password=password, port=self.port,
+                                        mpp_type=mpp_type,
+                                        version=version).login()
                 if ret:
                     LOGGER.warning(f"Looks like {version} matches")
                     return ret, info
+            clear(password)
+            LOGGER.info(f"end login_database port.")
             return ret, info
+
+    def make_exec_child(self, user_locale):
+        cmd = DamengStrFormat.DISQL_LOGIN_PASSWORD.format(self.install_user, self.bin_path)
+        self.child = pexpect.spawn(cmd, timeout=self.timeout, encoding=user_locale)
+        code = self.child.expect(["SQL>", pexpect.TIMEOUT])
+        if code != 0:
+            LOGGER.info(f"Failed to load the disql tool.code: {code}.")
+            return False, self.child.before
+        return True, self.child.before
+
 
     def login_dm(self, login_check_info):
         if not login_check_info:
@@ -154,7 +146,7 @@ class DmSqlTool:
             code = self.child.expect(
                 [expect_list[index][0], expect_list[index][1], "SQL>", pexpect.EOF, pexpect.TIMEOUT])
             if code not in (0, 1):
-                LOGGER.error("Expect %s fail.", expect_list[index])
+                LOGGER.error(f"Expect {expect_list[index]} fail.")
                 return False, self.child.before
         return True, self.child.before
 
@@ -168,15 +160,17 @@ class DmSqlTool:
             return False, result
         code = child.expect(["SQL>"])
         for disql in cmd_list:
+            LOGGER.info(f"Execute sql command: {disql}.")
             child.sendline(s=disql)
             sql_exec_code = child.expect(["\[-", "SQL>", pexpect.TIMEOUT, pexpect.EOF])
             if sql_exec_code == 1:
                 msg = child.before
+                LOGGER.info(f"Execute sql command succeeded.")
             else:
                 status = False
                 child.expect(["SQL>"])
                 msg = child.before
-                LOGGER.error(f"Fail exec sql.")
+                LOGGER.error(f"Execute sql command failed, error msg: {msg}.")
             info = msg.replace("\r\n", "\n")
             result.append(info)
         child.close()
@@ -224,7 +218,7 @@ class DmSqlTool:
             LOGGER.error("Get bin_path user fail.")
             return status, result
         if not is_port(self.port):
-            LOGGER.error("Invalid port information.port:%s", self.port)
+            LOGGER.error(f"Invalid port information.port: {self.port}.")
             return status, result
         if disql_cmd:
             if self.auth_type == AuthType.OS_PASSWORD:

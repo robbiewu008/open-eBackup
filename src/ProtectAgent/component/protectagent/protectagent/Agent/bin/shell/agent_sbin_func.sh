@@ -1,14 +1,16 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
+# 
+#  This file is a part of the open-eBackup project.
+#  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+#  If a copy of the MPL was not distributed with this file, You can obtain one at
+#  http://mozilla.org/MPL/2.0/.
+# 
+#  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+# 
+#  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+#  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+#  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 SYS_NAME=`uname -s`
 AGENT_ROOT_PATH=${DATA_BACKUP_AGENT_HOME}/DataBackup/ProtectClient/ProtectClient-E
 SANCLIENT_ROOT_PATH=${DATA_BACKUP_SANCLIENT_HOME}/DataBackup/SanClient/ProtectClient-E
@@ -173,7 +175,11 @@ if [ "${TESTCFG_BACK_ROLE}" = "${BACKUP_ROLE_SANCLIENT_PLUGIN}" ]  || [ "${CLIEN
     AGENT_USER=${SANCLIENT_USER}
     AGENT_ROOT_PATH=${DATA_BACKUP_SANCLIENT_HOME}/DataBackup/SanClient/ProtectClient-E
 fi
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${AGENT_ROOT_PATH}/bin && export LD_LIBRARY_PATH
+if [ -z "$LD_LIBRARY_PATH" ]; then
+    export LD_LIBRARY_PATH=${AGENT_ROOT_PATH}/bin
+else
+    export LD_LIBRARY_PATH=${AGENT_ROOT_PATH}/bin:$LD_LIBRARY_PATH
+fi
 MAXLOGSIZE=52428800
 LOGFILE_SUFFIX="gz"
 
@@ -241,6 +247,7 @@ ASM_PASSWORD="ASMUSER_PASSWORD${PID}"
 DB_PASSWORD="DBUSER_PASSWORD${PID}"
 DB_ENCKEY="DB_ENCKEY${PID}"
 WAIT_SEC=60
+CURRENT_PID=$$
 
 AUTO_START_TYPE=0               # 0, unsurpport; 1, rpm; 2, dpkg;
 
@@ -277,6 +284,11 @@ if [ "${SYS_NAME}" = "SunOS" ] || [ "${SYS_NAME}" = "AIX" ]; then
 else
     BACKLOGCOUNT=`su -m ${AGENT_USER} -s ${SHELL_TYPE_SH} -c "${EXPORT_ENV}${AGENT_ROOT_PATH}/sbin/xmlcfg read System log_count"`
 fi
+
+# ip
+G_NETWORK_TYPE=
+SEMICOLON=":"
+DOT="."
 
 # Get the specified value from input argument
 ##############################################################
@@ -586,11 +598,17 @@ SUExecCmdWithOutput()
 {
     cmd=$1
     if [ "${SYS_NAME}" = "SunOS" ] || [ "${SYS_NAME}" = "AIX" ]; then
-        output=`su - ${AGENT_USER} -c "${EXPORT_ENV}${cmd}"`
+        output=`su - ${AGENT_USER} -c "${EXPORT_ENV}${cmd}"` 
+        ret=$?
     else
         output=`su -m ${AGENT_USER} -s ${SHELL_TYPE_SH} -c "${EXPORT_ENV}${cmd}"`
+        ret=$?
+        if [ $ret -ne 0 ]; then
+            output=`su -p ${AGENT_USER} -s ${SHELL_TYPE_SH} -c "${EXPORT_ENV}${cmd}"`
+            ret=$?
+        fi
     fi
-    ret=$?
+    
     VerifySpecialChar "$output"
     echo $output
     return $ret
@@ -599,7 +617,7 @@ SUExecCmdWithOutput()
 JudgeAutoStartType()
 {
     AUTO_START_TYPE=0
-    which rpm
+    which rpm >/dev/null 2>&1
     if [ $? = 0 ];then
         AUTO_START_TYPE=1
         Log "Judge auto start type like rpm."
@@ -631,7 +649,8 @@ AutoStartUseService()
     echo "[Service]" >> ${systemd_file}
     echo "User=root" >> ${systemd_file}
     echo "Type=forking" >> ${systemd_file}
-    echo "ExecStart= ${DATA_BACKUP_AGENT_HOME}/DataBackup/ProtectClient/start.sh" >> ${systemd_file}
+    echo "ExecStart= ${DATA_BACKUP_AGENT_HOME}/DataBackup/ProtectClient/start.sh service" >> ${systemd_file}
+    echo "KillMode=process" >> ${systemd_file}
     echo "[Install]" >> ${systemd_file}
     echo "WantedBy=multi-user.target" >> ${systemd_file}
     systemctl daemon-reload
@@ -641,24 +660,9 @@ AutoStartUseService()
 SetAutoStartSystemctl()
 {
     if [ -f "/etc/redhat-release" ]; then
-        str_version=`cat /etc/redhat-release 2>/dev/null | ${MYAWK} -F '(' '{print $1}' | ${MYAWK} '{print $NF}'`
-        if [ "`RDsubstr ${str_version} 1 1`" = "8" ] || [ "`RDsubstr ${str_version} 1 1`" = "9" ]; then
-            # redhat 8
-            systemd_file=/usr/lib/systemd/system/rdagent.service
-            echo "[Unit]" > ${systemd_file}
-            echo "Description=agent auto start" >> ${systemd_file}
-            echo "Wants=network-online.target" >> ${systemd_file}
-            echo "[Service]" >> ${systemd_file}
-            echo "User=root" >> ${systemd_file}
-            echo "Type=forking" >> ${systemd_file}
-            str_cmd="su - ${AGENT_USER} -s ${SHELL_TYPE_SH} ${UNIX_CMD} -c \\\"${AGENT_ROOT_PATH}/bin/monitor &\\\" > /dev/null"
-            echo "ExecStart=/bin/sh -c \"ps -u ${AGENT_USER} | grep -v grep | grep monitor > /dev/null; [ \$? -ne 0 ] && ${str_cmd}\"" >> ${systemd_file}
-            echo "[Install]" >> ${systemd_file}
-            echo "WantedBy=multi-user.target" >> ${systemd_file}
-            systemctl daemon-reload
-            systemctl enable rdagent
-            return
-        fi
+        # redhat
+        AutoStartUseService
+        return
     fi
 
     if [ -f "/etc/os-release" ]; then
@@ -670,7 +674,7 @@ SetAutoStartSystemctl()
     fi
 
     if [ -f "/etc/os-release" ]; then
-        cat /etc/os-release | grep "EulerOS 2.0" | grep -E "SP10|SP8"
+        cat /etc/os-release | grep "EulerOS 2.0"
         if [ $? = 0 ]; then
             AutoStartUseService
             return
@@ -1598,45 +1602,69 @@ RemovePortFilter()
     fi
 }
 
+# $1 ancestor pid, $2 pid; check if $1 is is ancestor pid of $2
+CheckParentPid()
+{
+    if [ $# -eq 1 ] || [ "$2" = "" ]; then
+        return 1
+    fi
+    newCheckPid=`ps -ef | ${MYAWK} '{if($2=='$2'){print $3} }'`;
+    if [ "$newCheckPid" = "$1" ]; then
+        return 0
+    fi
+    CheckParentPid $1 $newCheckPid
+    return $?
+}
+ 
+# $1: the pid will be kill; $2: if not empty, will check if $2 is parent pid of $1
 KillSonPids()
 {
-	pids=`ps -ef | ${MYAWK} '{if($3=='$1'){print $2} }'`;
-        kill -9 $1 2>/dev/null
+    if [ "$1" = "" ]; then
+        return
+    fi
+
+    if [ $# -ge 2 ] && [ "$1" != "" ] && [ "$2" != "" ]; then
+        # check if $2 is parent or ancestor pid of $1
+        CheckParentPid $2 $1
+        if [ $? -ne 0 ]; then
+            reCheckPid=`ps -ef | ${MYAWK} '{if($2=='$1'){print $2} }'`;
+            if [ "$reCheckPid" = "" ]; then
+                Log "Pid $1 already not exist."
+            else
+                Log "Pid $2 is not ancestor pid of $1"
+                echo "Pid $2 is not ancestor pid of $1" >> ${AGENT_ROOT_PATH}/slog/PID_${CURRENT_PID}_check.txt
+                ps -ef >> ${AGENT_ROOT_PATH}/slog/PID_${CURRENT_PID}_check.txt
+            fi
+            return
+        fi
+    fi
+
+    pids=`ps -ef | ${MYAWK} '{if($3=='$1'){print $2} }'`;
+    kill -9 $1 2>/dev/null
 	if [ -n "$pids" ]; then
-		for pid in $pids
-		do
-		    KillSonPids $pid
-		done
-	fi
+        for pid in $pids
+        do
+            KillSonPids $pid
+        done
+    fi
 }
 
 # Command timeout function
 Timeout()
 {
     waitsec=${WAIT_SEC}
+
     `$*` & pid=$!
-    if [ "$SYS_NAME" = "SunOS" ]; then
-        `sleep $waitsec && KillSonPids $pid` & watchdog=$!
-    else
-        `sleep $waitsec && kill -9 $pid 2>/dev/null` & watchdog=$!
-    fi
+    `sleep $waitsec && KillSonPids $pid $CURRENT_PID "$*"` & watchdog=$!
     if wait $pid 2>/dev/null; then
-        if [ "$SYS_NAME" = "SunOS" ]; then
-            KillSonPids $watchdog
-        else
-            kill -9 $watchdog 2>/dev/null
-        fi
+        KillSonPids $watchdog $CURRENT_PID
         wait $watchdog 2>/dev/null
         return 0
     else
         status=$?
         pid_exit=`ps -ef | ${MYAWK} '{print $2}'| grep -w $pid`
         if [ ! $pid_exit ]; then
-            if [ "$SYS_NAME" = "SunOS" ]; then
-                KillSonPids $watchdog
-            else
-                kill -9 $watchdog 2>/dev/null
-            fi
+            KillSonPids $watchdog $CURRENT_PID
             wait $watchdog 2>/dev/null
         fi
         return $status
@@ -1647,28 +1675,16 @@ TimeoutWithoutOutput()
 {
     waitsec=10
     `$* >/dev/null 2>&1` & pid=$!
-    if [ "$SYS_NAME" = "SunOS" ]; then
-        `sleep $waitsec && KillSonPids $pid` & watchdog=$!
-    else
-        `sleep $waitsec && kill -9 $pid 2>/dev/null` & watchdog=$!
-    fi
+    `sleep $waitsec && KillSonPids $pid $CURRENT_PID "$*"` & watchdog=$!
     if wait $pid 2>/dev/null; then
-        if [ "$SYS_NAME" = "SunOS" ]; then
-            KillSonPids $watchdog
-        else
-            kill -9 $watchdog 2>/dev/null
-        fi
+        KillSonPids $watchdog $CURRENT_PID
         wait $watchdog 2>/dev/null
         return 0
     else
         status=$?
         pid_exit=`ps -ef | ${MYAWK} '{print $2}'| grep -w $pid`
         if [ ! $pid_exit ]; then
-            if [ "$SYS_NAME" = "SunOS" ]; then
-                KillSonPids $watchdog
-            else
-                kill -9 $watchdog 2>/dev/null
-            fi
+            KillSonPids $watchdog $CURRENT_PID
             wait $watchdog 2>/dev/null
         fi
         return $status
@@ -1688,17 +1704,9 @@ TimeoutWithOutput()
     fi
     waitsec=10
     `${cmd} >> ${STMP_PATH}/return_${porcessId}` & pid=$!
-    if [ "$SYS_NAME" = "SunOS" ]; then
-        `sleep $waitsec && KillSonPids $pid` & watchdog=$!
-    else
-        `sleep $waitsec && kill -9 $pid 2>/dev/null` & watchdog=$!
-    fi
+    `sleep $waitsec && KillSonPids $pid $CURRENT_PID "${cmd}"` & watchdog=$!
     if wait $pid 2>/dev/null; then
-        if [ "$SYS_NAME" = "SunOS" ]; then
-            KillSonPids $watchdog
-        else
-            kill -9 $watchdog 2>/dev/null
-        fi
+        KillSonPids $watchdog $CURRENT_PID
         wait $watchdog 2>/dev/null
         returnVal=`cat ${STMP_PATH}/return_${porcessId}`
         rm -rf ${STMP_PATH}/return_${porcessId}
@@ -1707,11 +1715,7 @@ TimeoutWithOutput()
         status=$?
         pid_exit=`ps -ef | ${MYAWK} '{print $2}'| grep -w $pid`
         if [ ! $pid_exit ]; then
-            if [ "$SYS_NAME" = "SunOS" ]; then
-                KillSonPids $watchdog
-            else
-                kill -9 $watchdog 2>/dev/null
-            fi
+            KillSonPids $watchdog $CURRENT_PID
             wait $watchdog 2>/dev/null
         fi
         rm -rf ${STMP_PATH}/return_${porcessId}
@@ -1725,27 +1729,15 @@ TimeoutMountWithOutput()
     waitsec=${WAIT_SEC}
     porcessId=$$
     `${cmd} >> ${STMP_PATH}/return_${porcessId} 2>&1` & pid=$!
-    if [ "$SYS_NAME" = "SunOS" ]; then
-        `sleep $waitsec && KillSonPids $pid` & watchdog=$!
-    else
-        `sleep $waitsec && kill -9 $pid 2>/dev/null` & watchdog=$!
-    fi
+    `sleep $waitsec && KillSonPids $pid $CURRENT_PID "$cmd"` & watchdog=$!
     if wait $pid 2>/dev/null; then
-        if [ "$SYS_NAME" = "SunOS" ]; then
-            KillSonPids $watchdog
-        else
-            kill -9 $watchdog 2>/dev/null
-        fi
+        KillSonPids $watchdog $CURRENT_PID
         wait $watchdog 2>/dev/null
     else
         status=$?
         pid_exit=`ps -ef | awk '{print $2}'| grep -w $pid`
         if [ ! $pid_exit ]; then
-            if [ "$SYS_NAME" = "SunOS" ]; then
-                KillSonPids $watchdog
-            else
-                kill -9 $watchdog 2>/dev/null
-            fi
+            KillSonPids $watchdog $CURRENT_PID
             wait $watchdog 2>/dev/null
         fi
     fi
@@ -1761,7 +1753,7 @@ IpAddrVerify()
         return 0
     fi
     ipAddr=$1
-    echo "$ipAddr" | grep -E "^([a-fA-F0-9]{1,4}(:|\.)){0,7}(:|::)?([a-fA-F0-9]{1,4}(:|\.)){0,7}([a-fA-F0-9]{1,4})?$"
+    echo "$ipAddr" | grep -E "^([a-fA-F0-9]{1,4}(:|\.)){0,7}(:|::)?([a-fA-F0-9]{1,4}(:|\.)){0,7}([a-fA-F0-9]{1,4})?$" >/dev/null 2>&1
     if [ "$?" = "0" ];then
         Log "$ipAddr verify success."
         return 0
@@ -1771,48 +1763,112 @@ IpAddrVerify()
     fi
 }
 
-VerifyAndPing()
+IpPingPointInterface()
 {
-    ipAddr=$1
-    IpAddrVerify $ipAddr
-    if [ $? -ne 0 ]; then
-        Log "$ipAddr verify failed."
-        return 1
-    fi
-    echo ${ipAddr} | grep "\\:" >/dev/null 2>&1
-    if [ 0 -eq $? ]; then
-        echo "IPV6"
-        if [ "${SYS_NAME}" = "SunOS" ]; then
-            ping6 -s ${ipAddr} 56 1 > /dev/null 2>&1
-        else
-            ping6 -c 1 -w 3 ${ipAddr} > /dev/null 2>&1
-        fi
-        return $?
-    fi
-    echo ${ipAddr} | grep "\\." >/dev/null 2>&1
-    if [ 0 -eq $? ]; then
-        echo "IPV4"
-        if [ "${SYS_NAME}" = "SunOS" ]; then
-            ping -s ${ipAddr} 56 1 > /dev/null 2>&1
-        else
-            ping -c 1 -w 3 ${ipAddr} > /dev/null 2>&1
-        fi
-        return $?
-    fi
-    return 1
-}
-
-IpPing()
-{
-    pingCmd=$1
+    pingCMD=$1
     nic=$2
     ip=$3
+
+    Log "will check src interface $nic to dstIps $ip"
+
     if [ "${SYS_NAME}" = "SunOS" ]; then
         ${pingCMD} -i ${nic} -s ${ip} 56 1 > /dev/null 2>&1
     elif [ "${SYS_NAME}" = "AIX" ] || [ "${SYS_NAME}" = "HP-UX" ]; then
         ${pingCMD} -c 1 -o ${nic} ${ip} > /dev/null 2>&1
     else
         ${pingCMD} -c 1 -W 3 -I ${nic} ${ip} > /dev/null 2>&1
+    fi
+    return $?
+}
+
+IpPingPointAddress()
+{
+    pingCMD=$1
+    srcIp=$2
+    ip=$3
+    Log "will check src ip $srcIp to dstIp $ip"
+
+    if [ "${SYS_NAME}" = "SunOS" ]; then
+        if [ -z "${srcIp}" ]; then
+            ${pingCMD} -s ${ip} 56 1 > /dev/null 2>&1
+        else
+            ${pingCMD} -i ${srcIp} -s ${ip} 56 1 > /dev/null 2>&1
+        fi
+    else
+        if [ -z "${srcIp}" ]; then
+            ${pingCMD} -c 1 -w 3 ${ip} > /dev/null 2>&1
+        else
+            ${pingCMD} -c 1 -I ${srcIp} ${ip} > /dev/null 2>&1
+        fi
+    fi
+    return $?
+}
+
+CheckIpsConnectivityUsePing()
+{
+    src=$1
+    dstIps=$2
+    IpAddrVerify "$1"
+    verifyRes=$?
+
+    for dstIp in ${dstIps}; do
+        pingCmd="ping"
+        echo $dstIp | grep "\\${SEMICOLON}" >/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            pingCmd="ping6"
+        else
+            echo $dstIp | grep "\\${DOT}" >/dev/null 2>&1
+            if [ $? -eq 0 ]; then
+                pingCmd="ping"
+            fi
+        fi
+
+        if [ $verifyRes -eq 0 ] && [ "$src" = "" ]; then
+            IpPingPointAddress "${pingCmd}" "$src" "$dstIp"
+        else
+            IpPingPointInterface "${pingCmd}" "$src" "$dstIp"
+        fi
+
+        if [ $? -eq 0 ]; then
+            Log "Check connection from src ${src} to dst ${dstIp} success."
+            return 0
+        fi
+        Log "Check connection from src ${src} to dst ${dstIp} fail."
+    done
+
+    ShowWarning "Local interface ${src} can not connect remote ips ${dstIps}."
+    Log "Local interface ${src} can not connect remote ips ${dstIps}."
+    return 1
+}
+
+TestHostsConnectivity()
+{
+    srcIp=$1
+    dstIps=$2
+    dstPort=$3
+    Log "will test src $srcIp to dstIps $dstIps dstport $dstPort"
+    for dstIp in ${dstIps}; do
+        SUExecCmd "${AGENT_ROOT_PATH}/bin/agentcli testhost ${dstIp} $dstPort 5000 ${srcIp}"
+        if [ $? -eq 0 ]; then
+            Log "Check connection from src ${srcIp} to dst ${dstIp} port $dstPort success."
+            return 0
+        fi
+        Log "Check connection from src ${srcIp} to dst ${dstIp} port $dstPort fail."
+    done
+    if [ "$srcIp" = "" ]; then
+        ShowWarning "Local ip can not connect remote ips ${dstIps} port $dstPort."
+    fi
+    Log "Local ip ${srcIp} can not connect remote ips ${dstIps} port $dstPort."
+    return 1
+}
+
+# $1 srcIp, $2 dstIp, $3 dstPort
+CheckIpsConnectivity()
+{
+    if [ "$3" = "" ]; then
+         CheckIpsConnectivityUsePing "$1" "$2"
+    else
+        TestHostsConnectivity "$1" "$2" "$3"
     fi
     return $?
 }
@@ -1893,24 +1949,24 @@ CheckDistributedScenes()
 }
 
 #开关关闭时将跳过datatubo
-SkipDatatuboInstall()
+SkipDataturboInstall()
 {
-    #由conf文件里的参数来判断是否跳过datatubo
+    #由conf文件里的参数来判断是否跳过dataturbo
     IS_ENABLE_DATATURBO=`cat ${INSTALL_PACKAGE_PATH}/conf/client.conf | grep "is_enable_dataturbo" | ${MYAWK} -F '=' '{print $NF}'`
     if [ "$IS_ENABLE_DATATURBO" == "false" ] || [ "$IS_ENABLE_DATATURBO" == "" ]; then
-        Log "Service close and not install datatubo."
+        Log "Service close and not install dataturbo."
         return 1
     else
         return 0
     fi
 }
 
-PrepareDataTurboPkg()
+PrepareDataTurboPkgZip()
 {
     dataturboZipPath=$1
     # dataturbo安装包不存在
     if [ ! -f $dataturboZipPath ]; then
-        Log "Missing dataturbo installation package."
+        Log "Missing dataturbo installation zip package."
         return 1
     fi
 
@@ -1922,7 +1978,30 @@ PrepareDataTurboPkg()
     mv $dataturboTmp/OceanStor_DataTurbo_*_Linux $dataturboTmp/dataturbo
 
     if [ ! -d "${dataturboTmp}/dataturbo" ]; then
-        Log "Dataturbo pkg(${dataturboTmp}/dataturbo) not exit."
+        Log "Dataturbo pkg(${dataturboTmp}/dataturbo) not exit.(zipmode)"
+        return 1
+    fi
+    return 0
+}
+
+PrepareDataTurboPkgTar()
+{
+    dataturboTarPath=$1
+    # dataturbo安装包不存在
+    if [ ! -f $dataturboTarPath ]; then
+        Log "Missing dataturbo installation tar package."
+        return 1
+    fi
+
+    # 解压压缩包到指定目录
+    dataturboTmp=$2
+    rm -rf $dataturboTmp
+    mkdir -p $dataturboTmp
+    tar zxvf $dataturboTarPath -C $dataturboTmp > /dev/null
+    mv $dataturboTmp/OceanStor_DataTurbo_*_Linux $dataturboTmp/dataturbo
+
+    if [ ! -d "${dataturboTmp}/dataturbo" ]; then
+        Log "Dataturbo pkg(${dataturboTmp}/dataturbo) not exit.(tarmode)"
         return 1
     fi
     return 0
@@ -1995,20 +2074,26 @@ IsDataturboVersionCanUpgrade()
         # curPkg: 1.1.RC1-202302201206
         curPkgVersion=`echo ${curPkg} | ${MYAWK} -F '-' '{print $1}'`
         curPkgRelease=`echo ${curPkg} | ${MYAWK} -F '-' '{print $2}'`
+        dataturboNew=$1
+        pkgNew=`ls ${dataturboNew}/dataturbo/packages/ | grep dataturbo | grep ${pkgType} | grep ${processorType}`
+        # pkgNew: oceanstor_dataturbo_1.5.0-202412281429.linux.x86_64.deb
+        newPkgVersion=${pkgNew%%-*}              # oceanstor_dataturbo_1.5.0
+        newPkgVersion=${newPkgVersion##*_}             # 1.5.0
+        newPkgRelease=${pkgNew##*-}              # 202412281429.linux.x86_64.deb
+        newPkgRelease=${newPkgRelease%%.*}             # 202412281429
     else
         pkgType="rpm"
         curPkg=`rpm -qa dataturbo 2>/dev/null`
         # curPkg: dataturbo-1.1.RC1-202302201206.x86_64
         curPkgVersion=`echo ${curPkg} | ${MYAWK} -F '-' '{print $2}'`
         curPkgRelease=`echo ${curPkg} | ${MYAWK} -F '-' '{print $3}' | ${MYAWK} -F '.' '{print $1}'`
+        dataturboNew=$1
+        pkgNew=`ls ${dataturboNew}/dataturbo/packages/ | grep dataturbo | grep ${pkgType} | grep ${processorType}`
+        # pkgNew: oceanstor_dataturbo_1.5.RC1_linux_x86_64_202407231912.rpm
+        newPkgVersion=`echo ${pkgNew} | ${MYAWK} -F '_' '{print $3}'`    # 1.5.RC1
+        newPkgRelease=${pkgNew##*_}         # 202407231912.rpm
+        newPkgRelease=`echo ${newPkgRelease} | ${MYAWK} -F '.' '{print $1}'`     # 202407231912
     fi
-
-    dataturboNew=$1
-    pkgNew=`ls ${dataturboNew}/dataturbo/packages/ | grep dataturbo | grep ${pkgType} | grep ${processorType}`
-    # pkgNew: oceanstor_dataturbo_1.5.RC1_linux_x86_64_202407231912.rpm
-    newPkgVersion=`echo ${pkgNew} | ${MYAWK} -F '_' '{print $3}'`    # 1.5.RC1
-    newPkgRelease=${pkgNew##*_}         # 202407231912.rpm
-    newPkgRelease=`echo ${newPkgRelease} | ${MYAWK} -F '.' '{print $1}'`     # 202407231912
 
     Log "Get dataturbo pkg. cur pkg(${curPkgVersion}-${curPkgRelease}), new pkg(${newPkgVersion}-${newPkgRelease})."
     ShowInfo "Get dataturbo pkg. cur pkg(${curPkgVersion}-${curPkgRelease}), new pkg(${newPkgVersion}-${newPkgRelease})."
@@ -2073,7 +2158,11 @@ UnInstallDataTurbo()
 InstallDataTurbo()
 {
     dataturboTmp="/opt/oceanstor/DataTurboTmp"
-    PrepareDataTurboPkg $1 $dataturboTmp
+    if [ "$2" = "tar" ]; then
+        PrepareDataTurboPkgTar $1 $dataturboTmp
+    else 
+        PrepareDataTurboPkgZip $1 $dataturboTmp
+    fi
     if [ $? -ne 0 ]; then
         ShowError "Prapare dataTurbo pkg fail."
         Log "Prapare dataTurbo pkg fail."
@@ -2133,7 +2222,11 @@ UpgradeDataTurbo()
 {
     dataturboTmp="/opt/oceanstor/DataTurboTmp"
     dataturboCur="/opt/oceanstor"
-    PrepareDataTurboPkg $1 $dataturboTmp
+    if [ "$2" = "tar" ]; then
+        PrepareDataTurboPkgTar $1 $dataturboTmp
+    else 
+        PrepareDataTurboPkgZip $1 $dataturboTmp
+    fi
     if [ $? -ne 0 ]; then
         ShowError "Prapare dataTurbo pkg fail."
         Log "Prapare dataTurbo pkg fail."

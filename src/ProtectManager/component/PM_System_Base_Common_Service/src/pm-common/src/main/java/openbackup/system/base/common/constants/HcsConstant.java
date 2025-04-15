@@ -56,4 +56,9 @@ public class HcsConstant {
      * 更新hosts的脚本
      */
     public static final String PYTHON_SCRIPT_PATH = "/script/update_hosts.py";
+
+    /**
+     * 刪除hosts的脚本
+     */
+    public static final String PYTHON_DELETE_HOST_SCRIPT_PATH = "/script/delete_hosts.py";
 }

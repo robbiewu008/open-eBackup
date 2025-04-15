@@ -23,6 +23,10 @@ add_library(${PROTOCOL_TARGET_NAME}
                    include/protocol/fuse/FuseMessage.h
                    src/fuse/FuseMessage.cpp
 
+                   # OsadAdmin message
+                   include/protocol/OsadAdminMessage.h
+                   src/OsadAdminMessage.cpp
+
                    # fuse requests and responses
                    include/protocol/fuse/Flush.h
                    include/protocol/fuse/Lookup.h
@@ -39,6 +43,7 @@ add_library(${PROTOCOL_TARGET_NAME}
                    include/protocol/fuse/Unlink.h
                    include/protocol/fuse/RemoveDirectory.h
                    include/protocol/fuse/MakeDirectory.h
+                   include/protocol/fuse/MkNod.h
                    include/protocol/fuse/Link.h
                    include/protocol/fuse/SymLink.h
                    include/protocol/fuse/Rename.h

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -26,6 +26,7 @@ import {
   DataMap,
   DataMapService,
   DATE_PICKER_MODE,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getLabelList,
   getPermissionMenuItem,
@@ -42,6 +43,7 @@ import {
   ProtectResourceAction,
   ProtectResourceCategory,
   RoleOperationMap,
+  SetTagType,
   WarningMessageService
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
@@ -52,6 +54,7 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { ProtectService } from 'app/shared/services/protect.service';
@@ -82,6 +85,7 @@ import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MessageService } from '@iux/live';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
+import { GetLabelOptionsService } from '../../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-filesets',
@@ -96,7 +100,7 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
   optsConfig;
   optItems = [];
   selectionData = [];
-
+  currentDetailUuid = '';
   groupCommon = GROUP_COMMON;
 
   @Input() data: any;
@@ -121,7 +125,9 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
     private warningMessageService: WarningMessageService,
     private takeManualBackupService: TakeManualBackupService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService,
+    private appUtilsService: AppUtilsService
   ) {}
 
   ngAfterViewInit() {
@@ -227,15 +233,6 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
               this.selectionData = [];
               this.dataTable.setSelections([]);
               this.dataTable.fetchData();
-              if (
-                includes(
-                  mapValues(this.drawModalService.modals, 'key'),
-                  'detail-modal'
-                ) &&
-                size(data) === 1
-              ) {
-                this.getResourceDetail(data);
-              }
             });
         },
         disableCheck: data => {
@@ -262,20 +259,12 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
               this.selectionData = [];
               this.dataTable.setSelections([]);
               this.dataTable.fetchData();
-              if (
-                includes(
-                  mapValues(this.drawModalService.modals, 'key'),
-                  'detail-modal'
-                ) &&
-                size(data) === 1
-              ) {
-                this.getResourceDetail(data);
-              }
             });
         },
         disableCheck: data => {
           return (
             !size(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX ||
             !isUndefined(
               find(
                 data,
@@ -283,7 +272,9 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
               )
             )
           );
-        }
+        },
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n)
       },
       {
         id: 'recovery',
@@ -360,7 +351,7 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_add_tag_label'),
         onClick: data => this.addTag(data)
@@ -372,7 +363,7 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_remove_tag_label'),
         onClick: data => this.removeTag(data)
@@ -495,8 +486,11 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -566,6 +560,7 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data,
+      type: SetTagType.Resource,
       onOk: () => {
         this.dataTable?.setSelections([]);
         this.dataTable?.fetchData();
@@ -577,6 +572,7 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data,
+      type: SetTagType.Resource,
       onOk: () => {
         this.dataTable?.setSelections([]);
         this.dataTable?.fetchData();
@@ -601,8 +597,9 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
         delete conditions_v2.environment_name;
       }
       if (conditions_v2.labelList) {
+        conditions_v2.labelList.shift();
         conditions_v2['labelCondition'] = {
-          labelName: conditions_v2.labelList[1]
+          labelList: conditions_v2.labelList
         };
         delete conditions_v2.labelList;
       }
@@ -637,6 +634,13 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
     }
 
     this.protectedResourceApiService.ListResources(params).subscribe(res => {
+      this.appUtilsService.openDetailModalAfterQueryData(
+        {
+          autoPolling: args?.isAutoPolling,
+          records: res.records
+        },
+        this
+      );
       this.tableData = {
         total: res.totalCount,
         data: _map(res.records, (item: any) => {
@@ -659,6 +663,7 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
   }
 
   getResourceDetail(params) {
+    this.currentDetailUuid = params.uuid;
     this.protectedResourceApiService
       .ListResources({
         pageNo: CommonConsts.PAGE_START,
@@ -728,7 +733,8 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
                   return getTableOptsItems(cloneDeep(this.optItems), v, this);
                 }
               }
-            )
+            ),
+            lvHeader: item?.name
           }
         );
       });
@@ -921,9 +927,6 @@ export class FilesetsComponent implements OnInit, AfterViewInit {
         this.selectionData = [];
         this.dataTable.setSelections([]);
         this.dataTable.fetchData();
-      },
-      restoreWidth: params => {
-        this.getResourceDetail(params);
       }
     });
   }

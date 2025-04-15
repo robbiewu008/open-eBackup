@@ -12,13 +12,12 @@
 */
 package openbackup.system.base.sdk.auth;
 
-import openbackup.system.base.common.enums.UserTypeEnum;
-import openbackup.system.base.sdk.auth.model.ResourceSetAuthorization;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.common.enums.UserTypeEnum;
+import openbackup.system.base.sdk.auth.model.ResourceSetAuthorization;
 
 import org.apache.logging.log4j.util.Strings;
 
@@ -49,7 +48,7 @@ public class UserRequest {
 
     private Set<ResourceSetAuthorization> resourceSetAuthorizationSets = new HashSet<>();
 
-    private int sessionLimit = 1;
+    private Integer sessionLimit;
 
     private String userType = UserTypeEnum.COMMON.getValue();
 

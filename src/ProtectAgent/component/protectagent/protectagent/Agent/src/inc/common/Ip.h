@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef __AGENT_IP_H__
 #define __AGENT_IP_H__
 
@@ -52,6 +64,7 @@ private:
     static mp_int32 GetUIntIpAddr(mp_string& strIpAddr, mp_uint32& uiIpAddr);
     static mp_void GetListenPort(const mp_string& nginxListenPort, mp_string& strPort);
     static mp_int32 GetValueFromConfFile(const mp_string& key, mp_string& val);
+    static mp_int32 GetApplicationJson(const mp_string& applicationText, mp_string& applications);
 };
 
 #endif  // __AGENT_UNIQUEID_H__

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -20,6 +20,7 @@ import {
 } from '@angular/core';
 import {
   ApplicationType,
+  autoTableScroll,
   CommonConsts,
   CookieService,
   CopyControllerService,
@@ -35,6 +36,7 @@ import {
   ProtectedResourceApiService,
   ProtectResourceAction,
   ProtectResourceCategory,
+  RoleType,
   VirtualResourceService,
   WarningMessageService
 } from 'app/shared';
@@ -65,6 +67,7 @@ import {
 import { ManualCopyComponent } from './manual-copy/manual-copy.component';
 import { finalize } from 'rxjs/operators';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
+import { ModifyOwnedUserComponent } from 'app/shared/components/modify-owned-user/modify-owned-user.component';
 
 @Component({
   selector: 'aui-resource-replica-list',
@@ -140,7 +143,13 @@ export class ResourceReplicaListComponent implements OnInit {
     this.getColumns();
     this.getResource();
     this.initColumnSelection();
-    this.virtualScroll.getScrollParam(this.isHyperdetect ? 320 : 420);
+    this.virtualScroll.getScrollParam(this.isHyperdetect ? 170 : 270);
+    autoTableScroll(
+      this.virtualScroll,
+      this.isHyperdetect ? 170 : 270,
+      null,
+      this.cdr
+    );
   }
 
   getColumns() {
@@ -468,9 +477,17 @@ export class ResourceReplicaListComponent implements OnInit {
       {
         id: 'manualCopy',
         disabled: !item.protectedSlaId,
+        hidden: item?.resourceSubType === DataMap.Resource_Type.oraclePDB.value,
         permission: OperateItems.RestoreCopy,
         label: this.i18n.get('protection_manual_copy_label'),
         onClick: () => this.manualCopy(item)
+      },
+      {
+        id: 'modifyOwnedUser',
+        disabled: this.cookieService.role !== RoleType.SysAdmin,
+        permission: OperateItems.RestoreCopy,
+        label: this.i18n.get('common_modify_owned_user_label'),
+        onClick: () => this.modifyOwnedUser(item)
       }
     ];
 
@@ -625,6 +642,38 @@ export class ResourceReplicaListComponent implements OnInit {
     });
   }
 
+  modifyOwnedUser(data) {
+    this.drawModalService.create({
+      ...MODAL_COMMON.generateDrawerOptions(),
+      lvHeader: this.i18n.get('common_modify_owned_user_label'),
+      lvContent: ModifyOwnedUserComponent,
+      lvOkDisabled: true,
+      lvWidth: MODAL_COMMON.normalWidth,
+      lvComponentParams: {
+        rowItem: assign({}, data)
+      },
+      lvAfterOpen: modal => {
+        const content = modal.getContentComponent() as ModifyOwnedUserComponent;
+        const modalIns = modal.getInstance();
+        content.formGroup.statusChanges.subscribe(res => {
+          modalIns.lvOkDisabled = res !== 'VALID';
+        });
+      },
+      lvOk: modal => {
+        return new Promise(resolve => {
+          const content = modal.getContentComponent() as ModifyOwnedUserComponent;
+          content.onOK().subscribe(
+            res => {
+              resolve(true);
+              this.getResource();
+            },
+            () => resolve(false)
+          );
+        });
+      }
+    });
+  }
+
   pageChange(page) {
     this.pageSize = page.pageSize;
     this.pageIndex = page.pageIndex;
@@ -668,14 +717,14 @@ export class ResourceReplicaListComponent implements OnInit {
         data: assign(
           {
             uuid: item.resourceId,
-            name: item.resourceName,
             ip:
               resource.sub_type === DataMap.Resource_Type.virtualMachine.value
                 ? ''
                 : resource.environment_endpoint
           },
           item,
-          resource
+          resource,
+          { name: item.resourceName }
         ),
         formCopyDataList: true
       },

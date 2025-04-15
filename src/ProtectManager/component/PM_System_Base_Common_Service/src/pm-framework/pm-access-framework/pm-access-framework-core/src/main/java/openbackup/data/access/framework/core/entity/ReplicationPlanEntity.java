@@ -12,9 +12,8 @@
 */
 package openbackup.data.access.framework.core.entity;
 
-import openbackup.system.base.common.constants.IsmNumberConstant;
-
 import lombok.Data;
+import openbackup.system.base.common.constants.IsmNumberConstant;
 
 /**
  * Replication Plan Entity

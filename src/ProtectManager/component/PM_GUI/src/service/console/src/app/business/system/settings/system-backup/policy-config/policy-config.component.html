@@ -20,7 +20,8 @@
             {{'system_launch_time_label' | i18n}}
         </lv-form-label>
         <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
-            <lv-time-picker formControlName="backupTime" lvPlaceholder="HH:mm" [lvFormat]="'HH:mm'">
+            <lv-time-picker formControlName="backupTime" lvPlaceholder="HH:mm" [lvFormat]="'HH:mm'"
+                [lvFooter]="timePickerFooterTpl">
             </lv-time-picker>
         </lv-form-control>
     </lv-form-item>
@@ -70,7 +71,7 @@
     <lv-form-item>
         <lv-form-label>
             {{'system_backup_dest_label' | i18n}}
-            <i *ngIf="isCyberengine" lv-icon="aui-icon-help" lv-tooltip="{{'system_backup_dest_help_label' | i18n}}"
+            <i *ngIf="isCyberengine || isOceanProtect" lv-icon="aui-icon-help" lv-tooltip="{{backupPathTip}}"
                 lvTooltipPosition="top" lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
         </lv-form-label>
         <lv-form-control [lvErrorTip]="destPathErrorTip">
@@ -112,13 +113,10 @@
 <ng-template #footerTpl>
     <div class="lv-modal-btns">
         <lv-group lvGutter='8px'>
-            <button lv-button (click)='test()' [disabled]="formGroup.get('destIp').invalid
-                || formGroup.get('destUsername').invalid
-                || formGroup.get('destPwd').invalid
-                || formGroup.get('destPort').invalid">
+            <button lv-button lvType='primary' (click)='test()' [disabled]="formGroup.invalid">
                 {{ 'common_test_label' | i18n }}
             </button>
-            <button lv-button lvType='primary' (click)='ok()' [disabled]="formGroup.invalid">
+            <button lv-button lvType='primary' (click)='ok()' [disabled]="!isTest || formGroup.invalid">
                 {{'common_ok_label' | i18n }}
             </button>
             <button lv-button (click)='modal.close()'>
@@ -126,4 +124,10 @@
             </button>
         </lv-group>
     </div>
+</ng-template>
+
+<ng-template #timePickerFooterTpl>
+    <button lv-button lvType="link" class="time-picker-current" (click)="setSysTime()">
+        {{'common_current_time_label' | i18n}}
+    </button>
 </ng-template>

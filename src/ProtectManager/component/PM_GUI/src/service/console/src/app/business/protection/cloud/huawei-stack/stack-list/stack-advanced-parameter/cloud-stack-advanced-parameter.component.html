@@ -16,7 +16,7 @@
         <lv-form [formGroup]="formGroup" [lvLabelColon]="false" class="formGroup">
             <lv-form-item>
                 <lv-form-label>
-                    {{'protection_proxy_host_label' | i18n}}
+                    {{'protection_clients_label' | i18n}}
                     <i lv-icon="aui-icon-help" [lv-tooltip]="'protection_hcs_proxy_server_tip_label' | i18n"
                         lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
                 </lv-form-label>
@@ -41,10 +41,16 @@
                     </ng-template>
                 </lv-form-control>
             </lv-form-item>
+            <!-- 索引 -->
+            <aui-update-index [formGroup]="formGroup" [extParams]="extParams"
+                [noNeedMgt]="resourceType === dataMap.Resource_Type.Project.value"></aui-update-index>
             <ng-container *ngIf="resourceType === dataMap.Resource_Type.Project.value">
                 <lv-form-item>
                     <lv-form-label>
                         {{'protection_overwrite_policy_label' | i18n}}
+                        <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_overwrite_policy_hcs_help_label' | i18n}}"
+                            lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
+                            lvColorState='true'></i>
                     </lv-form-label>
                     <lv-form-control>
                         <lv-radio-group formControlName="slaOverwrite">
@@ -68,6 +74,8 @@
                             <lv-group [lvGutter]="'8px'" lvDirection='vertical' class="mgt-8">
                                 <lv-checkbox lvValue="APPLY_TO_ALL">
                                     {{'protection_apply_sla_in_hcs_project_label' | i18n:[selectedTitle] }}
+                                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_hcs_sla_help_label' | i18n}}"
+                                        lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
                                 </lv-checkbox>
                                 <lv-checkbox lvValue="APPLY_TO_NEW">
                                     {{'protection_apply_sla_in_new_hcs_project_label' | i18n:[selectedTitle] }}
@@ -84,9 +92,6 @@
         <ng-container *ngIf="resourceType !== dataMap.Resource_Type.Project.value">
             <aui-copy-limit-advanced-parameter [formGroup]="formGroup"
                 [data]="resourceData"></aui-copy-limit-advanced-parameter>
-        </ng-container>
-        <ng-container *ngIf="resourceType !== dataMap.Resource_Type.Project.value">
-            <aui-update-index [formGroup]="formGroup" [extParams]="extParams"></aui-update-index>
         </ng-container>
     </lv-collapse-panel>
 </lv-collapse>

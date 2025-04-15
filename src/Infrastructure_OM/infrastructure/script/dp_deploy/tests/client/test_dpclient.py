@@ -3,11 +3,10 @@ import mock
 import sys
 from urllib.parse import urlparse
 from click.testing import CliRunner
-from typing import Dict
+from typing import Dict, List
 import json
 import logging as log
 import unittest
-import tempfile
 import os
 import shutil
 
@@ -16,6 +15,9 @@ import consts
 from dpclient import main as main_prog
 from config import SimbaOSInstallConfig, SimbaOSConfigGenerator, SimbaOSExpandConfig
 
+from mock_config import xlsx_e6000_expected_content, mock_password,\
+                        mock_dataprotect_image_name, mock_simbaos_package_name,\
+                        mock_dataprotect_chart_name, mock_config_file_name
 
 mock_primary_fsm = '1.1.1.1'
 mock_get_primary_fsm_response = {
@@ -23,14 +25,14 @@ mock_get_primary_fsm_response = {
     'nodeIpPrimaryExter': mock_primary_fsm,
     'nodeNamePrimary': 'node1',
 }
+mock_simbaos_package_name = 'SimbaOS-v1.3.0-release-aarch64.tar.gz'
+mock_dataprotect_chart_name = 'OceanProtect_DataProtect_1.6.RC1_chart_ARM_64.tgz'
+mock_dataprotect_image_name = 'OceanProtect_DataProtect_1.6.RC1_image_ARM_64.tgz'
+mock_upgrade_dpserver_package = 'dpserver-version2.tgz'
 
 mock_float_ip = '1.2.3.7'
 mock_float_ipv6 = '44:00:4d:65:37:5c'
 mock_esn = 'mock_esn'
-
-mock_simbaos_package_name = 'SimbaOS-v1.3.0-release-aarch64.tar.gz'
-mock_dataprotect_chart_name = 'OceanProtect_DataProtect_1.6.RC1_chart_ARM_64.tgz'
-mock_dataprotect_image_name = 'OceanProtect_DataProtect_1.6.RC1_image_ARM_64.tgz'
 
 mock_dpserver_version1 = 'version1'
 mock_dpserver_version2 = 'version2'
@@ -51,7 +53,6 @@ dataprotect:
   chart: {}
   image: {}
 """
-
 
 class MockStoragePool:
     def __init__(self, id, poolPara, server_list):
@@ -246,7 +247,8 @@ class MockDpServer:
         self.simbaos_cluster.unregister(self.hostname)
         self.dataprotect_cluster.unregister(self.hostname)
 
-    def handle_requests(self, method, path, json, **kwarg):
+    def handle_requests(self, method: str, path: str, json, **kwarg):
+
         if json is not None:
             ns = json.get('namespace_name')
             nid = json.get('namespace_id')
@@ -446,7 +448,7 @@ class MockDpServer:
 
 
 class MockPacificService:
-    def __init__(self, nodes: [MockPacificNode], pool: MockStoragePool = None):
+    def __init__(self, nodes: List[MockPacificNode], pool: MockStoragePool = None):
         self.pool = pool
         self.account_id = None
         self.tasks = []
@@ -458,7 +460,7 @@ class MockPacificService:
         self.tasks.append(False)
         return len(self.tasks)-1
 
-    def _expand_nodes(self, nodes: [MockPacificNode]):
+    def _expand_nodes(self, nodes: List[MockPacificNode]):
         self.nodes.extend(nodes)
 
     def _delete_node(self, node):
@@ -538,7 +540,7 @@ class MockPacificService:
 
     def login(self, user_name, password):
         assert user_name == 'admin'
-        assert password == 'mock_password'
+        assert password == mock_password
         return self.ok(x_auth_token='mock_token')
 
     def get_servers(self):
@@ -658,7 +660,7 @@ class MockPacificService:
 
 
 class MockCluster:
-    def __init__(self, pacific_nodes: [MockPacificNode], float_ip):
+    def __init__(self, pacific_nodes: List[MockPacificNode], float_ip):
         self.float_ip = float_ip
         self.dpserves: Dict[str, MockDpServer] = {
             node.get_management_ip(): MockDpServer(node.name)
@@ -672,7 +674,7 @@ class MockCluster:
         return self.dpserves[address]\
             .handle_requests(method, path, json, **kwarg)
 
-    def expand_pacific_nodes(self, nodes: [MockPacificNode]):
+    def expand_pacific_nodes(self, nodes: List[MockPacificNode]):
         for n in nodes:
             self.dpserves[n.get_management_ip()] = MockDpServer(n.name)
         self.pacific._expand_nodes(nodes)
@@ -724,14 +726,18 @@ class MockRequestSession:
 
 
 def mock_getpass(*args, **kwarg):
-    return 'mock_password'
+    return mock_password
 
+def mock_e6000_read_xlsx(path, simbaos_package=None, \
+                         chart_package=None, image_package=None):
+    return xlsx_e6000_expected_content, mock_password
 
 class DataprotectDeploymentClientTest(unittest.TestCase):
 
-    def setup_temp_filesystem(self):
-        tempdir = tempfile.mkdtemp()
-        # os.mkdir(os.path.join(tempdir, 'template'))
+    def setup_temp_filesystem(self, tempdir="./tmp"):
+        if os.path.exists(tempdir):
+            shutil.rmtree(tempdir)  # Remove it if it already exists (clean start)
+        os.makedirs(tempdir, exist_ok=True)
         shutil.copytree('./client/template', os.path.join(tempdir, 'template'))
 
         self._new_empty_files(
@@ -799,8 +805,10 @@ class DataprotectDeploymentClientTest(unittest.TestCase):
         worker_cnt = dp_cluster.pe_replicas
         self.assertTrue(node_cnt >= 3)
         self.assertTrue(node_cnt <= 32)
-        if node_cnt <= 16:
+        if node_cnt <= 3:
             self.assertTrue(master_cnt == 3)
+        elif node_cnt <= 16:
+            self.assertTrue(master_cnt == 4)
         elif node_cnt <= 32:
             self.assertTrue(master_cnt == 5)
         self.assertTrue(worker_cnt == node_cnt)
@@ -835,6 +843,15 @@ class DataprotectDeploymentClientTest(unittest.TestCase):
         result = runner.invoke(main_prog, args)
         assert result.exit_code == 0
         self.check_cluster_ok(mock_cluster)
+    
+    def install_cluster_xlsx(self):
+        runner = CliRunner()
+        args = ['e6000', '-f', mock_config_file_name, "-P1", mock_simbaos_package_name, \
+                "-P2", mock_dataprotect_chart_name, "-P3", mock_dataprotect_image_name, 'install', '--no_rollback']
+        result = runner.invoke(main_prog, args)
+        assert result.exit_code == 0
+        self.check_cluster_ok(mock_cluster)
+
 
     def reset_cluster(self):
         runner = CliRunner()
@@ -854,6 +871,21 @@ class DataprotectDeploymentClientTest(unittest.TestCase):
         node_names = ','.join([n.name for n in nodes])
         args = ["e6000"]
         args += ['-f', 'config.yaml', 'expand', '--nodes', node_names]
+        result = runner.invoke(main_prog, args)
+        assert result.exit_code == 0
+        self.check_cluster_ok(mock_cluster)
+
+    def expand_cluster_xlsx(self, total_num):
+        assert total_num > self.nodes_cnt
+        nodes = generate_mock_pacific_node(
+            ids=[i + self.nodes_cnt for i in range(0, total_num-self.nodes_cnt)])
+        self.nodes_cnt = total_num
+        mock_cluster.expand_pacific_nodes(nodes)
+        xlsx_e6000_expected_content["expanded_node_names"] = [n.name for n in nodes]
+        runner = CliRunner()
+        node_names = ','.join([n.name for n in nodes])
+        args = ['e6000', '-f', mock_config_file_name, "-P1", mock_simbaos_package_name, \
+                "-P2", mock_dataprotect_chart_name, "-P3", mock_dataprotect_image_name, 'expand']
         result = runner.invoke(main_prog, args)
         assert result.exit_code == 0
         self.check_cluster_ok(mock_cluster)
@@ -922,11 +954,14 @@ class DataprotectDeploymentClientTest(unittest.TestCase):
         result = runner.invoke(main_prog, args)
         assert result.exit_code == 0
 
+
+
     @mock.patch('requests.Session', MockRequestSession)
     @mock.patch('getpass.getpass', mock_getpass)
+    @mock.patch('dpclient.read_e6000_xlsx', mock_e6000_read_xlsx)
     @mock.patch('subcommands.dpserver.extract_version_from_package', )
-    def test_dpclient(self, mock_extract_version):
-        self.install_cluster()
+    def test_dpclient_xlsx(self, mock_extract_version):
+        self.install_cluster_xlsx()
         self.namespace_get_create_and_delete(mock_cluster.pacific.pool.id, 0)
         self.dataprotect_reset_and_install()
         self.simbaos_reset_and_install()

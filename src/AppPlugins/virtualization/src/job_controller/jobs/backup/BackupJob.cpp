@@ -41,6 +41,7 @@ constexpr uint32_t KB_SIZE = 1024;
 constexpr uint32_t GB_SIZE = 1024 * 1024 * 1024;
 constexpr uint32_t MAX_EXEC_COUNT = 3;
 constexpr uint32_t RETRY_INTERVAL_SECOND = 5;
+constexpr uint32_t GET_IO_TIMEOUT = 5 * 1000;
  
 // 	错误场景：执行调用生产端接口操作时，由于调用生产端接口失败，操作失败。
 constexpr int64_t INVOKE_API_FAILED_GENERAL_CODE = 1577213460;
@@ -424,8 +425,8 @@ int BackupJob::CleanLeftovers()
 bool BackupJob::IfSaveValidDataBitMap()
 {
     // 全量备份第一段差量位图为全F, 则该卷不记有效数据位图
-    if (m_backupPara->jobParam.backupType == AppProtect::BackupJobType::FULL_BACKUP &&
-        !m_volHandler->GetIfMarkBlockValidData()) {
+    if (m_backupPara->jobParam.backupType == AppProtect::BackupJobType::FULL_BACKUP
+        && !m_volHandler->GetIfMarkBlockValidData()) {
         return false;
     }
     // 增量备份根据是否存在有效数据位图信息来判断
@@ -476,6 +477,7 @@ int BackupJob::GetDirtyRanges()
     if (m_ifSaveValidDataBitMap == INITIAL_STATE) {
         m_ifSaveValidDataBitMap = IfSaveValidDataBitMap() ? SAVE_BLOCK_BIT_MAP : NOT_SAVE_BLOCK_BIT_MAP;
     }
+        
     // 初始化块位图文件及指针
     if (m_ifSaveValidDataBitMap == SAVE_BLOCK_BIT_MAP && !InitCurSegBlockDataBitMap()) {
         ERRLOG("Init block bit map failed, %s", m_taskInfo.c_str());
@@ -580,7 +582,6 @@ void BackupJob::SetBlockDataFlag(uint64_t offset, uint64_t confSegSize)
 {
     if (m_ifSaveValidDataBitMap == NOT_SAVE_BLOCK_BIT_MAP ||
         (offset + DIRTY_RANGE_BLOCK_SIZE - 1 < m_curSegmentIndex * confSegSize)) {
-        DBGLOG("No need save bitmap or offset is less than n*60G.");
         return;
     }
     uint64_t curBlockIndex = (offset + DIRTY_RANGE_BLOCK_SIZE - 1 - m_curSegmentIndex * confSegSize)
@@ -600,36 +601,16 @@ int BackupJob::BackupDirtyRanges()
     if (Module::ConfigReader::getUint("VOLUME_DATA_PROCESS", "BACKUP_WITH_AIO") != 0)
         return BackupDirtyRangesAio();
 #endif
-    uint64_t confSegSize = GetSegementSizeFromConf();
-    uint64_t curSegCompBlocksNum = 0;
-    uint32_t tasksCount = 0; // 当前已放入调度器队列的IO任务数量
-    int32_t tasksExecRet = SUCCESS;
-    uint64_t preReportNum = 0;
-    DirtyRanges::iterator it = m_dirtyRanges.begin(DIRTY_RANGE_BLOCK_SIZE);
-    for (; (tasksExecRet != FAILED) && (!it.End());) {
-        if (IsAbortJob()) {
-            ERRLOG("Receive abort req, break job, %s", m_taskInfo.c_str());
-            break;
-        }
-        std::shared_ptr<BackupIoTask> task = std::make_shared<BackupIoTask>(
-                it->Offset(), it->size, m_isCopyVerify);
-        task->SetVolumeHandler(m_volHandler);
-        task->SetRepositoryHandler(m_dataRepoHandler);
-        bool goNext = ExecBlockTaskStart(task, tasksCount, tasksExecRet, curSegCompBlocksNum, m_sha256Result);
-        if (goNext) { // goNext用于标记能否继续往调度器中添加任务，如果不能则重新加入进行重试
-            SetBlockDataFlag(it->Offset(), confSegSize);
-            ++it;
-        }
-        if (tasksExecRet != SUCCESS) {
-            break;
-        }
-        if (preReportNum != (m_completedDataSize / GB_SIZE)) {
-            preReportNum = (m_completedDataSize / GB_SIZE);
-            ReportBackupSpeed(m_completedDataSize); // 上报数据量
-        }
+    m_confSegSize = GetSegementSizeFromConf();
+    m_ioJobCount = 0;
+    m_ioJobCurrentCount = 0;
+    std::thread thread(&BackupJob::AddIoJobToPool, this);
+    thread.detach();
+    if (GetIoJobResultFromPool() != SUCCESS) {
+        INFOLOG("Get io job result from pool failed, %s", m_taskInfo.c_str());
+        return FAILED;
     }
-    ExecBlockTaskEnd(tasksCount, tasksExecRet, curSegCompBlocksNum, m_sha256Result);
-    if (IsAbortJob() || tasksExecRet != SUCCESS || SaveBlockDataBitMap(confSegSize) != SUCCESS) {
+    if (IsAbortJob() || SaveBlockDataBitMap(m_confSegSize) != SUCCESS) {
         ERRLOG("Receive abort req or IO task exec failed or save block data failed, %s", m_taskInfo.c_str());
         return FAILED;
     }
@@ -646,6 +627,86 @@ int BackupJob::BackupDirtyRanges()
     }
     CheckNextSegment();
     return SUCCESS;
+}
+
+int32_t BackupJob::AddIoJobToPool()
+{
+    DirtyRanges::iterator it = m_dirtyRanges.begin(DIRTY_RANGE_BLOCK_SIZE);
+    for (; !it.End();) {
+        if (IsAbortJob()) {
+            ERRLOG("Receive abort req, break job, %s", m_taskInfo.c_str());
+            break;
+        }
+        if (m_ioJobFailed.load()) {
+            ERRLOG("Io task exec failed, stop to add io task, %s", m_taskInfo.c_str());
+            return FAILED;
+        }
+        std::shared_ptr<BackupIoTask> task = std::make_shared<BackupIoTask>(
+                it->Offset(), it->size, m_isCopyVerify);
+        task->SetVolumeHandler(m_volHandler);
+        task->SetRepositoryHandler(m_dataRepoHandler);
+        // 实时获取当前每个子任务可以占用的最大io线程数
+        if (m_ioJobCurrentCount.load() > TaskPool::GetInstance()->GetThreadNum() /
+            VirtualizationJobFactory::GetInstance()->GetJobSize()) {
+            continue;
+        }
+        if (!m_taskScheduler->Put(task)) {
+            ERRLOG("Put io task to pool failed, %s", m_taskInfo.c_str());
+            return FAILED;
+        }
+        SetBlockDataFlag(it->Offset(), m_confSegSize);
+        ++it;
+        ++m_ioJobCount;
+        ++m_ioJobCurrentCount;
+    }
+    DBGLOG("Add io job to pool end, job count: %d, %s", m_ioJobCount.load(), m_taskInfo.c_str());
+    m_ioJobAddCompleted.store(true);
+    return SUCCESS;
+}
+
+int32_t BackupJob::GetIoJobResultFromPool()
+{
+    std::shared_ptr<BlockTask> res = nullptr;
+    int32_t taskCount = 0;
+    uint64_t timeOut = 0;
+    while (m_ioJobCount <= 0 && !(m_ioJobAddCompleted.load())) {
+        Utils::SleepSeconds(1);
+        timeOut++;
+        DBGLOG("Job continue, current io job count: %d, %s", m_ioJobCount.load(), m_taskInfo.c_str());
+        if (timeOut > DEFAULT_BLOCK_TIMEOUT_MS) {
+            ERRLOG("Get first io job result from pool timeout, %s", m_taskInfo.c_str());
+            m_ioJobFailed.store(true);
+            return FAILED;
+        }
+    }
+    while (1) {
+        if (m_ioJobAddCompleted.load() && taskCount == m_ioJobCount) {
+            INFOLOG("All io job get, %d, %s", taskCount, m_taskInfo.c_str());
+            m_ioJobAddCompleted.store(false);
+            return SUCCESS;
+        }
+        if (IsAbortJob()) {
+            ERRLOG("Receive abort req, break job, %s", m_taskInfo.c_str());
+            return FAILED;
+        }
+        if (!m_taskScheduler->Get(res, GET_IO_TIMEOUT)) {
+            // 获取io任务结果超时，重新检查所有io任务是否已经完成
+            WARNLOG("Get io job result from pool time out.");
+            continue;
+        }
+        --m_ioJobCurrentCount;
+        // 目前res->Result（）有4种结果:1.SUCCESS 2.DATA_SAME_IGNORE_WRITE 3.DATA_ALL_ZERO_IGNORE_WRITE 4.FAILED
+        if (res->Result() == FAILED) {
+            ERRLOG("Block task exec failed, res:[%d], %s", res->Result(), m_taskInfo.c_str());
+            m_ioJobFailed.store(true);
+            return FAILED;
+        } else if (res->Result() == SUCCESS) {
+            // 执行成功（SUCCESS:成功写入数据）才累计DirtyRange数据量
+            m_completedDataSize += DIRTY_RANGE_BLOCK_SIZE;
+        }
+        CalculateSha256Operator(res, res->Result(), m_sha256Result);
+        taskCount++;
+    }
 }
 
 #ifndef WIN32
@@ -1036,11 +1097,12 @@ int BackupJob::CreateSnapshot()
 
 int BackupJob::ActiveSnapShotConsistency()
 {
-    if (m_protectEngine->ActiveSnapConsistency(m_snapshotInfo) != SUCCESS) {
+    int32_t erroCode = 0;
+    if (m_protectEngine->ActiveSnapConsistency(m_snapshotInfo, erroCode) != SUCCESS) {
         WARNLOG("Active snap consistency failed, %s", m_taskInfo.c_str());
         ReportJobDetailsParam param = {"virtual_plugin_backup_job_active_snapshot_consistency_failed",
                                        JobLogLevel::TASK_LOG_WARNING,
-                                       SubJobStatus::FAILED, 0, 0};
+                                       SubJobStatus::FAILED, 0, 0, erroCode};
         std::string description = "Virtual plugin active snapshot consistency failed.";
         ReportJobDetailsWithLabel(param, description);
         return FAILED;
@@ -1220,6 +1282,7 @@ int BackupJob::SavePreVolInfoToCache()
         }
         INFOLOG("Copy vol info %s to cache  success, %s", volMetaPath.c_str(), m_taskInfo.c_str());
     }
+    INFOLOG("SavePreVolInfoToCache success. volCachePath: %s", volCachePath.c_str());
     return SUCCESS;
 }
 
@@ -1236,7 +1299,6 @@ int BackupJob::SaveSnapshotInfo()
     if (Utils::SaveToFileWithRetry(m_metaRepoHandler, snapshotInfoMetaFile, snapshotInfoStr) != SUCCESS) {
         return FAILED;
     }
-
     INFOLOG("Save snapshot info success, vmRef: %s, %s", m_vmInfo.m_moRef.c_str(), m_taskInfo.c_str());
     return SUCCESS;
 }
@@ -1262,6 +1324,7 @@ int BackupJob::SaveVolumesMetadata()
         /* Note: We dont serialize metadata in vmInfo struct, so clear it after saved to volumes dir. */
         volume.m_metadata.clear();
         DBGLOG("Save volumes metadata success. Volume moRef: %s, %s", volume.m_uuid.c_str(), m_taskInfo.c_str());
+        INFOLOG("SaveVolumesMetadata success. volumeFileName: %s", volumeFileName.c_str());
     }
     INFOLOG("Save volumes metadata success, %s", m_taskInfo.c_str());
     return SUCCESS;
@@ -1281,6 +1344,7 @@ int BackupJob::SaveVMInfo()
         return FAILED;
     }
 
+    INFOLOG("SaveVMInfo success. vmInfoMetaFile: %s", vmInfoMetaFile.c_str());
     INFOLOG("Save vm info success. VM name: %s, %s", m_vmInfo.m_name.c_str(), m_taskInfo.c_str());
     return SUCCESS;
 }
@@ -1609,6 +1673,7 @@ int BackupJob::GetSnapshotToBeDelete()
     if (m_jobResult != AppProtect::JobResult::type::SUCCESS) {
         INFOLOG("Task is not success, need delete snapshot which created in this time. %s.", m_taskInfo.c_str());
         LoadSnapshotToBeDeleted(curSnapshotInfoMetaFile);
+        LoadFailedSnapshotsToBeDeleted();
         return SUCCESS;
     }
 
@@ -1628,6 +1693,46 @@ int BackupJob::GetSnapshotToBeDelete()
     }
 
     return SUCCESS;
+}
+
+void BackupJob::LoadFailedSnapshotsToBeDeleted()
+{
+    if (!m_protectEngine->IfDeleteAllSnapshotWhenFailed()) {
+        WARNLOG("Dont delete all snapshot when job failed.");
+        return;
+    }
+    std::string vmInfoFile = m_metaRepoPath + VIRT_PLUGIN_VM_INFO;
+    if (Utils::LoadFileToStructWithRetry(m_metaRepoHandler, vmInfoFile, m_vmInfo) != SUCCESS) {
+        if (m_protectEngine->GetMachineMetadata(m_vmInfo) != SUCCESS) {
+            ERRLOG("Get machine metadata failed, %s", m_taskInfo.c_str());
+            return;
+        }
+    }
+
+    SnapshotInfo snapInfo;
+    for (const auto &volInfo : m_vmInfo.m_volList) {
+        INFOLOG("Volume to check snapshot: %s, %s", volInfo.m_uuid.c_str(), m_taskInfo.c_str());
+        std::vector<VolSnapInfo> snapList;
+        if (m_protectEngine->GetSnapshotsOfVolume(volInfo, snapList) != SUCCESS) {
+            ERRLOG("Get Snapshot list of volume failed, volId: %s, %s", volInfo.m_uuid.c_str(), m_taskInfo.c_str());
+            continue;
+        }
+        for (const auto &volSnap : snapList) {
+            snapInfo.m_volSnapList.push_back(volSnap);
+        }
+    }
+    if (snapInfo.m_volSnapList.empty()) {
+        INFOLOG("No more snapshots exist, vmId: %s, %s", m_vmInfo.m_uuid.c_str(), m_taskInfo.c_str());
+        return;
+    }
+    snapInfo.m_vmMoRef = m_vmInfo.m_moRef;
+    snapInfo.m_vmName = m_vmInfo.m_name;
+    snapInfo.m_deleted = false; // 默认值设置为false，表示快照未删除，需要进行删除
+    SnapToBeDeleted snap;
+    snap.m_snapshotInfo = snapInfo;
+    DBGLOG("Add snapshots(%s) to delete list, %s",
+        GetSnapshotsLogDetails(snapInfo.m_volSnapList).c_str(), m_taskInfo.c_str());
+    m_snapListToBeDeleted.m_snapList.push_back(snap);
 }
 
 void BackupJob::LoadSnapshotsOfVMToBeDeleted(const std::vector<VolSnapInfo>& exVolSnaps)
@@ -2040,6 +2145,7 @@ int BackupJob::FormatBackupCopy(Copy &copy)
     CopyExtendInfo info;
     std::string strInfo;
     info.m_copyVerifyFile = sha256FileState;
+    info.m_bootType = m_vmInfo.m_bootType;
     info.m_volList = m_vmInfo.m_volList;
     info.m_interfaceList = m_vmInfo.m_interfaceList;
     if (!Module::JsonHelper::StructToJsonString(info, strInfo)) {

@@ -12,6 +12,12 @@
 */
 package openbackup.obs.plugin.provider;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+import com.huawei.oceanprotect.repository.service.LocalStorageService;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupInterceptorProvider;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
@@ -25,13 +31,10 @@ import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.util.TaskUtil;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.obs.plugin.common.ObjectStorageCommonTool;
 import openbackup.obs.plugin.common.constants.EnvironmentConstant;
 import openbackup.obs.plugin.entity.BucketInfoEntity;
 import openbackup.obs.plugin.service.ObjectStorageAgentService;
-import com.huawei.oceanprotect.repository.service.LocalStorageService;
-
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -39,10 +42,6 @@ import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.BeanTools;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -92,7 +91,7 @@ public class ObjectStorageBackupProvider implements BackupInterceptorProvider {
             throw new LegoCheckedException(CommonErrorCode.ERR_PARAM, "ProtectEnv is illegal.");
         }
 
-        TaskUtil.setBackupTaskSpeedStatisticsEnum(backupTask, SpeedStatisticsEnum.UBC);
+        TaskUtil.setBackupTaskSpeedStatisticsEnum(backupTask, SpeedStatisticsEnum.APPLICATION);
 
         // 解密sk & 代理密码
         decryptData(backupTask);

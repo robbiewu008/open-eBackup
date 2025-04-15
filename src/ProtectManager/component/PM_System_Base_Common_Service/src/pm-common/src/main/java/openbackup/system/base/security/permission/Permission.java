@@ -79,4 +79,11 @@ public @interface Permission {
      * @return enable result
      */
     boolean enableCheckAuth() default true;
+
+    /**
+     * 是否开放自定义用户权限
+     *
+     * @return 是否开放自定义用户权限
+     */
+    boolean isEnableCustomRole() default false;
 }

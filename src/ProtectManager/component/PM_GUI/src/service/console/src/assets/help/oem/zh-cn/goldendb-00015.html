@@ -1,0 +1,65 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤6：（可选）开启备份链路加密开关">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="goldendb-00011.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="goldendb-00015">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤6：（可选）开启备份链路加密开关</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="goldendb-00015"></a><a name="goldendb-00015"></a>
+  <h1 class="topictitle1">步骤6：（可选）开启备份链路加密开关</h1>
+  <div>
+   <p id="goldendb-00015__zh-cn_topic_0000002200147021_p105016314451">当需要确保数据安全性时，可以开启备份链路加密开关，开启后，可以在数据备份过程中对传输数据进行加密。</p>
+   <div class="section" id="goldendb-00015__zh-cn_topic_0000002200147021_section41258319515">
+    <h4 class="sectiontitle">前提条件</h4>
+    <p id="goldendb-00015__zh-cn_topic_0000002200147021_p13640951351">请确保已为存储系统配置NFS Kerberos服务，并已在AD域中添加<strong id="goldendb-00015__zh-cn_topic_0000002200147021_b1495762152419">rdadmin</strong>用户。否则开启备份链路加密开关后，可能导致备份任务失败。<span id="goldendb-00015__zh-cn_topic_0000002200147021_ph527185394510">配置NFS Kerberos服务的操作请参见产品对应型号的<span id="goldendb-00015__zh-cn_topic_0000002200147021_cite5907115716400">《安装指南》</span>中的“（可选）配置NFS Kerberos服务”章节。</span></p>
+   </div>
+   <div class="section" id="goldendb-00015__zh-cn_topic_0000002200147021_section1376817483418">
+    <h4 class="sectiontitle">注意事项</h4>
+    <p id="goldendb-00015__zh-cn_topic_0000002200147021_p1854315715349">开启备份链路加密后，客户端所在主机与KDC域服务器之间的票证存在有效期，票证过期之后可能导致备份任务失败。建议延长KDC域服务器上Kerberos策略中票证的过期时间或者配置为永不过期。如果未配置永不过期，需要在票证即将过期前，在客户端所在主机上，对添加到AD域中的用户，通过<strong id="goldendb-00015__zh-cn_topic_0000002200147021_b3195122210175">kinit</strong>命令或<strong id="goldendb-00015__zh-cn_topic_0000002200147021_b185942242179">net</strong>命令更新票证，具体操作请参见产品对应型号的<span id="goldendb-00015__zh-cn_topic_0000002200147021_cite890601917412">《安装指南》</span>中的“配置客户端”章节。</p>
+   </div>
+   <div class="section" id="goldendb-00015__zh-cn_topic_0000002200147021_section4718134149">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="goldendb-00015__zh-cn_topic_0000002200147021_ol171184511428">
+     <li id="goldendb-00015__zh-cn_topic_0000002200147021_li185661554204220"><span>选择<span class="uicontrol" id="goldendb-00015__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_uicontrol123381932135316">“<span id="goldendb-00015__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_zh-cn_topic_0000001092505479_text113848306235"><span id="goldendb-00015__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_text8949174614917">系统</span></span> &gt; <span id="goldendb-00015__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_zh-cn_topic_0000001085869992_text484521122916"><span id="goldendb-00015__zh-cn_topic_0000002200147021_zh-cn_topic_0000001102065552_text2943115917492">安全</span></span> &gt; <span id="goldendb-00015__zh-cn_topic_0000002200147021_text6472734351">数据安全</span>”</span>。</span></li>
+     <li id="goldendb-00015__zh-cn_topic_0000002200147021_li109511195437"><span>在“加密设置”区域，单击页面右侧的<span class="uicontrol" id="goldendb-00015__zh-cn_topic_0000002200147021_uicontrol851575420436">“<span id="goldendb-00015__zh-cn_topic_0000002200147021_text2172104153514">修改</span>”</span>，开启<span class="uicontrol" id="goldendb-00015__zh-cn_topic_0000002200147021_uicontrol13743170204412">“<span id="goldendb-00015__zh-cn_topic_0000002200147021_text451824814419">备份链路加密</span>”</span>。</span></li>
+     <li id="goldendb-00015__zh-cn_topic_0000002200147021_li178813714443"><span>单击<span class="uicontrol" id="goldendb-00015__zh-cn_topic_0000002200147021_uicontrol1839019167443">“<span id="goldendb-00015__zh-cn_topic_0000002200147021_text1418318566358">保存</span>”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="goldendb-00011.html">备份GoldenDB数据库</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -12,6 +12,10 @@
 */
 package openbackup.tdsql.resources.access.provider;
 
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
@@ -41,11 +45,6 @@ import openbackup.tdsql.resources.access.dto.instance.TdsqlGroup;
 import openbackup.tdsql.resources.access.dto.instance.TdsqlInstance;
 import openbackup.tdsql.resources.access.service.TdsqlService;
 import openbackup.tdsql.resources.access.util.TdsqlValidator;
-
-import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -107,12 +106,12 @@ public class TdsqlClusterProvider extends DatabaseEnvironmentProvider {
         checkSchedulerNodeParam(environment);
 
         // 设置集群endpoint
-        Set<String> ossUuids = new HashSet<>();
+        Set<String> ossUuidPorts = new HashSet<>();
         Set<String> ossEndpoints = new HashSet<>();
         List<OssNode> ossNodes = tdsqlService.getOssNode(environment);
         ossNodes.forEach(ossNode -> {
             String ossEndpoint = tdsqlService.getEnvironmentById(ossNode.getParentUuid()).getEndpoint();
-            ossUuids.add(ossNode.getParentUuid());
+            ossUuidPorts.add(ossNode.getParentUuid() + TdsqlConstant.SEMICOLON + ossNode.getPort());
             ossEndpoints.add(ossEndpoint);
         });
         Set<String> schedulerUuids = new HashSet<>();
@@ -132,7 +131,7 @@ public class TdsqlClusterProvider extends DatabaseEnvironmentProvider {
         // 注册的时候校验集群唯一性
         if (environment.getUuid() == null) {
             // 生成环境资源唯一UUID,检查uuid是否已经存在
-            String uuid = buildUniqueUuid(ossUuids, schedulerUuids);
+            String uuid = buildUniqueUuid(ossUuidPorts, schedulerUuids);
             checkDuplicatedEnvironment(uuid);
             environment.setUuid(uuid);
         }
@@ -200,13 +199,13 @@ public class TdsqlClusterProvider extends DatabaseEnvironmentProvider {
     /**
      * 根据管理节点agent主机的uuid和资源类型生成环境的唯一UUID
      *
-     * @param ossUuids oss节点代理主机的uuid集合
+     * @param ossUuidPorts oss节点代理主机的uuid，端口号集合
      * @param schedulerUuids scheduler节点代理主机的uuid集合
      * @return 唯一UUID
      */
-    private String buildUniqueUuid(Set<String> ossUuids, Set<String> schedulerUuids) {
+    private String buildUniqueUuid(Set<String> ossUuidPorts, Set<String> schedulerUuids) {
         // 设置唯一UUID
-        String uuidTag = ossUuids.stream().sorted().collect(Collectors.joining(TdsqlConstant.SEMICOLON))
+        String uuidTag = ossUuidPorts.stream().sorted().collect(Collectors.joining(TdsqlConstant.SEMICOLON))
             + TdsqlConstant.SEMICOLON + schedulerUuids.stream()
             .sorted()
             .collect(Collectors.joining(TdsqlConstant.SEMICOLON));
@@ -402,6 +401,7 @@ public class TdsqlClusterProvider extends DatabaseEnvironmentProvider {
         log.info("start check tdsql cluster group[{}] of cluster[{}] link status", resource.getUuid(),
             clusterEnv.getUuid());
         String clusterGroupInfo = resource.getExtendInfoByKey(TdsqlConstant.CLUSTER_GROUP_INFO);
+        String mysqlVersion = resource.getExtendInfoByKey(TdsqlConstant.MYSQL_VERSION);
         TdsqlGroup tdsqlGroup = JsonUtil.read(clusterGroupInfo, TdsqlGroup.class);
         ProtectedEnvironment environment = BeanTools.copy(resource, ProtectedEnvironment::new);
         String status;
@@ -425,6 +425,7 @@ public class TdsqlClusterProvider extends DatabaseEnvironmentProvider {
         updateResource.setUuid(resource.getUuid());
         updateResource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY, status);
         updateResource.setExtendInfoByKey(TdsqlConstant.CLUSTER_GROUP_INFO, JsonUtil.json(tdsqlGroup));
+        updateResource.setExtendInfoByKey(TdsqlConstant.MYSQL_VERSION, mysqlVersion);
         resourceService.updateSourceDirectly(Collections.singletonList(updateResource));
         log.info("end check tdsql cluster group[{}] of cluster[{}] link status", resource.getUuid(),
             clusterEnv.getUuid());
@@ -453,6 +454,7 @@ public class TdsqlClusterProvider extends DatabaseEnvironmentProvider {
     private void healthCheckInstance(ProtectedResource resource, ProtectedEnvironment clusterEnv) {
         log.info("start check tdsql instance[{}] of cluster[{}] link status", resource.getUuid(), clusterEnv.getUuid());
         String clusterInstanceInfo = resource.getExtendInfoByKey(TdsqlConstant.CLUSTER_INSTANCE_INFO);
+        String mysqlVersion = resource.getExtendInfoByKey(TdsqlConstant.MYSQL_VERSION);
         TdsqlInstance tdsqlInstance = JsonUtil.read(clusterInstanceInfo, TdsqlInstance.class);
 
         // 查询实例的数据节点
@@ -487,6 +489,7 @@ public class TdsqlClusterProvider extends DatabaseEnvironmentProvider {
         updateResource.setUuid(resource.getUuid());
         updateResource.setExtendInfoByKey(DatabaseConstants.LINK_STATUS_KEY, status);
         updateResource.setExtendInfoByKey(TdsqlConstant.CLUSTER_INSTANCE_INFO, JsonUtil.json(tdsqlInstance));
+        updateResource.setExtendInfoByKey(TdsqlConstant.MYSQL_VERSION, mysqlVersion);
         resourceService.updateSourceDirectly(Collections.singletonList(updateResource));
 
         log.info("end check tdsql instance[{}] of cluster[{}] link status", resource.getUuid(), clusterEnv.getUuid());
@@ -514,7 +517,15 @@ public class TdsqlClusterProvider extends DatabaseEnvironmentProvider {
 
                 // 设置数据节点状态
                 dataNode.setLinkStatus(LinkStatusEnum.OFFLINE.getStatus().toString());
-                flag.set(false);
+                continue;
+            }
+            if (StringUtils.equals(LinkStatusEnum.OFFLINE.getStatus().toString(),
+                dataNodesFromEnv.get(key).getLinkStatus()) && StringUtils.equals(TdsqlConstant.IS_SLAVE,
+                dataNodesFromEnv.get(key).getIsMaster())) {
+                log.warn("check data node from env is offline,ip is {}, parentUuid is {}", dataNode.getIp(),
+                    dataNode.getParentUuid());
+                // 备节点离线，设置数据节点状态
+                dataNode.setLinkStatus(LinkStatusEnum.OFFLINE.getStatus().toString());
                 continue;
             }
 

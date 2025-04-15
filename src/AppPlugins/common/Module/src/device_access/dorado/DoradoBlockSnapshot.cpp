@@ -13,7 +13,8 @@
 #include "device_access/dorado/DoradoBlockSnapshot.h"
 #include "common/JsonUtils.h"
 namespace Module {
-    int DoradoBlockSnapshot::Delete() {
+    int DoradoBlockSnapshot::Delete()
+    {
         if (ResourceName.length() > MAX_LENGTH) {
             ResourceName = ResourceName.substr(0, MAX_LENGTH);
         }
@@ -37,7 +38,8 @@ namespace Module {
         }
     }
 
-    int DoradoBlockSnapshot::Query(DeviceDetails &info) {
+    int DoradoBlockSnapshot::Query(DeviceDetails &info)
+    {
         int status;
         const int forward = 2;
         unsigned long long size;
@@ -59,7 +61,8 @@ namespace Module {
         return ret;
     }
 
-    int DoradoBlockSnapshot::QuerySnapshotEx(std::string SnapshotName, int &id, std::string &WWN) {
+    int DoradoBlockSnapshot::QuerySnapshotEx(std::string SnapshotName, int &id, std::string &WWN)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query snapshot " << SnapshotName << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -77,7 +80,8 @@ namespace Module {
         }
     }
 
-    std::unique_ptr<ControlDevice> DoradoBlockSnapshot::CreateClone(std::string volumeName, int &errorCode) {
+    std::unique_ptr<ControlDevice> DoradoBlockSnapshot::CreateClone(std::string volumeName, int &errorCode)
+    {
         unsigned long long size;
         unsigned long long usedSize;
         int id;
@@ -123,7 +127,8 @@ namespace Module {
     }
 
     void DoradoBlockSnapshot::CreateCloneSendRequest(
-            std::string volumeName, std::string originalName, int &iRet, int &errorCode) {
+        std::string volumeName, std::string originalName, int &iRet, int &errorCode)
+    {
         HttpRequest req;
         Json::Value jsonReq;
         jsonReq["ID"] = ResourceId;
@@ -138,7 +143,8 @@ namespace Module {
         iRet = SendRequest(req, data, errorDes, errorCode);
     }
 
-    void DoradoBlockSnapshot::AssignDeviceInfo(ControlDeviceInfo &deviceInfo, std::string volumeName) {
+    void DoradoBlockSnapshot::AssignDeviceInfo(ControlDeviceInfo &deviceInfo, std::string volumeName)
+    {
         deviceInfo.deviceName = volumeName;
         deviceInfo.url = DoradoIP;
         deviceInfo.port = DoradoPort;
@@ -147,17 +153,20 @@ namespace Module {
         deviceInfo.poolId = DoradoPoolId;
     }
 
-    int DoradoBlockSnapshot::ExtendSize(unsigned long long size) {
+    int DoradoBlockSnapshot::ExtendSize(unsigned long long size)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "extend failed, snapshot not support." << HCPENDLOG;
         return FAILED;
     }
 
-    int DoradoBlockSnapshot::Revert(std::string SnapshotName) {
+    int DoradoBlockSnapshot::Revert(std::string SnapshotName)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "extend failed, snapshot not support." << HCPENDLOG;
         return FAILED;
     }
 
-    int DoradoBlockSnapshot::GetLunIDBySnapshot(int snapshotId, int &lunId) {
+    int DoradoBlockSnapshot::GetLunIDBySnapshot(int snapshotId, int &lunId)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Start get snapshot " << snapshotId << " origin lunId. " << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -177,8 +186,9 @@ namespace Module {
         }
     }
 
-    int DoradoBlockSnapshot::CreateReplication(
-            int snapshotId, int rLunId, std::string rDevId, int bandwidth, std::string &repId) {
+    int DoradoBlockSnapshot::CreateReplication(int snapshotId, int rLunId, std::string rDevId,
+        int bandwidth, std::string &repId)
+    {
         int lunId;
         int ret = GetLunIDBySnapshot(snapshotId, lunId);
         if (ret != SUCCESS) {
@@ -188,16 +198,18 @@ namespace Module {
         return DoradoBlock::CreateReplication(lunId, rLunId, rDevId, bandwidth, repId);
     }
 
-    int DoradoBlockSnapshot::ActiveReplication(std::string repId) {
+    int DoradoBlockSnapshot::ActiveReplication(std::string repId)
+    {
         return DoradoBlock::ActiveReplication(repId);
     }
 
-    int DoradoBlockSnapshot::QueryReplication(
-            ReplicationPairInfo &replicationPairInfo) {
+    int DoradoBlockSnapshot::QueryReplication(ReplicationPairInfo &replicationPairInfo)
+    {
         return DoradoBlock::QueryReplication(replicationPairInfo);
     }
 
-    int DoradoBlock::GetSnapShotInfo(const std::string &snapShotId, SnapshotInfo &info, std::string &errDes) {
+    int DoradoBlock::GetSnapShotInfo(const std::string &snapShotId, SnapshotInfo &info, std::string &errDes)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Start get snapshot info: " << snapShotId << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -224,7 +236,8 @@ namespace Module {
         }
     }
 
-    int DoradoBlock::GetSnapShotInfoByID(DeviceDetails &info, std::string &errDes) {
+    int DoradoBlock::GetSnapShotInfoByID(DeviceDetails &info, std::string &errDes)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Start get snapshot info: " << info.deviceId << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -247,7 +260,8 @@ namespace Module {
         }
     }
 
-    int DoradoBlock::GetSnapShotInfoByName(DeviceDetails &info, std::string &errDes) {
+    int DoradoBlock::GetSnapShotInfoByName(DeviceDetails &info, std::string &errDes)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Start get snapshot info: " << info.deviceName << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";

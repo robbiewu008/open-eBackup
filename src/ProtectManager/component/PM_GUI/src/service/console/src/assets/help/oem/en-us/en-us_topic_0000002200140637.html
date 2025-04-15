@@ -1,0 +1,66 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="A Backup Job Keeps Retrying During VM Backup in Hot-Add Transmission Mode">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200054965.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200140637">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>A Backup Job Keeps Retrying During VM Backup in Hot-Add Transmission Mode</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200140637"></a><a name="EN-US_TOPIC_0000002200140637"></a>
+  <h1 class="topictitle1">A Backup Job Keeps Retrying During VM Backup in Hot-Add Transmission Mode</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">Symptom</h4>
+    <p>During backup of a VM in Hot-Add transmission mode, a message, indicating that node <em>XX</em> is preparing for the backup job, is repeatedly displayed in the backup job details, stack logs containing "==================stack list==================" are repeatedly displayed in the client logs, and it is found on the vCenter Server that residual disks exist on the VM where the client is installed.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Possible Causes</h4>
+    <p>The previous backup or restoration job of the VM is not completed properly, leading to residual disks on the VM where the client is installed. When backup is performed again, the VDDK cannot automatically clear residual disks. As a result, the backup job keeps retrying.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Troubleshooting</h4>
+    <ol>
+     <li><span>Stop the backup job that is being retried and ensure that no other job is being executed on the VM where the client is installed.</span></li>
+     <li id="EN-US_TOPIC_0000002200140637__li17403167133818"><span>Log in to the vCenter Server on a browser.</span><p></p><p id="EN-US_TOPIC_0000002200140637__p3458193034817">Login address: <strong id="EN-US_TOPIC_0000002200140637__b147597335312">https://</strong><em id="EN-US_TOPIC_0000002200140637__i1375953310313">vCenter Server IP address</em></p> <p></p></li>
+     <li><span>In the left navigation tree, right-click the VM where the client is installed and choose <span class="uicontrol"><b>Edit Settings</b></span> from the shortcut menu.</span></li>
+     <li><span>Select all residual disks except system disks and placeholder disks and click <span><img src="en-us_image_0000002200055185.png"></span> on the right to remove them. Do not select <span class="uicontrol"><b>Delete files from datastore</b></span>.</span></li>
+     <li><span>Click <span class="uicontrol"><b>OK</b></span>.</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200054965.html">FAQs</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

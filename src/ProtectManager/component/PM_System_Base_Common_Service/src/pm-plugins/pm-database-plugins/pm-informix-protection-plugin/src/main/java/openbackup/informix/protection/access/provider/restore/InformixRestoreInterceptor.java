@@ -152,6 +152,7 @@ public class InformixRestoreInterceptor extends AbstractDbRestoreInterceptorProv
                 ? Boolean.FALSE.toString()
                 : Boolean.TRUE.toString();
         advanceParams.put(DatabaseConstants.MULTI_POST_JOB, multiPostJobValue);
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
         task.setAdvanceParams(advanceParams);
     }
 

@@ -1,0 +1,145 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤8：执行备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="fc_gud_0013.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="fc_gud_0019">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤8：执行备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="fc_gud_0019"></a><a name="fc_gud_0019"></a>
+
+<h1 class="topictitle1">步骤8：执行备份</h1>
+<div><p id="fc_gud_0019__p10332144917542">执行备份前将需要保护的资源关联到指定SLA，系统将对这些资源按照SLA进行保护，并根据SLA周期性执行备份任务。如需立即执行一次备份任务时，可以通过手动备份实现。</p>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><ul><li>手动备份时，SLA中定义的参数（<span class="uicontrol">“<span>失败后自动重试</span>”</span>除外），如<span class="uicontrol">“<span>限速策略</span>”</span>、<span class="uicontrol">“任务失败告警”</span>、<span class="uicontrol">“<span>源端重删</span>”</span>会应用到手动备份任务中。</li><li>手动备份产生的副本保留时长按照SLA中定义的保留时长进行保留。<p>如果手动备份时选择的保护策略未在SLA中定义，则产生的备份副本保留时长为永久保留。如SLA中未定义“<span>永久增量（合成全量）备份</span>”，而手动备份时选择的是“<span>永久增量（合成全量）备份</span>”，则本次手动永久增量（合成全量）备份产生的副本保留时长为永久保留。</p>
+</li><li>如果SLA定义了复制策略或归档策略，则执行手动备份时，系统会按照SLA的定义执行一次复制或归档。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>如果需在虚拟机开机状态下进行备份，请确保虚拟机已安装Tools，否则无法执行备份。具体操作请参考<span>FusionCompute联机帮助</span>进行安装。</li><li>对于FusionCompute 8.7.0及后续版本，如需使用单独的备份网络平面进行LAN-Base备份和恢复，请先通过FusionCompute配置独立的备份网络平面，具体操作请参见<a href="fc_gud_0079.html">配置备份网络平面（适用于FusionCompute 8.7.0及后续版本）</a>（仅适用于1.6.0及后续版本）。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="fc_gud_0019__zh-cn_topic_0000002199964685_uicontrol138292612376">“保护 &gt; 虚拟化 &gt; FusionCompute”</span>。</span></li><li><span>在左侧导航树选择已注册的FusionCompute环境。</span></li><li><span>在“集群”、“主机”、“虚拟机”或“虚拟机组”页签中，选择需要保护的集群、主机、虚拟机或虚拟机组，单击“保护”。</span><p><ul><li>在“集群”页签选择集群时，系统将对该集群下的所有虚拟机进行保护。</li><li>在“主机”页签选择主机时，系统将对该主机下的所有虚拟机进行保护。</li><li>在“虚拟机”页签选择虚拟机时，系统将对该虚拟机进行保护。</li><li>在“虚拟机组”页签选择虚拟机组时，系统将对该虚拟机组下的所有虚拟机进行保护。<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>仅1.6.0及后续版本支持选择“虚拟机组”。</li><li>批量保护FusionCompute虚拟机的数量上限为100。</li></ul>
+</div></div>
+</li></ul>
+</p></li><li><span>当在“虚拟机”页签选择虚拟机进行保护时，请选择是否开启自动保护磁盘。其他场景请跳过本步骤。</span><p><div class="p">系统默认开启自动保护磁盘，开启后将保护虚拟机的所有磁盘，包含新发现的磁盘。关闭自动保护后，需手动选择磁盘进行保护。<div class="note" id="fc_gud_0019__note13682191317455"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="fc_gud_0019__p68671543173914">如果系统盘被排除，则生成的副本不支持文件级恢复。</p>
+</div></div>
+</div>
+</p></li><li><span>选择SLA。</span><p><div class="p" id="fc_gud_0019__zh-cn_topic_0000002200146973_p16181740836">您也可以单击<span class="uicontrol" id="fc_gud_0019__zh-cn_topic_0000002200146973_uicontrol744210206420">“<span id="fc_gud_0019__zh-cn_topic_0000002200146973_text1873812341015">创建</span>”</span>，创建新的SLA。<div class="note" id="fc_gud_0019__zh-cn_topic_0000002200146973_note25947145710"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="fc_gud_0019__zh-cn_topic_0000002200146973_p125947145711"><span id="fc_gud_0019__zh-cn_topic_0000002200146973_ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></p>
+</div></div>
+</div>
+</p></li><li><span>在<span class="uicontrol">“<span>高级配置</span>”</span>中配置以下参数。</span><p>
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" frame="border" border="1" rules="all"><caption><b>表1 </b>高级配置参数</caption><colgroup><col style="width:20.48%"><col style="width:79.52%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="20.48%" id="mcps1.3.4.2.6.2.1.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="79.52%" id="mcps1.3.4.2.6.2.1.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.4.2.6.2.1.2.3.1.1 "><p>一致性快照</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.4.2.6.2.1.2.3.1.2 "><p>打开开关，快照创建时会将虚拟机当前未保存的缓存数据先保存，再创建快照。若虚拟机不支持一致性快照，系统将自动使用普通快照执行备份。</p>
+<p>虚拟机是否支持一致性快照需要在FusionCompute平台确认。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.4.2.6.2.1.2.3.1.1 "><p>快照删除速率（MB/s）</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.4.2.6.2.1.2.3.1.2 "><p>备份完成后系统会删除备份过程中产生的快照。快照删除会占用存储资源，您可以通过该参数指定快照删除速率，默认值为30MB/s。</p>
+<p>快照删除速率越高，对存储资源上运行的虚拟机性能影响越大。当虚拟机的数据存储为华为分布式块存储时该参数无效。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.4.2.6.2.1.2.3.1.1 "><div class="p">客户端<div class="note" id="fc_gud_0019__fc_gud_0015_note744192220131"><span class="notetitle"> 说明： </span><div class="notebody"><p id="fc_gud_0019__fc_gud_0015_p84411322171314"><span id="fc_gud_0019__fc_gud_0015_ph95581882392">对于1.5.0版本，该参数名为“代理主机”。</span></p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.4.2.6.2.1.2.3.1.2 "><p>选择用于执行备份任务的客户端。如不选择，执行任务时系统<span style="color:#282B33;">将随机选择一个客户端</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.4.2.6.2.1.2.3.1.1 "><div class="p" id="fc_gud_0019__p15195123493811">备份副本自动索引<div class="note" id="fc_gud_0019__zh-cn_topic_0000001839187081_note17447255201"><span class="notetitle"> 说明： </span><div class="notebody"><p id="fc_gud_0019__zh-cn_topic_0000001839187081_zh-cn_topic_0000001839187081_p168431642184919">仅1.6.0及后续版本支持此参数。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.4.2.6.2.1.2.3.1.2 "><div class="p">当选择虚拟机或虚拟机组进行保护，且备份的磁盘包含了系统盘时，开启后，系统会对备份副本自动创建索引。使用该副本进行恢复时，支持选择副本中的单个或多个文件进行恢复，支持搜索副本中的文件、目录或链接。<div class="note" id="fc_gud_0019__vmware_gud_0033_zh-cn_topic_0000001607702606_note05471921141918"><span class="notetitle"> 说明： </span><div class="notebody"><p id="fc_gud_0019__vmware_gud_0033_zh-cn_topic_0000001792520410_p0743109201911">索引需要占用备份存储空间，当系统中的索引文件总数超过10亿时，请按照<span id="fc_gud_0019__vmware_gud_0033_zh-cn_topic_0000001792520410_cite23814569190">《OceanProtect DataBackup 1.5.0-1.6.0 故障处理》</span>中的“创建副本索引失败”章节进行处理。</p>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.4.2.6.2.1.2.3.1.1 "><p>SLA覆盖策略</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.4.2.6.2.1.2.3.1.2 "><div class="p" id="fc_gud_0019__p198913233514">当选择集群或主机进行保护时，支持配置此参数。<ul id="fc_gud_0019__ul959534514278"><li id="fc_gud_0019__li159524532718">覆盖虚拟机已关联的SLA<ul id="fc_gud_0019__ul81515173234"><li id="fc_gud_0019__li11519179237">对于1.5.0版本，创建或修改保护时系统自动用集群或主机的SLA覆盖虚拟机已关联的SLA。</li><li id="fc_gud_0019__li14269132912314">对于1.6.0及后续版本，当扫描虚拟化环境后，<span id="fc_gud_0019__text248949017">OceanProtect</span>发现已关联SLA的虚拟机新加入集群或主机，系统会自动用集群或主机的SLA覆盖该虚拟机的SLA。<p id="fc_gud_0019__p9687925165419">例如：对主机1创建保护时，主机1中不存在虚拟机A，后续虚拟机A迁移至主机1，扫描虚拟化环境后，<span id="fc_gud_0019__text14897856115510">OceanProtect</span>发现新加入主机1的虚拟机A，虽然虚拟机A已关联SLA但与主机1的SLA不同，因此<span id="fc_gud_0019__text19259136165619">OceanProtect</span>将自动为虚拟机A关联主机1的SLA。</p>
+</li></ul>
+</li><li id="fc_gud_0019__li196977614594">不覆盖虚拟机已关联的SLA</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.4.2.6.2.1.2.3.1.1 "><p>SLA应用策略</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.4.2.6.2.1.2.3.1.2 "><div class="p" id="fc_gud_0019__p18715185119915">当选择集群或主机进行保护时，支持选择SLA的应用范围：<ul id="fc_gud_0019__vmware_gud_0033_ul192722515111"><li id="fc_gud_0019__vmware_gud_0033_li1592717251115">将集群或主机SLA应用到所有未关联SLA的虚拟机上。<ul id="fc_gud_0019__ul868012310253"><li id="fc_gud_0019__li01125227255">对于1.5.0版本，创建或修改保护时系统自动将集群或主机SLA应用到所有未关联SLA的虚拟机上。</li><li id="fc_gud_0019__li208191242122615">对于1.6.0版本，扫描虚拟化环境后，系统将自动为新加入集群或主机且未关联SLA的虚拟机关联与该集群或主机相同的SLA。<p id="fc_gud_0019__p1779018113412"><a name="fc_gud_0019__li208191242122615"></a><a name="li208191242122615"></a>例如：对主机1创建保护时，主机1中不存在虚拟机A，后续虚拟机A迁移至主机1，扫描虚拟化环境后，<span id="fc_gud_0019__text1813718465215">OceanProtect</span>发现新加入主机1的虚拟机A，且虚拟机A未关联SLA，则<span id="fc_gud_0019__text55481712105418">OceanProtect</span>将自动为虚拟机A关联主机1的SLA。</p>
+</li></ul>
+</li><li id="fc_gud_0019__vmware_gud_0033_li10927625419">将集群或主机SLA应用到新创建的虚拟机上。<p id="fc_gud_0019__vmware_gud_0033_p39279251213"><a name="fc_gud_0019__vmware_gud_0033_li10927625419"></a><a name="vmware_gud_0033_li10927625419"></a>扫描虚拟化环境后，系统自动为新发现的虚拟机关联与集群或主机相同的SLA。</p>
+</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.4.2.6.2.1.2.3.1.1 "><p>虚拟机过滤</p>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.4.2.6.2.1.2.3.1.2 "><div class="p">当选择集群或主机进行保护时，如需指定保护计划中要排除或包含的虚拟机，请打开开关，并执行以下操作：<ol type="a" id="fc_gud_0019__vmware_gud_0033_ol92741652870"><li id="fc_gud_0019__vmware_gud_0033_li2066616282811">选择过滤方式。</li><li id="fc_gud_0019__vmware_gud_0033_li42741252878">根据所选的过滤方式，在输入框中输入虚拟机名称或关键字过滤虚拟机。<ul id="fc_gud_0019__vmware_gud_0033_ul12669913111111"><li id="fc_gud_0019__vmware_gud_0033_li180521811113">支持输入多个名称或关键字。多个名称或关键字之间用英文逗号(,)隔开。</li><li id="fc_gud_0019__vmware_gud_0033_li10669613121112">支持精确匹配和模糊匹配虚拟机名称，模糊匹配规则包括：前缀匹配（如abc*）、后缀匹配（如*abc）、中间匹配（如*abc*）。</li></ul>
+</li></ol>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="20.48%" headers="mcps1.3.4.2.6.2.1.2.3.1.1 "><div class="p" id="fc_gud_0019__p105291553114116">安全归档<div class="note" id="fc_gud_0019__note2052965314120"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="fc_gud_0019__zh-cn_topic_0000002164660718_ul15432342582"><li id="fc_gud_0019__zh-cn_topic_0000002164660718_li94333410589"><span id="fc_gud_0019__zh-cn_topic_0000002164660718_ph03981201700">仅1.6.0及后续版本支持此功能。</span></li><li id="fc_gud_0019__zh-cn_topic_0000002164660718_li4285123675814"><span id="fc_gud_0019__zh-cn_topic_0000002164660718_ph10967204817175">仅OceanProtect X系列备份一体机和OceanProtect E1000支持此功能。</span></li></ul>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="79.52%" headers="mcps1.3.4.2.6.2.1.2.3.1.2 "><div class="p" id="fc_gud_0019__p167351924714">当选择的SLA包含归档策略时，显示该参数。勾选后仅归档防勒索检测未感染的备份副本。<div class="note" id="fc_gud_0019__note1550211211513"><span class="notetitle"> 说明： </span><div class="notebody"><p id="fc_gud_0019__p10502162125111"><span style="color:#1A1A1A;">如果SLA归档策略中“归档时间”未选择“备份成功后立即执行归档”或“归档策略”未选择“仅归档最新的副本”，以及并未设置防勒索策略时，</span>请单击“前往配置”为待保护资源设置防勒索策略。具体操作请参考<span id="fc_gud_0019__cite15733201398">《OceanProtect DataBackup 1.5.0-1.6.0 数据备份特性指南(副本防勒索)》</span>中的“创建防勒索&amp;WORM策略”章节。</p>
+</div></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>单击<span class="uicontrol" id="fc_gud_0019__zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p><p id="fc_gud_0019__zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p>
+</p></li><li><strong>可选：</strong><span>执行手动备份。</span><p><div class="p" id="fc_gud_0019__zh-cn_topic_0000002200146973_p11899115114511">当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。<ol type="a" id="fc_gud_0019__zh-cn_topic_0000002200146973_ol1888313571212"><li id="fc_gud_0019__zh-cn_topic_0000002200146973_li6449836144510">在需要备份的资源所在行单击“更多 &gt; <span id="fc_gud_0019__zh-cn_topic_0000002200146973_text18439122416533">手动备份</span>”。<div class="note" id="fc_gud_0019__zh-cn_topic_0000002200146973_note1527151103"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="fc_gud_0019__zh-cn_topic_0000002200146973_zh-cn_topic_0000001607531736_p870125314544">支持选择多个资源批量进行手动备份。勾选多个已保护的资源，在资源列表左上角选择“更多 &gt; <span id="fc_gud_0019__zh-cn_topic_0000002200146973_text122852865419">手动备份</span>”。</p>
+</div></div>
+</li><li id="fc_gud_0019__zh-cn_topic_0000002200146973_li5644125184512">设置手动备份产生的副本名称。<p id="fc_gud_0019__zh-cn_topic_0000002200146973_p444210492470"><a name="fc_gud_0019__zh-cn_topic_0000002200146973_li5644125184512"></a><a name="zh-cn_topic_0000002200146973_li5644125184512"></a>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p>
+</li><li id="fc_gud_0019__zh-cn_topic_0000002200146973_li9911344144518">选择保护策略：<span id="fc_gud_0019__zh-cn_topic_0000002200146973_text66431546113916">全量备份</span>或<span id="fc_gud_0019__zh-cn_topic_0000002200146973_text1343410023420">永久增量（合成全量）备份</span>。<div class="note" id="fc_gud_0019__zh-cn_topic_0000002200146973_note1552298154910"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="fc_gud_0019__zh-cn_topic_0000002200146973_p13522118194919"><span id="fc_gud_0019__zh-cn_topic_0000002200146973_ph19374310343">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
+</div></div>
+</li><li id="fc_gud_0019__zh-cn_topic_0000002200146973_li2637101024612">单击<span class="uicontrol" id="fc_gud_0019__zh-cn_topic_0000002200146973_uicontrol37271318124613">“<span id="fc_gud_0019__zh-cn_topic_0000002200146973_text6821948112410">确定</span>”</span>。</li></ol>
+</div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="fc_gud_0013.html">备份FusionCompute虚拟机</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

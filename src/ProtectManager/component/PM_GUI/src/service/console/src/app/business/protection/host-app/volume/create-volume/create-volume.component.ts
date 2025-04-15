@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DatatableComponent, MessageService } from '@iux/live';
@@ -27,6 +27,7 @@ import {
 } from 'app/shared/api/services';
 import { CAPACITY_UNIT, DataMap, MultiCluster } from 'app/shared/consts';
 import { cacheGuideResource } from 'app/shared/consts/guide-config';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
   assign,
   cloneDeep,
@@ -40,6 +41,7 @@ import {
   isNumber,
   map,
   size,
+  some,
   startsWith,
   uniq
 } from 'lodash';
@@ -64,13 +66,13 @@ export class CreateVolumeComponent implements OnInit {
   pageIndex = CommonConsts.PAGE_START;
   dataMap = DataMap;
   originalPaths = [];
-  osType;
   name;
   mountName;
   isProtected = false;
   hasSystemVolume = true; // 用来判断是否有系统卷
-
+  isWindows = false; // 用于判断所选主机类型
   typeFilterMap = this.dataMapService.toArray('volumeType');
+  backupType = this.dataMapService.toArray('windowsVolumeBackupType');
 
   filesetNameErrorTip = {
     ...this.baseUtilService.requiredErrorTip,
@@ -106,6 +108,7 @@ export class CreateVolumeComponent implements OnInit {
     public dataMapService: DataMapService,
     private messageService: MessageService,
     public baseUtilService: BaseUtilService,
+    private appUtilsService: AppUtilsService,
     public environmentsApiService: EnvironmentsService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService
@@ -148,7 +151,10 @@ export class CreateVolumeComponent implements OnInit {
           this.baseUtilService.VALID.maxLength(64)
         ]
       }),
-      osBackup: new FormControl(false)
+      osBackup: new FormControl(false),
+      backupType: new FormControl('', {
+        validators: [this.baseUtilService.VALID.required()]
+      })
     });
 
     this.formGroup.get('selectedHost').valueChanges.subscribe(res => {
@@ -156,52 +162,48 @@ export class CreateVolumeComponent implements OnInit {
         return;
       }
       this.hasSystemVolume = true;
-      this.osType = find(this.hostOptions, {
-        key: res
-      })?.os_type;
-      this.removeAll();
+      this.isWindows =
+        find(this.hostOptions, {
+          key: res
+        })?.os_type === DataMap.Os_Type.windows.value;
+      if (this.isWindows) {
+        this.formGroup.get('backupType').enable();
+      } else {
+        this.formGroup.get('backupType').disable();
+      }
       this.volumesData = [];
+      this.selectionVolumes = [];
+      this.selectedVolumes = [];
       this.getVolumes();
     });
 
     this.formGroup.get('osBackup').valueChanges.subscribe(res => {
       defer(() => this.selectionChange());
     });
+
+    this.formGroup.get('backupType').valueChanges.subscribe(res => {
+      defer(() => this.selectionChange());
+    });
   }
 
-  getUsedHosts(recordsTemp?, startPage?) {
-    this.protectedResourceApiService
-      .ListResources({
-        pageNo: startPage || 0,
-        pageSize: CommonConsts.PAGE_SIZE * 10,
-        conditions: JSON.stringify({
-          subType: DataMap.Resource_Type.volume.value
-        })
+  getUsedHosts() {
+    const extParams = {
+      conditions: JSON.stringify({
+        subType: DataMap.Resource_Type.volume.value
       })
-      .subscribe(res => {
-        if (!recordsTemp) {
-          recordsTemp = [];
-        }
-        if (!isNumber(startPage)) {
-          startPage = CommonConsts.PAGE_START;
-        }
-        startPage++;
-        recordsTemp = [...recordsTemp, ...res.records];
-        if (
-          startPage ===
-            Math.ceil(res.totalCount / (CommonConsts.PAGE_SIZE * 10)) ||
-          res.totalCount === 0
-        ) {
-          const hostArray = [];
-          each(res.records, item => {
-            hostArray.push(item.environment.uuid);
-          });
-          this.usedHostOptions = [...uniq(hostArray)];
-          this.getHosts();
-          return;
-        }
-        this.getUsedHosts(recordsTemp, startPage);
-      });
+    };
+    this.appUtilsService.getResourceByRecursion(
+      extParams,
+      params => this.protectedResourceApiService.ListResources(params),
+      resource => {
+        const hostArray = [];
+        each(resource, item => {
+          hostArray.push(item.environment.uuid);
+        });
+        this.usedHostOptions = [...uniq(hostArray)];
+        this.getHosts();
+      }
+    );
   }
 
   getHosts(recordsTemp?, startPage?) {
@@ -256,6 +258,7 @@ export class CreateVolumeComponent implements OnInit {
           }
           each(recordsTemp, item => {
             hostArr.push({
+              ...item,
               key: item.uuid,
               value: item.uuid,
               label: !isEmpty(item.environment?.endpoint)
@@ -278,7 +281,8 @@ export class CreateVolumeComponent implements OnInit {
                 ),
                 'value'
               ),
-              osBackup: this.rowData.extendInfo.system_backup_flag === 'true'
+              osBackup: this.rowData.extendInfo?.system_backup_flag === 'true',
+              backupType: Number(this.rowData.extendInfo?.system_backup_type)
             });
             this.originalPaths = map(
               JSON.parse(this.rowData.extendInfo.paths),
@@ -291,86 +295,132 @@ export class CreateVolumeComponent implements OnInit {
       });
   }
 
-  getVolumes(recordsTemp?, startPage?) {
-    this.protectedEnvironmentApiService
-      .ListEnvironmentResource({
-        envId: find(this.hostOptions, {
-          key: this.formGroup.value.selectedHost
-        })?.parentUuid,
-        pageNo: startPage || CommonConsts.PAGE_START,
-        pageSize: CommonConsts.PAGE_SIZE * 10,
-        parentId: '',
-        resourceType: DataMap.Resource_Type.volume.value
-      })
-      .subscribe(res => {
-        if (!recordsTemp) {
-          recordsTemp = [];
-        }
-        if (!isNumber(startPage)) {
-          startPage = CommonConsts.PAGE_START;
-        }
-        startPage++;
-        recordsTemp = [...recordsTemp, ...res.records];
-        if (
-          startPage ===
-            Math.ceil(res.totalCount / (CommonConsts.PAGE_SIZE * 10)) ||
-          res.totalCount === 0
-        ) {
-          const tableData = map(recordsTemp, item => {
+  getVolumes() {
+    const extParams = {
+      envId: find(this.hostOptions, {
+        key: this.formGroup.value.selectedHost
+      })?.parentUuid,
+      parentId: '',
+      resourceType: DataMap.Resource_Type.volume.value
+    };
+    this.appUtilsService.getResourceByRecursion(
+      extParams,
+      params =>
+        this.protectedEnvironmentApiService.ListEnvironmentResource(params),
+      resource => {
+        let tableData = [];
+        if (this.isWindows) {
+          tableData = map(resource, item => {
             return {
               ...item,
-              size: get(item, 'extendInfo.size'),
-              volume: get(item, 'extendInfo.path'),
-              volumeMountPoints: get(item, 'extendInfo.volumeMountPoints', '[]')
+              size: get(item, 'extendInfo.totalSize'),
+              volume: get(item, 'extendInfo.displayName'),
+              label: get(item, 'extendInfo.label'),
+              fileSystem: get(item, 'extendInfo.fileSystem'),
+              volumeType: get(item, 'extendInfo.volumeType'),
+              isBackupable: get(item, 'extendInfo.isBackupable'),
+              disabled: get(item, 'extendInfo.isBackupable') !== '1',
+              volumeName: get(item, 'extendInfo.volumeName')
             };
           });
-
-          // 标识卷的类型
-          this.markVolume(tableData);
-
-          // 判断所有卷里有没有系统卷
-          if (!find(tableData, { type: true })) {
-            this.hasSystemVolume = false;
-            this.formGroup.get('osBackup').setValue(false);
-          }
-
-          this.volumesData = cloneDeep(tableData);
-          this.tempVolumesData = this.volumesData;
-
-          if (!!size(this.originalPaths)) {
-            this.selectionVolumes = filter(this.volumesData, volume => {
-              return includes(this.originalPaths, volume.volume);
-            });
-            this.selectionChange();
-            this.originalPaths = [];
-          }
-          if (this.formGroup.value.osBackup) {
-            // 获取时已经开启开关则自动选中系统卷
-            this.selectionChange();
-          }
-          return;
+        } else {
+          tableData = this.parseVolumeData(resource, tableData);
         }
-        this.getVolumes(recordsTemp, startPage);
-      });
+        this.volumesData = cloneDeep(tableData);
+        this.tempVolumesData = this.volumesData;
+
+        if (!!size(this.originalPaths)) {
+          this.selectionVolumes = filter(this.volumesData, volume => {
+            return includes(
+              this.originalPaths,
+              this.isWindows ? volume.extendInfo.volumeName : volume.volume
+            );
+          });
+          this.selectionChange();
+          this.originalPaths = [];
+        }
+        if (
+          this.rowData ||
+          (this.formGroup.get('osBackup').value && !this.isWindows) ||
+          (!!this.formGroup.get('backupType').value && this.isWindows)
+        ) {
+          this.selectionChange();
+        }
+      }
+    );
+  }
+
+  private parseVolumeData(recordsTemp: any, tableData) {
+    tableData = map(recordsTemp, item => {
+      return {
+        ...item,
+        size: get(item, 'extendInfo.size'),
+        volume: get(item, 'extendInfo.path'),
+        volumeMountPoints: get(item, 'extendInfo.volumeMountPoints', '[]')
+      };
+    });
+
+    // 标识卷的类型
+    this.markVolume(tableData);
+
+    // 判断所有卷里有没有系统卷
+    if (!find(tableData, { type: true })) {
+      this.hasSystemVolume = false;
+      this.formGroup.get('osBackup').setValue(false);
+    }
+
+    return tableData;
   }
 
   markVolume(tableData) {
+    let tmpSystemList = [...this.systemVolumeList, '/'];
     each(tableData, item => {
       let tmp = item.volumeMountPoints.split(',');
-      if (!tmp) {
-        item.type = false;
-      }
-      each(tmp, volume => {
-        assign(item, {
-          type: !!find(this.systemVolumeList, val => {
-            return startsWith(volume, val) || volume === '/';
-          })
-        });
+      assign(item, {
+        type: !!some(tmp, volume => {
+          return (
+            !!some(this.systemVolumeList, val =>
+              startsWith(volume, val + '/')
+            ) || tmpSystemList.includes(volume)
+          );
+        })
       });
     });
   }
 
   selectionChange() {
+    if (this.isWindows) {
+      this.windowsSelectionChange();
+    } else {
+      this.linuxSelectionChange();
+    }
+    this.selectionVolumes = [...this.selectionVolumes];
+    this.selectedVolumes = [...this.selectionVolumes];
+    this.formGroup.get('selectedVolumes').setValue(this.selectedVolumes);
+  }
+
+  private windowsSelectionChange() {
+    const backupType = this.formGroup.get('backupType').value;
+    this.volumesData.forEach(item => {
+      if (backupType === 2) {
+        // 如果选择裸机，则除了普通卷都必选
+        item.disabled = item?.volumeType !== '3' || item.isBackupable !== '1';
+        if (
+          item?.volumeType !== '3' &&
+          !this.selectionVolumes.some(v => v.volume === item.volume)
+        ) {
+          this.selectionVolumes.push(item);
+        }
+      } else {
+        item.disabled = item.isBackupable !== '1';
+      }
+    });
+    this.selectionVolumes = this.selectionVolumes.filter(
+      item => item.isBackupable === '1'
+    );
+  }
+
+  private linuxSelectionChange() {
     if (!!this.formGroup.value.osBackup) {
       // 开启了开关则必定选中系统卷
       this.volumesData.forEach(item => {
@@ -393,9 +443,6 @@ export class CreateVolumeComponent implements OnInit {
         item.disabled = false;
       });
     }
-    this.selectionVolumes = [...this.selectionVolumes];
-    this.selectedVolumes = [...this.selectionVolumes];
-    this.formGroup.get('selectedVolumes').setValue(this.selectedVolumes);
   }
 
   remove(item) {
@@ -448,17 +495,37 @@ export class CreateVolumeComponent implements OnInit {
       parentUuid: this.formGroup.value.selectedHost,
       type: DataMap.Resource_Type.fileset.value,
       subType: DataMap.Resource_Type.volume.value,
-      extendInfo: {
+      extendInfo: {}
+    };
+
+    if (!this.isWindows) {
+      assign(params.extendInfo, {
+        system_backup_flag: this.formGroup.value.osBackup,
         paths: JSON.stringify(
           map(this.selectedVolumes, volume => {
             return {
               name: volume.volume
             };
           })
-        ),
-        system_backup_flag: this.formGroup.value.osBackup
-      }
-    };
+        )
+      });
+    }
+
+    if (this.isWindows) {
+      assign(params.extendInfo, {
+        system_backup_type: this.formGroup.value.backupType,
+        paths: JSON.stringify(
+          map(this.selectedVolumes, volume => {
+            return {
+              name: volume.extendInfo.volumeName,
+              displayName: volume.volume,
+              fileSystem: volume.fileSystem,
+              size: volume.size
+            };
+          })
+        )
+      });
+    }
 
     return params;
   }

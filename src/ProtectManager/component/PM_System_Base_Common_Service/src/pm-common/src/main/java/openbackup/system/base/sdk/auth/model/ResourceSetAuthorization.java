@@ -13,6 +13,7 @@
 package openbackup.system.base.sdk.auth.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,6 +26,7 @@ import java.util.Set;
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
 public class ResourceSetAuthorization {
     private String roleId;
 

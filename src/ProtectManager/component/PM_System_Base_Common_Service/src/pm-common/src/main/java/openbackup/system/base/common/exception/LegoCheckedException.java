@@ -175,6 +175,11 @@ public class LegoCheckedException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
+    /**
+     * 判断该异常是否可以重试:访问另一个节点
+     *
+     * @return 结果
+     */
     public boolean isRetryable() {
         return isRetryable;
     }

@@ -175,6 +175,26 @@ public class SapHanaResourceServiceImpl implements SapHanaResourceService {
     }
 
     @Override
+    public void checkDbNameBeforeUpdate(ProtectedResource resource) {
+        Map<String, Object> conditions = new HashMap<>();
+        conditions.put(DatabaseConstants.RESOURCE_TYPE, ResourceTypeEnum.DATABASE.getType());
+        conditions.put(DatabaseConstants.SUB_TYPE, ResourceSubTypeEnum.SAPHANA_DATABASE.getType());
+        conditions.put(DatabaseConstants.PARENT_UUID, resource.getParentUuid());
+        conditions.put(DatabaseConstants.NAME, resource.getName());
+        // 根据subType、所属实例资源的UUID、数据库名称查询SAP HANA数据库
+        List<ProtectedResource> protectedResources = listResourcesByConditions(conditions);
+        conditions.put(DatabaseConstants.UUID, resource.getUuid());
+        List<ProtectedResource> protectedResourcesTwo = listResourcesByConditions(conditions);
+        if (!protectedResources.isEmpty() && protectedResourcesTwo.isEmpty()) {
+            log.error("This sap hana database name is duplicated, name: {}, instance resource id: {}.",
+                resource.getName(),
+                resource.getParentUuid());
+            throw new LegoCheckedException(SapHanaErrorCode.RESOURCE_IS_REGISTERED,
+                "This sap hana database is registered.");
+        }
+    }
+
+    @Override
     public void checkDbIsRegisteredInGeneralDb(ProtectedResource resource) {
         Map<String, Object> conditions = new HashMap<>();
         conditions.put(DatabaseConstants.RESOURCE_TYPE, ResourceTypeEnum.DATABASE.getType());
@@ -398,7 +418,7 @@ public class SapHanaResourceServiceImpl implements SapHanaResourceService {
                     String[] params = Optional.ofNullable(actionResult.getDetailParams())
                         .map(e -> e.toArray(new String[0]))
                         .orElse(new String[0]);
-                    throw new LegoCheckedException(Long.parseLong(actionResult.getBodyErr()),
+                    throw new LegoCheckedException(Long.parseLong(actionResult.getBodyErr()), params,
                         actionResult.getMessage());
                 }
             }

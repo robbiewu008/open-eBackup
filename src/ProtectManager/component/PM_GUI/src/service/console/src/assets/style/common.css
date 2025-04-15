@@ -1,18 +1,4 @@
-/*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
-
 .aui-icon-large {
-  color: #9ea4b3;
   width: 24px;
   height: 24px;
   cursor: pointer;
@@ -52,38 +38,9 @@
   resize: none !important;
 }
 
-/* 首页所有资源和所有任务的下拉框背景色等样式修改 */
-.job-resource-dropdown.lv-dropdown-panel {
-  background-color: #282b33;
-  border-color: #545a67;
-}
-
-.job-resource-dropdown.lv-dropdown-panel li > .lv-dropdown-item {
-  color: #9ea4b3;
-}
-
-.job-resource-dropdown.lv-dropdown-panel li > .lv-dropdown-item:hover {
-  background-color: #202028;
-  color: #86a6fc;
-}
-
 /* 首页用户下拉框背景色等样式修改 */
 .user-dropdown {
   margin-top: 20px;
-}
-
-.user-dropdown.lv-dropdown-panel {
-  background-color: #282b33;
-  border-color: #282b33;
-}
-
-.user-dropdown.lv-dropdown-panel li > .lv-dropdown-item {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.user-dropdown.lv-dropdown-panel li > .lv-dropdown-item:hover {
-  background-color: #282b33;
-  color: #fff;
 }
 
 /* sla创建时的tooltip样式自定义 */
@@ -154,13 +111,13 @@
 .aui-block div.dashed-line,
 div.dashed-line {
   width: 100%;
-  border-bottom: 0.01rem dashed #d4d9e6;
+  border-bottom: 0.01rem dashed var(--live-angular-color-divider-regular);
   margin-bottom: 32px;
 }
 
 .aui-block div.container-border,
 div.container-border {
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--live-angular-color-table-header-divider);
   width: 100%;
 }
 
@@ -247,13 +204,7 @@ input::-ms-reveal {
 }
 
 .host-register-tabnav-num {
-  height: 18px;
-  margin-left: 8px;
-  padding: 0 16px;
-  line-height: 18px;
-  background: #ccc;
-  border-radius: 21px;
-  color: #6c7280;
+  margin-left: 4px;
   font-size: 14px;
 }
 
@@ -262,23 +213,6 @@ input::-ms-reveal {
   > .lv-tab-item.lv-tab-item-active
   > span:not(.lv-tab-close)::after {
   border-bottom: 0;
-}
-
-.lv-tabs
-  .lv-tabs-list
-  > .lv-tab-item.lv-tab-item-active
-  .host-register-tabnav
-  > span:not(.lv-tab-close) {
-  color: #6c7280;
-}
-
-.lv-tabs
-  .lv-tabs-list
-  > .lv-tab-item.lv-tab-item-active
-  .host-register-tabnav
-  > span:not(.lv-tab-close).host-register-tabnav-num {
-  background: #6c92fa;
-  color: #fff;
 }
 
 .sla-view .lv-button.lv-button-size-default,
@@ -366,6 +300,7 @@ input::-ms-reveal {
 
 .computer-location-hidden {
   visibility: hidden;
+  height: 0px;
 }
 
 .computer-location-hidden.lv-form-item .lv-form-label,
@@ -379,7 +314,7 @@ input::-ms-reveal {
 }
 
 .vm-location-placeHolder {
-  color: #b8becc;
+  color: var(--live-angular-color-text-hint);
 }
 
 .vmware-disk-container .lv-tabs-body,
@@ -388,7 +323,6 @@ input::-ms-reveal {
 }
 
 .selected-disk-title {
-  color: #6c7280;
   margin-right: 16px;
 }
 
@@ -508,7 +442,6 @@ input::-ms-reveal {
 
 .custom-collapse-title-text {
   font-size: 0.16rem;
-  color: #282b33;
   font-weight: bold;
 }
 
@@ -526,7 +459,7 @@ input::-ms-reveal {
 }
 
 .file-level-restore-tree .lv-table-content {
-  border: 1px solid #b8becc;
+  border: 1px solid var(--live-angular-color-border-regular);
   height: 720px;
 }
 
@@ -626,14 +559,6 @@ input::-ms-reveal {
   font-size: 0.12rem;
 }
 
-.register-nas-zh .lv-form-label-box {
-  width: 90px !important;
-}
-
-.register-nas-en .lv-form-label-box {
-  width: 145px !important;
-}
-
 .daysOfMonthGroup .lv-input:disabled,
 .daysOfMonthGroup .lv-input[disabled] {
   border-color: #b8becc !important;
@@ -650,19 +575,12 @@ input::-ms-reveal {
   padding-top: 12px;
 }
 
-.customer-cluster.lv-popover .lv-popover-inner {
-  width: 240px;
-  background-color: #282b33;
-  color: #fff;
+.taskPopoverClass.lv-popover .lv-popover-arrow {
+  border-bottom-color: #282b33;
 }
 
-.clusters-container .lv-table-thead > tr > th,
-.clusters-container .lv-table .lv-table-row > td,
-.clusters-container .lv-table-thead > tr > th:hover,
-.clusters-container .lv-table .lv-table-tbody > tr.lv-table-row:hover > td {
-  background-color: #282b33 !important;
-  padding-left: 0px !important;
-  padding-right: 0px !important;
+.customer-cluster .lv-popover-inner {
+  width: 240px;
 }
 
 .clusters-container .lv-table-small .lv-table-tbody > tr.lv-table-row > td {
@@ -799,24 +717,12 @@ input::-ms-reveal {
   color: #ffffff;
 }
 
-.sub-card-container {
-  height: 65px;
-  border-radius: 10px;
-  line-height: 65px;
-  background: #ffffff;
-  margin: 0 20px 20px 0;
-  padding: 0 20px;
-  display: inline-block;
-  cursor: pointer;
-  box-sizing: border-box;
-}
-
 .app-card-more-container {
-  background: #f0f2f5;
+  background: var(--live-angular-color-page-background);
 }
 
 .common-sub-aui-fullpage {
-  background: #f0f2f5;
+  background: var(--live-angular-color-page-background);
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -843,7 +749,7 @@ input::-ms-reveal {
 }
 
 .protection-summary-container .lv-tabs-container {
-  border-bottom: 1px solid #e2e5ed;
+  border-bottom: 1px solid var(--live-angular-color-divider-secondary);
 }
 
 .workload-container .lv-tabs .lv-tabs-list > .lv-tab-item {
@@ -944,19 +850,16 @@ input::-ms-reveal {
   width: 112px;
 }
 
-.checkbox-job-en .lv-checkbase-label {
-  width: 169px;
-}
-
 .overview-tag {
   height: 140px;
   background-image: url('assets/img/drill-overview-bk.png');
   background-repeat: no-repeat;
   background-position: right -10px bottom -10px;
-  background-color: #f8fafe;
+  background-color: var(--live-angular-color-container-background);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-radius: 8px;
 }
 
 .overview-tag .logo {
@@ -1064,6 +967,10 @@ lv-layout > lv-header > div {
   margin-top: 8px;
 }
 
+.mgt-16 {
+  margin-top: 16px;
+}
+
 .mgb-8 {
   margin-bottom: 8px;
 }
@@ -1091,11 +998,11 @@ lv-layout > lv-header > div {
 
 .custom-table-header {
   height: 33px;
-  background: #f7f7f7;
+  background: var(--live-angular-color-header-background);
   line-height: 33px;
   padding-left: 16px;
   font-size: 0.12rem;
-  color: #4d4d4d;
+  color: var(--live-angular-color-text-secondary);
 }
 
 .hide-table-header-border-top .lv-table-header {
@@ -1144,4 +1051,97 @@ lv-layout > lv-header > div {
   color: #ffffff;
   line-height: 16px;
   font-size: 12px;
+}
+
+.honeypot-min-tag {
+  min-width: 55px;
+}
+
+.bread-crumb-path .breadcrumb-item {
+  max-width: 80px;
+}
+
+.lv-time-picker-panel-footer
+  + .lv-time-picker-panel-operation
+  .lv-button-type-link {
+  visibility: hidden;
+}
+
+.time-picker-current {
+  position: relative;
+  left: 24px;
+  top: 40px;
+  opacity: 0;
+}
+
+.report-time-picker-current {
+  position: relative;
+  top: 40px;
+}
+
+.tabPopoverClass {
+  margin-right: 40px;
+}
+
+.tabPopoverClass .lv-popover-inner {
+  width: 400px;
+}
+
+.mouse-img,
+.unfold-img {
+  width: 24px;
+  position: relative;
+  top: 5px;
+}
+
+.clusters-container .lv-loading-mask {
+  background: none !important;
+}
+
+.clusters-container .lv-table-null {
+  border-top: none !important;
+}
+
+.resourceset-tree-container
+  .lv-treenode-content.disabled
+  > .lv-treenode-content-label {
+  color: #1a1a1a !important;
+  cursor: pointer !important;
+}
+
+.new-comer-guidance-popover {
+  .lv-popover-container {
+    min-width: 272px;
+    min-height: 142px;
+  }
+
+  .lv-popover-inner {
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 22px;
+    letter-spacing: 0;
+    text-align: left;
+    color: var(--live-angular-color-text-white) !important;
+    background-color: var(--new-comer-guidance-bg-color) !important;
+    > div {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+  &.lv-popover-position-bottom .lv-popover-arrow {
+    border-bottom-color: var(--new-comer-guidance-bg-color) !important;
+  }
+  &.lv-popover-position-right .lv-popover-arrow {
+    border-right-color: var(--new-comer-guidance-bg-color) !important;
+  }
+}
+
+.cnware-tag-tip .lv-tooltip-inner {
+  max-height: 400px;
+}
+
+.eye-input input {
+  padding-right: 40px !important;
 }

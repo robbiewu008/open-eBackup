@@ -27,6 +27,9 @@
     <ClInclude Include="..\..\..\src\inc\common\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\common\LogRotater.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\src\inc\common\LogCode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -37,6 +40,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\inc\common\ConfigXmlParse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\inc\common\StaticConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\inc\common\FileSearcher.h">
@@ -101,6 +107,9 @@
     <ClCompile Include="..\..\..\src\src\common\Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\src\common\LogRotater.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\src\common\String.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -114,6 +123,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\src\common\ConfigXmlParse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\src\common\StaticConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\src\common\FileSearcher.cpp">

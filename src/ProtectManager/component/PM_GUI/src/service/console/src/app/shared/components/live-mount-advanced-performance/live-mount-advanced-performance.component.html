@@ -115,7 +115,7 @@
         </lv-form-control>
     </lv-form-item>
     <ng-container
-        *ngIf="(formGroup.value.iopsStatus && formGroup.value.burst_iops) || (formGroup.value.bindWidthStatus && formGroup.value.burst_bandwidth)">
+        *ngIf="(formGroup.value.iopsStatus && formGroup.value.burst_iops && formGroup.value.iopsBurst) || (formGroup.value.bindWidthStatus && formGroup.value.burst_bandwidth && formGroup.value.bindWidthBurst)">
         <lv-form-item>
             <lv-form-label lvRequired> {{'explore_max_burst_label' | i18n}}</lv-form-label>
             <lv-form-control [lvErrorTip]='burstTimeErrorTip'>

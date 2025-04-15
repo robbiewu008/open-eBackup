@@ -12,6 +12,8 @@
 */
 package openbackup.system.base.sdk.storage.service;
 
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.enums.ConsistentStatusEnum;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
@@ -22,9 +24,6 @@ import openbackup.system.base.sdk.storage.model.DoradoResponse;
 import openbackup.system.base.sdk.storage.model.FileSystemScrubRequest;
 import openbackup.system.base.sdk.storage.model.FileSystemScrubResponse;
 import openbackup.system.base.sdk.storage.model.Result;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -114,12 +113,12 @@ public class LocalDoradoFileSystemService {
         DoradoResponse<FileSystemScrubResponse> doradoResponse;
         while (true) {
             String deviceId = storageService.getStorageSession().getData().getDeviceid();
-            doradoResponse = invoke("queryFileSystemScrub", () ->
-                localDoradoRestApi.queryFileSystemScrub(deviceId, fsId));
+            doradoResponse = invoke("queryFileSystemScrub",
+                    () -> localDoradoRestApi.queryFileSystemScrub(deviceId, fsId));
             FileSystemScrubResponse response = doradoResponse.getData();
             String runningStatus = response.getRunningStatus();
-            log.info("Query file system scrub, status: {}, fsId: {}, mediumErrors: {}, otherErrors: {}.",
-                    runningStatus, fsId, response.getMediumErrors(), response.getOtherErrors());
+            log.info("Query file system scrub, status: {}, fsId: {}, mediumErrors: {}, otherErrors: {}.", runningStatus,
+                    fsId, response.getMediumErrors(), response.getOtherErrors());
             if (JOB_FAILED.equals(runningStatus)) {
                 return ConsistentStatusEnum.INCONSISTENT;
             }
@@ -143,7 +142,7 @@ public class LocalDoradoFileSystemService {
             return data;
         }
         if (Objects.nonNull(data.getResult()) && Objects.nonNull(data.getResult().getCode())
-            && !data.getResult().getCode().equals("0")) {
+                && !data.getResult().getCode().equals("0")) {
             Result error = data.getResult();
             log.error("{} fail: {}, {}", operator, error.getCode(), error.getDescription());
         }

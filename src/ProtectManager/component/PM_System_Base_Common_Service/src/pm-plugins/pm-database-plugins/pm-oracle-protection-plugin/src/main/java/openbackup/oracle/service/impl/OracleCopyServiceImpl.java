@@ -12,12 +12,11 @@
 */
 package openbackup.oracle.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeCopyInfo;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeUnifiedRestApi;
 import openbackup.oracle.constants.ScnCopy;
 import openbackup.oracle.service.OracleCopyService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 

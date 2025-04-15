@@ -12,6 +12,8 @@
 */
 package openbackup.system.base.pack.lock;
 
+import java.util.List;
+
 /**
  * 功能描述
  *
@@ -40,4 +42,11 @@ public interface LockService {
      * @return 数据库锁对象
      */
     Lock createSQLDistributeLock(String key);
+
+    /**
+     * 释放锁列表
+     *
+     * @param keyList 资源锁Id列表
+     */
+    void batchUnlockSqlLock(List<String> keyList);
 }

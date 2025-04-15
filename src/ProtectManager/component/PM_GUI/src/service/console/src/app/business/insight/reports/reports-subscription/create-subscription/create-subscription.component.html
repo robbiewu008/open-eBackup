@@ -17,7 +17,7 @@
             {{ 'insight_report_subscription_name_label' | i18n }}
         </lv-form-label>
         <lv-form-control [lvErrorTip]="nameErrorTip">
-            <input lv-input type="text" formControlName="policyName"/>
+            <input lv-input type="text" formControlName="policyName" />
         </lv-form-control>
     </lv-form-item>
     <lv-form-item>
@@ -25,66 +25,53 @@
             {{ 'insight_report_type_label' | i18n }}
         </lv-form-label>
         <lv-form-control>
-            <lv-group lvGutter="8px" lvDirection="vertical">
-            <lv-select
-                    lvShowCheckAll
-                    lvMode="multiple"
-                    [lvOptions]="reportTypeOptions"
-                    formControlName="type"
-                    lvValueKey="value"
-            >
+            <lv-select lvShowCheckAll lvMode="multiple" [lvOptions]="reportTypeOptions" formControlName="type"
+                lvValueKey="value">
             </lv-select>
-              <lv-alert lvType="info" lvClosable="false" *ngIf="formGroup.get('type').value.includes(dataMap.Report_Type.storageSpace.value)">
-                <span [innerHTML]="i18n.get('insight_storage_space_tip_label')"></span>
-              </lv-alert>
-            </lv-group>
         </lv-form-control>
     </lv-form-item>
-    <lv-form-item>
+    <lv-alert lvType="info" lvClosable="false"
+        *ngIf="formGroup.get('type').value.includes(dataMap.Report_Type.storageSpace.value)">
+        <span [innerHTML]="i18n.get('insight_storage_space_tip_label')"></span>
+    </lv-alert>
+    <lv-form-item *ngIf="!isDecouple">
         <lv-form-label lvRequired>
             {{ 'common_data_source_label' | i18n }}
         </lv-form-label>
-        <lv-form-control>
-            <lv-tree-select
-                    [lvTreeData]="clusterOptions"
-                    lvTreeSelectionMode="multiple"
-                    lvTreeShowCheckbox
-                    lvTreeShowLine
-                    lvSelectedValueMode="parent"
-                    formControlName="cluster"
-            ></lv-tree-select>
+        <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+            <lv-tree-select [lvTreeData]="clusterOptions" lvTreeSelectionMode="multiple" lvTreeShowCheckbox
+                lvTreeShowLine lvSelectedValueMode="parent" formControlName="cluster"
+                lvTreeCompareWith="uniqueId"></lv-tree-select>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item *ngIf="showScopeAndFrequency">
         <lv-form-label lvRequired>
             {{ 'insight_report_scope_label' | i18n }}
-            <i
-                    lv-icon="aui-icon-help"
-                    [lv-tooltip]="tipsTemplate"
-                    lvTooltipTheme="light"
-                    class="configform-constraint"
-                    lvColorState="true"
-            ></i>
+            <i lv-icon="aui-icon-help" [lv-tooltip]="tipsTemplate" lvTooltipTheme="light" class="configform-constraint"
+                lvColorState="true"></i>
         </lv-form-label>
         <lv-form-control lvErrorTip="rangeErrorTip">
-          <lv-radio-group formControlName="period">
-            <lv-group lvGutter="4px" lvDirection="vertical">
-              <ng-container *ngFor="let item of periodOptions;">
-                <ng-container *ngIf="item.value !== dataMap.Report_Generated_Period.custom.value else customTpl">
-                  <lv-radio [lvValue]="item.value" class="custom-radio">{{item.label | nil}}</lv-radio>
-                </ng-container>
-                <ng-template #customTpl>
-                  <lv-radio [lvValue]="item.value" class="custom-radio">
-                    <lv-group lvGutter="8px">
-                      <span>{{'explore_last_label' | i18n}}</span>
-                      <lv-spinner style="width: 160px;" formControlName="customPeriod" [lvMin]="MIN_DAY" [lvMax]="MAX_DAY" [lv-tooltip]="customTipsLabel" [lvDisabled]="formGroup.get('period').value !== dataMap.Report_Generated_Period.custom.value"></lv-spinner>
-                      <span>{{'common_day_label' | i18n}}</span>
-                    </lv-group>
-                  </lv-radio>
-                </ng-template>
-              </ng-container>
-            </lv-group>
-          </lv-radio-group>
+            <lv-radio-group formControlName="period">
+                <lv-group lvGutter="4px" lvDirection="vertical">
+                    <ng-container *ngFor="let item of periodOptions;">
+                        <ng-container
+                            *ngIf="item.value !== dataMap.Report_Generated_Period.custom.value else customTpl">
+                            <lv-radio [lvValue]="item.value" class="custom-radio">{{item.label | nil}}</lv-radio>
+                        </ng-container>
+                        <ng-template #customTpl>
+                            <lv-radio [lvValue]="item.value" class="custom-radio">
+                                <lv-group lvGutter="8px">
+                                    <span>{{'explore_last_label' | i18n}}</span>
+                                    <lv-spinner style="width: 160px;" formControlName="customPeriod" [lvMin]="MIN_DAY"
+                                        [lvMax]="MAX_DAY" [lv-tooltip]="customTipsLabel"
+                                        [lvDisabled]="formGroup.get('period').value !== dataMap.Report_Generated_Period.custom.value"></lv-spinner>
+                                    <span>{{'common_day_label' | i18n}}</span>
+                                </lv-group>
+                            </lv-radio>
+                        </ng-template>
+                    </ng-container>
+                </lv-group>
+            </lv-radio-group>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item *ngIf="showScopeAndFrequency">
@@ -92,25 +79,20 @@
             {{ 'insight_report_frequency_label' | i18n }}
         </lv-form-label>
         <lv-form-control>
-            <lv-select
-                    style="width: 90%"
-                    [lvOptions]="frequencyOptions"
-                    formControlName="frequency"
-                    lvValueKey="value"
-            >
+            <lv-select style="width: 90%" [lvOptions]="frequencyOptions" formControlName="frequency" lvValueKey="value">
             </lv-select>
             <span style="padding-left: 20px;">{{ 'common_day_label' | i18n }}</span>
             <div class="descrip-info" *ngIf="formGroup.value.frequency">
-        <span class="form-tips">
-          {{
-            i18n.get('insight_report_frequency_desc_label', [
-                dataMapService.getLabel(
+                <span class="form-tips">
+                    {{
+                    i18n.get('insight_report_frequency_desc_label', [
+                    dataMapService.getLabel(
                     'reportFrequency',
                     formGroup?.value?.frequency
-                )
-            ])
-            }}
-        </span>
+                    )
+                    ])
+                    }}
+                </span>
             </div>
         </lv-form-control>
     </lv-form-item>
@@ -119,11 +101,7 @@
             {{ 'insight_report_format_label' | i18n }}
         </lv-form-label>
         <lv-form-control>
-            <lv-select
-                    [lvOptions]="formatOptions"
-                    formControlName="fileFormat"
-                    lvValueKey="value"
-            >
+            <lv-select [lvOptions]="formatOptions" formControlName="fileFormat" lvValueKey="value">
             </lv-select>
         </lv-form-control>
     </lv-form-item>
@@ -132,89 +110,120 @@
             {{'insight_generate_paln_label'|i18n}}
         </lv-form-label>
         <lv-form-control>
-            <lv-radio-group formControlName="intervalUnit" class="mgl-24" style="padding: 10px 0">
+            <ng-template #execIntervalTpl>
+                <lv-form-control [lvErrorTip]="execIntervalErrorTip">
+                    <input type="text" lv-input formControlName="execInterval" placeholder="1~365"
+                        style="width: 2.2rem">
+                </lv-form-control>
+            </ng-template>
+            <ng-template #firstExecTimeTpl>
+                <lv-form-control [lvErrorTip]="execIntervalErrorTip">
+                    <lv-time-picker class="time-picker" formControlName="firstExecTime" lvPlaceholder="HH:mm"
+                        lvFormat="HH:mm" [lvFooter]="firstTimePickerFooterTpl">
+                    </lv-time-picker>
+                </lv-form-control>
+            </ng-template>
+            <ng-template #daysOfWeekTpl>
+                <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
+                    <lv-select [lvOptions]="daysOfWeek" style="width: 2.2rem" formControlName="daysOfWeek"
+                        lvMaxTagCount="2" lvValueKey="value" lvMode="multiple" lvShowCheckAll>
+                    </lv-select>
+                </lv-form-control>
+            </ng-template>
+            <ng-template #daysOfMonthControlTpl>
+                <lv-form-control [lvErrorTip]="daysOfMonthErrorTip">
+                    <lv-input-group [lvSuffix]="suffixTpl" #popover="lvPopover" lv-popover
+                        [lvPopoverContent]="daysOfMonthTpl" lvPopoverTheme="light" lvPopoverPosition="bottom"
+                        lvPopoverTrigger="click" lvPopoverShowArrow="false" lvPopoverBackdrop="true"
+                        lvPopoverMaskTransparent="true" lvPopoverClassName="customer-popover" style="width: 2.2rem">
+                        <input lv-input formControlName="daysOfMonth" readonly="readonly"
+                            placeholder="{{'protection_select_date_label'|i18n}}" />
+                    </lv-input-group>
+                </lv-form-control>
+            </ng-template>
+            <ng-template #suffixTpl>
+                <i lv-icon="lv-icon-triangle-down"></i>
+            </ng-template>
+            <ng-template #daysOfMonthTpl>
+                <lv-group lvDirection='vertical'>
+                    <lv-checkbox-group #daysOfMonthGroup formControlName="daysOfMonths">
+                        <ng-container *ngFor="let data of monthDaysItems">
+                            <lv-group [lvGutter]="'16px'" class="month-day">
+                                <ng-container *ngFor="let d of data.key">
+                                    <lv-checkbox [lvViewType]="'custom'" [lvValue]="d">
+                                        <div class="month-card" [ngClass]="{'select': daysOfMonthGroup.isChecked(d)}">
+                                            {{d}}
+                                        </div>
+                                    </lv-checkbox>
+                                </ng-container>
+                            </lv-group>
+                        </ng-container>
+                    </lv-checkbox-group>
+                </lv-group>
+            </ng-template>
+            <lv-radio-group formControlName="intervalUnit" class="radio-group">
                 <lv-group [lvGutter]="'8px'" lvDirection="vertical">
                     <lv-radio [lvValue]="intervalUnit.day.value">
                         {{intervalUnit.day.label | i18n}}
-                        <lv-form-control [lvErrorTip]="execIntervalErrorTip" *ngIf="formGroup.get('intervalUnit').value === intervalUnit.day.value">
-                            <lv-group lvGutter="8px" lvDirection="vertical">
-                              <lv-group lvGutter="8px">
+                        <lv-group *ngIf="formGroup.get('intervalUnit').value === intervalUnit.day.value">
+                            <lv-group lvGutter="8px" *ngIf="!i18n.isEn">
                                 <span>{{'protection_every_label'|i18n}}</span>
-                                <input type="text" lv-input formControlName="execInterval" placeholder="1~365" style="width: 2.2rem">
+                                <ng-template [ngTemplateOutlet]="execIntervalTpl"></ng-template>
                                 <span>{{'common_day_label' | i18n}}</span>
-                                <lv-time-picker class="time-picker" formControlName="firstExecTime" lvPlaceholder="HH:mm" lvFormat="HH:mm"></lv-time-picker>
+                                <ng-template [ngTemplateOutlet]="firstExecTimeTpl"></ng-template>
                                 <span>{{'protection_execute_once_label'|i18n}}</span>
-                              </lv-group>
                             </lv-group>
-                        </lv-form-control>
+                            <lv-group lvGutter="8px" *ngIf="i18n.isEn">
+                                <span>{{'common_english_executed_once_at_label'|i18n}}</span>
+                                <ng-template [ngTemplateOutlet]="firstExecTimeTpl"></ng-template>
+                                <span>every</span>
+                                <ng-template [ngTemplateOutlet]="execIntervalTpl"></ng-template>
+                                <span>{{'copy_retention_duration_unit_days_label'|i18n}}</span>
+                            </lv-group>
+                        </lv-group>
                     </lv-radio>
                     <lv-radio [lvValue]="intervalUnit.week.value">
-                        {{intervalUnit.week.label | i18n}}
-                        <lv-form-control *ngIf="formGroup.get('intervalUnit').value === intervalUnit.week.value" [lvErrorTip]="baseUtilService.requiredErrorTip">
-                            <lv-group lvDirection="vertical" lvGutter="8px">
-                                <lv-group lvGutter="8px">
-                                    <span>
-                                        {{'common_every_week_label'|i18n}}
-                                    </span>
-                                    <lv-select
-                                        [lvOptions]="daysOfWeek"
-                                        style="width: 2.2rem"
-                                        formControlName="daysOfWeek" lvMaxTagCount="2"
-                                        lvValueKey="value" lvMode="multiple" lvShowCheckAll
-                                    >
-                                    </lv-select>
-                                  <lv-time-picker class="time-picker" formControlName="firstExecTime" lvPlaceholder="HH:mm" lvFormat="HH:mm"></lv-time-picker>
-                                    <span>{{'protection_execute_once_label'|i18n}}</span>
-                                </lv-group>
+                        {{'common_by_week_lower_case_label' | i18n}}
+                        <lv-group *ngIf="formGroup.get('intervalUnit').value === intervalUnit.week.value">
+                            <lv-group lvGutter="8px" *ngIf="!i18n.isEn">
+                                <span>
+                                    {{'common_every_week_label'|i18n}}
+                                </span>
+                                <ng-template [ngTemplateOutlet]="daysOfWeekTpl"></ng-template>
+                                <ng-template [ngTemplateOutlet]="firstExecTimeTpl"></ng-template>
+                                <span>{{'protection_execute_once_label'|i18n}}</span>
                             </lv-group>
-                        </lv-form-control>
+                            <lv-group lvGutter="8px" *ngIf="i18n.isEn">
+                                <span>{{'common_english_executed_once_at_label'|i18n}}</span>
+                                <ng-template [ngTemplateOutlet]="firstExecTimeTpl"></ng-template>
+                                <span>on</span>
+                                <ng-template [ngTemplateOutlet]="daysOfWeekTpl"></ng-template>
+                                <span>{{'common_english_of_every_week_label'|i18n}}</span>
+                            </lv-group>
+                        </lv-group>
                     </lv-radio>
                     <lv-radio [lvValue]="intervalUnit.month.value">
-                        {{'common_by_month_label' | i18n}}
+                        {{'common_by_month_lower_case_label' | i18n}}
                         <lv-form-control *ngIf="formGroup.get('intervalUnit').value === intervalUnit.month.value">
                             <lv-group lvDirection="vertical" lvGutter="8px">
                                 <lv-group lvGutter="8px">
-                                    <lv-form-control [lvErrorTip]="daysOfMonthErrorTip"
-                                                     class="groupInControl daysOfMonthGroup">
-                                      <lv-group lvGutter="8px">
-                                        <span>
-                                        {{'common_every_month_label'|i18n}}
-                                      </span>
-                                        <lv-input-group [lvSuffix]="suffixTpl" #popover="lvPopover" lv-popover
-                                                        [lvPopoverContent]="daysOfMonthTpl" lvPopoverTheme="light"
-                                                        lvPopoverPosition="bottom" lvPopoverTrigger="click"
-                                                        lvPopoverShowArrow="false" lvPopoverBackdrop="true"
-                                                        lvPopoverMaskTransparent="true"
-                                                        lvPopoverClassName="customer-popover" style="width: 2.2rem">
-                                          <input lv-input formControlName="daysOfMonth" readonly="readonly"
-                                                 placeholder="{{'protection_select_date_label'|i18n}}"/>
-                                        </lv-input-group>
-                                        <lv-time-picker class="time-picker" formControlName="firstExecTime" lvPlaceholder="HH:mm" lvFormat="HH:mm"></lv-time-picker>
-                                        <span>{{'protection_execute_once_label'|i18n}}</span>
-                                      </lv-group>
-                                    </lv-form-control>
-                                    <ng-template #suffixTpl>
-                                        <i lv-icon="lv-icon-triangle-down"></i>
-                                    </ng-template>
-                                    <ng-template #daysOfMonthTpl>
-                                        <lv-group lvDirection='vertical'>
-                                            <lv-checkbox-group #daysOfMonthGroup
-                                                               formControlName="daysOfMonths">
-                                                <ng-container *ngFor="let data of monthDaysItems">
-                                                    <lv-group [lvGutter]="'16px'" class="month-day">
-                                                        <ng-container *ngFor="let d of data.key">
-                                                            <lv-checkbox [lvViewType]="'custom'" [lvValue]="d">
-                                                                <div class="month-card"
-                                                                     [ngClass]="{'select': daysOfMonthGroup.isChecked(d)}">
-                                                                    {{d}}
-                                                                </div>
-                                                            </lv-checkbox>
-                                                        </ng-container>
-                                                    </lv-group>
-                                                </ng-container>
-                                            </lv-checkbox-group>
+                                    <lv-group class="groupInControl daysOfMonthGroup">
+                                        <lv-group lvGutter="8px" *ngIf="!i18n.isEn">
+                                            <span>
+                                                {{'common_every_month_label'|i18n}}
+                                            </span>
+                                            <ng-template [ngTemplateOutlet]="daysOfMonthControlTpl"></ng-template>
+                                            <ng-template [ngTemplateOutlet]="firstExecTimeTpl"></ng-template>
+                                            <span>{{'protection_execute_once_label'|i18n}}</span>
                                         </lv-group>
-                                    </ng-template>
+                                        <lv-group lvGutter="8px" *ngIf="i18n.isEn">
+                                            <span>{{'common_english_executed_once_at_label'|i18n}}</span>
+                                            <ng-template [ngTemplateOutlet]="firstExecTimeTpl"></ng-template>
+                                            <span>on days</span>
+                                            <ng-template [ngTemplateOutlet]="daysOfMonthControlTpl"></ng-template>
+                                            <span>{{'common_english_of_every_month_label'|i18n}}</span>
+                                        </lv-group>
+                                    </lv-group>
                                 </lv-group>
                             </lv-group>
                         </lv-form-control>
@@ -232,7 +241,8 @@
         </lv-form-label>
         <lv-form-control [lvErrorTip]="emailErrorTips">
             <lv-group lvDirection="vertical" lvGutter="8px">
-                <lv-input-tag [lvClearIcon]="'lv-icon-clear'" formControlName="emails" lvSaveOnBlur [lvSeparator]="[',']"></lv-input-tag>
+                <lv-input-tag [lvClearIcon]="'lv-icon-clear'" formControlName="emails" lvSaveOnBlur
+                    [lvSeparator]="[',']"></lv-input-tag>
                 <span class="eamils-tips">{{'insight_report_emails_tips_label'|i18n}}</span>
             </lv-group>
         </lv-form-control>
@@ -241,4 +251,11 @@
 
 <ng-template #tipsTemplate>
     <span [innerHTML]="i18n.get('insight_report_period_tips_label')"></span>
+</ng-template>
+
+<ng-template #firstTimePickerFooterTpl>
+    <button lv-button lvType="link" class="report-time-picker-current"
+        (click)="setSysTime(formGroup.get('firstExecTime'))">
+        {{'common_current_time_label' | i18n}}
+    </button>
 </ng-template>

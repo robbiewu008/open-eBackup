@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef __AGENT_CONFIG_XML_PARSE_H__
 #define __AGENT_CONFIG_XML_PARSE_H__
 
@@ -23,6 +35,7 @@ static const mp_string CFG_USER_NAME = "name";
 static const mp_string CFG_SALT_VALUE = "sl";
 static const mp_string CFG_HASH_VALUE = "hash";
 static const mp_string CFG_WIN_VERISON_VALUE = "win_version";
+static const mp_string CFG_WIN_SYSTEM_DISK_VALUE = "win_system_disk";
 static const mp_string CFG_DOMAIN_NAME_VALUE   = "domain_name";
 static const mp_string CFG_DOMAIN_NAME_VALUE_DME   = "domain_name_dme";
 static const mp_string CFG_SECURE_CHANNEL      = "secure_channel";
@@ -70,6 +83,7 @@ static const mp_string CFG_ADMINNODE_USER = "ebk_server_user";
 static const mp_string CFG_ADMINNODE_PWD = "ebk_server_pwd";
 static const mp_string CFG_BACKUP_ROLE = "backup_role";
 static const mp_string CFG_CHECK_CONN_TIME = "check_conn_time";
+static const mp_string CFG_CHECK_CONN_THREAD_NUM = "check_conn_thread_num";
 static const mp_string CFG_CHECK_VSPHERE_CONN_TIME = "check_vsphere_conn_time";
 static const mp_uchar CFG_DEFAULT_SECURITY_LEVEL = 3;
 static const mp_string CFG_PROGRESS_INTERVAL   = "progress_interval";
@@ -133,6 +147,7 @@ static const mp_string CFG_MOUNT_SECTION = "Mount";
 static const mp_string CFG_LINK_HOST_PORT = "link_host_port";
 static const mp_string CFG_CHECK_LINK_STATUS_TIMEOUT = "check_link_status_timeout";
 static const mp_string CFG_EIP = "eip";
+static const mp_string CFG_WIN_MOUNT_PUBLIC_PATH = "win_mount_public_path";
 static const mp_string CFG_GENERAL_MOUNT_OPTION = "general_mount_option";
 static const mp_string CFG_LINKENCRY_MOUNT_OPTION = "linkencyption_mount_option";
 static const mp_string CFG_GENERAL_MOUNT_PROTOCOL = "general_mount_protocol";
@@ -152,6 +167,12 @@ static const mp_string CFG_OPENSTACK_METADATA_SERVER_IP = "openstack_metadata_se
 static const mp_string CFG_OPENSTACK_METADATA_SERVER_PORT = "openstack_metadata_server_port";
 static const mp_string CFG_DATAPROCESS_USE_AIO_BACKUP = "use_aio_backup";
 static const mp_string CFG_DATAPROCESS_USE_AIO_RESTORE = "use_aio_restore";
+
+// job frame
+static const mp_string CFG_JOB_FRAM_SECTION = "JobFrame";
+static const mp_string CFG_GET_JOB_BASE_INTERVAL = "get_job_base_interval";
+static const mp_string CFG_GET_JOB_INC_INTERVAL = "get_job_inc_interval";
+static const mp_string CFG_GET_JOB_INTERVAL_MAX_ADJUST_TIMES = "get_job_interval_max_adjust_times";
 
 static const mp_string XBSACFG_APP_TYPE_SECTION = "Apptype";
 static const mp_string XBSACFG_APP_TYPE = "app_type";

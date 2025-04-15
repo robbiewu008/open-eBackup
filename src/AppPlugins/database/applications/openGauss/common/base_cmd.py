@@ -23,6 +23,16 @@ class BaseCmd:
         self.env_path = env_path
         self.db_user = db_user
 
+    @staticmethod
+    def _get_systemctl_status(serivce):
+        if not check_injection_char(serivce):
+            return False, "Invalid params to execute."
+        status_cmd = f"systemctl status {serivce}"
+        return_code, out_info, err_info = execute_cmd(status_cmd)
+        ret = (return_code in ("0", "3"))
+        res_cont = out_info if ret else err_info
+        return ret, res_cont
+
     def execute_cmd(self, cmd: str):
         return self._get_dbtool_cmd_result(cmd)
 
@@ -55,6 +65,18 @@ class BaseCmd:
         ret, cont = self._execute_sql_cmd(sql_cmd, data_port)
         return ret, cont
 
+    def show_archive_mode(self, data_port):
+        sql_cmd = "show archive_mode;"
+        ret, cont = self._execute_sql_cmd(sql_cmd, data_port)
+        if not ret:
+            return False
+        if len(cont) > 0:
+            split_lines = cont.splitlines()
+            for index, row in enumerate(split_lines):
+                if 1 < index < len(split_lines) - 1:
+                    return row.strip() == "on"
+        return False
+
     def get_control_data(self, data_path):
         if not check_injection_char(data_path):
             return False, "Invalid data path"
@@ -69,16 +91,6 @@ class BaseCmd:
     def execute_sql_cmd(self, data_port, sql_cmd):
         ret, cont = self._execute_sql_cmd(sql_cmd, data_port)
         return ret, cont
-
-
-    def _get_systemctl_status(self, serivce):
-        if not check_injection_char(serivce):
-            return False, "Invalid params to execute."
-        status_cmd = f"systemctl status {serivce}"
-        return_code, out_info, err_info = execute_cmd(status_cmd)
-        ret = (return_code in ("0", "3"))
-        res_cont = out_info if ret else err_info
-        return ret, res_cont
 
     def _su_dbuser_prefix(self):
         if not check_injection_char(self.db_user) and not self.check_user():
@@ -95,7 +107,10 @@ class BaseCmd:
         raise ValueError("Invalid env path")
 
     def _execute_sql_cmd(self, sql_cmd, db_port):
-        cmd = f"gsql -c \"{sql_cmd}\" postgres -p {db_port}"
+        if db_port:
+            cmd = f"gsql -c \"{sql_cmd}\" postgres -p {db_port}"
+        else:
+            cmd = f"gsql -d postgres -c \"{sql_cmd}\""
         ret, cont = self._get_dbtool_cmd_result(cmd)
         return ret, cont
 
@@ -123,6 +138,7 @@ class BaseCmd:
 
 
 class GaussCmd(BaseCmd):
+
     def __init__(self, db_user, env_path):
         super().__init__(db_user, env_path)
 
@@ -146,6 +162,28 @@ class GaussCmd(BaseCmd):
         ret, cont = self._get_dbtool_cmd_result(status_cmd)
         return ret, cont
 
+    def get_status_by_name(self, node_name):
+        status_cmd = f'gs_om -t status -h {node_name}'
+        ret, cont = self._get_dbtool_cmd_result(status_cmd)
+        return ret, cont
+
+    def get_status_by_group_name(self, group_name):
+        status_cmd = f'gs_om -t status --group-name {group_name} --detail'
+        ret, cont = self._get_dbtool_cmd_result(status_cmd)
+        return ret, cont
+
+    def get_cmdb_status(self, address, port):
+        query_cmd_status_command = cmd_format("ha_ctl monitor dcs -l http://{}:{}", address, port)
+        ret, cont = self._get_dbtool_cmd_result(query_cmd_status_command)
+        return ret, cont
+
+    def check_cmdb_user(self, user, password, port):
+        query_check_cmdb_user = \
+            f'gsql -d postgres -U {user} -W {password} -p {port} -c \"select datname from pg_database;\"' if port else \
+                f'gsql -d postgres -U {user} -W {password} -c \"select datname from pg_database;\"'
+        ret, cont = self._get_dbtool_cmd_result(query_check_cmdb_user)
+        return ret, cont
+
 
 class VastBaseCmd(BaseCmd):
     def __init__(self, db_user, env_path):
@@ -165,6 +203,13 @@ class VastBaseCmd(BaseCmd):
 
     def get_has_service(self):
         ret, res_cont = self._get_systemctl_status("has")
+        return ret, res_cont
+
+    def get_has_start_argv(self):
+        cmd = "systemctl show has -p ExecStart"
+        return_code, out_info, err_info = execute_cmd(cmd)
+        ret = (return_code in ("0", "3"))
+        res_cont = out_info if ret else err_info
         return ret, res_cont
 
     def get_dcs_service(self):

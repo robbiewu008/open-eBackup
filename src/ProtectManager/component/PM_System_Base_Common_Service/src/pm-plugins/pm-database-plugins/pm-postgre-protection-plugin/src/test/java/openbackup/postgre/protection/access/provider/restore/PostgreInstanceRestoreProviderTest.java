@@ -14,6 +14,7 @@ package openbackup.postgre.protection.access.provider.restore;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
+import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.access.framework.core.common.enums.v2.RestoreTypeEnum;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
@@ -56,10 +57,12 @@ public class PostgreInstanceRestoreProviderTest {
 
     private final ProtectedEnvironmentService environmentService = PowerMockito.mock(ProtectedEnvironmentService.class);
 
+    private final AgentUnifiedService agentUnifiedService = PowerMockito.mock(AgentUnifiedService.class);
+
     private final CopyRestApi copyRestApi = PowerMockito.mock(CopyRestApi.class);
 
-    private final PostgreInstanceRestoreProvider provider
-        = new PostgreInstanceRestoreProvider(postgreInstanceService, environmentService, copyRestApi);
+    private final PostgreInstanceRestoreProvider provider = new PostgreInstanceRestoreProvider(postgreInstanceService,
+        environmentService, agentUnifiedService, copyRestApi);
 
     private RestoreTask mockRestoreTask(String subType, RestoreLocationEnum restoreLocation) {
         RestoreTask task = new RestoreTask();
@@ -186,8 +189,8 @@ public class PostgreInstanceRestoreProviderTest {
     public void should_throw_LegoCheckedException_if_src_version_is_invalid_when_isVersionMatched() {
         String srcVersion = "9";
         String tgtVersion = "13.7";
-        ReflectionTestUtils.invokeMethod(PostgreInstanceRestoreProvider.class, "isVersionMatched",
-            srcVersion, tgtVersion);
+        ReflectionTestUtils.invokeMethod(PostgreInstanceRestoreProvider.class, "isVersionMatched", srcVersion,
+            tgtVersion);
     }
 
     /**
@@ -199,8 +202,8 @@ public class PostgreInstanceRestoreProviderTest {
     public void should_throw_LegoCheckedException_if_tgt_version_is_invalid_when_isVersionMatched() {
         String srcVersion = "9.4.3";
         String tgtVersion = "12";
-        ReflectionTestUtils.invokeMethod(PostgreInstanceRestoreProvider.class, "isVersionMatched",
-            srcVersion, tgtVersion);
+        ReflectionTestUtils.invokeMethod(PostgreInstanceRestoreProvider.class, "isVersionMatched", srcVersion,
+            tgtVersion);
     }
 
     /**
@@ -212,13 +215,15 @@ public class PostgreInstanceRestoreProviderTest {
     public void should_return_false_if_v9_minor_version_not_equal_when_isVersionMatched() {
         String srcVersion = "13.3";
         String tgtVersion = "13.7";
-        Assert.assertFalse(ReflectionTestUtils.invokeMethod(PostgreInstanceRestoreProvider.class, "isVersionMatched",
-            srcVersion, tgtVersion));
+        Assert.assertFalse(
+            ReflectionTestUtils.invokeMethod(PostgreInstanceRestoreProvider.class, "isVersionMatched", srcVersion,
+                tgtVersion));
 
         String srcVersion2 = "9.4.3";
         String tgtVersion2 = "9.6.3";
-        Assert.assertFalse(ReflectionTestUtils.invokeMethod(PostgreInstanceRestoreProvider.class, "isVersionMatched",
-            srcVersion2, tgtVersion2));
+        Assert.assertFalse(
+            ReflectionTestUtils.invokeMethod(PostgreInstanceRestoreProvider.class, "isVersionMatched", srcVersion2,
+                tgtVersion2));
     }
 
     /**
@@ -230,13 +235,15 @@ public class PostgreInstanceRestoreProviderTest {
     public void should_return_true_if_v9_minor_version_not_equal_when_isVersionMatched() {
         String srcVersion = "9.5.5";
         String tgtVersion = "9.5.5";
-        Assert.assertTrue(ReflectionTestUtils.invokeMethod(PostgreInstanceRestoreProvider.class, "isVersionMatched",
-            srcVersion, tgtVersion));
+        Assert.assertTrue(
+            ReflectionTestUtils.invokeMethod(PostgreInstanceRestoreProvider.class, "isVersionMatched", srcVersion,
+                tgtVersion));
 
         String srcVersion2 = "11.6";
         String tgtVersion2 = "11.6";
-        Assert.assertTrue(ReflectionTestUtils.invokeMethod(PostgreInstanceRestoreProvider.class, "isVersionMatched",
-            srcVersion2, tgtVersion2));
+        Assert.assertTrue(
+            ReflectionTestUtils.invokeMethod(PostgreInstanceRestoreProvider.class, "isVersionMatched", srcVersion2,
+                tgtVersion2));
     }
 
     private RestoreTask mockRestoreTaskForCheckSupportRestore() {
@@ -298,7 +305,6 @@ public class PostgreInstanceRestoreProviderTest {
         protectedResource.setVersion("9.2.7");
         protectedResource.setExtendInfoByKey(PostgreConstants.DB_OS_USER_KEY, "postgres");
         PowerMockito.when(postgreInstanceService.getResourceById(anyString())).thenReturn(protectedResource);
-        Assert.assertNull(
-            ReflectionTestUtils.invokeMethod(provider, "checkSupportRestore", task));
+        Assert.assertNull(ReflectionTestUtils.invokeMethod(provider, "checkSupportRestore", task));
     }
 }

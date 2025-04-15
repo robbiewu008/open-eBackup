@@ -12,6 +12,10 @@
 */
 package openbackup.sqlserver.common;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * SQL Server常量
  *
@@ -101,6 +105,22 @@ public class SqlServerConstants {
      * SQL Server数据库恢复重命名不支持的名称“tempdb”
      */
     public static final String TEMPDB_DATABASE = "tempdb";
+
+    /**
+     * 是否删除关联副本
+     */
+    public static final String IS_DELETE_RELATIVE_COPIES = "is_delete_relative_copies";
+
+    /**
+     * 需要兼容老版本
+     */
+    public static final List<String> SUPPORT_OLD_VERSION = Collections.unmodifiableList(Arrays.asList("1.5", "1.3"));
+
+
+    /**
+     * SQL Server恢复目标位置的key
+     */
+    public static final String IS_RESTORE_LOCATION = "isRestoreNew";
 
     private SqlServerConstants() {
     }

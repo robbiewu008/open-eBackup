@@ -1,0 +1,107 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Scanning Tape Libraries">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200029961.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200029813">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Scanning Tape Libraries</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200029813"></a><a name="EN-US_TOPIC_0000002200029813"></a>
+
+<h1 class="topictitle1">Scanning Tape Libraries</h1>
+<div><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p8060118"><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_ph13928104832017">The system automatically scans tape libraries every 10 minutes (for 1.5.0) or every 24 hours (for 1.6.0 and later versions). When detecting a tape library connected to the <span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000002200061393_text1834982214116">OceanProtect</span>, it automatically updates the tape library to the <span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000002200061393_text1679762213115">OceanProtect</span>.</span> This section describes how to manually scan a tape library that is newly added but has not been updated to the <span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text1832312816131">OceanProtect</span>.</p>
+<div class="section" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_section15402165315167"><h4 class="sectiontitle">Constraints</h4><ul id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_ul138793265179"><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_li2068675910384">Independent drives without robotic arms are not supported.</li><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_li987922691714">Physical tape libraries and virtual tape libraries of LTO-3 or higher are supported.</li><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_li173551059181714">Only tape libraries with bar codes are supported.</li><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_li938225111815">The <span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text5397447141213">OceanProtect</span> is connected to physical tape libraries using Fibre Channel and to virtual tape libraries using iSCSI.</li><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_li29334582180">Different drives of tape libraries need to support the same tape standard.</li><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_li15528103364810">Expiration of some tape space is not supported.</li><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_li1458819301476">Only RW tapes are supported. WORM tapes are not supported.</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_section356334914524"><h4 class="sectiontitle">Prerequisites</h4><ul id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_ul4735536364"><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_li17351313611">A tape library has been connected to the <span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text14923594015">OceanProtect</span>. For details about how to connect a tape library, see "Networking Overview" in the <em id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_i1163171382111">Installation Guide</em> specific to your product model.</li><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_li776618368">For a physical tape library, ensure that there are import/export slots and tape mounting and unmounting operations are allowed. Assume that a Quantum tape library is used. The following operations are performed on the configuration management page of the tape library. For details about the operations related to tape libraries from other vendors, contact the vendors.<ul id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_ul1531914811531"><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_li1345351311534">Select <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_uicontrol1552115302002"><b>Library</b></span>. In the <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_uicontrol2938711121"><b>Operations</b></span> area on the right pane, click <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_uicontrol198402055913"><b>IE Area</b></span>. In the displayed dialog box, set <strong id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_b1936711311123">Slots</strong> (indicating the number of import/export slots) as required.</li><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_li1049913100444">Select <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_uicontrol19119131141313"><b>Library</b></span>. In the <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_uicontrol19119111111316"><b>Operations</b></span> area on the right pane, click <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_uicontrol1897816512011"><b>Settings</b></span>. In the displayed dialog box, select <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_uicontrol267864164812"><b>Automatic Inventory</b></span>, <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_uicontrol17434247164817"><b>Library-Assisted Drive Unload</b></span>, <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_uicontrol9287112234811"><b>Logical Drive Serial Number Addressing</b></span>, and <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000001506034709_uicontrol16372732134820"><b>Logical System Addressing</b></span>.</li></ul>
+</li></ul>
+</div>
+<div class="section" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_section85267543435"><h4 class="sectiontitle">Procedure</h4><ol id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_ol6919600448"><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000001091431193_li1570821013536"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000002200069893_en-us_topic_0000002164660702_en-us_topic_0000001132896521_en-us_topic_0000001125223205_en-us_topic_0000001091431193_uicontrol123381932135316"><b><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000002200069893_en-us_topic_0000002164660702_en-us_topic_0000001132896521_en-us_topic_0000001125223205_text3591711162920">System</span> &gt; <span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000002200069893_en-us_topic_0000002164660702_en-us_topic_0000001132896521_en-us_topic_0000001125223205_text134875310309">Infrastructure</span> &gt; <span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_en-us_topic_0000002200069893_en-us_topic_0000002164660702_text102788238478"><strong>Archive Storage Library</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_li3233732194510"><span>On the <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_uicontrol120212905318"><b><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text1278022313534"><strong>Tape</strong></span></b></span> tab page, select a node and click <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_uicontrol663051135311"><b><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text6263729145310"><strong>Tape Library</strong></span></b></span>.</span></li><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_li2061123114818"><span>Click <span class="uicontrol" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_uicontrol17485191818512"><b><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text1372772714165"><strong>Scan Tape Library</strong></span></b></span>. The system automatically identifies the tape libraries that have been successfully connected to the <span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text37636518406">OceanProtect</span>. After the scanning is complete, you can view information about the newly scanned tape libraries in the tape library list. <a href="#EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_table17556217174917">Table 1</a> describes parameters.</span><p>
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_table17556217174917"></a><a name="en-us_topic_0000002200155613_table17556217174917"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_table17556217174917" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Parameters related to the tape library</caption><colgroup><col style="width:15.1%"><col style="width:84.89999999999999%"></colgroup><thead align="left"><tr id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_row555613174491"><th align="left" class="cellrowborder" valign="top" width="15.1%" id="mcps1.3.4.2.3.2.1.2.3.1.1"><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p12556171774913">Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="84.89999999999999%" id="mcps1.3.4.2.3.2.1.2.3.1.2"><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p10556181724910">Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_row18556101794917"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p13556111718497"><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text612519440161"><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p46371934161919">Name of a tape library, which is generated by the system. The naming convention is TapeLibrary- + <em id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_i5351195410247">Name of the controller to which the tape library belongs</em> + <em id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_i5922134962412">ID</em>. IDs are sorted according to the scanning sequence of tape libraries.</p>
+<p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p11556101712499">For example, if the name of the controller to which the first scanned tape library belongs is 0A, the name of the first scanned tape library is <strong id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_b31391758112616">TapeLibrary-0A0</strong>.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_row1055612178495"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p25561017114919"><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text1497145651614"><strong>Status</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p16556181716492">Current status of a tape library.</p>
+<ul id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_ul219732945413"><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_li1419717298545"><strong id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_b76261559202"><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text882694021718"><strong>Online</strong></span></strong>: The tape library is properly connected to the <span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text14289362404">OceanProtect</span>.</li><li id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_li1674016385547"><strong id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_b1138773652014"><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text2079911485175"><strong>Offline</strong></span></strong>: The tape library is disconnected from the <span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text168522610401">OceanProtect</span>.</li></ul>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_row13556017124918"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p14556171710498"><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text1344920419172"><strong>Serial No.</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p1755641711496">Serial number of a tape library.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_row55569178492"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p1455615178496"><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text17170811111711"><strong>Vendor</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p12556181716497">Manufacturer of a tape library. All vendors of virtual tape libraries are supported. The supported vendors of physical tape libraries include IBM and Quantum.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_row613201115509"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p614411155012"><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text931720187171"><strong>Product Model</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p614111145014">Model of a tape library.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_row183836134505"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p1638415137504"><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text20646623181713"><strong>Number of Slots</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p238441375018">Number of tape library slots.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_row56662118509"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p266142112505"><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text1553516295179"><strong>Number of Drivers</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p26682116507">Number of tape library drivers.</p>
+</td>
+</tr>
+<tr id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_row43971423145011"><td class="cellrowborder" valign="top" width="15.1%" headers="mcps1.3.4.2.3.2.1.2.3.1.1 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p13397192317501"><span id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_text1699813412173"><strong>Owning Controller</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="84.89999999999999%" headers="mcps1.3.4.2.3.2.1.2.3.1.2 "><p id="EN-US_TOPIC_0000002200029813__en-us_topic_0000002200155613_p123971723155017">Controller to which a tape library belongs.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002200029961.html">Managing Tape Libraries</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

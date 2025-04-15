@@ -60,7 +60,7 @@
       <thead>
         <tr>
           <th style="width: 300px;">
-            {{ 'protection_proxy_host_label' | i18n }}
+            {{ 'protection_client_label' | i18n }}
           </th>
           <th>
             <div lv-overflow>
@@ -98,7 +98,7 @@
               >
                 <lv-select
                   class="input-position"
-                  [lvOptions]="proxyOptions"
+                  [lvOptions]="managerProxyOptions"
                   formControlName="proxy"
                   lvValueKey="value"
                   lvMode="single"
@@ -151,7 +151,12 @@
             </td>
           </tr>
         </ng-container>
-      </tbody></lv-datatable
+      </tbody>
+    <lv-group [hidden]="!repeatNodes" [lvColumns]="['16px','auto']" class="error-tips">
+        <i lv-icon="lv-icon-status-failed"></i>
+        <span>{{'protection_duplication_node_tips_label'|i18n}}</span>
+    </lv-group>
+    </lv-datatable
     >
 
     <button
@@ -176,7 +181,7 @@
     <lv-datatable [lvData]="[{}]" #lvTable formArrayName="schedulerNodes">
       <thead>
         <tr>
-          <th>{{ 'protection_proxy_host_label' | i18n }}</th>
+          <th>{{ 'protection_clients_label' | i18n }}</th>
           <th>
             <div lv-overflow>
               <span> {{ 'common_dataplane_ip_label' | i18n }}</span>
@@ -214,6 +219,7 @@
                   lvValueKey="value"
                   lvMode="single"
                   lvShowFilter
+                  lvShowClear
                   lvShowCheckAll
                   lvFilterKey="label"
                   lvFilterMode="contains"

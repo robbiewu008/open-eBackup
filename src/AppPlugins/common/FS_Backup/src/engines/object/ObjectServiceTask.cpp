@@ -54,6 +54,7 @@ ObjectServiceTask::~ObjectServiceTask()
 
 void ObjectServiceTask::Exec()
 {
+    HCPTSP::getInstance().reset(m_params.reqID);
     if (m_bufferMapPtr == nullptr) {
         return;
     }
@@ -114,7 +115,7 @@ bool ObjectServiceTask::IsRestore()
 bool ObjectServiceTask::IsBucketName(std::string& path)
 {
     for (auto &item : m_params.bucketNames) {
-        if (path.substr(1) == item) {
+        if (path.substr(1) == item.bucketName) {
             return true;
         }
     }
@@ -130,13 +131,25 @@ std::string ObjectServiceTask::GetBucketName()
     std::string path = m_fileHandle.m_file->m_fileName;
     for (auto &item : m_params.bucketNames) {
         // 不包含首字符"/"路径分割符
-        if (path.substr(1, item.length()) == item) {
-            return item;
+        if (path.substr(1, item.bucketName.length()) == item.bucketName) {
+            return item.bucketName;
         }
     }
     return "";
 }
 
+bool ObjectServiceTask::GetEncode(const std::string& bucketName)
+{
+    if (IsRestore() && !m_params.dstBucket.bucketName.empty()) {
+        return m_params.dstBucket.encodeEnable;
+    }
+    for (auto &item : m_params.bucketNames) {
+        if (item.bucketName == bucketName) {
+            return item.encodeEnable;
+        }
+    }
+    return false;
+}
 /*
  * 如果指定了恢复的prefix，则恢复的key修改为 prefix + delimiter + key
  * 指定的prefix最多只有1个
@@ -178,7 +191,9 @@ void ObjectServiceTask::HandleCreateBucket()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
-        ERRLOG("Create bucket name %s failed.", req->bucketName.c_str());
+        RecordErrMessage(errorCode, ret.errorDesc);
+        ERRLOG("Create bucket(%s) failed. errorCode: %lld, errorDesc: %s",
+            req->bucketName.c_str(), errorCode, ret.errorDesc.c_str());
         m_result = Module::FAILED;
         return;
     }
@@ -192,6 +207,7 @@ void ObjectServiceTask::HandleCreateBucket()
             int64_t errorCode = createRet.GetLinuxErrorCode();
             m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
             SetCriticalErrorInfo(errorCode);
+            RecordErrMessage(errorCode, createRet.errorDesc);
             ERRLOG("Create bucket name %s failed.", createReq->bucketName.c_str());
             m_result = Module::FAILED;
             return;
@@ -234,11 +250,13 @@ void ObjectServiceTask::HandleReadMeta()
     }
     req->bucketName = GetBucketName();
     req->key = GetObjectKey();
+    req->encodeEnable = GetEncode(req->bucketName);
     OBSResult ret = m_obsCtx->GetObjectMetaData(req, resp);
     if (ret.result != ResultType::SUCCESS) {
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to get meta data of %s", req->key.c_str());
         m_result = Module::FAILED;
         return;
@@ -274,14 +292,20 @@ void ObjectServiceTask::HandleReadData()
     req->startByte = m_fileHandle.m_block.m_offset;
     req->byteCount = m_fileHandle.m_block.m_size;
     req->retryConfig.isRetryable = true;
+    req->encodeEnable = GetEncode(req->bucketName);
 
     OBSResult ret = m_obsCtx->GetObject(req, resp);
     if (!ret.IsSucc()) {
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
-        ERRLOG("Get object %s failed, bucket name is %s, filename: %s",
-            req->key.c_str(), req->bucketName.c_str(), m_fileHandle.m_file->m_fileName.c_str());
+        RecordErrMessage(errorCode, ret.errorDesc);
+        ERRLOG("Get object %s(offset: %llu, size: %llu) failed, bucket name is %s, filename: %s",
+            req->key.c_str(),
+            m_fileHandle.m_block.m_offset,
+            m_fileHandle.m_block.m_size,
+            req->bucketName.c_str(),
+            m_fileHandle.m_file->m_fileName.c_str());
         m_result = Module::FAILED;
         return;
     }
@@ -308,6 +332,14 @@ void ObjectServiceTask::SetCriticalErrorInfo(int64_t err)
         m_backupFailReason = BackupPhaseStatus::FAILED_NOMEMORY;
     }
     return;
+}
+
+void ObjectServiceTask::RecordErrMessage(int64_t errCode, const std::string& errMessage)
+{
+    if (errCode != ENOSPC && errCode != ENETUNREACH && errCode != EACCES && errCode != ENOMEM) {
+        m_fileHandle.m_errMessage = errMessage;
+        ERRLOG("Record errorCode: %lld, errorDesc: %s", errCode, errMessage.c_str());
+    }
 }
 
 bool ObjectServiceTask::IsNeedRestore()
@@ -354,11 +386,13 @@ void ObjectServiceTask::HandleOpenDst()
     std::unique_ptr<GetUploadIdResponse> resp = nullptr;
     req->bucketName = GetBucketName();
     req->key = GetObjectKey();
+    req->encodeEnable = GetEncode(req->bucketName);
     OBSResult ret = m_obsCtx->GetUploadId(req, resp);
     if (!ret.IsSucc()) {
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to get uploadid file: %s", m_fileHandle.m_file->m_fileName.c_str());
         m_result = Module::FAILED;
         return;
@@ -379,9 +413,11 @@ int ObjectServiceTask::GetObjectMtime(time_t &mtime)
     }
     req->bucketName = GetBucketName();
     req->key = GetObjectKey();
+    req->encodeEnable = GetEncode(req->bucketName);
     OBSResult ret = m_obsCtx->GetObjectMetaData(req, resp);
     if (!ret.IsSucc()) {
         INFOLOG("No this object or can not get meta data of %s", req->key.c_str());
+        RecordErrMessage(ret.GetLinuxErrorCode(), ret.errorDesc);
         return Module::FAILED;
     }
 
@@ -413,11 +449,13 @@ int ObjectServiceTask::HandleWriteHugeData()
     req->checkPointFilePath = m_params.cachePath + fileName.substr(fileName.rfind(PATH_SEPARATOR) + 1);
     req->callBack = ObjectWriteDataCb;
     req->callBackData = &m_params.writeCbData;
+    req->encodeEnable = GetEncode(req->bucketName);
     OBSResult ret = m_obsCtx->MultiPartUploadObject(req, resp);
     if (!ret.IsSucc()) {
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to MultiPartUploadObject %s", req->key.c_str());
         return Module::FAILED;
     }
@@ -468,11 +506,13 @@ int ObjectServiceTask::HandleWriteSmallData()
     if (m_params.writeMeta) {
         GetObjectMetaFromXattr(req->sysDefMetaData, req->userDefMetaData);
     }
+    req->encodeEnable = GetEncode(req->bucketName);
     OBSResult ret = m_obsCtx->PutObject(req, resp);
     if (!ret.IsSucc()) {
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to PutObject file: %s", req->key.c_str());
         return Module::FAILED;
     }
@@ -516,11 +556,13 @@ void ObjectServiceTask::HandleWriteData()
     req->bufPtr = (char *)m_fileHandle.m_block.m_buffer;
     DBGLOG("Object key %s, uploadId %s, partNumber %u, startByte %llu, partSize %llu",
         req->key.c_str(), req->uploadId.c_str(), req->partNumber, req->startByte, req->partSize);
+    req->encodeEnable = GetEncode(req->bucketName);
     OBSResult ret = m_obsCtx->PutObjectPart(req, resp);
     if (!ret.IsSucc()) {
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to PutObjectPart file: %s", req->key.c_str());
         m_result = Module::FAILED;
         return;
@@ -558,11 +600,13 @@ void ObjectServiceTask::HandleCloseDst()
             req->uploadInfo = it->second;
         }
     }
+    req->encodeEnable = GetEncode(req->bucketName);
     OBSResult ret = m_obsCtx->CompletePutObjectPart(req);
     if (!ret.IsSucc()) {
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to close file: %s", m_fileHandle.m_file->m_fileName.c_str());
         m_result = Module::FAILED;
         return;
@@ -610,11 +654,13 @@ void ObjectServiceTask::HandleDelete()
     }
     req->bucketName = GetBucketName();
     req->key = GetObjectKey();
+    req->encodeEnable = GetEncode(req->bucketName);
     OBSResult ret = m_obsCtx->DeleteObject(req);
     if (!ret.IsSucc()) {
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to delete object: %s", req->key.c_str());
         m_result = Module::FAILED;
         return;
@@ -664,6 +710,7 @@ int ObjectServiceTask::GetBucketAcl(std::unique_ptr<GetBucketACLResponse>& newAc
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to get bucket ACL of %s", req->bucketName.c_str());
         return Module::FAILED;
     }
@@ -681,11 +728,13 @@ int ObjectServiceTask::GetObjectAcl(std::unique_ptr<GetObjectACLResponse>& newAc
     req->bucketName = GetBucketName();
     req->key = GetObjectKey();
     req->isNewGet = true;
+    req->encodeEnable = GetEncode(req->bucketName);
     OBSResult ret = m_obsCtx->GetObjectACL(req, newAcl);
     if (!ret.IsSucc()) {
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to get object ACL of %s", req->key.c_str());
         return Module::FAILED;
     }
@@ -722,6 +771,7 @@ bool ObjectServiceTask::SetBucketAcl()
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to set bucket ACL for %s", m_fileHandle.m_file->m_fileName.c_str());
         return false;
     }
@@ -755,11 +805,13 @@ bool ObjectServiceTask::SetObjectAcl()
     req->key = GetObjectKey();
     req->aclGrants.assign(newAcl->aclGrants.begin(), newAcl->aclGrants.end());
     FillAclGrant(req->aclGrants);
+    req->encodeEnable = GetEncode(req->bucketName);
     OBSResult ret = m_obsCtx->SetObjectACL(req);
     if (!ret.IsSucc()) {
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to set object ACL for %s", req->key.c_str());
         m_result = Module::FAILED;
         return false;
@@ -769,18 +821,37 @@ bool ObjectServiceTask::SetObjectAcl()
     return true;
 }
 
+bool ObjectServiceTask::IsSkipMetaData(const vector<std::string> &excludeItems, const std::string &meta)
+{
+    for (auto it : excludeItems) {
+        if (it.find(meta) != std::string::npos) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void ObjectServiceTask::SetObjectMetaIntoXattr(
     std::unordered_map<std::string, std::string> &sysDefMetaData,
     std::unordered_map<std::string, std::string> &userDefMetaData)
 {
     m_fileHandle.m_file->LockCommonMutex();
+    vector<string> excludeItems;
+    boost::algorithm::split(excludeItems, m_params.excludeMeta, boost::is_any_of(","), boost::token_compress_off);
+    DBGLOG("Backup exclude meta configuration: %s", m_params.excludeMeta.c_str());
     if (m_fileHandle.m_file->m_xattr.empty()) {
         for (auto &item : sysDefMetaData) {
+            if (IsSkipMetaData(excludeItems, item.first)) {
+                continue;
+            }
             m_fileHandle.m_file->m_xattr.emplace_back(item.first, item.second);
         }
         // 增加一个空数据作为sysDefMetaData与userDefMetaData的分割，实际的元数据不会为空
         m_fileHandle.m_file->m_xattr.emplace_back("", "");
         for (auto &item : userDefMetaData) {
+            if (IsSkipMetaData(excludeItems, item.first)) {
+                continue;
+            }
             m_fileHandle.m_file->m_xattr.emplace_back(item.first, item.second);
         }
     }
@@ -818,11 +889,13 @@ bool ObjectServiceTask::SetObjectMeta()
     req->bucketName = GetBucketName();
     req->key = GetObjectKey();
     GetObjectMetaFromXattr(req->sysDefMetaData, req->userDefMetaData);
+    req->encodeEnable = GetEncode(req->bucketName);
     OBSResult ret = m_obsCtx->SetObjectMetaData(req);
     if (!ret.IsSucc()) {
         int64_t errorCode = ret.GetLinuxErrorCode();
         m_errDetails = {m_fileHandle.m_file->m_obsKey, errorCode};
         SetCriticalErrorInfo(errorCode);
+        RecordErrMessage(errorCode, ret.errorDesc);
         ERRLOG("Failed to meta data for file %s", req->key.c_str());
         return false;
     }

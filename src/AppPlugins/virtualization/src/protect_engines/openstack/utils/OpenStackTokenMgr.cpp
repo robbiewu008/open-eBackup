@@ -105,7 +105,7 @@ bool OpenStackTokenMgr::ReacquireToken(ModelBase &model, std::string &tokenValue
     }
     if (getTokenResponse->GetStatusCode() != static_cast<uint32_t>(Module::SC_CREATED)) {
         ERRLOG("Failed to get token by keystone api, status: %d, resp body: %s.", getTokenResponse->GetStatusCode(),
-            getTokenResponse->GetBody().c_str());
+            WIPE_SENSITIVE(getTokenResponse->GetBody()).c_str());
         return false;
     }
     if (!getTokenResponse->Serial()) {
@@ -133,7 +133,7 @@ bool OpenStackTokenMgr::ParseEndpoint(ModelBase &model, const TokenInfo &tokenIn
 {
     std::vector<std::string> novaApiNames = {"nova"};
     std::vector<std::string> cinderApiNames = {"cinderv3", "cinderv2"};
-    std::vector<std::string> neutronApiName = {"neutron"};
+    std::vector<std::string> neutronApiName = {"neutron", "tianchi"};
     std::map<ApiType, std::vector<std::string>> apiMap = {{ApiType::NOVA, novaApiNames},
         {ApiType::CINDER, cinderApiNames}, {ApiType::NEUTRON, neutronApiName}};
     auto it = apiMap.find(model.GetApiType());

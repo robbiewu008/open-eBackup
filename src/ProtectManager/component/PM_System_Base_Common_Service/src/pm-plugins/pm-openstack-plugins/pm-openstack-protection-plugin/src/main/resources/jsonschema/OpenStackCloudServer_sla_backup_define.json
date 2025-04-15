@@ -59,6 +59,10 @@
       "type": "boolean",
       "description": "副本校验"
     },
+    "available_capacity_threshold": {
+      "description": "生产存储剩余容量阈值",
+      "type": "integer"
+    },
     "fine_grained_restore": {
       "type": "boolean",
       "description": "细粒度恢复"

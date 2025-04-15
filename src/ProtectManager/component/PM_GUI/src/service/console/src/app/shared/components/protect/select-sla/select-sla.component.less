@@ -1,21 +1,26 @@
 .card {
   width: 416px;
-  height: 100px;
-  position: relative;
-  border: 1px solid #ccc;
+  height: 72px;
+  border: 1px solid var(--live-angular-color-border-regular);
+  box-sizing: border-box;
+  border-radius: 8px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 4px;
+  position: static;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 24px;
 }
-
+.card.select {
+  border: 1px solid var(--live-angular-color-primary-active);
+}
 .card-even {
   margin-right: 18px;
 }
 
 .card.select {
-  border-color: #6c92fa;
-  background: #eef7fd;
+  border-color: var(--live-angular-color-primary-active);
+  background: var(--live-angular-color-background-active);
 }
 
 .card .check-box {
@@ -33,17 +38,18 @@
 }
 
 .sla-status-container {
-  position: absolute;
-  left: 10%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
   font-size: 16px !important;
-  color: #282b33 !important;
+  color: var(--live-angular-color-text-regular) !important;
   font-weight: bold !important;
 
   .sla-icon {
-    height: 10px;
-    width: 10px;
-    display: inline-block;
-    border-radius: 50%;
+    height: 24px;
+    width: 24px;
     margin-right: 8px;
   }
 
@@ -51,20 +57,12 @@
     background: rgb(73, 157, 242);
   }
 
-  .gold {
-    background: #f7e08c;
-  }
-
-  .silver {
-    background: #d4d9e6;
-  }
-
-  .bronze {
-    background: #fa8e5a;
-  }
-
   .span {
-    color: #282b33;
+    color: var(--live-angular-color-text-regular);
+  }
+
+  .aui-link {
+    font-weight: normal;
   }
 }
 
@@ -107,15 +105,10 @@
 }
 
 .sla-name {
-  max-width: 150px;
+  max-width: 250px;
   position: relative;
   display: inline-block;
   top: 7px;
-}
-
-.sla-name:hover {
-  color: #5b7ede;
-  text-decoration: underline;
 }
 
 .card-tip-container {
@@ -124,7 +117,7 @@
 
   .title {
     font-size: 20px;
-    color: #282b33;
+    color: var(--live-angular-color-text-regular);
     font-weight: bold;
     padding-bottom: 10px;
     border-bottom: 1px dashed #d4d9e6;
@@ -143,7 +136,7 @@
     width: 100%;
 
     :nth-child(odd) {
-      color: #282b33;
+      color: var(--live-angular-color-text-regular);
     }
 
     :nth-child(even) {
@@ -160,7 +153,7 @@
     border-right: 1px dashed #d4d9e6;
 
     :nth-child(odd) {
-      color: #282b33;
+      color: var(--live-angular-color-text-regular);
     }
 
     :nth-child(even) {
@@ -177,7 +170,7 @@
     padding-left: 16px;
 
     > :first-child {
-      color: #282b33;
+      color: var(--live-angular-color-text-regular);
     }
 
     > :nth-child(2) {
@@ -201,11 +194,11 @@
 }
 
 .sla-disabled {
-  color: #e6ebf5;
+  color: var(--live-angular-color-primary-disabled);
 }
 
 .user-define-disabled {
-  background: #e6ebf5 !important;
+  opacity: 0.5;
 }
 
 .mgt-8 {

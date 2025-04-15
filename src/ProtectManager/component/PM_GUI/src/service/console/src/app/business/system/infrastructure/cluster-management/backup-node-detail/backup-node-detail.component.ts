@@ -1,18 +1,17 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { combineLatest } from 'rxjs';
 import {
   CapacityCalculateLabel,
   CommonConsts,
@@ -23,7 +22,6 @@ import {
   LocalStorageApiService,
   LANGUAGE,
   BaseUtilService,
-  MODAL_COMMON,
   StoragesApiService,
   CookieService,
   DataMap,
@@ -39,11 +37,11 @@ import {
   each,
   extend,
   isEmpty,
-  includes,
   filter,
   toString,
   isFunction
 } from 'lodash';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'aui-backup-node-detail',
@@ -71,9 +69,15 @@ export class BackupNodeDetailComponent implements OnInit {
   operationLabel = this.i18n.get('common_operation_label');
 
   CLUSTER_TYPE = this.dataMapService.getConfig('Cluster_Type');
-  primaryNodeLabel = this.i18n.get('system_backup_cluster_primary_node_label');
-  memberNodeLabel = this.i18n.get('system_backup_cluster_member_node_label');
-  backupNodeLabel = this.i18n.get('system_backup_cluster_standby_node_label');
+  primaryNodeLabel = this.i18n.get(
+    'system_backup_cluster_primary_node_low_label'
+  );
+  memberNodeLabel = this.i18n.get(
+    'system_backup_cluster_member_node_low_label'
+  );
+  backupNodeLabel = this.i18n.get(
+    'system_backup_cluster_standby_node_low_label'
+  );
   storageInfo = {} as any;
   currentCluster = {} as any;
 
@@ -134,7 +138,8 @@ export class BackupNodeDetailComponent implements OnInit {
     public clusterApiService: ClustersApiService,
     public baseUtilService: BaseUtilService,
     private capacityCalculateLabel: CapacityCalculateLabel,
-    private storagesAlarmThresholdApiService: StoragesAlarmThresholdApiService
+    private storagesAlarmThresholdApiService: StoragesAlarmThresholdApiService,
+    public appUtilsService?: AppUtilsService
   ) {}
 
   ngOnInit() {

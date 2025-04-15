@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   Component,
@@ -22,9 +22,9 @@ import { FormGroup } from '@angular/forms';
 import {
   DataMap,
   DataMapService,
-  DefaultRoles,
   I18NService,
-  RoleApiService
+  RoleApiService,
+  SpecialRoleIds
 } from 'app/shared';
 import {
   Filters,
@@ -50,12 +50,6 @@ export class AddRoleComponent implements OnInit, AfterViewInit {
   roleTableConfig: TableConfig;
   formGroup = new FormGroup({});
   modalInValid = new EventEmitter();
-  specialDefaultRoleIdList = [
-    DefaultRoles.rdAdmin.roleId,
-    DefaultRoles.drAdmin.roleId,
-    DefaultRoles.audit.roleId,
-    DefaultRoles.sysAdmin.roleId
-  ];
 
   @ViewChild('roleDataTable', { static: false })
   roleDataTable: ProTableComponent;
@@ -124,16 +118,12 @@ export class AddRoleComponent implements OnInit, AfterViewInit {
             each(this.roleTableData.data, val => {
               assign(val, {
                 disabled:
-                  (!this.data &&
-                    selection.length > this.selectionData.length &&
-                    this.specialDefaultRoleIdList.includes(val.roleId)) ||
-                  (!!this.data &&
-                    (val.roleId === this.data.rolesSet[0]?.roleId ||
-                      this.specialDefaultRoleIdList.includes(val.roleId)))
+                  val.roleId === this.data[0]?.roleId ||
+                  SpecialRoleIds.includes(val.roleId)
               });
             });
             this.selectionData = selection.filter(
-              item => !this.specialDefaultRoleIdList.includes(item.roleId)
+              item => !SpecialRoleIds.includes(item.roleId)
             );
             this.roleDataTable.setSelections(cloneDeep(this.selectionData));
           } else {
@@ -151,54 +141,20 @@ export class AddRoleComponent implements OnInit, AfterViewInit {
 
   private parseDefaultRole() {
     // 修改场景下如果原本的默认角色不是四个内置角色之一，就直接把那四个置灰，因为不能修改默认角色
-    if (
-      !!this.data &&
-      !this.specialDefaultRoleIdList.includes(this.data.rolesSet[0]?.roleId)
-    ) {
+    if (!SpecialRoleIds.includes(this.data[0]?.roleId)) {
       each(this.roleTableData.data, val => {
         assign(val, {
-          disabled:
-            val?.disabled || this.specialDefaultRoleIdList.includes(val.roleId)
+          disabled: val?.disabled || SpecialRoleIds.includes(val.roleId)
         });
       });
       return;
     }
-    if (!!this.data) {
-      // 修改场景下如果选的那四个内置角色之一就全部置灰
-      each(this.roleTableData.data, item => {
-        assign(item, {
-          disabled: true
-        });
+    // 修改场景下如果选的那四个内置角色之一就全部置灰
+    each(this.roleTableData.data, item => {
+      assign(item, {
+        disabled: true
       });
-      return;
-    }
-    let tmpSelection = this.selectionData.filter(
-      item =>
-        item.is_default &&
-        item.originRoleName !== DataMap.defaultRoleName.dpAdmin.value
-    );
-    if (!!tmpSelection.length) {
-      this.selectionData = [...tmpSelection];
-      // 除了所选内置角色外其他角色置灰
-      each(this.roleTableData.data, val =>
-        assign(val, {
-          disabled: !find(this.selectionData, {
-            roleId: val.roleId
-          })
-        })
-      );
-      this.roleDataTable.setSelections(cloneDeep(this.selectionData));
-    } else {
-      // 没有选那几个内置角色则正常判断置灰
-      each(this.roleTableData.data, item => {
-        item.disabled =
-          this.userType !== DataMap.loginUserType.local.value &&
-          [
-            DataMap.defaultRoleName.rdAdmin.value,
-            DataMap.defaultRoleName.drAdmin.value
-          ].includes(item.originRoleName);
-      });
-    }
+    });
   }
 
   typeChange(event) {
@@ -261,7 +217,7 @@ export class AddRoleComponent implements OnInit, AfterViewInit {
         item.disabled = true;
       }
       // 默认用户在修改的时候不能干掉
-      if (!!this.data && item.roleId === this.data.rolesSet[0]?.roleId) {
+      if (item.roleId === this.data[0].roleId) {
         item.disabled = true;
       }
       if (item['is_default']) {
@@ -273,6 +229,9 @@ export class AddRoleComponent implements OnInit, AfterViewInit {
           'defaultRoleDescription',
           item['roleDescription']
         );
+      } else {
+        // 升级场景会有自动创造的角色，使用词条做描述
+        item.roleDescription = this.i18n.get(item.roleDescription);
       }
 
       return item;
@@ -298,21 +257,12 @@ export class AddRoleComponent implements OnInit, AfterViewInit {
       })
       .subscribe({
         next: res => {
-          // 原本没选那几个内置的就直接推进去
-          if (
-            !this.selectionData.filter(
-              item =>
-                item.is_default &&
-                item.originRoleName !== DataMap.defaultRoleName.dpAdmin.value
-            )?.length
-          ) {
-            this.selectionData.push({
-              roleId: JSON.parse(res)?.uuid,
-              roleName: this.formGroup.get('roleName').value,
-              roleDescription: this.formGroup.get('roleDescription').value,
-              userNum: 0
-            });
-          }
+          this.selectionData.push({
+            roleId: JSON.parse(res)?.uuid,
+            roleName: this.formGroup.get('roleName').value,
+            roleDescription: this.formGroup.get('roleDescription').value,
+            userNum: 0
+          });
           observer.next(this.selectionData);
           observer.complete();
         },

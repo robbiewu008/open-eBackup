@@ -1,0 +1,87 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="执行可用性组备份">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="sql-0021.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="sql-0023">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>执行可用性组备份</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="sql-0023"></a><a name="sql-0023"></a>
+
+<h1 class="topictitle1">执行可用性组备份</h1>
+<div><div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="sql-0023__zh-cn_topic_0000002199964685_uicontrol114088356363">“<span id="sql-0023__zh-cn_topic_0000002199964685_text1840913533616">保护</span> &gt; 数据库 &gt; SQL Server”</span>。</span></li><li><span>在<span class="uicontrol">“可用性组”</span>页签，选择需要保护的可用性组，单击<span class="uicontrol">“<span>保护</span>”</span>。</span><p><p>您也可以勾选多个可用性组进行批量保护。</p>
+</p></li><li><span>选择用户自行创建的SLA。</span><p><p id="sql-0023__sql-0022_sql-0021_p33248794210">您也可以单击<span class="uicontrol" id="sql-0023__sql-0022_sql-0021_uicontrol744210206420">“<span id="sql-0023__sql-0022_sql-0021_text1873812341015">创建</span>”</span>，创建新的SLA。</p>
+<div class="note" id="sql-0023__sql-0022_sql-0021_note445111812544"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="sql-0023__sql-0022_sql-0021_ul1593912171370"><li id="sql-0023__sql-0022_sql-0021_li209391317153710">SQL Server不支持使用系统预置的SLA（Gold、Silver、Bronze）。</li><li id="sql-0023__sql-0022_sql-0021_li893971714374"><span id="sql-0023__sql-0022_sql-0021_zh-cn_topic_0000001964713008_ph1413818422327">如果待保护的资源已设置WORM策略，为避免WORM策略冲突，请选择不包含WORM策略的SLA创建保护。</span></li></ul>
+</div></div>
+</p></li><li><span>参考<a href="#sql-0023__sql-0021_table187795413336">表1</a>，在<span class="uicontrol">“<span>高级配置</span>”</span>中配置参数。</span><p>
+<div class="tablenoborder"><a name="sql-0023__sql-0021_table187795413336"></a><a name="sql-0021_table187795413336"></a><table cellpadding="4" cellspacing="0" summary="" id="sql-0023__sql-0021_table187795413336" frame="border" border="1" rules="all"><caption><b>表1 </b>备份高级参数说明</caption><colgroup><col style="width:22.07%"><col style="width:77.92999999999999%"></colgroup><thead align="left"><tr id="sql-0023__sql-0022_sql-0021_row147781341193315"><th align="left" class="cellrowborder" valign="top" width="22.07%" id="mcps1.3.1.2.4.2.1.2.3.1.1"><p id="sql-0023__sql-0022_sql-0021_p877818417339">参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="77.92999999999999%" id="mcps1.3.1.2.4.2.1.2.3.1.2"><p id="sql-0023__sql-0022_sql-0021_p277818416332">说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr id="sql-0023__sql-0022_sql-0021_row8778134133312"><td class="cellrowborder" valign="top" width="22.07%" headers="mcps1.3.1.2.4.2.1.2.3.1.1 "><p id="sql-0023__sql-0022_sql-0021_p77787417337"><span id="sql-0023__sql-0022_sql-0021_text10778341113316">备份前执行脚本</span></p>
+</td>
+<td class="cellrowborder" rowspan="3" valign="top" width="77.92999999999999%" headers="mcps1.3.1.2.4.2.1.2.3.1.2 "><p id="sql-0023__sql-0022_sql-0021_p17778741113313">您可以根据实际需求，配置“<span id="sql-0023__sql-0022_sql-0021_text577854153315">备份前执行脚本</span>”、“<span id="sql-0023__sql-0022_sql-0021_text1377814119334">备份成功执行脚本</span>”和“<span id="sql-0023__sql-0022_sql-0021_text1177810412336">备份失败执行脚本</span>”，当备份任务事件中出现“开始执行前置任务”提示后，配置的脚本会在对应场景下执行。</p>
+<p id="sql-0023__sql-0022_sql-0021_p199507143112"><span>请输入脚本名称，脚本名称以</span><strong id="sql-0023__sql-0022_sql-0021_b79501314314">.bat</strong><span>结尾。</span><span style="color:#282B33;">请确保脚本已存放在</span><em style="color:#282B33;" id="sql-0023__sql-0022_sql-0021_i44582227171">安装目录</em><span style="color:#282B33;">\</span>DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty<span style="color:#282B33;">，且登录数据库主机的用户对该脚本有可执行权限。</span></p>
+<div class="note" id="sql-0023__sql-0022_sql-0021_note07781341113314"><span class="notetitle"> 说明： </span><div class="notebody"><p id="sql-0023__sql-0022_sql-0021_p377812416334"><span>当配置了</span><span class="uicontrol" id="sql-0023__sql-0022_sql-0021_uicontrol77781041143317">“<span id="sql-0023__sql-0022_sql-0021_text15778441143313">备份成功执行脚本</span>”</span><span>时，即使该脚本执行失败，管理界面上也会显示备份任务的状态为</span><span class="uicontrol" id="sql-0023__sql-0022_sql-0021_uicontrol1977874110336">“<span id="sql-0023__sql-0022_sql-0021_text13778641193312">成功</span>”</span><span>。请您留意任务详情中是否有后置脚本执行失败的相关提示，如有请及时修正脚本。</span></p>
+</div></div>
+</td>
+</tr>
+<tr id="sql-0023__sql-0022_sql-0021_row14778114143310"><td class="cellrowborder" valign="top" headers="mcps1.3.1.2.4.2.1.2.3.1.1 "><p id="sql-0023__sql-0022_sql-0021_p4778114113312"><span id="sql-0023__sql-0022_sql-0021_text97788418334">备份成功执行脚本</span></p>
+</td>
+</tr>
+<tr id="sql-0023__sql-0022_sql-0021_row1877914183316"><td class="cellrowborder" valign="top" headers="mcps1.3.1.2.4.2.1.2.3.1.1 "><p id="sql-0023__sql-0022_sql-0021_p14779154113330"><span id="sql-0023__sql-0022_sql-0021_text1877964114335">备份失败执行脚本</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>单击<span class="uicontrol" id="sql-0023__sql-0022_sql-0021_zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_uicontrol471113581111">“确定”</span>。</span><p><p id="sql-0023__sql-0022_sql-0021_zh-cn_topic_0000002200146973_zh-cn_topic_0000001656691397_p25041111535">如果当前系统时间已晚于SLA首次备份的开始时间，可以在弹出的对话框中选择立即执行手动备份或者根据SLA中设置的备份策略周期性自动执行备份。</p>
+</p></li><li><span>执行手动备份。</span><p><p id="sql-0023__sql-0022_sql-0021_p11582152174516">当需要立即执行一次备份任务时，可以执行以下操作进行手动备份。否则，可跳过本步骤。</p>
+<ol type="a" id="sql-0023__sql-0022_sql-0021_ol1221414820461"><li id="sql-0023__sql-0022_sql-0021_li1321438154613">在需要备份的数据库所在行单击<span class="uicontrol" id="sql-0023__sql-0022_sql-0021_zh-cn_topic_0000001792503838_uicontrol58631047392">“<span id="sql-0023__sql-0022_sql-0021_zh-cn_topic_0000001792503838_text1648763311257">更多</span> &gt; <span id="sql-0023__sql-0022_sql-0021_zh-cn_topic_0000001792503838_text109939110248">手动备份</span>”</span>。<div class="note" id="sql-0023__sql-0022_sql-0021_zh-cn_topic_0000001792503838_note187025312547"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="sql-0023__sql-0022_sql-0021_p220112494336">支持选择多个资源批量进行手动备份。勾选多个资源，在页面左上角选择<span class="uicontrol" id="sql-0023__sql-0022_sql-0021_zh-cn_topic_0000001792503838_uicontrol14182155715711">“<span id="sql-0023__sql-0022_sql-0021_zh-cn_topic_0000001792503838_text662114113158">更多</span> &gt; <span id="sql-0023__sql-0022_sql-0021_zh-cn_topic_0000001792503838_text1068159191519">手动备份</span>”</span>。</p>
+</div></div>
+</li><li id="sql-0023__sql-0022_sql-0021_li152151189467">设置手动备份产生的副本名称。<p id="sql-0023__sql-0022_sql-0021_p175010712528"><a name="sql-0023__sql-0022_sql-0021_li152151189467"></a><a name="sql-0022_sql-0021_li152151189467"></a>如果您不设置，系统默认设置副本名称为：backup_时间戳。</p>
+</li><li id="sql-0023__sql-0022_sql-0021_li132154812466">选择保护策略：<span id="sql-0023__sql-0022_sql-0021_text1458620326503">全量备份</span>、<span id="sql-0023__sql-0022_sql-0021_text42166415718">差异备份</span>或<span id="sql-0023__sql-0022_sql-0021_text158154216502">日志备份</span>。<div class="note" id="sql-0023__sql-0022_sql-0021_note139500128280"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="sql-0023__sql-0022_sql-0021_p89501512162812"><span id="sql-0023__sql-0022_sql-0021_zh-cn_topic_0000002200146973_ph19374310343">对于1.6.0及后续版本，如果选择的保护策略与关联的SLA中配置的保护策略不一致，则WORM配置不生效。</span></p>
+</div></div>
+</li><li id="sql-0023__sql-0022_sql-0021_li621598124615">单击<span class="uicontrol" id="sql-0023__sql-0022_sql-0021_uicontrol37271318124613">“确定”</span>。</li></ol>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="sql-0021.html">步骤9：执行备份</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

@@ -1,27 +1,52 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, OnInit, ElementRef, Input } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { DatePipe } from '@angular/common';
+import { Component, OnInit, ElementRef, Input, OnDestroy } from '@angular/core';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import * as echarts from 'echarts';
-import { CapacityApiService } from 'app/shared';
-import { filter, first, floor, maxBy, size, union, isUndefined } from 'lodash';
+import {
+  CapacityApiService,
+  DataMap,
+  GlobalService,
+  THEME_TRIGGER_ACTION,
+  ThemeEnum,
+  getAppTheme,
+  SYSTEM_TIME
+} from 'app/shared';
+import {
+  filter,
+  first,
+  floor,
+  maxBy,
+  size,
+  union,
+  isUndefined,
+  find,
+  assign,
+  toString,
+  isEmpty
+} from 'lodash';
 import { I18NService } from 'app/shared';
+import QueryNodesStorageTendencyUsingGETParams = CapacityApiService.QueryNodesStorageTendencyUsingGETParams;
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'capacity-diction-chart',
   templateUrl: './capacity-diction-chart.component.html',
-  styleUrls: ['./capacity-diction-chart.component.less']
+  styleUrls: ['./capacity-diction-chart.component.less'],
+  providers: [DatePipe]
 })
-export class CapacityDictionChartComponent implements OnInit {
+export class CapacityDictionChartComponent implements OnInit, OnDestroy {
   @Input() cardInfo: any = {};
   chart: any;
   isNoData = true;
@@ -32,14 +57,58 @@ export class CapacityDictionChartComponent implements OnInit {
   reachTo80Symbol;
   reachTo100Symbol;
   systemTime = new Date().getTime() / 1000 / 3600 / 24;
+  chartOptions: any;
+  destroy$ = new Subject();
   constructor(
     private i18n: I18NService,
     public el: ElementRef,
-    public capacityApiService: CapacityApiService
+    private datePipe: DatePipe,
+    public capacityApiService: CapacityApiService,
+    private appUtilsService: AppUtilsService,
+    private globalService: GlobalService
   ) {}
 
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
+
   ngOnInit(): void {
-    this.cardInfo.loading = true;
+    this.cardInfo.loading = false;
+    this.globalService
+      .getState(THEME_TRIGGER_ACTION)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (isEmpty(this.chartOptions)) {
+          return;
+        }
+        this.chartOptions.xAxis.axisLabel.color = this.getAxisLabelColor();
+        this.chartOptions.yAxis.axisLabel.color = this.getAxisLabelColor();
+        this.chartOptions.yAxis.splitLine.lineStyle.color = this.getYAxisLine();
+        this.chartOptions.tooltip.axisPointer.lineStyle.color = this.getAxisPointerLine();
+        this.chartOptions.tooltip.backgroundColor = this.getTooltipBkcolor();
+        this.chart.setOption(this.chartOptions);
+      });
+  }
+
+  isThemeLight(): boolean {
+    return getAppTheme(this.i18n) === ThemeEnum.light;
+  }
+
+  getAxisLabelColor() {
+    return this.isThemeLight() ? '#4D4D4D' : '#B3B3B3';
+  }
+
+  getYAxisLine() {
+    return this.isThemeLight() ? '#E6E6E6' : '#262626';
+  }
+
+  getTooltipBkcolor() {
+    return this.isThemeLight() ? '#ffffff' : '#272933';
+  }
+
+  getAxisPointerLine() {
+    return this.isThemeLight() ? '#d9d9d9' : '#4d4d4d';
   }
 
   getCapcacityTendency() {
@@ -48,26 +117,47 @@ export class CapacityDictionChartComponent implements OnInit {
     this.reachTo100 = '--';
     this.reachTo80Symbol = undefined;
     this.reachTo100Symbol = undefined;
-    const params = {
+    const params: QueryNodesStorageTendencyUsingGETParams = {
       akDoException: false,
       akLoading: false,
-      clustersId: this.cardInfo?.selectNode[0],
-      clustersType: this.cardInfo?.clusterType
+      clustersType: this.cardInfo?.clusterType,
+      clustersId: toString(DataMap.Cluster_Type.local.value)
     };
-    this.capacityApiService
-      .queryClusterStorageTendencyUsingGET(params)
-      .subscribe(
-        res => {
-          this.isNoData = false;
-          this.existingDatas = this.formatData(res.existingDatas);
-          this.forecastDatas = this.formatData(res.forecastDatas);
-          this.handleData(res);
-          this.createChart();
-        },
-        error => {
-          this.isNoData = true;
-        }
+    if (this.appUtilsService.isDecouple) {
+      const [clusterId] = this.cardInfo?.selectNode;
+      const node = find(this.cardInfo.clusterNodesOptions, {
+        value: clusterId
+      });
+      assign(params, {
+        clustersType: DataMap.Cluster_Type.local.value,
+        esnList: [node?.storageEsn]
+      });
+    } else {
+      const [clusterId, NodeId] = this.cardInfo?.selectNode;
+      const node = find(
+        find(this.cardInfo.clusterNodesOptions, { value: clusterId })
+          ?.children || [],
+        { value: NodeId }
       );
+      assign(params, {
+        clustersId: clusterId,
+        esnList: [node?.remoteEsn]
+      });
+    }
+    this.capacityApiService.queryNodesStorageTendencyUsingGET(params).subscribe(
+      res => {
+        this.isNoData = false;
+        this.cardInfo.loading = false;
+        this.existingDatas = this.formatData(res[0].existingDatas);
+        this.forecastDatas = this.formatData(res[0].forecastDatas);
+        this.handleData(res[0]);
+        this.createChart();
+      },
+      error => {
+        this.cardInfo.loading = false;
+        this.isNoData = true;
+      }
+    );
   }
 
   handleData(res) {
@@ -85,7 +175,7 @@ export class CapacityDictionChartComponent implements OnInit {
       'percentage'
     );
 
-    if (maxPercentageObj.percentage < 80) {
+    if (maxPercentageObj?.percentage < 0.8) {
       const intervalTime =
         maxPercentageObj.timestamp / 1000 / 3600 / 24 - this.systemTime;
       this.reachTo100Symbol = this.reachTo80Symbol = '>';
@@ -99,13 +189,13 @@ export class CapacityDictionChartComponent implements OnInit {
       } else {
         this.reachTo100 = '0';
       }
-      if (existingMaxPercentageObj.percentage >= 80) {
+      if (existingMaxPercentageObj?.percentage >= 0.8) {
         this.reachTo80 = '0';
       } else {
         const forecastMaxPercentageObjs: any = filter(
           res.forecastDatas,
           (resu: any) => {
-            return resu.percentage >= 80;
+            return resu.percentage >= 0.8;
           }
         );
 
@@ -132,11 +222,11 @@ export class CapacityDictionChartComponent implements OnInit {
   }
 
   formatTime(value) {
-    const date = new Date(Number(value));
-    var year = date.getFullYear();
-    var month = String(date.getMonth() + 1).padStart(2, '0');
-    var day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return this.datePipe.transform(
+      new Date(Number(value)),
+      'yyyy-MM-dd HH:mm:ss',
+      SYSTEM_TIME.timeZone
+    );
   }
 
   refreshData() {
@@ -149,23 +239,41 @@ export class CapacityDictionChartComponent implements OnInit {
         this.el.nativeElement.querySelector('#capacity-diction-chart'),
         'dark'
       );
-      let option = {
+      this.chartOptions = {
         backgroundColor: 'transparent',
         grid: {
           left: '3%',
-          right: '4%',
+          right: '10%',
           bottom: '3%',
           top: '10px',
           containLabel: true
         },
         xAxis: {
           type: 'category',
-          boundaryGap: false
+          boundaryGap: false,
+          axisLabel: {
+            color: this.getAxisLabelColor(),
+            showMaxLabel: true,
+            formatter: value => {
+              return value
+                .split(' ')
+                .reverse()
+                .join('\n');
+            }
+          }
         },
         yAxis: {
           type: 'value',
           axisLabel: {
-            formatter: '{value} %'
+            color: this.getAxisLabelColor(),
+            formatter: '{value}%'
+          },
+          splitLine: {
+            lineStyle: {
+              type: 'solid',
+              color: this.getYAxisLine(),
+              width: 1
+            }
           },
           max: 100,
           min: 0,
@@ -174,14 +282,14 @@ export class CapacityDictionChartComponent implements OnInit {
         tooltip: {
           trigger: 'axis',
           borderWidth: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          backgroundColor: this.getTooltipBkcolor(),
           textStyle: {
-            color: '#fff',
+            color: '#808080',
             fontSize: 14
           },
           axisPointer: {
             lineStyle: {
-              color: '#fff',
+              color: this.getAxisPointerLine(),
               type: 'dashed'
             }
           },
@@ -254,7 +362,7 @@ export class CapacityDictionChartComponent implements OnInit {
         ]
       };
 
-      this.chart.setOption(option);
+      this.chart.setOption(this.chartOptions);
       this.cardInfo.loading = false;
     }, 0);
   }

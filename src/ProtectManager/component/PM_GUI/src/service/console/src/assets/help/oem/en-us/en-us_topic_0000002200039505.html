@@ -1,0 +1,107 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Step 1: Enabling the Archive Mode (Applicable Only to CMDB)">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200039481.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200039505">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Step 1: Enabling the Archive Mode (Applicable Only to CMDB)</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200039505"></a><a name="EN-US_TOPIC_0000002200039505"></a>
+  <h1 class="topictitle1">Step 1: Enabling the Archive Mode (Applicable Only to CMDB)</h1>
+  <div>
+   <p>Before backing up a CMDB database, you must enable the archive mode. Otherwise, the backup fails.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <p>The gs_om tool must be available for the active/standby replication cluster.</p>
+    <p></p>
+    <p>The procedure is as follows.</p>
+   </div>
+   <ul>
+    <li><strong>Single-node system or active/standby replication cluster: Enable the archive mode by modifying parameters in the configuration file. For the active/standby replication cluster, you only need to perform the operations on any node.</strong>
+     <ol>
+      <li id="EN-US_TOPIC_0000002200039505__li26730274197">Use PuTTY to log in to the CMDB database host.</li>
+      <li id="EN-US_TOPIC_0000002200039505__li1343189142018">Run the following command to switch to the database installation user. The following uses user <strong id="EN-US_TOPIC_0000002200039505__b1715018449207">omm</strong> as an example.<pre class="screen" id="EN-US_TOPIC_0000002200039505__screen8767925142014">su - omm</pre></li>
+      <li>Run the following commands to create a path for storing archive logs (WAL logs) and set the directory permissions. The <span class="filepath"><b>/database/panweidb/archive/</b></span> directory is used as an example.<pre class="screen">mkdir -p /database/panweidb/archive/</pre> <pre class="screen">chmod 750 /database/panweidb/archive/</pre></li>
+      <li>Query the path to the <strong>postgresql.conf</strong> file.<pre class="screen">find / -name postgresql.conf 2&gt;&amp;1 |grep -v 'find: '</pre></li>
+      <li>Run the following command to open the <strong>postgresql.conf</strong> file. The <span class="filepath"><b>/database/panweidb/data/postgresql.conf</b></span> path is used as an example.<pre class="screen">vi <em>/database/panweidb/data/</em>postgresql.conf</pre></li>
+      <li>Modify the <strong>wal_level</strong>, <strong>archive_mode</strong>, <strong>archive_command</strong>, <strong>enable_cbm_tracking</strong>, and <strong>panweidb_login_info</strong> parameters in the <strong>postgresql.conf</strong> file as follows:<pre class="screen">wal_level = hot_standby                 # minimal, archive, hot_standby or logical
+archive_mode = on               # enables archiving; off, on, or always
+archive_command = 'cp %p /database/panweidb/archive/%f'          # command to use to archive a logfile segment
+panweidb_login_info = off               #login info
+enable_cbm_tracking = on</pre>
+       <div class="note">
+        <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+        <div class="notebody">
+         <ul>
+          <li>Set <strong>wal_level</strong> to <strong>archive</strong>, <strong>hot_standby</strong>, or <strong>logical</strong>.</li>
+          <li>Set <strong>archive_mode</strong> to <strong>on</strong>, <strong>panweidb_login_info</strong> to <strong>off</strong>, and <strong>enable_cbm_tracking</strong> to <strong>on</strong>.</li>
+          <li>Set <strong>archive_command</strong> to <strong>'cp %p /mnt/server/archivedir/%f'</strong>.</li>
+          <li>When modifying the <strong>postgresql.conf</strong> file, change the values of existing fields in the file. Do not add the same fields to the file. Otherwise, the restoration job will be affected.</li>
+         </ul>
+        </div>
+       </div></li>
+      <li>Restart the database.
+       <ul>
+        <li>If the database type is <strong>Single Server</strong>, run the following command:<pre class="screen">pw_ctl restart -D /database/panweidb/data</pre></li>
+        <li>If the database type is <strong>Active/Standby Replication</strong>, run the following commands:<pre class="screen">gs_om -t stop</pre> <pre class="screen">gs_om -t start</pre></li>
+       </ul>
+       <div class="notice" id="EN-US_TOPIC_0000002200039505__note171971721125216">
+        <span class="noticetitle"><img src="public_sys-resources/notice_3.0-en-us.png"> </span>
+        <div class="noticebody">
+         <p id="EN-US_TOPIC_0000002200039505__p201971621175213">Database services will be interrupted during the restart. Exercise caution when performing this operation.</p>
+        </div>
+       </div></li>
+     </ol></li>
+    <li><strong>Distributed cluster: Use the ha_ctl tool to enable the archive mode. You only need to perform the operations on any node in the target cluster.</strong>
+     <ol>
+      <li>Use PuTTY to log in to the CMDB database host.</li>
+      <li>Run the following command to switch to the database installation user. The following uses user <strong id="EN-US_TOPIC_0000002200039505__en-us_topic_0000002200039505_b1715018449207">omm</strong> as an example.<pre class="screen" id="EN-US_TOPIC_0000002200039505__en-us_topic_0000002200039505_screen8767925142014">su - omm</pre></li>
+      <li>Obtain the IP address and port number of a DCS node by referring to <a href="en-us_topic_0000002200039525.html">Preparations for Backup</a>. (IP address <strong>10.0.1.16</strong> and port number <strong>2379</strong> are used as examples.)</li>
+      <li>Run the following commands to enable the archive mode:<pre class="screen">ha_ctl set gtm all -l http://<em>10.0.1.16</em>:<em>2379</em> -p archive_mode=on</pre> <pre class="screen">ha_ctl set coordinator all -l http://<em>10.0.1.16</em>:<em>2379</em> -p archive_mode=on</pre> <pre class="screen">ha_ctl set datanode all -l http://<em>10.0.1.16</em>:<em>2379</em> -p archive_mode=on</pre></li>
+      <li>Run the following command to obtain the cluster name:<pre class="screen">ha_ctl monitor all -l http://<em>10.0.1.16</em>:<em>2379</em></pre> <p>In the command output, the value of <span class="parmname"><b>cluster</b></span> is the cluster name. (Cluster name <span class="parmvalue"><b>panwei</b></span> is used as an example.)</p></li>
+      <li>Run the following commands to restart the database:<pre class="screen">ha_ctl stop all -l http://<em>10.0.1.16</em>:<em>2379</em> -c <em>panwei</em></pre> <pre class="screen">ha_ctl start all -l http://<em>10.0.1.16</em>:<em>2379</em> -c <em>panwei</em></pre>
+       <div class="notice">
+        <span class="noticetitle"><img src="public_sys-resources/notice_3.0-en-us.png"> </span>
+        <div class="noticebody">
+         <p id="EN-US_TOPIC_0000002200039505__en-us_topic_0000002200039505_p201971621175213">Database services will be interrupted during the restart. Exercise caution when performing this operation.</p>
+        </div>
+       </div></li>
+     </ol></li>
+   </ul>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200039481.html">Backing Up openGauss/CMDB</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

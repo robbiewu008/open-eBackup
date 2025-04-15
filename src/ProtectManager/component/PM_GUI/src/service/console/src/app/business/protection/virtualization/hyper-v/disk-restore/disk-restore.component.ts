@@ -1,20 +1,21 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {
   CAPACITY_UNIT,
   DataMap,
   DataMapService,
+  getBootTypeWarnTipByType,
   I18NService,
   LANGUAGE,
   MODAL_COMMON,
@@ -37,12 +38,13 @@ import {
   every,
   filter,
   find,
+  get,
   includes,
   isEmpty,
   map,
   omit,
-  pick,
   reject,
+  set,
   size
 } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
@@ -62,12 +64,14 @@ export class DiskRestoreComponent implements OnInit {
   restoreLocationType = RestoreV2LocationType;
   _isEmpty = isEmpty;
   resourceProperties;
-
+  properties;
   restoreTableConfig: TableConfig;
   restoreTableData: TableData;
   targetTableConfig: TableConfig;
   targetTableData: TableData;
-
+  isOriginPosition = true;
+  bootOptionsWarnTip;
+  rowCopyBootType;
   targerLocationInput;
   targetParams;
   targetDisksOptions;
@@ -79,7 +83,6 @@ export class DiskRestoreComponent implements OnInit {
   @ViewChild('targeTable', { static: false }) targeTable: ProTableComponent;
   @ViewChild('deskDeviceTpl', { static: true }) deskDeviceTpl: TemplateRef<any>;
   @ViewChild('sizeTpl', { static: true }) sizeTpl: TemplateRef<any>;
-  @ViewChild('rhvSizeTpl', { static: true }) rhvSizeTpl: TemplateRef<any>;
 
   constructor(
     public i18n: I18NService,
@@ -104,9 +107,11 @@ export class DiskRestoreComponent implements OnInit {
     this.resourceProperties = JSON.parse(
       this.rowCopy?.resource_properties || '{}'
     );
+    this.properties = JSON.parse(this.rowCopy?.properties || '{}');
+    this.rowCopyBootType = get(this.properties, 'bootType', null);
     const colsLeft: TableCols[] = [
       {
-        key: 'name',
+        key: 'diskName',
         name: this.i18n.get('common_name_label'),
         filter: {
           type: 'search',
@@ -145,7 +150,7 @@ export class DiskRestoreComponent implements OnInit {
 
     const colsRight: TableCols[] = [
       {
-        key: 'name',
+        key: 'diskName',
         width: 170,
         name: this.i18n.get('common_restore_disk_name_label'),
         filter: {
@@ -204,7 +209,7 @@ export class DiskRestoreComponent implements OnInit {
                   this.targetDisksOptions,
                   value =>
                     value[this.compareWithKey()] === item.targetDisk ||
-                    this.fiterDisk(value)
+                    this.fiterDisk(value, item)
                 )
               });
             });
@@ -264,9 +269,21 @@ export class DiskRestoreComponent implements OnInit {
         lvOk: modal => {
           const content = modal.getContentComponent();
           this.targetParams = content.getTargetParams();
+          this.isOriginPosition =
+            this.targetParams.formGroupValue.restoreTo ===
+            RestoreV2LocationType.ORIGIN;
           this.targerLocationInput = this.targetParams?.requestParams?.extendInfo?.restoreLocation;
           this.targetDisksOptions = this.targetParams?.targetDisk;
           this.cacheSelectedDisk = [];
+          if (this.isOriginPosition) {
+            this.bootOptionsWarnTip = '';
+          } else {
+            getBootTypeWarnTipByType(
+              this,
+              this.targetParams?.bootType,
+              this.rowCopyBootType
+            );
+          }
           if (!isEmpty(this.targetDisksOptions)) {
             this.targetDisksOptions = map(this.targetDisksOptions, disk => {
               return assign(disk, {
@@ -283,7 +300,7 @@ export class DiskRestoreComponent implements OnInit {
               assign(item, {
                 targetDiskOptions: filter(
                   cloneDeep(this.targetDisksOptions),
-                  val => this.fiterDisk(val)
+                  val => this.fiterDisk(val, item)
                 )
               });
             });
@@ -294,8 +311,12 @@ export class DiskRestoreComponent implements OnInit {
     );
   }
 
-  fiterDisk(value) {
-    return !includes(this.cacheSelectedDisk, value[this.compareWithKey()]);
+  fiterDisk(value, item) {
+    if (
+      Number(value?.extendInfo?.Capacity) >= Number(item?.extendInfo?.Capacity)
+    ) {
+      return !includes(this.cacheSelectedDisk, value[this.compareWithKey()]);
+    }
   }
 
   setVaild() {
@@ -318,7 +339,7 @@ export class DiskRestoreComponent implements OnInit {
         this.targetDisksOptions,
         value =>
           value[this.compareWithKey()] === item.targetDisk ||
-          this.fiterDisk(value)
+          this.fiterDisk(value, item)
       );
     });
     this.setVaild();
@@ -329,13 +350,23 @@ export class DiskRestoreComponent implements OnInit {
   }
 
   getAllDisk() {
-    return JSON.parse(this.resourceProperties.extendInfo?.disks || '[]');
+    return get(this.properties, 'volList', []).map(item => {
+      set(item, 'extendInfo', JSON.parse(item.extendInfo));
+      set(item, 'diskName', this.extractDiskName(item.name));
+      return item;
+    });
   }
 
   setExtParams(item) {
     assign(item, {
       type: item.extendInfo?.Type
     });
+  }
+
+  extractDiskName(path) {
+    // 使用正则表达式匹配最后一个斜杠或反斜杠后面的内容
+    const result = path.match(/[^\\/]+$/);
+    return result ? result[0] : '';
   }
 
   getLeftTableData() {
@@ -362,6 +393,7 @@ export class DiskRestoreComponent implements OnInit {
   }
 
   getParams() {
+    delete this.targetParams.bootType;
     const params = this.targetParams?.requestParams;
     if (
       includes(

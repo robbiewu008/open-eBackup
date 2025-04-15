@@ -95,6 +95,7 @@ public class CopyInfoBuilderTest {
                 .setResourceInfo(resource)
                 .setRetentionInfo(slaBo, null, 0L)
                 .setRetentionInfo(slaBo, policyBo, 0L)
+                .setWormRetentionInfo(slaBo, policyBo, 0L)
                 .setProperties(properties)
                 .setOtherInfo("chainId", "resourceStr", "slaString")
                 .setGeneratedBy("Backup")

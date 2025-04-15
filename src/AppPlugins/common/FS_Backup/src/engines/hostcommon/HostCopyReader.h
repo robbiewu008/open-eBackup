@@ -63,7 +63,7 @@ protected:
 
     virtual void ProcessReadEntries(FileHandle& fileHandle) = 0; // can be unify later
     virtual void HandleSuccessEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr) = 0;
-    void HandleFailedEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr);
+    virtual void HandleFailedEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr) = 0;
     bool WriteFailedAndSkipRead(FileHandle& fileHandle);
     bool ProcessReadEntriesScannerMode(FileHandle& fileHandle);
 
@@ -73,8 +73,6 @@ protected:
     std::thread             m_pollThread;
     bool                    m_threadDone { false };
     bool                    m_pollThreadDone { false };
-    std::atomic<uint64_t>   m_readTaskProduce { 0 };
-    std::atomic<uint64_t>   m_readTaskConsume { 0 };
     HostParams              m_params;
     time_t                  m_isCompleteTimer { 0 };
     std::unordered_set<std::shared_ptr<FileDesc>>   m_srcOpenedHandleSet;

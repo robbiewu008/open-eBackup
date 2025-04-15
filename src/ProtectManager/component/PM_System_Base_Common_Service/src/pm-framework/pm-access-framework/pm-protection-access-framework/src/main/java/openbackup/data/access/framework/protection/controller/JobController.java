@@ -12,6 +12,13 @@
 */
 package openbackup.data.access.framework.protection.controller;
 
+import static openbackup.system.base.common.constants.RedisConstants.UPDATE_JOB_PROCESS_KEY;
+import static openbackup.system.base.common.constants.RedisConstants.UPDATE_JOB_STATUS_KEY;
+
+import com.huawei.oceanprotect.job.dto.JobLogDto;
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.enums.DmeJobStatusEnum;
 import openbackup.data.access.framework.core.common.util.EngineUtil;
 import openbackup.data.access.framework.core.manager.ProviderManager;
@@ -20,8 +27,6 @@ import openbackup.data.access.framework.protection.controller.req.UpdateJobStatu
 import openbackup.data.access.framework.protection.dto.TaskCompleteMessageDto;
 import openbackup.data.access.framework.protection.listener.ITaskCompleteListener;
 import openbackup.data.protection.access.provider.sdk.job.JobProvider;
-import com.huawei.oceanprotect.job.dto.JobLogDto;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.LegoNumberConstant;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.JobSpeedConverter;
@@ -32,8 +37,6 @@ import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 import openbackup.system.base.sdk.job.util.JobUpdateUtil;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.DeployTypeService;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RBucket;
@@ -62,9 +65,6 @@ import javax.validation.Valid;
 public class JobController {
     // 任务进度在redis保存时间，12个小时
     private static final Integer JOB_PROCESS_EXPIRE_TIME = 12 * 60 * 60;
-
-    private static final String UPDATE_JOB_STATUS_KEY = "UpdateJobStatus";
-    private static final String UPDATE_JOB_PROCESS_KEY = "UpdateJobProcess";
 
     @Autowired
     private ProviderManager providerManager;
@@ -124,7 +124,7 @@ public class JobController {
     @ExterAttack
     @PutMapping("/{jobId}/action/update-status")
     public void updateJobStatus(@PathVariable String jobId, @RequestBody @Valid UpdateJobStatusRequest request) {
-        log.info("Update job, jobId: {}, taskId: {}, status: {}, speed: {}, progress: {}", jobId,
+        log.debug("Update job, jobId: {}, taskId: {}, status: {}, speed: {}, progress: {}", jobId,
             request.getTaskId(), request.getStatus(), request.getSpeed(), request.getProgress());
         if (!jobService.isJobPresent(jobId)) {
             log.warn("Job is not found, jobId: {}", jobId);

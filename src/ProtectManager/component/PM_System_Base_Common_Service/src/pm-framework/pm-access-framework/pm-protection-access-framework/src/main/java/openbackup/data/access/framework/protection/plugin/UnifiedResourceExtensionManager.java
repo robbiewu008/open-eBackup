@@ -12,6 +12,8 @@
 */
 package openbackup.data.access.framework.protection.plugin;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfig;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginExtensionInvokeContext;
@@ -20,8 +22,6 @@ import openbackup.data.protection.access.provider.sdk.plugin.ResourceExtensionMa
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.utils.json.JsonUtil;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;

@@ -296,7 +296,7 @@ void ConfigReaderImpl::InitConfigInfoForWDS()
 
 void ConfigReaderImpl::InitConfigInfoForHCS()
 {
-    putIntConfigInfo("HcsConfig", "CreateBitmapVolumeTimeOut", 300, 600, 7200);
+    putIntConfigInfo("HcsConfig", "CreateBitmapVolumeTimeOut", 300, 7200, 600);
     putIntConfigInfo("HcsConfig", "CreateSnapshotLimit", 1, 30, 10);
     putIntConfigInfo("HcsConfig", "CreateSnapshotApigwFailedRetry", 3, 10, 3);
 }
@@ -338,7 +338,7 @@ void ConfigReaderImpl::putIPConfigInfo(
     m_valueInfo.insert(ConfInfoMap::value_type(Configkey(sectionName, keyName), new IPStringConfigValue(defaultValue)));
 }
 
-vector<string> ConfigReaderImpl::getConfigFiles()
+std::vector<std::string> ConfigReaderImpl::getConfigFiles()
 {
     CThreadAutoLock lock(&m_configFileMutext);  //lint !e830
     vector<string> files;
@@ -485,6 +485,42 @@ string ConfigReaderImpl::GetBackupSceneFromXml(const string& strSection) const
         pChildItem = pChildItem->NextSiblingElement();
     }
     return backupScene;
+}
+
+string ConfigReaderImpl::GetStringFromAgentXml(const string& sectionName, const string& keyName) const
+{
+    string valueStr;
+    tinyxml2::XMLDocument doc;
+    DBGLOG("agentConfigPath:%s", m_agentConfFile.first.c_str());
+    if (doc.LoadFile(m_agentConfFile.first.c_str())) {
+        HCP_Logger_noid(ERR, MODULE_NAME) << "Load config xml file failed." << HCPENDLOG;
+        return valueStr;
+    }
+    tinyxml2::XMLElement* rootElement = doc.RootElement();
+    tinyxml2::XMLElement* pCfgSec = GetChildElement(rootElement, sectionName);
+    if (pCfgSec == nullptr) {
+        return valueStr;
+    }
+    tinyxml2::XMLElement* pChildItem = pCfgSec->FirstChildElement();
+    if (pChildItem == nullptr) {
+        return valueStr;
+    }
+ 
+    while (pChildItem) {
+        // Coverity&Fortify误报:FORTIFY.Null_Dereference
+        const char* nodeName = pChildItem->Value();
+        if (nodeName == nullptr || *nodeName == 0) {
+            pChildItem = pChildItem->NextSiblingElement();
+            continue;
+        }
+        if (strcmp(nodeName, keyName.c_str()) == 0) {
+            const tinyxml2::XMLAttribute* pAttr = pChildItem->FirstAttribute();
+            valueStr = pAttr->Value();
+            break;
+        }
+        pChildItem = pChildItem->NextSiblingElement();
+    }
+    return valueStr;
 }
 
 // Refresh value from conf/hcpconf.ini

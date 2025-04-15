@@ -115,10 +115,10 @@ public:
 
 private:
     uint32_t m_maxEntryPerFile = 0;             /* Maximum entries per control file */
-    MtimeCtrlParser::Header m_header {};			/* File header info */
+    MtimeCtrlParser::Header m_header {};            /* File header info */
 
-    uint32_t m_maxFileSize = 0;					/* Maximum size of the control file */
-    uint32_t m_entries = 0;						/* Number of file/dir entries in the file */
+    uint32_t m_maxFileSize = 0;                 /* Maximum size of the control file */
+    uint32_t m_entries = 0;                     /* Number of file/dir entries in the file */
 
     CTRL_FILE_RETCODE OpenWrite() override;
     CTRL_FILE_RETCODE CloseWrite() override;
@@ -126,24 +126,24 @@ private:
     /**
         * Validate a dir-entry read from the file
         */
-    CTRL_FILE_RETCODE ValidateEntry(std::vector<std::string> lineContents, std::string line);
+    CTRL_FILE_RETCODE ValidateEntry(const std::vector<std::string> &lineContents, const std::string &line) const;
 
     /**
         * Validate header information read from the file
         */
-    CTRL_FILE_RETCODE ValidateHeader();
+    CTRL_FILE_RETCODE ValidateHeader() override;
 
     /**
         * Read the file header info from file and load to m_header
         */
-    CTRL_FILE_RETCODE ReadHeader();
+    CTRL_FILE_RETCODE ReadHeader() override;
     CTRL_FILE_RETCODE FillHeader(uint32_t &headerLine, std::vector<std::string> &cltHeaderLineSplit,
         std::string &cltHeaderLine);
 
     /**
         * Write the file header info to file from m_header
         */
-    CTRL_FILE_RETCODE WriteHeader();
+    CTRL_FILE_RETCODE WriteHeader() override;
 
     /**
     * Get the line to write in header info of file
@@ -156,6 +156,16 @@ private:
     void TranslateEntry(std::vector<std::string> &lineContents, MtimeCtrlEntry &mtimeEntry);
 
     void PrintEntry(MtimeCtrlEntry& mtimeEntry);
+
+    /**
+     * 处理存在换行符的名称，直到获取到正常行为止
+     */
+    CTRL_FILE_RETCODE HandleBreakLine(std::vector<std::string> &lineContents, std::string& ctlFileLine);
+
+    /**
+     * 判断是否是有效的entry
+     */
+    bool IsNormalEntry(std::vector<std::string> &lineContents, const std::string& ctlFileLine) const;
 };
 
 }

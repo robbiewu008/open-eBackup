@@ -60,17 +60,23 @@
                 <ng-container *ngIf="!isSlaDetail">
                     <lv-group lvGutter="6px">
                         <lv-select [lvOptions]='backupStorageTypes' formControlName="storage_type" lvValueKey='value'
-                            [lvDisabled]="isUsed" lvShowClear class="select-width"></lv-select>
+                            lvShowClear class="select-width"></lv-select>
                         <lv-select
                             *ngIf="formGroup.value.storage_type === 'storage_unit_group'  && formGroup.value.storage_type !== 'none'"
                             [lvOptions]="backupStorageUnitGroupNames" formControlName="storage_id" lvValueKey="value"
                             lvShowFilter lvFilterKey='label' lvFilterMode='contains' lvShowClear
-                            [lvDisabled]="isUsed" class="select-width"></lv-select>
+                            class="select-width"></lv-select>
                         <lv-select
                             *ngIf="formGroup.value.storage_type === 'storage_unit'  && formGroup.value.storage_type !== 'none'"
                             [lvOptions]="backupStorageUnitNames" formControlName="storage_id" lvValueKey="value"
                             lvShowFilter lvFilterKey='label' lvFilterMode='contains' lvShowClear
-                            [lvDisabled]="isUsed" class="select-width"></lv-select>
+                            [lvContentTemplate]="contentTpl" class="select-width"></lv-select>
+                        <ng-template #contentTpl let-item>
+                            <div class="unit-content">
+                                <span>{{ item.label }}</span>
+                                <aui-status [value]="item.runningStatus" type="StoragePoolRunningStatus" *ngIf="!!item?.runningStatus"></aui-status>
+                            </div>
+                        </ng-template>
                     </lv-group>
                 </ng-container>
             </div>

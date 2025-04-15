@@ -19,7 +19,7 @@
 
     <springProperty scope="context" name="LOG_PATH" source="logging.file.path"/>
     <property name="INFO_FILE_NAME" value="${LOG_PATH}/all.log}"/>
-    <property name="LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%replace(%msg){'[\n\r\\x08]+',' '}][%logger{39}, %M:%L][%thread]%n"/>
+    <property name="LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5level][%replace(%msg){'[\\x0b\f\\x7f\t\n\r\\x08]+',' '}][%logger{39}, %M:%L][%thread]%n"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">

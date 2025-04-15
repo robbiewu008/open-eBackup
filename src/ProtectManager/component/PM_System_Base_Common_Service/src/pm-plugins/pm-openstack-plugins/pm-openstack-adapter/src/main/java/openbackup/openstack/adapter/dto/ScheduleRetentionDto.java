@@ -12,12 +12,11 @@
 */
 package openbackup.openstack.adapter.dto;
 
-import openbackup.openstack.adapter.enums.ScheduleRetentionType;
-
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import lombok.Data;
+import openbackup.openstack.adapter.enums.ScheduleRetentionType;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

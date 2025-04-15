@@ -12,12 +12,11 @@
 */
 package openbackup.data.access.client.sdk.api.base;
 
-import openbackup.system.base.common.utils.json.JsonUtil;
-
 import feign.RequestTemplate;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.utils.json.JsonUtil;
 
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.web.bind.annotation.RequestMapping;

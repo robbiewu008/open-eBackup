@@ -1,0 +1,83 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Dameng数据库集群恢复后状态异常">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="dameng-00060.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="Troubleshooting-0095-a1">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Dameng数据库集群恢复后状态异常</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="Troubleshooting-0095-a1"></a><a name="Troubleshooting-0095-a1"></a>
+
+
+  <h1 class="topictitle1">Dameng数据库集群恢复后状态异常</h1>
+
+  <div><div class="section" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_section530911285414"><h4 class="sectiontitle">现象描述</h4><p id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_zh-cn_topic_0000001656778725_p213420588212">集群恢复后，存在以下状态异常的现象：</p>
+<ul id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_zh-cn_topic_0000001656778725_ul178324239918"><li id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_zh-cn_topic_0000001656778725_li58321523997">在OceanProtect的<span class="uicontrol" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_zh-cn_topic_0000001656778725_uicontrol159210265105">“<span id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_zh-cn_topic_0000002199964685_text54096353367">保护</span> &gt; 数据库 &gt; Dameng”</span>界面查看Dameng集群详情，单击集群名称，集群中存在备节点状态为“离线”的情况（不包含主备节点都离线的情况）。</li><li id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_zh-cn_topic_0000001656778725_li4885745191012">数据库未正常启动。<p id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_zh-cn_topic_0000001656778725_p92618312199"><a name="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_zh-cn_topic_0000001656778725_li4885745191012"></a><a name="zh-cn_topic_0000002200100901_zh-cn_topic_0000001656778725_li4885745191012"></a><span><img id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_zh-cn_topic_0000001656778725_image82619311195" src="zh-cn_image_0000002189913412.png"></span></p>
+</li></ul>
+</div>
+<div class="section" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_section04103712434"><h4 class="sectiontitle">可能原因</h4><p id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_p168561527162310">集群恢复后，未正常启动所有的Dameng数据库实例。</p>
+</div>
+<div class="section" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_section447785154317"><h4 class="sectiontitle">处理步骤</h4><ol id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_ol622153714286"><li id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_li1422273716286"><span>使用PuTTY，登录Dameng数据库监视器所在的主机。</span><p><div class="note" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_note1813713248175"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_p121376244178">监视器所在的主机IP地址和登录账户请联系数据库管理员获取。</p>
+</div></div>
+</p></li><li id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_li8232143362713"><span>执行以下命令查询监视器所在路径。</span><p><pre class="screen" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_screen16851236192816">find / -name dmmonitor</pre>
+<p id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_p925512441299">回显类似如下，其中/dm7/bin/dmmonitor是监视器所在路径。</p>
+<pre class="screen" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_screen893215113010">[root@dm7_monitor_16183 <font style="font-size:8pt" Face="Courier New" >~</font>]# find / -name dmmonitor
+/dm7/bin/dmmonitor</pre>
+</p></li><li id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_li12251132118289"><span>执行以下命令查询监视器配置文件所在路径。</span><p><pre class="screen" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_screen0665133742910">find / -name dmmonitor.ini</pre>
+<p id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_p1359419588327">回显类似如下，其中/dm7/data/dmmonitor.ini是监视器配置文件所在路径。</p>
+<pre class="screen" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_screen1397821515335">[root@dm7_monitor_16183 <font style="font-size:8pt" Face="Courier New" >~</font>]# find / -name dmmonitor.ini
+/dm7/data/dmmonitor.ini</pre>
+</p></li><li id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_li05391339173715"><span>执行以下命令切换Dameng数据库管理员账号用户，以用户名<strong id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_b87558765210">dmdba</strong>为例。</span><p><pre class="screen" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_screen125391039113720">su - dmdba</pre>
+</p></li><li id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_li6643122214386"><span>执行以下命令终止正在运行的进程。</span><p><pre class="screen" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_screen235354403810">pkill dmmonitor</pre>
+</p></li><li id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_li10751123519388"><span>执行以下命令启动监视器，其中<strong id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_b12769144774616">/dm7/bin/dmmonitor</strong>是监视器所在路径，<strong id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_b552310391469">/dm7/data/dmmonitor.ini</strong>是监视器配置文件所在路径。</span><p><pre class="screen" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_screen171571337143914"> <em id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_i16516163354017">/dm7/bin/dmmonitor</em> <em id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_i4799143724016">/dm7/data/dmmonitor.ini</em></pre>
+</p></li><li id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_li484811255912"><span>登录监视器。</span><p><ol type="a" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_ol6829161715121"><li id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_li14291037105213">输入命令<strong id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_b191298236497">login</strong>进入监视器登录界面。</li><li id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_li11990193925019">分别输入<strong id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_b16367184193515">SYSDBA</strong>用户名与密码登录监视器。</li></ol>
+</p></li><li id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_li1161813575519"><span>执行以下命令，停止数据库。</span><p><pre class="screen" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_screen1066612310539">stop instance all</pre>
+<p id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_p770153018532">回显中包含退出所有组的活动实例成功表示数据库已经停止。</p>
+</p></li><li id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_li47781137279"><span>执行以下命令，开启数据库。</span><p><pre class="screen" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_screen471114155517">startup instance all</pre>
+<p id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_p6385131165820">回显中包含dmwatcher已配置自动重启表示数据库重启成功。</p>
+</p></li></ol>
+</div>
+<div class="section" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_section590752117443"><h4 class="sectiontitle">建议与总结</h4><p id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_p15225181517409">无。</p>
+</div>
+<div class="section" id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_section1227093194410"><h4 class="sectiontitle">参考信息</h4><p id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_p14328448608">重启守护进程命令参数：</p>
+<p id="Troubleshooting-0095-a1__zh-cn_topic_0000002200100901_p122872595010">[dmdba@DM2 ~]$ $DM_HOME/bin/DmWatcherServicedmrw restart</p>
+</div>
+</div>
+
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="dameng-00060.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

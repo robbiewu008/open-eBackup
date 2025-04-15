@@ -36,7 +36,7 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="'nodeLastModifiedTime'">
                                 <span lv-overflow>
-                                    {{item[col.key] * 1000 | date: 'yyyy-MM-dd HH:mm:ss'}}
+                                    {{item[col.key] * 1000 | date: 'yyyy-MM-dd HH:mm:ss':timeZone}}
                                 </span>
                             </ng-container>
                             <ng-container *ngSwitchCase="'nodeType'">

@@ -36,11 +36,29 @@ public:
         return;
     }
 
-    bool SetMigReq(const std::string &destHostId)
+    bool SetMigReq(const std::string &destHostId, const int32_t &min, const int32_t &max)
     {
         MigrationVolReq reqBody;
         reqBody.m_destHostId = destHostId;
         reqBody.m_migrateVols = m_volList;
+        reqBody.m_downtime.m_min = min;
+        reqBody.m_downtime.m_max = max;
+        m_hostId = destHostId;
+        if (!Module::JsonHelper::StructToJsonString(reqBody, m_body)) {
+            ERRLOG("Convert snapinfo to json string failed!");
+            return false;
+        }
+        return true;
+    }
+
+    bool SetV2MigReq(const std::string &destHostId, const int32_t &min, const int32_t &max)
+    {
+        V2MigrationVolReq reqBody;
+        reqBody.m_destHostId = destHostId;
+        reqBody.m_diskSynchronousWrites = true;
+        reqBody.m_migrateVols = m_volList;
+        reqBody.m_downtime.m_min = min;
+        reqBody.m_downtime.m_max = max;
         m_hostId = destHostId;
         if (!Module::JsonHelper::StructToJsonString(reqBody, m_body)) {
             ERRLOG("Convert snapinfo to json string failed!");

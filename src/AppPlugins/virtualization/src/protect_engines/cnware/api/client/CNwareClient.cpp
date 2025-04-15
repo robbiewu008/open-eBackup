@@ -32,10 +32,13 @@
 
 using namespace VirtPlugin;
 namespace CNwarePlugin {
+std::mutex g_mutexSession;
+
 namespace {
 const std::string MODULE_NAME = "CNwareClient";
 const std::string CNWARE_DB_VMINFO = "3";
 const int RETRY_TIME = 10;
+const int PAGE_START_NUM = 1;
 const int64_t CNWARE_AUTH_FAILED = 401;
 const int64_t CNWARE_JOB_CONFLICT = 409;
 const int64_t UNFINISHED_JOB_EXISTS = 2182;
@@ -65,42 +68,109 @@ int32_t CNwareClient::InitCNwareClient(const ApplicationEnvironment &appEnv)
     m_taskId = (appEnv.id);
     if (m_cnwareSessionCache == nullptr) {
         m_cnwareSessionCache = CNwareSessionCache::GetInstance();
+        m_cnwareSessionCache->IncreaseRegistreCnt();
     }
     if (m_cnwareSessionCache == nullptr) {
         ERRLOG("Init CNwareclient failed! Taskid: %s", appEnv.id.c_str());
         return FAILED;
     }
-    DBGLOG("SUCCESS Initiate CNware client, %s", appEnv.auth.extendInfo.c_str());
+    DBGLOG("SUCCESS Initiate CNware client");
     return SUCCESS;
 }
 
-bool CNwareClient::CheckSessionValidity(const std::tuple<std::string, std::string> &cnwareInfo)
+int32_t CNwareClient::DoCheckSessionValidity(CNwareRequest &req, std::shared_ptr<CNwareSession> cnwareSessionPtr)
 {
-    m_cnwareSessionPtr = m_cnwareSessionCache->GetCNwareSession(cnwareInfo);
-    if (m_cnwareSessionPtr == nullptr) {
+    if (!CheckParams(req) || cnwareSessionPtr == nullptr) {
+        ERRLOG("Failed to check param. Ip: %s", req.GetEndpoint().c_str());
+        return FAILED;
+    }
+    DBGLOG("Login to CNware client ip: %s", req.GetEndpoint().c_str());
+    RequestInfo requestInfo;
+    requestInfo.m_headerParams["Cookie"] = cnwareSessionPtr->m_cookie;
+    requestInfo.m_method = "GET";
+    requestInfo.m_resourcePath = "https://{cnwareAddr}:{port}/api/check/session";
+    std::string address = req.GetEndpoint();
+    requestInfo.m_pathParams["cnwareAddr"] = Utils::CheckIpv6Valid(address) ? "[" + address + "]" : address;
+    requestInfo.m_pathParams["port"] = req.GetPort();
+    requestInfo.m_headerParams["Content-Type"] = "application/json";
+    requestInfo.m_auth = req.GetUserInfo();
+    std::shared_ptr<ResponseModel> response = std::make_shared<ResponseModel>();
+    SetRetryTimes(1);
+    int64_t errorCode;
+    std::string errorDes;
+    if (CallApi(requestInfo, response, req) != SUCCESS) {
+        ERRLOG("Failed to send checksession request. Ip: %s", req.GetEndpoint().c_str());
+        return FAILED;       // cert error, CallApi will return FALSE, this scene need judge err code.
+    }
+    if (response.get() == nullptr) {
+        ERRLOG("DoCheckSessionValidity response is empty.Task id: %s", m_taskId.c_str());
+        return FAILED;
+    }
+    // not 200 OK
+    if (response->GetHttpStatusCode() != static_cast<uint32_t>(Module::SC_OK) ||
+        response->GetStatusCode() != static_cast<uint32_t>(Module::SC_OK)) {
+        ERRLOG("Session unvalid, ip(%s) return failed.", req.GetEndpoint().c_str());
+        if (m_cnwareSessionCache != nullptr) {
+            m_cnwareSessionCache->EraseSession(std::make_tuple(cnwareSessionPtr->m_ip.c_str(),
+                cnwareSessionPtr->m_userId.c_str()));
+        }
+        return FAILED;
+    }
+    DBGLOG("Session valid. Ip: %s", req.GetEndpoint().c_str());
+    return SUCCESS;
+}
+
+bool CNwareClient::CheckSessionValidity(const std::tuple<std::string, std::string> &cnwareInfo,
+    CNwareRequest &req, const bool &checkFlag)
+{
+    std::shared_ptr<CNwareSession> cnwareSessionPtr = m_cnwareSessionCache->GetCNwareSession(cnwareInfo);
+    if (cnwareSessionPtr == nullptr) {
         DBGLOG("Do not find valid session, %s", m_taskId.c_str());
+        return false;
+    }
+    if (checkFlag && DoCheckSessionValidity(req, cnwareSessionPtr) != SUCCESS) {
+        WARNLOG("Session is not valid, %s", m_taskId.c_str());
         return false;
     }
     return true;
 }
 
-int32_t CNwareClient::GetSessionAndlogin(CNwareRequest &req, int64_t &errorCode,
-    std::string &errorDes)
+int32_t CNwareClient::GetSessionAndlogin(CNwareRequest &req, RequestInfo &requestInfo,
+    int64_t &errorCode, std::string &errorDes, const bool &checkFlag)
 {
-    std::lock_guard<std::mutex> clock(m_mutexCache);
-    std::lock_guard<std::mutex> slock(m_mutexSession);
-    if (CheckSessionValidity(std::make_tuple(req.GetEndpoint(), req.GetUserInfo().name))) {
+    std::lock_guard<std::mutex> slock(g_mutexSession);  // 注意不要死锁！
+    if (CheckSessionValidity(std::make_tuple(req.GetEndpoint(), req.GetUserInfo().name), req, checkFlag) &&
+        SetSession(req, requestInfo)) {
         INFOLOG("Already login to CNware client! Ip: %s", req.GetEndpoint().c_str());
         return SUCCESS;
     }
-    if (Login(req, errorCode, errorDes) != SUCCESS) {
+    if (Login(req, errorCode, errorDes) != SUCCESS || !SetSession(req, requestInfo)) {
         ERRLOG("Failed login to CNware client! Ip: %s", req.GetEndpoint().c_str());
         return FAILED;
     }
     return SUCCESS;
 }
 
-int32_t CNwareClient::Login(CNwareRequest &req, int64_t &errorCode, std::string &errorDes)
+int32_t CNwareClient::CheckAuth(CNwareRequest &req, int64_t &errorCode, std::string &errorDes)
+{
+    std::lock_guard<std::mutex> slock(g_mutexSession);
+    std::shared_ptr<ResponseModel> response = std::make_shared<ResponseModel>();
+
+    if (DoLogin(req, errorCode, errorDes, response) != SUCCESS) {
+        ERRLOG("Login to cnware failed. Ip: %s", req.GetEndpoint().c_str());
+        return FAILED;
+    }
+    m_cnwareSessionPtr = GetResponseSession(response, req);
+    if (m_cnwareSessionPtr != nullptr) {
+        LoginoutCNware();
+        return SUCCESS;
+    }
+    ERRLOG("GetResponseSession failed!");
+    return FAILED;
+}
+
+int32_t CNwareClient::DoLogin(CNwareRequest &req, int64_t &errorCode, std::string &errorDes,
+    std::shared_ptr<ResponseModel> response)
 {
     if (!CheckParams(req)) {
         ERRLOG("Failed to check param. Ip: %s", req.GetEndpoint().c_str());
@@ -120,23 +190,34 @@ int32_t CNwareClient::Login(CNwareRequest &req, int64_t &errorCode, std::string 
         ERRLOG("Failed to build login body. Ip: %s", req.GetEndpoint().c_str());
         return FAILED;
     }
-    std::shared_ptr<ResponseModel> response = std::make_shared<ResponseModel>();
+    
     SetRetryTimes(1);
     if (CallApi(requestInfo, response, req) != SUCCESS) {
         ParseResonseBody(response, errorCode, errorDes, req);
         ERRLOG("Failed to send request. Ip: %s", req.GetEndpoint().c_str());
         return FAILED;       // cert error, CallApi will return FALSE, this scene need judge err code.
     }
-    if (response.get() == nullptr) {
-        ERRLOG("Return response is empty.Task id: %s", m_taskId.c_str());
+    if (ParseResonse(response, errorCode, errorDes, req) != SUCCESS) {
+        ParseResonseBody(response, errorCode, errorDes, req);
         return FAILED;
     }
-    ParseResonse(response, errorCode, errorDes, req);
-    if (RefreshSession(response, req)) {
-        ERRLOG("Failed to refresh session. Ip: %s", req.GetEndpoint().c_str());
+    INFOLOG("Login and refresh session. Ip: %s", req.GetEndpoint().c_str());
+    return SUCCESS;
+}
+
+int32_t CNwareClient::Login(CNwareRequest &req, int64_t &errorCode, std::string &errorDes)
+{
+    std::shared_ptr<ResponseModel> response = std::make_shared<ResponseModel>();
+    if (DoLogin(req, errorCode, errorDes, response) != SUCCESS) {
+        ERRLOG("Login to cnware failed. Ip: %s", req.GetEndpoint().c_str());
         return FAILED;
+    } else {
+        if (RefreshSession(response, req)) {
+            ERRLOG("Failed to refresh session. Ip: %s", req.GetEndpoint().c_str());
+            return FAILED;
+        }
     }
-    INFOLOG("Login. Ip: %s", req.GetEndpoint().c_str());
+    INFOLOG("Login and refresh session. Ip: %s", req.GetEndpoint().c_str());
     return SUCCESS;
 }
 
@@ -214,11 +295,12 @@ int32_t CNwareClient::ParseErrorBody(
     return SUCCESS;
 }
 
-int32_t CNwareClient::RefreshSession(const std::shared_ptr<ResponseModel> &response, CNwareRequest &req)
+std::shared_ptr<CNwareSession> CNwareClient::GetResponseSession(
+    const std::shared_ptr<ResponseModel> &response, CNwareRequest &req)
 {
     if (response->GetCookies().empty()) {
         ERRLOG("Parse cookie failed, cookie is empty.");
-        return FAILED;
+        return nullptr;
     }
     std::string cookieValue = *(response->GetCookies().begin());
     std::vector<std::string> strs;
@@ -226,36 +308,70 @@ int32_t CNwareClient::RefreshSession(const std::shared_ptr<ResponseModel> &respo
     if (!strs.empty()) {
         std::shared_ptr<CNwareSession> sessionPtr = std::make_shared<CNwareSession>(
             req.GetEndpoint(), req.GetPort(), req.GetUserInfo().name, strs[0]);
+        return sessionPtr;
+    }
+    return nullptr;
+}
+
+int32_t CNwareClient::RefreshSession(const std::shared_ptr<ResponseModel> &response, CNwareRequest &req)
+{
+    std::shared_ptr<CNwareSession> sessionPtr = GetResponseSession(response, req);
+    if (sessionPtr != nullptr)  {
         m_cnwareSessionCache->AddCNwareSession(sessionPtr);
         return SUCCESS;
     }
+    ERRLOG("RefreshSession cookie failed, cookie is empty.");
     return FAILED;
 }
 
-int32_t CNwareClient::Loginout()
+void CNwareClient::ForceLogOut(const CNwareRequest &request)
 {
-    std::lock_guard<std::mutex> clock(m_mutexCache);
-    std::lock_guard<std::mutex> slock(m_mutexSession);
+    std::lock_guard<std::mutex> slock(g_mutexSession);
     if (m_cnwareSessionCache == nullptr) {
         WARNLOG("Pointer m_cnwareSessionCache nullptr!");
-        return SUCCESS;
+        return;
     }
-    if (!m_cnwareSessionCache->IsSessionRemain() || m_cnwareSessionPtr == nullptr) {
-        return SUCCESS;
-    }
+    m_cnwareSessionPtr = m_cnwareSessionCache->GetCNwareSession(
+        std::make_tuple(request.GetEndpoint(), request.GetUserInfo().name));
     // try to get the last session that this cnware client used
-    m_cnwareSessionPtr = m_cnwareSessionCache->GetCNwareSession(std::make_tuple(
-        m_cnwareSessionPtr->m_ip, m_cnwareSessionPtr->m_userId));
-    if (m_cnwareSessionPtr != nullptr && m_cnwareSessionPtr.use_count() <= NUM_2) {
+    if (m_cnwareSessionPtr != nullptr) {
         INFOLOG("The last client using session, trigger loginOut");
         if (!LoginoutCNware()) {
             WARNLOG("Login out CNware failed! Ip:%s", m_cnwareSessionPtr->m_ip.c_str());
-            return FAILED;
         }
         m_cnwareSessionCache->EraseSession(std::make_tuple(m_cnwareSessionPtr->m_ip.c_str(),
             m_cnwareSessionPtr->m_userId.c_str()));
     } else {
-        DBGLOG("Session is being used by other clients, skip loginOut");
+        INFOLOG("Session is nullptr, skip loginOut");
+    }
+    return;
+}
+
+int32_t CNwareClient::Loginout()
+{
+    std::lock_guard<std::mutex> slock(g_mutexSession);
+    if (m_cnwareSessionCache == nullptr) {
+        WARNLOG("Pointer m_cnwareSessionCache nullptr!");
+        return SUCCESS;
+    }
+    if (!m_cnwareSessionCache->NeedRelease()) {
+        INFOLOG("SessionCache no need release!");
+        return SUCCESS;
+    }
+    // try to get the last session that this cnware client used
+    while (m_cnwareSessionCache->IsSessionRemain()) {
+        m_cnwareSessionPtr = m_cnwareSessionCache->GetLastCNwareSession();
+        if (m_cnwareSessionPtr != nullptr && m_cnwareSessionPtr.use_count() <= NUM_2) {
+            INFOLOG("The last client using session, trigger loginOut");
+            if (!LoginoutCNware()) {
+                WARNLOG("Login out CNware failed! Ip:%s", m_cnwareSessionPtr->m_ip.c_str());
+                return FAILED;
+            }
+            m_cnwareSessionCache->EraseSession(std::make_tuple(m_cnwareSessionPtr->m_ip.c_str(),
+                m_cnwareSessionPtr->m_userId.c_str()));
+        } else {
+            DBGLOG("No Session is being used by other clients, skip loginOut");
+        }
     }
     return SUCCESS;
 }
@@ -363,6 +479,45 @@ int32_t CNwareClient::GetResource(CNwareRequest &req, std::shared_ptr<ResponseMo
         return FAILED;
     }
     return SUCCESS;
+}
+
+std::shared_ptr<AssociateResponse> CNwareClient::PostVMTagsInfo(CNwareRequest &req, const QueryByPage &pageInfo)
+{
+    if (!CheckParams(req)) {
+        ERRLOG("Failed to check PostVMTagsInfo param. Ip: %s", req.GetEndpoint().c_str());
+        return nullptr;
+    }
+    req.url = "/api/tag/tags/associate";
+    RequestInfo requestInfo;
+    requestInfo.m_method = "POST";
+    Json::Value tagJson;
+    tagJson["size"] = pageInfo.pageSize;
+    tagJson["start"] = pageInfo.pageNo;
+    tagJson["sort"] = "";
+    tagJson["order"] = "asc";
+    Json::FastWriter writer;
+    if (!req.BuildBody(writer.write(tagJson))) {
+        ERRLOG("Struct of snap info to Json body failed!");
+        return nullptr;
+    }
+    std::string errorDes;
+    int64_t errorCode;
+    std::shared_ptr<AssociateResponse> response = std::make_shared<AssociateResponse>();
+    if (response == nullptr) {
+        ERRLOG("Create PostVMTagsInfo pointer failed.");
+        return nullptr;
+    }
+    if (SendRequest(response, req, requestInfo, errorDes, errorCode) != SUCCESS) {
+        ERRLOG("Failed to send PostVMTagsInfo request.");
+        return nullptr;
+    }
+
+    if (!response->Serial()) {
+        ERRLOG("Get CNware PostVMTagsInfo taskId fail");
+        return nullptr;
+    }
+    DBGLOG("Get CNware PostVMTagsInfo success, domainId is: %s!", req.GetDomainId().c_str());
+    return response;
 }
 
 std::shared_ptr<CNwareResponse> CNwareClient::CreateSnapshot(CreateSnapshotRequest &req)
@@ -604,7 +759,7 @@ std::shared_ptr<RemoveAssociateHostResponse> CNwareClient::RemoveAssociateHost(R
 }
 
 std::shared_ptr<StoragePoolResponse> CNwareClient::GetStoragePoolInfo(CNwareRequest &req,
-    const std::string &hostId, const std::string &poolId, const int32_t &start, const int32_t &size)
+    const std::string &hostId, const std::string &poolId, const NameType &nameType, const int32_t &start)
 {
     if (!CheckParams(req)) {
         ERRLOG("Failed to check param. Ip: %s", req.GetEndpoint().c_str());
@@ -614,13 +769,51 @@ std::shared_ptr<StoragePoolResponse> CNwareClient::GetStoragePoolInfo(CNwareRequ
     RequestInfo requestInfo;
     requestInfo.m_method = "GET";
     requestInfo.m_queryParams["hostId"] = hostId;
-    requestInfo.m_queryParams["size"] = std::to_string(size);
+    requestInfo.m_queryParams["size"] = std::to_string(m_pageSize);
     requestInfo.m_queryParams["start"] = std::to_string(start);
-    requestInfo.m_queryParams["offset"] = std::to_string((start - 1) * size);
+    requestInfo.m_queryParams["offset"] = std::to_string((start - 1) * m_pageSize);
     requestInfo.m_queryParams["order"] = "desc";
     if (poolId != "") {
         requestInfo.m_queryParams["id"] = poolId;
+    } else if (req.GetResourceId() != "") {
+        requestInfo.m_queryParams["nameLike"] = req.GetResourceId();
+        requestInfo.m_queryParams["nameType"] = std::to_string(static_cast<int32_t>(nameType));
     }
+    std::string errorDes;
+    int64_t errorCode = 0;
+    std::shared_ptr<StoragePoolResponse> response = std::make_shared<StoragePoolResponse>();
+    if (response == nullptr) {
+        ERRLOG("StoragePoolResponse pointer failed.");
+        return nullptr;
+    }
+    if (SendRequest(response, req, requestInfo, errorDes, errorCode) != SUCCESS) {
+        ERRLOG("Failed to send StoragePoolResponse request. errorCode is %lld, errorDes is %s.",
+            errorCode, errorDes.c_str());
+        return nullptr;
+    }
+    if (!response->Serial()) {
+        ERRLOG("Serial CNware StoragePoolResponse fail");
+        return nullptr;
+    }
+    DBGLOG("Get CNware StoragePoolResponse success, hostIdList is: %s!", hostId.c_str());
+    return response;
+}
+
+std::shared_ptr<StoragePoolResponse> CNwareClient::SearchStoragePool(CNwareRequest &req,
+    const std::string &hostId, const std::string &nameLike, const NameType &nameType)
+{
+    if (!CheckParams(req)) {
+        ERRLOG("Failed to check param. Ip: %s", req.GetEndpoint().c_str());
+        return nullptr;
+    }
+    req.url = "/api/storage/storagePools";
+    RequestInfo requestInfo;
+    requestInfo.m_method = "GET";
+    requestInfo.m_queryParams["hostId"] = hostId;
+    requestInfo.m_queryParams["order"] = "desc";
+    requestInfo.m_queryParams["nameType"] = std::to_string(static_cast<int32_t>(nameType));
+    requestInfo.m_queryParams["nameLike"] = nameLike;
+    requestInfo.m_queryParams["isPaginate"] = false;
     std::string errorDes;
     int64_t errorCode = 0;
     std::shared_ptr<StoragePoolResponse> response = std::make_shared<StoragePoolResponse>();
@@ -703,17 +896,15 @@ int32_t CNwareClient::SendRequest(std::shared_ptr<ResponseModel> response, CNwar
     requestInfo.m_body = req.GetBody();
     requestInfo.m_auth = req.GetUserInfo();
     int32_t retryNum = 0;
-    if (!SetSession(req, requestInfo)) {
-        if (Login(req, errorCode, errorDes) != SUCCESS || !SetSession(req, requestInfo)) {
-            ERRLOG("Retry login and set session failed. Ip: %s", req.GetEndpoint().c_str());
-            return FAILED;
-        }
+    if (GetSessionAndlogin(req, requestInfo, errorCode, errorDes) != SUCCESS) {
+        ERRLOG("Retry login and set session failed. Ip: %s", req.GetEndpoint().c_str());
+        return FAILED;
     }
     while (retryNum < RETRY_TIME) {
         INFOLOG("send request for %d time to %s, %s", (retryNum + 1),
             WIPE_SENSITIVE(req.url).c_str(), m_taskId.c_str());
         if (DoSendRequest(response, req, requestInfo, errorDes, errorCode) != SUCCESS) {
-            WARNLOG("Do send request failed. Url: %s, http status: %d, errCode: %d, error message: %d, %s",
+            WARNLOG("Do send request failed. Url: %s, http status: %d, errCode: %d, error message: %s, %s",
                 requestInfo.m_resourcePath.c_str(), response->GetHttpStatusCode(),
                 errorCode, errorDes.c_str(), m_taskId.c_str());
             if (NeedRetry(response, req, requestInfo, errorDes, errorCode)) {
@@ -737,15 +928,16 @@ int32_t CNwareClient::SendRequest(std::shared_ptr<ResponseModel> response, CNwar
 bool CNwareClient::NeedRetry(std::shared_ptr<ResponseModel> response, CNwareRequest &req,
     RequestInfo &requestInfo, std::string &errorDes, int64_t &errorCode)
 {
+    std::string retryErrorCode = Module::ConfigReader::getString("CNwareConfig", "RetryErrorCode");
     if (response->GetHttpStatusCode() == CNWARE_AUTH_FAILED &&
         ResponseSuccessHandle(req, requestInfo, response, errorDes, errorCode) == SUCCESS) {
         return true;
     }
-    if (response->GetHttpStatusCode() == CNWARE_JOB_CONFLICT && (errorCode == UNFINISHED_JOB_EXISTS ||
-        errorCode == REFRESH_POOL_JOB || errorCode== REFRESH_POOL_JOB_CONFLICT)) {
-        WARNLOG(" Url: %s, http status: %d, errCode: %d, error message: %d, request conflicts. %s",
+    if (response->GetHttpStatusCode() == CNWARE_JOB_CONFLICT &&
+        (retryErrorCode.find(std::to_string(errorCode)) != std::string::npos)) {
+        WARNLOG("Url: %s, http status: %d, errCode: %d, error message: %d, request conflicts. %s",
             requestInfo.m_resourcePath.c_str(), CNWARE_JOB_CONFLICT,
-            UNFINISHED_JOB_EXISTS, errorDes.c_str(), m_taskId.c_str());
+            errorCode, errorDes.c_str(), m_taskId.c_str());
         return true;
     }
     if (response->GetErrCode() != 0 || errorCode == UNSUPPORT_LUN) {
@@ -792,7 +984,7 @@ void CNwareClient::DelayTimeSendRequest()
 int32_t CNwareClient::ResponseSuccessHandle(CNwareRequest &req, RequestInfo &requestInfo,
     std::shared_ptr<ResponseModel> &response, std::string &errorDes, int64_t &errorCode)
 {
-    if (Login(req, errorCode, errorDes) != SUCCESS || !SetSession(req, requestInfo)) {
+    if (GetSessionAndlogin(req, requestInfo, errorCode, errorDes, true) != SUCCESS) {
         ERRLOG("Retry login and set session failed. Ip: %s", req.GetEndpoint().c_str());
         return FAILED;
     }
@@ -820,19 +1012,17 @@ bool CNwareClient::SetVersionInfoResonse(const std::shared_ptr<ResponseModel> &r
 
 bool CNwareClient::SetSession(const CNwareRequest &request, RequestInfo &requestInfo)
 {
-    std::lock_guard<std::mutex> clock(m_mutexCache);
-    std::lock_guard<std::mutex> slock(m_mutexSession);
     if (m_cnwareSessionCache == nullptr) {
         ERRLOG("SetSession pointer error. Task id: %s", m_taskId.c_str());
         return false;
     }
-    m_cnwareSessionPtr = m_cnwareSessionCache->GetCNwareSession(std::make_tuple(
-        request.GetEndpoint(), request.GetUserInfo().name));
-    if (m_cnwareSessionPtr == nullptr) {
+    std::shared_ptr<CNwareSession> cnwareSessionPtr = m_cnwareSessionCache->GetCNwareSession(
+        std::make_tuple(request.GetEndpoint(), request.GetUserInfo().name));
+    if (cnwareSessionPtr == nullptr) {
         ERRLOG("Cache Session pointer error. Task id: %s", m_taskId.c_str());
         return false;
     }
-    requestInfo.m_headerParams["Cookie"] = m_cnwareSessionPtr->m_cookie;
+    requestInfo.m_headerParams["Cookie"] = cnwareSessionPtr->m_cookie;
     return true;
 }
 
@@ -901,7 +1091,7 @@ std::shared_ptr<CheckNameUniqueResponse> CNwareClient::CheckNameUnique(CheckName
         response = nullptr;
         return nullptr;
     }
-    DBGLOG("Check name unique success!");
+    INFOLOG("Check name(%s) unique success!", UrlEncode(req.GetName()).c_str());
     return response;
 }
 
@@ -1428,6 +1618,7 @@ std::shared_ptr<StoreScanResponse> CNwareClient::ScanNfsStorage(CNwareRequest &r
     }
     INFOLOG("Login to CNware client ip: %s", req.GetEndpoint().c_str());
     req.url = "/api/storage/stores/{storeId}/scan";
+    req.BuildBody("{}");
     RequestInfo requestInfo;
     requestInfo.m_method = "POST";
     requestInfo.m_pathParams["storeId"] = storeId;
@@ -1461,6 +1652,7 @@ std::shared_ptr<StoreScanResponse> CNwareClient::RefreshStoragePool(CNwareReques
     }
     INFOLOG("Login to CNware client ip: %s", req.GetEndpoint().c_str());
     req.url = "/api/storage/storagePools/{poolId}/refresh";
+    req.BuildBody("{}");
     RequestInfo requestInfo;
     requestInfo.m_method = "POST";
     requestInfo.m_pathParams["poolId"] = poolId;
@@ -2195,5 +2387,45 @@ std::shared_ptr<GetHostResourceStatResponse> CNwareClient::GetHostResourceStat(C
         return nullptr;
     }
     return response;
+}
+
+std::shared_ptr<CNwareResponse> CNwareClient::ModifyBaseInfo(CNwareRequest &req,
+    const std::string &newName, const std::string &domainId)
+{
+    if (!CheckParams(req)) {
+        ERRLOG("Failed to check param. Ip: %s", req.GetEndpoint().c_str());
+        return nullptr;
+    }
+    INFOLOG("Login to CNware client ip: %s", req.GetEndpoint().c_str());
+    req.url = "/api/compute/domains/{domainId}/baseInfo";
+    RequestInfo requestInfo;
+    requestInfo.m_method = "POST";
+    requestInfo.m_pathParams["domainId"] = domainId;
+
+    std::shared_ptr<CNwareResponse> response = std::make_shared<CNwareResponse>();
+    if (response == nullptr) {
+        ERRLOG("Create AddNfs Response pointer failed.");
+        return nullptr;
+    }
+    std::string errorDes;
+    int64_t errorCode;
+    if (SendRequest(response, req, requestInfo, errorDes, errorCode) != SUCCESS) {
+        ERRLOG("Failed to send request.");
+        response = nullptr;
+        return response;
+    }
+    if (!response->Serial()) {
+        ERRLOG("Serialize response body failed!");
+        response = nullptr;
+        return nullptr;
+    }
+    return response;
+}
+
+void CNwareClient::SetPageSize(const int32_t &pageSize)
+{
+    DBGLOG("Set page size %d for cnware client.", pageSize);
+    m_pageSize = pageSize;
+    return;
 }
 }

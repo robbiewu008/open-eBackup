@@ -53,6 +53,8 @@ namespace PluginUtils {
     bool WriteFile(const std::string &path, const std::string &data);
     bool ReadFile(const std::string &path, std::string &data);
     bool CreateDirectory(const std::string& path);
+    bool SafeCreateDirectory(const std::string& path, const std::string& basePath);
+    bool DoRealCreateDirectory(const std::string& path);
     bool Remove(std::string path);
     bool IsPathExists(const std::string &path);
     bool Rename(std::string srcPath, std::string dstPath);
@@ -80,13 +82,22 @@ namespace PluginUtils {
     std::string VolumeNameTransform(const std::string& mapperName);
     uint64_t GetVolumeSize(const std::string& devicePath);
     std::string GetVolumeUuid(const std::string& devicePath);
-    std::string GetLvmVolumeName(const std::string& dmDevicePath);
-
+    std::string GetVolumeName(const std::string& dmDevicePath);
     std::string LowerCase(const std::string& path);
 #ifndef WIN32
     std::string GetRealPath(const std::string& path);
     std::string GetDirName(const std::string& path);
     bool IsDir(const std::string& path);
+#else
+    std::string GetWinSystemDriveForInd();
+    uint64_t GetWinVolumeSize(const std::string& devicePath);
+    std::wstring ConvertDevicePath(const std::wstring& devicePath);
+    std::wstring TrimTrailingSpaces(const std::wstring& str);
+    std::string GetEFIDrivePath();
+    std::string GetBootTypeForWinPE();
+    bool WinIsUEFIBoot();
+    bool IsUEFIBoot();
+    bool DetectWinPE();
 #endif
     template<class ... T>
     std::string PathJoin(T&&... paths)

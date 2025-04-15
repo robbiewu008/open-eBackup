@@ -53,10 +53,10 @@
             </lv-form-label>
             <lv-form-control class="control-container">
                 <div class="tree-container">
-                    <lv-tree [lvData]='filesData' #tree lvSelectionMode='single' [(lvSelection)]='fileSelection'
-                        (lvSelectionChange)="selectionChange()" (lvExpandedChange)="expandedChange($event)"
-                        (lvCheck)="nodeCheck($event)" lvShowContentIcon lvShowLine lvAsync lvVirtualScroll
-                        [lvNodeTemplate]='nodeTpl'>
+                    <lv-tree [lvData]='filesData' #tree lvSelectionMode='single' lvSelectionAssociate="false"
+                        [(lvSelection)]='fileSelection' (lvSelectionChange)="selectionChange()"
+                        (lvExpandedChange)="expandedChange($event)" (lvCheck)="nodeCheck($event)" lvShowContentIcon
+                        lvShowLine lvAsync lvVirtualScroll [lvNodeTemplate]='nodeTpl'>
                     </lv-tree>
                     <ng-template #nodeTpl let-item>
                         <div style="width: 400px;" lv-overflow>
@@ -100,3 +100,29 @@
         </lv-form-control>
     </lv-form-item>
 </lv-form>
+
+<div class="aui-gutter-column-lg "></div>
+<lv-collapse [lvMultiExpansion]="false" lvType="simple">
+    <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+        <lv-form [formGroup]="formGroup">
+            <lv-form-item>
+                <lv-form-label>
+                    {{'protection_vmware_capacity_threshold_label' | i18n}}
+                    <i lv-icon="aui-icon-help" [lv-tooltip]="capacityThresholdToolTip" lvTooltipPosition="rightTop"
+                        lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
+                </lv-form-label>
+                <lv-form-control [lvErrorTip]="capacityThresholdErrorTip">
+                    <lv-group lvGutter='8px' class="lv-group-flex-start">
+                        <input lv-input formControlName="available_capacity_threshold" type="text"
+                            placeholder="1-100" />
+                        <span class="configform-constraint">%</span>
+                    </lv-group>
+                </lv-form-control>
+            </lv-form-item>
+        </lv-form>
+    </lv-collapse-panel>
+</lv-collapse>
+
+<ng-template #titleTpl>
+    <span class="aui-h3">{{'common_advanced_label'|i18n}}</span>
+</ng-template>

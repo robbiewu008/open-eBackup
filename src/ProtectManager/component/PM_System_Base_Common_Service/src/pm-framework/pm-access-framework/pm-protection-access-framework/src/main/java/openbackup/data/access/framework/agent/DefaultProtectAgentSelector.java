@@ -12,8 +12,11 @@
 */
 package openbackup.data.access.framework.agent;
 
+import static openbackup.system.base.common.constants.Constants.INTERNAL_AGENT_KEY;
+
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import com.huawei.oceanprotect.system.base.user.bo.UserDomainRelationBo;
+import com.huawei.oceanprotect.system.base.user.common.enums.ResourceSetScopeModuleEnum;
 import com.huawei.oceanprotect.system.base.user.service.DomainResourceSetService;
 import com.huawei.oceanprotect.system.base.user.service.UserDomainRelationService;
 
@@ -29,9 +32,11 @@ import openbackup.data.protection.access.provider.sdk.resource.ResourceQueryPara
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.data.protection.access.provider.sdk.resource.model.AgentTypeEnum;
 import openbackup.system.base.common.constants.Constants;
+import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.auth.UserInnerResponse;
+import openbackup.system.base.sdk.auth.model.RoleBo;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.user.enums.ResourceSetTypeEnum;
@@ -45,6 +50,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -58,9 +64,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class DefaultProtectAgentSelector implements ProtectAgentSelector {
-    // 内置agent的key
-    private static final String INTERNAL_AGENT_KEY = "scenario";
-
     private static final String INTERNAL_AGENT_ESN = "internal_agent_esn";
 
     private static final int SIZE = 10000;
@@ -115,7 +118,7 @@ public class DefaultProtectAgentSelector implements ProtectAgentSelector {
      */
     public List<Endpoint> selectByAgentParameter(String agents, UserInnerResponse userInnerResponse) {
         return Arrays.stream(agents.split(";"))
-            .map(id -> findAgentByUuid(id, userInnerResponse))
+            .map(id -> findAgentByToken(id, userInnerResponse))
             .filter(Optional::isPresent)
             .map(Optional::get)
             .collect(Collectors.toList());
@@ -153,8 +156,9 @@ public class DefaultProtectAgentSelector implements ProtectAgentSelector {
             .map(e -> {
                 if (HCS_SUB_TYPE_LIST.contains(protectedResource.getSubType()) || deployTypeService.isCyberEngine()) {
                     // HCS场景
-                    if (OpServiceUtil.isHcsService() && ResourceSubTypeEnum.HCS_CONTAINER.getType().equals(
-                        protectedResource.getEnvironment().getSubType())) {
+                    if (OpServiceUtil.isHcsService() && !VerifyUtil.isEmpty(protectedResource.getEnvironment())
+                        && ResourceSubTypeEnum.HCS_CONTAINER.getType().equals(
+                            protectedResource.getEnvironment().getSubType())) {
                         // 如果root节点的资源类型是HCSContainer（即线下场景），并且是HCS OP服务，则只使用外置代理。注：线上场景是HcsEnvOp
                         return findExternalAgentByResource(e, userInnerResponse);
                     } else {
@@ -207,7 +211,28 @@ public class DefaultProtectAgentSelector implements ProtectAgentSelector {
             .map(env -> new Endpoint(env.getUuid(), env.getEndpoint(), env.getPort(), env.getOsType()));
     }
 
-    private Optional<Endpoint> findAgentByUuid(String resUuid, UserInnerResponse userInnerResponse) {
+    /**
+     * 根据用户token信息获取agent
+     *
+     * @param resUuid agentUuid
+     * @param token token信息
+     * @return  agent信息
+     */
+    public Optional<ProtectedEnvironment> findAgentByToken(String resUuid, TokenBo token) {
+        List<String> sharedAgentIds = protectedResourceAgentMapper.querySharedAgentIds();
+        UserInnerResponse userInnerResponse = new UserInnerResponse();
+        userInnerResponse.setUserId(token.getUser().getId());
+        RoleBo roleBo = new RoleBo();
+        roleBo.setRoleName(token.getUser().getRoles().get(0).getName());
+        userInnerResponse.setRolesSet(new HashSet<>(Collections.singleton(roleBo)));
+        return resourceService.getResourceById(false, resUuid)
+            .filter(resource -> checkResourceOwnership(resource, userInnerResponse, sharedAgentIds))
+            .filter(resource -> checkResourceInternalAgent(resource))
+            .filter(resource -> resource instanceof ProtectedEnvironment)
+            .map(resource -> (ProtectedEnvironment) resource);
+    }
+
+    private Optional<Endpoint> findAgentByToken(String resUuid, UserInnerResponse userInnerResponse) {
         List<String> sharedAgentIds = protectedResourceAgentMapper.querySharedAgentIds();
         return resourceService.getResourceById(false, resUuid)
             .filter(resource -> checkResourceOwnership(resource, userInnerResponse, sharedAgentIds))
@@ -255,8 +280,9 @@ public class DefaultProtectAgentSelector implements ProtectAgentSelector {
         if (!relation.isPresent()) {
             return false;
         }
-        return !VerifyUtil.isEmpty(domainResourceSetService.getDomainResourcesRelation(relation.get().getDomainId(),
-            resource.getUuid(), ResourceSetTypeEnum.AGENT.getType()));
+        return !VerifyUtil.isEmpty(
+            domainResourceSetService.getDomainResourcesRelation(relation.get().getDomainId(), resource.getUuid(),
+                ResourceSetTypeEnum.AGENT.getType(), ResourceSetScopeModuleEnum.AGENT.getType()));
     }
 
     @Override

@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "message/archivestream/ArchiveStreamService.h"
 
 #include <fstream>
@@ -13,6 +25,7 @@
 #include "common/Log.h"
 #include "common/Ip.h"
 #include "common/Path.h"
+#include "common/File.h"
 #include "common/Uuid.h"
 #include "common/ErrorCode.h"
 #include "common/JsonUtils.h"
@@ -55,10 +68,12 @@ const mp_string RECOVERYMESSAGE_SPLIT_FILE = "splitFile";
 const mp_string RECOVERYMESSAGE_OBJECT_NUM = "objectNum";
 const mp_string RECOVERYMESSAGE_METADATA = "metadata";
 const mp_string RECOVERYMESSAGE_CHECKPOINT = "checkpoint";
+const mp_string HOST_ENV_DEPLOYTYPE = "DEPLOY_TYPE";
 
 const std::string DEFAULT_MOUNT_PATH = "/mnt/databackup/archivestream/";
 const mp_string RECOVERYMESSAGE_FS_SHARE_NAME = "fsShareName";
 const mp_string RECOVERYMESSAGE_META_FILE_DIR = "metaFileDir";
+const mp_string RECOVERYMESSAGE_PARENT_DIR = "parentDir";
 const mp_string RECOVERYMESSAGE_CACHE_FILE_NAME = "cacheFileSystemSharePath";
 const mp_string CACHE_REPO_NAME = "cacheRepoName";
 const mp_string RECOVERYMESSAGE_LOGIC_IPV4_LIST = "logicIpv4List";
@@ -123,6 +138,7 @@ AGENT_EXPORT ArchiveStreamService::~ArchiveStreamService()
     m_backupId.clear();
     m_taskID.clear();
     m_dirList.clear();
+    INFOLOG("Destruct finish.");
 }
 
 AGENT_EXPORT \
@@ -161,7 +177,7 @@ AGENT_EXPORT mp_int32 ArchiveStreamService::Connect(const mp_string &busiIp, mp_
     mp_bool connectTooMuch = MP_FALSE;
     mp_int32 iRet = MP_FAILED;
     for (auto perArchieve : archieveIPList) {
-        iRet = m_handler->Connect(perArchieve, busiPort, true);
+        iRet = BuildConnect(perArchieve, busiPort, true);
         if (iRet == MP_ARCHIVE_TOO_MUCH_CONNECTION) {
             connectTooMuch = MP_TRUE;
         } else if (iRet == MP_SUCCESS) {
@@ -181,10 +197,10 @@ AGENT_EXPORT mp_int32 ArchiveStreamService::Connect(const mp_string &busiIp, mp_
             }
 
             Json::Value rspInfo;
-            DBGLOG("Backup Id is %s,task[%s].", m_backupId.c_str(), m_taskID.c_str());
+            DBGLOG("Copy Id is %s,task[%s], ip[%s].", m_backupId.c_str(), m_taskID.c_str(), perArchieve.c_str());
             iRet = SendDppMsg(m_taskID, reqInfo, rspInfo, CMD_ARCHIVE_SSH_CHECK);
             if (iRet != MP_SUCCESS) {
-                ERRLOG("Check ssh info failed, task[%s].", m_taskID.c_str());
+                ERRLOG("Check ssh info failed, ret[%d], task[%s] ip[%s].", iRet, m_taskID.c_str(), perArchieve.c_str());
                 m_handler->Disconnect();
                 continue;
             }
@@ -192,12 +208,30 @@ AGENT_EXPORT mp_int32 ArchiveStreamService::Connect(const mp_string &busiIp, mp_
             m_handler->Disconnect();
             m_busiIp = busiIp;
             m_busiPort = busiPort;
-            DBGLOG("First Connect Success.");
+            DBGLOG("First Connect task[%s] ip[%s] Success.", m_taskID.c_str(), perArchieve.c_str());
             return m_handler->Connect(perArchieve, busiPort + 1, false);
         }
     }
-    ERRLOG("Connect all archieves failed.");
+    ERRLOG("Connect all archieves(%s) failed.", busiIp.c_str());
     return connectTooMuch == MP_TRUE ? MP_ARCHIVE_TOO_MUCH_CONNECTION : iRet;
+}
+
+mp_int32 ArchiveStreamService::BuildConnect(const mp_string &ip, mp_int32 port, bool openSsl)
+{
+    mp_int32 iRet = MP_FAILED;
+    for (int i = 0; i < DEFULAT_SEND_TIMES; i++) {
+        mp_string tIp = ip;
+        mp_int32 iRet = m_handler->Connect(tIp, port, openSsl);
+        if (iRet == MP_SUCCESS) {
+            return MP_SUCCESS;
+        } else if (iRet == MP_ARCHIVE_TOO_MUCH_CONNECTION) {
+            DBGLOG("Connection too much.");
+            return iRet;
+        }
+        m_handler->Disconnect();
+        DBGLOG("Rebuild connect.");
+    }
+    return MP_FAILED;
 }
 
 mp_bool ArchiveStreamService::SplitIpList(const mp_string &busiIp, const mp_int32 &busiPort,
@@ -328,7 +362,8 @@ AGENT_EXPORT mp_int32 ArchiveStreamService::GetFileData(
     mp_int32 iRet = MP_FAILED;
     Json::Value reqInfo;
     int reciveCount = 0;
-    DBGLOG("taskId[%s] GetFileData.   hadnle[%s]", m_taskID.c_str(), getFileReq.taskID.c_str());
+    DBGLOG("taskId[%s] GetFileData. path[%s]  hadnle[%s]",
+        m_taskID.c_str(), getFileReq.filePath, getFileReq.taskID.c_str());
 
     reqInfo[RECOVERYMESSAGE_OBJECT_FSID] = getFileReq.fsID;
     reqInfo[RECOVERYMESSAGE_ARCHIVE_BACK_UP_ID] = m_backupId;
@@ -364,11 +399,9 @@ AGENT_EXPORT mp_int32 ArchiveStreamService::GetFileData(
         ERRLOG("taskId[%s] send dpp message failed.", m_taskID.c_str());
         return iRet;
     } else {
-        DBGLOG("taskId[%s] send dpp message success.  file size:%d", m_taskID.c_str(), getFileRsp.fileSize);
+        DBGLOG("taskId[%s] send dpp message success. file offset[%d], file size:%d",
+            m_taskID.c_str(), getFileRsp.offset, getFileRsp.fileSize);
         getFileRsp.offset += getFileRsp.fileSize;
-        if (mp_uint32(getFileRsp.fileSize) < readSize) {
-            getFileRsp.readEnd = 1;
-        }
     }
 
     return iRet;
@@ -422,11 +455,11 @@ AGENT_EXPORT mp_int32 ArchiveStreamService::UnMountFileSystem(const mp_string &m
     return MP_SUCCESS;
 }
 
-AGENT_EXPORT mp_int32 ArchiveStreamService::PrepareRecovery(mp_string &metaFileDir, const std::string& cacheRepoName)
+AGENT_EXPORT mp_int32 ArchiveStreamService::PrepareRecovery(mp_string &metaFileDir,
+    mp_string &parentDir, const std::string& cacheRepoName)
 {
     mp_int32 iRet = MP_FAILED;
     Json::Value reqInfo;
-    int reciveCount = 0;
 
     reqInfo[RECOVERYMESSAGE_ARCHIVE_BACK_UP_ID] = m_backupId;
     reqInfo[MANAGECMD_KEY_TASKID] = m_taskID;
@@ -447,6 +480,7 @@ AGENT_EXPORT mp_int32 ArchiveStreamService::PrepareRecovery(mp_string &metaFileD
     }
 
     GET_JSON_STRING_OPTION(rspInfo, RECOVERYMESSAGE_META_FILE_DIR, metaFileDir);
+    GET_JSON_STRING_OPTION(rspInfo, RECOVERYMESSAGE_PARENT_DIR, parentDir);
     CHECK_FAIL_EX(CheckParamStringEnd(metaFileDir, 0, ARCHIVE_STREAM_FORMAT_STRING));
     DBGLOG("taskId[%s] send dpp message success , m_mountPath:%s .", m_taskID.c_str(), m_mountPath.c_str());
 
@@ -512,7 +546,6 @@ mp_int32 ArchiveStreamService::CheckIPLinkStatus(
 {
     mp_int32 iRet = MP_FAILED;
     Json::Value reqInfo;
-
     reqInfo[RECOVERYMESSAGE_ARCHIVE_BACK_UP_ID] = m_backupId;
     reqInfo[MANAGECMD_KEY_TASKID] = m_taskID;
     std::vector<mp_string> ipv4List;
@@ -522,11 +555,13 @@ mp_int32 ArchiveStreamService::CheckIPLinkStatus(
         ERRLOG("Get Host ip  failed");
         return iRet;
     }
-
+    mp_string strDeployType;
+    iRet = CConfigXmlParser::GetInstance().GetValueString(CFG_SYSTEM_SECTION, CFG_DEPLOY_TYPE, strDeployType);
+    INFOLOG("CheckIPLinkStatus iRet is %d, strDeployType is %s", iRet, strDeployType.c_str());
     mp_bool isDorado = false;
     mp_string doradoLunIP = "";
     iRet = CIP::CheckIsDoradoEnvironment(isDorado);
-    if (isDorado && iRet == MP_SUCCESS) {
+    if (isDorado && iRet == MP_SUCCESS && strDeployType != HOST_ENV_DEPLOYTYPE_E6000) {
         GetDoradoIp(hostIpv4List);
         std::vector<mp_string> ipInfo;
         CMpString::StrSplit(ipInfo, hostIpv4List.front(), '.');

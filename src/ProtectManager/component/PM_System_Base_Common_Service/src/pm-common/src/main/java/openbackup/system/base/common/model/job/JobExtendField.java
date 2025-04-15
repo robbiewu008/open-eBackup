@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.common.model.job;
 
-import openbackup.system.base.query.PageQueryConfig;
-
 import lombok.Data;
+import openbackup.system.base.query.PageQueryConfig;
 
 /**
  * 功能描述

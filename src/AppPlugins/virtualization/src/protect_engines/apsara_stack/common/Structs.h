@@ -52,13 +52,15 @@ struct CommonApsaraExtendInfo {
     std::string m_accessKeyId;
     std::string m_accessKeySecret;
     std::string m_proxy;
+    std::string mResourceGroupId;
 
     BEGIN_SERIAL_MEMEBER
-    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_organizationId, organizationID)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_organizationId, organizationId)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_regionId, regionId)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_accessKeyId, AccessKeyId)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_accessKeySecret, AccessKeySecret)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_proxy, Proxy)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mResourceGroupId, resourceGroupId)
     END_SERIAL_MEMEBER
 };
 
@@ -155,6 +157,7 @@ struct Instance {
     std::string m_resourceGroupId;
     std::string m_resourceGroupName;
     std::string m_instanceType;
+    int32_t mResourceGroup;
     NetworkInterfaces m_networkInterfaces;
 
     BEGIN_SERIAL_MEMEBER
@@ -171,6 +174,7 @@ struct Instance {
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_resourceGroupId, ResourceGroupId)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_resourceGroupName, ResourceGroupName)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_instanceType, InstanceType)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mResourceGroup, ResourceGroup)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_networkInterfaces, NetworkInterfaces)
     END_SERIAL_MEMEBER
 };
@@ -317,10 +321,14 @@ struct ResourceSetResponse {
 struct CreateSnapshotGroupResponse {
     std::string m_requestId;
     std::string m_snapshotGroupId;
+    std::string m_code;
+    std::string m_message;
 
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_requestId, RequestId)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_snapshotGroupId, SnapshotGroupId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_code, Code)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(m_message, Message)
     END_SERIAL_MEMEBER
 };
 
@@ -474,6 +482,76 @@ struct APSCreateDiskResponse {
     BEGIN_SERIAL_MEMEBER
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_requestId, RequestId)
     SERIAL_MEMBER_TO_SPECIFIED_NAME(m_diskId, DiskId)
+    END_SERIAL_MEMEBER
+};
+
+struct ListResourcePara {
+    std::string mRegionId;
+    std::string mRegionName;
+    std::string mResourceType;
+    std::string mOrganizationId;
+    std::string mResourceGroupId;
+    std::string mInstanceId;
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mRegionId, regionId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mRegionName, regionName)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mResourceType, resourceType)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mOrganizationId, organizationId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mResourceGroupId, resourceSetId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mInstanceId, uuid)
+    END_SERIAL_MEMEBER
+};
+
+struct Organization {
+    std::string mUuid;
+    int32_t mId;
+    std::string mName;
+    std::string mSupportRegions;
+    std::string mLevel;
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mUuid, uuid)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mId, id)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mName, name)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mSupportRegions, supportRegions)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mLevel, level)
+    END_SERIAL_MEMEBER
+};
+
+struct DesOrganizationResponse {
+    std::string mCode;
+    int32_t mCost;
+    Organization mData;
+    std::string mMessage;
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mCode, code)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mCost, cost)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mData, data)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mMessage, message)
+    END_SERIAL_MEMEBER
+};
+
+struct InstanceResource {
+    std::string mRegionId;
+    std::string mPregionName;
+    std::string nZoneId;
+    std::string mStatus;
+    int32_t mResourceSetId;
+    std::string mResourceSetName;
+    std::string mOsType;
+    std::string mVmIp;
+
+    BEGIN_SERIAL_MEMEBER
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mRegionId, regionId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mPregionName, regionName)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(nZoneId, zoneId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mStatus, status)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mResourceSetId, resourceSetId)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mResourceSetName, resourceSetName)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mOsType, os_type)
+    SERIAL_MEMBER_TO_SPECIFIED_NAME(mVmIp, vm_ip)
     END_SERIAL_MEMEBER
 };
  

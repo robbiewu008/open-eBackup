@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
@@ -23,7 +23,7 @@ import {
   GlobalService,
   I18NService
 } from 'app/shared/services';
-import { assign, find, remove } from 'lodash';
+import { assign, find, includes, remove } from 'lodash';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -92,6 +92,7 @@ export class SpecialBaseInfoComponent implements OnInit, OnDestroy {
     switch (this.sourceType) {
       case DataMap.Resource_Type.ApsaraStack.value:
       case DataMap.Resource_Type.cNwareCluster.value:
+      case DataMap.Resource_Type.nutanixCluster.value:
       case DataMap.Resource_Type.FusionComputeCluster.value:
       case DataMap.Resource_Type.FusionComputeCNA.value:
       case DataMap.Resource_Type.Project.value:
@@ -106,17 +107,35 @@ export class SpecialBaseInfoComponent implements OnInit, OnDestroy {
         break;
       }
       case DataMap.Resource_Type.cNwareHost.value:
+      case DataMap.Resource_Type.nutanixHost.value:
         this.formItems[0][0].content = this.source.name;
         this.formItems[0][1].content =
           this.source?.environment?.name || this.source?.parentName;
         this.formItems[0][1].label = this.i18n.get('common_vm_label');
-        this.formItems[0][2].content = this.source?.status;
+        if (this.sourceType === DataMap.Resource_Type.nutanixHost.value) {
+          this.formItems[0][2].content = this.source?.extendInfo?.status;
+        } else {
+          this.formItems[0][2].content = this.source?.status;
+        }
         break;
       case DataMap.Resource_Type.hyperVHost.value:
         this.formItems[0][0].content = this.source.name;
         this.formItems[0][1].content = this.source?.path;
         this.formItems[0][1].label = this.i18n.get('common_path_label');
-        this.formItems[0][2].content = this.source?.linkStatus ?? '0';
+        this.formItems[0][2].content =
+          this.source?.linkStatus ??
+          includes(
+            [
+              DataMap.hypervHostStatus.Up.value,
+              DataMap.hypervHostStatus.Ok.value
+            ],
+            this.source.extendInfo.status
+          )
+            ? '1'
+            : '0';
+        break;
+      case DataMap.Resource_Type.nutanixVm.value:
+        this.formItems[0][2].content = this.source?.extendInfo?.status;
         break;
     }
     this.formItems[1][0].content = this.source.protection_status;

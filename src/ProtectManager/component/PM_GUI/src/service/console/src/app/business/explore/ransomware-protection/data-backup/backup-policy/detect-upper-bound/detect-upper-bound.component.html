@@ -18,15 +18,12 @@
                 {{'explore_upper_bound_label' | i18n}}
             </span>
             <div class="sensitive-slider">
-                <lv-slider formControlName="upper_bound" [lvPoints]="points" [lvTrackVisible]="false" [lvMin]="1"
+                <lv-slider formControlName="upper_bound" [lvPoints]="points" [lvTrackVisible]="true" [lvMin]="1"
                     [lvMax]="3" [lvStep]="1" [lvTooltip]="false"></lv-slider>
             </div>
-            <lv-group [lvColumns]='["16px", "auto"]' lvRowGutter="4px" class="upper-bound-tip">
-                <i lv-icon="lv-icon-status-info" lvColorState='true'></i>
-                <span class="aui-text-help">
-                    {{'explore_upper_bound_tip_label' | i18n}}
-                </span>
-            </lv-group>
+            <lv-alert lvType="info" [lvClosable]="false">
+                {{'explore_upper_bound_tip_label' | i18n}}
+            </lv-alert>
         </lv-form-control>
     </lv-form-item>
 </lv-form>

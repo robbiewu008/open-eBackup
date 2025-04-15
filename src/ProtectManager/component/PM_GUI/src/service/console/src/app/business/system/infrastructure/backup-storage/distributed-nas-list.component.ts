@@ -1,22 +1,25 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  EventEmitter,
+  Input,
   OnDestroy,
   OnInit,
+  Output,
   TemplateRef,
   ViewChild
 } from '@angular/core';
@@ -26,6 +29,7 @@ import {
   CookieService,
   DataMap,
   DataMapService,
+  DefaultRoles,
   getAccessibleViewList,
   I18NService,
   MODAL_COMMON,
@@ -48,10 +52,14 @@ import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service
 import {
   assign,
   cloneDeep,
+  each,
+  filter,
+  find,
   first,
   isEmpty,
   isUndefined,
   map,
+  remove,
   size
 } from 'lodash';
 import { Subject, Subscription } from 'rxjs';
@@ -66,6 +74,12 @@ import { ClusterDetailComponent } from './distributed-nas-detail/cluster-detail.
 })
 export class DistributedNasListComponent
   implements OnInit, AfterViewInit, OnDestroy {
+  @Input() isRbac = false;
+  @Input() data;
+  @Input() resourceSetMap;
+  @Input() isGeneral = false;
+  @Input() isDetail = false;
+  @Output() rbacSelectChange = new EventEmitter<any>();
   optsConfig;
   selectionData = [];
   tableData: TableData;
@@ -74,6 +88,13 @@ export class DistributedNasListComponent
   tableConfig: TableConfig;
   unitconst = CAPACITY_UNIT;
   activeIndex: string = 'unitGroup';
+  dataMap = DataMap;
+  specialDefaultRoleIdList = [
+    DefaultRoles.rdAdmin.roleId,
+    DefaultRoles.drAdmin.roleId,
+    DefaultRoles.audit.roleId,
+    DefaultRoles.sysAdmin.roleId
+  ];
 
   isDistributed =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.e6000.value;
@@ -108,7 +129,34 @@ export class DistributedNasListComponent
   }
 
   ngAfterViewInit() {
-    this.dataTable.fetchData();
+    if (
+      !this.isGeneral &&
+      !(
+        this.isDetail &&
+        isEmpty(
+          this.resourceSetMap.get(
+            DataMap.storagePoolBackupStorageType.group.value
+          )
+        )
+      )
+    ) {
+      this.dataTable.fetchData();
+    }
+    if (
+      this.isRbac &&
+      this.resourceSetMap.has(DataMap.storagePoolBackupStorageType.group.value)
+    ) {
+      const tmpData = this.resourceSetMap.get(
+        DataMap.storagePoolBackupStorageType.group.value
+      );
+      this.dataTable.setSelections(tmpData);
+      if (this.isGeneral) {
+        this.tableData = {
+          data: tmpData,
+          total: size(tmpData)
+        };
+      }
+    }
   }
 
   jumpToStorageUnits() {
@@ -162,16 +210,18 @@ export class DistributedNasListComponent
           type: 'search',
           filterMode: 'contains'
         },
-        cellRender: {
-          type: 'text',
-          config: {
-            id: 'outerClosable',
-            iconPos: 'flow-text',
-            click: data => {
-              this.getDetail(data);
+        cellRender: this.isRbac
+          ? null
+          : {
+              type: 'text',
+              config: {
+                id: 'outerClosable',
+                iconPos: 'flow-text',
+                click: data => {
+                  this.getDetail(data);
+                }
+              }
             }
-          }
-        }
       },
       {
         key: 'description',
@@ -251,29 +301,47 @@ export class DistributedNasListComponent
       cols.splice(3, 1);
     }
 
+    if (this.isRbac) {
+      remove(cols, { key: 'operation' });
+    }
+
     this.tableConfig = {
       table: {
+        async: !this.isRbac,
         compareWith: 'uuid',
         columns: cols,
         scrollFixed: true,
-        autoPolling: CommonConsts.TIME_INTERVAL,
-        rows: {
-          selectionMode: 'multiple',
-          selectionTrigger: 'selector',
-          showSelector: true
-        },
+        autoPolling: this.isRbac ? null : CommonConsts.TIME_INTERVAL,
+        rows:
+          this.isGeneral || this.isDetail
+            ? null
+            : {
+                selectionMode: 'multiple',
+                selectionTrigger: 'selector',
+                showSelector: true
+              },
         colDisplayControl: false,
         fetchData: (filter: Filters, args) => {
           this.getData(filter, args);
         },
         selectionChange: (renderSelection, selection) => {
           this.selectionData = selection;
+          if (this.isRbac) {
+            this.rbacSelectionChange(
+              selection,
+              DataMap.storagePoolBackupStorageType.group.value
+            );
+          }
         },
         trackByFn: (index, item) => {
           return item.uuid;
         }
       }
     };
+  }
+
+  rbacSelectionChange(e, type) {
+    this.resourceSetMap.set(type, e);
   }
 
   onChange() {
@@ -306,10 +374,38 @@ export class DistributedNasListComponent
     this.nasDistributionStoragesApiService
       .ListNasDistributionStorages(params)
       .subscribe(res => {
+        // 接口暂时没法直接过滤，所以一次性获取后前端过滤
+        if (this.isDetail) {
+          res.records = filter(res.records, item => {
+            return !!find(
+              this.resourceSetMap.get(
+                DataMap.storagePoolBackupStorageType.group.value
+              ),
+              { uuid: item.uuid }
+            );
+          });
+        }
         this.tableData = {
           data: res.records || [],
-          total: res.totalCount
+          total: this.isDetail ? size(res.records) : res.totalCount
         };
+        // rbac可能不会重新选取，那么所选项里面的数据需要更新，因为那个接口返回值不够多
+        if (
+          this.isRbac &&
+          this.resourceSetMap.has(
+            DataMap.storagePoolBackupStorageType.group.value
+          )
+        ) {
+          each(
+            this.resourceSetMap.get(
+              DataMap.storagePoolBackupStorageType.group.value
+            ),
+            item => {
+              const tmpData = find(res.records, { uuid: item.uuid });
+              assign(item, tmpData);
+            }
+          );
+        }
         this.cdr.detectChanges();
       });
   }

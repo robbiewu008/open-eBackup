@@ -19,7 +19,6 @@ import socket
 import subprocess
 import time
 
-import pexpect
 import pymysql
 
 from common.cleaner import clear
@@ -32,6 +31,7 @@ from mysql.src.common.constant import ExecCmdResult, MySQLStrConstant, DELETING_
     DEPLOY_OPERATING_SYSTEMS, MysqlExecSqlError, SystemConstant
 from mysql.src.common.constant import FileBackToolRET
 from mysql.src.common.parse_parafile import ReadFile
+from mysql.src.utils.common_func import exec_cmd_spawn
 
 
 def exec_sql(exec_sql_parse_param, data_path=''):
@@ -39,7 +39,6 @@ def exec_sql(exec_sql_parse_param, data_path=''):
     passwd = get_passwd(exec_sql_parse_param, data_path)
     if not passwd:
         return False, "get passwd failed"
-    user = safe_get_user(exec_sql_parse_param, data_path)
     try:
         if exec_sql_parse_param.database_name:
             mysql_connection = pymysql.connect(host=exec_sql_parse_param.host_ip,
@@ -75,44 +74,6 @@ def get_passwd(exec_sql_parse_param, data_path=''):
     if exec_sql_parse_param.passwd:
         return exec_sql_parse_param.passwd
     return safe_get_pwd(exec_sql_parse_param.passwd_env, data_path)
-
-
-def exec_sql_without_binlog(exec_sql_parse_param, data_path=''):
-    """连上数据库,执行一条sql命令,返回查询结果"""
-    passwd = safe_get_pwd(exec_sql_parse_param.passwd_env, data_path)
-    if not passwd:
-        return False, "get passwd failed"
-    try:
-        if exec_sql_parse_param.database_name:
-            mysql_connection = pymysql.connect(host=exec_sql_parse_param.host_ip,
-                                               port=int(exec_sql_parse_param.port),
-                                               user=exec_sql_parse_param.user,
-                                               password=passwd,
-                                               database=exec_sql_parse_param.database_name,
-                                               charset=exec_sql_parse_param.charset)
-        else:
-            mysql_connection = pymysql.connect(host=exec_sql_parse_param.host_ip,
-                                               port=int(exec_sql_parse_param.port),
-                                               user=exec_sql_parse_param.user,
-                                               password=passwd,
-                                               charset=exec_sql_parse_param.charset)
-    except pymysql.Error as except_str:
-        log.exception(except_str)
-        log.error(f"Connect MySQL service failed!")
-        if MysqlExecSqlError.ERROR_ACCESS_DENINED in str(except_str):
-            return False, MysqlExecSqlError.ERROR_ACCESS_DENINED
-        return False, "raise except"
-    finally:
-        clear(passwd)
-    try:
-        cursor = mysql_connection.cursor()
-        cursor.execute("set sql_log_bin=0")
-        cursor.execute(exec_sql_parse_param.sql_str)
-        results = cursor.fetchall()
-        cursor.execute("set sql_log_bin=1")
-    finally:
-        mysql_connection.close()
-    return True, results
 
 
 def mysql_get_status_output(cmd, passwd=""):
@@ -157,50 +118,15 @@ def exec_cmd_nowait(cmd):
 
 
 def retry_cmd_list(passwd_env, cmds: [str]):
-    for cmd in cmds:
-        ret, output = exec_cmd_spawn(cmd, passwd_env)
-        if ret == int(ExecCmdResult.SUCCESS):
-            return True, output
-    return False, ""
-
-
-def exec_cmd_spawn(cmd, passwd_env, data_path=''):
     try:
-        child = pexpect.spawn(cmd, timeout=None)
-    except Exception as exception_str:
-        log.exception(exception_str)
-        log.error(f"Spawn except an exception.")
-        return 1, "cmd error"
-    try:
-        ret_code = child.expect(["Enter password:", "Failed to connect to MySQL server",
-                                 pexpect.TIMEOUT, pexpect.EOF])
-    except Exception as exception_str:
-        log.exception(exception_str)
-        # 此处不打印异常，异常会显示用户名
-        log.error(f"Exec cmd except an exception.")
-        child.close()
-        return 1, "cmd error"
-    if ret_code != 0:
-        log.error(f"Exec cmd failed.")
-        child.close()
-        return 1, "cmd error"
-    try:
-        passwd = safe_get_pwd(passwd_env, data_path)
-        if not passwd:
-            child.close()
-            return 1, "get passwd failed"
-        child.sendline(passwd)
+        passwd = safe_get_environ(passwd_env)
+        for cmd in cmds:
+            ret, output = exec_cmd_spawn(cmd, passwd)
+            if ret == int(ExecCmdResult.SUCCESS):
+                return True, output
+        return False, ""
     finally:
         clear(passwd)
-    try:
-        out_str = child.read()
-    except Exception as exception_str:
-        log.exception(exception_str)
-        log.error(f"Exec cmd except an exception.")
-        child.close()
-        return 1, "cmd error"
-    child.close()
-    return child.exitstatus, str(out_str)
 
 
 def exec_rc_tool_cmd(cmd, in_path, out_path):
@@ -238,20 +164,6 @@ def safe_get_environ(key):
         return ""
     value = value_dict.get(key)
     return value if isinstance(value, str) else ""
-
-
-def safe_get_user(exec_sql_parse_param, data_path):
-    if not data_path:
-        return exec_sql_parse_param.user
-    connect_param_path = os.path.join(data_path, "connect_param.json")
-    if not os.path.exists(connect_param_path):
-        return exec_sql_parse_param.user
-    try:
-        connect_param = ReadFile.read_param_file(connect_param_path)
-    except Exception as exception_str:
-        log.debug(f"connect param not exists:{exception_str}")
-        return exec_sql_parse_param.user
-    return connect_param.get("user") if connect_param else ""
 
 
 def safe_get_pwd(key, data_path):
@@ -380,18 +292,6 @@ def get_config_value_from_job_param(job_param, key: str, default_value=""):
     except Exception as e:
         log.info(f"parse error :{e}")
         return default_value
-
-
-def validate_my_cnf(my_cnf_path):
-    if not os.path.exists(my_cnf_path):
-        return False
-    if os.path.isdir(my_cnf_path):
-        return False
-    with open(my_cnf_path, 'r', encoding='utf-8') as file_read:
-        for line in file_read.readlines():
-            if "[mysqld]" in line:
-                return True
-    return False
 
 
 def is_certificate_file(filename):

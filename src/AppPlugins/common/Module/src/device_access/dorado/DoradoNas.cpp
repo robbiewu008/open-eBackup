@@ -47,21 +47,24 @@ namespace Module {
         const std::string DORADO_MGRIP = "dorado.mgrip";
     }
 
-    DoradoNas::~DoradoNas() {
+    DoradoNas::~DoradoNas()
+    {
         if (MountInfo.autoUmount && !MountInfo.mountPoint.empty()) {
             HCP_Log(INFO, DORADO_MODULE_NAME) << "Auto umount " << MountInfo.mountPoint << HCPENDLOG;
             UnMount();
         }
     }
 
-    int DoradoNas::VerifyDoradoIP(std::string doradoIP) {
+    int DoradoNas::VerifyDoradoIP(std::string doradoIP)
+    {
         SetDoradoIP(doradoIP);
         SetRetryAttr(1);
         DeviceDetails info;
         return Query(info);
     }
 
-    int DoradoNas::QueryFileSystem(DeviceDetails &info) {
+    int DoradoNas::QueryFileSystem(DeviceDetails &info)
+    {
         int ret = QueryFileSystem(ResourceName, info);
         if (ret != SUCCESS) {
             return ret;
@@ -70,13 +73,14 @@ namespace Module {
         return SUCCESS;
     }
 
-    int DoradoNas::GetDeviceInfo(const Json::Value &data, DeviceDetails &info) {
+    int DoradoNas::GetDeviceInfo(const Json::Value &data, DeviceDetails &info)
+    {
         info.deviceId = std::atoi(data[0]["ID"].asString().c_str());
         info.deviceName = data[0]["NAME"].asString();
         info.Compress = (data[0]["ENABLECOMPRESSION"].asString() == "true") ? true : false;
         info.Dedup = (data[0]["ENABLEDEDUP"].asString() == "true") ? true : false;
         int secStyle = std::atoi(data[0]["securityStyle"].asString().c_str());
-        if (secStyle < static_cast<int>(NATIVE) || secStyle > static_cast<int>(UNIX)) {
+        if (secStyle < static_cast<int>(MIXED) || secStyle > static_cast<int>(UNIX)) {
             HCP_Log(ERR, DORADO_MODULE_NAME) << "Not found filesystem SecurityStyle, DeviceName: " <<
                                              info.deviceName << "SecurityStyle: " << secStyle << HCPENDLOG;
             return FAILED;
@@ -88,7 +92,8 @@ namespace Module {
         return SUCCESS;
     }
 
-    int DoradoNas::QueryFileSystem(std::string fileName, DeviceDetails &info) {
+    int DoradoNas::QueryFileSystem(std::string fileName, DeviceDetails &info)
+    {
         HttpRequest req;
         EncodeUrlFileName(fileName);
         req.method = "GET";
@@ -134,7 +139,8 @@ namespace Module {
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    void DoradoNas::EncodeUrlFileName(std::string &fileName) {
+    void DoradoNas::EncodeUrlFileName(std::string &fileName)
+    {
         CURL *curlHandle = curl_easy_init();
         char *output = curl_easy_escape(curlHandle, fileName.c_str(), fileName.size());
         if (output != nullptr) {
@@ -147,7 +153,8 @@ namespace Module {
         }
     }
 
-    int DoradoNas::QueryFileSystemByID(const std::string &fileName, const std::string &fsID, DeviceDetails &info) {
+    int DoradoNas::QueryFileSystemByID(const std::string &fileName, const std::string &fsID, DeviceDetails &info)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "filesystem?filter=NAME::" + fileName;
@@ -187,7 +194,8 @@ namespace Module {
         return FAILED;
     }
 
-    int DoradoNas::CreateFileSystem(unsigned long long size, SecurityStyle secStyle) {
+    int DoradoNas::CreateFileSystem(unsigned long long size, SecurityStyle secStyle)
+    {
         DeviceDetails info;
         int iRet = QueryFileSystem(info);
         if (iRet == SUCCESS) {
@@ -221,8 +229,8 @@ namespace Module {
         jsonValue["PARENTID"] = DoradoPoolId;
         jsonValue["ENABLEDEDUP"] = Dedup;
         jsonValue["securityStyle"] = secStyle;
-        std::string cmpress = Compress ? "1" : "0";
-        jsonValue["COMPRESSION"] = cmpress;
+        jsonValue["ENABLECOMPRESSION"] = Compress ? "1" : "0";
+        jsonValue["COMPRESSION"] = Compress ? "1" : "0";
         jsonValue["CAPACITY"] = (Json::UInt64)(size * KB * TWO);
         jsonValue["SECTORSIZE"] = SECTORSIZE; // Only 32 KB is supported. The default value is 32 KB.
         jsonValue["ISSHOWSNAPDIR"] = isShowSnapDir;
@@ -239,19 +247,23 @@ namespace Module {
         return errorCode;
     }
 
-    int DoradoNas::Create(unsigned long long size) {
+    int DoradoNas::Create(unsigned long long size)
+    {
         return CreateFileSystem(size, UNIX);
     }
 
-    int DoradoNas::Query(DeviceDetails &info) {
+    int DoradoNas::Query(DeviceDetails &info)
+    {
         return QueryFileSystem(info);
     }
 
-    int DoradoNas::Bind(HostInfo &host, const std::string &shareId) {
+    int DoradoNas::Bind(HostInfo &host, const std::string &shareId)
+    {
         return FAILED;
     }
 
-    int DoradoNas::UnBind(HostInfo host, const std::string &shareId) {
+    int DoradoNas::UnBind(HostInfo host, const std::string &shareId)
+    {
         HCP_Log(ERR, DORADO_MODULE_NAME) << "unsupport operation Create Clone for file system!" << HCPENDLOG;
         return FAILED;
     }
@@ -265,12 +277,14 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.create link clone volume with special snapshot
 */
-    std::unique_ptr<ControlDevice> DoradoNas::CreateClone(std::string volumeName, int &errorCode) {
+    std::unique_ptr<ControlDevice> DoradoNas::CreateClone(std::string volumeName, int &errorCode)
+    {
         return nullptr;
     }
 
 
-    int DoradoNas::CreateCloneFileSystem(std::string volumeName, std::string &fsid) {
+    int DoradoNas::CreateCloneFileSystem(std::string volumeName, std::string &fsid)
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = "filesystem";
@@ -306,11 +320,13 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.delete volume with name
 */
-    int DoradoNas::Delete() {
+    int DoradoNas::Delete()
+    {
         return DeleteFileSystem();
     }
 
-    int DoradoNas::DeleteFileSystem() {
+    int DoradoNas::DeleteFileSystem()
+    {
         HttpRequest req;
         req.method = "DELETE";
         req.url = "filesystem/" + fileSystemId;
@@ -326,7 +342,8 @@ Description:
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNas::QuerySnapshot(std::string SnapshotName, std::string &id) {
+    int DoradoNas::QuerySnapshot(std::string SnapshotName, std::string &id)
+    {
         int ret;
         DeviceDetails info;
         HttpRequest req;
@@ -343,7 +360,7 @@ Description:
         std::string errorDes;
         int errorCode = FAILED;
         Json::Value data;
-        int iRet = SendRequest(req, data, errorDes, errorCode);
+        int iRet = SendRequest(req, data, errorDes, errorCode, true);
         if (iRet == SUCCESS && data.isArray() && data.size() > 0 && data[0].size() > 0) {
             id = data[0]["ID"].asString();
             return SUCCESS;
@@ -351,7 +368,8 @@ Description:
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNas::DeleteSnapshot(std::string SnapshotName, std::string id) {
+    int DoradoNas::DeleteSnapshot(std::string SnapshotName, std::string id)
+    {
         HttpRequest req;
         req.method = "DELETE";
         req.url = "FSSNAPSHOT/" + id;
@@ -367,7 +385,8 @@ Description:
     }
 
     int DoradoNas::DeleteSnapshotWithVstoreId(const std::string &SnapshotName, const std::string &id,
-                                                   const std::string &vstoreId) {
+        const std::string &vstoreId)
+    {
         HttpRequest req;
         Json::Value jsonValue;
         Json::FastWriter jsonWriter;
@@ -396,7 +415,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.create snapshot for special volume
 */
-    std::unique_ptr<ControlDevice> DoradoNas::CreateSnapshot(std::string SnapshotName, int &errorCode) {
+    std::unique_ptr<ControlDevice> DoradoNas::CreateSnapshot(std::string SnapshotName, int &errorCode)
+    {
         std::string id;
         ControlDeviceInfo deviceInfo;
         deviceInfo.deviceName = SnapshotName;
@@ -441,7 +461,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.query all iscsi host,need Manual open on DeviceManager.
 */
-    int DoradoNas::QueryServiceHost(std::vector<std::string> &ipList, IP_TYPE ipType) {
+    int DoradoNas::QueryServiceHost(std::vector<std::string> &ipList, IP_TYPE ipType)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query nfs host " << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -458,7 +479,8 @@ Description:
         return errorCode;
     }
 
-    bool DoradoNas::HandleHostData(Json::Value oneNode, IP_TYPE ipType, std::vector<LogicPortInfo> &logicPorts) {
+    bool DoradoNas::HandleHostData(Json::Value oneNode, IP_TYPE ipType, std::vector<LogicPortInfo> &logicPorts)
+    {
         std::string proto = oneNode["SUPPORTPROTOCOL"].asString();
         if (proto != SUPPORTPROTOCOL_NFS_CIFS && proto != SUPPORTPROTOCOL_NFS
             && proto != SUPPORTPROTOCOL_CIFS) {
@@ -497,7 +519,8 @@ Description:
         return true;
     }
 
-    int DoradoNas::QueryNasShareClient(NasSharedInfo &info, std::string url, std::string type) {
+    int DoradoNas::QueryNasShareClient(NasSharedInfo &info, std::string url, std::string type)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = url;
@@ -539,7 +562,8 @@ Description:
         return SUCCESS;
     }
 
-    int DoradoNas::QueryNasShare(std::vector<NasSharedInfo> &infos, std::string url, std::string type) {
+    int DoradoNas::QueryNasShare(std::vector<NasSharedInfo> &infos, std::string url, std::string type)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = url;
@@ -564,7 +588,8 @@ Description:
         return SUCCESS;
     }
 
-    int DoradoNas::QueryServiceHost(std::vector<LogicPortInfo> &logicPorts, IP_TYPE ipType) {
+    int DoradoNas::QueryServiceHost(std::vector<LogicPortInfo> &logicPorts, IP_TYPE ipType)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query nfs host." << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -588,8 +613,8 @@ Description:
         }
     }
 
-    int
-    DoradoNas::GetLifPort(std::vector<std::string> &ownCtlIP, std::vector<std::string> &otherCtlIP, IP_TYPE ipType) {
+    int DoradoNas::GetLifPort(std::vector<std::string> &ownCtlIP, std::vector<std::string> &otherCtlIP, IP_TYPE ipType)
+    {
         HCP_Logger_noid(INFO, DORADO_MODULE_NAME) << "Enter..." << HCPENDLOG;
         DeviceDetails info = {};
         if (QueryFileSystem(info) != SUCCESS) {
@@ -613,7 +638,8 @@ Description:
     }
 
     int DoradoNas::QueryServiceIpController(
-            std::vector<std::pair<std::string, std::string>> &ipControllerList, IP_TYPE ipType) {
+        std::vector<std::pair<std::string, std::string>> &ipControllerList, IP_TYPE ipType)
+    {
         Json::Value data;
         std::vector<std::string> ipList;
         int ret = QueryLIFPortList(ipList, data);
@@ -632,8 +658,9 @@ Description:
     }
 
     void DoradoNas::GetLogicPortAndControllerAction(
-            const Json::Value &oneNode, std::vector<std::pair<std::string, std::string>> &ipControllerList,
-            IP_TYPE ipType) {
+        const Json::Value &oneNode, std::vector<std::pair<std::string, std::string>> &ipControllerList,
+        IP_TYPE ipType)
+    {
         std::string proto = oneNode["SUPPORTPROTOCOL"].asString();
         std::string role = oneNode["ROLE"].asString();
         std::string RunningStatus = oneNode["RUNNINGSTATUS"].asString();
@@ -654,7 +681,8 @@ Description:
     }
 
     int DoradoNas::GetLogicPortAndController(
-            const Json::Value &data, std::vector<std::pair<std::string, std::string>> &ipControllerList, IP_TYPE ipType) {
+        const Json::Value &data, std::vector<std::pair<std::string, std::string>> &ipControllerList, IP_TYPE ipType)
+    {
         if (!data.isArray()) {
             return FAILED;
         }
@@ -682,7 +710,8 @@ return : Success.SUCCESS, failed:FAILED or HTTP ERROR CODE.
 Description:
              1.query all iscsi host,need Manual open on DeviceManager.
 */
-    int DoradoNas::ExtendSize(unsigned long long size) {
+    int DoradoNas::ExtendSize(unsigned long long size)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start change file system size!" << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -702,7 +731,8 @@ Description:
         return errorCode;
     }
 
-    int DoradoNas::Revert(std::string SnapshotName) {
+    int DoradoNas::Revert(std::string SnapshotName)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start Revert" << HCPENDLOG;
         HttpRequest req;
         req.method = "PUT";
@@ -723,8 +753,9 @@ Description:
         return errorCode;
     }
 
-    int
-    DoradoNas::QueryRevertInfo(const std::string &resourceName, std::string &rollbackRate, std::string &rollbackStatus) {
+    int DoradoNas::QueryRevertInfo(const std::string &resourceName,
+        std::string &rollbackRate, std::string &rollbackStatus)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Query Revert" << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -743,8 +774,9 @@ Description:
         return errorCode;
     }
 
-    int DoradoNas::QueryRevertSnapshotId(
-            const std::string &resourceName, std::string &snapshotId, std::string &rollbackRate, std::string &rollbackStatus) {
+    int DoradoNas::QueryRevertSnapshotId(const std::string &resourceName,
+        std::string &snapshotId, std::string &rollbackRate, std::string &rollbackStatus)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Query revert SanpshotId" << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -766,8 +798,9 @@ Description:
     }
 
     int DoradoNas::QuerySnapshotRollBackStatus(const std::string &fileSystemId, std::string &snapshotId,
-                                                    std::string &rollbackRate, std::string &rollbackStatus,
-                                                    std::string &endTime) {
+        std::string &rollbackRate, std::string &rollbackStatus,
+        std::string &endTime)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Query Snapshot rollback status by SnapshotId" << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -790,8 +823,9 @@ Description:
     }
 
     int DoradoNas::QuerySnapshotRollBackStatusV2(const std::string &fileSystemId, std::string &snapshotId,
-                                                    std::string &rollbackRate, std::string &rollbackStatus,
-                                                    std::string &endTime) {
+        std::string &rollbackRate, std::string &rollbackStatus,
+        std::string &endTime)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Query Snapshot rollback status by SnapshotId" << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -816,7 +850,8 @@ Description:
     }
 
     int DoradoNas::QuerySnapshotRollBackStatusV3(const std::string &fileSystemId, const std::string &snapshotName,
-                                                    std::string &rollbackStatus, std::string &endTime) {
+        std::string &rollbackStatus, std::string &endTime)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Query Snapshot rollback status by SnapshotName" << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -825,7 +860,7 @@ Description:
         std::string errorDes;
         int errorCode = FAILED;
         int iRet = SendRequest(req, data, errorDes, errorCode);
-        if(iRet == SUCCESS && errorCode == SUCCESS) {
+        if (iRet == SUCCESS && errorCode == SUCCESS) {
             if (data.isObject() && data.isMember("rollbackTargetObjID") && data.isMember("rollbackStatus")) {
                 rollbackStatus = data["rollbackStatus"].asString();
                 endTime = data["rollbackEndtime"].asString();
@@ -856,7 +891,8 @@ Description:
         return errorCode;
     }
 
-    int DoradoNas::QuerySnapshotList(std::vector<FSSnapshotInfo> &snapshots) {
+    int DoradoNas::QuerySnapshotList(std::vector<FSSnapshotInfo> &snapshots)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query snapshot list" << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -878,7 +914,8 @@ Description:
         return errorCode;
     }
 
-    int DoradoNas::QueryContorllerCnt(int &outCnt) {
+    int DoradoNas::QueryContorllerCnt(int &outCnt)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query control cnt." << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -899,7 +936,8 @@ Description:
         return FAILED;
     }
 
-    int DoradoNas::QueryLIFPortList(std::vector<std::string> &ipList, Json::Value &data) {
+    int DoradoNas::QueryLIFPortList(std::vector<std::string> &ipList, Json::Value &data)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query nfs host " << HCPENDLOG;
         HttpRequest req;
         Json::Value jsonReq;
@@ -915,16 +953,16 @@ Description:
     }
 
 
-    void DoradoNas::IterateNFSHost(Json::Value data, std::vector<std::string> &nfsIPList, IP_TYPE ipType) {
+    void DoradoNas::IterateNFSHost(Json::Value data, std::vector<std::string> &nfsIPList, IP_TYPE ipType)
+    {
         for (int i = 0; i < data.size(); i++) {
             Json::Value oneNode = data[i];
             std::string proto = oneNode["SUPPORTPROTOCOL"].asString();
             std::string role = oneNode["ROLE"].asString();
             std::string RunningStatus = oneNode["RUNNINGSTATUS"].asString();
-            if (RunningStatus == RUNNINGSTATUS_LINKUP && (proto == SUPPORTPROTOCOL_NFS_CIFS
-                                                          || proto == SUPPORTPROTOCOL_NFS) && (role == PORT_ROLE_SERVICE
-                                                                                               || role ==
-                                                                                                  PORT_ROLE_MANAGE_SERVICE)) {
+            if (RunningStatus == RUNNINGSTATUS_LINKUP &&
+                (proto == SUPPORTPROTOCOL_NFS_CIFS || proto == SUPPORTPROTOCOL_NFS) &&
+                (role == PORT_ROLE_SERVICE || role == PORT_ROLE_MANAGE_SERVICE)) {
                 Json::Value ip;
                 if (ipType == IP_TYPE::IP_V4) {
                     ip = oneNode["IPV4ADDR"];
@@ -937,7 +975,8 @@ Description:
         }
     }
 
-    int DoradoNas::CheckReplicationPair(int lunId, int &rfsId, std::string devId, std::string &pairId) {
+    int DoradoNas::CheckReplicationPair(int lunId, int &rfsId, std::string devId, std::string &pairId)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "REPLICATIONPAIR?filter=LOCALRESID::" + std::to_string(lunId) + "&range=[0-100]";
@@ -965,7 +1004,8 @@ Description:
         }
     }
 
-    int DoradoNas::QueryReplicationPairIds(std::string lunId, std::vector<std::string> &pairIdList) {
+    int DoradoNas::QueryReplicationPairIds(std::string lunId, std::vector<std::string> &pairIdList)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "REPLICATIONPAIR?filter=LOCALRESID::" + lunId + "&range=[0-100]";
@@ -990,7 +1030,8 @@ Description:
     }
 
     int DoradoNas::CreateReplication(
-            int fsId, int &rfsId, std::string rDevId, int bandwidth, std::string &pairId) {
+        int fsId, int &rfsId, std::string rDevId, int bandwidth, std::string &pairId)
+    {
         int ret = CheckReplicationPair(fsId, rfsId, rDevId, pairId);
         if (ret == SUCCESS) {
             HCP_Log(INFO, DORADO_MODULE_NAME)
@@ -1038,12 +1079,14 @@ Description:
         }
     }
 
-    int DoradoNas::CreateShare() {
+    int DoradoNas::CreateShare()
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Not support create share!" << HCPENDLOG;
         return FAILED;
     }
 
-    int DoradoNas::GetUsablePoolID(unsigned long long size, std::string &poolId) {
+    int DoradoNas::GetUsablePoolID(unsigned long long size, std::string &poolId)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query pool list" << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -1068,7 +1111,8 @@ Description:
         return FAILED;
     }
 
-    int DoradoNas::QueryReplicationPortIpInfo(std::vector<LogicalPorts> &ipList) {
+    int DoradoNas::QueryReplicationPortIpInfo(std::vector<LogicalPorts> &ipList)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "lif";
@@ -1103,7 +1147,8 @@ Description:
         return SUCCESS;
     }
 
-    int DoradoNas::QueryReplicationRepportgroup(const std::string &groupName, std::string &groupId) {
+    int DoradoNas::QueryReplicationRepportgroup(const std::string &groupName, std::string &groupId)
+    {
         HttpRequest req;
         Json::Value data;
         req.method = "GET";
@@ -1127,7 +1172,8 @@ Description:
     }
 
     int DoradoNas::CreateReplicationRepportgroup(
-            const std::vector<std::string> &iscsiList, const std::string &groupName, std::string &groupId) {
+        const std::vector<std::string> &iscsiList, const std::string &groupName, std::string &groupId)
+    {
         auto ret = QueryReplicationRepportgroup(groupName, groupId);
         if (ret == SUCCESS) {
             HCP_Log(INFO, DORADO_MODULE_NAME) << "QueryReplicationRepportgroup success" << HCPENDLOG;
@@ -1160,7 +1206,7 @@ Description:
         std::string errDes;
         int iRet = SendRequest(req, data, errDes, errorCode);
         if (iRet != SUCCESS || errorCode != SUCCESS) {
-            HCP_Log(ERR, DORADO_MODULE_NAME) << "Crqeate ReplicationRepportgroup failed:  " << errorCode << HCPENDLOG;
+            HCP_Log(ERR, DORADO_MODULE_NAME) << "Create ReplicationRepportgroup failed:  " << errorCode << HCPENDLOG;
             return FAILED;
         } else {
             groupId = data["ID"].asString();
@@ -1169,7 +1215,8 @@ Description:
         }
     }
 
-    int DoradoNas::QueryNasSnapShotByName(std::string snapShotName, std::string parentId, std::string &snapShotId) {
+    int DoradoNas::QueryNasSnapShotByName(std::string snapShotName, std::string parentId, std::string &snapShotId)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start query NasSnapShot" << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -1186,7 +1233,8 @@ Description:
         return FAILED;
     }
 
-    int DoradoNas::GetFileSystemNameByID(DeviceDetails &info, std::string &errDes) {
+    int DoradoNas::GetFileSystemNameByID(DeviceDetails &info, std::string &errDes)
+    {
         HCP_Log(DEBUG, DORADO_MODULE_NAME) << "Start get lun info: " << info.deviceId << HCPENDLOG;
         HttpRequest req;
         req.method = "GET";
@@ -1203,7 +1251,8 @@ Description:
         }
     }
 
-    int DoradoNas::DeleteRemoteDevice(std::string devicdID, std::string &errDes) {
+    int DoradoNas::DeleteRemoteDevice(std::string devicdID, std::string &errDes)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -1227,7 +1276,8 @@ Description:
     }
 
     int DoradoNas::QueryRemoteDevice(std::string devicdID, std::string &localGroupId,
-                                          std::string &remoteGroupId, std::string &remoteESN) {
+        std::string &remoteGroupId, std::string &remoteESN)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -1252,7 +1302,8 @@ Description:
         }
     }
 
-    int DoradoNas::BatchQueryRemoteDevice(std::string esn, std::string &devicdID) {
+    int DoradoNas::BatchQueryRemoteDevice(std::string esn, std::string &devicdID)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -1281,7 +1332,8 @@ Description:
     }
 
     int DoradoNas::BatchQueryRemoteDevice(std::string esn, std::string &devicdID,
-                                               int &healthStatus, int &runStatus) {
+        int &healthStatus, int &runStatus)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -1318,7 +1370,8 @@ Description:
     }
 
     int DoradoNas::RelinkRemoteDevice(std::string localPort, std::string remoteIP, std::string remoteUser,
-                                           std::string remotePassWord, std::string deviceID) {
+        std::string remotePassWord, std::string deviceID)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -1347,7 +1400,8 @@ Description:
         return SUCCESS;
     }
 
-    int DoradoNas::BatchQueryRemoteDevice(std::string &devicdID) {
+    int DoradoNas::BatchQueryRemoteDevice(std::string &devicdID)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -1371,7 +1425,8 @@ Description:
         }
     }
 
-    int DoradoNas::BatchQueryAllRemoteDevice(std::vector<std::string> &devicdIDList) {
+    int DoradoNas::BatchQueryAllRemoteDevice(std::vector<std::string> &devicdIDList)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -1395,7 +1450,8 @@ Description:
         }
     }
 
-    int DoradoNas::AddReplicationRepportgroupMember(std::string groupId, const std::vector<std::string> &iscsiList) {
+    int DoradoNas::AddReplicationRepportgroupMember(std::string groupId, const std::vector<std::string> &iscsiList)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -1429,8 +1485,8 @@ Description:
         }
     }
 
-    int
-    DoradoNas::RemoveReplicationRepportgroupMember(std::string groupId, const std::vector<std::string> &iscsiList) {
+    int DoradoNas::RemoveReplicationRepportgroupMember(std::string groupId, const std::vector<std::string> &iscsiList)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -1461,7 +1517,8 @@ Description:
         }
     }
 
-    int DoradoNas::CheckPerformanceStatisticSwitch() {
+    int DoradoNas::CheckPerformanceStatisticSwitch()
+    {
         HttpRequest req;
         Json::Value data;
         Json::FastWriter jsonWriter;
@@ -1482,7 +1539,8 @@ Description:
         return FAILED;
     }
 
-    int DoradoNas::OpenPerformanceStatisticSwitch() {
+    int DoradoNas::OpenPerformanceStatisticSwitch()
+    {
         if (CheckPerformanceStatisticSwitch() == SUCCESS) {
             HCP_Log(INFO, DORADO_MODULE_NAME) << "Performance statistic switch is open!" << HCPENDLOG;
             return SUCCESS;
@@ -1507,7 +1565,8 @@ Description:
         }
     }
 
-    int DoradoNas::QueryReplicationPerformance(std::string pairID, uint64_t &bandwidth) {
+    int DoradoNas::QueryReplicationPerformance(std::string pairID, uint64_t &bandwidth)
+    {
         HttpRequest req;
         Json::Value data;
         req.method = "GET";
@@ -1535,7 +1594,8 @@ Description:
         }
     }
 
-    int DoradoNas::QueryFileSystemSnapShotNum(std::string fileSystemId, unsigned long long &count) {
+    int DoradoNas::QueryFileSystemSnapShotNum(std::string fileSystemId, unsigned long long &count)
+    {
         HttpRequest req;
         Json::Value data;
         Json::FastWriter jsonWriter;
@@ -1555,7 +1615,8 @@ Description:
         }
     }
 
-    int DoradoNas::GetESN(std::string &esn) {
+    int DoradoNas::GetESN(std::string &esn)
+    {
         HttpRequest req;
         Json::Value data;
         Json::FastWriter jsonWriter;
@@ -1574,7 +1635,8 @@ Description:
         }
     }
 
-    int DoradoNas::DeleteFileSystemAndParentSnapshot() {
+    int DoradoNas::DeleteFileSystemAndParentSnapshot()
+    {
         HttpRequest req;
         req.method = "DELETE";
         req.url = "filesystem/" + fileSystemId + "?ISDELETEPARENTSNAPSHOT=true";
@@ -1590,7 +1652,8 @@ Description:
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNas::DeleteSnapshot(std::string SnapshotName) {
+    int DoradoNas::DeleteSnapshot(std::string SnapshotName)
+    {
         std::string id;
         int ret = QuerySnapshot(SnapshotName, id);
         if (ret != SUCCESS) {
@@ -1611,7 +1674,8 @@ Description:
         return iRet;
     }
 
-    int DoradoNas::CreateDTree(const std::string &dtreeName) {
+    int DoradoNas::CreateDTree(const std::string &dtreeName)
+    {
         HttpRequest req;
         req.method = "POST";
         req.url = "QUOTATREE";
@@ -1637,7 +1701,8 @@ Description:
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNas::QueryDTree(const std::string &dtreeName) {
+    int DoradoNas::QueryDTree(const std::string &dtreeName)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "QUOTATREE?PARENTID=" + fileSystemId + "&NAME=" + dtreeName;
@@ -1653,7 +1718,8 @@ Description:
         return (errorCode == 0) ? FAILED : errorCode;
     }
 
-    int DoradoNas::DeleteDTree(const std::string &dtreeName) {
+    int DoradoNas::DeleteDTree(const std::string &dtreeName)
+    {
         HttpRequest req;
         req.method = "DELETE";
         req.url = "QUOTATREE?PARENTID=" + fileSystemId + "&NAME=" + dtreeName;
@@ -1672,7 +1738,8 @@ Description:
     }
 
     int DoradoNas::GetReplicationPairID(const std::string &fsID, const std::string &remoteDeviceEsn,
-                                             std::string &pairID) {
+        std::string &pairID)
+    {
         HttpRequest req;
         req.method = "GET";
         req.url = "replicationpair/associate?ASSOCIATEOBJTYPE=40&ASSOCIATEOBJID=" + fsID;
@@ -1699,7 +1766,46 @@ Description:
         }
     }
 
-    int DoradoNas::SwitchOverPrimaryAndSecondResource(const std::string &pairId) {
+    // 检查文件系统除了和底座之外是否还和其他设备组了复制pair，是否是从端
+    int DoradoNas::GetReplicationPairWithFsId(const std::string &fsID, const std::string &localDeviceEsn,
+        bool& isPrimary)
+    {
+        HttpRequest req;
+        req.method = "GET";
+        req.url = "replicationpair/associate?ASSOCIATEOBJTYPE=40&ASSOCIATEOBJID=" + fsID;
+        Json::Value data;
+        int errorCode;
+        std::string errDes;
+        int iRet = SendRequest(req, data, errDes, errorCode);
+        if (iRet != SUCCESS || errorCode != SUCCESS) {
+            return FAILED;
+        } else {
+            for (int i = 0; i < data.size(); i++) {
+                Json::Value pair = data[i];
+                std::string pairID = pair["ID"].asString();
+                std::string remoteDeviceEsn = pair["REMOTEDEVICESN"].asString();
+                if (remoteDeviceEsn == localDeviceEsn) {
+                    INFOLOG("found rep pair with local esn: %s", localDeviceEsn.c_str());
+                    continue;
+                }
+                if (pair["ISPRIMARY"].asString() == "false") {
+                    isPrimary = false;
+                    INFOLOG("found replication pair with device %s , fsID %s is secondary end!",
+                        remoteDeviceEsn.c_str(), fsID.c_str());
+                    return SUCCESS;
+                } else if (pair["ISPRIMARY"].asString() == "true") {
+                    isPrimary = true;
+                    INFOLOG("found replication pair with device %s , fsID %s is primary end!",
+                        remoteDeviceEsn.c_str(), fsID.c_str());
+                }
+            }
+            return SUCCESS;
+        }
+        return SUCCESS;
+    }
+
+    int DoradoNas::SwitchOverPrimaryAndSecondResource(const std::string &pairId)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -1723,7 +1829,8 @@ Description:
         }
     }
 
-    int DoradoNas::SecondaryResourceProtectEnable(const std::string &pairId) {
+    int DoradoNas::SecondaryResourceProtectEnable(const std::string &pairId)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -1747,7 +1854,8 @@ Description:
         }
     }
 
-    int DoradoNas::SecondaryResourceProtectDisable(const std::string &pairId) {
+    int DoradoNas::SecondaryResourceProtectDisable(const std::string &pairId)
+    {
         HttpRequest req;
         Json::Value data;
         Json::Value jsonReq;
@@ -1772,7 +1880,8 @@ Description:
     }
 
     int DoradoNas::CreateSnapshotWithSnapTag(const std::string &snapshotName, const std::string &snapTag,
-                                                  std::string &snapshotId) {
+        std::string &snapshotId)
+    {
         if (QuerySnapshot(snapshotName, snapshotId) == SUCCESS) {
             HCP_Log(INFO, DORADO_MODULE_NAME) << "Snapshot " << snapshotName << " has been existed." << HCPENDLOG;
             return SUCCESS;
@@ -1802,7 +1911,8 @@ Description:
     }
 
     int DoradoNas::CreateSnapshotWithSnapTagAndVstoreId(const std::string &snapshotName, const std::string &snapTag,
-                                                             std::string &snapshotId, const std::string &vstoreId) {
+        std::string &snapshotId, const std::string &vstoreId)
+    {
         if (QuerySnapshot(snapshotName, snapshotId) == SUCCESS) {
             HCP_Log(INFO, DORADO_MODULE_NAME) << "Snapshot " << snapshotName << " has been existed." << HCPENDLOG;
             return SUCCESS;
@@ -1831,7 +1941,8 @@ Description:
     }
 
 
-    int DoradoNas::QueryRemoteDeviceUserByName(const std::string &userName, std::string &remoteDevUserID) {
+    int DoradoNas::QueryRemoteDeviceUserByName(const std::string &userName, std::string &remoteDevUserID)
+    {
         HttpRequest req;
         Json::Value data;
         req.method = "GET";
@@ -1857,7 +1968,8 @@ Description:
         return FAILED;
     }
 
-    int DoradoNas::DeleteRemoteDeviceUserByID(const std::string &remoteDevUserID) {
+    int DoradoNas::DeleteRemoteDeviceUserByID(const std::string &remoteDevUserID)
+    {
         HttpRequest req;
         Json::Value data;
         req.method = "DELETE";
@@ -1875,7 +1987,8 @@ Description:
         return SUCCESS;
     }
 
-    int DoradoNas::RollBackBySnapShotId(const std::string &SnapshotName, const std::string &snapshotId) {
+    int DoradoNas::RollBackBySnapShotId(const std::string &SnapshotName, const std::string &snapshotId)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start Revert" << HCPENDLOG;
         HttpRequest req;
         req.method = "PUT";
@@ -1897,7 +2010,8 @@ Description:
     }
 
     int DoradoNas::RollBackBySnapShotIdWithVstoreId(const std::string &snapshotName,
-            const std::string &snapshotId, const std::string &vstoreId, Module::RestResult& result) {
+        const std::string &snapshotId, const std::string &vstoreId, Module::RestResult& result)
+    {
         HCP_Log(INFO, DORADO_MODULE_NAME) << "Start Revert" << HCPENDLOG;
         HttpRequest req;
         req.method = "PUT";
@@ -1919,8 +2033,9 @@ Description:
     }
 
     int DoradoNas::CreateReplicationWithSnapTag(const int &fsId, const std::string &rDevId,
-                                                     const int &bandwidth, const std::string &snapTag,
-                                                     int &rfsId, std::string &pairId) {
+        const int &bandwidth, const std::string &snapTag,
+        int &rfsId, std::string &pairId)
+    {
         int ret = CheckReplicationPair(fsId, rfsId, rDevId, pairId);
         if (ret == SUCCESS) {
             HCP_Log(INFO, DORADO_MODULE_NAME)

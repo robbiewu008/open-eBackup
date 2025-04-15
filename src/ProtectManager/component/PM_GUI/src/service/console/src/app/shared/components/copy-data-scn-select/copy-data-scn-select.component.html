@@ -24,7 +24,7 @@
         <ng-container *ngFor='let item of copyTable.renderData'>
             <tr (click)='selectionCopyRow(item)' [ngClass]='{"lv-table-row-highlight": copyTable.isSelected(item)}'>
                 <td>
-                    {{item.timestamp | date: 'yyyy-MM-dd HH:mm:ss'}}
+                    {{item.timestamp | date: 'yyyy-MM-dd HH:mm:ss':timeZone}}
                 </td>
             </tr>
         </ng-container>

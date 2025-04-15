@@ -25,6 +25,7 @@ import openbackup.tdsql.resources.access.dto.cluster.SchedulerNode;
 import openbackup.tdsql.resources.access.dto.instance.DataNode;
 import openbackup.tdsql.resources.access.dto.instance.TdsqlGroup;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -219,4 +220,13 @@ public interface TdsqlService {
      * @param resource resource
      */
     void umountDataRepo(TdsqlGroup tdsqlGroup, ProtectedResource resource);
+
+
+    /**
+     * 删除生产环境的日志
+     *
+     * @param resource resource
+     * @param extendInfo extendInfo
+     */
+    void deleteLogFromProductEnv(ProtectedResource resource, HashMap<String, String> extendInfo);
 }

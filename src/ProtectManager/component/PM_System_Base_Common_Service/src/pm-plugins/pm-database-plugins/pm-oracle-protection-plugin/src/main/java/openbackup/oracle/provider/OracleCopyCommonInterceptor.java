@@ -12,14 +12,13 @@
 */
 package openbackup.oracle.provider;
 
+import com.google.common.collect.ImmutableList;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.copy.CopyCommonInterceptor;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.copy.model.CopyInfo;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import com.google.common.collect.ImmutableList;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

@@ -12,6 +12,9 @@
 */
 package openbackup.data.access.framework.protection.listener.v1.archive;
 
+import com.alibaba.fastjson.JSONObject;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.core.manager.ProviderManager;
@@ -21,10 +24,6 @@ import openbackup.system.base.common.model.repository.RepositoryType;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.kafka.annotations.MessageListener;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import com.alibaba.fastjson.JSONObject;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.Acknowledgment;

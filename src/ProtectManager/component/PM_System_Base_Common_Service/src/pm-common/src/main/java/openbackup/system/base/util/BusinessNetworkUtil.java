@@ -12,14 +12,13 @@
 */
 package openbackup.system.base.util;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.StatefulsetConstants;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.sdk.infrastructure.InfrastructureRestApi;
 import openbackup.system.base.sdk.infrastructure.model.beans.IpAddressInfo;
 import openbackup.system.base.sdk.infrastructure.model.beans.NetPlaneInfo;
 import openbackup.system.base.sdk.infrastructure.model.beans.NodePodInfo;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -71,30 +70,24 @@ public class BusinessNetworkUtil {
      * @return ip列表
      */
     public static String parseNetPlane(NodePodInfo pod, String netPlaneName) {
-        List<NetPlaneInfo> engines = pod.getNetPlaneInfos()
-            .stream()
-            .filter(netPlane -> netPlane.getNetPlaneName().contains(netPlaneName))
-            .collect(Collectors.toList());
+        List<NetPlaneInfo> engines = pod.getNetPlaneInfos().stream()
+                .filter(netPlane -> netPlane.getNetPlaneName().contains(netPlaneName)).collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(engines)) {
             log.debug("get net plane engine info empty,node name :{}, net plane name:{}", pod.getPodName(),
-                netPlaneName);
+                    netPlaneName);
             return StringUtils.EMPTY;
         }
-        List<String> ipNames = engines.stream()
-            .map(netPlaneInfo -> IP_NAME_PREFIX + netPlaneInfo.getIpAddress())
-            .collect(Collectors.toList());
-        List<NetPlaneInfo> netPlaneList = pod.getNetPlaneInfos()
-            .stream()
-            .filter((netPlane) -> NETWORKS_STATUS.equals(netPlane.getNetPlaneName()))
-            .collect(Collectors.toList());
-        List<IpAddressInfo> ipAddressInfoList = netPlaneList.stream()
-            .flatMap((netPlane) -> JSONArray.fromObject(netPlane.getIpAddress()).toBean(IpAddressInfo.class).stream())
-            .collect(Collectors.toList());
+        List<String> ipNames = engines.stream().map(netPlaneInfo -> IP_NAME_PREFIX + netPlaneInfo.getIpAddress())
+                .collect(Collectors.toList());
+        List<NetPlaneInfo> netPlaneList = pod.getNetPlaneInfos().stream()
+                .filter((netPlane) -> NETWORKS_STATUS.equals(netPlane.getNetPlaneName())).collect(Collectors.toList());
+        List<IpAddressInfo> ipAddressInfoList = netPlaneList.stream().flatMap(
+                (netPlane) -> JSONArray.fromObject(netPlane.getIpAddress()).toBean(IpAddressInfo.class).stream())
+                .collect(Collectors.toList());
         List<String> ipList = ipAddressInfoList.stream()
-            .filter((ipAddressInfo) -> ipNames.contains(ipAddressInfo.getName()))
-            .flatMap((ipAddressInfo) -> ipAddressInfo.getIps().stream())
-            .collect(Collectors.toList());
+                .filter((ipAddressInfo) -> ipNames.contains(ipAddressInfo.getName()))
+                .flatMap((ipAddressInfo) -> ipAddressInfo.getIps().stream()).collect(Collectors.toList());
         return String.join(",", ipList);
     }
 
@@ -124,25 +117,24 @@ public class BusinessNetworkUtil {
         log.debug("get pod info from infra successful, info : {}.", String.join(";", names));
         // 获取podName包含 protectengine 的pod info，并过滤出其中的NetPlaneInfo集合
         List<NetPlaneInfo> netPlaneInfos = podInfos.stream()
-            .filter(nodePodInfo -> nodePodInfo.getPodName().matches(PATTERN_PROTECTENGINE))
-            .flatMap(nodePodInfo -> nodePodInfo.getNetPlaneInfos().stream())
-            .collect(Collectors.toList());
+                .filter(nodePodInfo -> nodePodInfo.getPodName().matches(PATTERN_PROTECTENGINE))
+                .flatMap(nodePodInfo -> nodePodInfo.getNetPlaneInfos().stream()).collect(Collectors.toList());
         // 获取名为 k8s.v1.cni.cncf.io/networks-status 的NetPlaneInfo
         List<NetPlaneInfo> rightNetPlaneInfo = netPlaneInfos.stream()
-            .filter(netPlaneInfo -> NETWORKS_STATUS.equals(netPlaneInfo.getNetPlaneName()))
-            .collect(Collectors.toList());
+                .filter(netPlaneInfo -> NETWORKS_STATUS.equals(netPlaneInfo.getNetPlaneName()))
+                .collect(Collectors.toList());
         // 获取netPlaneName为backupNetPlane中ipAddress的id
         List<NetPlaneInfo> planeInfos = netPlaneInfos.stream()
-            .filter(netPlaneInfo -> netPlaneInfo.getNetPlaneName().contains(BACKUP_NET_PLANE))
-            .collect(Collectors.toList());
+                .filter(netPlaneInfo -> netPlaneInfo.getNetPlaneName().contains(BACKUP_NET_PLANE))
+                .collect(Collectors.toList());
         if (CollectionUtils.isEmpty(planeInfos) || planeInfos.size() < 1) {
             return Optional.empty();
         }
         // 获取的NetPlaneInfo中的IpAddressInfo
         List<IpAddressInfo> ipAddressInfos = rightNetPlaneInfo.stream()
-            .flatMap(netPlaneInfo -> JSONArray.toCollection(JSONArray.fromObject(netPlaneInfo.getIpAddress()),
-                IpAddressInfo.class).stream())
-            .collect(Collectors.toList());
+                .flatMap(netPlaneInfo -> JSONArray
+                        .toCollection(JSONArray.fromObject(netPlaneInfo.getIpAddress()), IpAddressInfo.class).stream())
+                .collect(Collectors.toList());
         if (CollectionUtils.isEmpty(ipAddressInfos)) {
             return Optional.empty();
         }
@@ -152,10 +144,8 @@ public class BusinessNetworkUtil {
             String ipId = netPlaneInfo.getIpAddress();
             log.info("get ip id from infra, ip address :{}.", ipId);
             final String ipName = "default/" + ipId;
-            backupIps.addAll(ipAddressInfos.stream()
-                .filter(ipAddressInfo -> ipName.equals(ipAddressInfo.getName()))
-                .map(ipAddressInfo -> ipAddressInfo.getIps().get(0))
-                .collect(Collectors.toList()));
+            backupIps.addAll(ipAddressInfos.stream().filter(ipAddressInfo -> ipName.equals(ipAddressInfo.getName()))
+                    .map(ipAddressInfo -> ipAddressInfo.getIps().get(0)).collect(Collectors.toList()));
             // 打乱Ips地址
             log.info("disrupt state:{},before disrupt ips :{}", isDisrupt, String.join(";", backupIps));
             disruptIps(backupIps);

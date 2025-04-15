@@ -1,6 +1,19 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifndef TCP_DPP_CONNECTION_H
 #define TCP_DPP_CONNECTION_H
 
+#include <atomic>
 #include "common/Defines.h"
 #include "common/Types.h"
 #include "common/CMpTime.h"
@@ -199,7 +212,7 @@ private:
     // laste heartbeat time
     mp_time lastHbTime;
     // 链路连接状态
-    LinkState linkState;
+    std::atomic<LinkState> linkState;
     mp_bool m_isIpv4;
     mp_string m_listenIp;
     // 是否是安全通道
@@ -210,6 +223,7 @@ private:
     mp_time lastReconnectTime;
     thread_lock_t m_stateLock;
     thread_lock_t m_sendMsgLock;
+    thread_lock_t m_connectLock;
     mp_bool m_sendMesFlag = MP_TRUE;
     thread_lock_t m_recvExitFlagLock;
     mp_bool m_recvExitFlag = MP_FALSE;

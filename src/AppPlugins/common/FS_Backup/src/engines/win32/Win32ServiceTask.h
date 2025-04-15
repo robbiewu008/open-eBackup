@@ -23,6 +23,8 @@
 #include "BackupQueue.h"
 #include "HostServiceTask.h"
 #include "StreamHostFilePendingMap.h"
+#include "ParserStructs.h"
+#include "AdsParser.h"
 
 using namespace FS_Backup;
 using namespace Module;
@@ -76,21 +78,28 @@ private:
     void HandleCloseDst() override;
     void HandleDelete() override;
     void HandleCreateDir() override;
+    void HandleWriteSubStreams() override;
 
     /* methods defined only for posix backup task */
     int ProcessOpenDst(const std::string& dstFile);
+    int ProessOpenDstFailed(const std::string& dstFile, const std::wstring wDstFile, DWORD lastError);
+    int ReopenDstNoAccessFile(const std::string& dstFile, const std::wstring wDstFile);
     int ProcessRestorePolicy(const std::string& dstFile);
     int ProcessOverwriteOlderPolicy(const std::string& dstFile);
     int ProcessOverwritePolicy(const std::string& dstFile);
     int ProcessOverrideRenamePolicy(const std::string& dstFile);
 
+    bool DeleteDirectoryRecursively(const std::string& dirPath);
     bool IsValidWin32Handle(const HANDLE& handle) const;
     bool CheckWin32HandleValid(HANDLE hFile, const std::string& filePath);
 
     bool SetSecurityDescriptorW(const std::wstring& wPath, DWORD& errorCode) const;
+    DWORD SetSecurityForDir(const std::wstring& wPath, uint32_t sdFlag,
+        PSECURITY_DESCRIPTOR pSecurityDescriptor) const;
     bool InitSparseFile(const std::string& filepath, HANDLE hFile, uint64_t size);
     bool ProcessCreateSymlink(const std::string& dstFile);
     void CloseSmallFileDstFd();
+    void CloseSmallFileSrcFd();
     bool Win32DeleteFile(const std::string& filePath);
     bool DeleteReadOnlyFile(const std::string& filePath);
     bool SetFileInformation();
@@ -100,9 +109,13 @@ private:
     void HandleFindStreamFailed(const std::string& srcFile, DWORD lastError);
     void PostReadMetaRoutine() const;
     void HandleWriteMetaForADS();
-
+    bool WriteFileWithRetry(const std::string& dstFile);
+    void GetXMetaEntries(std::vector<Module::XMetaField>& entryList);
+    void DoWriteSubStreams(const std::vector<std::string>& streamNames,
+        const std::string& adsMetaFileIndex, const std::string& adsMetaFileOffset);
+    bool WriteSingleSubStream(const std::string& dstFile, const std::string& streamName,
+        std::unique_ptr<Module::AdsParser>& adsParser, uint8_t* buffer, uint64_t& adsOffset);
 private:
-
     Win32TaskExtendContext m_extendContext {};    /* used to store ADS context in ReadMeta stage */
 };
 #endif  // WIN32_SERVICE_TASK_H

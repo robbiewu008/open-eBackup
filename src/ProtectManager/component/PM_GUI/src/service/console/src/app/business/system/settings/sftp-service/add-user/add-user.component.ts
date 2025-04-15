@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -21,15 +21,15 @@ import {
 import { OptionItem } from '@iux/live';
 import {
   BaseUtilService,
-  CookieService,
-  I18NService,
   CommonConsts,
+  CookieService,
   DataMap,
   DataMapService,
+  I18NService,
   SftpManagerApiService,
   SFTP_USERNAME_BLACKLIST
 } from 'app/shared';
-import { assign, isUndefined, includes, isEmpty } from 'lodash';
+import { assign, includes, isEmpty, isUndefined } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
 @Component({
@@ -39,7 +39,7 @@ import { Observable, Observer } from 'rxjs';
 })
 export class AddUserComponent implements OnInit {
   node;
-  passLenVal = 8;
+  passLenVal = 12;
   maxLenVal = 64;
   passComplexVal = 3;
   passContiunVal = 3;

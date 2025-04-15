@@ -125,6 +125,11 @@ std::string PosixUtils::PathConcat(
     std::string newCtrlEntryPath = ctrlEntryPath;
     if (newCtrlEntryPath.find(trimPrefixPath) == 0) {
         newCtrlEntryPath = newCtrlEntryPath.substr(trimPrefixPath.length());
+    } else if (trimPrefixPath.find(newCtrlEntryPath) == 0) {
+        newCtrlEntryPath = "";
+    }
+    if (newCtrlEntryPath.empty()) {
+        return forwardPath;
     }
     std::string path = forwardPath + SLASH + newCtrlEntryPath;
     std::size_t pos = 0;

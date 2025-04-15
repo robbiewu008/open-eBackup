@@ -12,6 +12,8 @@
 */
 package openbackup.oracle.provider;
 
+import jodd.util.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentDetailDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
@@ -20,7 +22,6 @@ import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.ListResourceReq;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
 import openbackup.data.protection.access.provider.sdk.base.Authentication;
-import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.exception.DataProtectionAccessException;
 import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
@@ -46,8 +47,6 @@ import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -58,6 +57,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -193,10 +193,11 @@ public class OracleClusterDatabaseProvider implements ResourceProvider {
     private void checkRegisterRepeats(ProtectedResource resource) {
         Map<String, Object> conditions = new HashMap<>();
         conditions.put("parentUuid", resource.getParentUuid());
-        conditions.put("name", resource.getName());
         conditions.put("subType", resource.getSubType());
-        PageListResponse<ProtectedResource> resources = resourceService.query(0, 1, conditions);
-        if (!VerifyUtil.isEmpty(resources.getRecords())) {
+        List<ProtectedResource> resourceList = resourceService.queryAllResources(conditions);
+        Set<String> namesLowerCaseSet = resourceList.stream().map(ProtectedResource::getName).map(String::toLowerCase)
+                .collect(Collectors.toSet());
+        if (namesLowerCaseSet.contains(resource.getName().toLowerCase())) {
             log.error("Oracle cluster database has been registered, name: {}", resource.getName());
             throw new LegoCheckedException(CommonErrorCode.PROTECTED_ENV_REPEATED,
                 "This Oracle cluster has been registered");
@@ -205,10 +206,10 @@ public class OracleClusterDatabaseProvider implements ResourceProvider {
 
     // 任意Agent检查失败，则连通性检查失败
     private void checkConnection(ProtectedResource clusterDatabase, List<ProtectedEnvironment> agents) {
-        for (ProtectedEnvironment agent : agents) {
+        agents.parallelStream().forEach(agent -> {
             AgentBaseDto response = agentUnifiedService.checkApplicationNoRetry(clusterDatabase, agent);
             checkConnectResult(response);
-        }
+        });
         log.info("Check oracle cluster connection success, name: {}", clusterDatabase.getName());
     }
 
@@ -225,7 +226,7 @@ public class OracleClusterDatabaseProvider implements ResourceProvider {
 
     private List<ProtectedResource> queryAllDatabaseInstances(ProtectedResource database,
         List<ProtectedEnvironment> agents) {
-        return agents.stream()
+        return agents.parallelStream()
                 .map(agent -> queryDatabaseInstanceFromAgent(database, agent))
                 .collect(Collectors.toList());
     }
@@ -295,6 +296,9 @@ public class OracleClusterDatabaseProvider implements ResourceProvider {
         database.setExtendInfoByKey(OracleConstants.ORACLE_GROUP,
                 instance.getExtendInfoByKey(OracleConstants.ORACLE_GROUP));
         database.setExtendInfoByKey(OracleConstants.VERIFY_STATUS, "true");
+        Optional.ofNullable(instance.getExtendInfoByKey(OracleConstants.IS_CDB))
+                .filter(StringUtil::isNotBlank)
+                .ifPresent(isCdb -> database.setExtendInfoByKey(OracleConstants.IS_CDB, isCdb));
     }
 
     private void updateDatabaseStatusToDb(String uuid, LinkStatusEnum statusEnum) {
@@ -368,6 +372,11 @@ public class OracleClusterDatabaseProvider implements ResourceProvider {
         // oracle集群数据库名称可以重复，不检查集群数据库重名
         resourceFeature.setShouldCheckResourceNameDuplicate(false);
         return resourceFeature;
+    }
+
+    @Override
+    public boolean supplyDependency(ProtectedResource resource) {
+        return true;
     }
 
     @Override

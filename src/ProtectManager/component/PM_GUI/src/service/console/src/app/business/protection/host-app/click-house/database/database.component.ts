@@ -1,15 +1,16 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { ResourceDetailService } from 'app/shared/services/resource-detail.service';
 import { ProtectService } from 'app/shared/services/protect.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
@@ -51,7 +52,10 @@ import {
   hasProtectPermission,
   hasRecoveryPermission,
   hasBackupPermission,
-  getLabelList
+  getLabelList,
+  SetTagType,
+  hasResourcePermission,
+  disableDeactiveProtectionTips
 } from 'app/shared';
 import {
   filter,
@@ -73,6 +77,7 @@ import {
 } from 'lodash';
 import { map } from 'rxjs/operators';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
+import { GetLabelOptionsService } from '../../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-database',
@@ -86,7 +91,7 @@ export class DatabaseComponent implements OnInit, AfterViewInit {
   tableConfig: TableConfig;
   tableData: TableData;
   searchKey: string;
-
+  currentDetailUuid = '';
   groupCommon = GROUP_COMMON;
 
   @ViewChild('dataTable') dataTable: ProTableComponent;
@@ -107,7 +112,9 @@ export class DatabaseComponent implements OnInit, AfterViewInit {
     private detailService: ResourceDetailService,
     private takeManualBackupService: TakeManualBackupService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService,
+    private appUtilsService: AppUtilsService
   ) {}
 
   ngOnInit() {
@@ -231,9 +238,13 @@ export class DatabaseComponent implements OnInit, AfterViewInit {
                   hasProtectPermission(val)
                 );
               })
-            ) !== size(data) || !size(data)
+            ) !== size(data) ||
+            !size(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX
           );
         },
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n),
         permission: OperateItems.DeactivateProtection,
         label: this.i18n.get('protection_deactive_protection_label'),
         onClick: data => {
@@ -287,7 +298,9 @@ export class DatabaseComponent implements OnInit, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return (
+            !size(data) || some(data, item => !hasResourcePermission(item))
+          );
         },
         label: this.i18n.get('common_add_tag_label'),
         onClick: data => this.addTag(data)
@@ -299,7 +312,9 @@ export class DatabaseComponent implements OnInit, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return (
+            !size(data) || some(data, item => !hasResourcePermission(item))
+          );
         },
         label: this.i18n.get('common_remove_tag_label'),
         onClick: data => this.removeTag(data)
@@ -402,8 +417,11 @@ export class DatabaseComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -468,6 +486,7 @@ export class DatabaseComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data ? data : this.selectionData,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable?.setSelections([]);
@@ -480,6 +499,7 @@ export class DatabaseComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data ? data : this.selectionData,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable?.setSelections([]);
@@ -506,8 +526,7 @@ export class DatabaseComponent implements OnInit, AfterViewInit {
           this.selectionData = [];
           this.dataTable.setSelections([]);
           this.dataTable.fetchData();
-        },
-        restoreWidth: params => this.getResourceDetail(params)
+        }
       }
     );
   }
@@ -554,6 +573,7 @@ export class DatabaseComponent implements OnInit, AfterViewInit {
   }
 
   getResourceDetail(res) {
+    this.currentDetailUuid = res.uuid;
     this.protectedResourceApiService
       .ShowResource({
         resourceId: res.uuid
@@ -596,7 +616,8 @@ export class DatabaseComponent implements OnInit, AfterViewInit {
                   return getTableOptsItems(cloneDeep(this.opts), v, this);
                 }
               }
-            )
+            ),
+            lvHeader: item?.name
           }
         );
       });
@@ -639,9 +660,10 @@ export class DatabaseComponent implements OnInit, AfterViewInit {
         delete conditionsTemp.equipmentType;
       }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
@@ -675,6 +697,13 @@ export class DatabaseComponent implements OnInit, AfterViewInit {
         })
       )
       .subscribe(res => {
+        this.appUtilsService.openDetailModalAfterQueryData(
+          {
+            autoPolling: args?.isAutoPolling,
+            records: res.records
+          },
+          this
+        );
         this.tableData = {
           total: res.totalCount,
           data: res.records

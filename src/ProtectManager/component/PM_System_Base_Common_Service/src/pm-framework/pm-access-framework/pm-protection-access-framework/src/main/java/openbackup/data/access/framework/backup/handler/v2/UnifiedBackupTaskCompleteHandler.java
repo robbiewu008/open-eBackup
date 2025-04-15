@@ -14,6 +14,18 @@ package openbackup.data.access.framework.backup.handler.v2;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.StorageUnitService;
+import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
+import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.system.base.label.service.LabelService;
+import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
+
+import com.google.common.collect.ImmutableSet;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
+import openbackup.access.framework.resource.persistence.dao.ProtectedResourceMapper;
+import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
 import openbackup.data.access.client.sdk.api.framework.dme.CopyVerifyStatusEnum;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeCopyInfo;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeUnifiedRestApi;
@@ -55,24 +67,25 @@ import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnu
 import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
 import openbackup.data.protection.access.provider.sdk.resource.Resource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.constants.IsmNumberConstant;
+import openbackup.system.base.common.constants.LegoNumberConstant;
+import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.enums.RetentionTypeEnum;
+import openbackup.system.base.common.enums.WormValidityTypeEnum;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.msg.NotifyManager;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
-import com.huawei.oceanprotect.system.base.label.service.LabelService;
+import openbackup.system.base.sdk.anti.api.AntiRansomwareApi;
 import openbackup.system.base.sdk.cluster.model.StorageUnitVo;
 import openbackup.system.base.sdk.common.model.UuidObject;
 import openbackup.system.base.sdk.copy.CopyRestApi;
-import openbackup.system.base.sdk.copy.model.BasePage;
-import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyExtendType;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.copy.model.CopyInfo;
 import openbackup.system.base.sdk.copy.model.CopyStatus;
+import openbackup.system.base.sdk.copy.model.CopyStorageUnitStatus;
 import openbackup.system.base.sdk.job.JobCenterRestApi;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
@@ -81,11 +94,6 @@ import openbackup.system.base.sdk.protection.model.SlaBo;
 import openbackup.system.base.sdk.repository.api.BackupStorageApi;
 import openbackup.system.base.sdk.repository.model.NasDistributionStorageDetail;
 import openbackup.system.base.service.DeployTypeService;
-import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -94,11 +102,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 统一备份任务完成处理器
@@ -113,6 +123,11 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
     private static final int THOUSAND = 1000;
 
     private static final String DEFAULT_POOL_ID = "0";
+
+    private static final Set<String> INCREMENT_BACKUP_TYPE_SET = ImmutableSet.of(
+            BackupTypeEnum.CUMULATIVE_INCREMENT.name().toLowerCase(Locale.ROOT),
+            BackupTypeEnum.DIFFERENCE_INCREMENT.name().toLowerCase(Locale.ROOT),
+            BackupTypeEnum.PERMANENT_INCREMENT.name().toLowerCase(Locale.ROOT));
 
     @Autowired
     private DmeUnifiedRestApi unifiedRestApi;
@@ -159,14 +174,21 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
     @Autowired
     private LabelService labelService;
 
+    @Autowired
+    private AntiRansomwareApi antiRansomwareApi;
+
+    @Autowired
+    private ProtectedResourceMapper protectedResourceMapper;
+
     @Override
     public void onTaskCompleteSuccess(TaskCompleteMessageBo taskMessage) {
-        taskCompleteSuccessOrCheckPointProcess(taskMessage, false);
+        JobBo job = jobService.queryJob(taskMessage.getJobId());
+        taskCompleteSuccessOrCheckPointProcess(taskMessage, false, isCheckPointOn(job));
         jobBackupPostProcessService.onBackupJobSuccess(taskMessage.getJobId());
     }
 
     private void taskCompleteSuccessOrCheckPointProcess(
-            TaskCompleteMessageBo taskMessage, boolean isFailTaskCheckPointOn) {
+            TaskCompleteMessageBo taskMessage, boolean isFailTaskCheckPointOn, boolean isResumableBackup) {
         String requestId = taskMessage.getJobRequestId();
         log.debug("Backup task complete, do backup success, request id: {}", requestId);
 
@@ -189,7 +211,15 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
         String jobId = taskMessage.getJobId();
         JobBo job = jobService.queryJob(jobId);
         copyInfo.setStorageUnitId(job.getStorageUnitId());
-        UuidObject resp = copyRestApi.saveCopy(copyInfo);
+        copyInfo.setStorageUnitStatus(CopyStorageUnitStatus.ONLINE.getValue());
+        UuidObject resp;
+        if (isResumableBackup) {
+            resp = copyRestApi.saveCopy(copyInfo, true);
+        } else {
+            resp = copyRestApi.saveCopy(copyInfo);
+        }
+        copyService.deleteInvalidCopies(copyInfo.getResourceId(), LegoNumberConstant.TWO,
+            Collections.singletonList(copyInfo.getUuid()));
         // 设置副本继承资源的标签
         labelService.setCopyLabel(copyInfo.getUuid(), copyInfo.getResourceId());
         resourceSetApi.createCopyResourceSetRelation(copyInfo.getUuid(), copyInfo.getResourceId(), Strings.EMPTY);
@@ -198,6 +228,7 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
             userQuotaManager.increaseUsedQuota(requestId, copyInfo);
             UpdateJobRequest updateJobRequest = new UpdateJobRequest();
             // 更新时间戳
+            updateJobRequest.setCopyId(resp.getUuid());
             updateJobRequest.setCopyTime(Long.parseLong(copyInfo.getTimestamp()) / THOUSAND);
             log.info("Update job timestamp success, request id: {}", requestId);
             JSONObject extendField = JSONObject.fromObject(taskMessage.getExtendsInfo());
@@ -237,9 +268,10 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
 
         DmeCopyInfo dmeCopyInfo = unifiedRestApi.getCopyInfo(requestId);
 
-        Map<String, Object> properties = buildProperties(dmeCopyInfo);
+        Map<String, Object> properties = buildProperties(context, dmeCopyInfo);
 
         CopyInfoBo copyInfoBo = buildCopyInfoBo(requestId, context, dmeCopyInfo, properties);
+        fillWormRetentionInfo(copyInfoBo);
         CopyInfo copyInfo = new CopyInfo();
         BeanUtils.copyProperties(copyInfoBo, copyInfo);
         if (isFailTaskCheckPointOn) {
@@ -249,7 +281,24 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
         return copyInfo;
     }
 
-    private Map<String, Object> buildProperties(DmeCopyInfo dmeCopyInfo) {
+    /**
+     * 填充额外的worm保留时间
+     *
+     * @param copyInfoBo  副本信息
+     */
+    private void fillWormRetentionInfo(CopyInfoBo copyInfoBo) {
+        boolean existWormPolicy = antiRansomwareApi.isExistWormPolicyByResourceId(copyInfoBo.getResourceId());
+        if (existWormPolicy) {
+            copyInfoBo.setWormDurationUnit(copyInfoBo.getDurationUnit());
+            copyInfoBo.setWormRetentionDuration(copyInfoBo.getRetentionDuration());
+            copyInfoBo.setWormValidityType(WormValidityTypeEnum.COPY_RETENTION_TIME_CONSISTENT.getType());
+            if (RetentionTypeEnum.TEMPORARY.equals(RetentionTypeEnum.getByType(copyInfoBo.getRetentionType()))) {
+                copyInfoBo.setWormExpirationTime(copyInfoBo.getExpirationTime());
+            }
+        }
+    }
+
+    private Map<String, Object> buildProperties(Map<String, String> context, DmeCopyInfo dmeCopyInfo) {
         // 设置副本属性信息
         Map<String, Object> properties = new HashMap<>();
 
@@ -292,29 +341,42 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
         SlaBo slaBo = JSONObject.toBean(slaJson, SlaBo.class);
         PolicyBo policyBo = JSONObject.toBean(context.get(CopyPropertiesKeyConstant.KEY_BACKUP_POLICY), PolicyBo.class);
         String name = getLocationName(context, dmeCopyInfo);
+        int abBackType = BackupTypeConstants.convert2AbBackType(backupType);
         return CopyInfoBuilder.builder()
                 .setBaseCopyInfo()
                 .setLocation(StringUtils.isEmpty(name) ? CopyInfoConstants.COPY_INIT_LOCATION : name)
+                .setStorageUnitStatus(CopyStorageUnitStatus.ONLINE.getValue())
                 .setCopyId(requestId)
                 .setOriginBackupId(requestId)
                 .setEBackupTimestamp(dmeCopyInfo.getTimestamp())
                 .setCopyFeature(buildFeature(dmeCopyInfo))
                 .setResourceInfo(resource)
-                .setRetentionInfo(slaBo, policyBo, dmeCopyInfo.getTimestamp() * IsmNumberConstant.THOUSAND)
+                .setRetentionInfo(context, abBackType, slaBo, policyBo,
+                    dmeCopyInfo.getTimestamp() * IsmNumberConstant.THOUSAND)
+                .setWormRetentionInfo(slaBo, policyBo, dmeCopyInfo.getTimestamp() * IsmNumberConstant.THOUSAND)
                 .setProperties(properties)
                 .setOtherInfo(context.get(CopyPropertiesKeyConstant.KEY_BACKUP_CHAIN_ID), resJson, slaJson)
                 .setEnvironmentInfo(taskEnvironment.getName(), taskEnvironment.getEndpoint())
                 .setGeneratedBy(CopyGeneratedByEnum.BY_BACKUP.value())
                 .setIndexed(CopyIndexStatus.UNINDEXED.getIndexStaus())
                 .setDeletable(Boolean.TRUE)
-                .setBackupType(BackupTypeConstants.convert2AbBackType(backupType))
-                .setUserId(context.get(Constants.CURRENT_OPERATE_USER_ID))
+                .setBackupType(abBackType)
+                .setUserId(queryUserId(resource.getUuid()))
                 .setName(context.get(CopyConstants.COPY_NAME))
                 .setStorageId(getStorageId(dmeCopyInfo))
                 .setSourceCopyType(BackupTypeConstants.convert2AbBackType(sourceCopyType))
                 .setDeviceEsn(memberClusterService.getCurrentClusterEsn())
                 .setPoolId(getCopyPoolId(properties))
                 .build();
+    }
+
+    private String queryUserId(String uuid) {
+        QueryWrapper<ProtectedResourcePo> wrapper = new QueryWrapper<>();
+        wrapper.eq("uuid", uuid);
+        if (!protectedResourceMapper.exists(wrapper)) {
+            return Strings.EMPTY;
+        }
+        return protectedResourceMapper.selectById(uuid).getUserId();
     }
 
     private String getLocationName(Map<String, String> context, DmeCopyInfo dmeCopyInfo) {
@@ -393,69 +455,48 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
         return provider.supportFeatures();
     }
 
-    /**
-     * 检查无效副本数量并达到指定上限数量（retryNum - 1）后删除副本
-     * 如果达到指定数量返回 true
-     * 未达到返回 false
-     *
-     * @param sourceId 资源id
-     * @param retryNum 断点重传次数
-     * @return 是否达到指定上限数量
-     */
-    private boolean checkInvalidCopiesNumAndDeleteCopies(String sourceId, int retryNum) {
-        BasePage<Copy> checkPointInvalidCopies =
-                copyService.queryCopiesByResourceIdAndStatusAndExtendType(
-                        sourceId, CopyStatus.INVALID.getValue(), CopyExtendType.CHECKPOINT.getValue(), retryNum);
-        if (checkPointInvalidCopies.getTotal() == retryNum - 1) {
-            List<Copy> deleteCopies = checkPointInvalidCopies.getItems();
-            for (Copy c : deleteCopies) {
-                log.info(
-                        "delete checkPoint invalid copies, total_num:{}, copy_id:{}",
-                        checkPointInvalidCopies.getTotal(),
-                        c.getUuid());
-                copyRestApi.deleteCopy(c.getUuid(), null);
-            }
+    private boolean isCheckPointOn(JobBo job) {
+        // 不是 CheckPoint 的任务直接返回 false，直接进入失败流程
+        // checkPoint 任务需要检查副本数量阈值 checkInvalidCopiesNumAndDeleteCopies
+        // 达到，删除所有副本并返回 false 跳过保留无效副本流程直接进入失败流程
+        // 未达到，返回 true 进入保留无效副本流程
+        JSONObject protectedObjExtParam = JobExtendInfoUtil.getProtectedObjExtParam(job);
+        return protectedObjExtParam != null && protectedObjExtParam.containsKey(JobExtendInfoKeys.CHECK_POINT)
+            && protectedObjExtParam.getBoolean(JobExtendInfoKeys.CHECK_POINT);
+    }
+
+    private boolean deleteCopyWhenTaskRetryTouchLimit(JobBo job) {
+        // 校验 retryNum 是否存在，如果不在给默认值3
+        JSONObject protectedObjExtParam = JobExtendInfoUtil.getProtectedObjExtParam(job);
+        int retryNum = protectedObjExtParam.containsKey(JobExtendInfoKeys.RETRY_NUM) ? protectedObjExtParam.getInt(
+            JobExtendInfoKeys.RETRY_NUM) : BackupConstant.DEFAULT_CHECK_POINT_RETRY_NUM;
+        // 检验 retryNum 是否在合法区间，如果不在给默认值 3
+        retryNum = (retryNum >= BackupConstant.MIN_CHECK_POINT_RETRY_NUM
+            && retryNum <= BackupConstant.MAX_CHECK_POINT_RETRY_NUM)
+            ? retryNum
+            : BackupConstant.DEFAULT_CHECK_POINT_RETRY_NUM;
+        int jobOverrideTimes = jobService.getJobOverrideTimes(job.getExtendStr());
+        if (jobOverrideTimes >= retryNum) {
+            copyService.deleteInvalidCopies(job.getSourceId(), retryNum, Collections.emptyList());
             return true;
         }
         return false;
     }
 
-    private boolean isCheckPointOn(TaskCompleteMessageBo taskMessage) {
-        JobBo job = jobService.queryJob(taskMessage.getJobId());
-        JSONObject protectedObjExtParam = JobExtendInfoUtil.getProtectedObjExtParam(job);
-        // 不是 CheckPoint 的任务直接返回 false，直接进入失败流程
-        // checkPoint 任务需要检查副本数量阈值 checkInvalidCopiesNumAndDeleteCopies
-        // 达到，删除所有副本并返回 false 跳过保留无效副本流程直接进入失败流程
-        // 未达到，返回 true 进入保留无效副本流程
-        if (protectedObjExtParam != null
-                && protectedObjExtParam.containsKey(JobExtendInfoKeys.CHECK_POINT)
-                && protectedObjExtParam.getBoolean(JobExtendInfoKeys.CHECK_POINT)) {
-            // 校验 retryNum 是否存在，如果不在给默认值3
-            int retryNum =
-                    protectedObjExtParam.containsKey(JobExtendInfoKeys.RETRY_NUM)
-                            ? protectedObjExtParam.getInt(JobExtendInfoKeys.RETRY_NUM)
-                            : BackupConstant.DEFAULT_CHECK_POINT_RETRY_NUM;
-            // 检验 retryNum 是否在合法区间，如果不在给默认值 3
-            retryNum =
-                    (retryNum >= BackupConstant.MIN_CHECK_POINT_RETRY_NUM
-                                    && retryNum <= BackupConstant.MAX_CHECK_POINT_RETRY_NUM)
-                            ? retryNum
-                            : BackupConstant.DEFAULT_CHECK_POINT_RETRY_NUM;
-            return !checkInvalidCopiesNumAndDeleteCopies(job.getSourceId(), retryNum);
-        } else {
-            return false;
-        }
-    }
-
     @Override
     public void onTaskCompleteFailed(TaskCompleteMessageBo taskMessage) {
-        if (isCheckPointOn(taskMessage)) {
-            taskCompleteSuccessOrCheckPointProcess(taskMessage, true);
+        JobBo job = jobService.queryJob(taskMessage.getJobId());
+        if (isCheckPointOn(job) && !deleteCopyWhenTaskRetryTouchLimit(job) && checkDmeCopyExist(
+            taskMessage.getJobId())) {
+            taskCompleteSuccessOrCheckPointProcess(taskMessage, true, true);
             jobBackupPostProcessService.onBackupJobFail(taskMessage.getJobId());
             return;
         }
         String requestId = taskMessage.getJobRequestId();
         String jobId = taskMessage.getProperty(ContextConstants.JOB_ID);
+        if (VerifyUtil.isEmpty(jobId)) {
+            jobId = requestId;
+        }
         int status = taskMessage.getJobStatus();
         DmcJobStatus jobStatus = DmcJobStatus.getByStatus(status);
         // 发送任务终止消息到对应的workflow
@@ -470,6 +511,17 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
         Map<String, String> context = taskMessage.getContext();
         this.postProcess(context, JobDataConverter.convertToProviderJobStatus(status), null);
         jobBackupPostProcessService.onBackupJobFail(jobId);
+    }
+
+    private boolean checkDmeCopyExist(String jobId) {
+        boolean copyAdded = false;
+        try {
+            copyAdded = unifiedRestApi.queryCopyAdded(jobId);
+        } catch (LegoCheckedException e) {
+            log.error("query copy added from dme failed,job id:{}", jobId);
+        }
+        log.debug("task generate copy result:{}", copyAdded);
+        return copyAdded;
     }
 
     @Override
@@ -498,11 +550,8 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
         PolicyBo policyBo =
                 JSONObject.toBean(backupContext.get(CopyPropertiesKeyConstant.KEY_BACKUP_POLICY), PolicyBo.class);
         String userId = backupContext.get(Constants.CURRENT_OPERATE_USER_ID);
-        // 全量备份失败，副本类型为快照类型时，下一次备份需要转为全量备份。
-        if (!jobStatus.checkSuccess()
-                && BackupTypeEnum.FULL.name().toLowerCase(Locale.ROOT).equals(backupType)
-                && copyFormat == CopyFormatEnum.INNER_SNAPSHOT.getCopyFormat()) {
-            log.info("Full Backup failed this time, convert next backup type to Full!");
+        if (isNeedBackupToFull(jobStatus, backupType, copyFormat)) {
+            log.info("Full Backup or E6000 increment backup failed this time, convert next backup type to Full!");
             setNextBackupToFull(protectedObject.getResourceId());
         }
 
@@ -522,9 +571,35 @@ public class UnifiedBackupTaskCompleteHandler extends UnifiedTaskCompleteHandler
         }
     }
 
+    /**
+     * 下次备份需要转换为全量备份的情况
+     * 必要条件：任务状态失败且是快照
+     *         所有形态下的全量备份失败
+     *         E6000形态下的增量备份失败
+     *
+     * @param jobStatus 任务状态
+     * @param backupType 备份类型
+     * @param copyFormat 副本格式
+     * @return 下次备份是否需要转全量
+     */
+    private Boolean isNeedBackupToFull(ProviderJobStatusEnum jobStatus, String backupType, int copyFormat) {
+        // 任务状态失败，并且是快照格式的
+        if (jobStatus.checkSuccess() || copyFormat != CopyFormatEnum.INNER_SNAPSHOT.getCopyFormat()) {
+            return false;
+        }
+        // 所有形态下的全量备份失败，要转全量
+        if (BackupTypeEnum.FULL.name().toLowerCase(Locale.ROOT).equals(backupType)) {
+            return true;
+        }
+        // E6000 形态下，增量备份失败也要转全量
+        return deployTypeService.isPacific() && INCREMENT_BACKUP_TYPE_SET.contains(backupType);
+    }
+
     private void setNextBackupToFull(String resourceId) {
-        NextBackupModifyReq nextBackupModifyReq =
-                NextBackupModifyReq.build(resourceId, NextBackupChangeCauseEnum.BIGDATA_PLUGIN_TO_FULL_LABEL);
+        NextBackupChangeCauseEnum toFullReason = deployTypeService.isPacific()
+            ? NextBackupChangeCauseEnum.E6000_BACKUP_FAILED
+            : NextBackupChangeCauseEnum.BIGDATA_PLUGIN_TO_FULL_LABEL;
+        NextBackupModifyReq nextBackupModifyReq = NextBackupModifyReq.build(resourceId, toFullReason);
         resourceService.modifyNextBackup(nextBackupModifyReq);
     }
 }

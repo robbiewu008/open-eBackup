@@ -68,12 +68,19 @@ EXTER_ATTACK VIRTUAL_PLUGIN_API void AllowCheckCopyInLocalNode(ActionResult& ret
     const AppProtect::CheckCopyJob& job);
 EXTER_ATTACK VIRTUAL_PLUGIN_API void AllowCheckCopySubJobInLocalNode(ActionResult& returnValue,
     const AppProtect::CheckCopyJob& job, const AppProtect::SubJob& subJob);
+EXTER_ATTACK VIRTUAL_PLUGIN_API void AllowDelCopyInLocalNode(ActionResult& returnValue,
+    const AppProtect::DelCopyJob& job);
+EXTER_ATTACK VIRTUAL_PLUGIN_API void AllowDelCopySubJobInLocalNode(ActionResult& returnValue,
+    const AppProtect::DelCopyJob& job, const AppProtect::SubJob& subJob);
 
+void InitGeneralCfg();
 void InitAppCfg();
 void InitOpenStackCfg();
 void InitApsaraStackCfg();
 void InitCNwareCfg();
+void InitNutanixCfg();
 void InitHyperVCfg();
+void InitHCSCfg();
 #ifndef WIN32
 void RegisterWhitelist();
 #endif

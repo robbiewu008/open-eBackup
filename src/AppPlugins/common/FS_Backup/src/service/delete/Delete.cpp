@@ -41,6 +41,14 @@ Delete::Delete(const string& source, const string& destination, const string& me
 void Delete::InitReaderEngine(BackupIOEngine srcEngine, const ReaderParams& readerParams)
 {
     switch (srcEngine) {
+        case BackupIOEngine::ARCHIVE_CLIENT: {
+            auto client = dynamic_pointer_cast<ArchiveRestoreAdvanceParams>(
+                readerParams.backupParams.srcAdvParams)->archiveClient;
+            unique_ptr<ArchiveDeleteReader> reader = mem::make_unique<ArchiveDeleteReader>(readerParams);
+            reader->SetArchiveClient(client);
+            m_reader = move(reader);
+            break;
+        }
 #ifndef WIN32
         case BackupIOEngine::POSIX: {
             m_reader = mem::make_unique<PosixDeleteReader>(readerParams, m_failureRecorder);

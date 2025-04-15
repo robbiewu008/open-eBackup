@@ -32,6 +32,7 @@ NdmpMsgHandlerFunc	fileHistoryAddUnixNode;
 NdmpMsgHandlerFunc	fileHistoryAddUnixDir;
 NdmpMsgHandlerFunc	fileHistoryAddNode;
 NdmpMsgHandlerFunc	fileHistoryAddDir;
+NdmpMsgHandlerFunc	FileHistoryAddFile;
 
 #endif /* ifndef ndmpc_h_ */
 

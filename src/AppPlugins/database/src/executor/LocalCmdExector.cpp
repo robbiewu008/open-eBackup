@@ -93,6 +93,9 @@ int LocalCmdExector::Exec(const Param &comParam, Json::Value &result, std::share
         ERRLOG("Split param failed, jobId=%s, subJobId=%s.", comParam.jobId.c_str(), comParam.subJobId.c_str());
         return retRes;
     }
+    if (!comParam.scriptPath.empty()) {
+        return ExecScript(comParam, sensitiveInfos, uniqueId, result);
+    }
     return ExecActual(comParam, sensitiveInfos, uniqueId, result, job);
 }
 
@@ -141,6 +144,20 @@ int LocalCmdExector::ExecActual(const Param &comParam, std::map<mp_string, mp_st
         timerHanlder->NotifyJobDetailTimer(DetailTimerStatus::QUERY_DETAIL_NOW);
     }
     return GetScriptExecResult(comParam, uniqueId, result);
+}
+
+int LocalCmdExector::ExecScript(const Param &comParam, std::map<mp_string, mp_string>& sensitiveInfos, const mp_string &uniqueId, Json::Value &result)
+{
+    LOGGUARD("");
+    std::vector<mp_string> taskParam; // 添加str1作为第一个元素
+    taskParam.push_back(comParam.scriptPath);
+    taskParam.insert(taskParam.end(), comParam.scriptParams.begin(), comParam.scriptParams.end()); // 在末尾插入scriptParams的所有元素
+    if (ExecuteCmd(taskParam, sensitiveInfos, uniqueId) != MP_SUCCESS) {
+        ERRLOG("Execute cmd failed, jobId=%s, subJobId=%s, uniqueId=%s.", comParam.jobId.c_str(),
+            comParam.subJobId.c_str(), uniqueId.c_str());
+        return MP_FAILED;
+    }
+    return MP_SUCCESS;
 }
 
 int LocalCmdExector::CheckCmdDelimiter(const mp_string& str)

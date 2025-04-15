@@ -27,25 +27,9 @@
           data.controllerName
         )
       "
-      [disabled]="data.controllerData.length === 20"
+      [disabled]="data.controllerData.length >= 72"
     >
       {{ 'common_create_port_label' | i18n }}
-    </button>
-    <button
-      lv-button
-      lvType="default"
-      lv-tooltip="{{ 'common_reuse_dm_port_tip_label' | i18n }}"
-      (click)="
-        operationCallBack(
-          'reuse',
-          data.controllerData,
-          null,
-          data.controllerName
-        )
-      "
-      *ngIf="isModify"
-    >
-      {{ 'common_reuse_dm_port_label' | i18n }}
     </button>
   </lv-group>
 </div>
@@ -74,28 +58,27 @@
           lvFilterCheckAll
           [attr.width]="col.width"
         >
-          <span lv-overflow *ngIf="col.key !== 'ip'">{{ col.label }}</span>
-          <span lv-overflow *ngIf="col.key === 'ip'">
+          <span lv-overflow *ngIf="!['ip', 'dmExists'].includes(col.key)">{{
+            col.label
+          }}</span>
+          <span lv-overflow *ngIf="col.key === 'dmExists'">
             {{ col.label }}
             <i
-              lv-icon="lv-icon-search"
-              [lvColorState]="true"
-              lv-popover
-              [lvPopoverContent]="ipTpl"
-              lvPopoverTheme="light"
-              lvPopoverPosition="bottom"
-              lvPopoverTrigger="click"
-              #ipPopover="lvPopover"
-              [ngClass]="{ active: !!data.isSearch }"
+              lv-icon="aui-icon-help"
+              lv-tooltip="{{ 'common_dm_exist_tip_label' | i18n }}"
+              lvTooltipTheme="light"
+              lvTooltipPosition="top"
+              class="configform-constraint"
+              lvColorState="true"
             ></i>
           </span>
-          <ng-template #ipTpl>
-            <lv-search
-              [(ngModel)]="ip"
-              (lvSearch)="searchByIp($event, data)"
-              [lvFocus]="true"
-            ></lv-search>
-          </ng-template>
+          <span lv-overflow *ngIf="col.key === 'ip'">
+            {{ col.label }}
+            <aui-custom-table-search
+              (search)="searchByIp($event, data)"
+              [filterTitle]="ip"
+            ></aui-custom-table-search>
+          </span>
         </th>
       </ng-container>
       <th width="20px" style="padding: 0;">
@@ -126,7 +109,7 @@
           <td>
             <ng-container [ngSwitch]="col.key">
               <ng-container *ngSwitchCase="'id'">
-                {{ item.id | nil }}
+                <span lv-overflow>{{ item.id | nil }}</span>
               </ng-container>
               <ng-container *ngSwitchCase="'name'">
                 <input
@@ -143,6 +126,12 @@
               </ng-container>
               <ng-container *ngSwitchCase="'role'">
                 {{ item.role | textMap: 'initRoleTable' }}
+              </ng-container>
+              <ng-container *ngSwitchCase="'dmExists'">
+                {{
+                  _get(item, 'dmExists', true)
+                    | textMap: 'initLogicPortExistStatus'
+                }}
               </ng-container>
               <ng-container *ngSwitchCase="'portType'">
                 <span lv-overflow>{{
@@ -168,13 +157,25 @@
               <ng-container *ngSwitchCase="'ethernetPort'">
                 <span lv-overflow>{{ getPort(item) }}</span>
               </ng-container>
+              <ng-container *ngSwitchCase="'currentPortName'">
+                <span lv-overflow
+                  ><i
+                    lv-icon="lv-icon-status-info"
+                    lvColorState="true"
+                    class="icon"
+                    style="margin-right:4px"
+                    *ngIf="item?.isFailing"
+                  ></i
+                  >{{ getMainPort(item) }}</span
+                >
+              </ng-container>
               <ng-container *ngSwitchCase="'operation'">
                 <lv-group lvGutter="16px">
                   <span
                     [ngClass]="{
                       'aui-link': !item?.modifyDisabled,
                       'aui-link-disabled': !!item?.modifyDisabled,
-                      'disabled': !!item?.modifyDisabled
+                      disabled: !!item?.modifyDisabled
                     }"
                     (click)="
                       operationCallBack(
@@ -189,11 +190,13 @@
                         ? ('common_reuse_dm_port_modify_tip_label' | i18n)
                         : ''
                     "
+                    *ngIf="_get(item, 'dmExists', true)"
                     >{{ 'common_modify_label' | i18n }}</span
                   >
                   <span
                     class="aui-link"
                     (click)="operationCallBack('routeConfig', null, item, null)"
+                    *ngIf="_get(item, 'dmExists', true)"
                   >
                     {{ 'common_config_route_label' | i18n }}
                   </span>

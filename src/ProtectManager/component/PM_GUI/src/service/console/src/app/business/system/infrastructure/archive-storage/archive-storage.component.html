@@ -144,7 +144,7 @@
                             </lv-group>
                         </td>
                         <td width='300px'>
-                            <div class='percent-bar' *ngIf="item.cloudType !== 4; else elseTemplate">
+                            <div class='percent-bar' *ngIf="!includes([dataMap.Storage_Cloud_Platform.aws.value,dataMap.Storage_Cloud_Platform.azure.value],item.cloudType); else elseTemplate">
                                 <lv-progress [lvValue]="item.sizePercent" [lvSize]="'small'"
                                     [lvColors]='item.progressBarColor' [lvLabel]="progressLabelTpl"
                                     [lvExtra]="progressExtraTpl" lvDecimals="3"></lv-progress>

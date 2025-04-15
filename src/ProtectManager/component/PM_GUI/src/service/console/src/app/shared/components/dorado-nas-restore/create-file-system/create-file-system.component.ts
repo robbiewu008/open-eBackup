@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BaseUtilService, DataMapService } from 'app/shared';
@@ -379,9 +379,7 @@ export class CreateFileSystemComponent implements OnInit {
             shareName: `Restore_${this.formGroup.value.name}`,
             clientType: _toString(DataMap.Nfs_Share_Client_Type.host.value),
             client: this.formGroup.value.client,
-            accessVal: _toString(
-              DataMap.Livemount_Filesystem_Authority_Level.readonly.value
-            ),
+            accessVal: this.formGroup.get('unixType').value,
             squash: _toString(PermissonLimitation.Retained),
             rootSquash: _toString(RootPermisson.Enable),
             secure: _toString(PortPermisson.Arbitrary)
@@ -401,9 +399,7 @@ export class CreateFileSystemComponent implements OnInit {
                   DataMap.Cifs_Domain_Client_Type.windowsGroup.value
                 ? `@${this.formGroup.value.userName}`
                 : this.formGroup.value.userName,
-            permission: _toString(
-              DataMap.Livemount_Filesystem_Authority_Level.readonly.value
-            )
+            permission: this.formGroup.get('permissionType').value
           }
         });
       }

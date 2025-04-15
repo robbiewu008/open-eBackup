@@ -12,23 +12,19 @@
   .header {
     width: 100%;
     height: 80px;
-    // background-color: pink;
     display: flex;
     align-items: center;
     gap: 32px;
-    // > div {
-    //   background-color: red;
-    // }
     .num {
       font-size: 32px;
-      color: #fff;
+      color: var(--live-angular-color-text-regular);
       height: 36px;
       line-height: 36px;
       font-weight: 700;
     }
     .title {
       font-size: 16px;
-      color: #b3b3b3;
+      color: var(--live-angular-color-text-secondary);
       height: 24px;
       line-height: 24px;
     }
@@ -122,7 +118,7 @@
     .split-line {
       width: 1px;
       height: 58px;
-      background-color: #333;
+      background-color: var(--live-angular-color-divider-secondary);
     }
   }
 
@@ -145,14 +141,19 @@
         box-sizing: border-box;
         cursor: pointer;
       }
+      .production-environment-done {
+        position: absolute;
+        box-sizing: border-box;
+      }
       .production-environment,
+      .production-environment-done,
       .backing-up,
       .duplicate,
       .archiving,
       .duplicate-not-configured,
       .archiving-not-configured {
         .title {
-          color: #e6e6e6;
+          color: var(--live-angular-color-text-regular);
           font-size: 14px;
           font-weight: 700;
           line-height: 22px;
@@ -167,15 +168,15 @@
         white-space: nowrap;
         padding: 8px;
         box-sizing: border-box;
-        color: #b3b3b3;
+        color: var(--live-angular-color-text-secondary);
+        border: 1px solid var(--live-angular-color-card-border);
         font-size: 12px;
         font-weight: 400;
-        // line-height: 22px;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
         top: -50px;
-        background: #c8caff10;
+        background: var(--live-angular-color-container-background);
         border-radius: 8px;
         box-shadow: -1px -1px 1px rgba(255, 255, 255, 0.23);
         display: flex;
@@ -184,7 +185,7 @@
         .num {
           font-weight: 700;
           font-size: 20px;
-          color: #e6e6e6;
+          color: var(--live-angular-color-text-regular);
           margin-right: -4px;
         }
         .icon {
@@ -195,13 +196,13 @@
         }
       }
 
-      .production-environment {
+      .production-environment,
+      .production-environment-done {
         width: 162px;
         height: 280px;
         top: 24px;
         left: 0;
-        background: url(assets\img\mission-overview-production-environment.png)
-          no-repeat center;
+        background: var(--custom-overview-production-environment);
         .title {
           top: 130px;
         }
@@ -219,24 +220,27 @@
           }
         }
       }
-      .production-environment::before {
+      .production-environment::before,
+      .production-environment-done::before {
         content: '';
         display: block;
         position: absolute;
-        background: url(assets\img\mission-overview-production-environment-footer.gif);
+        background: var(--custom-production-environment-footer);
         width: 162px;
         height: 280px;
       }
-      .production-environment::after {
+      .production-environment::after,
+      .production-environment-done::after {
         content: '';
         display: block;
         position: absolute;
-        background: url(assets\img\mission-overview-production-environment-hover.png);
+        background: var(--custom-production-environment-hover);
         visibility: hidden;
         width: 100%;
         height: 100%;
       }
-      .production-environment:hover::after {
+      .production-environment:hover::after,
+      .production-environment-done:hover::after {
         animation: fadeInOut 2s infinite;
       }
       // ---------------------------
@@ -245,8 +249,7 @@
         height: 248px;
         top: 74px;
         left: 225px;
-        background: url(assets\img\mission-overview-backing-up.png) no-repeat
-          center;
+        background: var(--custom-overview-backing-up);
         .title {
           top: 150px;
         }
@@ -254,8 +257,7 @@
           position: absolute;
           width: 137px;
           height: 248px;
-          background: url(assets\img\mission-overview-backing-up-abnormal.png)
-            no-repeat center;
+          background: var(--custom-overview-backing-up-abnormal);
           z-index: 10;
         }
       }
@@ -263,7 +265,7 @@
         content: '';
         display: block;
         position: absolute;
-        background: url(assets\img\mission-overview-backing-up-footer.gif);
+        background: var(--custom-mission-overview-backing-up-footer);
         width: 137px;
         height: 248px;
       }
@@ -271,14 +273,14 @@
         content: '';
         display: block;
         position: absolute;
-        background: url(assets\img\mission-overview-backing-up-hover.png);
+        background: var(--custom-overview-backing-up-hover);
         visibility: hidden;
         z-index: 11;
         width: 100%;
         height: 100%;
       }
       .backing-up-abnormal::after {
-        background: url(assets\img\mission-overview-backing-up-abnormal-hover.png) !important;
+        background: var(--custom-overview-backing-up-abnormal-hover);
       }
       .backing-up:hover::after {
         animation: fadeInOut 2s infinite;
@@ -289,8 +291,7 @@
         height: 234px;
         top: 0;
         left: 440px;
-        background: url(assets\img\mission-overview-duplicate.png) no-repeat
-          center;
+        background: var(--custom-mission-overview-duplicate);
         .title {
           top: 148px;
         }
@@ -298,8 +299,7 @@
           position: absolute;
           width: 142px;
           height: 234px;
-          background: url(assets\img\mission-overview-duplicate-abnormal.png)
-            no-repeat center;
+          background: var(--custom-mission-overview-duplicate-abnormal);
         }
       }
       .duplicate-not-configured {
@@ -308,8 +308,7 @@
         height: 234px;
         top: 0;
         left: 440px;
-        background: url(assets\img\mission-overview-duplicate-not-configured.png)
-          no-repeat center;
+        background: var(--custom-mission-overview-duplicate-not-configured);
         .title {
           top: 148px;
         }
@@ -318,7 +317,7 @@
         content: '';
         display: block;
         position: absolute;
-        background: url(assets\img\mission-overview-duplicate-footer.gif);
+        background: var(--custom-mission-overview-duplicate-footer);
         width: 142px;
         height: 234px;
       }
@@ -326,13 +325,13 @@
         content: '';
         display: block;
         position: absolute;
-        background: url(assets\img\mission-overview-duplicate-hover.png);
+        background: var(--custom-mission-overview-duplicate-hover);
         visibility: hidden;
         width: 100%;
         height: 100%;
       }
       .duplicate-abnormal::after {
-        background: url(assets\img\mission-overview-duplicate-abnormal-hover.png) !important;
+        background: var(--custom-mission-overview-duplicate-abnormal-hover);
       }
       .duplicate:hover::after {
         animation: fadeInOut 2s infinite;
@@ -343,8 +342,7 @@
         height: 267px;
         top: 74px;
         left: 643px;
-        background: url(assets\img\mission-overview-archiving.png) no-repeat
-          center;
+        background: var(--custom-mission-overview-archiving);
         .title {
           top: 146px;
         }
@@ -352,8 +350,7 @@
           position: absolute;
           width: 142px;
           height: 267px;
-          background: url(assets\img\mission-overview-archiving-abnormal.png)
-            no-repeat center;
+          background: var(--custom-mission-overview-archiving-abnormal);
         }
       }
       .archiving-not-configured {
@@ -362,8 +359,7 @@
         height: 267px;
         top: 74px;
         left: 643px;
-        background: url(assets\img\mission-overview-archiving-note-configured.png)
-          no-repeat center;
+        background: var(--custom-mission-overview-archiving-not-configured);
         .title {
           top: 146px;
         }
@@ -372,7 +368,7 @@
         content: '';
         display: block;
         position: absolute;
-        background: url(assets\img\mission-overview-archiving-footer.gif);
+        background: var(--custom-mission-overview-archiving-footer);
         width: 142px;
         height: 267px;
       }
@@ -380,13 +376,13 @@
         content: '';
         display: block;
         position: absolute;
-        background: url(assets\img\mission-overview-archiving-hover.png);
+        background: var(--custom-mission-overview-archiving-hover);
         visibility: hidden;
         width: 100%;
         height: 100%;
       }
       .archiving-abnormal::after {
-        background: url(assets\img\mission-overview-archiving-abnormal-hover.png) !important;
+        background: var(--custom-mission-overview-archiving-abnormal-hover);
       }
       .archiving:hover::after {
         animation: fadeInOut 2s infinite;
@@ -416,7 +412,7 @@
         top: 118px;
         width: 160px;
         height: 66px;
-        background: url(assets\img\mission-overview-line-1.png) no-repeat;
+        background: var(--custom-mission-overview-line-1);
         background-position: 0 0;
         animation: lineAnimation 1.28s infinite steps(4, end);
       }
@@ -425,15 +421,14 @@
         top: 118px;
         width: 160px;
         height: 66px;
-        background: url(assets\img\mission-overview-line-1-not-work.png)
-          no-repeat;
+        background: var(--custom-mission-overview-line-1-not-work);
       }
       .line-2 {
         left: 326px;
         top: 118px;
         width: 171px;
         height: 65px;
-        background: url(assets\img\mission-overview-line-2.png) no-repeat;
+        background: var(--custom-mission-overview-line-2);
         background-position: 0 0;
         animation: lineAnimation-2 1.28s infinite steps(4, end);
       }
@@ -442,15 +437,14 @@
         top: 118px;
         width: 171px;
         height: 65px;
-        background: url(assets\img\mission-overview-line-2-not-work.png)
-          no-repeat;
+        background: var(--custom-mission-overview-line-2-not-work);
       }
       .line-3 {
         left: 309px;
         top: 190px;
         width: 393px;
         height: 77px;
-        background: url(assets\img\mission-overview-line-3.png) no-repeat;
+        background: var(--custom-mission-overview-line-3);
         background-position: 0 0;
         animation: lineAnimation-3 1.28s infinite steps(4, end);
       }
@@ -459,8 +453,7 @@
         top: 190px;
         width: 393px;
         height: 77px;
-        background: url(assets\img\mission-overview-line-3-not-work.png)
-          no-repeat;
+        background: var(--custom-mission-overview-line-3-not-work);
       }
 
       @lineWidth: -640px;

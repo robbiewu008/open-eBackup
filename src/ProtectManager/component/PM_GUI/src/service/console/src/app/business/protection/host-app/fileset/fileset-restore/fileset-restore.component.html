@@ -12,6 +12,14 @@
   -->
 
 <lv-form [formGroup]="formGroup" class="formGroup">
+  <lv-form-item *ngIf="tapeCopy && restoreType === RestoreType.CommonRestore">
+    <lv-form-label>{{
+      'protection_tape_all_restore_label' | i18n
+    }}</lv-form-label>
+    <lv-form-control>
+      <lv-switch formControlName="isDirectRecovery"></lv-switch>
+    </lv-form-control>
+  </lv-form-item>
   <lv-form-item>
     <lv-form-label lvRequired>
       {{ 'protection_restore_to_label' | i18n }}
@@ -23,15 +31,23 @@
             [lvValue]="restoreLocationType.ORIGIN"
             [lvDisabled]="disableOriginLocation"
             [lv-tooltip]="
-              disableOriginLocation && !isVolume
-                ? ('protection_cloud_origin_restore_disabled_label' | i18n)
-                : ''
+              disableOriginLocation && !isVolume ? disableOriginTip : ''
             "
           >
             {{ 'common_restore_to_origin_location_label' | i18n }}
           </lv-radio>
           <lv-radio [lvValue]="restoreLocationType.NEW">
             {{ 'common_restore_to_new_location_label' | i18n }}
+            <i
+              lv-icon="aui-icon-help"
+              lv-tooltip="{{ 'explore_volume_copy_new_loc_tip_label' | i18n }}"
+              lvTooltipTheme="light"
+              lvTooltipPosition="right"
+              class="configform-constraint"
+              lvColorState="true"
+              style="margin-bottom:4px"
+              *ngIf="isVolume"
+            ></i>
           </lv-radio>
         </lv-group>
       </lv-radio-group>
@@ -68,6 +84,49 @@
         </lv-select>
       </lv-form-control>
     </lv-form-item>
+  </ng-container>
+  <ng-container
+    *ngIf="
+      osType === dataMap.Fileset_Template_Os_Type.linux.value &&
+      isOsBackup &&
+      restoreType === RestoreType.CommonRestore
+    "
+  >
+    <lv-alert lvType="warning" *ngIf="formGroup.get('is_OS_restore').value">{{
+      'explore_fileset_os_restore_tip_label' | i18n
+    }}</lv-alert>
+    <lv-form-item>
+      <lv-form-label>
+        {{ 'explore_fileset_os_restore_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-switch
+          formControlName="is_OS_restore"
+          [lvDisabled]="formGroup.get('incrementalRestore').value"
+        ></lv-switch>
+      </lv-form-control>
+    </lv-form-item>
+    <lv-pro-table
+      #dataTable
+      [config]="tableConfig"
+      [data]="tableData"
+      *ngIf="formGroup.get('is_OS_restore').value"
+    ></lv-pro-table>
+    <lv-form-item *ngIf="formGroup.get('is_OS_restore').value">
+      <lv-form-label>
+        {{ 'explore_volume_reboot_system_after_restore_label' | i18n }}
+      </lv-form-label>
+      <lv-form-control>
+        <lv-switch formControlName="reboot_system_after_restore"></lv-switch>
+      </lv-form-control>
+    </lv-form-item>
+  </ng-container>
+  <ng-container
+    *ngIf="
+      formGroup.value.restoreLocation === restoreLocationType.NEW &&
+      !formGroup.get('is_OS_restore').value
+    "
+  >
     <lv-form-item>
       <lv-form-label lvRequired>
         {{ 'common_destination_path_label' | i18n }}
@@ -104,18 +163,23 @@
   <ng-container *ngIf="isIncremental">
     <lv-form-item>
       <lv-form-label>
-        {{'protection_incremental_restore_label'|i18n}}
+        {{ 'protection_incremental_restore_label' | i18n }}
         <i
           class="configform-constraint"
           lv-icon="aui-icon-help"
           lvTooltipTheme="light"
-          lv-tooltip="{{'protection_fileset_incremental_restore_tips_label'|i18n}}"
+          lv-tooltip="{{
+            'protection_fileset_incremental_restore_tips_label' | i18n
+          }}"
           lvColorState="true"
         >
         </i>
       </lv-form-label>
       <lv-form-control>
-        <lv-switch formControlName="incrementalRestore">
+        <lv-switch
+          formControlName="incrementalRestore"
+          [lvDisabled]="formGroup.get('is_OS_restore').value"
+        >
         </lv-switch>
       </lv-form-control>
     </lv-form-item>
@@ -130,10 +194,15 @@
           <lv-radio [lvValue]="fileReplaceStrategy.Overwriting"
             >{{ 'protection_overwrite_label' | i18n }}
           </lv-radio>
-          <lv-radio [lvValue]="fileReplaceStrategy.Skip">{{
-            'protection_skip_label' | i18n
-          }}</lv-radio>
-          <lv-radio [lvValue]="fileReplaceStrategy.Replace">
+          <lv-radio
+            [lvValue]="fileReplaceStrategy.Skip"
+            *ngIf="!formGroup.get('is_OS_restore').value"
+            >{{ 'protection_skip_label' | i18n }}</lv-radio
+          >
+          <lv-radio
+            [lvValue]="fileReplaceStrategy.Replace"
+            *ngIf="!formGroup.get('is_OS_restore').value"
+          >
             {{ 'protection_restore_replace_older_label' | i18n }}</lv-radio
           >
         </lv-group>
@@ -143,6 +212,26 @@
   <div class="advanced-container">
     <lv-collapse [lvType]="'simple'">
       <lv-collapse-panel [lvTitle]="titleTpl" [lvExpanded]="false">
+        <lv-form-item>
+          <lv-form-label
+            >{{ 'protection_channel_number_label' | i18n }}
+            <i
+              lv-icon="aui-icon-help"
+              lv-tooltip="{{ 'protection_fileset_channels_tips_label' | i18n }}"
+              lvTooltipTheme="light"
+              class="configform-constraint"
+              lvColorState="true"
+            ></i>
+          </lv-form-label>
+          <lv-form-control [lvErrorTip]="channelsErrorTip">
+            <input
+              lv-input
+              type="text"
+              formControlName="channels"
+              placeholder="1-40"
+            />
+          </lv-form-control>
+        </lv-form-item>
         <lv-form-item>
           <lv-form-label>
             {{ 'protection_restore_pre_script_label' | i18n }}
@@ -197,4 +286,37 @@
     >
     </i>
   </lv-group>
+</ng-template>
+
+<ng-template #capacityTpl let-item="$implicit">
+  <span>{{
+    item.diskSize | capacityCalculateLabel: '1.1-3':unitconst.BYTE:true
+  }}</span>
+</ng-template>
+
+<ng-template #selectDiskTpl let-item>
+  <lv-select
+    [lvOptions]="item.diskOptions"
+    lvValueKey="value"
+    [(ngModel)]="item.targetDisk"
+    (ngModelChange)="targetDiskChange($event)"
+    lvShowFilter
+    lvFilterKey="label"
+    lvFilterMode="contains"
+    [lvContentTemplate]="diskTemplate"
+    lvShowClear
+  ></lv-select>
+</ng-template>
+
+<ng-template #diskTemplate let-item>
+  <lv-group class="disk-select">
+    <span lv-overflow style="max-width: 200px;">{{ item.label }}</span>
+    <span class="aui-text-desc">{{
+      item.size | capacityCalculateLabel: '1.1-3':unitconst.BYTE:true
+    }}</span>
+  </lv-group>
+</ng-template>
+
+<ng-template #starTpl>
+  <span class="star-class">*</span>
 </ng-template>

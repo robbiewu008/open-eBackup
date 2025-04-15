@@ -1,0 +1,634 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring an Oracle Database">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002199963633.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002164757038">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring an Oracle Database</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002164757038"></a><a name="EN-US_TOPIC_0000002164757038"></a>
+  <h1 class="topictitle1">Restoring an Oracle Database</h1>
+  <div>
+   <p>This section describes how to restore a backed-up database to the original location or a new location.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <ul>
+     <li>You can restore an Oracle database by specifying a copy, a point in time, or an SCN.</li>
+     <li>Backup copies, replication copies, and imported copies can be used for RMAN-based restoration. Restoration to the original location or a new location is supported. Replication copies cannot be used for restoration to the original location.
+      <ul>
+       <li>Restored to the original location<p>An Oracle database is restored to the original host and directory of the database. During the restoration, the original database is overwritten.</p></li>
+       <li>Restored to a new location<p>An Oracle database is restored to a specified location. If a database with the same name exists at the location, it will be overwritten.</p></li>
+       <li>During the restoration, if a database with the same name exists in the target location, you are advised not to stop the restoration job. Otherwise, the original database will be damaged.</li>
+      </ul></li>
+     <li>For 1.6.0 and later versions, when snapshot-based restoration at the storage layer is performed:
+      <ul>
+       <li>Backup copies, replication copies, and imported copies can be used for restoration in the single-node system scenario.</li>
+       <li>Backup copies and imported copies can be used for restoration in the cluster scenario.</li>
+       <li>In the Windows cluster scenario, data can only be restored to the original location.</li>
+       <li>The system restores LUNs at the specified location. After the restoration, data on the target LUNs will be overwritten.</li>
+       <li>If snapshot-based restoration at the storage layer is performed in non-ASM deployment mode, the drive letters to which LUNs are mounted before and after the restoration may be different.</li>
+      </ul></li>
+     <li>The GUI may vary with versions.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>The client and other related software have been installed on the target host for restoration.<p>For details, see the <i><cite>Client Installation Guide</cite></i>.</p></li>
+     <li>When restoring data to a different host, ensure that the free disk space of the target host is greater than the size of the database.</li>
+     <li>For 1.6.0 and later versions, before performing snapshot-based restoration at the storage layer, ensure that:
+      <ul>
+       <li>The disk where OCR or voting files reside is not on the same LUN as the disk where data files reside.</li>
+       <li>The disk where OCR or voting files reside is not on the same LUN as the disk where log files reside.</li>
+       <li>The ASM disk group where the database resources to be protected reside does not have other database instances.</li>
+      </ul></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li id="EN-US_TOPIC_0000002164757038__li1386725584414"><a name="EN-US_TOPIC_0000002164757038__li1386725584414"></a><a name="li1386725584414"></a><span>During the restoration, if a database with the same name exists in the target location, shut down the database first. Otherwise, the restoration will fail. To shut down the database, do as follows:</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>The database with the same name at the target location will be overwritten after the restoration.</p>
+       </div>
+      </div>
+      <ol type="a">
+       <li>Log in to the Oracle database host.
+        <ul id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597202_en-us_topic_0000001656760969_ul1983714162204">
+         <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597202_en-us_topic_0000001656760969_li7258697580">If the Linux OS is used, use PuTTY to log in to the Oracle database host and run the <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597202_b14682476107">su - oracle</strong> command to switch to user <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597202_b1646874718106">oracle</strong>.</li>
+         <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597202_en-us_topic_0000001656760969_li1366015032013">If the Windows OS is used, log in to the Oracle database host as the system administrator.</li>
+        </ul></li>
+       <li>Run the following commands to log in to the Oracle database instance.
+        <ul id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_ul7420345341">
+         <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_li15682124913711">OS authentication:
+          <ul id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_ul89443983816">
+           <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_li18420124173415">If the Linux OS is used, run the following commands:<p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_p95148598366"><a name="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_li18420124173415"></a><a name="en-us_topic_0000002164597290_li18420124173415"></a><strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_b14236563719">export ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_i85144598369">Database instance name</em></p> <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_p145141259153613"><strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_b1597618293715">sqlplus / as sysdba</strong></p></li>
+           <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_li7402151163816">If the Windows OS is used, perform the following operations:
+            <ol class="substepthirdol" id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_ol124110408264">
+             <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_li624120402267">Press <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_en-us_topic_0000002164597290_uicontrol11819941114510"><b>Win+R</b></span> to open the <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_en-us_topic_0000002164597290_b1015191219408">Run</strong> window.</li>
+             <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_li161821338277">Enter <span class="parmvalue" id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_parmvalue122291222476"><b>cmd</b></span> and run the following commands:<p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_p1755152313372"><strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_b19591532143713">set ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_i16755423133718">Database instance name</em></p> <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_p1075515234379"><strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_b540852910371">sqlplus / as sysdba</strong></p></li>
+            </ol></li>
+          </ul></li>
+         <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_li105571236103417">Database authentication:
+          <ul id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_ul1136516538386">
+           <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_li1723334817382">If the Linux OS is used, run the following commands:<p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_p920984963717"><a name="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_li1723334817382"></a><a name="en-us_topic_0000002164597290_li1723334817382"></a><strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_b162511338427">export ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_i142521037423">Database instance name</em></p> <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_p182093496371"><strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_b034785743716">sqlplus</strong></p> <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_p17915722412">Enter the name of a user with the <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_b0440649114212">sysdba</strong> permissions as prompted:</p> <pre class="screen" id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_screen9915112104114"><em id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_i1915102164113">username </em>as sysdba</pre> <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_p159150224117">Enter the password as prompted.</p></li>
+           <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_li122822426407">If the Windows OS is used, perform the following operations:
+            <ol class="substepthirdol" id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_ol587720252273">
+             <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_li5168124414479">Press <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_en-us_topic_0000002164597290_uicontrol11819941114510_1"><b>Win+R</b></span> to open the <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_en-us_topic_0000002164597290_b1015191219408_1">Run</strong> window.</li>
+             <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_li3877172517270">Enter <span class="parmvalue" id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_parmvalue89061315114212"><b>cmd</b></span> and run the following commands:<p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_p8745723103813"><strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_b0361183517422">set ORACLE_SID=</strong><em id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_i8361163518426">Database instance name</em></p> <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_p15745182333814"><strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_b11154427163811">sqlplus</strong></p> <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_p71274192512">Enter the name of a user with the <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_b330420012221">sysdba</strong> permissions as prompted:</p> <pre class="screen" id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_screen18896121620243"><em id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_i380114413256">username </em>as sysdba</pre> <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164597290_p15251105852511">Enter the password as prompted.</p></li>
+            </ol></li>
+          </ul></li>
+        </ul></li>
+       <li>Run the following command to shut down the database with the same name:<p><strong>shutdown immediate;</strong></p>
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>For an RAC cluster, run this command on all nodes.</p>
+         </div>
+        </div> <p>If the following information is displayed, the database is shut down.</p> <pre class="screen">ORACLE instance shut down.</pre></li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164757038__li17844445165619"><a name="EN-US_TOPIC_0000002164757038__li17844445165619"></a><a name="li17844445165619"></a><span>For data restoration to the original location, ensure that the size of the free memory of the target host is greater than the total size of the system global area (SGA) and process global area (PGA) of the database. Otherwise, the restoration may fail.</span><p></p>
+      <ol type="a">
+       <li>Check the SGA size and PGA size.
+        <ol class="substepthirdol">
+         <li>Log in to the Oracle database. For details, see <a href="#EN-US_TOPIC_0000002164757038__li1386725584414">1</a>.</li>
+         <li id="EN-US_TOPIC_0000002164757038__li465910318509">Run the following command to check the SGA size:<p id="EN-US_TOPIC_0000002164757038__p1865918316502"><a name="EN-US_TOPIC_0000002164757038__li465910318509"></a><a name="li465910318509"></a><strong id="EN-US_TOPIC_0000002164757038__b1265903185017">show parameter sga;</strong></p>
+          <div class="p" id="EN-US_TOPIC_0000002164757038__p196591232506">
+           The command output similar to the following is displayed. Check the value of <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol365911365013"><b>sga_target</b></span>.
+           <pre class="screen" id="EN-US_TOPIC_0000002164757038__screen965973135010">SQL&gt; show parameter sga;
+
+NAME                                 TYPE                              VALUE
+------------------------------------ --------------------------------- ------------------------------
+allow_group_access_to_sga            boolean                            FALSE
+lock_sga                             boolean                            FALSE
+pre_page_sga                         boolean                            TRUE
+sga_max_size                         big integer                        4768M
+sga_min_size                         big integer                        0
+<strong id="EN-US_TOPIC_0000002164757038__b365911314501">sga_target                       big integer                    4768M</strong>
+unified_audit_sga_queue_size         integer                            1048576</pre>
+          </div></li>
+         <li id="EN-US_TOPIC_0000002164757038__li965918313501">Run the following command to check the PGA size:<p id="EN-US_TOPIC_0000002164757038__p0659163145014"><a name="EN-US_TOPIC_0000002164757038__li965918313501"></a><a name="li965918313501"></a><strong id="EN-US_TOPIC_0000002164757038__b146599335016">show parameter pga;</strong></p> <p id="EN-US_TOPIC_0000002164757038__p176591235501">The command output similar to the following is displayed. Check the value of <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol66597315507"><b>pga_aggregate_target</b></span>.</p> <pre class="screen" id="EN-US_TOPIC_0000002164757038__screen865911317505">SQL&gt; show parameter pga;
+
+NAME                                 TYPE                              VALUE
+------------------------------------ -------------------------------- ------------------------------
+pga_aggregate_limit                  big integer                       3900M
+<strong id="EN-US_TOPIC_0000002164757038__b1865917312504">pga_aggregate_target             big integer                   1589M</strong></pre></li>
+        </ol></li>
+       <li>Check the free memory size of the host.
+        <ul>
+         <li>If the Linux OS is used, run the following command as user <strong>root</strong> to check the free memory size:<p><strong>free -h</strong></p> <p>The command output similar to the following is displayed. Check the free memory size.</p> <pre class="screen">[root@localhost ~]# free -h
+              total        used        free      shared  buff/cache   <strong>available</strong>
+<strong>Mem</strong>:            15G        2.2G        992M        4.8G         12G        <strong>8.1G</strong>
+Swap:           99G          0B         99G</pre></li>
+         <li>If the Windows OS is used, perform the following operations:
+          <ol class="substepthirdol">
+           <li>Right-click the taskbar of the desktop and choose <strong>Task Manager</strong> from the shortcut menu.</li>
+           <li>Click the <strong>Performance</strong> tab and click <strong>Memory</strong> to view the free memory size.</li>
+          </ol></li>
+        </ul> <p id="EN-US_TOPIC_0000002164757038__p17444174155215">If the free memory size is not greater than the sum of <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol116596335018"><b>sga_target</b></span> and <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol16607311501"><b>pga_aggregate_target</b></span> values, clear the memory to ensure that the free memory size is greater than the sum of <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol126601137507"><b>sga_target</b></span> and <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol86609310504"><b>pga_aggregate_target</b></span> values.</p></li>
+      </ol> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164757038__li16371834113620"><span>If the Linux OS is used and the target host for recovery is in the high availability cluster server (HACS) cluster, freeze the HACS cluster before the recovery.</span><p></p>
+      <div class="p" id="EN-US_TOPIC_0000002164757038__p73081226165516">
+       You can check whether the target host is in the HACS cluster by referring to <a href="en-us_topic_0000002164597210.html">Checking Whether the Target Recovery Host Is a Host in the HACS Cluster</a>.
+       <ol type="a" id="EN-US_TOPIC_0000002164757038__ol0422132585512">
+        <li id="EN-US_TOPIC_0000002164757038__li34221251555">Use PuTTY to log in to the Oracle database host as user <strong id="EN-US_TOPIC_0000002164757038__b248215016391">root</strong>.</li>
+        <li id="EN-US_TOPIC_0000002164757038__li154221525195516">Run the following command to freeze the HACS cluster:<p id="EN-US_TOPIC_0000002164757038__p2088691273211"><a name="EN-US_TOPIC_0000002164757038__li154221525195516"></a><a name="li154221525195516"></a><strong id="EN-US_TOPIC_0000002164757038__b1283231763217">crm configure property maintenance-mode=true</strong></p>
+         <div class="notice" id="EN-US_TOPIC_0000002164757038__note13422142510556">
+          <span class="noticetitle"><img src="public_sys-resources/notice_3.0-en-us.png"> </span>
+          <div class="noticebody">
+           <p id="EN-US_TOPIC_0000002164757038__p3422122575514">After the restoration job is complete, run the <strong id="EN-US_TOPIC_0000002164757038__b144120133406">crm configure property maintenance-mode=false</strong> command to unfreeze the cluster.</p>
+          </div>
+         </div></li>
+       </ol>
+      </div> <p></p></li>
+     <li><span>For 1.6.0 and later versions, perform this step if snapshot-based restoration at the storage layer is required. Otherwise, skip this step.</span><p></p>
+      <ul>
+       <li>For an ASM instance:
+        <ul>
+         <li>If the Linux OS is used, use PuTTY to log in to the Oracle database host and perform the following operations:
+          <ol type="a">
+           <li>Shut down the ASM instance or unmount the ASM disk group.
+            <ul>
+             <li>In a single-node system, run the following commands to shut down the ASM instance:<pre class="screen">su - grid
+srvctl stop asm -force</pre></li>
+             <li>In an RAC cluster, run the following commands on all nodes to unmount the ASM disk group where the non-OCR and voting disk data is located. <em>DATA</em> indicates the disk group name.<pre class="screen">su - grid</pre> <pre class="screen">asmcmd</pre> <pre class="screen">ASMCMD&gt; umount -f <em>DATA</em></pre></li>
+            </ul></li>
+           <li><span id="EN-US_TOPIC_0000002164757038__ph1373181923716">For restoration using log copies of the Oracle cluster, perform the following operations. Otherwise, skip this step.</span><p id="EN-US_TOPIC_0000002164757038__p7416617181812">Run the following commands to disable the crs service:</p> <pre class="screen">su - grid</pre> <pre class="screen">cd $ORACLE_HOME/bin</pre> <pre class="screen" id="EN-US_TOPIC_0000002164757038__screen18913141015199">crsctl stop res ora.crsd -init</pre></li>
+          </ol></li>
+         <li>If the Windows OS is used, log in to the Oracle database host as the system administrator and perform the following operations:
+          <ol type="a">
+           <li>Specify the <strong>ORACLE_HOME</strong> path. Oracle 19c is used as an example.
+            <ol class="substepthirdol">
+             <li>Press <strong>Win+R</strong> to open the <strong>Run</strong> dialog box. Enter <strong>regedit</strong> to open the registry and obtain the <strong>ORACLE_HOME</strong> path from <strong>Computer\HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE\KEY_OraGI</strong><em>19Home1</em>.
+              <div class="note">
+               <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+               <div class="notebody">
+                <p>In the path, <strong>KEY_OraGI</strong><em>19Home1</em> is only an example. Replace it based on actual conditions.</p>
+               </div>
+              </div></li>
+             <li>Press <span class="uicontrol"><b>Win+R</b></span> to open the <strong>Run</strong> window.</li>
+             <li>Enter <span class="parmvalue"><b>cmd</b></span> and press <strong>Enter</strong>. In the displayed window, run the following command to specify the <strong>ORACLE_HOME</strong> path:<pre class="screen">set ORACLE_HOME=<em>queried ORACLE_HOME path</em></pre></li>
+            </ol></li>
+           <li>Press <strong>Win+R</strong>, enter <strong>cmd</strong>, and press <strong>Enter</strong>. In the Command Prompt, shut down the ASM instance or unmount the ASM disk group by running commands.
+            <ul>
+             <li>In a single-node system, run the following command to shut down the ASM instance:<pre class="screen">srvctl stop asm -force</pre></li>
+             <li>In an RAC cluster, run the following commands on all nodes to unmount the ASM disk group where the non-OCR and voting disk data is located. <em>DATA</em> indicates the disk group name.<pre class="screen">set ORACLE_SID <strong>=</strong> <em>ASM instance name</em></pre> <pre class="screen">asmcmd</pre> <pre class="screen">ASMCMD&gt; umount -f <em>DATA</em></pre></li>
+            </ul></li>
+           <li><span>For restoration using log copies of the Oracle cluster, perform the following operations. Otherwise, skip this step.</span><p>Run the following commands to disable the crs service:</p> <pre class="screen">crsctl stop res ora.crsd -init</pre></li>
+          </ol></li>
+        </ul></li>
+       <li>For a non-ASM instance:
+        <ol type="a">
+         <li>Run the following command to check whether effective mounting rules exist in the directories where data, control, and log files, as well as pfile and spfile parameter files are located:<p><strong>cat /etc/fstab</strong></p>
+          <ul>
+           <li>If yes, delete the corresponding records or add <strong>#</strong> before the records.<p>Example:</p> <p><span><img src="en-us_image_0000002164757226.png"></span></p></li>
+           <li>If no, no action is required.</li>
+          </ul></li>
+         <li id="EN-US_TOPIC_0000002164757038__li133927551708"><a name="EN-US_TOPIC_0000002164757038__li133927551708"></a><a name="li133927551708"></a>Run the following command to query the mounting information about the disks where data, control, and log files, as well as pfile and spfile parameter files are located:<p><a name="EN-US_TOPIC_0000002164757038__li133927551708"></a><a name="li133927551708"></a><strong>df -h</strong></p></li>
+         <li>Run the following command to unmount the disks where data, control, and log files, as well as pfile and spfile parameter files are located:<p><strong>umount -l</strong> <em>Disk mounting directory</em></p>
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <p>You can obtain the <em>Disk mounting directory</em> from <a href="#EN-US_TOPIC_0000002164757038__li133927551708">4.b</a>.</p>
+            <p></p>
+           </div>
+          </div></li>
+        </ol></li>
+      </ul> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164757038__li10796132225712"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002199964685_uicontrol1186171611461"><b><span id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002199964685_text6186101615464"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002199964685_text74373665812"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002199964685_text12413710445"><strong>Databases</strong></span> &gt; <span id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002199964685_text151861216124615"><strong>Oracle</strong></span></b></span>.</span></li>
+     <li><span>You can search for copies by database resource or copy. This section uses database resources as an example.</span><p></p><p>On the <span class="wintitle"><b><span><strong>Resources</strong></span></b></span> tab page, locate the database to be restored by database name and then click the name.</p> <p></p></li>
+     <li><span>Restore data to a specified point in time or using a copy.</span><p></p><p>You can specify a copy or any point in time between two copies for restoration.</p>
+      <div class="p">
+       If you need to specify an SCN for restoration, ignore this step and go to <a href="#EN-US_TOPIC_0000002164757038__li02165214225">8</a>.
+       <ol type="a">
+        <li>On the <span><strong>By Date</strong></span> tab page, select a year, month, and day in sequence to search for copies.<p>If <span><img src="en-us_image_0000002199963829.png"></span> is displayed under a month or date, copies exist in the month or on the date.</p></li>
+        <li>Specify a copy or a point in time for restoration.
+         <ul>
+          <li>Specify a copy for restoration.<p><span><img class="eddx" src="en-us_image_0000002164597506.png"></span></p> <p></p></li>
+          <li>Specify a point in time for restoration.<p>On the timeline, <span><img src="en-us_image_0000002164757242.png"></span> indicates that a copy exists at the time point. If no archive logs are backed up at a point in time, data cannot be restored to the point in time.</p> <p><span><img class="eddx" src="en-us_image_0000002199998257.png"></span></p> <p></p>
+           <div class="note" id="EN-US_TOPIC_0000002164757038__note20962634193812">
+            <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+            <div class="notebody">
+             <ul id="EN-US_TOPIC_0000002164757038__ul75802612312">
+              <li id="EN-US_TOPIC_0000002164757038__li1497342618234">For 1.5.0, a maximum of 100 copies can be displayed on the timeline. You can click <span><img id="EN-US_TOPIC_0000002164757038__image173544102299" src="en-us_image_0000002199963833.png"></span> to view all copies.</li>
+              <li id="EN-US_TOPIC_0000002164757038__li95818264231">During point-in-time restoration, the information about the copy used for restoration cannot be obtained on the management page. Therefore, you cannot view the copy information of the restoration job on pages of the restoration job and related events.</li>
+             </ul>
+            </div>
+           </div></li>
+         </ul></li>
+        <li id="EN-US_TOPIC_0000002164757038__li10621031104911"><a name="EN-US_TOPIC_0000002164757038__li10621031104911"></a><a name="li10621031104911"></a>Restore the Oracle database to the original location or a new location.
+         <div class="p">
+          <a name="EN-US_TOPIC_0000002164757038__li10621031104911"></a><a name="li10621031104911"></a>
+          <ul>
+           <li>Restore the Oracle database to the original location.
+            <ol class="substepthirdol">
+             <li>Set <strong>Restore To</strong> to <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span>.</li>
+             <li>Set the advanced parameters for restoration.<p><a href="#EN-US_TOPIC_0000002164757038__table2019615469249">Table 1</a> describes the related parameters.</p>
+              <div class="tablenoborder">
+               <a name="EN-US_TOPIC_0000002164757038__table2019615469249"></a><a name="table2019615469249"></a>
+               <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164757038__table2019615469249" frame="border" border="1" rules="all">
+                <caption>
+                 <b>Table 1 </b>Advanced parameters of a restoration job
+                </caption>
+                <colgroup>
+                 <col style="width:32.86%">
+                 <col style="width:67.14%">
+                </colgroup>
+                <thead align="left">
+                 <tr>
+                  <th align="left" class="cellrowborder" valign="top" width="32.86%" id="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1"><p>Parameter</p></th>
+                  <th align="left" class="cellrowborder" valign="top" width="67.14%" id="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2"><p>Description</p></th>
+                 </tr>
+                </thead>
+                <tbody>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><span><strong>BCT</strong></span></p>
+                   <div class="note">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p12270112845717">This parameter is available only for RMAN-based restoration.</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 ">
+                   <ul id="EN-US_TOPIC_0000002164757038__ul0406833165714">
+                    <li id="EN-US_TOPIC_0000002164757038__li1406173315719">If you enable the BCT function, the BCT function will be automatically enabled after the restoration is successful.</li>
+                    <li id="EN-US_TOPIC_0000002164757038__li1140663317578">If you disable the BCT function, the BCT function will be automatically disabled after the restoration is successful.</li>
+                   </ul></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><span><strong>Channels</strong></span></p>
+                   <div class="note">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p12270112845717_1">This parameter is available only for RMAN-based restoration.</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164757038__p1919510464243">Controls the concurrency of restoration jobs. This parameter specifies the maximum number of connections between RMAN and database instances. If the host performance is average, you are advised to retain the default value. If the host performance is excellent, you can increase the number of channels to improve the concurrency and restoration efficiency. It is recommended that the number of channels be the same as the number of data files.</p> <p>Value range: <strong>1</strong> to <strong>254</strong>.</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><strong>Clients</strong></p>
+                   <div class="note">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p75712513014">This parameter is available only when snapshot-based restoration at the storage layer is performed in 1.6.0 and later versions.</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 ">
+                   <div class="p" id="EN-US_TOPIC_0000002164757038__p17564105152415">
+                    Client used for executing the restoration job. You can select multiple clients. If this parameter is not set, the system selects one client by default.
+                    <div class="note" id="EN-US_TOPIC_0000002164757038__note549003193914">
+                     <span class="notetitle"> NOTE: </span>
+                     <div class="notebody">
+                      <p id="EN-US_TOPIC_0000002164757038__p13111497296">If the Windows OS is used, select a built-in client or a host where the external Linux client and Oracle plug-in are installed.</p>
+                     </div>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><strong>Concurrency</strong></p>
+                   <div class="note">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p75712513014_1">This parameter is available only when snapshot-based restoration at the storage layer is performed in 1.6.0 and later versions.</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 "><p>Number of restoration sub-jobs that can be executed concurrently. The value ranges from <strong>1</strong> to <strong>8</strong>.</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><strong>Start Database</strong></p>
+                   <div class="note">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p>This parameter is available only when RMAN-based restoration is performed in 1.6.0 and later versions.</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164757038__p098982795020">After this function is enabled, the database is automatically started after the restoration job is complete.</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><span><strong>Execution Script</strong></span></p></td>
+                  <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164757038__p1676124485210">You can execute a user-defined script before restoration, upon restoration success, or upon restoration failure as required.</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><span><strong>Script to Run Before Restoration</strong></span></p></td>
+                  <td class="cellrowborder" rowspan="3" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164757038__p1551175893115">You can configure <strong id="EN-US_TOPIC_0000002164757038__b76991612143815">Script to Run Before Restoration</strong>, <strong id="EN-US_TOPIC_0000002164757038__b13699171210384">Script to Run upon Restoration Success</strong>, and <strong id="EN-US_TOPIC_0000002164757038__b4699121213814">Script to Run upon Restoration Failure</strong> based on the actual requirements. When a message indicating that the prerequisite task starts to be executed is displayed during a backup job, the configured script will be executed in the corresponding scenario.</p>
+                   <ul id="EN-US_TOPIC_0000002164757038__ul564321125916">
+                    <li id="EN-US_TOPIC_0000002164757038__li664172111592">If the Linux OS is used, enter the script name, which ends with <strong id="EN-US_TOPIC_0000002164757038__b455691613819">.sh</strong>. Ensure that the script has been stored in the <strong id="EN-US_TOPIC_0000002164757038__b1535284433812">DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty</strong> directory in the client installation directory and the user (<strong id="EN-US_TOPIC_0000002164757038__b183891830133820">root</strong> by default) who has logged in to the database host is permitted to execute the script. If the user has no execution permission, run the following commands in sequence to grant the permission:<p id="EN-US_TOPIC_0000002164757038__p1122810535219"><strong id="EN-US_TOPIC_0000002164757038__b11890754143818">chown root:root</strong> <em id="EN-US_TOPIC_0000002164757038__i19890125443816">Script name</em></p> <p id="EN-US_TOPIC_0000002164757038__p72285517529"><strong id="EN-US_TOPIC_0000002164757038__b6340135733813">chmod 500</strong><em id="EN-US_TOPIC_0000002164757038__i2340205773810"> Script name</em></p></li>
+                   </ul>
+                   <ul id="EN-US_TOPIC_0000002164757038__ul5228155115212">
+                    <li id="EN-US_TOPIC_0000002164757038__li422818514522">If the Windows OS is used, enter the script name, which ends with <strong id="EN-US_TOPIC_0000002164757038__b6771810113914">.bat</strong>. Ensure that the script has been stored in the <strong id="EN-US_TOPIC_0000002164757038__b881782015394">DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty</strong> directory in the client installation directory and the user (<strong id="EN-US_TOPIC_0000002164757038__b1988213103914">Administrator</strong> by default) who has logged in to the database host is permitted to execute the script. If the user has no execution permission, perform the following operations in sequence to grant the permission:<p id="EN-US_TOPIC_0000002164757038__p1222865205217">Right-click the script and choose <strong id="EN-US_TOPIC_0000002164757038__b121087327395">Properties</strong> &gt; <strong id="EN-US_TOPIC_0000002164757038__b010823211399">Security</strong>. In the dialog box that is displayed, select the <strong id="EN-US_TOPIC_0000002164757038__b51082326396">Administrator</strong> user and click <strong id="EN-US_TOPIC_0000002164757038__b131081632143917">Edit</strong> to change the permission.</p></li>
+                   </ul>
+                   <div class="note" id="EN-US_TOPIC_0000002164757038__note61961446112411">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__p519614617243">When <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol3817648133717"><b><span id="EN-US_TOPIC_0000002164757038__text1817154863715"><strong>Script to Run upon Restoration Success</strong></span></b></span> is configured, the status of the restoration job is displayed as <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol15818144810376"><b><span id="EN-US_TOPIC_0000002164757038__text1381714883715"><strong>Succeeded</strong></span></b></span> on the management page even if the script fails to be executed. Check whether the job details contain a message indicating that a post-processing script fails to be executed. If yes, modify the script in a timely manner.</p>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><span><strong>Script to Run upon Restoration Success</strong></span></p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><span><strong>Script to Run upon Restoration Failure</strong></span></p></td>
+                 </tr>
+                </tbody>
+               </table>
+              </div></li>
+             <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.
+              <div class="note">
+               <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+               <div class="notebody">
+                <p>After restoration to the original location is performed, execute a full backup during off-peak hours. Otherwise, the log backup after the point in time for restoration may be unavailable.</p>
+               </div>
+              </div></li>
+            </ol></li>
+           <li>Restore the Oracle database to a new location.
+            <ol class="substepthirdol">
+             <li>Set <strong>Restore To</strong> to <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</li>
+             <li>Set the basic and advanced parameters for restoration.<p><a href="#EN-US_TOPIC_0000002164757038__table15202164672412">Table 2</a> describes the related parameters.</p>
+              <div class="tablenoborder">
+               <a name="EN-US_TOPIC_0000002164757038__table15202164672412"></a><a name="table15202164672412"></a>
+               <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002164757038__table15202164672412" frame="border" border="1" rules="all">
+                <caption>
+                 <b>Table 2 </b>Restoration parameters
+                </caption>
+                <colgroup>
+                 <col style="width:18.41%">
+                 <col style="width:81.58999999999999%">
+                </colgroup>
+                <thead align="left">
+                 <tr>
+                  <th align="left" class="cellrowborder" valign="top" width="18.41%" id="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1"><p>Parameter</p></th>
+                  <th align="left" class="cellrowborder" valign="top" width="81.58999999999999%" id="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2"><p>Description</p></th>
+                 </tr>
+                </thead>
+                <tbody>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 ">
+                   <div class="p">
+                    <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164820458_b827118125517">Tag</strong>
+                    <div class="note" id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164820458_note1330311543247">
+                     <span class="notetitle"> NOTE: </span>
+                     <div class="notebody">
+                      <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164820458_p630385412417"><span id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164820458_ph5374928181810">This parameter is available only in 1.6.0 and later versions.</span></p>
+                     </div>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>If you set <strong>Restore To</strong> to <span class="uicontrol"><b>New location</b></span>, you can filter the resources to be restored by tag.</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span><strong>Target Host/Cluster</strong></span></p></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>Target host or cluster to which data is restored.</p>
+                   <div class="note" id="EN-US_TOPIC_0000002164757038__note179370214920">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__p2922101773417">If you want to restore data to a cluster, select a node in the cluster.</p>
+                    </div>
+                   </div> <p></p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 ">
+                   <div class="p">
+                    <strong>Original Instance</strong>
+                    <div class="note" id="EN-US_TOPIC_0000002164757038__note15922394357">
+                     <span class="notetitle"> NOTE: </span>
+                     <div class="notebody">
+                      <p id="EN-US_TOPIC_0000002164757038__p292039103511">This parameter is available only when RMAN-based restoration is performed in 1.6.0 and later versions.</p>
+                     </div>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p id="EN-US_TOPIC_0000002164757038__p13601141483419">Original instance to be restored to the target location.</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 ">
+                   <div class="p">
+                    <strong>Target Instance</strong>
+                    <div class="note">
+                     <span class="notetitle"> NOTE: </span>
+                     <div class="notebody">
+                      <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p292039103511">This parameter is available only when RMAN-based restoration is performed in 1.6.0 and later versions.</p>
+                     </div>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 ">
+                   <div class="p" id="EN-US_TOPIC_0000002164757038__p948713314367">
+                    Name of the instance in the target location for restoration. If you do not set this parameter, the instance name is the same as the original instance name before the restoration.
+                    <div class="note" id="EN-US_TOPIC_0000002164757038__note16724735153418">
+                     <span class="notetitle"> NOTE: </span>
+                     <div class="notebody">
+                      <p id="EN-US_TOPIC_0000002164757038__p17724173583412">If the target instance name is configured, use the target instance name to log in to the database after the restoration.</p>
+                     </div>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span><strong>Target Path</strong></span></p>
+                   <div class="note" id="EN-US_TOPIC_0000002164757038__note3270162820571">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__p12270112845717">This parameter is available only for RMAN-based restoration.</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>ASM disk group directory or file system directory where the database to be restored is located on the target host.</p> <p id="EN-US_TOPIC_0000002164757038__p181981746162414">An example of the ASM disk group directory is <strong id="EN-US_TOPIC_0000002164757038__b1890110556352">+ORADATA</strong>, and an example of the file system directory is <strong id="EN-US_TOPIC_0000002164757038__b1034285212359">/u01/oracle/oradata/</strong>.</p>
+                   <div class="note">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <ul>
+                      <li><span id="EN-US_TOPIC_0000002164757038__ph14567120183420">Ensure that the path exists on the target host and the Oracle installation user has the read, write, and execute permissions on the path. (If the Linux OS is used, switch to the Oracle installation user and run the <strong id="EN-US_TOPIC_0000002164757038__b250151316494">ll</strong> command in the parent path to query the permissions. If the Windows OS is used, right-click the path, choose <strong id="EN-US_TOPIC_0000002164757038__b1680102494913">Properties</strong> &gt; <strong id="EN-US_TOPIC_0000002164757038__b177971928114914">Security</strong>, and find the installation user to view the permissions.)</span> Otherwise, the restoration job will fail. If the target path is empty, ensure that the ASM disk group directory or file system directory that is the same as that of the production database exists on the target host.</li>
+                      <li>The remaining space of the disk where the target path is located must be greater than the space occupied by the source database. Otherwise, the restoration job will fail.</li>
+                     </ul>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><strong>Target Disk</strong></p>
+                   <div class="note" id="EN-US_TOPIC_0000002164757038__note86651341182613">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__p75712513014">This parameter is available only when snapshot-based restoration at the storage layer is performed in 1.6.0 and later versions.</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>Select the disk to be restored to the target host.</p>
+                   <div class="note">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <ul>
+                      <li>If the disk to be restored is an ASM disk, select the target disk corresponding to <strong>ASM Disk Group Name</strong>. For example, if the value of <strong>ASM Disk Group Name</strong> is <strong>data_108</strong>, select a disk whose prefix is <strong>data</strong> as the target disk.</li>
+                      <li>After snapshot-based restoration at the storage layer is performed, data on the target LUNs will be overwritten. Ensure that the size of the corresponding LUN at the target location is greater than or equal to that of the LUN in the backup copy.</li>
+                     </ul>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><strong>Clients</strong></p>
+                   <div class="note">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p75712513014_2">This parameter is available only when snapshot-based restoration at the storage layer is performed in 1.6.0 and later versions.</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 ">
+                   <div class="p">
+                    Client used for executing the restoration job. You can select multiple clients. If this parameter is not set, the system selects one client by default.
+                    <div class="note" id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_note549003193914">
+                     <span class="notetitle"> NOTE: </span>
+                     <div class="notebody">
+                      <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p13111497296">If the Windows OS is used, select a built-in client or a host where the external Linux client and Oracle plug-in are installed.</p>
+                     </div>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><strong>Concurrency</strong></p>
+                   <div class="note">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p75712513014_3">This parameter is available only when snapshot-based restoration at the storage layer is performed in 1.6.0 and later versions.</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>Number of restoration jobs that can be executed concurrently. The value ranges from <strong>1</strong> to <strong>8</strong>.</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span><strong>BCT</strong></span></p>
+                   <div class="note">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p12270112845717_2">This parameter is available only for RMAN-based restoration.</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 ">
+                   <ul>
+                    <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_li1406173315719">If you enable the BCT function, the BCT function will be automatically enabled after the restoration is successful.</li>
+                    <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_li1140663317578">If you disable the BCT function, the BCT function will be automatically disabled after the restoration is successful.</li>
+                   </ul></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span><strong>Channels</strong></span></p>
+                   <div class="note">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p12270112845717_3">This parameter is available only for RMAN-based restoration.</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>Controls the concurrency of restoration jobs. This parameter specifies the maximum number of connections between RMAN and database instances. If the host performance is average, you are advised to retain the default value. If the host performance is excellent, you can increase the number of channels to improve the concurrency and restoration efficiency. It is recommended that the number of channels be the same as the number of data files.</p> <p>Value range: <strong>1</strong> to <strong>254</strong>.</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span><strong>Execution Script</strong></span></p></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>You can execute a user-defined script before restoration, upon restoration success, or upon restoration failure as required.</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span><strong>Script to Run Before Restoration</strong></span></p></td>
+                  <td class="cellrowborder" rowspan="3" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>You can configure <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b76991612143815">Script to Run Before Restoration</strong>, <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b13699171210384">Script to Run upon Restoration Success</strong>, and <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b4699121213814">Script to Run upon Restoration Failure</strong> based on the actual requirements. When a message indicating that the prerequisite task starts to be executed is displayed during a backup job, the configured script will be executed in the corresponding scenario.</p>
+                   <ul>
+                    <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_li664172111592">If the Linux OS is used, enter the script name, which ends with <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b455691613819">.sh</strong>. Ensure that the script has been stored in the <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b1535284433812">DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty</strong> directory in the client installation directory and the user (<strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b183891830133820">root</strong> by default) who has logged in to the database host is permitted to execute the script. If the user has no execution permission, run the following commands in sequence to grant the permission:<p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p1122810535219"><strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b11890754143818">chown root:root</strong> <em id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_i19890125443816">Script name</em></p> <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p72285517529"><strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b6340135733813">chmod 500</strong><em id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_i2340205773810"> Script name</em></p></li>
+                   </ul>
+                   <ul>
+                    <li id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_li422818514522">If the Windows OS is used, enter the script name, which ends with <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b6771810113914">.bat</strong>. Ensure that the script has been stored in the <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b881782015394">DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty</strong> directory in the client installation directory and the user (<strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b1988213103914">Administrator</strong> by default) who has logged in to the database host is permitted to execute the script. If the user has no execution permission, perform the following operations in sequence to grant the permission:<p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p1222865205217">Right-click the script and choose <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b121087327395">Properties</strong> &gt; <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b010823211399">Security</strong>. In the dialog box that is displayed, select the <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b51082326396">Administrator</strong> user and click <strong id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_b131081632143917">Edit</strong> to change the permission.</p></li>
+                   </ul>
+                   <div class="note">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p519614617243">When <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_uicontrol3817648133717"><b><span id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_text1817154863715"><strong>Script to Run upon Restoration Success</strong></span></b></span> is configured, the status of the restoration job is displayed as <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_uicontrol15818144810376"><b><span id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_text1381714883715"><strong>Succeeded</strong></span></b></span> on the management page even if the script fails to be executed. Check whether the job details contain a message indicating that a post-processing script fails to be executed. If yes, modify the script in a timely manner.</p>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span><strong>Script to Run upon Restoration Success</strong></span></p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span><strong>Script to Run upon Restoration Failure</strong></span></p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span><strong>Modify Database Settings</strong></span></p>
+                   <div class="note">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__en-us_topic_0000002164757038_p12270112845717_4">This parameter is available only for RMAN-based restoration.</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>Modify the database parameters based on the actual configuration of the target host. If any parameter is set incorrectly, the database may fail to be restored.</p>
+                   <div class="note" id="EN-US_TOPIC_0000002164757038__note32022468247">
+                    <span class="notetitle"> NOTE: </span>
+                    <div class="notebody">
+                     <p id="EN-US_TOPIC_0000002164757038__p182002046152413">During restoration, ensure that the free memory size of the target host must be greater than the total size of the SGA and PGA of the database. Otherwise, the restoration may fail.</p>
+                     <ol id="EN-US_TOPIC_0000002164757038__ol1220294614243">
+                      <li id="EN-US_TOPIC_0000002164757038__li192002046192416">Check the free memory size of the target host.<p id="EN-US_TOPIC_0000002164757038__p14200174614242"><a name="EN-US_TOPIC_0000002164757038__li192002046192416"></a><a name="li192002046192416"></a>For details, see <a href="#EN-US_TOPIC_0000002164757038__li17844445165619">2</a>.</p></li>
+                      <li id="EN-US_TOPIC_0000002164757038__li1420174662413">After enabling <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol2823739397"><b><span id="EN-US_TOPIC_0000002164757038__text132158351392"><strong>Modify Database Settings</strong></span></b></span>, search for <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol43952050122017"><b>*.pga_aggregate_target</b></span> and <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol5885145922016"><b>*.sga_target</b></span> parameters.<p id="EN-US_TOPIC_0000002164757038__p122019465249">Check whether the free memory size is greater than the sum of <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol12195102664111"><b>*.pga_aggregate_target</b></span> and <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol11195426134114"><b>*.sga_target</b></span> values.</p>
+                       <ul id="EN-US_TOPIC_0000002164757038__ul020117460245">
+                        <li id="EN-US_TOPIC_0000002164757038__li020119461244">If yes, no further action is required.</li>
+                        <li id="EN-US_TOPIC_0000002164757038__li172011746112414">If no, go to <a href="#EN-US_TOPIC_0000002164757038__li520219465244">3</a>.</li>
+                       </ul></li>
+                      <li id="EN-US_TOPIC_0000002164757038__li520219465244"><a name="EN-US_TOPIC_0000002164757038__li520219465244"></a><a name="li520219465244"></a>Modify either <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol463074712814"><b>*.pga_aggregate_target</b></span> or <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol1563094716287"><b>*.sga_target</b></span> parameters or both of them to ensure that the free memory size is greater than the sum of <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol363044792817"><b>*.pga_aggregate_target</b></span> and <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol56311147172818"><b>*.sga_target</b></span> values.<p id="EN-US_TOPIC_0000002164757038__p17202124615241">If multiple identical parameters are found, modify all of them.</p></li>
+                      <li id="EN-US_TOPIC_0000002164757038__li3202154610247">If <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol435612615499"><b>*.pga_aggregate_target</b></span> is modified, change <em id="EN-US_TOPIC_0000002164757038__i1381455915107">Instance name</em><strong id="EN-US_TOPIC_0000002164757038__b179751177388">.__pga_aggregate_target</strong> to the following:<p id="EN-US_TOPIC_0000002164757038__p112021846192418"><em id="EN-US_TOPIC_0000002164757038__i15116101771217">Instance name</em><strong id="EN-US_TOPIC_0000002164757038__b1111618175129">.__pga_aggregate_target = *.pga_aggregate_target * 1024 *1024</strong></p> <p id="EN-US_TOPIC_0000002164757038__p12021146162417">If <span class="uicontrol" id="EN-US_TOPIC_0000002164757038__uicontrol359043115496"><b>*.sga_target</b></span> is modified, change <em id="EN-US_TOPIC_0000002164757038__i107393386127">Instance name</em><strong id="EN-US_TOPIC_0000002164757038__b72657597385">.__sga_target</strong> to the following:</p> <p id="EN-US_TOPIC_0000002164757038__p72021446122418"><em id="EN-US_TOPIC_0000002164757038__i932917509125">Instance name</em><strong id="EN-US_TOPIC_0000002164757038__b8329105031218">.__sga_target = *.sga_target</strong><strong id="EN-US_TOPIC_0000002164757038__b8590231194918"> * 1024 *1024</strong></p></li>
+                     </ol>
+                    </div>
+                   </div></td>
+                 </tr>
+                </tbody>
+               </table>
+              </div></li>
+             <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span> and complete the configuration as prompted.
+              <div class="note" id="EN-US_TOPIC_0000002164757038__note131611441701">
+               <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+               <div class="notebody">
+                <p id="EN-US_TOPIC_0000002164757038__p63168441018">For 1.6.0 and later versions, if the name of the target database for restoration is the same as that of the original database, scan the restoration target resource after the restoration job is complete to ensure that the obtained instance name information is correct.</p>
+               </div>
+              </div></li>
+            </ol></li>
+          </ul>
+         </div></li>
+       </ol>
+      </div> <p></p></li>
+     <li id="EN-US_TOPIC_0000002164757038__li02165214225"><a name="EN-US_TOPIC_0000002164757038__li02165214225"></a><a name="li02165214225"></a><span>Specify an SCN for restoration.</span><p></p>
+      <ol type="a">
+       <li>On the <span class="uicontrol"><b><span><strong>By SCN</strong></span></b></span> tab page, enter an SCN and choose <span class="uicontrol"><b><span><strong>More</strong></span> &gt; <span><strong>Restoration</strong></span></b></span>.
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-en-us.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>Run the following command to obtain the current SCN of the database:</p>
+          <p><strong>select dbms_flashback.get_system_change_number from dual;</strong></p>
+         </div>
+        </div></li>
+       <li id="EN-US_TOPIC_0000002164757038__li1641392320470">Select a backup copy for restoration.<p id="EN-US_TOPIC_0000002164757038__p1641915411820"><a name="EN-US_TOPIC_0000002164757038__li1641392320470"></a><a name="li1641392320470"></a>All backup copies that contain the specified SCN are displayed. You can determine the SCN to be restored to based on the time when a backup copy is generated.</p> <p id="EN-US_TOPIC_0000002164757038__p184191549183">If no backup copy is displayed, no logs are backed up at the specified SCN and therefore data cannot be restored based on the SCN. In this case, enter another SCN.</p></li>
+       <li>Restore the database to the original location or a new location.<p>For details, see <a href="#EN-US_TOPIC_0000002164757038__li10621031104911">7.c</a>.</p></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002199963633.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -40,7 +40,7 @@ public:
     {
         return m_diskCapacityInBytes;
     }
-    int32_t GetStorageInfoFromAppEnvAuth(const std::string &extendInfo);
+    int32_t GetStorageInfoFromAppEnvAuth(const std::string &extendInfo, int32_t &erro);
     int32_t TestDeviceConnection(const std::string &authExtendInfo, int32_t &erroCode);
     int32_t CleanLeftovers()
     {
@@ -52,8 +52,15 @@ public:
     {
         return m_spDeviceFile;
     }
+
+    void SetOpService(bool isOpService)
+    {
+        m_isOpService = isOpService;
+    }
+
+    int32_t QueryStoragePoolUsedRate(double &usedCapacityRate) override;
 private:
-    int32_t GetStorageInfo();
+    int32_t GetStorageInfo(int32_t &erro);
     int32_t SetChangeInfo(const VolSnapInfo &preVolSnapshot, const VolSnapInfo &curVolSnapshot);
     int32_t ExecGetDirtyRanges(DirtyRanges& dirtyRanges, const uint64_t &startOffset, const uint64_t &endOffset);
     int32_t GetDirtyRangesFragmentForLun(const uint64_t &startOffset, const uint64_t &endOffset,
@@ -86,6 +93,7 @@ private:
     std::shared_ptr<ApiOperator> m_spApiOperator = nullptr;
     VolumeDSExtendInfo m_dsExtend;
     AppProtect::BackupJobType m_backupType;
+    bool m_isOpService {false};
 };
 }
 

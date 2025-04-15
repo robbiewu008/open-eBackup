@@ -1204,6 +1204,38 @@ paths:
           description: 资源组批量禁用保护成功
           schema:
             type: string
+  /v2/resources/action/update-copy-user:
+    put:
+      x-dr-role: 'N'
+      x-product: OceanProtect X8000,OceanProtect X6000,OceanProtect X3000,OceanProtect E6000,OceanProtect DataBackup,OceanProtect for HCS
+      x-dm-role: 'N'
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - protected-resource-api
+      description: |-
+        更改副本所属用户
+        1.修改副本所属用户
+        2.根据副本类型同步对应配额给用户
+        3.修改对应副本资源集
+      operationId: UpdateCopyUser
+      parameters:
+        - name: updateCopyUserObjectReq
+          in: body
+          required: false
+          schema:
+            $ref: '#/definitions/updateCopyUserObjectReq'
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: string
 definitions:
   ProtectedEnvironmentRequest:
     description: 受保护对象请求体
@@ -2046,3 +2078,16 @@ definitions:
         type: string
       uuid:
         type: string
+  updateCopyUserObjectReq:
+    type: object
+    description: 更换资源所属用户请求体
+    required:
+      - resourceId
+      - userId
+    properties:
+      resourceId:
+        type: string
+        description: 资源ID
+      userId:
+        type: string
+        description: 用户ID

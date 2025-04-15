@@ -21,13 +21,14 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/functional/hash.hpp>
+#include <fstream>
 #include "ParserUtils.h"
 #include "securec.h"
-#include <fstream>
 #include "define/Defines.h"
 
 namespace Module {
 const uint32_t CTRL_WRITE_LINE_SIZE = 4608;
+const uint32_t BINARY_MAX_BUFFER_SIZE = 5 * 1024 * 1024; // 写buffer达到5M落盘
 
 class  AGENT_API FileParser {
 public:
@@ -97,6 +98,7 @@ protected:
     CTRL_FILE_RETCODE ReadFromAggrFile();
     CTRL_FILE_RETCODE WriteToFile(std::stringstream& writeBuffer, bool isBinaryFile);
     CTRL_FILE_RETCODE ReadFromFile();
+    CTRL_FILE_RETCODE ReadFromFileRetry();
     CTRL_FILE_RETCODE ReadFromBinaryFile(uint64_t offset, uint32_t readLen);
 };
 

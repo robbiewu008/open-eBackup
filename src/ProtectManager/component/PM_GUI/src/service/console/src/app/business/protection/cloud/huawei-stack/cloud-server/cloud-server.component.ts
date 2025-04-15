@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseTemplateComponent } from 'app/business/protection/virtualization/kubernetes/base-template/base-template.component';
 import {
@@ -79,6 +79,14 @@ export class CloudServerComponent implements OnInit {
       }
     },
     {
+      key: 'vm_ip',
+      name: this.i18n.get('common_ip_address_label'),
+      filter: {
+        type: 'search',
+        filterMode: 'contains'
+      }
+    },
+    {
       key: 'isWorkspace',
       name: this.i18n.get('protection_hcs_workspace_label'),
       filter: {
@@ -90,6 +98,14 @@ export class CloudServerComponent implements OnInit {
       cellRender: {
         type: 'status',
         config: this.dataMapService.toArray('isWorkspace')
+      }
+    },
+    {
+      key: 'computerName',
+      name: this.i18n.get('protection_hcs_workspace_name_label'),
+      filter: {
+        type: 'search',
+        filterMode: 'contains'
       }
     },
     {

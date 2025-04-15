@@ -210,9 +210,9 @@ void BackupMtimeCtrl::TranslateEntry(vector<string> &lineContents, BackupMtimeCt
     uint32_t totCommaCnt = (uint32_t) atoi(lineContents[NAS_CTRL_FILE_OFFSET_0].c_str());
 
     mtimeEntry.m_absPath = ConstructStringName(offset, totCommaCnt, lineContents);
-	#ifndef WIN32
+#ifndef WIN32
     mtimeEntry.m_mode = (mode_t) atoi(lineContents[offset++].c_str());
-	#endif
+#endif
     mtimeEntry.m_attr = (uint32_t) atoi(lineContents[offset++].c_str());
     mtimeEntry.m_uid = (uint32_t) atoi(lineContents[offset++].c_str());
     mtimeEntry.m_gid = (uint32_t) atoi(lineContents[offset++].c_str());
@@ -235,9 +235,9 @@ NAS_CTRL_FILE_RETCODE BackupMtimeCtrl::WriteEntry(BackupMtimeCtrlEntry &mtimeEnt
 
     ctlFileLine = to_string(commaCount) + "," +
                 mtimeEntry.m_absPath + "," +
-				#ifndef WIN32
+#ifndef WIN32
                 to_string(mtimeEntry.m_mode) + "," +
-				#endif
+#endif
                 to_string(mtimeEntry.m_attr) + "," +
                 to_string(mtimeEntry.m_uid) + "," +
                 to_string(mtimeEntry.m_gid) + "," +

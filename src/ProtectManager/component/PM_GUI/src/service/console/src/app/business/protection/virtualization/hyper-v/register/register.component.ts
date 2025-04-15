@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
@@ -28,9 +28,15 @@ import {
   each,
   filter,
   find,
+  get,
   includes,
+  isArray,
   isEmpty,
-  replace
+  map,
+  reduce,
+  replace,
+  set,
+  toNumber
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -68,6 +74,7 @@ export class RegisterComponent implements OnInit {
     ...this.baseUtilService.requiredErrorTip,
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64])
   };
+  dataMap = DataMap;
 
   constructor(
     private fb: FormBuilder,
@@ -125,9 +132,12 @@ export class RegisterComponent implements OnInit {
           this.baseUtilService.VALID.name()
         ]
       }),
-      agents: new FormControl(this.item?.dependencies?.agents[0]?.uuid || '', {
+      agent: new FormControl(this.item?.dependencies?.agents[0]?.uuid || '', {
         validators: [this.baseUtilService.VALID.required()]
       }),
+      agents: new FormControl(
+        this.item?.dependencies?.agents.map(item => item.uuid) || []
+      ),
       username: new FormControl(this.item?.auth?.authKey || '', {
         validators: [
           this.baseUtilService.VALID.required(),
@@ -161,6 +171,25 @@ export class RegisterComponent implements OnInit {
         this.hideUserInfo = true;
         this.formGroup.get('username').clearValidators();
         this.formGroup.get('password').clearValidators();
+        this.formGroup.get('agents').clearValidators();
+      } else if (res === DataMap.Resource_Type.hyperVCluster.value) {
+        this.hideUserInfo = false;
+        this.formGroup
+          .get('username')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.maxLength(64)
+          ]);
+        this.formGroup
+          .get('password')
+          .setValidators([
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.maxLength(64)
+          ]);
+        this.formGroup
+          .get('agents')
+          .setValidators([this.baseUtilService.VALID.required()]);
+        this.formGroup.get('agent').clearValidators();
       } else {
         this.hideUserInfo = false;
         this.formGroup
@@ -175,26 +204,64 @@ export class RegisterComponent implements OnInit {
             this.baseUtilService.VALID.required(),
             this.baseUtilService.VALID.maxLength(64)
           ]);
+        this.formGroup
+          .get('agent')
+          .setValidators([this.baseUtilService.VALID.required()]);
+        this.formGroup.get('agents').clearValidators();
       }
       this.formGroup.get('username').updateValueAndValidity();
       this.formGroup.get('password').updateValueAndValidity();
+      this.formGroup.get('agents').updateValueAndValidity();
+      this.formGroup.get('agent').updateValueAndValidity();
     });
+  }
+  getAllEndpoint() {
+    let arr = [];
+    reduce(
+      this.formGroup.value.agents,
+      (acc, item) => {
+        acc.push(find(this.proxyOptions, { value: item })?.endpoint);
+        return acc;
+      },
+      arr
+    );
+    return arr.join(',');
+  }
+  getEndpoint() {
+    if (
+      this.formGroup.get('type').value ===
+      DataMap.Resource_Type.hyperVCluster.value
+    ) {
+      return this.getAllEndpoint();
+    } else {
+      return find(this.proxyOptions, { value: this.formGroup.value.agent })
+        ?.endpoint;
+    }
   }
 
   getParams() {
     let reduceAgents = [];
     if (this.item) {
-      reduceAgents = differenceBy(
-        this.item?.dependencies?.agents.map(item => item.uuid),
-        [this.formGroup.value.agents]
-      );
+      if (
+        this.formGroup.get('type').value ===
+        DataMap.Resource_Type.hyperVCluster.value
+      ) {
+        reduceAgents = differenceBy(
+          this.item?.dependencies?.agents.map(item => item.uuid),
+          this.formGroup.value.agents
+        );
+      } else {
+        reduceAgents = differenceBy(
+          this.item?.dependencies?.agents.map(item => item.uuid),
+          [this.formGroup.value.agent]
+        );
+      }
     }
     return {
       name: this.formGroup.value.name,
       type: ResourceType.Virtualization,
       subType: this.formGroup.value.type,
-      endpoint: find(this.proxyOptions, { value: this.formGroup.value.agents })
-        ?.endpoint,
+      endpoint: this.getEndpoint(),
       extendInfo: {
         targetType: replace(this.formGroup.value.type, 'HyperV.', '')
       },
@@ -204,7 +271,15 @@ export class RegisterComponent implements OnInit {
         authPwd: this.hideUserInfo ? '' : this.formGroup.value.password
       },
       dependencies: {
-        agents: [{ uuid: this.formGroup.value.agents }],
+        agents: map(
+          this.formGroup.value.type ===
+            DataMap.Resource_Type.hyperVCluster.value
+            ? this.formGroup.value.agents
+            : [this.formGroup.value.agent],
+          item => {
+            return { uuid: item };
+          }
+        ),
         '-agents': !isEmpty(this.item)
           ? reduceAgents.map(item => {
               return { uuid: item };

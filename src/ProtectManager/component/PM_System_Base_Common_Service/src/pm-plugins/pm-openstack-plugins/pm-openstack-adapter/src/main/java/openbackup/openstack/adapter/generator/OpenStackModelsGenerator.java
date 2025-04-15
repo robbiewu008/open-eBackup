@@ -12,6 +12,16 @@
 */
 package openbackup.openstack.adapter.generator;
 
+import com.huawei.oceanprotect.sla.sdk.constants.SlaConstants;
+import com.huawei.oceanprotect.sla.sdk.dto.PolicyDto;
+import com.huawei.oceanprotect.sla.sdk.dto.RetentionDto;
+import com.huawei.oceanprotect.sla.sdk.dto.ScheduleDto;
+import com.huawei.oceanprotect.sla.sdk.dto.SlaDto;
+import com.huawei.oceanprotect.sla.sdk.enums.Trigger;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.openstack.adapter.constants.OpenStackConstants;
 import openbackup.openstack.adapter.dto.JobScheduleDto;
@@ -24,13 +34,6 @@ import openbackup.openstack.adapter.enums.JobScheduleType;
 import openbackup.openstack.adapter.enums.OpenStackJobStatus;
 import openbackup.openstack.adapter.enums.OpenStackJobType;
 import openbackup.openstack.adapter.enums.ScheduleRetentionType;
-import com.huawei.oceanprotect.sla.sdk.constants.SlaConstants;
-import com.huawei.oceanprotect.sla.sdk.dto.PolicyDto;
-import com.huawei.oceanprotect.sla.sdk.dto.RetentionDto;
-import com.huawei.oceanprotect.sla.sdk.dto.ScheduleDto;
-import com.huawei.oceanprotect.sla.sdk.dto.SlaDto;
-import com.huawei.oceanprotect.sla.sdk.enums.Trigger;
-
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.DateFormatConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
@@ -39,10 +42,6 @@ import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.job.model.JobStatusEnum;
 import openbackup.system.base.sdk.resource.enums.ProtectionStatusEnum;
 import openbackup.system.base.sdk.resource.model.ProtectedObjectInfo;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;

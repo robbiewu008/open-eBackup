@@ -1,21 +1,22 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Injectable } from '@angular/core';
 import {
   CookieService,
   DataMap,
+  E6000SupportApplication,
   I18NService,
-  hcsSupportApplication
+  hcsNoSupportApplication
 } from 'app/shared';
 import {
   filter,
@@ -30,7 +31,11 @@ import {
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 import { RESOURCE_CATALOGS } from '..';
-import { CatalogName, SupportLicense } from '../consts/common.const';
+import {
+  CatalogName,
+  CommonConsts,
+  SupportLicense
+} from '../consts/common.const';
 
 @Injectable({
   providedIn: 'root'
@@ -167,6 +172,15 @@ export class ResourceCatalogsService {
         )
       );
     }
+
+    if (this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE) {
+      return reject(items, item => includes(hcsNoSupportApplication, item));
+    }
+
+    if (this.i18n.get('deploy_type') === DataMap.Deploy_Type.e6000.value) {
+      return reject(items, item => !includes(E6000SupportApplication, item));
+    }
+
     if (
       includes(
         [

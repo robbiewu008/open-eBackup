@@ -14,12 +14,12 @@
 <div class="loading-container">
     <ng-container *ngIf="viewType === type.BackupView">
         <ng-container *ngIf="backupResult.status === initStatus.running.value">
-            <img [src]="'assets/img/init_loading.gif'">
+            <img [src]="getInitLoadingImg()">
             <div [innerHTML]="initStatus.running.label | i18n: [backupResult.rate]"></div>
         </ng-container>
 
         <ng-container *ngIf="backupResult.status === initStatus.ok.value && backupResult.code">
-            <img [src]="'assets/img/init_failed.png'">
+            <img [src]="getInitFailedImg()">
             <div [innerHTML]="backupResult.code | i18n : backupResult.params"></div>
             <div>
                 <ng-container *ngTemplateOutlet="resetBackupTpl"></ng-container>
@@ -29,12 +29,12 @@
 
     <ng-container *ngIf="viewType === type.ArchiveView">
         <ng-container *ngIf="archiveResult.status === initStatus.running.value">
-            <img [src]="'assets/img/init_loading.gif'">
+            <img [src]="getInitLoadingImg()">
             <div [innerHTML]="initStatus.running.label | i18n: [archiveResult.rate]"></div>
         </ng-container>
 
         <ng-container *ngIf="archiveResult.status === initStatus.ok.value && archiveResult.code">
-            <img [src]="'assets/img/init_failed.png'">
+            <img [src]="getInitFailedImg()">
             <div [innerHTML]="archiveResult.code | i18n : archiveResult.params"></div>
             <div>
                 <ng-container *ngTemplateOutlet="resetArchiveTpl"></ng-container>

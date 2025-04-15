@@ -12,6 +12,12 @@
 */
 package openbackup.data.access.framework.backup.handler.v1;
 
+import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
+import com.huawei.oceanprotect.job.sdk.JobService;
+import com.huawei.oceanprotect.system.base.label.service.LabelService;
+import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.backup.service.impl.JobBackupPostProcessService;
 import openbackup.data.access.framework.core.common.constants.ContextConstants;
 import openbackup.data.access.framework.core.common.enums.DmcJobStatus;
@@ -27,12 +33,12 @@ import openbackup.data.protection.access.provider.sdk.copy.CopyProvider;
 import openbackup.data.protection.access.provider.sdk.enums.BackupTypeEnum;
 import openbackup.data.protection.access.provider.sdk.job.ExtendsInfo;
 import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
-import com.huawei.oceanprotect.job.constants.JobExtendInfoKeys;
-import com.huawei.oceanprotect.job.sdk.JobService;
+import openbackup.system.base.common.enums.RetentionTypeEnum;
+import openbackup.system.base.common.enums.WormValidityTypeEnum;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
-import com.huawei.oceanprotect.system.base.label.service.LabelService;
+import openbackup.system.base.sdk.anti.api.AntiRansomwareApi;
 import openbackup.system.base.sdk.common.model.UuidObject;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.AddCopyArchiveMapRequest;
@@ -42,9 +48,6 @@ import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.security.exterattack.ExterAttack;
-import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -101,6 +104,9 @@ public class BackupTaskCompleteHandler implements TaskCompleteHandler {
 
     @Autowired
     private LabelService labelService;
+
+    @Autowired
+    private AntiRansomwareApi antiRansomwareApi;
 
     /**
      * detect object applicable
@@ -218,6 +224,7 @@ public class BackupTaskCompleteHandler implements TaskCompleteHandler {
                         Optional.ofNullable(extendsInfo.getBackupId()).orElse(StringUtils.EMPTY),
                         Optional.ofNullable(extendsInfo.getInstanceId()).orElse(StringUtils.EMPTY),
                         resourceType);
+
         // 查不到副本信息，备份任务直接失败。不卡住，阻塞后面的任务
         if (CollectionUtils.isEmpty(copyInfoList)) {
             log.error("request_id:{} query copy info list fail copyInfoList:{}", requestId, copyInfoList);
@@ -237,6 +244,7 @@ public class BackupTaskCompleteHandler implements TaskCompleteHandler {
                     copy.getTimestamp(),
                     copy.getDisplayTimestamp());
             copy.setProperties(addDataSizeToProperties(copy.getProperties(), extInfo));
+            fillWormRetentionInfo(copy);
             CopyInfo copyInfo = new CopyInfo();
             BeanUtils.copyProperties(copy, copyInfo);
             copyInfo.setStorageUnitId(storageUnitId);
@@ -253,6 +261,18 @@ public class BackupTaskCompleteHandler implements TaskCompleteHandler {
         if (resp != null && StringUtils.isNotBlank(resp.getUuid())) {
             updateJob(requestId, jobId, extInfo, copyInfoList);
             sendCompleteMessage(requestId, jobId, taskResponse, followUpProvider, resp);
+        }
+    }
+
+    private void fillWormRetentionInfo(CopyInfoBo copy) {
+        boolean existWormPolicy = antiRansomwareApi.isExistWormPolicyByResourceId(copy.getResourceId());
+        if (existWormPolicy) {
+            copy.setWormDurationUnit(copy.getDurationUnit());
+            copy.setWormRetentionDuration(copy.getRetentionDuration());
+            copy.setWormValidityType(WormValidityTypeEnum.COPY_RETENTION_TIME_CONSISTENT.getType());
+            if (RetentionTypeEnum.TEMPORARY.equals(RetentionTypeEnum.getByType(copy.getRetentionType()))) {
+                copy.setWormExpirationTime(copy.getExpirationTime());
+            }
         }
     }
 

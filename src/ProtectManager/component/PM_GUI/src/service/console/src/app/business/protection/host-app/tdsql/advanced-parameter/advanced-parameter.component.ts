@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { BaseUtilService, DataMap } from 'app/shared';
@@ -43,6 +43,9 @@ export class AdvancedParameterComponent implements OnInit {
     this.formGroup = this.fb.group({
       delete_archived_log: new FormControl(
         extParameters.delete_archived_log ?? false
+      ),
+      archive_res_auto_index: new FormControl(
+        extParameters.archive_res_auto_index ?? false
       )
     });
     this.formGroup.statusChanges.subscribe(() => {
@@ -61,7 +64,8 @@ export class AdvancedParameterComponent implements OnInit {
       : this.resourceData;
     return assign(resourceData, {
       ext_parameters: {
-        delete_archived_log: this.formGroup.value.delete_archived_log
+        delete_archived_log: this.formGroup.value.delete_archived_log,
+        archive_res_auto_index: this.formGroup.value.archive_res_auto_index
       }
     });
   }

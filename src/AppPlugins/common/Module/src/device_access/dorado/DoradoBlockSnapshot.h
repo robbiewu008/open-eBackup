@@ -22,17 +22,19 @@ namespace Module {
     class DoradoBlockSnapshot : public DoradoBlock {
     public:
         explicit DoradoBlockSnapshot(ControlDeviceInfo deviceInfo, int id, std::string wwn, bool readFromK8s = true)
-                : DoradoBlock(deviceInfo, readFromK8s) {
+            : DoradoBlock(deviceInfo, readFromK8s)
+        {
             ResourceId = id;
             Wwn = wwn;
             if (readFromK8s) {
-            GetConnectedIP();
+                GetConnectedIP();
             } else {
                 Login();
             }
         }
 
-        ~DoradoBlockSnapshot() {
+        ~DoradoBlockSnapshot()
+        {
             if (fs_pHttpCLient) {
                 fs_pHttpCLient = NULL;
             }

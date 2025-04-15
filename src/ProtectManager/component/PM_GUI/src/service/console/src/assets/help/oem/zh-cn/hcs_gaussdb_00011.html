@@ -1,0 +1,159 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤1：注册华为云Stack GaussDB项目">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="hcs_gaussdb_00010.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="hcs_gaussdb_00011">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤1：注册华为云Stack GaussDB项目</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="hcs_gaussdb_00011"></a><a name="hcs_gaussdb_00011"></a>
+  <h1 class="topictitle1">步骤1：注册华为云Stack GaussDB项目</h1>
+  <div>
+   <p>执行华为云Stack GaussDB备份恢复前，需要将华为云Stack GaussDB注册至<span>本产品</span>。</p>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>已注册华为云，并在华为云创建云平台租户。该用户用于将华为云Stack GaussDB接入<span>本产品</span>。</li>
+     <li>已建立华为云Stack GaussDB项目与客户端所在的主机的专线。详细操作请联系服务提供商的技术支持工程师。</li>
+     <li>如果需要开启<span>XBSA SSL 证书管理</span>，需确保安装客户端时已获取SSL证书，详细操作请参见《客户端安装指南》中的“配置SSL双向认证证书文件”章节。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li id="hcs_gaussdb_00011__li6843163813710"><span>选择<span class="uicontrol" id="hcs_gaussdb_00011__zh-cn_topic_0000002199964685_uicontrol665811131217">“<span id="hcs_gaussdb_00011__zh-cn_topic_0000002199964685_text565810111123">保护</span> &gt; 云平台 &gt; 华为云Stack GaussDB”</span>。</span></li>
+     <li><span>单击<span class="uicontrol">“<span>注册</span>”</span>，注册华为云Stack GaussDB信息。</span><p></p>
+      <div class="p">
+       华为云Stack GaussDB注册信息如<a href="#hcs_gaussdb_00011__table613227155112">表1</a>所示。 
+       <div class="tablenoborder">
+        <a name="hcs_gaussdb_00011__table613227155112"></a><a name="table613227155112"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="hcs_gaussdb_00011__table613227155112" frame="border" border="1" rules="all">
+         <caption>
+          <b>表1 </b>华为云Stack GaussDB注册信息
+         </caption>
+         <colgroup>
+          <col style="width:25.629999999999995%">
+          <col style="width:74.37%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.3.2.2.2.1.2.2.3.1.1"><p>参数</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.3.2.2.2.1.2.2.3.1.2"><p>说明</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>名称</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>用户自定义华为云Stack GaussDB名称。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p>管理面url</p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>管理面地址获取方法如下：</p>
+            <ol type="a">
+             <li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li46368592592">请参考华为云Stack软件安装阶段HCC Turnkey导出的参数信息汇总文件《<em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i12473164115012">xxx</em>_export_all_v2_CN.xlsx》的“基本参数”页签，搜索“region_id”和“external_global_domain_name”，获取对应的参数值。</li>
+             <li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li122681935416">请参考华为云Stac软件安装阶段HCC Turnkey导出的参数信息汇总文件《<em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i1035816496507">xxx</em>_export_all_v2_CN.xlsx》的“工具生成的IP参数”页签，搜索“AGW-LB-Float-IP”，获取管理面IP地址。</li>
+             <li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li1941018428330">完成域名映射。
+              <ol id="hcs_gaussdb_00011__hcs_gaussdb_00009_ol201493163404">
+               <li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li8367141320406">登录客户端所在的主机。</li>
+               <li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li14676163034010">执行以下命令打开/etc/hosts文件。<pre class="screen" id="hcs_gaussdb_00011__hcs_gaussdb_00009_screen1870506123418">vi /etc/hosts</pre></li>
+               <li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li2344115264019">在/etc/hosts文件中新增如下信息，进行域名映射,其中<em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i117521616375">xx.x.x.xx</em>为管理面IP。<pre class="screen" id="hcs_gaussdb_00011__hcs_gaussdb_00009_screen9455132794116"><em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i348312113711">xx.x.x.xx</em> iam-apigateway-proxy.<em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i11592143393812">{region_id}</em>.<em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i45921833183816">{external_global_domain_name}</em></pre></li>
+              </ol></li>
+             <li id="hcs_gaussdb_00011__hcs_gaussdb_00009_li6457159192714">获取管理面地址：https://<strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b1266352192611">iam-apigateway-proxy.<em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i666165215264">{region_id}</em>.<em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i56610523260">{external_global_domain_name</em></strong><strong id="hcs_gaussdb_00011__hcs_gaussdb_00009_b186619529266"><em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i76618526266">}</em></strong>:443。</li>
+            </ol></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p>业务面url</p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>请参考华为云Stack软件安装阶段HCC Turnkey导出的参数信息汇总文件《<em id="hcs_gaussdb_00011__hcs_gaussdb_00009_i1101610517">xxx</em>_export_all_v2_CN.xlsx》的“工具生成的IP参数”页签，搜索“AGW-LB-Float-IP”，获取对应的参数值XX.XX.XX.XX。https://XX.XX.XX.XX即为业务面地址。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p>云平台租户名称</p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>待保护的华为云Stack GaussDB实例所属租户的名称，根据<a href="hcs_gaussdb_00009.html">备份前准备</a>获取。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p>云平台租户密码</p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>待保护的华为云Stack GaussDB实例所属租户的密码，根据<a href="hcs_gaussdb_00009.html">备份前准备</a>获取。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p>云平台租户所属VDC名称</p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>云平台租户所属的账户名称，可参考<a href="hcs_gaussdb_00009.html#hcs_gaussdb_00009__zh-cn_topic_0000001514140621_table10744125193920">表1</a>的准备项“云平台租户名称”。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p>资源空间名称</p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>租户下资源空间名称，根据<a href="hcs_gaussdb_00009.html">备份前准备</a>获取。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p>资源空间ID</p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>租户下资源空间ID，根据<a href="hcs_gaussdb_00009.html">备份前准备</a>获取。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p>客户端</p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>已注册到<span>本产品</span>的客户端所在的主机。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>XBSA配置路径</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>用户安装backupAgent时配置的“xbsa.conf”文件路径。</p> <p>客户端自动推送：XBSA配置路径为/opt/backupAgent/xbsa.conf。</p> <p>客户端手动安装：可参考<a href="hcs_gaussdb_00009.html#hcs_gaussdb_00009__zh-cn_topic_0000001514140621_table10744125193920">表1</a>的准备项“XBSA配置路径”获取该路径。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>XBSA SSL 证书管理</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>默认开启。开启后，注册华为云Stack GaussDB时会对其证书进行校验，确保<span>本产品</span>与外部设备交互的安全性。关闭后，系统与云平台通信可能存在安全风险，请谨慎操作。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>根证书</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>后缀为“.pem”的根证书文件，获取方式参见<a href="hcs_gaussdb_00009.html#hcs_gaussdb_00009__zh-cn_topic_0000001514140621_table10744125193920">表1</a>中的准备项“证书”。当选择<span class="uicontrol">“<span>XBSA SSL 证书管理</span>”</span>时，需要配置该参数。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>用户证书</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>后缀为“.crt”的客户端用户证书文件，获取方式参见<a href="hcs_gaussdb_00009.html#hcs_gaussdb_00009__zh-cn_topic_0000001514140621_table10744125193920">表1</a>中的准备项“证书”。当选择<span class="uicontrol">“<span>XBSA SSL 证书管理</span>”</span>时，需要配置该参数。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>用户私钥</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>后缀为“.key”的客户端用户私钥文件，获取方式参见<a href="hcs_gaussdb_00009.html#hcs_gaussdb_00009__zh-cn_topic_0000001514140621_table10744125193920">表1</a>中的准备项“证书”。当选择<span class="uicontrol">“<span>XBSA SSL 证书管理</span>”</span>时，需要配置该参数。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span>私钥密码</span></p></td>
+           <td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>创建证书文件时设置客户端私钥密码字符串。当选择<span class="uicontrol">“<span>XBSA SSL 证书管理</span>”</span>时，需要配置该参数。</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+     <li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="hcs_gaussdb_00010.html">备份华为云Stack GaussDB实例</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

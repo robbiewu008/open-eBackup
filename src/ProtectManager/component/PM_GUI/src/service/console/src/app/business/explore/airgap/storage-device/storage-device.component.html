@@ -18,6 +18,8 @@
   </lv-group>
   <lv-group [lvGutter]="groupCommon.middleRowGutter">
     <lv-search
+      [ngClass]="{'input-width-en':i18n.isEn}"
+      class="input-width"
       [lvFocus]="true"
       lvPlaceHolder="{{ 'common_search_device_name_label' | i18n }}"
       (lvSearch)="search($event)"
@@ -26,8 +28,7 @@
     <button
       class="aui-button-icon"
       lv-button
-      l
-      vSize="auto"
+      lvSize="auto"
       (click)="refresh()"
     >
       <i lv-icon="lv-icon-refresh" [lvColorState]="true"></i>

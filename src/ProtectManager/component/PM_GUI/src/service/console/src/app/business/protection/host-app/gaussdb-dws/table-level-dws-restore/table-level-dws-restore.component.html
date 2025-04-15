@@ -1,0 +1,225 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<div class="aui-gutter-column-md">
+    <h2>{{'protection_basic_config_label' | i18n}}</h2>
+</div>
+
+<div class="aui-gutter-column-md">
+    <lv-group lvGutter="20px" class="padding-10" *ngIf="!isSearchRestore">
+        <span class="aui-text-label">{{
+            'protection_selected_copy_label' | i18n
+            }}</span>
+        <span>{{
+            rowCopy.display_timestamp | date: 'yyyy-MM-dd HH:mm:ss'
+            }}</span>
+    </lv-group>
+    <lv-group lvGutter="20px" class="padding-10" *ngIf="isSearchRestore">
+        <span class="aui-text-label" style="width:90px">{{
+            'protection_selected_file_label' | i18n
+            }}</span>
+        <span lv-overflow>{{ rowCopy.searchRestorePath | nil }}</span>
+    </lv-group>
+</div>
+
+<ng-container *ngIf="childResType === dataMap.Resource_Type.DWS_Cluster.value">
+    <aui-cluster-restore [rowCopy]="rowCopy" [childResType]="childResType" [restoreType]="restoreType"
+        (onStatusChange)="formChange($event)"></aui-cluster-restore>
+</ng-container>
+<ng-container
+    *ngIf="[dataMap.Resource_Type.DWS_Schema.value,dataMap.Resource_Type.DWS_Table.value].includes(childResType)">
+    <aui-table-restore [rowCopy]="rowCopy" [childResType]="childResType" [restoreType]="restoreType"
+        (onStatusChange)="formChange($event)"></aui-table-restore>
+</ng-container>
+
+<h2 class="aui-gutter-column-md content">
+    {{'protection_select_restore_table_label' | i18n}}
+</h2>
+<div *ngIf="rowCopy.resource_sub_type === dataMap.Resource_Type.DWS_Cluster.value" class="aui-gutter-column-md">
+    <div class="aui-text-label">{{
+        'common_database_label' | i18n
+        }} <span class="required-star">*</span></div>
+    <lv-select [lvOptions]='databaseOptions' lvValueKey='value' [(ngModel)]='database' lvShowFilter lvFilterKey="label" lvFilterMode="contains"
+        (ngModelChange)='changeDatabase($event)' #lvSelect style="width:368px">
+    </lv-select>
+</div>
+
+<div class="tree-table-container">
+    <div class="header-tab">
+        <lv-radio-group [(ngModel)]="pathView" [lvGroupName]="'path'" (ngModelChange)="tabChange()">
+            <lv-group lvGutter='14px'>
+                <lv-radio [lvViewType]="'custom'" [lvValue]="totalView">
+                    <div>
+                        {{'protection_sla_optional_tooltip_step_label' | i18n}}
+                        <span class="num-tag" [ngClass]="{'tag-light': pathView === totalView}">{{total}}</span>
+                    </div>
+                </lv-radio>
+                <div class="dash-line"></div>
+                <lv-radio [lvViewType]="'custom'" [lvValue]="selectedView">
+                    <div>
+                        {{'common_selected_simple_label' | i18n}}
+                        <span class="num-tag"
+                            [ngClass]="{'tag-light': pathView === selectedView}">{{selectedTotal}}</span>
+                    </div>
+                </lv-radio>
+            </lv-group>
+        </lv-radio-group>
+    </div>
+    <ng-container *ngIf="pathView === totalView; else elsePathTemplate">
+        <lv-group lvGutter='14px' [lvColumns]='["auto", "270px"]' class="search-path-container">
+            <div>
+                <lv-breadcrumb [lvItems]="filePathItems" class="breadcrumb"></lv-breadcrumb>
+            </div>
+            <div class="search-name">
+                <lv-search (lvSearch)="searchName($event)"
+                    [lvPlaceHolder]="'explore_dws_restore_search_under_label'|i18n:[(selectionTree.length ?selectionTree[0].path:'')]"
+                    [(ngModel)]="searchKey"></lv-search>
+            </div>
+        </lv-group>
+    </ng-container>
+    <ng-template #elsePathTemplate>
+        <div class="search-path-container">
+            <lv-search (lvSearch)="searchSelectedName($event)" lvPlaceHolder="{{'common_name_label' | i18n}}"
+                [(ngModel)]="searchSelectedKey"></lv-search>
+        </div>
+    </ng-template>
+    <ng-container *ngIf="pathView === totalView; else elseTableTemplate">
+        <lv-group class="tree-table" [lvColumns]='["270px", "auto"]'>
+            <div class="tree-container">
+                <lv-tree #tree lvCompareWith="rootPath" lvSelectionAssociate="false" [lvData]="treeData"
+                    lvSelectionMode="single" [(lvSelection)]="selectionTree" (lvCheck)="pathNodeCheck($event)"
+                    [lvBeforeSelected]="beforeSelected" lvShowContentIcon [lvNodeTemplate]='nodeTpl'
+                    style="width: auto;"></lv-tree>
+                <ng-template #nodeTpl let-item>
+                    <div style="width: 160px;" lv-overflow>
+                        <span *ngIf="!item.isMoreBtn">
+                            <i lv-icon="{{item.icon}}"></i>
+                            {{item.label}}
+                        </span>
+                    </div>
+                    <span class="aui-link" *ngIf="item.isMoreBtn"
+                        (click)="clickMoreFile($event, item)">{{item.label}}</span>
+                </ng-template>
+            </div>
+            <div class="table-container">
+                <lv-group lvDirection='vertical'>
+                    <div style="height:570px">
+                        <lv-loading [lvLoading]="tableLoading">
+                            <lv-group *ngIf="(!isDatabase  || isSearch) && isRestoreNew && !isTable"
+                                class="batch-button">
+                                <span class="aui-link" lv-popover [lvPopoverContent]="batchSchemaNameTpl"
+                                    lvPopoverTrigger="click" lvPopoverTheme="light" lvPopoverPosition="bottom"
+                                    #batchSchemaNamePopover="lvPopover">
+                                    {{'explore_dws_batch_set_restore_location_label'|i18n}}
+                                </span>
+                            </lv-group>
+                            <lv-pro-table #schemaDataTable [config]="schemaTableConfig" [data]="schemaTableData"
+                                *ngIf="isDatabase && !isSearch"></lv-pro-table>
+                            <lv-pro-table #tableDataTable [config]="tableConfig" [data]="tableData"
+                                *ngIf="!isDatabase || isSearch"></lv-pro-table>
+                        </lv-loading>
+                    </div>
+                </lv-group>
+            </div>
+        </lv-group>
+    </ng-container>
+    <ng-template #elseTableTemplate>
+        <div class="table-container">
+            <lv-pro-table #dataSelectTable [config]="selectedTableConfig" [data]="selectedTableData"></lv-pro-table>
+        </div>
+    </ng-template>
+</div>
+
+<ng-template #fileTpl let-item>
+    <span lv-overflow [ngClass]="{'name-class':item.type === RestoreFileType.Directory}"
+        (click)="clickSchema(item)">
+        <i lv-icon="{{ item.icon }}" [lvColorState]="true"></i>
+        {{ item.name }}
+    </span>
+    <p lv-overflow *ngIf="pathView === selectedView || (isDatabase && isSearch)" class="aui-number-6 aui-text-desc">
+        {{item.rootPath}}
+    </p>
+</ng-template>
+
+<ng-template #targetSchemaTpl let-item>
+    <ng-container *ngIf="item.type !== RestoreFileType.Directory">
+        <input lv-input type="text" [(ngModel)]="item.targetSchema" (ngModelChange)="validTargetSchema(item)"
+            [lvDisabled]="item.inputDisabled" [ngClass]="{'invaild': item.schemaInvalid&& !item.inputDisabled}">
+        <ng-container *ngIf="!!item?.schemaInvalid&& !item.inputDisabled">
+            <i lv-icon="lv-icon-status-failed"></i>
+            <span class="invaild-color">{{ item?.schemaErrorTips }}</span>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="item.type === RestoreFileType.Directory">
+        --
+    </ng-container>
+</ng-template>
+
+<ng-template #targetTableTpl let-item>
+    <ng-container *ngIf="item.type !== RestoreFileType.Directory">
+        <input lv-input type="text" [(ngModel)]="item.targetTableName" (ngModelChange)="validTargetTable(item)"
+            [lvDisabled]="item.inputDisabled" [ngClass]="{'invaild': item.tableInvalid&& !item.inputDisabled}">
+        <ng-container *ngIf="!!item?.tableInvalid&& !item.inputDisabled">
+            <i lv-icon="lv-icon-status-failed"></i>
+            <span class="invaild-color">{{ item?.tableErrorTips }}</span>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="item.type === RestoreFileType.Directory">
+        --
+    </ng-container>
+</ng-template>
+
+<ng-template #optTpl let-item>
+    <lv-group class="opt-row">
+        <span lv-overflow>
+            {{item.modifyTime}}
+        </span>
+        <i lv-icon="lv-icon-close" [lvColorState]="true" (click)="deleteNode(item)"></i>
+    </lv-group>
+</ng-template>
+
+<ng-template #targetOptTpl let-item>
+    <lv-group class="opt-row">
+        <lv-group lvDirection="vertical" lvGutter="4px">
+            <input lv-input type="text" [(ngModel)]="item.targetTableName" (ngModelChange)="validTargetTable(item)"
+                [lvDisabled]="item.inputDisabled" [ngClass]="{'invaild': item.tableInvalid && !item.inputDisabled}">
+            <ng-container *ngIf="!!item?.tableInvalid&& !item.inputDisabled">
+                <span class="invaild-color"><i lv-icon="lv-icon-status-failed"></i>{{ item?.tableErrorTips }}</span>
+            </ng-container>
+        </lv-group>
+        <i lv-icon="lv-icon-close" [lvColorState]="true" (click)="deleteNode(item)"></i>
+    </lv-group>
+</ng-template>
+
+<ng-template #batchSchemaNameTpl>
+    <lv-group lvGutter="8px" lvDirection="vertical" class="aui-gutter-column-md">
+        <span class="label-class">
+            {{'explore_dws_restore_schema_label' | i18n }}
+        </span>
+        <input lv-input type="text" [(ngModel)]="schemaName" (keyup.enter)="batchSetTargetSchema()">
+    </lv-group>
+    <div class="lv-modal-btns mgt-btns">
+        <lv-group lvGutter='16px'>
+            <button lv-button lvType='primary' (click)='batchSetTargetSchema()'>
+                {{ 'common_ok_label' | i18n }}
+            </button>
+            <button lv-button (click)='batchSchemaNamePopoverHide()'>
+                {{ 'common_cancel_label' | i18n }}
+            </button>
+        </lv-group>
+    </div>
+</ng-template>
+
+<ng-template #starTpl>
+    <span class="star-class">*</span>
+</ng-template>

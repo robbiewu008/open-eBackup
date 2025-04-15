@@ -20,6 +20,10 @@ using namespace std;
 using namespace Module;
 using namespace FS_Backup;
 
+namespace {
+    const int RETRY_TIME_MILLISENCOND = 1000;
+}
+
 PosixCopyReader::PosixCopyReader(
     const ReaderParams &copyReaderParams,
     std::shared_ptr<Module::BackupFailureRecorder> failureRecorder)
@@ -47,20 +51,13 @@ int PosixCopyReader::ReadEmptyData(FileHandle& fileHandle)
     fileHandle.m_block.m_offset = 0;
     fileHandle.m_block.m_seq = 1;
     fileHandle.m_file->m_blockStats.m_totalCnt = 1;
+    fileHandle.m_file->SetSrcState(FileDescState::SRC_CLOSED);
     DBGLOG("total blocks: %d, file size: %llu",
         fileHandle.m_file->m_blockStats.m_totalCnt.load(), fileHandle.m_file->m_size);
-
-    m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
-    auto taskptr = make_shared<PosixServiceTask>(
-        HostEvent::READ_DATA, m_blockBufferMap, fileHandle, m_params);
-    if (m_jsPtr->Put(taskptr) == false) {
-        m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
-        ERRLOG("put read file task %s failed", fileHandle.m_file->m_fileName.c_str());
-        return FAILED;
-    }
-
-    ++m_readTaskProduce;
-    DBGLOG("total readTask produce for now: %d", m_readTaskProduce.load());
+    ++m_controlInfo->m_noOfFilesRead;
+    PushToAggregator(fileHandle);
+    DBGLOG("%s is empty file, needn't read it! readed for now: %d", fileHandle.m_file->m_fileName.c_str(),
+        m_controlInfo->m_noOfFilesRead.load());
     return SUCCESS;
 }
 
@@ -134,10 +131,7 @@ void PosixCopyReader::HandleSuccessEvent(shared_ptr<PosixServiceTask> taskPtr)
     FileDescState state = fileHandle.m_file->GetSrcState();
     DBGLOG("Posix copy reader success %s event %d state %d",
         fileHandle.m_file->m_fileName.c_str(), static_cast<int>(event), static_cast<int>(state));
-    if (fileHandle.m_file->IsFlagSet(READ_FAILED_DISCARD)) {
-        FSBackupUtils::RecordFailureDetail(m_failureRecorder, taskPtr->m_errDetails);
-    }
-    // 小文件readdata后已经close了， 直接push给aggregator
+    // 小文件readdata后已经close了, 直接push给aggregator
     if ((fileHandle.m_file->m_size <= m_params.blockSize) || isHugeObjectFile(fileHandle)) {
         fileHandle.m_file->SetSrcState(FileDescState::SRC_CLOSED);
         ++m_controlInfo->m_noOfFilesRead;
@@ -171,6 +165,76 @@ void PosixCopyReader::HandleSuccessEvent(shared_ptr<PosixServiceTask> taskPtr)
         return;
     }
     return;
+}
+
+void PosixCopyReader::HandleFailedEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr)
+{
+    FileHandle fileHandle = taskPtr->m_fileHandle;
+    HostEvent event = taskPtr->m_event;
+    ++fileHandle.m_retryCnt;
+    WARNLOG("event %d retry cnt %d, %s copy reader failed %s, %u", static_cast<int>(event), fileHandle.m_retryCnt,
+        OS_PLATFORM_NAME.c_str(), fileHandle.m_file->m_fileName.c_str(), fileHandle.m_block.m_size);
+    FileDescState state = fileHandle.m_file->GetSrcState();
+
+    if (FSBackupUtils::IsStuck(m_controlInfo)) {
+        ERRLOG("set backup to failed due to stucked!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+        return;
+    }
+
+    if (m_params.discardReadError && taskPtr->m_errDetails.second == ENOENT) {
+        // 如果设置了忽略读失败，对于文件不存在的情况，认为该文件备份成功，设置为跳过文件
+        WARNLOG("File %s not exist, discardReadError is true, ignore it", fileHandle.m_file->m_fileName.c_str());
+        ++m_controlInfo->m_noOfFilesWriteSkip;
+        m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
+        return;
+    }
+    if (state != FileDescState::READ_FAILED &&  /* If state is READ_FAILED, needn't retry */
+        fileHandle.m_retryCnt < DEFAULT_ERROR_SINGLE_FILE_CNT && !taskPtr->IsCriticalError()) {
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
+        return;
+    }
+    HandleFailedEventInner(state, fileHandle, taskPtr);
+    m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
+    if (!m_backupParams.commonParams.skipFailure || taskPtr->IsCriticalError()) {
+        ERRLOG("set backup to failed!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+    }
+    // NATIVE format doesn't need push to aggregator.
+    if (m_backupParams.commonParams.backupDataFormat == BackupDataFormat::AGGREGATE) {
+        PushToAggregator(fileHandle); // file handle so aggregate can handle failurs of reading file
+    }
+    ERRLOG("copy read failed for file %s, %llu, totalFailed: %llu, %llu", fileHandle.m_file->m_fileName.c_str(),
+        m_controlInfo->m_noOfFilesReadFailed.load(), m_controlInfo->m_noOfDirFailed.load(),
+        m_controlInfo->m_noOfFilesFailed.load());
+    return;
+}
+
+void PosixCopyReader::HandleFailedEventInner(FileDescState state, FileHandle fileHandle,
+    shared_ptr<OsPlatformServiceTask> taskPtr)
+{
+    if (state != FileDescState::READ_FAILED) {
+        FSBackupUtils::RecordFailureDetail(m_failureRecorder, taskPtr->m_errDetails);
+        // 通过设置公共锁，防止read和write同时失败设置FAILED时导致两边都不计数的问题
+        fileHandle.m_file->LockCommonMutex();
+        fileHandle.m_file->SetSrcState(FileDescState::READ_FAILED);
+        if (!fileHandle.m_file->IsFlagSet(IS_DIR)) {
+            // skipping to the failed cnt inc for zip files in restore which are not used in writetask
+            if (!fileHandle.m_file->IsFlagSet(AGGREGATE_GEN_FILE) &&
+                fileHandle.m_file->GetDstState() != FileDescState::WRITE_FAILED) {
+                // 若write的状态为WRITE_FAILED时，说明该文件已经被writer记为失败
+                ++m_controlInfo->m_noOfFilesFailed;
+                fileHandle.m_errNum = taskPtr->m_errDetails.second;
+                m_failedList.emplace_back(fileHandle);
+            }
+        } else {
+            ++m_controlInfo->m_noOfDirFailed;
+        }
+        fileHandle.m_file->UnlockCommonMutex();
+        ++m_controlInfo->m_noOfFilesReadFailed;
+    }
 }
 
 void PosixCopyReader::CloseOpenedHandle()

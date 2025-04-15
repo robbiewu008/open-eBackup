@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { I18NService } from '@iux/live';
@@ -21,6 +21,7 @@ import {
   CommonConsts,
   DataMap
 } from 'app/shared';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { assign, each, filter, trim } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 
@@ -47,6 +48,7 @@ export class BindRelationComponent implements OnInit {
   constructor(
     public i18n: I18NService,
     private fb: FormBuilder,
+    private appUtilsService: AppUtilsService,
     private antiRansomwareNetworkApiService: AntiRansomwareNetworkApiService,
     private detectReportApiService: DetectReportAPIService,
     private baseUtilService: BaseUtilService,
@@ -131,13 +133,12 @@ export class BindRelationComponent implements OnInit {
   }
 
   getTenant(data) {
-    this.detectReportApiService
-      .ListQueryResources({
-        deviceId: data
-      })
-      .subscribe(res => {
+    this.appUtilsService.getResourceByRecursion(
+      { deviceId: data },
+      params => this.detectReportApiService.ListQueryResources(params),
+      resource => {
         const tenantArray = [];
-        each(res, item => {
+        each(resource, item => {
           tenantArray.push({
             ...item,
             key: item.uuid,
@@ -147,7 +148,8 @@ export class BindRelationComponent implements OnInit {
           });
         });
         this.tenantOptions = tenantArray;
-      });
+      }
+    );
   }
 
   modify(): Observable<void> {

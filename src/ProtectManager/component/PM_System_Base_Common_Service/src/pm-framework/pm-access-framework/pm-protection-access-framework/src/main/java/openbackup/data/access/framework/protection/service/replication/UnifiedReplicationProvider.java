@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.protection.service.replication;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeCopyInfo;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeUnifiedRestApi;
 import openbackup.data.access.framework.copy.mng.constant.CopyPropertiesKeyConstant;
@@ -21,8 +22,6 @@ import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.copy.CopyInfoBo;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -47,6 +47,7 @@ explicit ApsaraStackProtectEngine(std::shared_ptr<VirtPlugin::JobHandle> jobHand
     
     // snapshot
     int32_t GetSnapshotsOfVolume(const VolInfo &volInfo, std::vector<VolSnapInfo> &snapList) override;
+    int32_t DeleteSnapshot(const SnapshotInfo &snapshot) override;
     // meta and handle
     int32_t GetMachineMetadata(VMInfo &vmInfo) override;
     int32_t GetVolumesMetadata(const VMInfo &vmInfo,
@@ -143,9 +144,13 @@ protected:
     int32_t DeleteSnapshotGroup(const std::string &groupId);
     bool WaitSnapshotGroup(const CreateSnapshotGroupResponse &createRes, const std::string &snapGroupName,
         SnapshotInfo &snapshot);
+    int32_t ActiveSnapConsistency(const SnapshotInfo& snapshotInfo, int32_t &erroCode) override;
+    int32_t GetOrganizationInfo(const std::string &organizationId, Organization &org);
+    int32_t CheckBeforeCreateSnapshot(const std::vector<VolInfo> &volList);
 
     Instance m_instance;
-    std::string m_regionId = "";
+    CommonApsaraExtendInfo m_envParam;
+    std::string m_regionId = "Default";
     std::string m_pythonObject;
 };
     

@@ -106,9 +106,11 @@ void SendLstatCb(int status, struct nfs_context *nfs, void *data, void *privateD
         // INCR backup scenario for non hardlink files
         if (S_ISDIR(st->nfs_mode)) {
             // We got a file creation request with same name as the directory present in BackupFS.
-            // delete directory as delete entry will come later. Without deleting we cannot create file.
-            WARNLOG("Already dir present with same name as %s", fileHandle.m_file->m_fileName.c_str());
-            fileHandle.m_file->SetDstState(FileDescState::DIR_DEL);
+            // consider this file as restore failed.
+            ERRLOG("Already dir present with same name as %s, metafile index: %u, metafile offset: %llu", fileHandle.m_file->m_fileName.c_str(),
+                fileHandle.m_file->m_metaFileIndex, fileHandle.m_file->m_metaFileOffset);
+            LstatFailureHandling(commonData, status, fileHandle);
+            return;
         } else if (S_ISLNK(st->nfs_mode) || IsSpecialDeviceFile(st->nfs_mode)) {
             fileHandle.m_file->SetDstState(FileDescState::LINK_DEL_FOR_RESTORE);
         } else if (S_ISREG(st->nfs_mode)) {
@@ -241,8 +243,10 @@ void HandleOverWrite(NfsCommonData *commonData, FileHandle &fileHandle, struct n
     if (S_ISDIR(st->nfs_mode)) {
         // We got a file creation request with same name as the directory present in TargetFS.
         // Without deleting we cannot create file.
-        WARNLOG("Already dir present with same name as %s", fileHandle.m_file->m_fileName.c_str());
-        fileHandle.m_file->SetDstState(FileDescState::DIR_DEL);
+        ERRLOG("Already dir present with same name as %s, metafile index: %u, metafile offset: %llu", fileHandle.m_file->m_fileName.c_str(),
+            fileHandle.m_file->m_metaFileIndex, fileHandle.m_file->m_metaFileOffset);
+        LstatFailureHandling(commonData, 0, fileHandle);
+        return;
     } else if (S_ISLNK(st->nfs_mode) || IsSpecialDeviceFile(st->nfs_mode)) {
         // We got a file creation request with same name as the symlink or special file present in TargetFS.
         // Without deleting we cannot create file.
@@ -255,7 +259,6 @@ void HandleOverWrite(NfsCommonData *commonData, FileHandle &fileHandle, struct n
     if (fileHandle.m_file->m_size != 0 && restoreReplacePolicy != RestoreReplacePolicy::NONE) {
         fileHandle.m_file->SetDstState(FileDescState::LINK_DEL_FOR_RESTORE);
     }
-
     PushToWriteQueue(commonData, fileHandle);
 }
 

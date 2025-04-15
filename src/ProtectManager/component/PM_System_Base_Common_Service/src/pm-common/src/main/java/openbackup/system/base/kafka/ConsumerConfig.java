@@ -12,14 +12,13 @@
 */
 package openbackup.system.base.kafka;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.security.exterattack.ExterAttack;
 import openbackup.system.base.service.ConfigMapServiceImpl;
 import openbackup.system.base.util.KeyToolUtil;
 import openbackup.system.base.util.MessageTemplate;
 import openbackup.system.base.util.ProviderRegistry;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -147,9 +146,9 @@ public class ConsumerConfig {
         props.put(org.apache.kafka.clients.consumer.ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 1);
         props.put(org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-            org.apache.kafka.common.serialization.StringDeserializer.class);
+                org.apache.kafka.common.serialization.StringDeserializer.class);
         props.put(org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-            org.apache.kafka.common.serialization.StringDeserializer.class);
+                org.apache.kafka.common.serialization.StringDeserializer.class);
         props.put(org.apache.kafka.clients.consumer.ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, HEARTBEAT_TIME);
         props.put(org.apache.kafka.clients.consumer.ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, maxPollIntervalMs);
 
@@ -165,10 +164,10 @@ public class ConsumerConfig {
         props.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, keyStoreType);
         props.put(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "");
         props.put(SaslConfigs.SASL_MECHANISM, mechanism);
-        String kafkaPassword = configMapService.getValueFromSecretByKey(KAFKA_AUTH_KEY);
+        String kafkaPassword = configMapService.getValueFromSecretByKey(KAFKA_AUTH_KEY, Boolean.FALSE);
         String jaasConfig = String.format(Locale.ENGLISH,
-            "org.apache.kafka.common.security.plain.PlainLoginModule required username='kafka_usr' password='%s';",
-            kafkaPassword);
+                "org.apache.kafka.common.security.plain.PlainLoginModule required username='kafka_usr' password='%s';",
+                kafkaPassword);
         props.put(SaslConfigs.SASL_JAAS_CONFIG, jaasConfig);
         return new DefaultKafkaConsumerFactory<>(props);
     }
@@ -194,9 +193,8 @@ public class ConsumerConfig {
 
     private Optional<Object> onRecovery(RetryContext retryContext) {
         Throwable throwable = retryContext.getLastThrowable();
-        Optional.ofNullable(throwable)
-            .map(Throwable::getCause)
-            .ifPresent(ex -> log.error("Recovery Callback, retry count:[{}]", retryContext.getRetryCount(), ex));
+        Optional.ofNullable(throwable).map(Throwable::getCause)
+                .ifPresent(ex -> log.error("Recovery Callback, retry count:[{}]", retryContext.getRetryCount(), ex));
 
         ConsumerRecord<?, ?> record = getAttribute(retryContext, "record", ConsumerRecord.class).orElse(null);
         if (record == null) {
@@ -242,21 +240,19 @@ public class ConsumerConfig {
         RetryTemplate retryTemplate = new RetryTemplate();
         ExponentialBackOffPolicy exponentialBackOffPolicy = new ExponentialBackOffPolicy();
         // 最大重试间隔，1分钟
-        exponentialBackOffPolicy.setMaxInterval(
-            IsmNumberConstant.ONE * IsmNumberConstant.SIXTY * IsmNumberConstant.THOUSAND);
+        exponentialBackOffPolicy
+                .setMaxInterval(IsmNumberConstant.ONE * IsmNumberConstant.SIXTY * IsmNumberConstant.THOUSAND);
         // 初始重试间隔，1分钟
-        exponentialBackOffPolicy.setInitialInterval(
-            IsmNumberConstant.ONE * IsmNumberConstant.SIXTY * IsmNumberConstant.THOUSAND);
+        exponentialBackOffPolicy
+                .setInitialInterval(IsmNumberConstant.ONE * IsmNumberConstant.SIXTY * IsmNumberConstant.THOUSAND);
         // 后续重试间隔=上次重试间隔 * 1
         exponentialBackOffPolicy.setMultiplier(1);
         retryTemplate.setBackOffPolicy(exponentialBackOffPolicy);
         Map<Class<? extends Throwable>, Boolean> retryableExceptions = new HashMap<>();
 
         // 指定不重试的异常类，业务异常无需重试
-        providerRegistry.findProviders(MessageErrorHandler.class)
-            .stream()
-            .map(MessageErrorHandler::retryableExceptions)
-            .forEach(retryableExceptions::putAll);
+        providerRegistry.findProviders(MessageErrorHandler.class).stream().map(MessageErrorHandler::retryableExceptions)
+                .forEach(retryableExceptions::putAll);
         retryTemplate.setRetryPolicy(new ExceptionRetryPolicy(IsmNumberConstant.TWO, retryableExceptions, false));
         retryTemplate.setThrowLastExceptionOnExhausted(true);
         return retryTemplate;

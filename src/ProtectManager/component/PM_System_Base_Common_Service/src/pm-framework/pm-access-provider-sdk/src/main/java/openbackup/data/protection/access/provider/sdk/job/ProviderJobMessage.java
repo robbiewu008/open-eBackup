@@ -12,9 +12,9 @@
 */
 package openbackup.data.protection.access.provider.sdk.job;
 
-import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnum;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import openbackup.data.protection.access.provider.sdk.enums.ProviderJobStatusEnum;
 
 import java.util.List;
 

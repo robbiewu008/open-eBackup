@@ -83,7 +83,8 @@ class Scanner(object):
     def __init__(self):
         if platform.system().lower() == "windows":
             lib_path = f"{adaptation_win_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin"
-            self._scanner = cdll.LoadLibrary(os.path.join(lib_path, "FS_Scanner.dll"))
+            dll_path = os.path.join(lib_path, "FS_Scanner.dll").replace('\\', '/')
+            self._scanner = cdll.LoadLibrary(dll_path)
         elif platform.system().lower() == "aix":
             lib_path = f"{get_install_head_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/lib"
             self._scanner = cdll.LoadLibrary(os.path.join(lib_path, "libScanner.a(libScanner.so)"))
@@ -91,7 +92,10 @@ class Scanner(object):
             lib_path = f"{get_install_head_path()}/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/lib"
             self._scanner = cdll.LoadLibrary(os.path.join(lib_path, "libScanner.so"))
         self._scanner.InitLog.argtypes = [c_char_p]
-        log_path = os.getenv("GENERALDB_LOG_PATH")
+        if platform.system().lower() == "windows":
+            log_path = f"{adaptation_win_path()}/DataBackup/ProtectClient/ProtectClient-E/log/Plugins/GeneralDBPlugin/"
+        else:
+            log_path = os.getenv("GENERALDB_LOG_PATH")
         log_level = get_log_level()
         self._scanner.InitLog(log_path.encode(), log_level)
         self._instance = None
@@ -107,9 +111,14 @@ class Scanner(object):
         self._instance = self._scanner.CreateScannerInst(scan_conf)
 
     def start(self, dir_path):
-        self._scanner.StartScanner.argtypes = [c_void_p, c_char_p]
-        self._scanner.StartScanner.restype = c_bool
-        return self._scanner.StartScanner(self._instance, dir_path.encode())
+        if platform.system().lower() == "windows":
+            self._scanner.StartScannerWithoutSplitCompoundPrefix.argtypes = [c_void_p, c_char_p]
+            self._scanner.StartScannerWithoutSplitCompoundPrefix.restype = c_bool
+            return self._scanner.StartScannerWithoutSplitCompoundPrefix(self._instance, dir_path.encode())
+        else:
+            self._scanner.StartScanner.argtypes = [c_void_p, c_char_p]
+            self._scanner.StartScanner.restype = c_bool
+            return self._scanner.StartScanner(self._instance, dir_path.encode())
 
     def start_scan_files(self, files):
         self._scanner.StartScannerBatch.argtypes = [c_void_p, c_char_p]
@@ -173,3 +182,24 @@ def scan_dir_size(job_id, dirs):
     else:
         size = 0
     return True, size
+
+
+def scan_dir(job_id, meta_ctl_path, directory):
+    scanner = Scanner()
+    meta_path = os.path.realpath(os.path.join(_SCANNER_PATH, job_id, "meta"))
+    if not os.path.exists(_SCANNER_PATH):
+        os.makedirs(_SCANNER_PATH)
+    if not os.path.exists(meta_path):
+        os.makedirs(meta_path)
+    if not os.path.exists(meta_ctl_path):
+        os.makedirs(meta_ctl_path)
+    if platform.system().lower() != "windows":
+        directory = os.path.join(directory, "")
+    else:
+        directory = directory.replace('/', '\\')
+    scanner.create(job_id, meta_path, meta_ctl_path)
+    if not scanner.start(directory):
+        return False
+    if not scanner.monitor(job_id):
+        return False
+    return True

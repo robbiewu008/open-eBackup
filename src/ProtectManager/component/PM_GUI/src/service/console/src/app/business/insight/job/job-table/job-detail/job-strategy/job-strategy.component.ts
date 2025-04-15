@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
@@ -64,10 +64,9 @@ export class JobStrategyComponent implements OnInit {
     this.extendStr = JSON.parse(this.job?.extendStr);
     if (this.backupDetailJobType.includes(this.job.type)) {
       this.sla = assign(this.extendStr, {
-        application: this.getTypeKey(
-          this.job.sourceSubType,
-          this.resourceSubTypeSLAMap
-        ),
+        application:
+          this.extendStr?.slaApplication ||
+          this.getTypeKey(this.job.sourceSubType, this.resourceSubTypeSLAMap),
         policy_list: this.extendStr?.triggerPolicy?.policy_list
       });
       this.slaName = this.sla.slaName;

@@ -6,6 +6,7 @@
   flex-direction: column;
   align-items: center;
   position: relative;
+
   .chart-container {
     position: absolute;
     top: 0;
@@ -15,6 +16,7 @@
     height: 190px;
     box-sizing: border-box;
   }
+
   .detail-container {
     position: absolute;
     top: 176px;
@@ -23,6 +25,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+
     .protected,
     .unprotected {
       height: 50px;
@@ -31,40 +34,46 @@
       flex-direction: column;
       justify-items: center;
       align-items: center;
+
       .num {
-        color: #e6e6e6;
+        color: var(--live-angular-color-text-regular);
         font-size: 24px;
         font-weight: 700;
         height: 28px;
         line-height: 28px;
       }
+
       .type {
         height: 22px;
         line-height: 22px;
         display: flex;
         align-items: center;
         gap: 8px;
+
         .circle {
           width: 8px;
           height: 8px;
           border-radius: 50%;
           background-color: #3388ff;
         }
+
         .text {
           font-size: 14px;
-          color: #b3b3b3;
+          color: var(--live-angular-color-text-secondary);
         }
       }
     }
+
     .unprotected {
       .circle {
-        background-color: #808080 !important;
+        background-color: var(--live-angular-color-tag-background) !important;
       }
     }
+
     .split-line {
       height: 30px;
       width: 1px;
-      background-color: #333333;
+      background-color: var(--live-angular-color-divider-secondary);
     }
   }
 }

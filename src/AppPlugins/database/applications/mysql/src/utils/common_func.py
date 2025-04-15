@@ -18,15 +18,33 @@ import re
 import uuid
 from configparser import ConfigParser
 
+import pexpect
 import pymysql
+from pydantic import BaseModel, Field
 
 from common.common import execute_cmd_list_communicate, retry_when_exception
+from common.const import CMDResultInt
 from common.exception.common_exception import ErrCodeException
+from common.util.cmd_utils import cmd_format
 from mysql import log
-from mysql.src.common.constant import ExecCmdResult, MySQLType, MysqlExecSqlError
+from mysql.src.common.constant import ExecCmdResult, MySQLType, MysqlExecSqlError, SystemConstant, SQLCMD
 from mysql.src.common.error_code import MySQLErrorCode
 
 SYSTEM_DATABASE = ["information_schema", "mysql", "performance_schema", "sys"]
+
+
+class ActionResponse(BaseModel):
+    code: int = Field(default=0, description="执行结果")
+    body_err: int = Field(None, description="错误码", alias='bodyErr')
+    message: str = Field(default='', description="错误信息")
+    body_err_params: list = Field(None, description="错误码具体参数", alias="bodyErrParams")
+
+
+class PermissionInfo(BaseModel):
+    user: str = Field(default='root', description='user')
+    group: str = Field(default='root', description='group')
+    file_mode: str = Field(default='0700', description='mod', alias='fileMode')
+    extend_info: dict = Field(default={}, alias='extendInfo')
 
 
 class SQLParam(object):
@@ -48,8 +66,8 @@ def exec_mysql_sql_cmd(sql_param: SQLParam, ignore_sql_error=True):
         if MysqlExecSqlError.ERROR_ACCESS_DENINED in str(error):
             raise ErrCodeException(MySQLErrorCode.CHECK_AUTHENTICATION_INFO_FAILED, message=str(error)) from error
         raise ErrCodeException(MySQLErrorCode.ERROR_INSTANCE_IS_NOT_RUNNING, message=str(error)) from error
+    cursor = mysql_connection.cursor()
     try:
-        cursor = mysql_connection.cursor()
         cursor.execute(sql_param.sql)
         results = cursor.fetchall()
     except Exception as except_str:
@@ -58,6 +76,33 @@ def exec_mysql_sql_cmd(sql_param: SQLParam, ignore_sql_error=True):
             return False, str(except_str)
         raise except_str
     finally:
+        cursor.close()
+        mysql_connection.close()
+    return True, results
+
+
+def exec_sql_without_binlog(sql_param: SQLParam, ignore_sql_error=True):
+    try:
+        mysql_connection = pymysql.connect(user=sql_param.user, host=sql_param.host, password=sql_param.passwd,
+                                           charset=sql_param.charset, port=int(sql_param.port))
+    except pymysql.Error as error:
+        log.error(f"Connect MySQL service failed!,{error}")
+        if MysqlExecSqlError.ERROR_ACCESS_DENINED in str(error):
+            raise ErrCodeException(MySQLErrorCode.CHECK_AUTHENTICATION_INFO_FAILED, message=str(error)) from error
+        raise ErrCodeException(MySQLErrorCode.ERROR_INSTANCE_IS_NOT_RUNNING, message=str(error)) from error
+    cursor = mysql_connection.cursor()
+    try:
+        cursor.execute("set sql_log_bin=0")
+        cursor.execute(sql_param.sql)
+        results = cursor.fetchall()
+        cursor.execute("set sql_log_bin=1")
+    except Exception as except_str:
+        log.error(f"execute sql failed!,execute_sql:{sql_param.sql},{except_str}")
+        if ignore_sql_error:
+            return False, str(except_str)
+        raise except_str
+    finally:
+        cursor.close()
         mysql_connection.close()
     return True, results
 
@@ -133,7 +178,7 @@ def get_conf_by_key(my_cnf_path, key: str, section: str = "mysqld") -> str:
     if os.path.exists(my_cnf_path):
         conf_path = my_cnf_path
     else:
-        conf_path = find_default_my_cnf_path()
+        _, conf_path = find_default_my_cnf_path()
     mysql_parser = configparser.ConfigParser(allow_no_value=True, strict=False, delimiters="=",
                                              comment_prefixes="#", inline_comment_prefixes="#")
     mysql_parser.optionxform = ignore_line_optionxform
@@ -248,7 +293,7 @@ def get_log_bin_from_sql(sql_param: SQLParam):
     return output[0][1]
 
 
-def get_databases_from_sql(sql_param: SQLParam, instance_id: str, instance_name: str):
+def get_databases_from_sql(sql_param: SQLParam, instance_id: str, instance_name: str, version):
     sql_param.sql = "show databases"
     ret, output = exec_mysql_sql_cmd(sql_param)
     if not ret:
@@ -257,6 +302,9 @@ def get_databases_from_sql(sql_param: SQLParam, instance_id: str, instance_name:
     for database_info in output:
         database = database_info[0]
         if database in SYSTEM_DATABASE:
+            continue
+        # 数据库test在maria版本10.5.16-MariaDB-log时，是默认数据库
+        if database == "test" and version == "10.5.16-MariaDB-log":
             continue
         if database.__contains__('#mysql50#'):
             continue
@@ -300,6 +348,28 @@ def get_pxc_info(sql_param: SQLParam):
     return pxc_info
 
 
+def get_instant_tables(sql_param: SQLParam, version: str):
+    if str(version) not in SystemConstant.UNSUPPORTED_INSTANT_VERSION:
+        return []
+    sql_param.sql = SQLCMD.select_instant
+    ret, output = exec_mysql_sql_cmd(sql_param)
+    if not ret or not output:
+        return []
+    instant_table_names = []
+    for i in output:
+        table_full_name = i[0]
+        instant_table_names.append(str(table_full_name).replace("/", "."))
+    return instant_table_names
+
+
+def flush_logs(sql_param: SQLParam):
+    sql_param.sql = SQLCMD.flush_logs
+    ret, output = exec_mysql_sql_cmd(sql_param)
+    if not ret:
+        return False
+    return True
+
+
 def contains_all_elements(arr_total, arr_sub):
     for item in arr_sub:
         if item not in arr_total:
@@ -324,7 +394,55 @@ def build_body_param(code: int, body_error: int, message: str):
 
 
 def get_value(param, key, default_value=""):
+    if not param:
+        return default_value
     return_value = param.get(key)
     if return_value:
         return return_value
     return default_value
+
+
+def exec_cmd_spawn(cmd, passwd):
+    child = None
+    try:
+        child = pexpect.spawn(cmd, timeout=None)
+    except Exception as exception_str:
+        log.exception(exception_str)
+        log.error(f"Spawn except an exception.")
+        if child:
+            child.close()
+        return CMDResultInt.FAILED.value, "cmd error"
+    try:
+        ret_code = child.expect(["Enter password:", "Failed to connect to MySQL server",
+                                 pexpect.TIMEOUT, pexpect.EOF])
+        log.info(f"ret_code:{ret_code}")
+    except Exception as exception_str:
+        log.exception(exception_str)
+        # 此处不打印异常，异常会显示用户名
+        log.error(f"Exec cmd except an exception.")
+        child.close()
+        return CMDResultInt.FAILED.value, "cmd exception"
+    if ret_code != CMDResultInt.SUCCESS.value:
+        log.error(f"Exec cmd failed.")
+        child.close()
+        return CMDResultInt.FAILED.value, "cmd error"
+    try:
+        child.sendline(passwd)
+        out_str = child.read()
+    except Exception as exception_str:
+        log.exception(exception_str)
+        log.error(f"Exec cmd except an exception.")
+        child.close()
+        return CMDResultInt.FAILED.value, "cmd read exception"
+    child.close()
+    return child.exitstatus, str(out_str)
+
+
+def source_sql_script(sql_param: SQLParam, sql_path):
+    cmd_str = cmd_format("mysql -u{} -h{} -P{} -p -e 'set sql_log_bin=0; source {};set sql_log_bin=1'",
+                         sql_param.user, sql_param.host, sql_param.port, sql_path)
+    ret, output = exec_cmd_spawn(cmd_str, sql_param.passwd)
+    log.info(f"ret:{ret}, output:{output}")
+    if ret != CMDResultInt.SUCCESS.value:
+        return False, ""
+    return True, output

@@ -91,7 +91,7 @@
               (lvFilterChange)="filterChange($event)" lvFilterCheckAll>
               {{ 'common_status_label' | i18n }}
             </th>
-            <th lvCellKey="modellist">
+            <th lvCellKey="modellist" width="200px">
               {{'common_model_label' | i18n }}
             </th>
             <th lvCellKey="capacitylist" width="300px">
@@ -146,7 +146,7 @@
                 <i lv-icon="aui-icon-loading" class="lv-m-rotate"></i>
                 {{ 'common_status_deleting_label' | i18n}}
               </td>
-              <td>
+              <td width="200px">
                 {{ item.mode | nil}}
               </td>
               <td width="300px">
@@ -161,11 +161,8 @@
                 </div>
               </td>
               <td>
-                <span *ngIf="item.role === ROLE_TYPE.primaryNode.value" lv-overflow>
+                <span lv-overflow>
                   {{ item.ipArr }}
-                </span>
-                <span *ngIf="item.role !== ROLE_TYPE.primaryNode.value" lv-overflow>
-                  {{item.displayIps | nil}}
                 </span>
               </td>
               <td>
@@ -209,7 +206,12 @@
 </ng-template>
 <ng-template #titleTpl>
   <lv-group>
-    <span class="custom-title">{{'system_local_cluster_node_label' | i18n}}({{total}})</span>
+    <ng-container *ngIf="i18n.isEn; else elseTemplate">
+      <span class="custom-title">{{'system_local_cluster_node_label' | i18n}} ({{total}})</span>
+    </ng-container>
+    <ng-template #elseTemplate>
+      <span class="custom-title">{{'system_local_cluster_node_label' | i18n}}({{total}})</span>
+    </ng-template>
     <i lv-icon="aui-icon-help" lv-tooltip="{{'system_local_cluster_node_tip_label' | i18n}}" lvTooltipTheme="light"
       class="cluster-help" lvColorState='true'></i>
   </lv-group>

@@ -12,6 +12,7 @@
 */
 package openbackup.dameng.protection.access.interceptor;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.dameng.protection.access.constant.DamengConstant;
 import openbackup.dameng.protection.access.provider.DamengAgentProvider;
 import openbackup.dameng.protection.access.service.DamengService;
@@ -29,8 +30,6 @@ import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -111,6 +110,8 @@ public class DamengBackupInterceptor extends AbstractDbBackupInterceptor {
         Map<String, String> advanceParams = Optional.ofNullable(backupTask.getAdvanceParams()).orElse(new HashMap<>());
         advanceParams.put(MULTI_FILE_SYSTEM, FALSE);
         advanceParams.put(DamengConstant.MULTI_POST_JOB, TRUE);
+        // 恢复时，副本是否需要可写，除 DWS 之外，所有数据库应用都设置为 True
+        advanceParams.put(DatabaseConstants.IS_COPY_RESTORE_NEED_WRITABLE, Boolean.TRUE.toString());
         backupTask.setAdvanceParams(advanceParams);
 
         // 设置部署类型

@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.service;
 
-import openbackup.system.base.common.enums.DeployTypeEnum;
-import openbackup.system.base.config.configmap.ConfigMapService;
-
 import com.google.common.collect.ImmutableList;
 
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.enums.DeployTypeEnum;
+import openbackup.system.base.config.configmap.ConfigMapService;
 
 import org.springframework.stereotype.Component;
 
@@ -36,14 +35,21 @@ public class DeployTypeService {
      * 备份软件白牌化涉及的产品型号
      */
     public static final ImmutableList<String> WHITE_BOX_DEPLOY_TYPES = ImmutableList.of(DeployTypeEnum.X9000.getValue(),
-            DeployTypeEnum.A8000.getValue(), DeployTypeEnum.X8000.getValue(), DeployTypeEnum.X6000.getValue(),
-            DeployTypeEnum.X3000.getValue());
+        DeployTypeEnum.A8000.getValue(), DeployTypeEnum.X8000.getValue(), DeployTypeEnum.X6000.getValue(),
+        DeployTypeEnum.X3000.getValue(), DeployTypeEnum.HYPER_DETECT.getValue(),
+        DeployTypeEnum.OPEN_SOURCE.getValue());
 
     /**
      * x系列存储的设备枚举值
      */
     public static final List<DeployTypeEnum> X_SERIES = Arrays.asList(DeployTypeEnum.X3000, DeployTypeEnum.X6000,
-            DeployTypeEnum.X8000, DeployTypeEnum.X9000);
+            DeployTypeEnum.X8000, DeployTypeEnum.X9000, DeployTypeEnum.OPEN_SOURCE);
+
+    /**
+     * E系列存储的设备枚举值
+     */
+    public static final ImmutableList<DeployTypeEnum> E_SERIES =
+        ImmutableList.of(DeployTypeEnum.E1000, DeployTypeEnum.E6000);
 
     /**
      * 业务认证初始化设备类型
@@ -55,8 +61,8 @@ public class DeployTypeService {
      * 不支持RBAC部署形态
      */
     public static final ImmutableList<DeployTypeEnum> NOT_SUPPORT_RBAC_DEPLOY_TYPES = ImmutableList.of(
-        DeployTypeEnum.CLOUD_BACKUP_OLD, DeployTypeEnum.CLOUD_BACKUP, DeployTypeEnum.CYBER_ENGINE,
-        DeployTypeEnum.HYPER_DETECT);
+            DeployTypeEnum.CLOUD_BACKUP_OLD, DeployTypeEnum.CLOUD_BACKUP, DeployTypeEnum.CYBER_ENGINE,
+            DeployTypeEnum.HYPER_DETECT);
 
     /**
      * 支持通过lld初始化的部署形态
@@ -90,6 +96,18 @@ public class DeployTypeService {
         deployType = DeployTypeEnum.getByValue(productModel);
         log.info("The system deploy type is :{}", deployType);
         return deployType;
+    }
+
+    /**
+     * 判断是否为X9000
+     *
+     * @return true-是，false-不是
+     */
+    public boolean isX9000() {
+        if (Objects.isNull(deployType)) {
+            getDeployType();
+        }
+        return DeployTypeEnum.X9000.equals(deployType);
     }
 
     /**
@@ -140,7 +158,6 @@ public class DeployTypeService {
         }
 
         return DeployTypeEnum.E1000.equals(deployType)
-            || DeployTypeEnum.OPEN_SOURCE.equals(deployType)
             || DeployTypeEnum.OPEN_SERVER.equals(deployType);
     }
 
@@ -168,7 +185,7 @@ public class DeployTypeService {
         return DeployTypeEnum.CLOUD_BACKUP.equals(deployType) || DeployTypeEnum.CLOUD_BACKUP_OLD.equals(deployType)
             || DeployTypeEnum.HYPER_DETECT.equals(deployType) || DeployTypeEnum.CYBER_ENGINE.equals(deployType)
             || DeployTypeEnum.E1000.equals(deployType) || DeployTypeEnum.E6000.equals(deployType)
-            || DeployTypeEnum.OPEN_SOURCE.equals(deployType) || DeployTypeEnum.OPEN_SERVER.equals(deployType);
+            || DeployTypeEnum.OPEN_SERVER.equals(deployType);
     }
 
     /**
@@ -196,6 +213,18 @@ public class DeployTypeService {
     }
 
     /**
+     * 判断是否是E系列存储
+     *
+     * @return true-是，false-不是
+     */
+    public boolean isESeries() {
+        if (Objects.isNull(deployType)) {
+            getDeployType();
+        }
+        return E_SERIES.contains(deployType);
+    }
+
+    /**
      * 判断是否是业务认证初始化设备类型
      *
      * @return true-是，false-不是
@@ -210,7 +239,7 @@ public class DeployTypeService {
     /**
      * 判断是否不支持RBAC
      *
-     * @return true-是，false-不是
+     * @return true-是(不支持)，false-不是(支持)
      */
     public boolean isNotSupportRBACType() {
         if (Objects.isNull(deployType)) {

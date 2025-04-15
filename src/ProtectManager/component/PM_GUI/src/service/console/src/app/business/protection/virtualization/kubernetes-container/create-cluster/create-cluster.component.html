@@ -16,10 +16,8 @@
     <lv-form-item>
         <lv-form-label lvRequired>{{'protection_k8s_cluster_type_label' | i18n}}</lv-form-label>
         <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
-            <lv-select formControlName="clusterType"
-            [lvOptions]="clusterOptions"
-            lvValueKey="value"
-            lvShowCheckAll></lv-select>
+            <lv-select formControlName="clusterType" [lvOptions]="clusterOptions" lvValueKey="value"
+                lvShowCheckAll></lv-select>
         </lv-form-control>
     </lv-form-item>
     <lv-form-item>
@@ -45,13 +43,21 @@
     </lv-form-item>
     <ng-container *ngIf="formGroup.value.type === dataMap.Cluster_Register_Mode.token.value">
         <lv-form-item>
-            <lv-form-label lvRequired>{{ 'common_ip_address_label' | i18n}}</lv-form-label>
+            <lv-form-label lvRequired>
+                {{ 'common_ip_address_label' | i18n}}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_kubernetes_ip_tip_label' | i18n}}"
+                    lvColorState='true' class="configform-constraint"></i>
+            </lv-form-label>
             <lv-form-control [lvErrorTip]="baseUtilService.ipErrorTip">
                 <input lv-input type="text" formControlName="ip" />
             </lv-form-control>
         </lv-form-item>
         <lv-form-item>
-            <lv-form-label lvRequired>{{ 'common_port_label' | i18n }}</lv-form-label>
+            <lv-form-label lvRequired>
+                {{ 'common_port_label' | i18n }}
+                <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_kubernetes_ip_port_label' | i18n}}"
+                    lvColorState='true' class="configform-constraint"></i>
+            </lv-form-label>
             <lv-form-control [lvErrorTip]="portErrorTip">
                 <input lv-input lv-input type="text" formControlName="port" placeholder="1~65535" />
             </lv-form-control>
@@ -105,25 +111,49 @@
             {{'common_task_timeout_label' | i18n}}
         </lv-form-label>
         <lv-form-control>
-            <lv-group lvGutter='8px'>
-                <lv-spinner [ngClass]="{'timeout-spinner': _isEn}"
+            <lv-group lvGutter='4px'>
+                <lv-spinner
                     lvMin="{{+formGroup.value.timeoutHour === 0 && +formGroup.value.timeoutMin === 0 && +formGroup.value.timeoutSec === 0  ? 1 : 0}}"
                     formControlName="timeoutDay">
                 </lv-spinner>
-                <span>{{'common_days_label' | i18n}}</span>
-                <lv-spinner [ngClass]="{'timeout-spinner': _isEn}" lvMax="23"
+                <span [ngClass]="{'unit-label': isEn}">{{'common_days_label' | i18n}}</span>
+                <lv-spinner lvMax="23"
                     lvMin="{{+formGroup.value.timeoutDay === 0 && +formGroup.value.timeoutMin === 0 && +formGroup.value.timeoutSec === 0  ? 1 : 0}}"
                     formControlName="timeoutHour">
                 </lv-spinner>
-                <span>{{'common_hours_label' | i18n}}</span>
-                <lv-spinner [ngClass]="{'timeout-spinner': _isEn}" lvMax="59"
+                <span class="unit-label">{{'common_hours_label' | i18n}}</span>
+                <lv-spinner lvMax="59"
                     lvMin="{{+formGroup.value.timeoutDay === 0 && +formGroup.value.timeoutHour === 0 && +formGroup.value.timeoutSec === 0  ? 1 : 0}}"
                     formControlName="timeoutMin">
                 </lv-spinner>
-                <span>{{'common_minutes_label' | i18n}}</span>
-                <lv-spinner [ngClass]="{'timeout-spinner': _isEn}" lvMax="59"
+                <span [ngClass]="{'unit-label-en': isEn,'unit-label': !isEn}">{{'common_minutes_label' | i18n}}</span>
+                <lv-spinner lvMax="59"
                     lvMin="{{+formGroup.value.timeoutDay === 0 && +formGroup.value.timeoutHour === 0 && +formGroup.value.timeoutMin === 0  ? 1 : 0}}"
                     formControlName="timeoutSec">
+                </lv-spinner>
+                <span [ngClass]="{'unit-label-en': isEn,'unit-label': !isEn}">{{'common_seconds_label' | i18n}}</span>
+            </lv-group>
+        </lv-form-control>
+    </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{'protection_script_timeout_label' | i18n}}
+        </lv-form-label>
+        <lv-form-control>
+            <lv-group lvGutter='4px'>
+                <lv-spinner lvMax="23"
+                    lvMin="{{+formGroup.value.scriptTimeoutMin === 0 && +formGroup.value.scriptTimeoutSec === 0  ? 1 : 0}}"
+                    formControlName="scriptTimeoutHour">
+                </lv-spinner>
+                <span class="unit-label">{{'common_hours_label' | i18n}}</span>
+                <lv-spinner lvMax="59"
+                    lvMin="{{+formGroup.value.scriptTimeoutHour === 0 && +formGroup.value.scriptTimeoutSec === 0  ? 1 : 0}}"
+                    formControlName="scriptTimeoutMin">
+                </lv-spinner>
+                <span [ngClass]="{'unit-label-en': isEn,'unit-label': !isEn}">{{'common_minutes_label' | i18n}}</span>
+                <lv-spinner lvMax="59"
+                    lvMin="{{+formGroup.value.scriptTimeoutHour === 0 && +formGroup.value.scriptTimeoutMin === 0  ? 1 : 0}}"
+                    formControlName="scriptTimeoutSec">
                 </lv-spinner>
                 <span>{{'common_seconds_label' | i18n}}</span>
             </lv-group>

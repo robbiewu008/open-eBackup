@@ -12,14 +12,15 @@
   -->
 
 <div class="loading-container" [ngClass]="{'modify-container': !!isModify}">
-    <ng-container *ngIf="[dataMap.System_Init_Status.running.value, dataMap.networkModifyStatus.running.value].includes(status)">
-        <img [src]="'assets/img/init_loading.gif'">
+    <ng-container
+        *ngIf="[dataMap.System_Init_Status.running.value, dataMap.networkModifyStatus.running.value].includes(status)">
+        <img [src]="getInitLoadingImg()">
         <div [innerHTML]="init_running_label | i18n: [result.rate || 0]"></div>
     </ng-container>
 
     <ng-container
         *ngIf="[dataMap.System_Init_Status.archiveFailed.value,dataMap.System_Init_Status.backupFailed.value,dataMap.System_Init_Status.authFailed.value,dataMap.System_Init_Status.failed.value].includes(status)">
-        <img [src]="'assets/img/init_failed.png'">
+        <img [src]="getInitFailedImg()">
         <div [innerHTML]="result.code | i18n : result.params"></div>
         <div *ngIf="dataMap.System_Init_Status.archiveFailed.value !== status" class="btn-container">
             <ng-container *ngTemplateOutlet="resetTpl"></ng-container>
@@ -28,10 +29,10 @@
             <ng-container *ngTemplateOutlet="exportLogTpl"></ng-container>
         </div>
     </ng-container>
-    
+
     <!-- 修改网络时使用 -->
     <ng-container *ngIf="dataMap.networkModifyStatus.fail.value === status">
-        <img [src]="'assets/img/init_failed.png'">
+        <img [src]="getInitFailedImg()">
         <div [innerHTML]="result.code | i18n : result.params"></div>
         <button lv-button lvType='primary' (click)='modifyReset()' style="margin-top:8px">
             {{'common_modify_config_label' | i18n}}

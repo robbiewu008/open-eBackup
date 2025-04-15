@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -68,7 +68,10 @@ export class AddRuleComponent implements OnInit {
   );
   nameErrorTip = {
     ...this.baseUtilService.nameErrorTip,
-    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64])
+    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [64]),
+    invalidName: this.i18n.get(
+      'common_valid_desensitization_rule_name_combination_label'
+    )
   };
   alphabetErrorTip = {
     ...this.baseUtilService.requiredErrorTip,
@@ -133,7 +136,8 @@ export class AddRuleComponent implements OnInit {
       name: new FormControl(this.rowItem ? this.rowItem.name : '', {
         validators: [
           this.baseUtilService.VALID.required(),
-          this.baseUtilService.VALID.maxLength(64)
+          this.baseUtilService.VALID.maxLength(64),
+          this.validName()
         ],
         asyncValidators: this.asyncValidName()
       }),
@@ -376,6 +380,21 @@ export class AddRuleComponent implements OnInit {
     this.formGroup.get('originalData').valueChanges.subscribe(res => {
       this.formGroup.get('description').setValue('');
     });
+  }
+
+  validName(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (!control.value) {
+        return;
+      }
+
+      const reg1 = /^[\w\u4e00-\u9fa5\- ]+$/;
+      if (!reg1.test(control.value)) {
+        return { invalidName: { value: control.value } };
+      }
+
+      return null;
+    };
   }
 
   asyncValidName() {

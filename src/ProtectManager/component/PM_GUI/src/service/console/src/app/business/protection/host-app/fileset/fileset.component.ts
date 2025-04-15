@@ -1,51 +1,51 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnDestroy,
-  OnInit,
-  TemplateRef,
-  ViewChild
+  OnInit
 } from '@angular/core';
 import {
   CommonConsts,
   CookieService,
-  DATE_PICKER_MODE,
   DataMap,
   DataMapService,
-  GROUP_COMMON,
+  DATE_PICKER_MODE,
+  extendSlaInfo,
+  getLabelList,
+  getPermissionMenuItem,
   GlobalService,
+  GROUP_COMMON,
+  hasBackupPermission,
+  hasProtectPermission,
+  hasRecoveryPermission,
+  hasResourcePermission,
   I18NService,
   MODAL_COMMON,
   OperateItems,
   ProjectedObjectApiService,
+  ProtectedResourceApiService,
   ProtectResourceAction,
   ProtectResourceCategory,
-  ProtectedResourceApiService,
   ResourceOperationType,
   RoleOperationMap,
-  WarningMessageService,
-  extendSlaInfo,
-  getLabelList,
-  getPermissionMenuItem,
-  hasBackupPermission,
-  hasProtectPermission,
-  hasRecoveryPermission,
-  hasResourcePermission
+  SetTagType,
+  WarningMessageService
 } from 'app/shared';
 import { WarningBatchConfirmsService } from 'app/shared/components/warning-batch-confirm/warning-batch-confirm.component';
+import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
 import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { ProtectService } from 'app/shared/services/protect.service';
@@ -64,6 +64,7 @@ import {
   find,
   first,
   forEach,
+  get,
   includes,
   isArray,
   isEmpty,
@@ -71,13 +72,13 @@ import {
   map,
   mapValues,
   size,
+  some,
   toString,
   trim
 } from 'lodash';
 import { Subject, Subscription, timer } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { CreateFilesetTemplateComponent } from './fileset-template-list/create-fileset-template/create-fileset-template.component';
-import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
 
 @Component({
   selector: 'aui-fileset',
@@ -120,7 +121,7 @@ export class FilesetComponent implements OnInit, OnDestroy {
       isShow: true
     },
     {
-      label: this.i18n.get('protection_host_name_label'),
+      label: this.i18n.get('protection_client_name_label'),
       key: 'environment_name',
       isShow: true
     },
@@ -144,6 +145,13 @@ export class FilesetComponent implements OnInit, OnDestroy {
           item.value
         );
       }),
+      isShow: true
+    },
+    {
+      label: this.i18n.get('protection_volume_advanced_backup_label'),
+      key: 'osBackup',
+      filter: true,
+      filterMap: this.dataMapService.toArray('copyDataVolume'),
       isShow: true
     },
     {
@@ -364,14 +372,18 @@ export class FilesetComponent implements OnInit, OnDestroy {
       {
         id: 'addTag',
         permission: OperateItems.AddTag,
-        disabled: !size(this.selection),
+        disabled:
+          !size(this.selection) ||
+          some(this.selection, v => !hasResourcePermission(v)),
         label: this.i18n.get('common_add_tag_label'),
         onClick: data => this.addTag(this.selection)
       },
       {
         id: 'removeTag',
         permission: OperateItems.RemoveTag,
-        disabled: !size(this.selection),
+        disabled:
+          !size(this.selection) ||
+          some(this.selection, v => !hasResourcePermission(v)),
         label: this.i18n.get('common_remove_tag_label'),
         onClick: data => this.removeTag(this.selection)
       }
@@ -387,6 +399,7 @@ export class FilesetComponent implements OnInit, OnDestroy {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selection = [];
         this.getFilesets();
@@ -398,6 +411,7 @@ export class FilesetComponent implements OnInit, OnDestroy {
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selection = [];
         this.getFilesets();
@@ -405,13 +419,13 @@ export class FilesetComponent implements OnInit, OnDestroy {
     });
   }
 
-  getFilesets(refreshData?, name?, keepSelection?) {
+  getFilesets(refreshData?, keepSelection?) {
     if (!keepSelection) {
       each(this.moreMenus, item => {
         item.disabled = true;
       });
     }
-    const params = this.getParams(name);
+    const params = this.getParams();
     if (this.filesetListSub$) {
       this.filesetListSub$.unsubscribe();
     }
@@ -438,7 +452,8 @@ export class FilesetComponent implements OnInit, OnDestroy {
             environment_endpoint: item.environment?.endpoint,
             template_name: item.extendInfo?.templateName,
             showLabelList: showList,
-            hoverLabelList: hoverList
+            hoverLabelList: hoverList,
+            osBackup: get(item.extendInfo, 'is_OS_backup', 'false') === 'true'
           });
           extendSlaInfo(item);
         });
@@ -471,9 +486,6 @@ export class FilesetComponent implements OnInit, OnDestroy {
       });
   }
 
-  searchFilesets(name) {
-    this.getFilesets(null, name);
-  }
   // 刷新资源详情
   refreshDetail(target, tableData) {
     if (find(tableData, { uuid: target.uuid })) {
@@ -483,17 +495,11 @@ export class FilesetComponent implements OnInit, OnDestroy {
     }
   }
 
-  getParams(name?) {
+  getParams() {
     const params = {
       pageNo: this.pageIndex,
       pageSize: this.pageSize
     };
-    if (!isUndefined(name)) {
-      this.queryName = name;
-      assign(this.filterParams, {
-        name: [['~~'], trim(this.queryName)]
-      });
-    }
     each(this.filterParams, (value, key) => {
       if (isEmpty(value)) {
         delete this.filterParams[key];
@@ -653,12 +659,14 @@ export class FilesetComponent implements OnInit, OnDestroy {
       {
         id: 'addTag',
         permission: OperateItems.AddTag,
+        disabled: !hasResourcePermission(item),
         label: this.i18n.get('common_add_tag_label'),
         onClick: () => this.addTag([item])
       },
       {
         id: 'removeTag',
         permission: OperateItems.RemoveTag,
+        disabled: !hasResourcePermission(item),
         label: this.i18n.get('common_remove_tag_label'),
         onClick: () => this.removeTag([item])
       }
@@ -689,9 +697,18 @@ export class FilesetComponent implements OnInit, OnDestroy {
     } else if (e.key === 'osType') {
       assign(this.filterParams, {
         environment: {
+          ...this.filterParams?.environment,
           osType: [['in'], ...e.value]
         }
       });
+    } else if (e.key === 'osBackup') {
+      if (e.value.length !== 2) {
+        assign(this.filterParams, {
+          is_OS_backup: e.value.includes(false)
+            ? [['!='], 'true']
+            : [['in'], ...e.value.map(item => String(item))]
+        });
+      }
     } else {
       assign(this.filterParams, {
         [e.key]: e.value
@@ -724,6 +741,7 @@ export class FilesetComponent implements OnInit, OnDestroy {
   searchByHostName(hostName) {
     assign(this.filterParams, {
       environment: {
+        ...this.filterParams?.environment,
         name: [['~~'], trim(hostName)]
       }
     });
@@ -733,6 +751,7 @@ export class FilesetComponent implements OnInit, OnDestroy {
   searchByIp(ip) {
     assign(this.filterParams, {
       environment: {
+        ...this.filterParams?.environment,
         endpoint: [['~~'], trim(ip)]
       }
     });
@@ -740,24 +759,20 @@ export class FilesetComponent implements OnInit, OnDestroy {
   }
 
   searchBySlaName(slaName) {
-    if (trim(this.querySlaName)) {
-      assign(this.filterParams, {
-        protectedObject: {
-          slaName: [['~~'], trim(slaName)]
-        }
-      });
-    } else {
-      assign(this.filterParams, {
-        protectedObject: {}
-      });
-    }
+    assign(this.filterParams, {
+      protectedObject: {
+        ...this.filterParams?.protectedObject,
+        slaName: [['~~'], trim(slaName)]
+      }
+    });
     this.getFilesets();
   }
 
   searchByLabel(label) {
+    label = label.map(e => e.value);
     assign(this.filterParams, {
       labelCondition: {
-        labelName: trim(label)
+        labelList: label
       }
     });
     this.getFilesets();
@@ -819,9 +834,13 @@ export class FilesetComponent implements OnInit, OnDestroy {
           ? this.i18n.get('protection_partial_resources_active_label')
           : '';
       } else if (item.id === 'addTag') {
-        item.disabled = !size(this.selection);
+        item.disabled =
+          !size(this.selection) ||
+          some(this.selection, v => !hasResourcePermission(v));
       } else if (item.id === 'removeTag') {
-        item.disabled = !size(this.selection);
+        item.disabled =
+          !size(this.selection) ||
+          some(this.selection, v => !hasResourcePermission(v));
       } else {
         item.disabled =
           size(
@@ -832,10 +851,16 @@ export class FilesetComponent implements OnInit, OnDestroy {
                 hasProtectPermission(val)
               );
             })
-          ) !== size(this.selection);
+          ) !== size(this.selection) ||
+          size(this.selection) > CommonConsts.DEACTIVE_PROTECTION_MAX;
         item.tips = item.disabled
           ? this.i18n.get('protection_partial_resources_deactive_label')
           : '';
+        if (size(this.selection) > CommonConsts.DEACTIVE_PROTECTION_MAX) {
+          item.tips = this.i18n.get(
+            'protection_max_deactivate_protection_label'
+          );
+        }
       }
     });
     // 批量删除按钮
@@ -857,7 +882,9 @@ export class FilesetComponent implements OnInit, OnDestroy {
             isEmpty(val.sla_id) &&
             val.protection_status !==
               DataMap.Protection_Status.creating.value &&
-            val.protection_status !== DataMap.Protection_Status.protected.value
+            val.protection_status !==
+              DataMap.Protection_Status.protected.value &&
+            hasProtectPermission(val)
           );
         })
       ) !== size(this.selection) ||
@@ -875,7 +902,7 @@ export class FilesetComponent implements OnInit, OnDestroy {
   pageChange(page) {
     this.pageSize = page.pageSize;
     this.pageIndex = page.pageIndex;
-    this.getFilesets('', '', true);
+    this.getFilesets('', true);
   }
 
   manualBackup(datas) {

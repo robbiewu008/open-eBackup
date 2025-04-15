@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   EventEmitter,
@@ -40,7 +40,7 @@ import {
   VmFileReplaceStrategy,
   VmRestoreOptionType
 } from 'app/shared';
-import { each, size, first, includes, trim } from 'lodash';
+import { each, size, first, includes, trim, isFunction, assign } from 'lodash';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -56,6 +56,7 @@ export class FileRestoreComponent implements OnInit {
   DataMap = DataMap;
   formGroup: FormGroup;
   resourceProperties;
+  properties;
   originVmIp;
   newVmIp;
   selectedVm;
@@ -76,9 +77,23 @@ export class FileRestoreComponent implements OnInit {
 
   pageSize = CommonConsts.PAGE_SIZE_SMALL;
 
+  vmIpTypeOptions = {
+    exist: '1',
+    custom: '2'
+  };
+
   vmIpHelpLabel = this.i18n.get('protection_file_restore_ip_help_label');
   pathErrorTip = {
     invalidPath: this.i18n.get('common_path_error_label')
+  };
+  ipErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
+    ...this.baseUtilService.ipErrorTip
+  };
+  portErrorTip = {
+    ...this.baseUtilService.requiredErrorTip,
+    invalidInteger: this.i18n.get('common_valid_integer_label'),
+    invalidRang: this.i18n.get('common_valid_rang_label', [1, 65535])
   };
 
   @ViewChild('footerTpl', { static: true }) footerTpl: TemplateRef<any>;
@@ -118,6 +133,7 @@ export class FileRestoreComponent implements OnInit {
       });
     });
     this.resourceProperties = JSON.parse(this.rowCopy.resource_properties);
+    this.properties = JSON.parse(this.rowCopy.properties);
   }
 
   validTargetPath(): ValidatorFn {
@@ -135,21 +151,39 @@ export class FileRestoreComponent implements OnInit {
     };
   }
 
+  setPortValid(updateValid = true) {
+    if (this.showPort()) {
+      this.formGroup
+        .get('port')
+        ?.addValidators([
+          this.baseUtilService.VALID.required(),
+          this.baseUtilService.VALID.integer(),
+          this.baseUtilService.VALID.rangeValue(1, 65535)
+        ]);
+    } else {
+      this.formGroup.get('port')?.clearValidators();
+    }
+    if (updateValid) {
+      this.formGroup.get('port')?.updateValueAndValidity();
+    }
+  }
+
   initForm() {
     this.formGroup = this.fb.group({
       restoreLocation: [RestoreLocationType.ORIGIN],
       location: new FormControl(this.resourceProperties.path, {
-        validators: [this.baseUtilService.VALID.required()],
-        updateOn: 'change'
+        validators: [this.baseUtilService.VALID.required()]
       }),
       targetPath: new FormControl('', {
         validators: [this.validTargetPath()]
       }),
       originalType: [VmFileReplaceStrategy.Overwriting],
+      vmIpType: new FormControl(this.vmIpTypeOptions.exist),
       vmIp: new FormControl('', {
-        validators: [this.baseUtilService.VALID.required()],
-        updateOn: 'change'
+        validators: [this.baseUtilService.VALID.required()]
       }),
+      customIp: new FormControl(''),
+      port: new FormControl('22'),
       userName: new FormControl('', {
         validators: [this.baseUtilService.VALID.required()]
       }),
@@ -157,6 +191,10 @@ export class FileRestoreComponent implements OnInit {
         validators: [this.baseUtilService.VALID.required()]
       })
     });
+
+    this.formGroup
+      .get('vmIpType')
+      .valueChanges.subscribe(res => this.listenVmIpType(res));
 
     if (this.disableOriginLocation) {
       this.formGroup.patchValue({
@@ -168,6 +206,7 @@ export class FileRestoreComponent implements OnInit {
         this.os_type = res?.os_type;
         this.getVmIpOptions(res.vm_ip);
       });
+      this.setPortValid(false);
     }
 
     this.listenRestoreLocation();
@@ -179,6 +218,25 @@ export class FileRestoreComponent implements OnInit {
     this.formGroup.statusChanges.subscribe(res =>
       this.restoreParamsChange.emit(res)
     );
+  }
+
+  listenVmIpType(res) {
+    if (res === this.vmIpTypeOptions.exist) {
+      this.formGroup
+        .get('vmIp')
+        .setValidators([this.baseUtilService.VALID.required()]);
+      this.formGroup.get('customIp').clearValidators();
+    } else {
+      this.formGroup
+        .get('customIp')
+        .setValidators([
+          this.baseUtilService.VALID.required(),
+          this.baseUtilService.VALID.ip()
+        ]);
+      this.formGroup.get('vmIp').clearValidators();
+    }
+    this.formGroup.get('customIp').updateValueAndValidity();
+    this.formGroup.get('vmIp').updateValueAndValidity();
   }
 
   listenRestoreLocation() {
@@ -205,6 +263,7 @@ export class FileRestoreComponent implements OnInit {
           this.vmIpNoData = false;
         }
       }
+      this.setPortValid();
       this.formGroup.get('vmIp').markAsPristine();
       this.formGroup.get('vmIp').markAsUntouched();
     });
@@ -216,12 +275,14 @@ export class FileRestoreComponent implements OnInit {
     this.formGroup.get('vmIp').markAsPristine();
     this.formGroup.get('vmIp').markAsUntouched();
     this.getVmIpOptions(event.vmIp);
+    // 增加端口校验
+    this.setPortValid();
   }
 
   changeVcenter(event) {
     this.vmIpHelpLabel = this.i18n.get(
       'protection_file_restore_ip_help_label',
-      [event]
+      [event?.label || '']
     );
   }
 
@@ -255,8 +316,14 @@ export class FileRestoreComponent implements OnInit {
       .pipe(map(res => (!!size(res.items) ? first(res.items) : {})));
   }
 
+  getVmIp(): string {
+    return this.formGroup.get('vmIpType')?.value === this.vmIpTypeOptions.exist
+      ? this.formGroup.get('vmIp')?.value
+      : this.formGroup.get('customIp')?.value;
+  }
+
   getParams() {
-    return {
+    const params = {
       copy_id: this.rowCopy.uuid,
       object_type: this.rowCopy.resource_sub_type,
       restore_location: this.formGroup.value.restoreLocation,
@@ -286,11 +353,27 @@ export class FileRestoreComponent implements OnInit {
             : this.selectedVm.name,
         USER_NAME: this.formGroup.value.userName,
         PASSWORD: this.formGroup.value.password,
-        VM_IP: this.formGroup.value.vmIp,
+        VM_IP: this.getVmIp(),
         FILE_REPLACE_STRATEGY: this.formGroup.value.originalType,
         TARGET_PATH: this.formGroup.value.targetPath || ''
       }
     };
+    if (this.showPort()) {
+      assign(params.ext_parameters, {
+        PORT: this.formGroup.get('port')?.value
+      });
+    }
+    return params;
+  }
+
+  showPort(): boolean {
+    if (this.formGroup.value.restoreLocation === RestoreLocationType.ORIGIN) {
+      return (
+        this.os_type === DataMap.vmwareOsType.linux.value ||
+        this.properties?.osType === DataMap.vmwareOsType.linux.value
+      );
+    }
+    return this.selectedVm?.os_type === DataMap.vmwareOsType.linux.value;
   }
 
   testConnection() {
@@ -299,20 +382,25 @@ export class FileRestoreComponent implements OnInit {
       password: this.formGroup.value.password,
       osType:
         this.formGroup.value.restoreLocation === RestoreLocationType.ORIGIN
-          ? this.os_type || ''
+          ? this.os_type || this.properties?.osType || ''
           : this.selectedVm.os_type || '',
-      vmIp: this.formGroup.value.vmIp
+      vmIp: this.getVmIp()
     };
+    if (this.showPort()) {
+      assign(params, {
+        port: this.formGroup.get('port')?.value
+      });
+    }
     this.restoreFilesControllerService
       .checkDestConnection({ checkDestConnectionRequest: params })
-      .subscribe(
-        () => {
+      .subscribe({
+        next: () => {
           this.isTest = true;
         },
-        () => {
+        error: () => {
           this.isTest = false;
         }
-      );
+      });
   }
 
   restore() {
@@ -321,6 +409,9 @@ export class FileRestoreComponent implements OnInit {
       .createRestoreV1RestoresPost({ body: params })
       .subscribe(res => {
         this.modal.close();
+        if (isFunction(this.rowCopy.closeDetailFn)) {
+          this.rowCopy.closeDetailFn();
+        }
       });
   }
 }

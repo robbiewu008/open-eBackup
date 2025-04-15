@@ -11,20 +11,22 @@
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
 
+import os
 import time
 from threading import Thread
 
-from mysql import log
-from common.util.cmd_utils import cmd_format
-from common.const import SubJobStatusEnum
-from common.common import exter_attack
 from common.cleaner import clear
+from common.common import exter_attack
+from common.const import SubJobStatusEnum
 from common.util.check_utils import check_repo_path
+from common.util.cmd_utils import cmd_format
 from common.util.scanner_utils import scan_dir_size
+from mysql import log
+from mysql.src.common.constant import MySQLProgressFileType, MysqlBackupToolName
+from mysql.src.common.execute_cmd import safe_get_environ, check_path_in_white_list
+from mysql.src.common.model.backup_cmd_param import BackupCmdParamModel
 from mysql.src.protect_mysql_backup_full import MysqlBackupFull
 from mysql.src.protect_mysql_base import MysqlBase
-from mysql.src.common.execute_cmd import safe_get_environ, check_path_in_white_list
-from mysql.src.common.constant import MySQLProgressFileType, MysqlBackupToolName
 
 
 class MysqlBackupInc(MysqlBase):
@@ -55,28 +57,23 @@ class MysqlBackupInc(MysqlBase):
                 database_cmd = "--databases="
                 if self._full_backup.check_database_dir(database_name):
                     return False
-            channel_number = self.get_channel_number()
-            lock_ddl_cmd = self.get_lock_ddl_cmd()
             tool_name = self.get_backup_tool_name()
             if tool_name == MysqlBackupToolName.MARIADBBACKUP:
-                # mariaDB 就在命令码中拼接密码
-                passwd_str = f"={safe_get_environ(self._mysql_pwd)}"
+                # mariaDB 不能命令码中拼接密码，会有ps明文密码安全问题
+                passwd_str = f"{safe_get_environ(self._mysql_pwd)}"
                 # mariaDB 没有app_log_only 参数
                 app_log_only = ""
-            backup_cmd_param = cmd_format("--defaults-file={} {}{} \
-                                    --backup  --parallel={} {}\
-                                    --host={} --user={}  --password'{}' --port={} \
-                                    --target-dir={} \
-                                    --incremental-basedir={}",
-                                          my_cnf_path, database_cmd, database_name, channel_number, lock_ddl_cmd,
-                                          self._mysql_ip, self._mysql_user, passwd_str, self._mysql_port, copy_path,
-                                          copy_full_path)
+                os.environ["MYSQL_PWD"] = passwd_str
+            backup_param_model = BackupCmdParamModel(copy_full_path, copy_path, database_cmd, database_name,
+                                                     my_cnf_path, passwd_str, tool_name)
+            backup_cmd_param = self.build_backup_cmd_param(backup_param_model)
 
             begin_time = time.time()
             ret, output = self.exec_xtrabackup_cmd(backup_cmd_param, tool_name, self._mysql_pwd)
             self._backup_time = int(time.time())
         finally:
             clear(passwd_str)
+            self.clear_password_environ_for_maria()
         if not ret:
             log.error(f"Exec backup cmd failed. output:{output} pid:{self._p_id} jobId:{self._job_id}")
             return False
@@ -87,7 +84,7 @@ class MysqlBackupInc(MysqlBase):
         self.set_average_speed(begin_time, self._backup_time, copy_path)
         log.info(f"Exec backup cmd success. output: pid:{self._p_id} jobId:{self._job_id}")
         parper_cmd_param = cmd_format("--prepare {} --parallel={} \
-            --target-dir={} --incremental-dir={}", app_log_only, channel_number, copy_full_path, copy_path)
+            --target-dir={} --incremental-dir={}", app_log_only, self.get_channel_number(), copy_full_path, copy_path)
         ret, output = self.exec_xtrabackup_cmd(parper_cmd_param, tool_name)
         if not ret:
             log.error(f"Exec prepare cmd failed. output:{output} pid:{self._p_id} jobId:{self._job_id}")
@@ -100,6 +97,43 @@ class MysqlBackupInc(MysqlBase):
         if not ret:
             return False
         return True
+
+    def build_backup_cmd_param(self, backup_param_model):
+        if backup_param_model.tool_name == MysqlBackupToolName.MARIADBBACKUP:
+            backup_cmd_param = cmd_format("--defaults-file={} {}{} \
+                                                                --backup  --parallel={} {}\
+                                                                --host={} --user={} --port={} \
+                                                                --target-dir={} \
+                                                                --incremental-basedir={}",
+                                          backup_param_model.my_cnf_path,
+                                          backup_param_model.database_cmd,
+                                          backup_param_model.database_name,
+                                          self.get_channel_number(),
+                                          self.get_lock_ddl_cmd(),
+                                          self._mysql_ip,
+                                          self._mysql_user,
+                                          self._mysql_port,
+                                          backup_param_model.copy_path,
+                                          backup_param_model.copy_full_path)
+        else:
+            backup_cmd_param = cmd_format("--defaults-file={} {}{} \
+                                                --backup  --parallel={} {}\
+                                                --host={} --user={}  --password'{}' --port={} \
+                                                --target-dir={} \
+                                                --incremental-basedir={}",
+                                          backup_param_model.my_cnf_path,
+                                          backup_param_model.database_cmd,
+                                          backup_param_model.database_name,
+                                          self.get_channel_number(),
+                                          self.get_lock_ddl_cmd(),
+                                          self._mysql_ip,
+                                          self._mysql_user,
+                                          backup_param_model.passwd_str,
+                                          self._mysql_port,
+                                          backup_param_model.copy_path,
+                                          backup_param_model.copy_full_path)
+        return backup_cmd_param
+
 
     @exter_attack
     def exec_sub_job(self):
@@ -134,7 +168,7 @@ class MysqlBackupInc(MysqlBase):
             return False
         self.check_and_del_target_dir(copy_path)
         # 副本信息记录cache仓
-        ret = self.write_copy_info(self._backup_time)
+        ret = self.write_copy_info(self._backup_time, self.get_full_copy_path())
         if not ret:
             log.error(f"Write_copy_info_failed. pid:{self._p_id} jobId:{self._job_id}")
             return False

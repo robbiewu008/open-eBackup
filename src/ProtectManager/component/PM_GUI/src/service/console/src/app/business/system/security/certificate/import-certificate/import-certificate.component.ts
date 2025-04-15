@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
@@ -90,6 +90,17 @@ export class ImportCertificateComponent implements OnInit {
   isHyperdetect =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.hyperdetect.value;
   isProtectAgent = false;
+  isADFS;
+  lvAcceptType;
+  isDataBackup = !includes(
+    [
+      DataMap.Deploy_Type.hyperdetect.value,
+      DataMap.Deploy_Type.cyberengine.value,
+      DataMap.Deploy_Type.cloudbackup.value,
+      DataMap.Deploy_Type.cloudbackup2.value
+    ],
+    this.i18n.get('deploy_type')
+  );
 
   constructor(
     public i18n: I18NService,
@@ -114,6 +125,9 @@ export class ImportCertificateComponent implements OnInit {
     this.redisComponentFlag =
       this.currentComponent.type ===
       DataMap.Component_Type.redisComponent.value;
+    this.isADFS =
+      this.currentComponent.type === DataMap.Component_Type.adfs.value;
+    this.lvAcceptType = this.isADFS ? '.pem,.cer' : '.pem';
     this.formGroup = this.fb.group({
       password: new FormControl('', {
         validators: [this.baseUtilService.VALID.maxLength(512)]
@@ -127,15 +141,24 @@ export class ImportCertificateComponent implements OnInit {
       {
         name: 'suffix',
         filterFn: (files: UploadFile[]) => {
-          const supportSuffix = ['pem'];
+          const supportSuffix = this.isADFS ? ['pem', 'cer'] : ['pem'];
           const validFiles = files.filter(file => {
             const suffix = file.name.split('.').pop();
             return supportSuffix.includes(suffix);
           });
 
           if (validFiles.length !== files.length) {
+            const errorMassageArr = [
+              'pem',
+              this.i18n.get('common_or_label'),
+              'cer'
+            ];
             this.message.error(
-              this.i18n.get('common_format_error_label', ['pem']),
+              this.isADFS
+                ? this.i18n.get('common_format_error_label', [
+                    `${errorMassageArr.join(this.i18n.isEn ? ' ' : '')}`
+                  ])
+                : this.i18n.get('common_format_error_label', ['pem']),
               {
                 lvMessageKey: 'formatErrorKey',
                 lvShowCloseButton: true
@@ -160,7 +183,6 @@ export class ImportCertificateComponent implements OnInit {
         }
       }
     ];
-
     this.filters3 = [
       {
         name: 'suffix',
@@ -443,26 +465,26 @@ export class ImportCertificateComponent implements OnInit {
         this.warningMessageService.create({
           content: warnContent,
           onOK: () => {
-            if (this.internalFlag) {
-              this.certApiService.pushUpdateCertificate(params).subscribe(
-                () => {
+            if (this.internalFlag && this.isDataBackup) {
+              this.certApiService.pushUpdateCertificate(params).subscribe({
+                next: () => {
                   isFunction(cb) && cb();
                   resolve(true);
                 },
-                () => {
+                error: () => {
                   resolve(false);
                 }
-              );
+              });
             } else {
-              this.certApiService.importCertificateUsingPOST(params).subscribe(
-                () => {
+              this.certApiService.importCertificateUsingPOST(params).subscribe({
+                next: () => {
                   isFunction(cb) && cb();
                   resolve(true);
                 },
-                () => {
+                error: () => {
                   resolve(false);
                 }
-              );
+              });
             }
           },
           onCancel: () => resolve(false),

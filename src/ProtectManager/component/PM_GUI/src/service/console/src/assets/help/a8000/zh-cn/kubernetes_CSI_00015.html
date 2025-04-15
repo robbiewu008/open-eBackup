@@ -1,0 +1,62 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="上传和更新Kubernetes镜像压缩包">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="kubernetes_CSI_00014.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="kubernetes_CSI_00015">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>上传和更新Kubernetes镜像压缩包</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="kubernetes_CSI_00015"></a><a name="kubernetes_CSI_00015"></a>
+
+<h1 class="topictitle1">上传和更新Kubernetes镜像压缩包</h1>
+<div><p>执行备份恢复前，需要上传Kubernetes镜像压缩包至镜像库。备份恢复时需要在生产环境上使用镜像部署备份pod，用于备份恢复任务运行过程中的数据搬迁，因此需要上传Kubernetes镜像压缩包至镜像仓库用于部署备份pod。</p>
+<div class="section" id="kubernetes_CSI_00015__section86041226145019"><h4 class="sectiontitle">前提条件</h4><p id="kubernetes_CSI_00015__kubernetes_CSI_00012_p155091416131516">上传Kubernetes镜像压缩包前，请用户在<span id="kubernetes_CSI_00015__kubernetes_csi_00012_text157711162916">OceanProtect</span>管理界面上查询版本，再根据查询到的版本下载“OceanProtect_DataProtect<em id="kubernetes_CSI_00015__kubernetes_csi_00012_i820512012382">_X.X.X_</em>K8s_BackupImage.tgz”安装包，解压安装包后，获得对应的“k8s_backup_image_x86.tar”或“k8s_backup_image_arm64.tar”镜像压缩包。安装包通过以下方式获取。</p>
+<ul id="kubernetes_CSI_00015__kubernetes_CSI_00012_ul1470191016457"><li id="kubernetes_CSI_00015__kubernetes_CSI_00012_li12701151074511">企业用户：<a href="https://support.huawei.com/enterprise/zh/flash-storage/oceanprotect-databackup-pid-258115661/software/" target="_blank" rel="noopener noreferrer">点此前往</a></li><li id="kubernetes_CSI_00015__kubernetes_CSI_00012_li8194016184520">运营商用户：<a href="https://support.huawei.com/carrier/navi?coltype=software#col=software&amp;path=PBI1-21430725/PBI1-251363742/PBI1-250389226/PBI1-251366310/PBI1-258115661" target="_blank" rel="noopener noreferrer">点此前往</a></li></ul>
+<div class="note" id="kubernetes_CSI_00015__note6710171014395"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><div class="p" id="kubernetes_CSI_00015__p8557192519583">可通过以下方式查询版本。<ol id="kubernetes_CSI_00015__ol1134712489218"><li id="kubernetes_CSI_00015__li858118598213">单击右上角<span><img id="kubernetes_CSI_00015__image1458902641019" src="zh-cn_image_0000002204920450.png"></span>图标，选择“<span id="kubernetes_CSI_00015__text1501142871111">关于</span>”。<p id="kubernetes_CSI_00015__p99764566169">在弹框中“<span id="kubernetes_CSI_00015__text8170123961415">版本</span>”所在行显示出版本。</p>
+</li></ol>
+</div>
+</div></div>
+</div>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><p>每一个需要使用备份或恢复功能的CCE集群所属租户，都需要执行以下操作步骤进行安装包的上传和更新操作。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>登录ManageOne运营面。</span></li><li><span>依次选择<span class="uicontrol">“服务列表 &gt; 云容器引擎CCE &gt; 镜像仓库”</span>，跳转至镜像仓库的总览页面。</span></li><li><span>通过<span class="uicontrol">“总览”</span>页面的新手入门指导的步骤1和步骤2进行镜像上传操作。</span></li><li><span>上传镜像压缩包后，选择<span class="uicontrol">“我的镜像”</span>，单击该镜像压缩包名称，跳转到对应的压缩包详情页面。</span></li><li id="kubernetes_CSI_00015__li4890151815206"><a name="kubernetes_CSI_00015__li4890151815206"></a><a name="li4890151815206"></a><span>在镜像版本“latest”所在行单击<span class="uicontrol">“containerd指令”</span>，拷贝弹出的下载镜像命令。</span></li><li><span>单击页面右上角的<span class="uicontrol">“编辑”</span>，将<span class="uicontrol">“类型”</span>改为<span class="uicontrol">“公开”</span>。</span></li><li id="kubernetes_CSI_00015__li17365195215269"><a name="kubernetes_CSI_00015__li17365195215269"></a><a name="li17365195215269"></a><span>分别登录Kubernetes集群的各个节点，执行<strong>crictl images</strong>命令查看本地镜像信息，如果回显内容存在，则记录“TAG”值为“latest”的镜像名对应的“IMAGE ID”，如果回显内容为空，则无需记录。</span><p><p><span><img src="zh-cn_image_0000002199990961.png"></span></p>
+</p></li><li><span>在登录的所有节点执行<a href="#kubernetes_CSI_00015__li4890151815206">5</a>拷贝的镜像下载命令。</span></li><li><span>镜像下载命令执行成功后，再次执行<strong>crictl images</strong>命令查看本地镜像信息，当“TAG”值为“latest”的镜像的“IMAGE ID”与<a href="#kubernetes_CSI_00015__li17365195215269">7</a>查询的镜像ID不一致时，表示本地镜像更新成功。如果<a href="#kubernetes_CSI_00015__li17365195215269">7</a>回显内容为空，此时查看本地镜像信息会新增一条“TAG”值为“latest”的镜像，表明本次镜像下载成功。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="kubernetes_CSI_00014.html">备份前准备（适用于CCE）</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

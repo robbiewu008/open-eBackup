@@ -53,11 +53,24 @@ int Win32CopyWriter::WriteMeta(FileHandle& fileHandle)
     extendContext.controlInfo = m_controlInfo;
     auto task = make_shared<Win32ServiceTask>(
         HostEvent::WRITE_META, m_blockBufferMap, fileHandle, m_params, extendContext);
-    if (m_jsPtr->Put(task) == false) {
+    if (m_jsPtr->Put(task, true, TIME_LIMIT_OF_PUT_TASK) == false) {
         ERRLOG("put write meta file task %s failed", fileHandle.m_file->m_fileName.c_str());
+        m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
         return FAILED;
     }
-    ++m_writeTaskProduce;
+    ++m_controlInfo->m_writeTaskProduce;
+    return SUCCESS;
+}
+
+int Win32CopyWriter::WriteSubStreams(FileHandle& fileHandle)
+{
+    auto task = make_shared<Win32ServiceTask>(
+        HostEvent::WRITE_SUB_STREAM, m_blockBufferMap, fileHandle, m_params);
+    if (m_jsPtr->Put(task) == false) {
+        ERRLOG("put write substream task failed. %s", fileHandle.m_file->m_fileName.c_str());
+        return FAILED;
+    }
+    ++m_controlInfo->m_writeTaskProduce;
     return SUCCESS;
 }
 
@@ -94,7 +107,13 @@ void Win32CopyWriter::ProcessWriteEntries(FileHandle& fileHandle)
         WriteData(fileHandle);
         return;
     }
+    ProcessWriteEntriesPart2(fileHandle);
+    return;
+}
 
+void Win32CopyWriter::ProcessWriteEntriesPart2(FileHandle& fileHandle)
+{
+    FileDescState state = fileHandle.m_file->GetDstState();
     if (state == FileDescState::INIT) {
         if (IsOpenBlock(fileHandle)) {
             OpenFile(fileHandle);
@@ -102,7 +121,6 @@ void Win32CopyWriter::ProcessWriteEntries(FileHandle& fileHandle)
             InsertWriteCache(fileHandle);
         }
     }
-
     if ((state == FileDescState::DST_OPENED) || (state == FileDescState::PARTIAL_WRITED)) {
         WriteData(fileHandle);
     }
@@ -112,13 +130,15 @@ void Win32CopyWriter::ProcessWriteEntries(FileHandle& fileHandle)
     if (state == FileDescState::DST_CLOSED) {
         WriteMeta(fileHandle);
     }
+    if (state == FileDescState::META_WRITED &&
+        m_params.adsProcessType == AdsProcessType::ADS_PROCESS_TYPE_FROM_SCANNER) {
+        WriteSubStreams(fileHandle);
+    }
     bool deleteFlag =
         (state == FileDescState::WRITE_FAILED) || (state == FileDescState::WRITE_SKIP) || (state == FileDescState::END);
     if (deleteFlag) {
         m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
     }
-
-    return;
 }
 
 void Win32CopyWriter::ProcessWriteData(FileHandle& fileHandle)
@@ -167,7 +187,7 @@ bool Win32CopyWriter::IsComplete()
             "(totalFiles %llu totalDirs %llu archiveFiles %llu)",
             m_controlInfo->m_aggregatePhaseComplete.load(),
             m_writeQueue->GetSize(), m_writeCache.size(), m_timer.GetCount(),
-            m_writeTaskProduce.load(), m_writeTaskConsume.load(),
+            m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load(),
             m_controlInfo->m_noOfSubStreamCopied.load(), m_controlInfo->m_noOfSubStreamFound.load(),
             m_controlInfo->m_noOfFilesCopied.load(), m_controlInfo->m_noOfDirCopied.load(),
             m_controlInfo->m_aggregatedFiles.load(), m_controlInfo->m_skipFileCnt.load(),
@@ -181,10 +201,10 @@ bool Win32CopyWriter::IsComplete()
         m_writeQueue->Empty() &&
         (m_writeCache.size() == 0) &&
         (m_timer.GetCount() == 0) &&
-        (m_writeTaskProduce == m_writeTaskConsume) &&
+        (m_controlInfo->m_writeTaskProduce == m_controlInfo->m_writeTaskConsume) &&
         (m_controlInfo->m_noOfSubStreamCopied == m_controlInfo->m_noOfSubStreamFound) &&
-        (m_controlInfo->m_noOfFilesCopied + m_controlInfo->m_noOfFilesFailed ==
-        m_controlInfo->m_noOfFilesToBackup)) {
+        (m_controlInfo->m_noOfFilesCopied + m_controlInfo->m_noOfFilesFailed + m_controlInfo->m_skipFileCnt +
+        m_controlInfo->m_noOfFilesWriteSkip == m_controlInfo->m_noOfFilesToBackup)) {
         INFOLOG("CopyWriter complete: aggrComplete %d writeQueueSize %llu writeCacheSize %llu timerSize %llu "
             "(writeTaskProduce %llu writeTaskConsume %llu) "
             "(noOfSubStreamCopied %llu noOfSubStreamFound %llu) "
@@ -193,7 +213,7 @@ bool Win32CopyWriter::IsComplete()
             "(totalFiles %llu totalDirs %llu archiveFiles %llu)",
             m_controlInfo->m_aggregatePhaseComplete.load(),
             m_writeQueue->GetSize(), m_writeCache.size(), m_timer.GetCount(),
-            m_writeTaskProduce.load(), m_writeTaskConsume.load(),
+            m_controlInfo->m_writeTaskProduce.load(), m_controlInfo->m_writeTaskConsume.load(),
             m_controlInfo->m_noOfSubStreamCopied.load(), m_controlInfo->m_noOfSubStreamFound.load(),
             m_controlInfo->m_noOfFilesCopied.load(), m_controlInfo->m_noOfDirCopied.load(),
             m_controlInfo->m_aggregatedFiles.load(), m_controlInfo->m_skipFileCnt.load(),
@@ -228,12 +248,12 @@ void Win32CopyWriter::PostFileSucceedCopiedOperation(const FileHandle& fileHandl
 
 void Win32CopyWriter::PostFileFailCopiedOperation(const FileHandle& fileHandle)
 {
-    DBGLOG("PostFileFailCopiedOperation, fileName: %s, mode: %u IsAdsFile : %u, HasAds: %u",
+    DBGLOG("PostFileFailCopiedOperation, fileName: %s, mode: %u IsAdsFile : %d, HasAds: %d",
         fileHandle.m_file->m_fileName.c_str(), fileHandle.m_file->m_mode,
         fileHandle.IsAdsFile(), fileHandle.HasAdsFile());
     // dir with ADS won't enter this branch
     if (fileHandle.HasAdsFile()) {
-        m_controlInfo->m_streamHostFilePendingMap->MarkHostWriteFailed(fileHandle.m_file->m_fileName);
+        m_controlInfo->m_streamHostFilePendingMap->MarkHostFailed(fileHandle.m_file->m_fileName);
     }
     if (fileHandle.IsAdsFile()) {
         m_controlInfo->m_noOfSubStreamCopied += fileHandle.m_file->m_originalFileCount;
@@ -256,14 +276,17 @@ void Win32CopyWriter::HandleSuccessEvent(std::shared_ptr<OsPlatformServiceTask> 
         return;
     }
 
-    if (event == HostEvent::WRITE_META || state == FileDescState::WRITE_SKIP) {
+    if (event == HostEvent::WRITE_SUB_STREAM) {
         fileHandle.m_file->SetDstState(FileDescState::END);
-        PostFileSucceedCopiedOperation(fileHandle);
+        m_controlInfo->m_noOfFilesCopied += fileHandle.m_file->m_originalFileCount;
         if (state == FileDescState::WRITE_SKIP) {
             m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
         }
-        DBGLOG("Finish backup file %s total backup file %lu %lu", fileHandle.m_file->m_fileName.c_str(),
-            m_controlInfo->m_noOfFilesCopied.load(), m_controlInfo->m_noOfSubStreamCopied.load());
+        return;
+    }
+
+    if (event == HostEvent::WRITE_META || state == FileDescState::WRITE_SKIP) {
+        HandleSuccessEventWriteMeta(fileHandle);
         return;
     }
 
@@ -271,16 +294,7 @@ void Win32CopyWriter::HandleSuccessEvent(std::shared_ptr<OsPlatformServiceTask> 
         if (state == FileDescState::WRITE_FAILED) {
             return;
         }
-        if (m_params.writeMeta) {
-            fileHandle.m_file->SetDstState(FileDescState::DST_CLOSED);
-            m_writeQueue->Push(fileHandle);
-        } else {
-            fileHandle.m_file->SetDstState(FileDescState::END);
-            PostFileSucceedCopiedOperation(fileHandle);
-            DBGLOG("Finish backup file %s originalFileCount %lu total backup file %lu %lu",
-                fileHandle.m_file->m_fileName.c_str(), fileHandle.m_file->m_originalFileCount,
-                m_controlInfo->m_noOfFilesCopied.load(), m_controlInfo->m_noOfSubStreamCopied.load());
-        }
+        HandleSuccessEventCloseDst(fileHandle);
         return;
     }
 
@@ -297,16 +311,56 @@ void Win32CopyWriter::HandleSuccessEvent(std::shared_ptr<OsPlatformServiceTask> 
     return;
 }
 
+void Win32CopyWriter::HandleSuccessEventCloseDst(FileHandle& fileHandle)
+{
+    if (m_params.writeMeta) {
+        fileHandle.m_file->SetDstState(FileDescState::DST_CLOSED);
+        m_writeQueue->Push(fileHandle);
+    } else {
+        fileHandle.m_file->SetDstState(FileDescState::END);
+        PostFileSucceedCopiedOperation(fileHandle);
+        DBGLOG("Finish backup file %s originalFileCount %lu total backup file %lu %lu",
+            fileHandle.m_file->m_fileName.c_str(), fileHandle.m_file->m_originalFileCount,
+            m_controlInfo->m_noOfFilesCopied.load(), m_controlInfo->m_noOfSubStreamCopied.load());
+    }
+}
+
+void Win32CopyWriter::HandleSuccessEventWriteMeta(FileHandle& fileHandle)
+{
+    FileDescState state = fileHandle.m_file->GetDstState();
+    if (fileHandle.m_file->m_numOfStreams > 0 && m_params.adsProcessType == AdsProcessType::ADS_PROCESS_TYPE_FROM_SCANNER) {
+        fileHandle.m_file->SetDstState(FileDescState::META_WRITED);
+        m_writeQueue->Push(fileHandle);
+        return;
+    }
+    fileHandle.m_file->SetDstState(FileDescState::END);
+    PostFileSucceedCopiedOperation(fileHandle);
+    if (state == FileDescState::WRITE_SKIP) {
+        m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
+    }
+    DBGLOG("Finish backup file %s total backup file %lu %lu", fileHandle.m_file->m_fileName.c_str(),
+        m_controlInfo->m_noOfFilesCopied.load(), m_controlInfo->m_noOfSubStreamCopied.load());
+    return;
+}
+
 void Win32CopyWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskPtr)
 {
     FileHandle fileHandle = taskPtr->m_fileHandle;
     HostEvent event = taskPtr->m_event;
     ++fileHandle.m_retryCnt;
 
-    ERRLOG("Host copy writer failed %s event %d retry cnt %d seq %d",
+    WARNLOG("Host copy writer failed %s event %d retry cnt %d seq %d",
         fileHandle.m_file->m_fileName.c_str(),
         static_cast<int>(event), fileHandle.m_retryCnt, fileHandle.m_block.m_seq);
     FileDescState state = fileHandle.m_file->GetDstState();
+
+    if (FSBackupUtils::IsStuck(m_controlInfo)) {
+        ERRLOG("set backup to failed due to stucked!");
+        m_controlInfo->m_failed = true;
+        m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
+        return;
+    }
+
     if (state != FileDescState::WRITE_FAILED &&  /* If state is WRITE_FAILED, needn't retry */
         fileHandle.m_retryCnt < DEFAULT_ERROR_SINGLE_FILE_CNT && !taskPtr->IsCriticalError()) {
         m_timer.Insert(fileHandle, fileHandle.m_retryCnt * RETRY_TIME_MILLISENCOND);
@@ -323,10 +377,10 @@ void Win32CopyWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskPt
             fileHandle.m_file->GetSrcState() != FileDescState::READ_FAILED && !fileHandle.IsAdsFile()) {
             // 若read的状态为READ_FAILED时，说明该文件已经被reader记为失败
             m_controlInfo->m_noOfFilesFailed += fileHandle.m_file->m_originalFileCount;
+            fileHandle.m_errNum = taskPtr->m_errDetails.second;
+            m_failedList.emplace_back(fileHandle);
         }
         fileHandle.m_file->UnlockCommonMutex();
-        fileHandle.m_errNum = taskPtr->m_errDetails.second;
-        m_failedList.emplace_back(fileHandle);
     }
     m_blockBufferMap->Delete(fileHandle.m_file->m_fileName, fileHandle);
     CloseWriteFailedHandle(fileHandle);
@@ -335,8 +389,9 @@ void Win32CopyWriter::HandleFailedEvent(shared_ptr<OsPlatformServiceTask> taskPt
         m_controlInfo->m_failed = true;
         m_controlInfo->m_backupFailReason = taskPtr->m_backupFailReason;
     }
-    ERRLOG("copy write failed for file %s, totalFailed: %llu %llu",
+    ERRLOG("copy write failed for file %s, metaInfo: %u, %llu, totalFailed: %llu %llu",
         fileHandle.m_file->m_fileName.c_str(),
+        fileHandle.m_file->m_metaFileIndex, fileHandle.m_file->m_metaFileOffset,
         m_controlInfo->m_noOfFilesFailed.load(), m_controlInfo->m_noOfDirFailed.load());
     return;
 }

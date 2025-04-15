@@ -12,6 +12,7 @@
 */
 package openbackup.database.base.plugin.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfig;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigManager;
@@ -20,8 +21,6 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ResourceCheckContext;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceConnectionCheckProvider;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

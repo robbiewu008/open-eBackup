@@ -14,6 +14,7 @@
 import time
 from common.const import RepositoryDataTypeEnum, ExecuteResultEnum
 from common.logger import Logger
+from common.util.cmd_utils import get_livemount_path
 from postgresql.common.const import RestoreAction
 from postgresql.common.error_code import ErrorCode
 from postgresql.common.models import RestoreConfigParam, RestoreProgress
@@ -28,6 +29,7 @@ LOGGER = Logger().get_logger("postgresql.log")
 class SingleInstFullRestore(PostgresRestoreBase):
     """PostgreSQL全量副本恢复任务执行类
     """
+
     def __init__(self, pid, job_id, sub_job_id, param_dict):
         super().__init__(pid, job_id, sub_job_id, param_dict)
 
@@ -48,8 +50,12 @@ class SingleInstFullRestore(PostgresRestoreBase):
         cache_path = PostgreRestoreService.get_cache_mount_path(self.param_dict)
 
         # 1.清空目标实例data目录
-        tgt_install_path, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
-        PostgreRestoreService.backup_conf_file(tgt_data_path)
+        tgt_install_path, tgt_data_path, tgt_archive_dir = PostgreRestoreService.get_db_install_and_data_path(
+            self.param_dict)
+        tgt_wal_path, tgt_real_wal_path = PostgreRestoreService.get_db_pg_wal_dir_real_path(self.param_dict,
+                                                                                            tgt_data_path)
+        PostgreRestoreService.backup_conf_file(tgt_data_path, self.job_id)
+        PostgreRestoreService.cleanup_archive_after_restore(self.param_dict)
         PostgreRestoreService.clear_data_dir(PostgreRestoreService.parse_os_user(self.param_dict), tgt_data_path)
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
                                                RestoreProgress(progress=5, message="delete data dir ok"))
@@ -57,6 +63,7 @@ class SingleInstFullRestore(PostgresRestoreBase):
         job_dict = self.param_dict.get("job", {})
         copy_mount_path = PostgreRestoreService.get_copy_mount_paths(
             PostgreRestoreService.parse_copies(job_dict)[0], RepositoryDataTypeEnum.DATA_REPOSITORY.value)[0]
+        copy_mount_path = get_livemount_path(self.job_id, copy_mount_path)
         PostgreRestoreService.clear_table_space_dir(copy_mount_path=copy_mount_path)
 
         # 2.恢复全量副本数据到目标实例
@@ -65,7 +72,8 @@ class SingleInstFullRestore(PostgresRestoreBase):
         PostgreRestoreService.change_owner_of_download_data(self.param_dict, copy_mount_path)
         PostgreRestoreService.restore_data(cache_path, copy_mount_path,
                                            tgt_data_path, job_id=self.job_id)
-        PostgreRestoreService.restore_conf_file(tgt_data_path)
+        PostgreRestoreService.restore_pg_wal_dir(tgt_wal_path, tgt_real_wal_path, job_id=self.job_id)
+        PostgreRestoreService.restore_conf_file(tgt_data_path, self.job_id, param_dict=self.param_dict)
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
                                                RestoreProgress(progress=72, message="restore data ok"))
 
@@ -80,21 +88,34 @@ class SingleInstFullRestore(PostgresRestoreBase):
                                                RestoreProgress(progress=76, message="delete useless files of data ok"))
 
         # 5.配置恢复命令
-        tgt_archive_path = PostgreCommonUtils.get_archive_path_offline(tgt_data_path)
+        config_file = self.param_dict.get("job", {}).get("targetObject", {}).get("extendInfo", {}).get("configFile", "")
+        tgt_archive_path = PostgreCommonUtils.get_archive_path_offline(tgt_data_path, config_file=config_file,
+                                                                       archive_dir=tgt_archive_dir)
         cfg_param = RestoreConfigParam(
             system_user=tgt_db_os_user, target_version=tgt_obj_extend_info_dict.get("version", ""),
-            target_install_path=tgt_install_path, target_data_path=tgt_data_path, target_archive_path=tgt_archive_path)
+            target_install_path=tgt_install_path, target_data_path=tgt_data_path, target_archive_path=tgt_archive_path,
+            extend_info={"configFile": config_file})
         PostgreRestoreService.set_recovery_conf_file(self.param_dict, cfg_param)
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
                                                RestoreProgress(progress=80, message="set recovery command ok"))
 
+        self.start_postgresql_databse_single_instance()
+
+    def start_postgresql_databse_single_instance(self):
+        tgt_install_path, tgt_data_path, _ = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
+        job_dict = self.param_dict.get("job", {})
+        tgt_obj_extend_info_dict = job_dict.get("targetObject", {}).get("extendInfo", {})
+        tgt_db_os_user = tgt_obj_extend_info_dict.get("osUsername", "")
+        cache_path = PostgreRestoreService.get_cache_mount_path(self.param_dict)
         # 6.启动数据库实例
-        PostgreCommonUtils.start_postgresql_database(tgt_db_os_user, tgt_install_path, tgt_data_path)
+        PostgreCommonUtils.start_postgresql_database(tgt_db_os_user, tgt_install_path, tgt_data_path, self.param_dict)
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
                                                RestoreProgress(progress=90, message="start database ok"))
 
         # 7.检查数据库实例是否启动成功
-        is_running = PostgreCommonUtils.is_db_running(tgt_db_os_user, tgt_install_path, tgt_data_path)
+        config_file = self.param_dict.get("job", {}).get("targetObject", {}).get("extendInfo", {}).get("configFile", "")
+        is_running = PostgreCommonUtils.is_db_running(tgt_db_os_user, tgt_install_path, tgt_data_path,
+                                                      config_file=config_file)
         if not is_running:
             PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE,
                                                    RestoreProgress(progress=95, message="database run failed"))
@@ -123,8 +144,9 @@ class SingleInstFullRestore(PostgresRestoreBase):
                                                RestoreProgress(progress=0, message="begin"))
 
         # 恢复后清理data目录无用文件
-        _, tgt_data_path = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
+        _, tgt_data_path, _ = PostgreRestoreService.get_db_install_and_data_path(self.param_dict)
         PostgreRestoreService.delete_useless_files_of_data_dir(tgt_data_path, before_restore=False)
+        PostgreRestoreService.delete_useless_bak_files(tgt_data_path, self.job_id)
 
         LOGGER.info("Execute restore post task success.")
         PostgreCommonUtils.write_progress_info(cache_path, RestoreAction.QUERY_RESTORE_POST,

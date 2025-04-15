@@ -15,6 +15,7 @@ typedef ApplicationProtectBaseDataType.CopyDataType CopyDataType
 typedef ApplicationProtectBaseDataType.StorageRepository StorageRepository
 typedef ApplicationProtectBaseDataType.BackupJobType BackupJobType
 typedef ApplicationProtectBaseDataType.JobPermission JobPermission
+typedef ApplicationProtectBaseDataType.ResourceResultByPage ResourceResultByPage
 
 exception AppProtectFrameworkException {
     1:required i32 code;
@@ -364,6 +365,18 @@ service JobService {
             validity if the ActionResult.code is 0, invalidity otherwise
     */
     ActionResult AddIpWhiteList(1:string jobId, 2:string ipListStr);
+
+    /**
+        Function description
+            Plugin send msg to pm to update async list task results
+        Parameters
+            jobId : main job id
+            code : return value code
+            results : ResourceResultByPage
+        Return value
+            validity if the ActionResult.code is 0, invalidity otherwise
+    */
+    ActionResult ReportAsyncJobDetails(1:string jobId, 2:i32 code, 3:ResourceResultByPage results);
 }
 
 /** 

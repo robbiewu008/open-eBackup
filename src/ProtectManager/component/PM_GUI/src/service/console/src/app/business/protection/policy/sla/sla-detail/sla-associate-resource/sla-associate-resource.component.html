@@ -135,7 +135,7 @@
 </ng-container>
 
 <lv-paginator [lvPageSizeOptions]='sizeOptions' [lvTotal]='total' [lvPageIndex]='startPage' [lvPageSize]='pageSize'
-    #page [hidden]='!total' (lvPageChange)="pageChange($event)" lvMode="simple" lvShowPageSizeOptions="false">
+    #page [hidden]='!total' (lvPageChange)="pageChange($event)" lvMode="simple" lvShowPageSizeOptions="false" class="aui-paginator-wrap">
 </lv-paginator>
 
 <ng-template #nameFilterTpl>

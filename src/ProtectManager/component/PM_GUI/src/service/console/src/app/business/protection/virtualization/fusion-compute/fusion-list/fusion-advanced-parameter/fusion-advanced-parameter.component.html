@@ -17,11 +17,12 @@
             <lv-form-item>
                 <lv-form-label>
                     {{'protection_same_snapshot_label' | i18n}}
-                    <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_fc_consistency_snapshot_help_label' | i18n}}"
+                    <i lv-icon="aui-icon-help"
+                        lv-tooltip="{{(isFusionOne ? 'protection_fo_consistency_snapshot_help_label' : 'protection_fc_consistency_snapshot_help_label') | i18n}}"
                         lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
                 </lv-form-label>
                 <lv-form-control>
-                    <lv-switch formControlName="isConsistent"></lv-switch>
+                    <lv-switch formControlName="isConsistent" [lvDisabled]='!isSupport'></lv-switch>
                     <div *ngIf="formGroup.value.isConsistent">
                         <i lv-icon="lv-icon-status-warning-info" lvColorState='true' class="type-icon"></i>
                         <span>
@@ -42,7 +43,7 @@
             </lv-form-item>
             <lv-form-item>
                 <lv-form-label>
-                    {{'protection_proxy_host_label' | i18n}}
+                    {{'protection_clients_label' | i18n}}
                 </lv-form-label>
                 <lv-form-control>
                     <lv-select [lvOptions]="hostOptions" formControlName="proxyHost" lvValueKey='value' lvShowFilter
@@ -60,6 +61,10 @@
                     </ng-template>
                 </lv-form-control>
             </lv-form-item>
+            <aui-update-index [formGroup]="formGroup" [extParams]="extParams" [noNeedMgt]="!includes([
+            dataMap.Resource_Type.fusionComputeVirtualMachine.value,
+            dataMap.Resource_Type.vmGroup.value
+            ],resourceType)"></aui-update-index>
             <ng-container *ngIf="!includes([
                 dataMap.Resource_Type.fusionComputeVirtualMachine.value,
                 dataMap.Resource_Type.vmGroup.value
@@ -68,6 +73,8 @@
                 <lv-form-item>
                     <lv-form-label>
                         {{'protection_overwrite_policy_label' | i18n}}
+                        <i lv-icon="aui-icon-help" [lv-tooltip]="slaOverwriteHelp" lvTooltipPosition="rightTop"
+                            lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
                     </lv-form-label>
                     <lv-form-control>
                         <lv-radio-group formControlName="slaOverwrite">
@@ -94,6 +101,8 @@
                                 <lv-checkbox lvValue="APPLY_TO_ALL">
                                     {{ (resourceType === ResourceType.HOST ? 'protection_apply_sla_in_cna_vmware_label'
                                     : 'protection_apply_sla_in_cluster_vmware_label') | i18n }}
+                                    <i lv-icon="aui-icon-help" [lv-tooltip]="slaApplyAllHelp"
+                                        lvTooltipPosition="rightTop" lvTooltipTheme="light" lvColorState='true'></i>
                                 </lv-checkbox>
                                 <lv-checkbox lvValue="APPLY_TO_NEW">
                                     {{ (resourceType === ResourceType.HOST ?
@@ -109,12 +118,12 @@
             </ng-container>
         </lv-form>
         <!-- 防勒索副本设置参数 -->
-        <ng-container *ngIf="includes([dataMap.Resource_Type.fusionComputeVirtualMachine.value],resourceType)">
+        <ng-container *ngIf="includes([
+                dataMap.Resource_Type.fusionComputeVirtualMachine.value,
+                dataMap.Resource_Type.vmGroup.value
+            ],resourceType)">
             <aui-copy-limit-advanced-parameter [formGroup]="formGroup"
                 [data]="resourceData"></aui-copy-limit-advanced-parameter>
-        </ng-container>
-        <ng-container *ngIf="includes([dataMap.Resource_Type.fusionComputeVirtualMachine.value],resourceType)">
-            <aui-update-index [formGroup]="formGroup" [extParams]="extParams"></aui-update-index>
         </ng-container>
     </lv-collapse-panel>
 </lv-collapse>

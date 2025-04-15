@@ -50,6 +50,7 @@ const auto MODULE = "ArchiveDownloadFile";
 
 const int SUCCESS = 0;
 const int FAILED = -1;
+const int TAP_REMIND_ERROR = 17;
 
 const int SKD_PREPARE_CODE_NE1 = -1;
 const int SKD_PREPARE_CODE_0 = 0;
@@ -100,6 +101,11 @@ std::string ArchiveDownloadFile::GetFileSystemsId()
     return m_fsId;
 }
 
+std::string ArchiveDownloadFile::GetParentDir()
+{
+    return m_parentDir;
+}
+
 bool ArchiveDownloadFile::Start(const std::string& outputPath, const std::vector<std::string>& pathList)
 {
     m_state = ArchiveDownloadState::RUNNING;
@@ -141,6 +147,7 @@ bool ArchiveDownloadFile::StartDownloadMeta(const std::string& outputPath, const
         if (!GetFileListFromCtrl(controlfile, ctrlFileMap)) {
             return false;
         }
+        INFOLOG("ctrlFileMapSize : %d", ctrlFileMap.size());
         if (!DownloadFile(outputPath, ctrlFileMap)) {
             ERRLOG("DownloadFile failed controlfile: %s", controlfile.c_str());
             return false;
@@ -229,7 +236,7 @@ bool ArchiveDownloadFile::QueryPrepare()
     // 这里是共享名， windows场景也是 "/"
     size_t pos = cacheRepoFsName.find_first_of("/");
     cacheRepoFsName = cacheRepoFsName.substr(0, pos);
-    if (m_clientHandler->PrepareRecovery(metaFilePath, cacheRepoFsName) != SUCCESS) {
+    if (m_clientHandler->PrepareRecovery(metaFilePath, m_parentDir, cacheRepoFsName) != SUCCESS) {
         ERRLOG("Archive client prepare recovery failed.");
         return false;
     }
@@ -448,7 +455,7 @@ bool ArchiveDownloadFile::OpenFileExistOrNew()
     return true;
 }
 
-bool ArchiveDownloadFile::ArchiveWriteFile(const ControlFileData& ctrlData) const
+bool ArchiveDownloadFile::ArchiveWriteFile(const ControlFileData& ctrlData)
 {
     INFOLOG("Enter ArchiveWriteFile: %s", ctrlData.fileName.c_str());
     int readEnd = 0;
@@ -469,8 +476,11 @@ bool ArchiveDownloadFile::ArchiveWriteFile(const ControlFileData& ctrlData) cons
             " req.archiveBackupId: " << req.archiveBackupId << " req.fsID: " << req.fsID <<
             " req.filePath: " << req.filePath << " req.fileOffset: " << req.fileOffset <<
             " req.readSize: " << req.readSize << " req.maxResponseSize: " << req.maxResponseSize << HCPENDLOG;
-        if (m_clientHandler->GetFileData(req, retValue) != SUCCESS) {
-            HCP_Log(ERR, MODULE) << "GetFileData failed: " << m_fileFullPath << HCPENDLOG;
+        int clientError = 0;
+        if ((clientError = m_clientHandler->GetFileData(req, retValue)) != SUCCESS) {
+            ERRLOG("GetFileData failed: %s, error: %d", m_fileFullPath.c_str(), clientError);
+            m_state = (clientError == TAP_REMIND_ERROR) ?
+                ArchiveDownloadState::TAP_REMIND : ArchiveDownloadState::FAILED;
             return false;
         }
         HCP_Log(DEBUG, MODULE) << "retValue.fileSize: " << retValue.fileSize <<

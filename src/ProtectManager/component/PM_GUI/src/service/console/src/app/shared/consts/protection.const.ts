@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 // 虚拟化资源详情展示的类型
 export enum VM_COPY_TYPE {
   DISKS = 1, // 磁盘
@@ -126,6 +126,7 @@ export enum ResourceType {
   FUSIONSPHERE = 'FusionSphere',
   DATACENTER = 'Datacenter',
   CLUSTER = 'Cluster',
+  NUTANIX = 'Nutanix',
   DATABASE = 'Database',
   HOST = 'Host',
   FILESET = 'Fileset',
@@ -215,6 +216,7 @@ export enum ApplicationTypeView {
 export enum ResourceSetType {
   VMware = 'VMware',
   CNware = 'CNware',
+  Nutanix = 'Nutanix',
   FusionCompute = 'FusionCompute',
   FusionOne = 'FusionOneCompute',
   HyperV = 'HyperV',
@@ -227,6 +229,7 @@ export enum ResourceSetType {
   ADDS = 'ADDS',
   Exchange = 'Exchange',
   SAP_HANA = 'SAP_HANA',
+  SAP_ON_ORACLE = 'SAP_ON_ORACLE',
   StorageEquipment = 'StorageEquipment',
   NasShare = 'NasShare',
   NasFileSystem = 'NasFileSystem',
@@ -234,14 +237,16 @@ export enum ResourceSetType {
   CommonShare = 'CommonShare',
   Volume = 'Volume',
   Fileset = 'Fileset',
+  Ndmp = 'NDMP',
   FilesetTemplate = 'FILE_SET_TEMPLATE',
+  AntDB = 'AntDB',
   DB2 = 'DB2',
   Dameng = 'Dameng',
   GaussDB = 'GaussDB',
   GaussDB_T = 'GaussDBT',
   GoldenDB = 'GoldenDB',
   Informix = 'Informix',
-  Kingbase = 'Kingbase',
+  KingBase = 'KingBase',
   MySQL = 'MySQL',
   OceanBase = 'OceanBase',
   Oracle = 'Oracle',
@@ -253,7 +258,7 @@ export enum ResourceSetType {
   GeneralDb = 'GeneralDb',
   GaussDB_DWS = 'GaussDB_DWS',
   ClickHouse = 'ClickHouse',
-  Elasticsearch = 'Elasticsearch',
+  Elasticsearch = 'ElasticSearch',
   HBase = 'HBase',
   HDFS = 'HDFS',
   Hive = 'Hive',
@@ -267,14 +272,17 @@ export enum ResourceSetType {
   AirGap = 'AIR_GAP',
   LiveMount = 'LIVE_MOUNT_POLICY',
   Worm = 'PREVENT_EXTORTION_AND_WORM',
-  Report = 'REPORT'
+  Report = 'REPORT',
+  ReportSubscription = 'SCHEDULE_REPORT'
 }
 
 export enum ApplicationType {
   Common = 'Common',
+  AntDB = 'AntDB',
   Oracle = 'Oracle',
   Vmware = 'vim.VirtualMachine',
   CNware = 'CNwareVm',
+  Nutanix = 'NutanixVm',
   FusionCompute = 'FusionCompute',
   FusionOne = 'FusionOneCompute',
   Fileset = 'Fileset',
@@ -298,6 +306,7 @@ export enum ApplicationType {
   GaussDBDWS = 'DWS-cluster',
   Redis = 'Redis',
   SapHana = 'SAPHANA-database',
+  Saponoracle = 'SAP_ON_ORACLE',
   MongoDB = 'MongoDB',
   HyperV = 'HyperV.VM',
   FusionSphere = 'FusionSphere',
@@ -344,12 +353,16 @@ export const allAppType = {
     ApplicationType.NASFileSystem,
     ApplicationType.NASShare,
     ApplicationType.CommonShare,
-    ApplicationType.Volume
+    ApplicationType.Volume,
+    ApplicationType.AntDB,
+    ApplicationType.Saponoracle
   ],
   virtualCloudApp: [
     ApplicationType.Vmware,
     ApplicationType.CNware,
+    ApplicationType.Nutanix,
     ApplicationType.FusionCompute,
+    ApplicationType.FusionOne,
     ApplicationType.HyperV,
     ApplicationType.HCSCloudHost,
     ApplicationType.OpenStack,
@@ -361,6 +374,10 @@ export const APP_HOST_ICONS = [
   {
     id: ApplicationType.Fileset,
     label: 'common_fileset_label'
+  },
+  {
+    id: ApplicationType.AntDB,
+    label: 'AntDB'
   },
   {
     id: ApplicationType.ActiveDirectory,
@@ -392,7 +409,7 @@ export const APP_HOST_ICONS = [
   },
   {
     id: ApplicationType.OpenGauss,
-    label: 'openGauss'
+    label: 'common_opengauss_label'
   },
   {
     id: ApplicationType.GaussDBT,
@@ -453,6 +470,10 @@ export const APP_HOST_ICONS = [
   {
     id: ApplicationType.SapHana,
     label: 'SAP HANA'
+  },
+  {
+    id: ApplicationType.Saponoracle,
+    label: 'common_sap_on_oracle_label'
   }
 ];
 
@@ -464,6 +485,10 @@ export const VM_ICONS = [
   {
     id: ApplicationType.CNware,
     label: 'common_cnware_label'
+  },
+  {
+    id: ApplicationType.Nutanix,
+    label: 'common_nutanix_label'
   },
   {
     id: ApplicationType.KubernetesStatefulSet,
@@ -792,3 +817,11 @@ export enum ClusterEnvironment {
 export const MultiClusterStatus = {
   nodeStatus: []
 };
+
+export enum ResourceDetailType {
+  nutanixNetwork = 'NutanixNetwork',
+  portGroup = 'PortGroup',
+  nutanixStorageContainer = 'NutanixStorageContainer',
+  storagePool = 'StoragePool',
+  apsDisk = 'APS-disk'
+}

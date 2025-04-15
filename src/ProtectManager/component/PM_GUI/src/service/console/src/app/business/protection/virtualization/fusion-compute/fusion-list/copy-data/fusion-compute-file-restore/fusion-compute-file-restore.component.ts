@@ -1,18 +1,24 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, Input, OnInit } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import {
+  Component,
+  Input,
+  OnInit,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MessageService } from '@iux/live';
+import { MessageService, ModalRef } from '@iux/live';
 import {
   BaseUtilService,
   CommonConsts,
@@ -22,7 +28,8 @@ import {
   RestoreV2LocationType,
   DatastoreType,
   ResourceType,
-  CAPACITY_UNIT
+  CAPACITY_UNIT,
+  filterVersion
 } from 'app/shared';
 import {
   AppService,
@@ -48,8 +55,7 @@ import {
   uniqBy,
   set
 } from 'lodash';
-import { forkJoin, Observable, Observer, of, Subject } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { Observable, Observer, Subject } from 'rxjs';
 
 @Component({
   selector: 'aui-fusion-compute-file-restore',
@@ -96,7 +102,12 @@ export class FusionComputeFileRestoreComponent implements OnInit {
 
   proxyOptions = [];
 
+  resourceTypeLabel: string;
+
+  @ViewChild('headerTpl', { static: true }) headerTpl: TemplateRef<any>;
+
   constructor(
+    private modal: ModalRef,
     public i18n: I18NService,
     private fb: FormBuilder,
     public baseUtilService: BaseUtilService,
@@ -108,6 +119,7 @@ export class FusionComputeFileRestoreComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.modal.setProperty({ lvHeader: this.headerTpl });
     this.expandedNodeList = [];
     this.treeData = [];
     this.initData();
@@ -117,6 +129,10 @@ export class FusionComputeFileRestoreComponent implements OnInit {
   }
 
   initData() {
+    this.resourceTypeLabel =
+      this.childResType === DataMap.Resource_Type.fusionOne.value
+        ? this.i18n.get('protection_fusionone_label')
+        : this.i18n.get('common_fusion_compute_label');
     this.resourceProperties = JSON.parse(this.rowCopy.resource_properties);
     this.properties = JSON.parse(this.rowCopy.properties);
     // 复制副本、反向复制、级联复制、磁带归档、对象存储归档
@@ -607,123 +623,59 @@ export class FusionComputeFileRestoreComponent implements OnInit {
     }
   }
 
-  getShowData(agentId, envId, resourceIds): Observable<any> {
-    const params = {
-      agentId,
-      envId,
-      pageNo: 1,
-      pageSize: CommonConsts.PAGE_SIZE * 10,
-      resourceIds
-    };
-    let curData = [];
-    return this.appService.ListResourcesDetails(params).pipe(
-      mergeMap((response: any) => {
-        curData = [of(response)];
-
-        const totalCount = response.totalCount;
-        const pageCount = Math.ceil(totalCount / (CommonConsts.PAGE_SIZE * 10));
-        for (let i = 2; i <= pageCount; i++) {
-          curData.push(
-            this.appService.ListResourcesDetails({
-              agentId,
-              envId,
-              pageNo: i,
-              pageSize: CommonConsts.PAGE_SIZE * 10,
-              resourceIds
-            })
-          );
-        }
-        return forkJoin(curData);
-      })
-    );
-  }
-
   getStorageTableData() {
-    const params = {
-      pageNo: CommonConsts.PAGE_START,
-      pageSize: CommonConsts.PAGE_SIZE,
-      queryDependency: true,
-      conditions: JSON.stringify({
-        subType: this.childResType || DataMap.Resource_Type.FusionCompute.value,
-        uuid: this.formGroup.value.environment
-      })
+    const resource = {
+      rootUuid: this.formGroup.value.environment,
+      uuid: this.formGroup.value.host[0]?.uuid
     };
-    this.protectedResourceApiService
-      .ListResources(params)
-      .subscribe((res: any) => {
-        if (res.records?.length) {
-          const onlineAgents = res.records[0]?.dependencies?.agents?.filter(
-            item =>
-              item.linkStatus ===
-              DataMap.resource_LinkStatus_Special.normal.value
-          );
-          if (isEmpty(onlineAgents)) {
-            this.datastoreNoData = true;
-            this.storageServiceError();
-            return;
-          }
-          const agentsId = onlineAgents[0].uuid;
-          this.getShowData(agentsId, this.formGroup.value.environment, [
-            this.formGroup.value.host[0]?.uuid
-          ]).subscribe({
-            next: response => {
-              const totalData = [];
-              for (const item of response) {
-                totalData.push(...item.records);
-              }
-              if (!totalData.length) {
-                this.datastoreNoData = true;
-                this.storageServiceError();
-                return;
-              }
-              this.datastoreNoData = false;
-              this.initStorage();
-              totalData.forEach(item => {
-                this.dataStoreOptions.push({
-                  key: item.uuid,
-                  value: item.uuid,
-                  label: item.name,
-                  freeSpace: +item.extendInfo?.freeSizeGB,
-                  moReference: item?.extendInfo?.datastoreUri,
-                  name: item.name,
-                  errorTip:
-                    +item.extendInfo?.freeSizeGB < this.allDiskCapacity
-                      ? this.targetDatastoreErrorTip
-                      : '',
-                  cacheFreeSpace: +item.extendInfo?.freeSizeGB,
-                  datastoreType: item.extendInfo?.type,
-                  isLeaf: true
-                });
-              });
-              const diskStorageControls = this.formGroup.get(
-                'diskStorage'
-              ) as FormArray;
-              if (diskStorageControls) {
-                diskStorageControls.controls.forEach(control => {
-                  const diskDatastoreOptions = cloneDeep(this.dataStoreOptions);
-                  diskDatastoreOptions.forEach(option => {
-                    option.diskCapacity = control.value.diskCapacity;
-                    option.rowId = control.value.uuid;
-                    option.errorTip =
-                      option.freeSpace < option.diskCapacity
-                        ? this.targetDatastoreErrorTip
-                        : '';
-                  });
-                  control.patchValue({
-                    options: diskDatastoreOptions,
-                    diskDatastore: null
-                  });
-                });
-              }
-            },
-            error: ex => {
-              this.datastoreNoData = true;
-              this.storageServiceError();
-            }
-          });
-        } else {
+    this.appUtilsService
+      .getResourcesDetails(resource, '', {}, {}, false)
+      .subscribe(res => {
+        // 数据存储为空
+        if (isEmpty(res)) {
           this.datastoreNoData = true;
           this.storageServiceError();
+          return;
+        }
+        const totalData = [...res];
+        this.datastoreNoData = false;
+        this.initStorage();
+        totalData.forEach(item => {
+          this.dataStoreOptions.push({
+            key: item.uuid,
+            value: item.uuid,
+            label: item.name,
+            freeSpace: +item.extendInfo?.freeSizeGB,
+            moReference: item?.extendInfo?.datastoreUri,
+            name: item.name,
+            errorTip:
+              +item.extendInfo?.freeSizeGB < this.allDiskCapacity
+                ? this.targetDatastoreErrorTip
+                : '',
+            cacheFreeSpace: +item.extendInfo?.freeSizeGB,
+            datastoreType: item.extendInfo?.type,
+            isLeaf: true
+          });
+        });
+        const diskStorageControls = this.formGroup.get(
+          'diskStorage'
+        ) as FormArray;
+        if (diskStorageControls) {
+          diskStorageControls.controls.forEach(control => {
+            const diskDatastoreOptions = cloneDeep(this.dataStoreOptions);
+            diskDatastoreOptions.forEach(option => {
+              option.diskCapacity = control.value.diskCapacity;
+              option.rowId = control.value.uuid;
+              option.errorTip =
+                option.freeSpace < option.diskCapacity
+                  ? this.targetDatastoreErrorTip
+                  : '';
+            });
+            control.patchValue({
+              options: diskDatastoreOptions,
+              diskDatastore: null
+            });
+          });
         }
       });
   }
@@ -789,7 +741,7 @@ export class FusionComputeFileRestoreComponent implements OnInit {
             });
           }
         });
-        this.proxyOptions = hostArray;
+        this.proxyOptions = filterVersion(hostArray, this.verifyStatus);
       }
     );
   }

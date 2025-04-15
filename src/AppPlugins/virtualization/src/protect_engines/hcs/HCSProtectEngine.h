@@ -165,9 +165,11 @@ public:
     int32_t AllowRestoreSubJobInLocalNode(
         const AppProtect::RestoreJob &job, const AppProtect::SubJob &subJob, int32_t &errorCode) override;
     int32_t GetSnapshotsOfVolume(const VolInfo &volInfo, std::vector<VolSnapInfo> &snapList) override;
-    int32_t ActiveSnapConsistency(const SnapshotInfo &m_snapshotInfo);
     bool IfDeleteLatestSnapShot() override;
     void SetErrorCodeParam(const int32_t errorCode, std::vector<std::string> &certParams) override;
+    int32_t AllowDelCopyInLocalNode(const AppProtect::DelCopyJob &job, ActionResult& returnValue) override;
+    int32_t AllowDelCopySubJobInLocalNode(const AppProtect::DelCopyJob& job,
+        const AppProtect::SubJob& subJob, ActionResult& returnValue) override;
 
 protected:
     bool FormHttpRequest(ModelBase &request, bool useAdmin = false) override;
@@ -181,7 +183,7 @@ private:
     int32_t AttachVolumeHandle(const VolInfo &volObj);
     int32_t DetachVolumeHandle(const VolInfo &volObj);
     int32_t GetSnapshotProviderAuth(std::vector<std::string>& proAuth, GetSnapshotRequest& request,
-        const VolSnapInfo& volSnap);
+        const VolSnapInfo& volSnap) override;
 
     bool CheckVMStatus();
     bool CheckTargetVolume(const VolInfo &copyVolObj, const std::string &targetVolUUID);
@@ -193,7 +195,7 @@ private:
     bool DoGetMachineMetadata();
     bool TransServerDetail2VMInfo(const ServerDetail &serverDetail, VMInfo &vmInfo);
     bool DoCreateSnapshot(const std::vector<VolInfo> &volList, SnapshotInfo &snapshot, std::string &errCode);
-    bool CreateVolumeSnapshot(const VolInfo &volInfo, VolSnapInfo &volSnap, std::string &errCode);
+    bool CreateVolumeSnapshot(const VolInfo &volInfo, VolSnapInfo &volSnap, std::string &errCode, bool useEvs);
     bool ShowVolumeSnapshot(VolSnapInfo &volSnap);
     bool FillUpVolSnapInfo(const VolInfo &volInfo,
         const SnapshotDetails &snapDetails, const std::string &snapshotStr, VolSnapInfo &volSnap);
@@ -204,7 +206,7 @@ private:
     int32_t CheckVolumeStatus(const VolInfo &volObj, const std::string &status);
     bool AssemblyTargetVolInfo(VolPair &volumePair, const std::shared_ptr<ShowVolumeResponse> &response);
     int32_t GetProjectResource(ResourceResultByPage &page, HcsResourceAccess &access,
-        const ListResourceRequest& request);
+        const ListResourceRequest& request, std::string &erroParam);
     int32_t GetVirtualMachineResource(ResourceResultByPage &page, HcsResourceAccess &access,
         const ListResourceRequest& request);
     int32_t GetDiskResourceDetail(ResourceResultByPage &page, HcsResourceAccess &access,
@@ -214,13 +216,11 @@ private:
     int32_t BackUpAllVolumes(SnapshotInfo &snapshot, std::string &errCode);
     int32_t CheckAttachServerVolume(const VolInfo &volObj);
     int32_t CheckDetachServerVolume(const VolInfo &volObj);
-    int32_t CheckProtectEnvConn(const AppProtect::ApplicationEnvironment& env, const std::string &vmId);
+    int32_t CheckProtectEnvConn(const AppProtect::ApplicationEnvironment& env, const std::string &vmId,
+        int32_t &errorCode);
     int32_t CheckStorageEnvConn(const ApplicationEnvironment &appEnv);
     bool ParseCert(const std::string &markId, const std::string &certInfo);
     bool ParseCinderCert(const std::string &cinderCertInfo);
-    int AddProjectsErrorMsg(ResourceResultByPage &page, const std::string &parentId);
-    void AddTenantErrorInfo(ResourceResultByPage &page);
-    void AddScanCloudSeverErrorInfo(ResourceResultByPage &page, const std::string &parentId);
     void AddInvalidItemInfo(ResourceResultByPage &page, const std::string& extendInfo, const std::string& parentId);
     void ParseCreateSnapResponse(std::shared_ptr<CreateSnapshotResponse> createSnapRes, std::string &errCode);
     int32_t ActiveSnapInit();
@@ -237,15 +237,24 @@ private:
     int32_t CheckDistributeVersion(std::vector<StorageInfo> &storageVector,
         const VirtPlugin::JobTypeParam &jobTypeParam);
     int32_t DeleteSnapshotPreHook(const VolSnapInfo &volSnap) override;
+    bool CheckIsConsistenSnapshot() override;
+    int32_t CheckBeforeCreateSnapshot(const std::vector<VolInfo> &volList) override;
+    double GetMinAvailableCapacity();
+    int32_t DealWithVolumeHander(const VolSnapInfo &volSnap);
+    bool SendDeleteSnapshotMsg(const VolSnapInfo &volSnap) override;
+    bool NormalDeleteSnapshot(const VolSnapInfo &volSnap);
+    int32_t CheckPreSnapshotExist(const VirtPlugin::JobTypeParam &jobTypeParam);
 
 private:
     bool m_certCpsIsExists { true };
     bool m_certHcsIsExists { true };
     bool m_noNeedInitOceanVolHandler { false };
+    bool m_hasUpdateToken = false;
     std::shared_ptr<VirtPlugin::CertManger> m_cinderCertMgr = nullptr;
     HcsPlugin::EcsClient m_ecsClient;
     HcsPlugin::EvsClient m_evsClient;
     HcsPlugin::HcsCinderClient m_hcsCinderClient;
+    HcsOpServiceUtils m_hcsOpServiceUtils;
 };
 }
 

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   BaseUtilService,
   I18NService,
@@ -44,6 +44,7 @@ import {
   USER_GUIDE_CACHE_DATA,
   cacheGuideResource
 } from 'app/shared/consts/guide-config';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'aui-postgre-register',
@@ -137,23 +138,19 @@ export class PostgreRegisterComponent implements OnInit {
 
   initForm() {
     this.formGroup = this.fb.group({
-      name: new FormControl(
-        {
-          value: !isEmpty(this.data) ? this.data.name : '',
-          disabled: !!this.data
-        },
-        {
-          validators: [
-            this.baseUtilService.VALID.name(),
-            this.baseUtilService.VALID.maxLength(64)
-          ]
-        }
-      ),
+      name: new FormControl(!isEmpty(this.data) ? this.data.name : '', {
+        validators: [
+          this.baseUtilService.VALID.name(),
+          this.baseUtilService.VALID.maxLength(64)
+        ]
+      }),
       type: new FormControl(!isEmpty(this.data) ? this.data.clusterType : '', {
         validators: [this.baseUtilService.VALID.required()]
       }),
       installDeployType: new FormControl(
-        !isEmpty(this.data) ? this.data.installDeployType : '',
+        !isEmpty(this.data)
+          ? this.data?.installDeployType
+          : DataMap.PostgreSqlDeployType.Pgpool.value,
         {
           validators: [this.baseUtilService.VALID.required()]
         }
@@ -196,14 +193,17 @@ export class PostgreRegisterComponent implements OnInit {
       this.formGroup.get('clupServerNode').updateValueAndValidity();
     });
 
-    this.formGroup.get('agents').valueChanges.subscribe(res => {
-      this.formGroup.get('installDeployType').setValue('');
-      if (isEmpty(res)) {
-        this.isSupport = true;
-      } else {
-        this.isSupportFunc(res);
-      }
-    });
+    this.formGroup
+      .get('agents')
+      .valueChanges.pipe(distinctUntilChanged())
+      .subscribe(res => {
+        this.formGroup.get('installDeployType').setValue('');
+        if (isEmpty(res)) {
+          this.isSupport = true;
+        } else {
+          this.isSupportFunc(res);
+        }
+      });
   }
 
   updateData() {
@@ -212,20 +212,20 @@ export class PostgreRegisterComponent implements OnInit {
     }
     this.protectedResourceApiService
       .ShowResource({ resourceId: this.data.uuid })
-      .subscribe(res => {
+      .subscribe((res: any) => {
         const data = {
           name: res.name,
           type: res.extendInfo?.clusterType,
+          agents: map(res.dependencies.agents || [], 'uuid'),
           installDeployType:
             res.extendInfo?.installDeployType ||
-            DataMap.PostgreSqlDeployType.Pgpool.value,
-          agents: map(res['dependencies']['agents'], 'uuid')
+            DataMap.PostgreSqlDeployType.Pgpool.value
         };
         if (
           data.installDeployType === DataMap.PostgreSqlDeployType.CLup.value
         ) {
           assign(data, {
-            clupServerNode: map(res['dependencies']['clupServers'], 'uuid')
+            clupServerNode: map(res.dependencies.clupServers || [], 'uuid')
           });
         }
         this.formGroup.patchValue(data);

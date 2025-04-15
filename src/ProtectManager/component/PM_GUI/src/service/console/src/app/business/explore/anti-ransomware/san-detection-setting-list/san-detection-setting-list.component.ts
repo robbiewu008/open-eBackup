@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -37,9 +37,11 @@ import {
   TableConfig,
   TableData
 } from 'app/shared/components/pro-table';
+import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
   assign,
+  cloneDeep,
   each,
   filter,
   find,
@@ -50,7 +52,6 @@ import {
   size
 } from 'lodash';
 import { RealTimeConfirmComponent } from '../detection-setting-list/real-time-confirm/real-time-confirm.component';
-import { BatchOperateService } from 'app/shared/services/batch-operate.service';
 
 @Component({
   selector: 'aui-san-detection-setting-list',
@@ -159,7 +160,7 @@ export class SanDetectionSettingListComponent implements OnInit, AfterViewInit {
           this.disable(
             data,
             DetectionConfigField.IoDetect,
-            'explore_disable_io_detect_label'
+            'explore_disable_san_io_detect_label'
           );
         }
       },
@@ -181,7 +182,7 @@ export class SanDetectionSettingListComponent implements OnInit, AfterViewInit {
           this.disable(
             data,
             DetectionConfigField.CopyDetect,
-            'explore_disable_copy_detect_label'
+            'explore_disable_san_copy_detect_label'
           );
         }
       }
@@ -246,6 +247,7 @@ export class SanDetectionSettingListComponent implements OnInit, AfterViewInit {
     ];
 
     this.tableConfig = {
+      filterTags: true,
       table: {
         autoPolling: CommonConsts.TIME_INTERVAL,
         compareWith: 'id',
@@ -255,10 +257,6 @@ export class SanDetectionSettingListComponent implements OnInit, AfterViewInit {
           selectionMode: 'multiple',
           selectionTrigger: 'selector',
           showSelector: true
-        },
-        scroll: {
-          ...this.virtualScroll.scrollParam,
-          y: '65vh'
         },
         colDisplayControl: false,
         fetchData: (filter: Filters, args) => {
@@ -315,6 +313,8 @@ export class SanDetectionSettingListComponent implements OnInit, AfterViewInit {
       this.messageBox.confirm({
         lvOkType: 'primary',
         lvCancelType: 'default',
+        lvHeader: this.i18n.get('explore_enable_real_time_detection_label'),
+        lvWidth: this.i18n.isEn ? 480 : 400,
         lvContent: RealTimeConfirmComponent,
         lvComponentParams: {
           type: 'SAN'
@@ -359,13 +359,7 @@ export class SanDetectionSettingListComponent implements OnInit, AfterViewInit {
     }
   }
   disable(data, configField, contentLabel?) {
-    const params: any = {
-      detectSwitchConfig: {
-        lunDetectConfigField: configField,
-        isRealTimeDetectEnabled: false,
-        ids: map(data, 'id')
-      }
-    };
+    each(data, item => (item.name = item?.lunName));
     if (configField === DetectionConfigField.IoDetect) {
       this.disableRealTime(data, configField, contentLabel);
     } else {
@@ -375,43 +369,42 @@ export class SanDetectionSettingListComponent implements OnInit, AfterViewInit {
 
   // 禁用实时勒索检测
   disableRealTime(data, configField, contentLabel?) {
-    const params: any = {
-      detectSwitchConfig: {
-        lunDetectConfigField: configField,
-        isRealTimeDetectEnabled: false,
-        ids: map(data, 'id')
-      }
-    };
-    const body = [];
-    each(data, item => {
-      body.push({
-        vstoreName: item.vstoreName,
-        fsName: ''
-      });
-    });
-    const closeParams: any = {
-      honeypotRequests: body
-    };
     this.warningMessageService.create({
-      content: this.i18n.get(contentLabel, [map(data, 'vstoreName')]),
+      content: this.i18n.get(contentLabel, [map(data, 'lunName')]),
       onOK: () => {
-        this.sanConfigManagementService
-          .postSanDetectSwitch(params)
-          .subscribe(res => {
+        this.batchOperateService.selfGetResults(
+          item => {
+            return this.sanConfigManagementService.postSanDetectSwitch({
+              detectSwitchConfig: {
+                lunDetectConfigField: configField,
+                isRealTimeDetectEnabled: false,
+                ids: [item.id]
+              },
+              akDoException: false,
+              akOperationTips: false,
+              akLoading: false
+            });
+          },
+          map(cloneDeep(data), item => {
+            assign(item, { uuid: item.id });
+            return item;
+          }),
+          () => {
             this.selectionData = [];
             this.dataTable.setSelections([]);
             this.dataTable.fetchData();
-          });
+          },
+          '',
+          true
+        );
       }
     });
   }
 
   // 禁用智能勒索检测
   disabledIntelligent(data, configField, contentLabel?) {
-    each(data, item => (item.name = item?.lunName));
-
     this.warningMessageService.create({
-      content: this.i18n.get(contentLabel, [map(data, 'vstoreName')]),
+      content: this.i18n.get(contentLabel, [map(data, 'lunName')]),
       onOK: () => {
         this.batchOperateService.selfGetResults(
           item => {
@@ -427,12 +420,17 @@ export class SanDetectionSettingListComponent implements OnInit, AfterViewInit {
               akLoading: false
             });
           },
-          data,
+          map(cloneDeep(data), item => {
+            assign(item, { uuid: item.id });
+            return item;
+          }),
           () => {
             this.selectionData = [];
             this.dataTable.setSelections([]);
             this.dataTable.fetchData();
-          }
+          },
+          '',
+          true
         );
       }
     });

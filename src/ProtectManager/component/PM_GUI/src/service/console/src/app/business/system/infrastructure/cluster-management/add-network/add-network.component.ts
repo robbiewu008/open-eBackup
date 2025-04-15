@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -43,8 +43,7 @@ import {
   nth,
   set,
   some,
-  trim,
-  uniq
+  trim
 } from 'lodash';
 import { Observable, Observer } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
@@ -137,17 +136,19 @@ export class AddNetworkComponent implements OnInit {
   }
 
   getControl() {
-    this.logManagerApiService.collectNodeInfo({}).subscribe(
-      res => {
-        each(res.data, item => {
-          this.controllers.push(item.nodeName);
-        });
-        this.getData();
-        this.source.cols[1].filters = this.getFilter();
-        this.target.cols[1].filters = this.getFilter();
-      },
-      err => {}
-    );
+    this.logManagerApiService
+      .collectNodeInfo({ memberEsn: this.drawData.storageEsn })
+      .subscribe(
+        res => {
+          each(res.data, item => {
+            this.controllers.push(item.nodeName);
+          });
+          this.getData();
+          this.source.cols[1].filters = this.getFilter();
+          this.target.cols[1].filters = this.getFilter();
+        },
+        err => {}
+      );
   }
 
   initColumns() {
@@ -335,6 +336,8 @@ export class AddNetworkComponent implements OnInit {
     });
     this.formGroup.get('homePortType').valueChanges.subscribe(res => {
       if (res === DataMap.initHomePortType.ethernet.value) {
+        // 从绑定切到以太把共享置false
+        this.formGroup.get('shareBondPort').setValue(false);
         if (!this.enableVlan) {
           // 从绑定切到以太如果没有开vlan则不展示复用
           this.formGroup.get('reuse').setValue(false);
@@ -359,6 +362,11 @@ export class AddNetworkComponent implements OnInit {
           });
           this.target.cols = this.source.cols;
         }
+      }
+      if (this.enableVlan && this.formGroup.get('reuse').value) {
+        defer(() => {
+          this.switchOldCols();
+        });
       }
       this.source.selection = [];
       this.targetData = [];
@@ -432,22 +440,19 @@ export class AddNetworkComponent implements OnInit {
         return false;
       }
 
-      const usedPort = filter(
-        this.logicPort,
-        val =>
-          val.HOMEPORTTYPE !== DataMap.initHomePortType.bonding.value &&
-          item.location === val.HOMEPORTNAME
-      );
+      // 将已经被使用过的端口而且不是自己创出来的端口拿出来
+      const usedPort = filter(this.logicPort, val => {
+        if (val.HOMEPORTTYPE !== DataMap.initHomePortType.bonding.value) {
+          return item.location === val.HOMEPORTNAME && !port.includes(item.id);
+        } else {
+          const tmpBondPort = find(this.bondPort, { id: val.HOMEPORTID });
+          return (
+            tmpBondPort.portIdList.includes(item.id) && !port.includes(item.id)
+          );
+        }
+      });
 
-      if (!this.isModify) {
-        return !usedPort.length;
-      } else {
-        // 否则如果端口被SFTP本身创出的逻辑端口使用是可以的
-        return (
-          !usedPort.length ||
-          (usedPort.length === 1 && find(port, val => val === item.location))
-        );
-      }
+      return !usedPort.length;
     });
   }
 
@@ -469,13 +474,9 @@ export class AddNetworkComponent implements OnInit {
           ? this.i18n.get('system_pod_bonding_rule_tip_label')
           : this.i18n.get('system_pod_add_network_bonding_rule_tip_label');
     } else {
-      if (this.enableVlan) {
-        this.tips = this.i18n.get('system_pod_bonding_rule_tip_label');
-      } else {
-        this.tips = shareBondPort
-          ? this.i18n.get('system_pod_rule_tip_label')
-          : this.i18n.get('system_pod_bonding_rule_tip_label');
-      }
+      this.tips = shareBondPort
+        ? this.i18n.get('system_pod_rule_tip_label')
+        : this.i18n.get('system_pod_bonding_rule_tip_label');
     }
   }
 
@@ -510,11 +511,7 @@ export class AddNetworkComponent implements OnInit {
       }
 
       let idGroup = control.value.split(',');
-      if (idGroup.length < 2) {
-        return { invalidInput: { value: control.value } };
-      }
-      let uniqGroup = uniq(idGroup);
-      if (uniqGroup.length !== idGroup.length) {
+      if (idGroup.length < 1) {
         return { invalidInput: { value: control.value } };
       }
       if (
@@ -539,6 +536,7 @@ export class AddNetworkComponent implements OnInit {
   getData() {
     this.systemApiService
       .getAllPorts({
+        memberEsn: this.drawData.storageEsn,
         queryLogicPortRequest: {},
         ethLogicTypeValue: '0;13',
         akOperationTips: false
@@ -619,32 +617,47 @@ export class AddNetworkComponent implements OnInit {
   }
 
   updateData() {
-    this.backupClusterNetplaneService.getNetPlane({}).subscribe((res: any) => {
-      this.selectedPort = res.portList;
-      this.formGroup.patchValue(res);
-      if (res.homePortType === DataMap.initHomePortType.vlan.value) {
-        this.enableVlan = true;
-        this.formGroup.get('homePortType').setValue(res.vlanPort.portType);
-        defer(() => this.vlanChange(true));
-        if (!res.reuse) {
-          // 复用时不回显vlanId
-          this.formGroup.get('vlanID').setValue(res.vlanPort.tags.join(','));
+    this.backupClusterNetplaneService
+      .getNetPlane({ memberEsn: this.drawData.storageEsn })
+      .subscribe((res: any) => {
+        this.selectedPort = res.portList;
+        // 如果上次不是创的绑定端口就去筛选
+        if (
+          res?.vlanPort?.portType === DataMap.initHomePortType.ethernet.value ||
+          res.homePortType === DataMap.initHomePortType.ethernet.value
+        ) {
+          this.ethPort = filter(
+            this.ethPort,
+            item =>
+              !find(this.bondPort, port => {
+                return port.portIdList.includes(item.id);
+              })
+          );
         }
-      }
+        this.formGroup.patchValue(res);
+        if (res.homePortType === DataMap.initHomePortType.vlan.value) {
+          this.enableVlan = true;
+          this.formGroup.get('homePortType').setValue(res.vlanPort.portType);
+          defer(() => this.vlanChange(true));
+          if (!res.reuse) {
+            // 复用时不回显vlanId
+            this.formGroup.get('vlanID').setValue(res.vlanPort.tags.join(','));
+          }
+        }
 
-      if (res.ipType === '0') {
-        this.formGroup.get('mask').setValue(res.mask);
-      } else {
-        this.formGroup.get('prefix').setValue(res.mask);
-      }
+        if (res.ipType === '0') {
+          this.formGroup.get('mask').setValue(res.mask);
+        } else {
+          this.formGroup.get('prefix').setValue(res.mask);
+        }
 
-      this.routeData = res.portRoutes;
-      if (!!res.portRoutes.length) {
-        this.enableRoute = true;
-      }
+        this.routeData = res.portRoutes;
+        if (!!res.portRoutes.length) {
+          this.enableRoute = true;
+        }
 
-      defer(() => this.updatePort(res));
-    });
+        defer(() => this.updatePort(res));
+      });
   }
 
   updatePort(res) {
@@ -657,7 +670,6 @@ export class AddNetworkComponent implements OnInit {
         res.portList
       );
       this.source.selection = [...filteredSelection];
-      this.source.data = this.ethPort;
       this.targetData = this.source.selection;
     } else {
       // 复用的时候要么绑定口复用，要么vlan复用
@@ -738,6 +750,17 @@ export class AddNetworkComponent implements OnInit {
   routeStatusChange(e) {
     this.routeGroupData = e;
     this.modal.getInstance().lvOkDisabled = some(e, item => item.invalid);
+    if (
+      find(
+        e,
+        item => item.get('type').value === DataMap.initRouteType.default.value
+      )
+    ) {
+      this.formGroup.get('gateway').disable();
+      this.formGroup.get('gateway').setValue('');
+    } else {
+      this.formGroup.get('gateway').enable();
+    }
   }
 
   validRoute() {
@@ -818,10 +841,7 @@ export class AddNetworkComponent implements OnInit {
         return onlinePort.length < 2 || tmpData.length < 4;
       }
     } else {
-      if (this.enableVlan) {
-        // 开vlan后如果复用两类口都需要选两个已连接的
-        return onlinePort.length < 2;
-      } else if (shareBondPort) {
+      if (shareBondPort) {
         return onlinePort.length < 1;
       } else {
         return onlinePort.length < 2;
@@ -829,18 +849,14 @@ export class AddNetworkComponent implements OnInit {
     }
   }
 
-  clearSelected() {
-    this.source.selection = [];
-    this.targetData = [];
-    this.disableBtn();
-  }
-
   selectionChange(e) {
+    this.source.selection = e.selection;
     this.targetData = e.selection;
     this.disableBtn();
   }
 
   oldSelectionChange(e) {
+    this.oldSource.selection = e.selection;
     this.oldTargetData = e.selection;
     this.disableBtn();
   }
@@ -898,7 +914,8 @@ export class AddNetworkComponent implements OnInit {
       if (this.isModify) {
         this.backupClusterNetplaneService
           .updateInternalNetPlaneRelationUsingPut({
-            request: this.getParams()
+            request: this.getParams(),
+            memberEsn: this.drawData?.storageEsn
           })
           .subscribe({
             next: () => {

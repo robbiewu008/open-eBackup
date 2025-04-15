@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -55,7 +55,8 @@ import {
   reject,
   size,
   toString,
-  toUpper
+  toUpper,
+  toLower
 } from 'lodash';
 import { BackupNodeDetailDistributedComponent } from '../backup-node-detail-distributed/backup-node-detail-distributed.component';
 import { BackupNodeEditDistributedComponent } from '../backup-node-edit-distributed/backup-node-edit-distributed.component';
@@ -85,6 +86,12 @@ export class BackupClusterDistributedComponent
   status;
   unitconst = CAPACITY_UNIT;
   isDecouple = this.appUtilsService.isDecouple;
+  decoupleRole = this.dataMapService.toArray('nodeRole').map(obj => {
+    return {
+      ...obj,
+      value: toLower(obj.value)
+    };
+  });
 
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
   @ViewChild('clusterStatusTpl', { static: true })
@@ -128,7 +135,7 @@ export class BackupClusterDistributedComponent
         roleList: [7]
       })
       .subscribe(res => {
-        this.clusterName = res.records[0].clusterName;
+        this.clusterName = 'OceanProtect E6000';
         this.status = res.records[0].status;
       });
   }
@@ -176,7 +183,9 @@ export class BackupClusterDistributedComponent
           type: 'select',
           isMultiple: true,
           showCheckAll: true,
-          options: this.dataMapService.toArray('DistributedClusterRole')
+          options: this.isDecouple
+            ? this.decoupleRole
+            : this.dataMapService.toArray('DistributedClusterRole')
         },
         cellRender: this.clusterRoleTpl
       },

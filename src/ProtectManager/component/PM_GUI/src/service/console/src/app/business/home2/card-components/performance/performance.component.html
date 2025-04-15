@@ -14,7 +14,7 @@
 <div class="performance">
   <div class="num">
     {{ performanceTimeChart.readAvg }}
-    <span class="text">{{ performanceTimeChart.unit }} {{ 'common_home_average_total_bandwidth_label' | i18n }}</span>
+    <span class="text">{{ performanceTimeChart.readAvgLabel }} {{ 'common_home_average_total_bandwidth_label' | i18n }}</span>
   </div>
 
   <div class="chart-tooltip" *ngIf="!performanceTimeChart.isNoData">

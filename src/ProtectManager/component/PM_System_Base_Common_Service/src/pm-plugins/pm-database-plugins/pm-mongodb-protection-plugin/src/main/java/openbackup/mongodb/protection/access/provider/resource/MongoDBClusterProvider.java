@@ -97,8 +97,11 @@ public class MongoDBClusterProvider extends DatabaseEnvironmentProvider {
         ProtectedResource protectedResource = MongoDBConstructionUtils.getProtectedResource(environment);
         List<ProtectedResource> instanceList = environment.getDependencies().get(DatabaseConstants.CHILDREN);
 
-        // 认证方式一致性校验
-        checkAuthTypeIsSame(instanceList);
+        // 认证方式一致性校验(复制集群不进行校验)
+        if (!MongoDBClusterTypeEnum.REPLICATION.getType()
+                .equals(environment.getExtendInfoByKey(MongoDBConstants.CLUSTE_TYPE))) {
+            checkAuthTypeIsSame(instanceList);
+        }
         // 单机、副本和主从、分片都不支持添加/刪除节点, 只允许修改名称和认证信息, 集群类型不允许修改。
         instanceList.forEach(instance -> mongoDBBaseService.checkMongoDBEnvironmentSize(instance,
             VerifyUtil.isEmpty(environment.getUuid())));

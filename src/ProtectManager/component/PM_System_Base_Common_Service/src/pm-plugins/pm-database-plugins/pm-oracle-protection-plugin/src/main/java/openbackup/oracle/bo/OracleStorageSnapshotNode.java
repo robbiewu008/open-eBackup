@@ -12,10 +12,9 @@
 */
 package openbackup.oracle.bo;
 
-import openbackup.data.protection.access.provider.sdk.base.Authentication;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.data.protection.access.provider.sdk.base.Authentication;
 
 import java.util.Map;
 

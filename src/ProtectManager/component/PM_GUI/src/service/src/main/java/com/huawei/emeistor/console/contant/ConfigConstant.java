@@ -63,9 +63,14 @@ public class ConfigConstant {
     public static final String DME_AUTH_TOKEN = "Dme-X-Auth-Token";
 
     /**
-     * dme-token
+     * DME可用分区Id
      */
     public static final String DME_AZ = "Az-Id";
+
+    /**
+     * DME Project Id
+     */
+    public static final String DME_PROJECT_ID = "X-Project-Id";
 
     /**
      * REQUEST_ID标识
@@ -76,6 +81,11 @@ public class ConfigConstant {
      * 远端请求IP
      */
     public static final String REQUEST_IP = "x-forwarded-for";
+
+    /**
+     * 远端请求real IP
+     */
+    public static final String REAL_REQUEST_IP = "X-Real-IP";
 
     /**
      * CONTENT_DISPOSITION标识

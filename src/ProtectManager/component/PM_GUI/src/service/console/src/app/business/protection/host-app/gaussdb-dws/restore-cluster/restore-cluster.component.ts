@@ -1,22 +1,21 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, Input, OnInit } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ModalRef } from '@iux/live';
 import {
   BaseUtilService,
   CommonConsts,
-  compareVersion,
   DataMap,
   HdfsFilesetReplaceOptions,
   I18NService,
@@ -38,6 +37,7 @@ export class ClusterRestoreComponent implements OnInit {
   @Input() rowCopy;
   @Input() childResType;
   @Input() restoreType;
+  @Output() onStatusChange = new EventEmitter<any>();
   formGroup: FormGroup;
   restoreLocationType = RestoreV2LocationType;
   fileReplaceStrategy = HdfsFilesetReplaceOptions;
@@ -48,12 +48,15 @@ export class ClusterRestoreComponent implements OnInit {
   originalClusterUuid;
   resourceData;
   disableOriginLocation = false;
+  isOriginAllowRestore = true;
   tip = this.i18n.get('protection_cloud_origin_restore_disabled_label');
+  restoreClusterTip = this.i18n.get('protection_dws_cluster_tip_label');
+  isNormalRestore = true;
 
   constructor(
+    public i18n: I18NService,
     private fb: FormBuilder,
     private modal: ModalRef,
-    private i18n: I18NService,
     private baseUtilService: BaseUtilService,
     private restoreV2Service: RestoreApiV2Service,
     private protectedResourceApiService: ProtectedResourceApiService
@@ -67,6 +70,12 @@ export class ClusterRestoreComponent implements OnInit {
         DataMap.CopyData_generatedType.cascadedReplication.value;
     this.resourceData = JSON.parse(this.rowCopy.resource_properties) || {};
     this.initForm();
+    this.isNormalRestore = this.restoreType === RestoreType.CommonRestore;
+    if (!this.isNormalRestore) {
+      this.restoreClusterTip = `${this.i18n.get(
+        'protection_dws_cluster_restore_version_tip_label'
+      )}<br>${this.i18n.get('protection_dws_cluster_tip_label')}`;
+    }
     if (!this.disableOriginLocation) {
       // 存在原资源才去获取原位置是否允许恢复
       this.getRestoreLimit();
@@ -101,7 +110,12 @@ export class ClusterRestoreComponent implements OnInit {
   }
 
   listenForm() {
-    this.formGroup.statusChanges.subscribe(res => this.disableOkBtn());
+    this.formGroup.statusChanges.subscribe(res => {
+      this.disableOkBtn();
+      if (this.restoreType !== RestoreType.CommonRestore) {
+        this.onStatusChange.emit();
+      }
+    });
 
     this.formGroup.get('restoreLocation').valueChanges.subscribe(res => {
       if (res === RestoreV2LocationType.ORIGIN) {
@@ -133,6 +147,7 @@ export class ClusterRestoreComponent implements OnInit {
         if (isAllowRestore === 'false') {
           this.disableOriginLocation = true;
           this.tip = this.i18n.get('protection_origin_disable_restore_label');
+          this.isOriginAllowRestore = false;
           this.formGroup
             .get('restoreLocation')
             .setValue(RestoreV2LocationType.NEW);
@@ -184,13 +199,6 @@ export class ClusterRestoreComponent implements OnInit {
             item => item.uuid !== get(this.resourceData, 'root_uuid')
           );
         } else {
-          // 表级恢复的新位置恢复：目标集群只展示版本号大于等于9.1.0版本的，且过滤掉原集群
-          recordsTemp = filter(
-            recordsTemp,
-            item =>
-              compareVersion(item?.version, '9.1.0') !== -1 &&
-              item.uuid !== get(this.resourceData, 'root_uuid')
-          );
           this.clusterOptions = map(recordsTemp, item => {
             return {
               ...item,

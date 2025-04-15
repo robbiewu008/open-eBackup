@@ -1,0 +1,112 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="Restoring a Redis Cluster">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002200004821.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="EN-US_TOPIC_0000002200004809">
+  <meta name="DC.Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>Restoring a Redis Cluster</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="EN-US_TOPIC_0000002200004809"></a><a name="EN-US_TOPIC_0000002200004809"></a>
+  <h1 class="topictitle1">Restoring a Redis Cluster</h1>
+  <div>
+   <p>This section describes how to restore a Redis cluster that has been backed up to the original or a new location.</p>
+   <div class="section">
+    <h4 class="sectiontitle">Context</h4>
+    <p>Backup copies, replication copies, or imported copies can be used for restoration. Restoration to the original or a new location is supported.</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Prerequisites</h4>
+    <ul>
+     <li>Before restoration, ensure that the remaining space of the data directory at the target location for restoration is greater than the size of the copy used for restoration before reduction. Otherwise, restoration will fail.</li>
+    </ul>
+    <ul>
+     <li>Before Redis restoration, all instances in the Redis cluster must be stopped on the MRS console.</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">Procedure</h4>
+    <ol>
+     <li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200004809__en-us_topic_0000002199964685_uicontrol891812261272"><b><span id="EN-US_TOPIC_0000002200004809__en-us_topic_0000002199964685_text199190265271"><strong>Explore</strong></span> &gt; <span id="EN-US_TOPIC_0000002200004809__en-us_topic_0000002199964685_text491952622713"><strong>Copy Data</strong></span> &gt; <span id="EN-US_TOPIC_0000002200004809__en-us_topic_0000002199964685_text141999121015"><strong>Big Data</strong></span> &gt; Redis</b></span>.</span></li>
+     <li><span>Search for copies by resource or copy. This section describes how to search for copies by resource.</span><p></p><p>On the <span class="uicontrol"><b><span><strong>Resources</strong></span></b></span> tab page, locate the cluster to be restored by resource name and click the name.</p> <p></p></li>
+     <li><span>Select the year, month, and day in sequence to find copies.</span><p></p><p>If <span><img src="en-us_image_0000002164604102.png"></span> is displayed below a month or day, a copy is generated in that month or day.</p> <p></p></li>
+     <li><span>Restore data using a specified copy.</span><p></p>
+      <ol type="a">
+       <li>In the row that contains the target copy, choose <span class="menucascade"><b><span class="uicontrol"><span><strong>More</strong></span></span></b> &gt; <b><span class="uicontrol"><span><strong>Restore</strong></span></span></b></span>.</li>
+       <li>Restore the Redis cluster to the original or a new location.
+        <div class="p">
+         <a href="#EN-US_TOPIC_0000002200004809__table519513151452">Table 1</a> describes the related parameters. 
+         <div class="tablenoborder">
+          <a name="EN-US_TOPIC_0000002200004809__table519513151452"></a><a name="table519513151452"></a>
+          <table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200004809__table519513151452" frame="border" border="1" rules="all">
+           <caption>
+            <b>Table 1 </b>Restoring a Redis cluster
+           </caption>
+           <colgroup>
+            <col style="width:32.019999999999996%">
+            <col style="width:67.97999999999999%">
+           </colgroup>
+           <thead align="left">
+            <tr>
+             <th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.1"><p>Parameter</p></th>
+             <th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.2"><p>Description</p></th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.1 "><p><span><strong>Restore To</strong></span></p></td>
+             <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.2 "><p>Select <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span> or <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>.</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.1 "><p><span><strong>Location</strong></span></p></td>
+             <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.2 "><p>If you select restoration to <span class="uicontrol"><b><span><strong>Original location</strong></span></b></span>, the original location is displayed.</p></td>
+            </tr>
+            <tr>
+             <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.1 "><p>Target Cluster</p></td>
+             <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.4.2.4.2.1.2.1.2.2.3.1.2 "><p>If you select restoration to <span class="uicontrol"><b><span><strong>New location</strong></span></b></span>, you must specify the target cluster.</p></td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div></li>
+       <li>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</li>
+       <li>In the displayed dialog box, confirm the information and click <span class="uicontrol"><b>OK</b></span>.<p></p> <p></p></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>Parent topic:</strong> <a href="en-us_topic_0000002200004821.html">Restoration</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -128,6 +128,10 @@ paths:
           description: 是否验签
           type: boolean
           default: true
+        - name: superDmPwd
+          in: formData
+          required: false
+          type: string
         - name: password
           in: formData
           required: true
@@ -487,6 +491,61 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/SystemBackupCommonResponseBody'
+  /v1/sysbackup/policy/{policyId}:
+    put:
+      x-dr-role: 'N'
+      x-dm-role: 'N'
+      x-product: OceanCyber,OceanProtect X8000,OceanProtect X6000,OceanProtect X3000
+      x-impact-subsystem: 不影响
+      x-access-port: 25081
+      x-auth-required: 'Y'
+      x-rd-admin-role: 'N'
+      x-auditor-role: 'N'
+      x-dp-admin-role: 'N'
+      x-public-api: 'Y'
+      x-sysadmin-role: 'Y'
+      tags:
+        - sysbackup-api
+      summary: 启用/禁用备份策略
+      operationId: enablePolicyUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: policyId
+          in: path
+          required: true
+          type: integer
+          format: int64
+          description: 删除备份策略ID
+        - name: X-Auth-Token
+          in: header
+          description: Access token
+          required: true
+          type: string
+        - name: enable
+          in: query
+          required: true
+          description: 启用/禁用备份策略
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SystemBackupCommonResponseBody'
+            originalRef: SystemBackupCommonResponseBody
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - Authorization:
+            - global
 securityDefinitions:
   Authorization:
     type: apiKey
@@ -703,6 +762,9 @@ definitions:
         type: integer
         format: int32
         description: 策略备份保持数量
+      scheduleId:
+        type: string
+        description: 策略备份scheduleId
     title: SystemBackupPolicyResponseBody
   SystemBackupRecoveryRequest:
     type: object

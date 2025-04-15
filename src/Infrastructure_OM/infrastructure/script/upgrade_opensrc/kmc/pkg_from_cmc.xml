@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <dependencies>
+        <dependency>
+            <versionType>Component</versionType>
+            <repoType>Generic</repoType>
+            <id>
+                <offering>OceanProtect A8000</offering>
+                <componentName>ProtectEngine-E</componentName>
+                <componentVersion>${componentVersion}</componentVersion>
+            </id>
+            <according>Y</according>
+            <copies>
+                <copy>
+                    <source>${PRODUCT}/${CODE_BRANCH}/${COMPONENT_TYPE}/${ARCH}/${PKG}</source>
+                    <dest>.</dest>
+                </copy>
+            </copies>
+        </dependency>
+    </dependencies>
+</project>

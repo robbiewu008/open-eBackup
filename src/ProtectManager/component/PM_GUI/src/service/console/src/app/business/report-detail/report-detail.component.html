@@ -187,6 +187,8 @@
       <!-- 最近一次快照侦测情况 -->
       <div class="latest-card-title aui-gutter-column-lg">
         {{ 'explore_latest_snapshot_detect_report_label' | i18n }}
+        <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_latest_snapshot_detect_report_help_label' | i18n}}"
+          lvColorState='true'></i>
       </div>
       <div class="latest-report">
         <ng-container *ngIf="reportDataResponse?.latestInfectionSnapshotInfo; else elseNoDataTemplate">
@@ -326,10 +328,7 @@
 
 <ng-template #elseNoDataTemplate>
   <div class="no-data">
-    <i lv-icon="lv-icon-no-data"></i>
-    <div class="no-data-label">
-      {{'common_no_data_label' | i18n}}
-    </div>
+    <lv-empty></lv-empty>
   </div>
 </ng-template>
 
@@ -379,6 +378,17 @@
 <ng-template #subjectUserTpl>
   <i lv-icon="aui-icon-help" lv-tooltip="{{'explore_subject_user_tip_label' | i18n}}" lvTooltipTheme="light"
     class="operation-help-icon" lvColorState='true'></i>
+</ng-template>
+
+<ng-template #fileTpl let-item>
+  <lv-group lvGutter='8px'>
+    <div lv-overflow>
+      <span>{{ item.fileName }}</span>
+    </div>
+    <span class="guide-recommend-label honeypot-min-tag" *ngIf="item.honeypotFile">
+      {{'explore_honeypot_file_label' | i18n}}
+    </span>
+  </lv-group>
 </ng-template>
 
 <ng-template #elseEmptyTemplate>

@@ -1,0 +1,634 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="恢复Oracle数据库">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="oracle_gud_0080.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="oracle_gud_0083">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>恢复Oracle数据库</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="oracle_gud_0083"></a><a name="oracle_gud_0083"></a>
+  <h1 class="topictitle1">恢复Oracle数据库</h1>
+  <div>
+   <p>当需要对已备份的数据库进行恢复时，可以参考本节恢复数据库至原位置或新位置。</p>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <ul>
+     <li>恢复Oracle数据库支持：指定副本恢复、指定时间点恢复、指定SCN恢复。</li>
+     <li>RMAN恢复支持使用备份副本、复制副本、导入的副本进行恢复。支持恢复至原位置（复制副本不支持恢复至原位置）或新位置。
+      <ul>
+       <li>恢复至原位置<p>恢复至数据库的原主机及原目录，恢复时会覆盖原数据库。</p></li>
+       <li>恢复至新位置<p>系统在指定位置恢复新的数据库，如果存在同名数据库，则会覆盖同名数据库。</p></li>
+       <li>恢复时，如果目标位置存在同名数据库，建议恢复任务执行过程中不要中止任务，否则会导致原同名数据库损坏。</li>
+      </ul></li>
+     <li>对于1.6.0及后续版本，执行存储层快照恢复时：
+      <ul>
+       <li>单机场景下支持使用备份副本、复制副本、导入的副本进行恢复。</li>
+       <li>集群场景下支持使用备份副本、导入的副本进行恢复。</li>
+       <li>Windows集群场景下仅支持恢复至原位置。</li>
+       <li>系统在指定位置恢复LUN，恢复后目标LUN中的数据会被覆盖。</li>
+       <li>非ASM部署形态执行存储层快照恢复，恢复前后LUN的挂载盘符可能会不一致。</li>
+      </ul></li>
+     <li>不同版本的操作界面可能会有少许差异，操作时请以实际情况为准。</li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>恢复至的目标主机已安装客户端及其他相关软件。<p>具体操作可参考<span>《客户端安装指南》</span>。</p></li>
+     <li>异机恢复至目标主机时，请确保目标主机的剩余磁盘空间大小要大于数据库的大小。</li>
+     <li>对于1.6.0及后续版本，执行存储层快照恢复前，请确保：
+      <ul>
+       <li>OCR或voting files所在磁盘与数据文件所在磁盘不在同一个LUN上。</li>
+       <li>OCR或voting files所在磁盘与日志文件所在磁盘不在同一个LUN上。</li>
+       <li>所保护的数据库资源所在的ASM磁盘组无其他数据库实例。</li>
+      </ul></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li id="oracle_gud_0083__li1386725584414"><a name="oracle_gud_0083__li1386725584414"></a><a name="li1386725584414"></a><span>恢复时，如果目标位置存在同名数据库，请先关闭该同名数据库再恢复，否则会导致恢复失败。关闭数据库操作如下：</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>当目标位置存在同名数据库时，恢复后同名数据库将被覆盖。</p>
+       </div>
+      </div>
+      <ol type="a">
+       <li>登录Oracle数据库主机。
+        <ul id="oracle_gud_0083__oracle_gud_0020_zh-cn_topic_0000001656760969_ul1983714162204">
+         <li id="oracle_gud_0083__oracle_gud_0020_zh-cn_topic_0000001656760969_li7258697580">如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行<strong id="oracle_gud_0083__oracle_gud_0020_zh-cn_topic_0000001656760969_b119369483451">su - oracle</strong>命令，切换到<strong id="oracle_gud_0083__oracle_gud_0020_zh-cn_topic_0000001656760969_b2486163014495">oracle</strong>账户。</li>
+         <li id="oracle_gud_0083__oracle_gud_0020_zh-cn_topic_0000001656760969_li1366015032013">如果是Windows操作系统，请使用系统管理员登录Oracle数据库主机。</li>
+        </ul></li>
+       <li>执行以下命令，登录Oracle数据库实例。
+        <ul id="oracle_gud_0083__oracle_gud_0016_ul7420345341">
+         <li id="oracle_gud_0083__oracle_gud_0016_li15682124913711">OS认证：
+          <ul id="oracle_gud_0083__oracle_gud_0016_ul89443983816">
+           <li id="oracle_gud_0083__oracle_gud_0016_li18420124173415">如果是Linux操作系统，请执行以下命令：<p id="oracle_gud_0083__oracle_gud_0016_p95148598366"><a name="oracle_gud_0083__oracle_gud_0016_li18420124173415"></a><a name="oracle_gud_0016_li18420124173415"></a><strong id="oracle_gud_0083__oracle_gud_0016_b14236563719">export ORACLE_SID=</strong><em id="oracle_gud_0083__oracle_gud_0016_i85144598369">数据库实例名称</em></p> <p id="oracle_gud_0083__oracle_gud_0016_p145141259153613"><strong id="oracle_gud_0083__oracle_gud_0016_b1597618293715">sqlplus / as sysdba</strong></p></li>
+           <li id="oracle_gud_0083__oracle_gud_0016_li7402151163816">如果是Windows操作系统，请执行以下操作：
+            <ol class="substepthirdol" id="oracle_gud_0083__oracle_gud_0016_ol124110408264">
+             <li id="oracle_gud_0083__oracle_gud_0016_li624120402267">在键盘上按<span class="uicontrol" id="oracle_gud_0083__oracle_gud_0016_oracle_gud_0016_uicontrol11819941114510">“Win+R”</span>，打开运行窗口。</li>
+             <li id="oracle_gud_0083__oracle_gud_0016_li161821338277">输入<span class="parmvalue" id="oracle_gud_0083__oracle_gud_0016_parmvalue122291222476">“cmd”</span>，执行以下命令。<p id="oracle_gud_0083__oracle_gud_0016_p1755152313372"><strong id="oracle_gud_0083__oracle_gud_0016_b19591532143713">set ORACLE_SID=</strong><em id="oracle_gud_0083__oracle_gud_0016_i16755423133718">数据库实例名称</em></p> <p id="oracle_gud_0083__oracle_gud_0016_p1075515234379"><strong id="oracle_gud_0083__oracle_gud_0016_b540852910371">sqlplus / as sysdba</strong></p></li>
+            </ol></li>
+          </ul></li>
+         <li id="oracle_gud_0083__oracle_gud_0016_li105571236103417">数据库认证：
+          <ul id="oracle_gud_0083__oracle_gud_0016_ul1136516538386">
+           <li id="oracle_gud_0083__oracle_gud_0016_li1723334817382">如果是Linux操作系统，请执行以下命令：<p id="oracle_gud_0083__oracle_gud_0016_p920984963717"><a name="oracle_gud_0083__oracle_gud_0016_li1723334817382"></a><a name="oracle_gud_0016_li1723334817382"></a><strong id="oracle_gud_0083__oracle_gud_0016_b19174355163720">export ORACLE_SID=</strong><em id="oracle_gud_0083__oracle_gud_0016_i1420924973715">数据库实例名称</em></p> <p id="oracle_gud_0083__oracle_gud_0016_p182093496371"><strong id="oracle_gud_0083__oracle_gud_0016_b034785743716">sqlplus</strong></p> <p id="oracle_gud_0083__oracle_gud_0016_p17915722412">根据提示输入具备<strong id="oracle_gud_0083__oracle_gud_0016_b1691518214115">sysdba</strong>权限的用户：</p> <pre class="screen" id="oracle_gud_0083__oracle_gud_0016_screen9915112104114"><em id="oracle_gud_0083__oracle_gud_0016_i1915102164113">username </em>as sysdba</pre> <p id="oracle_gud_0083__oracle_gud_0016_p159150224117">根据提示输入密码。</p></li>
+           <li id="oracle_gud_0083__oracle_gud_0016_li122822426407">Windows OS执行以下命令：
+            <ol class="substepthirdol" id="oracle_gud_0083__oracle_gud_0016_ol587720252273">
+             <li id="oracle_gud_0083__oracle_gud_0016_li5168124414479">在键盘上按<span class="uicontrol" id="oracle_gud_0083__oracle_gud_0016_oracle_gud_0016_uicontrol11819941114510_1">“Win+R”</span>，打开运行窗口。</li>
+             <li id="oracle_gud_0083__oracle_gud_0016_li3877172517270">输入<span class="parmvalue" id="oracle_gud_0083__oracle_gud_0016_parmvalue2059612503475">“cmd”</span>，执行以下命令。<p id="oracle_gud_0083__oracle_gud_0016_p8745723103813"><strong id="oracle_gud_0083__oracle_gud_0016_b9408122923816">set ORACLE_SID=</strong><em id="oracle_gud_0083__oracle_gud_0016_i12745162318389">数据库实例名称</em></p> <p id="oracle_gud_0083__oracle_gud_0016_p15745182333814"><strong id="oracle_gud_0083__oracle_gud_0016_b11154427163811">sqlplus</strong></p> <p id="oracle_gud_0083__oracle_gud_0016_p71274192512">根据提示输入具备<strong id="oracle_gud_0083__oracle_gud_0016_b17349199162611">sysdba</strong>权限的用户：</p> <pre class="screen" id="oracle_gud_0083__oracle_gud_0016_screen18896121620243"><em id="oracle_gud_0083__oracle_gud_0016_i380114413256">username </em>as sysdba</pre> <p id="oracle_gud_0083__oracle_gud_0016_p15251105852511">根据提示输入密码。</p></li>
+            </ol></li>
+          </ul></li>
+        </ul></li>
+       <li>执行以下命令关闭同名数据库。<p><strong>shutdown immediate;</strong></p>
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>对于RAC集群，所有节点均需要执行该命令。</p>
+         </div>
+        </div> <p>回显如下表示数据库关闭完成。</p> <pre class="screen">ORACLE instance shut down.</pre></li>
+      </ol> <p></p></li>
+     <li id="oracle_gud_0083__li17844445165619"><a name="oracle_gud_0083__li17844445165619"></a><a name="li17844445165619"></a><span>恢复至原位置时，要求目标主机的空闲内存大小必须大于数据库的SGA（<span style="color:#4D4D4D;">System Global Area</span>）和PGA（Process Global Area）的大小总和，否则可能导致恢复失败。</span><p></p>
+      <ol type="a">
+       <li>查看SGA和PGA大小。
+        <ol class="substepthirdol">
+         <li>登录Oracle数据库。具体操作可参考<a href="#oracle_gud_0083__li1386725584414">1</a>。</li>
+         <li id="oracle_gud_0083__li465910318509">执行以下命令查看SGA的大小。<p id="oracle_gud_0083__p1865918316502"><a name="oracle_gud_0083__li465910318509"></a><a name="li465910318509"></a><strong id="oracle_gud_0083__b1265903185017">show parameter sga;</strong></p>
+          <div class="p" id="oracle_gud_0083__p196591232506">
+           回显类似如下，查看<span class="uicontrol" id="oracle_gud_0083__uicontrol365911365013">“sga_target”</span>的值。
+           <pre class="screen" id="oracle_gud_0083__screen965973135010">SQL&gt; show parameter sga;
+
+NAME                                 TYPE                              VALUE
+------------------------------------ --------------------------------- ------------------------------
+allow_group_access_to_sga            boolean                            FALSE
+lock_sga                             boolean                            FALSE
+pre_page_sga                         boolean                            TRUE
+sga_max_size                         big integer                        4768M
+sga_min_size                         big integer                        0
+<strong id="oracle_gud_0083__b365911314501">sga_target                       big integer                    4768M</strong>
+unified_audit_sga_queue_size         integer                            1048576</pre>
+          </div></li>
+         <li id="oracle_gud_0083__li965918313501">执行以下命令查看PGA的大小。<p id="oracle_gud_0083__p0659163145014"><a name="oracle_gud_0083__li965918313501"></a><a name="li965918313501"></a><strong id="oracle_gud_0083__b146599335016">show parameter pga;</strong></p> <p id="oracle_gud_0083__p176591235501">回显类似如下，查看<span class="uicontrol" id="oracle_gud_0083__uicontrol66597315507">“pga_aggregate_target”</span>的值。</p> <pre class="screen" id="oracle_gud_0083__screen865911317505">SQL&gt; show parameter pga;
+
+NAME                                 TYPE                              VALUE
+------------------------------------ -------------------------------- ------------------------------
+pga_aggregate_limit                  big integer                       3900M
+<strong id="oracle_gud_0083__b1865917312504">pga_aggregate_target             big integer                   1589M</strong></pre></li>
+        </ol></li>
+       <li>查看主机空闲内存大小。
+        <ul>
+         <li>如果是Linux操作系统，以<strong>root</strong>用户执行以下命令查看空闲内存大小。<p><strong>free -h</strong></p> <p>回显类似如下，查看空闲内存大小。</p> <pre class="screen">[root@localhost <font style="font-size:8pt" face="Courier New">~</font>]# free -h
+              total        used        free      shared  buff/cache   <strong>available</strong>
+<strong>Mem</strong>:            15G        2.2G        992M        4.8G         12G        <strong>8.1G</strong>
+Swap:           99G          0B         99G</pre></li>
+         <li>如果是Windows操作系统，执行以下操作：
+          <ol class="substepthirdol">
+           <li>在桌面任务栏单击鼠标右键，在弹出的菜单中选择“任务管理器”。</li>
+           <li>选择“性能”页签，单击“内存”，查看空闲内存大小。</li>
+          </ol></li>
+        </ul> <p id="oracle_gud_0083__p17444174155215">如果空闲内存的大小不大于数据库<span class="uicontrol" id="oracle_gud_0083__uicontrol116596335018">“sga_target”</span>与<span class="uicontrol" id="oracle_gud_0083__uicontrol16607311501">“pga_aggregate_target”</span>值的总和，请清理内存空间，使得空闲内存的大小大于数据库<span class="uicontrol" id="oracle_gud_0083__uicontrol126601137507">“sga_target”</span>与<span class="uicontrol" id="oracle_gud_0083__uicontrol86609310504">“pga_aggregate_target”</span>值的总和。</p></li>
+      </ol> <p></p></li>
+     <li id="oracle_gud_0083__li16371834113620"><span>当操作系统为Linux且恢复的目标主机为HACS（High Availability Cluster Server）集群中的主机时，恢复前请先冻结HACS集群。</span><p></p>
+      <div class="p" id="oracle_gud_0083__p73081226165516">
+       可参考<a href="oracle_gud_0131.html">如何检查恢复的目标主机是否为HACS集群中的主机</a>确认目标主机是否为HACS集群中的主机。
+       <ol type="a" id="oracle_gud_0083__ol0422132585512">
+        <li id="oracle_gud_0083__li34221251555">使用PuTTY，以<strong id="oracle_gud_0083__b154227254554">root</strong>账号登录Oracle数据库主机。</li>
+        <li id="oracle_gud_0083__li154221525195516">执行以下命令冻结HACS集群。<p id="oracle_gud_0083__p2088691273211"><a name="oracle_gud_0083__li154221525195516"></a><a name="li154221525195516"></a><strong id="oracle_gud_0083__b1283231763217">crm configure property maintenance-mode=true</strong></p>
+         <div class="notice" id="oracle_gud_0083__note13422142510556">
+          <span class="noticetitle"><img src="public_sys-resources/notice_3.0-zh-cn.png"> </span>
+          <div class="noticebody">
+           <p id="oracle_gud_0083__p3422122575514">恢复任务完成后，执行<strong id="oracle_gud_0083__b134221125175518">crm configure property maintenance-mode=false</strong>命令解除冻结。</p>
+          </div>
+         </div></li>
+       </ol>
+      </div> <p></p></li>
+     <li><span>对于1.6.0及后续版本，如果需执行存储层快照恢复，请执行本步骤。否则，请跳过。</span><p></p>
+      <ul>
+       <li>对于ASM实例：
+        <ul>
+         <li>如果是Linux操作系统，请使用PuTTY登录Oracle数据库主机，并执行以下操作。
+          <ol type="a">
+           <li>关闭ASM实例或者解挂载ASM磁盘组。
+            <ul>
+             <li>如果是单机场景，执行以下命令关闭ASM实例。<pre class="screen">su - grid
+srvctl stop asm -force</pre></li>
+             <li>如果是RAC集群场景，请在所有节点上执行以下命令，解挂载非OCR和表决磁盘数据所在的ASM磁盘组，其中<em>DATA</em>为磁盘组名称。<pre class="screen">su - grid</pre> <pre class="screen">asmcmd</pre> <pre class="screen">ASMCMD&gt; umount -f <em>DATA</em></pre></li>
+            </ul></li>
+           <li><span id="oracle_gud_0083__ph1373181923716">对于恢复Oracle集群场景下的日志副本，请执行以下操作。否则，请跳过该步骤。</span><p id="oracle_gud_0083__p7416617181812">执行以下命令，关闭crs服务。</p> <pre class="screen">su - grid</pre> <pre class="screen">cd $ORACLE_HOME/bin</pre> <pre class="screen" id="oracle_gud_0083__screen18913141015199">crsctl stop res ora.crsd -init</pre></li>
+          </ol></li>
+         <li>如果是Windows操作系统，请使用系统管理员登录Oracle数据库主机，并执行以下操作。
+          <ol type="a">
+           <li>指定“ORACLE_HOME”的路径。以Oracle 19c为例。
+            <ol class="substepthirdol">
+             <li>在键盘上按“Win+R”，输入“regedit”，打开注册表，在“Computer\HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE\KEY_OraGI<em>19Home1</em>”路径下获取“ORACLE_HOME”的路径。
+              <div class="note">
+               <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+               <div class="notebody">
+                <p>路径中“KEY_OraGI<em>19Home1</em>”为示例，请以实际为准。</p>
+               </div>
+              </div></li>
+             <li>在键盘上按<span class="uicontrol">“Win+R”</span>，打开运行窗口。</li>
+             <li>输入<span class="parmvalue">“cmd”</span>，执行以下命令，指定“ORACLE_HOME”的路径。<pre class="screen">set ORACLE_HOME=<em>查询到的ORACLE_HOME路径</em></pre></li>
+            </ol></li>
+           <li>在键盘上按“Win+R”，输入“cmd”，执行命令关闭ASM实例或者解挂载ASM磁盘组。
+            <ul>
+             <li>如果是单机场景，执行以下命令关闭ASM实例。<pre class="screen">srvctl stop asm -force</pre></li>
+             <li>如果是RAC集群场景，请在所有节点上执行以下命令，解挂载非OCR和表决磁盘数据所在的ASM磁盘组，其中<em>DATA</em>为磁盘组名称。<pre class="screen">set ORACLE_SID<strong>=</strong><em>ASM实例名</em></pre> <pre class="screen">asmcmd</pre> <pre class="screen">ASMCMD&gt; umount -f <em>DATA</em></pre></li>
+            </ul></li>
+           <li><span>对于恢复Oracle集群场景下的日志副本，请执行以下操作。否则，请跳过该步骤。</span><p>执行以下命令，关闭crs服务。</p> <pre class="screen">crsctl stop res ora.crsd -init</pre></li>
+          </ol></li>
+        </ul></li>
+       <li>对于非ASM实例：
+        <ol type="a">
+         <li>执行以下命令，检查回显中数据文件、控制文件、日志文件、pfile和spfile参数文件所在目录是否存在生效的挂载规则。<p><strong>cat /etc/fstab</strong></p>
+          <ul>
+           <li>如果存在，请将对应条目删除或在该条目前加<strong>#</strong>将其注释掉。<p>示例：</p> <p><span><img src="zh-cn_image_0000002164757226.png"></span></p></li>
+           <li>如果不存在，则无需处理。</li>
+          </ul></li>
+         <li id="oracle_gud_0083__li133927551708"><a name="oracle_gud_0083__li133927551708"></a><a name="li133927551708"></a>执行以下命令，查询数据文件、控制文件、日志文件、pfile和spfile参数文件所在磁盘的挂载信息。<p><a name="oracle_gud_0083__li133927551708"></a><a name="li133927551708"></a><strong>df -h</strong></p></li>
+         <li>执行以下命令，解挂载数据文件、控制文件、日志文件、pfile和spfile参数文件所在磁盘。<p><strong>umount -l</strong> <em>磁盘挂载目录</em></p>
+          <div class="note">
+           <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+           <div class="notebody">
+            <p>命令中的<em>磁盘挂载目录</em>可从<a href="#oracle_gud_0083__li133927551708">4.b</a>中获取。</p>
+            <p></p>
+           </div>
+          </div></li>
+        </ol></li>
+      </ul> <p></p></li>
+     <li id="oracle_gud_0083__li10796132225712"><span>选择<span class="uicontrol" id="oracle_gud_0083__zh-cn_topic_0000002199964685_uicontrol1186171611461">“<span id="oracle_gud_0083__zh-cn_topic_0000002199964685_text6186101615464">数据利用</span> &gt; <span id="oracle_gud_0083__zh-cn_topic_0000002199964685_text74373665812">副本数据</span> &gt; <span id="oracle_gud_0083__zh-cn_topic_0000002199964685_text12413710445">数据库</span> &gt; <span id="oracle_gud_0083__zh-cn_topic_0000002199964685_text151861216124615">Oracle</span>”</span>。</span></li>
+     <li><span>您可以以数据库资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p></p><p>在<span class="wintitle">“<span>资源</span>”</span>页签，根据数据库名称查找到需要恢复的数据库，并单击数据库名称。</p> <p></p></li>
+     <li><span>指定副本或时间点进行恢复。</span><p></p><p>您可以指定某个副本或两个副本之间的任意时间点进行恢复。</p>
+      <div class="p">
+       如果需要指定SCN进行恢复，请忽略该步骤，执行<a href="#oracle_gud_0083__li02165214225">8</a>。
+       <ol type="a">
+        <li>在“<span>时间选择</span>”页签依次选择年、月、天查找副本。<p>当时间上显示<span><img src="zh-cn_image_0000002199963829.png"></span>，即表示该月、该天存在副本。</p></li>
+        <li>指定某个副本或指定时间点进行恢复。
+         <ul>
+          <li>指定某个副本进行恢复<p><span><img class="eddx" src="zh-cn_image_0000002164597506.png"></span></p> <p></p></li>
+          <li>指定时间点进行恢复。<p>时间轴上<span><img src="zh-cn_image_0000002164757242.png"></span>表示该时间点存在副本。没有备份归档日志的时间点无法进行时间点恢复。</p> <p><span><img class="eddx" src="zh-cn_image_0000002199998257.png"></span></p> <p></p>
+           <div class="note" id="oracle_gud_0083__note20962634193812">
+            <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+            <div class="notebody">
+             <ul id="oracle_gud_0083__ul75802612312">
+              <li id="oracle_gud_0083__li1497342618234">对于1.5.0版本，时间轴上最多仅展示100个副本，单击<span><img id="oracle_gud_0083__image173544102299" src="zh-cn_image_0000002199963833.png"></span>可以查看所有副本。</li>
+              <li id="oracle_gud_0083__li95818264231">执行时间点恢复时，由于管理界面无法获取恢复时所使用的副本信息，因此，在恢复任务和相关的事件页面，用户无法看到该恢复任务的副本信息。</li>
+             </ul>
+            </div>
+           </div></li>
+         </ul></li>
+        <li id="oracle_gud_0083__li10621031104911"><a name="oracle_gud_0083__li10621031104911"></a><a name="li10621031104911"></a>恢复Oracle数据库至原位置或新位置。
+         <div class="p">
+          <a name="oracle_gud_0083__li10621031104911"></a><a name="li10621031104911"></a>
+          <ul>
+           <li>恢复Oracle数据库至原位置。
+            <ol class="substepthirdol">
+             <li>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>。</li>
+             <li>配置恢复高级参数。<p>相关参数如<a href="#oracle_gud_0083__table2019615469249">表1</a>所示。</p>
+              <div class="tablenoborder">
+               <a name="oracle_gud_0083__table2019615469249"></a><a name="table2019615469249"></a>
+               <table cellpadding="4" cellspacing="0" summary="" id="oracle_gud_0083__table2019615469249" frame="border" border="1" rules="all">
+                <caption>
+                 <b>表1 </b>恢复任务高级参数说明
+                </caption>
+                <colgroup>
+                 <col style="width:32.86%">
+                 <col style="width:67.14%">
+                </colgroup>
+                <thead align="left">
+                 <tr>
+                  <th align="left" class="cellrowborder" valign="top" width="32.86%" id="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1"><p>参数</p></th>
+                  <th align="left" class="cellrowborder" valign="top" width="67.14%" id="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2"><p>说明</p></th>
+                 </tr>
+                </thead>
+                <tbody>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><span>BCT功能</span></p>
+                   <div class="note">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__oracle_gud_0083_p12270112845717">仅执行RMAN恢复时存在此参数。</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 ">
+                   <ul id="oracle_gud_0083__ul0406833165714">
+                    <li id="oracle_gud_0083__li1406173315719">如果选择开启BCT功能，恢复成功后会自动开启BCT功能。</li>
+                    <li id="oracle_gud_0083__li1140663317578">如果选择关闭BCT功能，恢复成功后会自动关闭BCT功能。</li>
+                   </ul></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><span>通道数</span></p>
+                   <div class="note">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__oracle_gud_0083_p12270112845717_1">仅执行RMAN恢复时存在此参数。</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 "><p id="oracle_gud_0083__p1919510464243">控制恢复任务的并行度，通过该参数指定RMAN与数据库实例之间的最大连接数。如果主机性能一般，建议保持默认值；如果主机性能良好，可以适量增大通道数，提高并发度，提升恢复效率，建议通道数与数据文件的数量保持一致。</p> <p>取值范围：1~254。</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p>客户端</p>
+                   <div class="note">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__oracle_gud_0083_p75712513014">仅1.6.0及后续版本，执行存储层快照恢复时存在此参数。</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 ">
+                   <div class="p" id="oracle_gud_0083__p17564105152415">
+                    选择用于执行恢复任务的客户端，支持选择多个。未配置时系统将默认选择其中一个客户端。
+                    <div class="note" id="oracle_gud_0083__note549003193914">
+                     <span class="notetitle"> 说明： </span>
+                     <div class="notebody">
+                      <p id="oracle_gud_0083__p13111497296"><span>如果是Windows操作系统，</span>请选择内置客户端或者安装了Oracle插件的Linux外置客户端的主机。</p>
+                     </div>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p>并发数</p>
+                   <div class="note">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__oracle_gud_0083_p75712513014_1">仅1.6.0及后续版本，执行存储层快照恢复时存在此参数。</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 "><p>可同时执行恢复子任务的个数。取值范围为1~8。</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><span style="color:#4D4D4D;">启动数据库</span></p>
+                   <div class="note">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p>仅1.6.0及后续版本，执行RMAN恢复时存在此参数。</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 "><p id="oracle_gud_0083__p098982795020">开启后，当恢复任务完成后将自动启动数据库。</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><span>执行脚本</span></p></td>
+                  <td class="cellrowborder" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 "><p id="oracle_gud_0083__p1676124485210">您可以根据实际需求，在恢复任务执行前、执行成功后、执行失败后，执行自定义脚本。</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="32.86%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><span>恢复前执行脚本</span></p></td>
+                  <td class="cellrowborder" rowspan="3" valign="top" width="67.14%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.2 "><p id="oracle_gud_0083__p1551175893115">您可以根据实际需求，配置“恢复前执行脚本”、“恢复成功执行脚本”和“恢复失败执行脚本”，当恢复任务事件中出现“开始执行前置任务”提示后，配置的脚本会在对应场景下执行。</p>
+                   <ul id="oracle_gud_0083__ul564321125916">
+                    <li id="oracle_gud_0083__li664172111592">如果是Linux操作系统，请输入脚本名称，脚本名称以<strong id="oracle_gud_0083__b2540185975418">.sh</strong>结尾。确保脚本已存放在客户端安装目录下的“DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty”目录中，且登录数据库主机的用户（默认为<strong id="oracle_gud_0083__b174008455514">root</strong>）对该脚本有可执行权限。如果无执行权限请依次执行以下命令授权：<p id="oracle_gud_0083__p1122810535219"><strong id="oracle_gud_0083__b1150002216546">chown root:root</strong> <em id="oracle_gud_0083__i034171855415">脚本名称</em></p> <p id="oracle_gud_0083__p72285517529"><strong id="oracle_gud_0083__b17358729165412">chmod 500</strong><em id="oracle_gud_0083__i189689318546"> 脚本名称</em></p></li>
+                   </ul>
+                   <ul id="oracle_gud_0083__ul5228155115212">
+                    <li id="oracle_gud_0083__li422818514522">如果是Windows操作系统，请输入脚本名称，脚本名称以<strong id="oracle_gud_0083__b298601014555">.bat</strong>结尾。确保脚本已存放在客户端安装目录下的“DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty”目录中，且登录数据库主机的用户（默认为<strong id="oracle_gud_0083__b273891717550">Administrator</strong>）对该脚本有可执行权限。如果无执行权限请依次执行以下操作授权：<p id="oracle_gud_0083__p1222865205217">选择该脚本，单击鼠标右键，选择“属性 &gt; 安全”，在弹出的对话框中选择Administrator用户，单击“编辑”更改权限。</p></li>
+                   </ul>
+                   <div class="note" id="oracle_gud_0083__note61961446112411">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__p519614617243">当配置了<span class="uicontrol" id="oracle_gud_0083__uicontrol12195646192416">“<span id="oracle_gud_0083__text84841738161018">恢复成功执行脚本</span>”</span>时，即使该脚本执行失败，管理界面上也会显示恢复任务的状态为<span class="uicontrol" id="oracle_gud_0083__uicontrol4196154615243">“<span id="oracle_gud_0083__text8403565109">成功</span>”</span>。请您留意任务详情中是否有后置脚本执行失败的相关提示，如有请及时修正脚本。</p>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><span>恢复成功执行脚本</span></p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.2.2.3.1.1.1.1.2.2.2.3.1.1 "><p><span>恢复失败执行脚本</span></p></td>
+                 </tr>
+                </tbody>
+               </table>
+              </div></li>
+             <li>单击<span class="uicontrol">“<span>确定</span>”</span>。
+              <div class="note">
+               <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+               <div class="notebody">
+                <p>执行原位置恢复后，请在业务空闲时执行一次全量备份，否则恢复时间点之后的日志备份可能无法使用。</p>
+               </div>
+              </div></li>
+            </ol></li>
+           <li>恢复Oracle数据库至新位置。
+            <ol class="substepthirdol">
+             <li>选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>。</li>
+             <li>配置恢复基本参数及高级参数。<p>相关参数说明如<a href="#oracle_gud_0083__table15202164672412">表2</a>所示。</p>
+              <div class="tablenoborder">
+               <a name="oracle_gud_0083__table15202164672412"></a><a name="table15202164672412"></a>
+               <table cellpadding="4" cellspacing="0" summary="" id="oracle_gud_0083__table15202164672412" frame="border" border="1" rules="all">
+                <caption>
+                 <b>表2 </b>恢复参数说明
+                </caption>
+                <colgroup>
+                 <col style="width:18.41%">
+                 <col style="width:81.58999999999999%">
+                </colgroup>
+                <thead align="left">
+                 <tr>
+                  <th align="left" class="cellrowborder" valign="top" width="18.41%" id="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1"><p>参数</p></th>
+                  <th align="left" class="cellrowborder" valign="top" width="81.58999999999999%" id="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2"><p>说明</p></th>
+                 </tr>
+                </thead>
+                <tbody>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 ">
+                   <div class="p">
+                    标签
+                    <div class="note" id="oracle_gud_0083__zh-cn_topic_0000002164820458_note1330311543247">
+                     <span class="notetitle"> 说明： </span>
+                     <div class="notebody">
+                      <p id="oracle_gud_0083__zh-cn_topic_0000002164820458_p630385412417"><span id="oracle_gud_0083__zh-cn_topic_0000002164820458_ph5374928181810">仅1.6.0及后续版本存在此参数。</span></p>
+                     </div>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“新位置”</span>时，可以通过标签筛选待恢复的资源。</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span>目标主机/集群</span></p></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>恢复到的目标主机或集群。</p>
+                   <div class="note" id="oracle_gud_0083__note179370214920">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__p2922101773417">如果恢复到集群，请选择恢复到该集群下的一个节点。</p>
+                    </div>
+                   </div> <p></p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 ">
+                   <div class="p">
+                    原实例
+                    <div class="note" id="oracle_gud_0083__note15922394357">
+                     <span class="notetitle"> 说明： </span>
+                     <div class="notebody">
+                      <p id="oracle_gud_0083__p292039103511">仅1.6.0及后续版本，执行RMAN恢复时存在此参数。</p>
+                     </div>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p id="oracle_gud_0083__p13601141483419">选择恢复到目标位置的原实例。</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 ">
+                   <div class="p">
+                    目标实例
+                    <div class="note">
+                     <span class="notetitle"> 说明： </span>
+                     <div class="notebody">
+                      <p id="oracle_gud_0083__oracle_gud_0083_p292039103511">仅1.6.0及后续版本，执行RMAN恢复时存在此参数。</p>
+                     </div>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 ">
+                   <div class="p" id="oracle_gud_0083__p948713314367">
+                    支持配置恢复到目标位置的实例名，如不配置，则与恢复前的原实例名保持一致。
+                    <div class="note" id="oracle_gud_0083__note16724735153418">
+                     <span class="notetitle"> 说明： </span>
+                     <div class="notebody">
+                      <p id="oracle_gud_0083__p17724173583412">如果配置了目标实例名，恢复后请使用目标实例名登录数据库。</p>
+                     </div>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span>目标路径</span></p>
+                   <div class="note" id="oracle_gud_0083__note3270162820571">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__p12270112845717">仅执行RMAN恢复时存在此参数。</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p><span style="color:#282B33;">目标主机上待恢复的数据库所在的ASM磁盘组目录或者文件系统目录。</span></p> <p id="oracle_gud_0083__p181981746162414"><span style="color:#282B33;">ASM磁盘组目录举例：+ORADATA，文件系统目录举例：/u01/oracle/oradata/。</span></p>
+                   <div class="note">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <ul>
+                      <li><span id="oracle_gud_0083__ph14567120183420">请确保目标主机已存在该路径，且Oracle安装用户对该路径具有读取、写入和执行权限（如果是Linux OS，请切换至Oracle安装用户，在该父路径下执行<strong id="oracle_gud_0083__b128671655111311">ll</strong>命令查询权限；如果是Windows OS，右键单击路径，选择“属性 &gt; 安全”，找到安装用户查看权限。）</span>，否则恢复任务将失败。当目标路径为空时，确保目标主机上存在与生产数据库相同的ASM磁盘组目录或文件系统目录。</li>
+                      <li>目标路径所在磁盘的剩余空间要大于源数据库所占空间，否则恢复任务将失败。</li>
+                     </ul>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p>目标磁盘</p>
+                   <div class="note" id="oracle_gud_0083__note86651341182613">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__p75712513014">仅1.6.0及后续版本，执行存储层快照恢复时存在此参数。</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>选择恢复至目标主机上的磁盘。</p>
+                   <div class="note">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <ul>
+                      <li>如果待恢复的是ASM磁盘，请选择与“待恢复ASM磁盘组名称”对应的目标磁盘。例如：“待恢复ASM磁盘组名称”为<strong>data_108</strong>，则目标磁盘需选择前缀为<strong>data</strong>的磁盘。</li>
+                      <li>执行存储层快照恢复后目标LUN中的数据将会被覆盖，选择目标位置对应LUN的大小需大于或等于备份副本中LUN的大小。</li>
+                     </ul>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p>客户端</p>
+                   <div class="note">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__oracle_gud_0083_p75712513014_2">仅1.6.0及后续版本，执行存储层快照恢复时存在此参数。</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 ">
+                   <div class="p">
+                    选择用于执行恢复任务的客户端，支持选择多个。未配置时系统将默认选择其中一个客户端。
+                    <div class="note" id="oracle_gud_0083__oracle_gud_0083_note549003193914">
+                     <span class="notetitle"> 说明： </span>
+                     <div class="notebody">
+                      <p id="oracle_gud_0083__oracle_gud_0083_p13111497296"><span>如果是Windows操作系统，</span>请选择内置客户端或者安装了Oracle插件的Linux外置客户端的主机。</p>
+                     </div>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p>并发数</p>
+                   <div class="note">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__oracle_gud_0083_p75712513014_3">仅1.6.0及后续版本，执行存储层快照恢复时存在此参数。</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>可同时执行恢复任务的个数。取值范围为1~8。</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span>BCT功能</span></p>
+                   <div class="note">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__oracle_gud_0083_p12270112845717_2">仅执行RMAN恢复时存在此参数。</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 ">
+                   <ul>
+                    <li id="oracle_gud_0083__oracle_gud_0083_li1406173315719">如果选择开启BCT功能，恢复成功后会自动开启BCT功能。</li>
+                    <li id="oracle_gud_0083__oracle_gud_0083_li1140663317578">如果选择关闭BCT功能，恢复成功后会自动关闭BCT功能。</li>
+                   </ul></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span>通道数</span></p>
+                   <div class="note">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__oracle_gud_0083_p12270112845717_3">仅执行RMAN恢复时存在此参数。</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>控制恢复任务的并行度，通过该参数指定RMAN与数据库实例之间的最大连接数。如果主机性能一般，建议保持默认值；如果主机性能良好，可以适量增大通道数，提高并发度，提升恢复效率，建议通道数与数据文件的数量保持一致。</p> <p>取值范围：1~254。</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span>执行脚本</span></p></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>您可以根据实际需求，在恢复任务执行前、执行成功后、执行失败后，执行自定义脚本。</p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span>恢复前执行脚本</span></p></td>
+                  <td class="cellrowborder" rowspan="3" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>您可以根据实际需求，配置“恢复前执行脚本”、“恢复成功执行脚本”和“恢复失败执行脚本”，当恢复任务事件中出现“开始执行前置任务”提示后，配置的脚本会在对应场景下执行。</p>
+                   <ul>
+                    <li id="oracle_gud_0083__oracle_gud_0083_li664172111592">如果是Linux操作系统，请输入脚本名称，脚本名称以<strong id="oracle_gud_0083__oracle_gud_0083_b2540185975418">.sh</strong>结尾。确保脚本已存放在客户端安装目录下的“DataBackup/ProtectClient/ProtectClient-E/sbin/thirdparty”目录中，且登录数据库主机的用户（默认为<strong id="oracle_gud_0083__oracle_gud_0083_b174008455514">root</strong>）对该脚本有可执行权限。如果无执行权限请依次执行以下命令授权：<p id="oracle_gud_0083__oracle_gud_0083_p1122810535219"><strong id="oracle_gud_0083__oracle_gud_0083_b1150002216546">chown root:root</strong> <em id="oracle_gud_0083__oracle_gud_0083_i034171855415">脚本名称</em></p> <p id="oracle_gud_0083__oracle_gud_0083_p72285517529"><strong id="oracle_gud_0083__oracle_gud_0083_b17358729165412">chmod 500</strong><em id="oracle_gud_0083__oracle_gud_0083_i189689318546"> 脚本名称</em></p></li>
+                   </ul>
+                   <ul>
+                    <li id="oracle_gud_0083__oracle_gud_0083_li422818514522">如果是Windows操作系统，请输入脚本名称，脚本名称以<strong id="oracle_gud_0083__oracle_gud_0083_b298601014555">.bat</strong>结尾。确保脚本已存放在客户端安装目录下的“DataBackup\ProtectClient\ProtectClient-E\bin\thirdparty”目录中，且登录数据库主机的用户（默认为<strong id="oracle_gud_0083__oracle_gud_0083_b273891717550">Administrator</strong>）对该脚本有可执行权限。如果无执行权限请依次执行以下操作授权：<p id="oracle_gud_0083__oracle_gud_0083_p1222865205217">选择该脚本，单击鼠标右键，选择“属性 &gt; 安全”，在弹出的对话框中选择Administrator用户，单击“编辑”更改权限。</p></li>
+                   </ul>
+                   <div class="note">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__oracle_gud_0083_p519614617243">当配置了<span class="uicontrol" id="oracle_gud_0083__oracle_gud_0083_uicontrol12195646192416">“<span id="oracle_gud_0083__oracle_gud_0083_text84841738161018">恢复成功执行脚本</span>”</span>时，即使该脚本执行失败，管理界面上也会显示恢复任务的状态为<span class="uicontrol" id="oracle_gud_0083__oracle_gud_0083_uicontrol4196154615243">“<span id="oracle_gud_0083__oracle_gud_0083_text8403565109">成功</span>”</span>。请您留意任务详情中是否有后置脚本执行失败的相关提示，如有请及时修正脚本。</p>
+                    </div>
+                   </div></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span>恢复成功执行脚本</span></p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span>恢复失败执行脚本</span></p></td>
+                 </tr>
+                 <tr>
+                  <td class="cellrowborder" valign="top" width="18.41%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.1 "><p><span>修改数据库配置</span></p>
+                   <div class="note">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__oracle_gud_0083_p12270112845717_4">仅执行RMAN恢复时存在此参数。</p>
+                    </div>
+                   </div></td>
+                  <td class="cellrowborder" valign="top" width="81.58999999999999%" headers="mcps1.3.4.2.7.2.2.2.3.1.1.2.1.2.2.2.3.1.2 "><p>根据目标主机的实际配置修改数据库参数，参数错误将导致恢复数据库失败。</p>
+                   <div class="note" id="oracle_gud_0083__note32022468247">
+                    <span class="notetitle"> 说明： </span>
+                    <div class="notebody">
+                     <p id="oracle_gud_0083__p182002046152413">恢复时，要求目标主机的空闲内存大小必须大于数据库SGA和PGA的大小总和，否则可能导致恢复失败。</p>
+                     <ol id="oracle_gud_0083__ol1220294614243">
+                      <li id="oracle_gud_0083__li192002046192416">查看目标主机空闲内存的大小。<p id="oracle_gud_0083__p14200174614242"><a name="oracle_gud_0083__li192002046192416"></a><a name="li192002046192416"></a>具体操作可参考<a href="#oracle_gud_0083__li17844445165619">2</a>。</p></li>
+                      <li id="oracle_gud_0083__li1420174662413">开启<span class="uicontrol" id="oracle_gud_0083__uicontrol4200124632411">“<span id="oracle_gud_0083__text6200164682413">修改数据库配置</span>”</span>开关后，搜索<span class="uicontrol" style="color:#282B33;" id="oracle_gud_0083__uicontrol142004460245">“*.pga_aggregate_target”</span>和<span class="uicontrol" style="color:#282B33;" id="oracle_gud_0083__uicontrol72001546142410">“*.sga_target”</span>参数。<p id="oracle_gud_0083__p122019465249">检查空闲内存大小是否大于<span class="uicontrol" style="color:#282B33;" id="oracle_gud_0083__uicontrol4201174662412">“*.pga_aggregate_target”</span><span style="color:#282B33;">与</span><span class="uicontrol" style="color:#282B33;" id="oracle_gud_0083__uicontrol19201104615246">“*.sga_target”</span>的总和。</p>
+                       <ul id="oracle_gud_0083__ul020117460245">
+                        <li id="oracle_gud_0083__li020119461244">是，结束处理。</li>
+                        <li id="oracle_gud_0083__li172011746112414">否，执行<a href="#oracle_gud_0083__li520219465244">3</a>。</li>
+                       </ul></li>
+                      <li id="oracle_gud_0083__li520219465244"><a name="oracle_gud_0083__li520219465244"></a><a name="li520219465244"></a>修改<span class="uicontrol" style="color:#282B33;" id="oracle_gud_0083__uicontrol62011146162413">“*.pga_aggregate_target”</span><span style="color:#282B33;">与</span><span class="uicontrol" style="color:#282B33;" id="oracle_gud_0083__uicontrol1120144682417">“*.sga_target”</span>其中一个参数或两个参数都修改，使得空闲内存大小大于<span class="uicontrol" style="color:#282B33;" id="oracle_gud_0083__uicontrol82011846162413">“*.pga_aggregate_target”</span><span style="color:#282B33;">与</span><span class="uicontrol" style="color:#282B33;" id="oracle_gud_0083__uicontrol420134616246">“*.sga_target”</span>的总和<strong id="oracle_gud_0083__b7202746162413">。</strong><p id="oracle_gud_0083__p17202124615241">如果搜索到多个相同的参数，相同的参数均需修改。</p></li>
+                      <li id="oracle_gud_0083__li3202154610247">如果修改了<span class="uicontrol" style="color:#282B33;" id="oracle_gud_0083__uicontrol720216466245">“*.pga_aggregate_target”</span>，需要同步修改“<em style="color:#282B33;" id="oracle_gud_0083__i8202134622420">实例名称</em><span style="color:#282B33;">.__pga_aggregate_target</span>”的值，修改<span style="color:#282B33;">“</span><em style="color:#282B33;" id="oracle_gud_0083__i620264616246">实例名称</em><span style="color:#282B33;">.__pga_aggregate_target</span>”为：<p id="oracle_gud_0083__p112021846192418"><em style="color:#282B33;" id="oracle_gud_0083__i520234617241">实例名称</em><strong style="color:#282B33;" id="oracle_gud_0083__b16202114622416">.__pga_aggregate_target = *.pga_aggregate_target * 1024 *1024</strong></p> <p id="oracle_gud_0083__p12021146162417">如果修改了<span class="uicontrol" style="color:#282B33;" id="oracle_gud_0083__uicontrol12202144662410">“*.sga_target”</span><span style="color:#282B33;">，需要同步修改“</span><em style="color:#282B33;" id="oracle_gud_0083__i82021546122411">实例名称</em>.__sga_target”的值，修改<span style="color:#282B33;">“</span><em style="color:#282B33;" id="oracle_gud_0083__i102021546172412">实例名称</em>.__sga_target”为：</p> <p id="oracle_gud_0083__p72021446122418"><em style="color:#282B33;" id="oracle_gud_0083__i8202546132411">实例名称</em><strong style="color:#282B33;" id="oracle_gud_0083__b92024462249">.__sga_target = *.sga_target</strong><strong id="oracle_gud_0083__b1020234611248"> * 1024 *1024</strong></p></li>
+                     </ol>
+                    </div>
+                   </div></td>
+                 </tr>
+                </tbody>
+               </table>
+              </div></li>
+             <li>单击<span class="uicontrol">“<span>确定</span>”</span>，并根据界面提示完成确认。
+              <div class="note" id="oracle_gud_0083__note131611441701">
+               <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+               <div class="notebody">
+                <p id="oracle_gud_0083__p63168441018">对于1.6.0及后续版本，如果恢复的目标数据库名称与原数据库名称相同，恢复任务完成后，请对恢复目标资源执行资源扫描操作，以确保获取的实例名称信息正确。</p>
+               </div>
+              </div></li>
+            </ol></li>
+          </ul>
+         </div></li>
+       </ol>
+      </div> <p></p></li>
+     <li id="oracle_gud_0083__li02165214225"><a name="oracle_gud_0083__li02165214225"></a><a name="li02165214225"></a><span>指定SCN号进行恢复。</span><p></p>
+      <ol type="a">
+       <li>在<span class="uicontrol">“<span>SCN</span>”</span>页签，输入SCN号，单击<span class="uicontrol">“<span>更多</span> &gt; <span>恢复</span>”</span>。
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>执行以下命令获取数据库当前SCN。</p>
+          <p><strong>select dbms_flashback.get_system_change_number from dual;</strong></p>
+         </div>
+        </div></li>
+       <li id="oracle_gud_0083__li1641392320470">选择备份副本进行恢复。<p id="oracle_gud_0083__p1641915411820"><a name="oracle_gud_0083__li1641392320470"></a><a name="li1641392320470"></a>界面上展示的是包含当前SCN的所有备份副本。您可以根据备份副本时间判断恢复到的SCN。</p> <p id="oracle_gud_0083__p184191549183">如果没有任何副本显示，则说明要恢复的SCN点没有备份的日志，无法进行SCN恢复，请重新输入其他SCN。</p></li>
+       <li>恢复数据库至原位置或新位置。<p>具体配置请参考<a href="#oracle_gud_0083__li10621031104911">7.c</a>。</p></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="oracle_gud_0080.html">恢复</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

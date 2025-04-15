@@ -67,7 +67,8 @@ int32_t ExecutePython::InitObject(const std::string &className, PyObject* &pArgs
     PyRun_SimpleString("import sys");
     std::string addScriptPath = "sys.path.append('" + m_scriptPath + "')";
     PyRun_SimpleString(addScriptPath.c_str());
-    PrintErr();
+    std::string erroInfo;
+    PrintErr(erroInfo);
     if (GetMethod(pClass, className, m_scriptFileName) != SUCCESS) {
         ERRLOG("Get python class %s failed.", className.c_str());
         return FAILED;
@@ -76,12 +77,12 @@ int32_t ExecutePython::InitObject(const std::string &className, PyObject* &pArgs
     Py_DECREF(pClass);
     if (pConstruct == nullptr) {
         ERRLOG("Get pConstruct %s null!!!", m_scriptFileName.c_str());
-        PrintErr();
+        PrintErr(erroInfo);
         return FAILED;
     }
     pObject = PyObject_CallObject(pConstruct, pArgs);
     if (pObject == nullptr) {
-        PrintErr();
+        PrintErr(erroInfo);
         ERRLOG("Get pObject %s null!!!", m_scriptFileName.c_str());
         return FAILED;
     }
@@ -96,23 +97,24 @@ int32_t ExecutePython::GetMethod(PyObject* &pClass, const std::string &className
     PyObject* pDict = nullptr;
     // 在使用这个函数的时候，只需要写文件的名称就可以了。不用写后缀。
     pModule = PyImport_ImportModule(fileName.c_str());
+    std::string erroInfo = "";
     if (pModule == nullptr) {
         ERRLOG("Import %s module failed.", fileName.c_str());
-        PrintErr();
+        PrintErr(erroInfo);
         return FAILED;
     }
     pDict = PyModule_GetDict(pModule);
     Py_DECREF(pModule);
     if (pDict == nullptr) {
         ERRLOG("Get Dict %s failed.", fileName.c_str());
-        PrintErr();
+        PrintErr(erroInfo);
         return FAILED;
     }
     pClass = PyDict_GetItemString(pDict, className.c_str());
     Py_DECREF(pDict);
     if (pClass == nullptr) {
         ERRLOG("Get class %s from %s failed.", className.c_str(), fileName.c_str());
-        PrintErr();
+        PrintErr(erroInfo);
         return FAILED;
     }
     DBGLOG("GetMethod %s success!", fileName.c_str());
@@ -137,21 +139,21 @@ int32_t ExecutePython::CallObjFunction(const std::string &className, const std::
         pReturn = PyObject_CallMethod(pObject, functionName.c_str(), "O", pFunctionArgs);
         DBGLOG("PyObject CallMethod success, instance name: %s", functionName.c_str());
     }
-    PrintErr();
+    PrintErr(result);
     if (pReturn == nullptr) {
         ERRLOG("Call Method null, instance name: %s", functionName.c_str());
         return FAILED;
     }
     char* nResult = nullptr;
     PyArg_Parse(pReturn, "s", &nResult);
-    PrintErr();
+    PrintErr(result);
     result = nResult;
     DBGLOG("Execute python class %s, return:%s", functionName.c_str(), result.c_str());
     Py_DECREF(pReturn);
     return SUCCESS;
 }
 
-void ExecutePython::PrintErr()
+void ExecutePython::PrintErr(std::string &erroInfo)
 {
     PyObject *type;
     PyObject *value;
@@ -161,7 +163,12 @@ void ExecutePython::PrintErr()
         PyObject* pystr = PyObject_Str(value);
         char* err = nullptr;
         PyArg_Parse(pystr, "s", &err);
+        if (err == nullptr) {
+            ERRLOG("Null ptr.");
+            return;
+        }
         ERRLOG("Execute python failed, err info: %s", err);
+        erroInfo.assign(err);
         PyErr_Restore(type, value, traceback);
     }
 }

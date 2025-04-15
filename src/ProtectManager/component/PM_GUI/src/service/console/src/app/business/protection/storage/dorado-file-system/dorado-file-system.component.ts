@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -27,6 +27,7 @@ import {
   DataMap,
   DataMapService,
   DATE_PICKER_MODE,
+  disableDeactiveProtectionTips,
   extendSlaInfo,
   getLabelList,
   getPermissionMenuItem,
@@ -35,11 +36,13 @@ import {
   hasBackupPermission,
   hasProtectPermission,
   hasRecoveryPermission,
+  hasResourcePermission,
   I18NService,
   OperateItems,
   ProtectedEnvironmentApiService,
   ProtectedResourceApiService,
-  ProtectResourceAction
+  ProtectResourceAction,
+  SetTagType
 } from 'app/shared';
 import { ProButton } from 'app/shared/components/pro-button/interface';
 import {
@@ -58,17 +61,18 @@ import { SlaService } from 'app/shared/services/sla.service';
 import { TakeManualBackupService } from 'app/shared/services/take-manual-backup.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
 import {
-  filter as _filter,
-  map as _map,
   assign,
   clone,
   cloneDeep,
   each,
   every,
+  filter as _filter,
+  find,
   first,
   includes,
   isEmpty,
   isUndefined,
+  map as _map,
   mapValues,
   omit,
   reject,
@@ -78,6 +82,7 @@ import {
   values
 } from 'lodash';
 import { map } from 'rxjs/operators';
+import { GetLabelOptionsService } from '../../../../shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-dorado-file-system',
@@ -108,7 +113,10 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
 
   groupCommon = GROUP_COMMON;
 
+  currentDetailUuid: string;
+
   @Input() header = this.i18n.get('common_nas_file_systems_label');
+  @Input() subType: string;
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
   @ViewChild('slaComplianceExtraTpl', { static: true })
   slaComplianceExtraTpl: TemplateRef<any>;
@@ -132,7 +140,8 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
     private takeManualBackupService: TakeManualBackupService,
     private protectedResourceApiService: ProtectedResourceApiService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit() {
@@ -143,6 +152,9 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.virtualScroll.getScrollParam(340);
     this.initConfig();
+    if (this.subType === DataMap.Resource_Type.ndmp.value) {
+      this.isHyperdetect = true;
+    }
   }
 
   onChange() {
@@ -185,7 +197,7 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
     const opts: { [key: string]: ProButton } = {
       protect: {
         id: 'protect',
-        type: this.cookieService.isCloudBackup ? 'default' : 'primary',
+        type: 'primary',
         disableCheck: data => {
           return (
             size(
@@ -196,6 +208,10 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
                     DataMap.Protection_Status.creating.value &&
                   val.protection_status !==
                     DataMap.Protection_Status.protected.value &&
+                  ((!this.cookieService.isCloudBackup &&
+                    val.extendInfo?.protocol !==
+                      DataMap.NasFileSystem_Protocol.none.value) ||
+                    this.cookieService.isCloudBackup) &&
                   hasProtectPermission(val)
                 );
               })
@@ -279,15 +295,6 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
               this.selectionData = [];
               this.dataTable.setSelections([]);
               this.dataTable.fetchData();
-              if (
-                includes(
-                  mapValues(this.drawModalService.modals, 'key'),
-                  'detail-modal'
-                ) &&
-                size(data) === 1
-              ) {
-                this.getResourceDetail(first(data));
-              }
             });
         }
       },
@@ -304,13 +311,17 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
                   hasProtectPermission(val)
                 );
               })
-            ) !== size(data) || !size(data)
+            ) !== size(data) ||
+            !size(data) ||
+            size(data) > CommonConsts.DEACTIVE_PROTECTION_MAX
           );
         },
         permission: OperateItems.DeactivateProtection,
         disabledTips: this.i18n.get(
           'protection_partial_resources_deactive_label'
         ),
+        disabledTipsCheck: data =>
+          disableDeactiveProtectionTips(data, this.i18n),
         label: this.i18n.get('protection_deactive_protection_label'),
         onClick: data => {
           this.protectService
@@ -319,15 +330,6 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
               this.selectionData = [];
               this.dataTable.setSelections([]);
               this.dataTable.fetchData();
-              if (
-                includes(
-                  mapValues(this.drawModalService.modals, 'key'),
-                  'detail-modal'
-                ) &&
-                size(data) === 1
-              ) {
-                this.getResourceDetail(first(data));
-              }
             });
         }
       },
@@ -368,10 +370,10 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
         id: 'addTag',
         permission: OperateItems.AddTag,
         displayCheck: data => {
-          return true;
+          return !this.cookieService.isCloudBackup;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_add_tag_label'),
         onClick: data => this.addTag(data)
@@ -380,10 +382,10 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
         id: 'removeTag',
         permission: OperateItems.RemoveTag,
         displayCheck: data => {
-          return true;
+          return !this.cookieService.isCloudBackup;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_remove_tag_label'),
         onClick: data => this.removeTag(data)
@@ -439,7 +441,15 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
           type: 'select',
           isMultiple: true,
           showCheckAll: true,
-          options: this.dataMapService.toArray('NasFileSystem_Protocol')
+          options: this.dataMapService
+            .toArray('NasFileSystem_Protocol')
+            .filter(
+              item =>
+                !includes(
+                  [DataMap.NasFileSystem_Protocol.ndmp.value],
+                  item.value
+                )
+            )
         },
         cellRender: {
           type: 'status',
@@ -509,8 +519,11 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -538,14 +551,17 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
     }
 
     this.tableConfig = {
+      filterTags: this.isHyperdetect,
       table: {
         autoPolling: this.isHyperdetect
           ? CommonConsts.TIME_INTERVAL
           : CommonConsts.TIME_INTERVAL_RESOURCE,
         compareWith: 'uuid',
-        columns: this.cookieService.isCloudBackup
-          ? reject(cols, item => item.key === 'protocol')
-          : cols,
+        columns:
+          this.cookieService.isCloudBackup ||
+          this.subType === DataMap.Resource_Type.ndmp.value
+            ? reject(cols, item => item.key === 'protocol')
+            : cols,
         rows: {
           selectionMode: 'multiple',
           selectionTrigger: 'selector',
@@ -586,6 +602,7 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data ? data : this.selectionData,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable.setSelections([]);
@@ -598,6 +615,7 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data ? data : this.selectionData,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable.setSelections([]);
@@ -618,29 +636,37 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
     if (this.cookieService.isCloudBackup) {
       subType = [DataMap.Resource_Type.LocalFileSystem.value];
     } else {
-      subType =
-        this.i18n.get('deploy_type') === DataMap.Deploy_Type.e6000.value
-          ? [DataMap.Resource_Type.ndmp.value]
-          : [
-              DataMap.Resource_Type.NASFileSystem.value,
-              DataMap.Resource_Type.ndmp.value
-            ];
+      subType = [this.subType || DataMap.Resource_Type.NASFileSystem.value];
     }
     const defaultConditions = {
       subType: subType
     };
 
+    if (this.subType === DataMap.Resource_Type.ndmp.value) {
+      assign(defaultConditions, {
+        isFs: [['!='], '0']
+      });
+    }
+
     if (!isEmpty(filters.conditions_v2)) {
       const conditionsTemp = JSON.parse(filters.conditions_v2);
+      if (isUndefined(conditionsTemp.name)) {
+        this.name = '';
+      } else {
+        this.name = conditionsTemp.name[1];
+      }
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;
       }
       assign(defaultConditions, conditionsTemp);
+    } else {
+      this.name = '';
     }
 
     assign(params, { conditions: JSON.stringify(defaultConditions) });
@@ -674,6 +700,18 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
           total: res.totalCount,
           data: res.records
         };
+        if (
+          !args?.isAutoPolling &&
+          includes(
+            mapValues(this.drawModalService.modals, 'key'),
+            'detail-modal'
+          ) &&
+          find(res.records, { uuid: this.currentDetailUuid })
+        ) {
+          this.getResourceDetail(
+            find(res.records, { uuid: this.currentDetailUuid })
+          );
+        }
         this.cdr.detectChanges();
       });
   }
@@ -726,6 +764,7 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
   }
 
   getResourceDetail(params) {
+    this.currentDetailUuid = params.uuid;
     this.protectedResourceApiService
       .ShowResource({
         resourceId: params.uuid
@@ -771,7 +810,7 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
       });
   }
 
-  protect(datas, action: ProtectResourceAction, header?: string, refreshData?) {
+  protect(datas, action: ProtectResourceAction) {
     const data = size(datas) > 1 ? datas : datas[0];
     this.protectService.openProtectModal(datas[0].sub_type, action, {
       width: 780,
@@ -780,23 +819,17 @@ export class DoradoFileSystemComponent implements OnInit, AfterViewInit {
         this.selectionData = [];
         this.dataTable.setSelections([]);
         this.dataTable.fetchData();
-      },
-      restoreWidth: params => this.getResourceDetail(params)
+      }
     });
   }
 
   search() {
-    assign(this.dataTable.filterMap, {
-      filters: [
-        {
-          filterMode: 'contains',
-          caseSensitive: false,
-          key: 'name',
-          value: trim(this.name)
-        }
-      ]
+    this.dataTable.filterChange({
+      filterMode: 'contains',
+      caseSensitive: false,
+      key: 'name',
+      value: trim(this.name)
     });
-    this.dataTable.fetchData();
   }
 
   rescan() {

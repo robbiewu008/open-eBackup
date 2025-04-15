@@ -12,6 +12,9 @@
 */
 package openbackup.ndmp.protection.access.interceptor;
 
+import com.huawei.oceanprotect.repository.service.LocalStorageService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskEnvironment;
@@ -19,11 +22,8 @@ import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.database.base.plugin.interceptor.AbstractDbBackupInterceptor;
 import openbackup.ndmp.protection.access.constant.NdmpConstant;
 import openbackup.ndmp.protection.access.service.NdmpService;
-import com.huawei.oceanprotect.repository.service.LocalStorageService;
-
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.service.DeployTypeService;
 
 import org.apache.commons.collections.MapUtils;
 import org.springframework.stereotype.Component;
@@ -45,15 +45,20 @@ public class NdmpBackupInterceptor extends AbstractDbBackupInterceptor {
 
     private final NdmpService ndmpService;
 
+    private final DeployTypeService deployTypeService;
+
     /**
      * 构造器
      *
      * @param localStorageService localStorageService
      * @param ndmpService ndmpService
+     * @param deployTypeService deployTypeService
      */
-    public NdmpBackupInterceptor(LocalStorageService localStorageService, NdmpService ndmpService) {
+    public NdmpBackupInterceptor(LocalStorageService localStorageService, NdmpService ndmpService,
+        DeployTypeService deployTypeService) {
         this.localStorageService = localStorageService;
         this.ndmpService = ndmpService;
+        this.deployTypeService = deployTypeService;
     }
 
     @Override
@@ -68,10 +73,16 @@ public class NdmpBackupInterceptor extends AbstractDbBackupInterceptor {
      */
     @Override
     protected void supplyAgent(BackupTask backupTask) {
-        String parentUuid = backupTask.getProtectObject().getParentUuid();
+        String parentUuid = backupTask.getProtectObject().getRootUuid();
         log.info("NdmpBackupInterceptor supplyAgent, parentUuid:{}", parentUuid);
         String agents = backupTask.getAdvanceParams().get("agents");
         log.info("NdmpBackupInterceptor supplyAgent, agents:{}", agents);
+        // 判断是否是文件系统
+        String isFs = backupTask.getProtectObject().getExtendInfo().get(NdmpConstant.IS_FILE_SYSTEM);
+        if (NdmpConstant.DIR.equals(isFs)) {
+            // rootUuid是保护环境的id
+            backupTask.getProtectObject().setParentUuid(backupTask.getProtectObject().getRootUuid());
+        }
         backupTask.setAgents(ndmpService.getAgents(parentUuid, agents));
     }
 
@@ -94,10 +105,12 @@ public class NdmpBackupInterceptor extends AbstractDbBackupInterceptor {
         TaskResource taskResource = backupTask.getProtectObject();
         taskResource.setName(fullName);
         StorageRepository storageRepository = backupTask.getRepositories().get(0);
-        storageRepository.setId(localStorageService.getStorageInfo().getEsn());
-        storageRepository.setRole(NdmpConstant.MASTER_ROLE);
         Map<String, Object> extendInfo = Optional.ofNullable(storageRepository.getExtendInfo()).orElse(new HashMap<>());
-        extendInfo.put(NdmpConstant.REPOSITORIES_KEY_ENS, localStorageService.getStorageInfo().getEsn());
+        if (!deployTypeService.isE1000()) {
+            storageRepository.setId(localStorageService.getStorageInfo().getEsn());
+            extendInfo.put(NdmpConstant.REPOSITORIES_KEY_ENS, localStorageService.getStorageInfo().getEsn());
+        }
+        storageRepository.setRole(NdmpConstant.MASTER_ROLE);
         storageRepository.setExtendInfo(extendInfo);
 
         // 更新环境中的信息

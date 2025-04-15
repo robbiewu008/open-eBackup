@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageboxService, MessageService } from '@iux/live';
@@ -40,6 +40,7 @@ import { AdvancedParameterComponent as OracleAdvancedParameterComponent } from '
 import { SelectDatabaseListComponent as OracleSelectDatabaseListComponent } from 'app/business/protection/host-app/oracle/database-list/select-database-list/select-database-list.component';
 import { SelectInstanceDatabaseComponent as SelectSQLServerListComponent } from 'app/business/protection/host-app/sql-server/select-instance-database/select-instance-database.component';
 import { AdvancedParameterComponent as TDSQLAdvancedParameterComponent } from 'app/business/protection/host-app/tdsql/advanced-parameter/advanced-parameter.component';
+import { AdvancedParameterComponent as TDSQLDistributedAdvancedParameterComponent } from 'app/business/protection/host-app/tdsql/dirstibuted-instance/advanced-parameter/advanced-parameter.component';
 import { AdvancedParameterComponent } from 'app/business/protection/host-app/tidb/advanced-parameter/advanced-parameter.component';
 import { VolumeAdvancedParameterComponent } from 'app/business/protection/host-app/volume/volume-advanced-parameter/volume-advanced-parameter.component';
 import { SelectDoradoListComponent } from 'app/business/protection/storage/dorado-file-system/select-dorado-list/select-dorado-list.component';
@@ -183,11 +184,11 @@ export class ProtectService {
             )
           );
           break;
-        case DataMap.Resource_Type.openStackCloudServer.value:
+        case DataMap.Application_Type.FusionOne.value:
           protectionConfig.push(
             last(
               PROTECTION_CONFIG[
-                DataMap.Resource_Type.openStackCloudServer.value
+                DataMap.Resource_Type.fusionComputeVirtualMachine.value
               ].steps
             )
           );
@@ -196,6 +197,13 @@ export class ProtectService {
           protectionConfig.push(
             last(PROTECTION_CONFIG[DataMap.Resource_Type.CloudHost.value].steps)
           );
+          break;
+        case DataMap.Resource_Type.cNwareVm.value:
+        case DataMap.Resource_Type.nutanixVm.value:
+        case DataMap.Resource_Type.hyperVVm.value:
+        case DataMap.Resource_Type.openStackCloudServer.value:
+        case DataMap.Resource_Type.APSCloudServer.value:
+          protectionConfig.push(last(PROTECTION_CONFIG[unitType].steps));
           break;
       }
     }
@@ -397,6 +405,7 @@ export class ProtectService {
             component instanceof ProtectionAdvancedComponent ||
             component instanceof ApsAdvanceParameterComponent ||
             component instanceof TDSQLAdvancedParameterComponent ||
+            component instanceof TDSQLDistributedAdvancedParameterComponent ||
             component instanceof ReplicaAdvancedParameterComponent
           ) {
             if (!isUndefined(component.valid$)) {
@@ -862,6 +871,7 @@ export class ProtectService {
       case DataMap.Resource_Type.OceanBaseTenant.value:
       case DataMap.Resource_Type.tidbCluster.value:
       case DataMap.Resource_Type.tidbDatabase.value:
+      case DataMap.Resource_Type.tidbTable.value:
       case DataMap.Resource_Type.volume.value:
       case DataMap.Resource_Type.ActiveDirectory.value:
       case DataMap.Resource_Type.ObjectSet.value:
@@ -869,6 +879,8 @@ export class ProtectService {
       case DataMap.Resource_Type.ExchangeDataBase.value:
       case DataMap.Resource_Type.ExchangeEmail.value:
       case DataMap.Resource_Type.tdsqlInstance.value:
+      case DataMap.Resource_Type.tdsqlDistributedInstance.value:
+      case DataMap.Resource_Type.lightCloudGaussdbInstance.value:
         return this.protectDatabases(params, option);
       case DataMap.Resource_Type.CloudHost.value:
       case DataMap.Resource_Type.Project.value:
@@ -892,6 +904,9 @@ export class ProtectService {
       case DataMap.Resource_Type.cNwareCluster.value:
       case DataMap.Resource_Type.hyperVHost.value:
       case DataMap.Resource_Type.hyperVVm.value:
+      case DataMap.Resource_Type.nutanixVm.value:
+      case DataMap.Resource_Type.nutanixHost.value:
+      case DataMap.Resource_Type.nutanixCluster.value:
         return this.protectVirtual(params, option);
       case ProtectResourceCategory.host:
       case ProtectResourceCategory.hosts:
@@ -959,6 +974,7 @@ export class ProtectService {
       case DataMap.Resource_Type.OceanBaseTenant.value:
       case DataMap.Resource_Type.tidbCluster.value:
       case DataMap.Resource_Type.tidbDatabase.value:
+      case DataMap.Resource_Type.tidbTable.value:
       case DataMap.Resource_Type.volume.value:
       case DataMap.Resource_Type.ActiveDirectory.value:
       case DataMap.Resource_Type.ObjectSet.value:
@@ -966,6 +982,8 @@ export class ProtectService {
       case DataMap.Resource_Type.ExchangeDataBase.value:
       case DataMap.Resource_Type.ExchangeEmail.value:
       case DataMap.Resource_Type.tdsqlInstance.value:
+      case DataMap.Resource_Type.tdsqlDistributedInstance.value:
+      case DataMap.Resource_Type.lightCloudGaussdbInstance.value:
         return this.modifyDatabaseProtect(params, option);
       case DataMap.Resource_Type.CloudHost.value:
       case DataMap.Resource_Type.Project.value:
@@ -989,6 +1007,9 @@ export class ProtectService {
       case DataMap.Resource_Type.cNwareCluster.value:
       case DataMap.Resource_Type.hyperVHost.value:
       case DataMap.Resource_Type.hyperVVm.value:
+      case DataMap.Resource_Type.nutanixVm.value:
+      case DataMap.Resource_Type.nutanixHost.value:
+      case DataMap.Resource_Type.nutanixCluster.value:
         return this.modifyVirtual(params, option);
       case ProtectResourceCategory.vmware:
       case ProtectResourceCategory.vmwares:
@@ -1672,6 +1693,20 @@ export class ProtectService {
           });
         }
 
+        if (
+          includes(
+            [
+              DataMap.Resource_Type.APSZone.value,
+              DataMap.Resource_Type.APSResourceSet.value
+            ],
+            params.subType
+          )
+        ) {
+          assign(obj.ext_parameters, {
+            all_disk: true
+          });
+        }
+
         // 是否执行一次备份
         if (params.post_action) {
           assign(obj, { post_action: params.post_action });
@@ -1731,6 +1766,20 @@ export class ProtectService {
               ? params.diskInfo
               : [],
           all_disk: params.enableSelectAll ?? true
+        });
+      }
+
+      if (
+        includes(
+          [
+            DataMap.Resource_Type.APSZone.value,
+            DataMap.Resource_Type.APSResourceSet.value
+          ],
+          params.subType
+        )
+      ) {
+        assign(body.ext_parameters, {
+          all_disk: true
         });
       }
 
@@ -1883,7 +1932,8 @@ export class ProtectService {
           includes(
             [
               DataMap.Resource_Type.hyperVVm.value,
-              DataMap.Resource_Type.cNwareVm.value
+              DataMap.Resource_Type.cNwareVm.value,
+              DataMap.Resource_Type.nutanixVm.value
             ],
             params.subType
           )

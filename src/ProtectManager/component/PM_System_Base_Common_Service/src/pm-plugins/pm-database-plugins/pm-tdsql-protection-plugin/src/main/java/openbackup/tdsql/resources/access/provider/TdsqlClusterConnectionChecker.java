@@ -12,6 +12,9 @@
 */
 package openbackup.tdsql.resources.access.provider;
 
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.ProtectedEnvironmentRetrievalsService;
 import openbackup.access.framework.resource.service.provider.UnifiedResourceConnectionChecker;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
@@ -34,10 +37,6 @@ import openbackup.tdsql.resources.access.dto.cluster.OssNode;
 import openbackup.tdsql.resources.access.dto.cluster.TdsqlCluster;
 import openbackup.tdsql.resources.access.service.TdsqlService;
 import openbackup.tdsql.resources.access.util.TdsqlUtils;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -131,8 +130,19 @@ public class TdsqlClusterConnectionChecker extends UnifiedResourceConnectionChec
 
         if (EnvironmentLinkStatusHelper.isOnlineAdaptMultiCluster(agentEnv)) {
             // 检查连通性
-            checkResult = super.generateCheckResult(resource);
-            actionResult = Optional.ofNullable(checkResult).map(CheckResult::getResults).orElse(new ActionResult());
+            try {
+                checkResult = super.generateCheckResult(resource);
+                actionResult = Optional.ofNullable(checkResult).map(CheckResult::getResults).orElse(new ActionResult());
+            } catch (LegoCheckedException exception) {
+                actionResult = new ActionResult();
+                actionResult.setCode(CommonErrorCode.AGENT_NETWORK_ERROR);
+                actionResult.setBodyErr(String.valueOf(CommonErrorCode.AGENT_NETWORK_ERROR));
+                actionResult.setMessage("add ip rule failed");
+
+                checkResult = new CheckResult<>();
+                checkResult.setEnvironment(agentEnv);
+                checkResult.setResults(actionResult);
+            }
         } else {
             actionResult = new ActionResult();
             actionResult.setCode(CommonErrorCode.AGENT_NETWORK_ERROR);

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MessageService, ModalRef, UploadFile } from '@iux/live';
@@ -619,6 +619,7 @@ export class RegisterClusterComponent implements OnInit {
   }
 
   onOK(): Observable<void> {
+    const isHDFS = !this.data?.isHbase;
     if (this.formGroup.invalid) {
       return;
     }
@@ -672,8 +673,13 @@ export class RegisterClusterComponent implements OnInit {
           : 'false'
       });
     }
+    // 只有HDFS修改场景才特殊提示
+    const warningLabel =
+      this.data?.uuid && isHDFS
+        ? 'protection_hdfs_register_warn_label'
+        : 'protection_hbase_register_warn_label';
     this.warningMessageService.create({
-      content: this.i18n.get('protection_hdfs_hbase_register_warn_label'),
+      content: this.i18n.get(warningLabel),
       onOK: () => {
         !isEmpty(omit(this.data, 'isHbase'))
           ? this.onModify(body).subscribe(() => {

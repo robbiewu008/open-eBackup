@@ -25,9 +25,16 @@ namespace Module {
 
     class FusionStorageNas : public FusionStorageBlock {
     public:
-        explicit FusionStorageNas(ControlDeviceInfo deviceInfo) : FusionStorageBlock(deviceInfo) {}
+        explicit FusionStorageNas(ControlDeviceInfo deviceInfo) : FusionStorageBlock(deviceInfo)
+        {
+            shareId = deviceInfo.shareId;
+            fileSystemId = deviceInfo.fileSystemId;
+            dtreeId = deviceInfo.dtreeId;
+            sharePath = deviceInfo.sharePath;
+        }
 
-        FusionStorageNas(ControlDeviceInfo deviceInfo, std::string fsId) : FusionStorageBlock(deviceInfo) {
+        FusionStorageNas(ControlDeviceInfo deviceInfo, std::string fsId) : FusionStorageBlock(deviceInfo)
+        {
             fileSystemId = fsId;
         }
 
@@ -53,7 +60,15 @@ namespace Module {
 
         int QuerySnapshot(std::string SnapshotName, std::string &id);
 
-        std::string fileSystemId = "";
+        virtual int QueryDtreeWithShare();
+
+        std::string fileSystemId;
+        std::string dtreeId;
+        std::string m_dtreePath;
+        std::string m_dtreeName;
+        std::string fileSystemName;
+        std::string shareId;
+        std::string sharePath;
     };
 }
 #endif  // FUSION_STORAGE_BLOCK_H

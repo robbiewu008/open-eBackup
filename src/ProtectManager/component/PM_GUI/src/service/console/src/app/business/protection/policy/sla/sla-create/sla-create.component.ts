@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -24,20 +24,24 @@ import {
   DataMap,
   DataMapService,
   deepEqualObject,
+  getAppTheme,
   I18NService,
-  LANGUAGE,
   MODAL_COMMON,
   NasDistributionStoragesApiService,
   PolicyAction,
   PolicyType,
   ProjectedObjectApiService,
   ProtectResourceAction,
+  RetentionType,
   SlaApiService,
   SlaType,
   SLA_BACKUP_NAME,
-  WarningMessageService,
-  SupportLicense
+  SupportLicense,
+  ThemeEnum,
+  WarningMessageService
 } from 'app/shared';
+import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
+import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { SlaParseService } from 'app/shared/services/sla-parse.service';
 import {
@@ -51,10 +55,10 @@ import {
   get,
   has,
   includes,
+  isEmpty,
   isUndefined,
   keys,
   map as _map,
-  now,
   omit,
   pick,
   reject,
@@ -68,7 +72,6 @@ import { SelectApplicationComponent } from './select-application/select-applicat
 import { SpecifiedArchivalPolicyComponent } from './specified-archival-policy/specified-archival-policy.component';
 import { SpecifiedBackupPolicyComponent } from './specified-backup-policy/specified-backup-policy.component';
 import { SpecifiedReplicationPolicyComponent } from './specified-replication-policy/specified-replication-policy.component';
-import { AppUtilsService } from 'app/shared/services/app-utils.service';
 
 @Component({
   selector: 'sla-create',
@@ -77,9 +80,11 @@ import { AppUtilsService } from 'app/shared/services/app-utils.service';
   providers: [DatePipe]
 })
 export class SlaCreateComponent implements OnInit {
+  userGuide = USER_GUIDE_CACHE_DATA;
   isDisabled = false;
   sla;
   action;
+  _isEmpty = isEmpty;
   backupModes = [];
   valid$ = new Subject<boolean>();
   policy_list = [];
@@ -93,6 +98,8 @@ export class SlaCreateComponent implements OnInit {
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.hyperdetect.value;
   isEnglish = this.i18n.language !== 'zh-cn';
   isHcsUser = false;
+  isBasicDisk = false; // 判断备份策略的存储单元是不是本地盘
+  isDisableRep = false; // E1000判断是否禁用复制策略
   dwsGroup = false;
   dwsParallel = false;
   application = {
@@ -104,7 +111,10 @@ export class SlaCreateComponent implements OnInit {
       ? this.applicationTypeView.Specified
       : this.applicationTypeView.General,
     click: () => {
-      if (this.action !== this.protectResourceAction.Create || this.sla) {
+      if (
+        (this.action !== this.protectResourceAction.Create || this.sla) &&
+        !this.sla?.isOnlyGuide
+      ) {
         return;
       }
       this.selectApplication();
@@ -141,6 +151,14 @@ export class SlaCreateComponent implements OnInit {
     checked: false,
     url: 'assets/img/up_curved_disabled.png'
   };
+  timeTable = {
+    [DataMap.Interval_Unit.hour.value]: 60,
+    [DataMap.Interval_Unit.day.value]: 24 * 60,
+    [DataMap.Interval_Unit.week.value]: 7 * 24 * 60,
+    [DataMap.Interval_Unit.month.value]: 30 * 24 * 60,
+    [DataMap.Interval_Unit.year.value]: 365 * 24 * 60
+  };
+
   constructor(
     public fb: FormBuilder,
     public modal: ModalRef,
@@ -165,6 +183,7 @@ export class SlaCreateComponent implements OnInit {
     this.initIcons();
     this.initForm();
     this.initSla();
+    this.transLabel();
   }
 
   initHcsUser() {
@@ -198,8 +217,24 @@ export class SlaCreateComponent implements OnInit {
     }
   }
 
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = this.pad(date.getMonth() + 1); // getMonth() 返回的月份从0开始，所以需要+1
+    const day = this.pad(date.getDate());
+    const hours = this.pad(date.getHours());
+    const minutes = this.pad(date.getMinutes());
+    const seconds = this.pad(date.getSeconds());
+
+    return `${year}${month}${day}${hours}${minutes}${seconds}`;
+  }
+
+  private pad(value: number): string {
+    return value < 10 ? '0' + value : value.toString();
+  }
+
   initForm() {
-    const defaultName = `SLA_${now()}`;
+    const now = new Date();
+    const defaultName = `SLA_${this.formatDate(now)}`;
 
     this.formGroup = this.fb.group({
       uuid: new FormControl(''),
@@ -251,6 +286,23 @@ export class SlaCreateComponent implements OnInit {
       this.slaParseService.getBackupPolicy(this.sla, this.policy_list)
     );
 
+    // E系列在修改的情况下直接校验一下备份存储单元的类型看是否支持归档
+    if (
+      this.appUtilsService.isDecouple ||
+      (this.appUtilsService.isDistributed &&
+        !isEmpty(this.backupPolicy.policyList))
+    ) {
+      this.isBasicDisk = [
+        'BasicDisk',
+        DataMap.poolStorageDeviceType.Server.value
+      ].includes(this.backupPolicy.policyList[0].ext_parameters?.device_type);
+      this.isDisableRep =
+        this.isBasicDisk &&
+        ((this.application.value !== ApplicationType.HCSCloudHost &&
+          this.appUtilsService.isDecouple) ||
+          this.appUtilsService.isDistributed);
+    }
+
     // Archival
     assign(
       this.archival,
@@ -301,28 +353,12 @@ export class SlaCreateComponent implements OnInit {
               checkedUrl: res.checkedUrl,
               value: res.applicationType
             });
-            this.slaBackupName.difference_increment = includes(
-              [
-                ApplicationType.NASFileSystem,
-                ApplicationType.NASShare,
-                ApplicationType.HBase,
-                ApplicationType.Hive,
-                ApplicationType.HDFS,
-                ApplicationType.KubernetesStatefulSet,
-                ApplicationType.Vmware,
-                ApplicationType.HCSCloudHost,
-                ApplicationType.FusionCompute,
-                ApplicationType.FusionOne,
-                ApplicationType.TDSQL,
-                ApplicationType.Volume
-              ],
-              this.application.value
-            )
-              ? 'common_permanent_backup_label'
-              : 'common_incremental_backup_label';
+            this.transLabel();
             assign(this.backupPolicy, {
               tooltip: this.i18n.get('protection_sla_backup_tooltip_label'),
-              checkedUrl: 'assets/img/oceanprotect-disabled.gif',
+              checkedUrl: this.isThemeLight()
+                ? 'assets/img/oceanprotect-disabled.gif'
+                : 'assets/img/oceanprotect-disabled_dark.gif',
               newData: '',
               policyList: []
             });
@@ -341,6 +377,31 @@ export class SlaCreateComponent implements OnInit {
         }
       })
     );
+  }
+
+  transLabel() {
+    this.slaBackupName.difference_increment = includes(
+      [
+        ApplicationType.NASFileSystem,
+        ApplicationType.NASShare,
+        ApplicationType.HBase,
+        ApplicationType.Hive,
+        ApplicationType.HDFS,
+        ApplicationType.KubernetesStatefulSet,
+        ApplicationType.KubernetesDatasetCommon,
+        ApplicationType.Vmware,
+        ApplicationType.HCSCloudHost,
+        ApplicationType.FusionCompute,
+        ApplicationType.FusionOne,
+        ApplicationType.TDSQL,
+        ApplicationType.Volume,
+        ApplicationType.HyperV,
+        ApplicationType.Nutanix
+      ],
+      this.application.value
+    )
+      ? 'common_permanent_backup_label'
+      : 'common_incremental_backup_label';
   }
 
   selectSpecifiedBackupPolicy(item?) {
@@ -372,7 +433,7 @@ export class SlaCreateComponent implements OnInit {
           action: this.action,
           applicationData: this.application.value,
           backupData: this.backupPolicy.policyList,
-          archvieDataList: this.archival.policyList,
+          archivalDataList: this.archival.policyList,
           replicationData: this.replication
         },
         lvOkDisabled: true,
@@ -395,6 +456,19 @@ export class SlaCreateComponent implements OnInit {
                   res.newData
                 );
 
+                this.isBasicDisk =
+                  (this.appUtilsService.isDecouple ||
+                    this.appUtilsService.isDistributed) &&
+                  [
+                    'BasicDisk',
+                    DataMap.poolStorageDeviceType.Server.value
+                  ].includes(content?.formGroup.get('device_type').value);
+                this.isDisableRep =
+                  this.isBasicDisk &&
+                  ((this.application.value !== ApplicationType.HCSCloudHost &&
+                    this.appUtilsService.isDecouple) ||
+                    this.appUtilsService.isDistributed);
+
                 this.archival.tooltip = this.i18n.get(
                   this.appUtilsService.isDistributed
                     ? 'protection_sla_archival_tooltip_distributed_label'
@@ -407,7 +481,9 @@ export class SlaCreateComponent implements OnInit {
                   tooltip: '',
                   newData: res.newData,
                   policyList: res.originalData,
-                  checkedUrl: 'assets/img/oceanprotect_enable.png'
+                  checkedUrl: this.isThemeLight()
+                    ? 'assets/img/oceanprotect_enable.png'
+                    : 'assets/img/oceanprotect_enable_dark.png'
                 });
                 this.valid$.next(
                   this.formGroup.valid && !!size(this.policy_list)
@@ -449,7 +525,9 @@ export class SlaCreateComponent implements OnInit {
       assign({}, MODAL_COMMON.generateDrawerOptions(), {
         lvHeader: this.i18n.get('protection_archival_policy_label'),
         lvContent: SpecifiedArchivalPolicyComponent,
-        lvWidth: MODAL_COMMON.smallModal,
+        lvWidth: this.i18n.isEn
+          ? MODAL_COMMON.smallModal + 100
+          : MODAL_COMMON.smallModal,
         lvComponentParams: {
           activeIndex,
           sla: this.sla,
@@ -510,7 +588,8 @@ export class SlaCreateComponent implements OnInit {
     ) {
       return false;
     }
-    if (this.isDisabled || this.isHcsUser) {
+
+    if (this.isDisabled || this.isHcsUser || this.isBasicDisk) {
       return false;
     }
 
@@ -605,7 +684,8 @@ export class SlaCreateComponent implements OnInit {
     ) {
       return false;
     }
-    return true;
+
+    return !this.isDisableRep;
   }
 
   onCreate(): Observable<any> {
@@ -615,6 +695,16 @@ export class SlaCreateComponent implements OnInit {
       }
 
       if (!this.dwsStorageVaild()) {
+        observer.error(null);
+        return;
+      }
+
+      if (!this.validLinkRedelete()) {
+        observer.error(null);
+        return;
+      }
+
+      if (!this.validFrequencyAndRetention()) {
         observer.error(null);
         return;
       }
@@ -820,10 +910,26 @@ export class SlaCreateComponent implements OnInit {
         return;
       }
 
+      if (!this.validLinkRedelete()) {
+        observer.error(null);
+        return;
+      }
+
+      if (!this.validFrequencyAndRetention()) {
+        observer.error(null);
+        return;
+      }
+
       const body = assign(this.formGroup.value, {
         application: this.application.value,
         policy_list: this.policy_list
       });
+
+      if (this.isHcsUser) {
+        assign(body, {
+          user_id: this.sla?.user_id
+        });
+      }
 
       // 升级场景复制策略，replication_target_type为空，默认复制所有。
       each(body.policy_list, item => {
@@ -1089,5 +1195,240 @@ export class SlaCreateComponent implements OnInit {
       }
     }
     return true;
+  }
+
+  // NAS共享、NAS文件系统、文件集、对象存储的备份SLA目标端重删关闭，复制的SLA链路重删不能开启
+  validLinkRedelete(): boolean {
+    // E6000不会下发这两个参数，所以不用管
+    if (this.appUtilsService.isDistributed) {
+      return true;
+    }
+    const backupPolicy = find(
+      this.policy_list,
+      item => item.type === PolicyType.BACKUP
+    );
+    const hasLinkDeduplicationReplica = find(
+      this.policy_list,
+      item =>
+        item.type === PolicyType.REPLICATION &&
+        item.ext_parameters?.link_deduplication
+    );
+    const backpExtParams: any = backupPolicy?.ext_parameters;
+    if (
+      includes(
+        [
+          ApplicationType.NASFileSystem,
+          ApplicationType.NASShare,
+          ApplicationType.Fileset,
+          ApplicationType.ObjectStorage
+        ],
+        this.application.value
+      ) &&
+      !backpExtParams?.deduplication &&
+      !isEmpty(hasLinkDeduplicationReplica)
+    ) {
+      this.messageService.error(
+        this.i18n.get('protection_link_redelete_error_tip_label'),
+        {
+          lvMessageKey: 'lvMsg_key_link_deduplication_error_label',
+          lvShowCloseButton: true
+        }
+      );
+      return false;
+    }
+    return true;
+  }
+
+  getActualMinutes(duration, unit) {
+    return Number(duration) * this.timeTable[unit];
+  }
+
+  validFrequencyAndRetention() {
+    const backupPolicy = filter(
+      this.policy_list,
+      item => item.type === PolicyType.BACKUP
+    );
+    const repPolicy = filter(
+      this.policy_list,
+      item => item.type === PolicyType.REPLICATION
+    );
+    if (isEmpty(repPolicy) || isEmpty(backupPolicy)) {
+      return true;
+    }
+    // 时间为永久的时候直接用一个超大值替代了
+    const tmpPermanentNum = 10 * 365 * 24 * 60;
+    let minBackupRetentionValue = backupPolicy.reduce(
+      (min, obj) => {
+        let tmpValue;
+        if (
+          obj.retention.retention_type === RetentionType.PERMANENTLY_RETAINED
+        ) {
+          tmpValue = tmpPermanentNum;
+        } else {
+          tmpValue = this.getActualMinutes(
+            obj.retention.retention_duration,
+            obj.retention.duration_unit
+          );
+        }
+
+        return tmpValue < min ? tmpValue : min;
+      },
+      backupPolicy[0].retention.retention_type ===
+        RetentionType.PERMANENTLY_RETAINED
+        ? tmpPermanentNum
+        : this.getActualMinutes(
+            backupPolicy[0].retention.retention_duration,
+            backupPolicy[0].retention.duration_unit
+          )
+    );
+    let maxFrequency = repPolicy.reduce((max, obj) => {
+      const tmpValue = this.getActualMinutes(
+        obj.schedule.interval,
+        obj.schedule.interval_unit
+      );
+      return tmpValue > max ? tmpValue : max;
+    }, this.getActualMinutes(repPolicy[0].schedule.interval, repPolicy[0].schedule.interval_unit));
+    if (minBackupRetentionValue <= maxFrequency) {
+      this.messageService.error(
+        this.i18n.get('protection_sla_frequency_retention_tip_label'),
+        {
+          lvMessageKey: 'lvMsg_key_frequency_retention_error_label',
+          lvShowCloseButton: true
+        }
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  isThemeLight(): boolean {
+    return getAppTheme(this.i18n) === ThemeEnum.light;
+  }
+
+  // 获取应用设置图
+  getApplicationImg(isEnable): string {
+    if (this.isThemeLight()) {
+      return isEnable
+        ? 'assets/img/application_enable.png'
+        : 'assets/img/application_flickers.gif';
+    } else {
+      return isEnable
+        ? 'assets/img/application_enable_dark.png'
+        : 'assets/img/application_flickers_dark.gif';
+    }
+  }
+
+  // 获取圆形图
+  getlinkCircledImg(isEnable): string {
+    if (this.isThemeLight()) {
+      return isEnable
+        ? 'assets/img/link_circled_enable.png'
+        : 'assets/img/link_circled_disabled.png';
+    } else {
+      return isEnable
+        ? 'assets/img/link_circled_enable_dark.png'
+        : 'assets/img/link_circled_disabled_dark.png';
+    }
+  }
+
+  // 获取备份策略图
+  getBackupImg(isEnable): string {
+    if (this.isThemeLight()) {
+      return isEnable
+        ? 'assets/img/oceanprotect_enable.png'
+        : this.backupPolicy.checkedUrl;
+    } else {
+      return isEnable
+        ? 'assets/img/oceanprotect_enable_dark.png'
+        : this.backupPolicy.checkedUrl;
+    }
+  }
+
+  // 获取归档、复制连线图
+  getUpCurvedImg(isEnable): string {
+    if (this.isThemeLight()) {
+      return isEnable
+        ? 'assets/img/up_curved_enable.png'
+        : 'assets/img/up_curved_disabled.png';
+    } else {
+      return isEnable
+        ? 'assets/img/up_curved_enable_dark.png'
+        : 'assets/img/up_curved_disabled_dark.png';
+    }
+  }
+
+  // 获取归档图片
+  getArchivalImg(): string {
+    if (
+      (this.backupPolicy.newData !== '' &&
+        this.archival.policyList.length > 0) ||
+      (includes(
+        [this.applicationType.ImportCopy, this.applicationType.Replica],
+        this.application.value
+      ) &&
+        this.archival.policyList.length > 0)
+    ) {
+      if (this.archival.policyList.length === 4) {
+        return 'assets/img/archival_enable.png';
+      } else {
+        return this.isThemeLight()
+          ? 'assets/img/archival_enable_add.png'
+          : 'assets/img/archival_enable_add_dark.png';
+      }
+    } else if (
+      includes(
+        [this.applicationType.ImportCopy, this.applicationType.Replica],
+        this.application.value
+      ) ||
+      (this.backupPolicy.newData !== '' &&
+        !includes([this.applicationType.Volume], this.application.value))
+    ) {
+      return this.isThemeLight()
+        ? 'assets/img/archival_disabled.gif'
+        : 'assets/img/archival_disabled_dark.gif';
+    } else {
+      return this.isThemeLight()
+        ? 'assets/img/archival_disabled.png'
+        : 'assets/img/archival_disabled_dark.png';
+    }
+  }
+
+  // 获取复制图片
+  getReplicationImg(): string {
+    if (this.isDisableRep) {
+      return 'assets/img/replication_disabled.svg';
+    }
+    if (
+      (this.backupPolicy.newData !== '' &&
+        this.replication.policyList.length > 0) ||
+      (includes(
+        [this.applicationType.ImportCopy, this.applicationType.Replica],
+        this.application.value
+      ) &&
+        this.replication.policyList.length > 0)
+    ) {
+      if (this.replication.policyList.length === 4) {
+        return 'assets/img/replication_enable.png';
+      } else {
+        return this.isThemeLight()
+          ? 'assets/img/replication_enable_add.png'
+          : 'assets/img/replication_enable_add_dark.png';
+      }
+    } else if (
+      includes(
+        [this.applicationType.ImportCopy, this.applicationType.Replica],
+        this.application.value
+      ) ||
+      this.backupPolicy.newData !== ''
+    ) {
+      return this.isThemeLight()
+        ? 'assets/img/replication_disabled.gif'
+        : 'assets/img/replication_disabled_dark.gif';
+    } else {
+      return this.isThemeLight()
+        ? 'assets/img/replication_disabled.png'
+        : 'assets/img/replication_disabled_dark.png';
+    }
   }
 }

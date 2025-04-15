@@ -26,7 +26,8 @@ enum class ArchiveDownloadState {
     FAILED,
     FINISH,
     RUNNING,
-    EMPTY_COPY
+    EMPTY_COPY,
+    TAP_REMIND
 };
 
 struct ArchiveServerInfo {
@@ -77,6 +78,7 @@ public:
     bool Start(const std::string& outputPath, const std::vector<std::string>& pathList);
     bool StartDownloadMeta(const std::string& outputPath, const std::vector<std::string>& pathList);
     std::string GetFileSystemsId();
+    std::string GetParentDir();
     void SetAbort();
 
     ArchiveDownloadState m_state {ArchiveDownloadState::RUNNING};
@@ -92,7 +94,7 @@ private:
 
     bool OpenFileExistOrNew();
     inline bool IsDir(const std::string& name) const;
-    bool ArchiveWriteFile(const ControlFileData& ctrlData) const;
+    bool ArchiveWriteFile(const ControlFileData& ctrlData);
     int WriteBufferToFile(const char* buf, uint64_t offset, uint64_t length) const;
 #ifdef WIN32
     std::string GetCacheRepoRootPath(const std::string& cacheFsPath) const;
@@ -104,6 +106,7 @@ private:
     std::string m_fsId;
     std::string m_cacheFsPath;
     std::string m_cacheFsRemotePath;
+    std::string m_parentDir;
     bool m_isInit {false};
     ArchiveServerInfo m_archiveInfo;
     std::unique_ptr<ArchiveStreamService> m_clientHandler = std::make_unique<ArchiveStreamService>();

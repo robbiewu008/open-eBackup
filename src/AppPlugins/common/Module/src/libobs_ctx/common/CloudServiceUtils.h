@@ -19,14 +19,16 @@
 #include "interface/CloudServiceRequest.h"
 
 namespace Module {
-    static inline char* String2CharPtr(const std::string& str) {
+    static inline char* String2CharPtr(const std::string& str)
+    {
         if (str.empty()) {
             return nullptr;
         } else {
             return const_cast<char*>(str.c_str());
         }
     }
-    static inline bool NewAndCopyCStr(char* dst, int len, const char* src) {
+    static inline bool NewAndCopyCStr(char* dst, int len, const char* src)
+    {
         dst = new char[len];
         if (strcpy_s(dst, len, src) != 0) { // strcpy_s内部会校验三个入参是否合法
             delete[] dst;
@@ -34,13 +36,15 @@ namespace Module {
         }
         return true;
     }
-    static inline void DelCStr(const char** ppStr) {
+    static inline void DelCStr(const char** ppStr)
+    {
         if (*ppStr != nullptr) {
             delete[] *ppStr;
             *ppStr = nullptr;
         }
     }
-    static inline std::string ConvertCStr2Str(const char* ptr) {
+    static inline std::string ConvertCStr2Str(const char* ptr)
+    {
         if (ptr == nullptr) {
             return "";
         } else {

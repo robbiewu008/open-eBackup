@@ -17,6 +17,7 @@ import java.util.Map;
 /**
  * DSwareApi
  *
+ * @since 2024-08-27
  */
 public interface DSwareApi {
     /**
@@ -37,15 +38,6 @@ public interface DSwareApi {
      * @param volName String
      */
     void deleteVolume(String[] dsaIps, String volName);
-
-    /**
-     * deleteVolume
-     *
-     * @param dsaIps String[]
-     * @param volName String
-     * @param deleteType int
-     */
-    void deleteVolume(String[] dsaIps, String volName, int deleteType);
 
     /**
      * queryVolume

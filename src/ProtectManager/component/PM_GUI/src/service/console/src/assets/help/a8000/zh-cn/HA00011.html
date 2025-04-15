@@ -1,0 +1,62 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="添加主节点内部通信网络平面（适用于1.5.0版本）">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="zh-cn_topic_0000002164632012.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="documenttype" content="usermanual">
+<meta name="prodname" content="csbs">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="HA00011">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>添加主节点内部通信网络平面（适用于1.5.0版本）</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="HA00011"></a><a name="HA00011"></a>
+
+<h1 class="topictitle1">添加主节点内部通信网络平面（适用于1.5.0版本）</h1>
+<div><p>如果您需要使用集群高可用特性，请先参考本节操作，为主节点添加内部通信网络平面，用于备份集群各节点通信。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li id="HA00011__li26601649133316">配置集群高可用前，请确保已在DeviceManager界面为每个节点设置NTP自动同步，具体操作请参见<span id="HA00011__cite1055914015571">《OceanProtect DataBackup 1.5.0-1.6.0 管理员指南》</span>中的“配置设备时间”章节。</li><li>主节点内部通信网络平面需要至少预留2个IP地址。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><ul><li>添加主节点内部通信网络平面后，将导致系统重启，可能导致备份任务失败。</li><li>内部通信网络平面添加完成，且已添加成员节点后，内部通信网络平面不支持修改，请谨慎操作。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="HA00011__li466583421410"><span>选择<span class="menucascade" id="HA00011__menucascade31053579148">“<span class="uicontrol" id="HA00011__uicontrol41059577142"><span id="HA00011__text1054020121612">系统</span></span> &gt; <span class="uicontrol" id="HA00011__uicontrol154661958121418"><span id="HA00011__text8757278167">基础设施</span></span> &gt; <span class="uicontrol" id="HA00011__uicontrol54471544151"><span id="HA00011__text1631251418164">集群管理</span></span>”</span>。</span></li><li id="HA00011__li1378321711615"><span>选择<span class="uicontrol" id="HA00011__uicontrol1161813395168">“<span id="HA00011__text353374216166">备份集群</span>”</span>。</span></li><li><span>在主节点所在行右侧选择<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"> <span>添加内部通信网络平面</span></span>”</span>。</span></li><li><span>在弹出的窗口中填写内部通信网络平面名称。<span style="color:#282B33;">可以复用备份网络平面或在DeviceManager上创建内部通信网络平面。</span></span><p><ul><li>复用备份网络平面。查询备份网络平面名称方法：<ol type="a"><li>在<span class="uicontrol">“<span>备份集群</span>”</span>页面，单击主节点名称。</li><li>系统右侧弹出窗口，单击<span class="uicontrol">“打开设备管理”</span>进入DeviceManager界面。</li><li>在“<span>系统</span> &gt; 容器服务 &gt; 网络平面”页面查看网络平面名称。</li></ol>
+</li><li>在<span style="color:#282B33;">DeviceManager上创建内部通信网络平面。</span>创建内部通信网络平面的方法请参见<span>《OceanProtect DataBackup 1.5.0-1.6.0 管理员指南》</span>中的<span class="uicontrol">“新增内部通信网络”</span>章节。</li></ul>
+</p></li><li><span>单击<span class="uicontrol">“<span>确定</span>”</span>。</span></li><li><span>系统弹出<span class="uicontrol">“<span>危险</span>”</span>提示框，确认提示信息无误后，勾选<span class="uicontrol">“<span>我已阅读上述信息，了解执行此操作带来的后果</span>”</span>，单击<span class="uicontrol">“<span>确定</span>”</span>。</span><p><p><span><img src="zh-cn_image_0000002164791812.png"></span></p>
+<p></p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>如果您需要修改或删除已添加的内部通信网络平面，请在主节点所在行右侧单击<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"><span>修改内部通信网络平面</span></span>”</span>或<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"><span>删除内部通信网络平面</span></span>”</span>进行操作。后续添加了成员节点后，无法修改或删除内部通信网络平面。</p>
+</div></div>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="zh-cn_topic_0000002164632012.html">添加主节点内部通信网络平面</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

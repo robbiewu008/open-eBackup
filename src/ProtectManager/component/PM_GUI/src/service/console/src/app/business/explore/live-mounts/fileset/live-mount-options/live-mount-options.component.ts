@@ -1,16 +1,24 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef,
+  ViewChild
+} from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -21,6 +29,8 @@ import {
 import {
   ApiStorageBackupPluginService,
   BaseUtilService,
+  CapacityCalculateLabel,
+  CAPACITY_UNIT,
   CommonConsts,
   CookieService,
   DatabasesService,
@@ -33,9 +43,13 @@ import {
   MountTargetLocation,
   ProtectedEnvironmentApiService,
   ProtectedResourceApiService,
-  RestoreFileType,
-  RoleType
+  RestoreFileType
 } from 'app/shared';
+import {
+  ProTableComponent,
+  TableConfig,
+  TableData
+} from 'app/shared/components/pro-table';
 import {
   assign,
   cloneDeep,
@@ -49,7 +63,6 @@ import {
   isArray,
   isEmpty,
   isNumber,
-  isUndefined,
   last,
   map,
   omit,
@@ -61,11 +74,13 @@ import {
   toString,
   trim
 } from 'lodash';
+import { Subject } from 'rxjs';
 import { pairwise } from 'rxjs/operators';
 @Component({
   selector: 'aui-live-mount-fileset-options',
   templateUrl: './live-mount-options.component.html',
-  styleUrls: ['./live-mount-options.component.less']
+  styleUrls: ['./live-mount-options.component.less'],
+  providers: [CapacityCalculateLabel]
 })
 export class LiveMountOptionsComponent implements OnInit {
   posOptions;
@@ -124,10 +139,27 @@ export class LiveMountOptionsComponent implements OnInit {
   authHosts = [];
   isDataProtectionAdmin = isRBACDPAdmin(this.cookieService.role);
   isFileset;
+  isManual = false; // 判断是否是从副本直接点击进入
   volumePos = '/mnt/databackup';
   volumeTips = this.i18n.get('protection_fileset_livemount_dir_tips_label');
   // OP服务化环境
   isHcsUser = this.cookieService.get('userType') === CommonConsts.HCS_USER_TYPE;
+  volumeTableConfig: TableConfig;
+  volumeTableData: TableData;
+  volumeSelection = [];
+  unitconst = CAPACITY_UNIT;
+  volumePathErrorTip = {
+    invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [256])
+  };
+
+  @ViewChild('capacityTpl', { static: true })
+  capacityTpl: TemplateRef<any>;
+  @ViewChild('targetPathTpl', { static: true })
+  targetPathTpl: TemplateRef<any>;
+  @ViewChild('targetPathHeaderTpl', { static: true })
+  targetPathHeaderTpl: TemplateRef<any>;
+  @ViewChild('volumeTable', { static: false }) volumeTable: ProTableComponent;
+  valid$ = new Subject<boolean>();
 
   @Input() activeIndex;
   @Input() componentData;
@@ -259,13 +291,17 @@ export class LiveMountOptionsComponent implements OnInit {
       (!!this.componentData?.childResourceType &&
         this.componentData?.childResourceType[0] ===
           DataMap.Resource_Type.fileset.value);
-    this.initForm();
+    if (!this.isFileset) {
+      this.initConfig();
+    }
+    this.isManual = !isEmpty(this.componentData?.selectionCopy);
     this.getHosts();
     if (this.componentData) {
       this.isWindows =
         this.componentData.selectionResource.environment_os_type ===
         DataMap.Os_Type.windows.value;
     }
+    this.initForm();
   }
 
   updateIopsItems(value, type: 'min' | 'max' | 'burst') {
@@ -415,12 +451,7 @@ export class LiveMountOptionsComponent implements OnInit {
           this.formGroup.get('burst_bandwidth').clearValidators();
         }
         if (
-          !(
-            (this.formGroup.value.iopsStatus &&
-              this.formGroup.value.burst_iops) ||
-            (this.formGroup.value.bindWidthStatus &&
-              this.formGroup.value.burst_bandwidth)
-          )
+          !(this.formGroup.value.iopsStatus && this.formGroup.value.burst_iops)
         ) {
           this.formGroup.get('burst_time').clearValidators();
         }
@@ -481,10 +512,8 @@ export class LiveMountOptionsComponent implements OnInit {
         }
         if (
           !(
-            (this.formGroup.value.iopsStatus &&
-              this.formGroup.value.burst_iops) ||
-            (this.formGroup.value.bindWidthStatus &&
-              this.formGroup.value.burst_bandwidth)
+            this.formGroup.value.bindWidthStatus &&
+            this.formGroup.value.burst_bandwidth
           )
         ) {
           this.formGroup.get('burst_time').clearValidators();
@@ -545,41 +574,7 @@ export class LiveMountOptionsComponent implements OnInit {
       }
       this.formGroup.get('latency').updateValueAndValidity();
     });
-    // 服务化场景需要用户填写名称、密码
-    if (this.isHcsUser && this.isFileset) {
-      this.userTypeOptions = filter(this.userTypeOptions, item =>
-        includes([DataMap.Cifs_Domain_Client_Type.windows.value], item.value)
-      );
-      this.formGroup.addControl(
-        'customUserName',
-        new FormControl('', {
-          validators: [
-            this.baseUtilService.VALID.required(),
-            this.baseUtilService.VALID.minLength(3),
-            this.baseUtilService.VALID.maxLength(20),
-            this.nameFormatValidator()
-          ]
-        })
-      );
-      this.formGroup.addControl(
-        'customUserPwd',
-        new FormControl('', {
-          validators: [
-            this.baseUtilService.VALID.required(),
-            this.baseUtilService.VALID.minLength(8),
-            this.baseUtilService.VALID.maxLength(32),
-            this.passwordFormatValidator()
-          ]
-        })
-      );
-      this.formGroup
-        .get('customUserName')
-        .valueChanges.subscribe(() =>
-          defer(() =>
-            this.formGroup.get('customUserPwd').updateValueAndValidity()
-          )
-        );
-    }
+    this.addHcsWindowsUser();
     this.formGroup.get('userType').valueChanges.subscribe(res => {
       if (res === '' || (this.isHcsUser && this.isFileset)) {
         return;
@@ -772,7 +767,22 @@ export class LiveMountOptionsComponent implements OnInit {
       });
 
     this.formGroup.statusChanges.subscribe(res => {
-      this.selectMountOptionChange.emit(res === 'VALID');
+      // 卷的windows需要校验表格已选,从副本直接点击时走另一个校验
+      if (this.isManual && this.isWindows && !this.isFileset) {
+        this.valid$.next(
+          res === 'VALID' &&
+            !!this.volumeSelection.length &&
+            !find(this.volumeSelection, item => item.volumeFormGroup.invalid)
+        );
+      } else if (!this.isManual && this.isWindows && !this.isFileset) {
+        this.selectMountOptionChange.emit(
+          res === 'VALID' &&
+            !!this.volumeSelection.length &&
+            !find(this.volumeSelection, item => item.volumeFormGroup.invalid)
+        );
+      } else {
+        this.selectMountOptionChange.emit(res === 'VALID');
+      }
     });
 
     this.globalService
@@ -838,6 +848,44 @@ export class LiveMountOptionsComponent implements OnInit {
     });
   }
 
+  addHcsWindowsUser() {
+    // 服务化场景需要用户填写名称、密码
+    if (this.isHcsUser && this.isFileset && this.isWindows) {
+      this.userTypeOptions = filter(this.userTypeOptions, item =>
+        includes([DataMap.Cifs_Domain_Client_Type.windows.value], item.value)
+      );
+      this.formGroup.addControl(
+        'customUserName',
+        new FormControl('', {
+          validators: [
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.minLength(3),
+            this.baseUtilService.VALID.maxLength(20),
+            this.nameFormatValidator()
+          ]
+        })
+      );
+      this.formGroup.addControl(
+        'customUserPwd',
+        new FormControl('', {
+          validators: [
+            this.baseUtilService.VALID.required(),
+            this.baseUtilService.VALID.minLength(8),
+            this.baseUtilService.VALID.maxLength(32),
+            this.passwordFormatValidator()
+          ]
+        })
+      );
+      this.formGroup
+        .get('customUserName')
+        .valueChanges.subscribe(() =>
+          defer(() =>
+            this.formGroup.get('customUserPwd').updateValueAndValidity()
+          )
+        );
+    }
+  }
+
   setValidForm() {
     if (!this.isWindows && this.isFileset) {
       this.formGroup
@@ -857,6 +905,84 @@ export class LiveMountOptionsComponent implements OnInit {
     this.formGroup.get('metadataPath').updateValueAndValidity();
     this.formGroup.get('userType').updateValueAndValidity();
     this.formGroup.get('name').updateValueAndValidity();
+  }
+
+  initConfig() {
+    this.volumeTableConfig = {
+      table: {
+        async: false,
+        compareWith: 'volumeName',
+        colDisplayControl: false,
+        columns: [
+          {
+            key: 'name',
+            name: this.i18n.get('common_name_label')
+          },
+          {
+            key: 'size',
+            name: this.i18n.get('common_size_label'),
+            cellRender: this.capacityTpl
+          },
+          {
+            key: 'dataDstPath',
+            name: this.i18n.get('protection_volume_live_mount_path_label'),
+            thExtra: this.targetPathHeaderTpl,
+            cellRender: this.targetPathTpl
+          }
+        ],
+        rows: {
+          selectionMode: 'multiple',
+          selectionTrigger: 'selector',
+          showSelector: true,
+          keepRadioLogic: true
+        },
+        selectionChange: data => {
+          this.volumeSelection = data;
+          this.volumePathChange();
+        }
+      }
+    };
+    if (!isEmpty(this.componentData?.selectionCopy)) {
+      const properties = JSON.parse(
+        this.componentData?.selectionCopy?.properties || '{}'
+      );
+      const volumeArray = properties.volumeInfoSet;
+      this.volumeTableData = {
+        data: volumeArray.map(item => {
+          return assign(item, {
+            name: item.mountPoint,
+            fileSystem: item.mountType,
+            volumeFormGroup: this.fb.group({
+              path: new FormControl('', {
+                validators: this.baseUtilService.VALID.maxLength(256)
+              })
+            })
+          });
+        }),
+        total: size(volumeArray)
+      };
+    }
+  }
+
+  volumePathChange(e?) {
+    const flag =
+      !!this.volumeSelection.length &&
+      this.formGroup.valid &&
+      !find(this.volumeSelection, item => item.volumeFormGroup.invalid);
+
+    if (this.isManual) {
+      this.valid$.next(flag);
+    } else {
+      this.selectMountOptionChange.emit(flag);
+    }
+  }
+
+  getPathTips(item) {
+    return !!item.volumeFormGroup.get('path').value
+      ? ''
+      : this.i18n.get('protection_volume_target_path_tooltip_label', [
+          item.volumeName
+        ]);
   }
 
   getHosts(recordsTemp?, startPage?) {
@@ -957,7 +1083,8 @@ export class LiveMountOptionsComponent implements OnInit {
       '/var',
       '/run',
       '/mnt/databackup',
-      '/opt/DataBackup'
+      '/opt/DataBackup',
+      '/tmp'
     ];
     const params = {
       envId: find(this.hostOptions, {
@@ -1009,7 +1136,10 @@ export class LiveMountOptionsComponent implements OnInit {
               label: replace(last(split(item.extendInfo?.path, '/')), '/', ''),
               disabled:
                 (isAuthHost && isNotMntPath) ||
-                includes(['/mnt', '/opt', '/tmp'], item.extendInfo.path) ||
+                includes(
+                  ['/mnt', '/opt', '/tmp', '/home'],
+                  item.extendInfo.path
+                ) ||
                 !!find(
                   sysDir,
                   str =>
@@ -1328,15 +1458,16 @@ export class LiveMountOptionsComponent implements OnInit {
   }
 
   getComponentData() {
-    const winMountInfo = {};
     if (this.isWindows) {
       assign(this.componentData, {
         share_name: this.formGroup.get('name').value,
         type: this.formGroup.value.userType,
-        userName: this.formGroup.value.userName
+        userName:
+          this.isHcsUser && this.isFileset
+            ? [this.formGroup.value.customUserName]
+            : this.formGroup.value.userName
       });
     }
-    const mountTargetHost = {};
     const targetHostList = [];
     const target_resource_uuid_list = [];
 
@@ -1376,6 +1507,18 @@ export class LiveMountOptionsComponent implements OnInit {
           }
         ]
       });
+      if (!this.isFileset) {
+        this.componentData.requestParams.file_system_share_info_list[0].advanceParams.livemount_detail = map(
+          this.volumeSelection,
+          item => {
+            return {
+              volume_name: item.volumeName,
+              name: item.name,
+              dst_path: item.volumeFormGroup.get('path').value
+            };
+          }
+        );
+      }
     } else {
       assign(this.componentData.requestParams, {
         target_resource_uuid_list,
@@ -1412,7 +1555,7 @@ export class LiveMountOptionsComponent implements OnInit {
       });
     }
     let summary = this.formGroup.value;
-    const advanceParameters = omit(this.formGroup.value, [
+    let advanceParameters = omit(this.formGroup.value, [
       'targetPos',
       'bindWidthStatus',
       'iopsStatus',
@@ -1425,6 +1568,22 @@ export class LiveMountOptionsComponent implements OnInit {
       'customUserName',
       'customUserPwd'
     ]);
+
+    if (!this.formGroup.value.bindWidthStatus) {
+      advanceParameters = omit(advanceParameters, [
+        'min_bandwidth',
+        'max_bandwidth',
+        'burst_bandwidth'
+      ]);
+    }
+
+    if (!this.formGroup.value.iopsStatus) {
+      advanceParameters = omit(advanceParameters, [
+        'min_iops',
+        'max_iops',
+        'burst_iops'
+      ]);
+    }
 
     each(advanceParameters, (v, k) => {
       if (isEmpty(trim(String(v)))) {

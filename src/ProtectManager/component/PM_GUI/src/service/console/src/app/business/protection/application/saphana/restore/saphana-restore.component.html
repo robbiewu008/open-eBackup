@@ -12,7 +12,7 @@
   -->
 
 <lv-form [formGroup]="formGroup" class="formGroup">
-  <lv-form-item>
+  <lv-form-item *ngIf="!isDrill">
     <lv-form-label lvRequired>
       {{ 'protection_restore_to_label' | i18n }}
     </lv-form-label>
@@ -47,6 +47,7 @@
   <ng-container
     *ngIf="formGroup.value.restoreLocation === restoreLocationType.NEW"
   >
+  <aui-select-tag [formGroup]="formGroup" (updateTable)="updateTable($event)" [targetKey]="'target'"></aui-select-tag>
     <lv-form-item>
       <lv-form-label lvRequired>
         {{ 'protection_target_instance_label' | i18n }}
@@ -84,4 +85,14 @@
       </lv-form-control>
     </lv-form-item>
   </ng-container>
+    <ng-container *ngIf="isLogCopy">
+        <lv-form-item>
+            <lv-form-label>
+                {{'protection_saphana_restore_log_copy_use_delta_label'|i18n}}
+            </lv-form-label>
+            <lv-form-control>
+                <lv-switch formControlName="usingDelta"></lv-switch>
+            </lv-form-control>
+        </lv-form-item>
+    </ng-container>
 </lv-form>

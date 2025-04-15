@@ -1,0 +1,140 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤2：创建GaussDB(DWS)Schema集/表集">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="DWS_00020.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="DWS_00025">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤2：创建GaussDB(DWS)Schema集/表集</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="DWS_00025"></a><a name="DWS_00025"></a>
+  <h1 class="topictitle1">步骤2：创建GaussDB(DWS)Schema集/表集</h1>
+  <div>
+   <p>如果您需要执行GaussDB(DWS)Schema集或表集保护，请先参考本节操作，创建Schema集或表集。</p>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <p>内核版本为GaussDB A 8.0.0的GaussDB(DWS)不支持创建Schema集。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="DWS_00025__dws_00024_zh-cn_topic_0000002199964685_uicontrol865195012392">“<span id="DWS_00025__dws_00024_zh-cn_topic_0000002199964685_text4651950123919">保护</span> &gt; 大数据 &gt; GaussDB(DWS)”</span>。</span></li>
+     <li><span>选择<span class="uicontrol">“Schema集”</span>或<span class="uicontrol">“表集”</span>页签。</span></li>
+     <li><span>单击<span class="uicontrol">“创建”</span>，创建<span class="uicontrol">“Schema集”</span>或<span class="uicontrol">“表集”</span>。</span><p></p>
+      <ol type="a">
+       <li>配置相关参数。参数说明如<a href="#DWS_00025__zh-cn_topic_0000001397042241_table43343410374">表1</a>和<a href="#DWS_00025__table15230122515266">表2</a>。 
+        <div class="tablenoborder">
+         <a name="DWS_00025__zh-cn_topic_0000001397042241_table43343410374"></a><a name="zh-cn_topic_0000001397042241_table43343410374"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="DWS_00025__zh-cn_topic_0000001397042241_table43343410374" frame="border" border="1" rules="all">
+          <caption>
+           <b>表1 </b>Schema集参数信息
+          </caption>
+          <colgroup>
+           <col style="width:12.959999999999999%">
+           <col style="width:18.6%">
+           <col style="width:68.44%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.3.2.1.1.3.2.4.1.1"><p>参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.3.2.1.1.3.2.4.1.2"><p>说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.3.2.1.1.3.2.4.1.1 "><p>名称</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.1.3.2.4.1.2 "><p>自定义Schema集名称。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.3.2.1.1.3.2.4.1.1 "><p>集群</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.1.3.2.4.1.2 "><p>选择待保护对象的所属GaussDB(DWS)集群。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.3.2.1.1.3.2.4.1.1 "><p>数据库</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.1.3.2.4.1.2 "><p>选择待保护对象的所属数据库。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.3.2.1.1.3.2.4.1.1 "><p>Schemas</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.1.3.2.4.1.2 "><p>在<span class="uicontrol">“可选Schema”</span>页面，勾选数据库中需要保护的Schema。</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div>
+        <div class="tablenoborder">
+         <a name="DWS_00025__table15230122515266"></a><a name="table15230122515266"></a>
+         <table cellpadding="4" cellspacing="0" summary="" id="DWS_00025__table15230122515266" frame="border" border="1" rules="all">
+          <caption>
+           <b>表2 </b>表集参数信息
+          </caption>
+          <colgroup>
+           <col style="width:12.959999999999999%">
+           <col style="width:18.6%">
+           <col style="width:68.44%">
+          </colgroup>
+          <thead align="left">
+           <tr>
+            <th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.3.2.1.1.4.2.4.1.1"><p>参数</p></th>
+            <th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.3.2.1.1.4.2.4.1.2"><p>说明</p></th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.3.2.1.1.4.2.4.1.1 "><p>名称</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.1.4.2.4.1.2 "><p>自定义表集名称。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.3.2.1.1.4.2.4.1.1 "><p>集群</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.1.4.2.4.1.2 "><p>选择待保护对象的所属GaussDB(DWS)集群。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.3.2.1.1.4.2.4.1.1 "><p>数据库</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.1.4.2.4.1.2 "><p>选择待保护对象的所属数据库。</p></td>
+           </tr>
+           <tr>
+            <td class="cellrowborder" colspan="2" valign="top" headers="mcps1.3.3.2.3.2.1.1.4.2.4.1.1 "><p>表</p></td>
+            <td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.1.1.4.2.4.1.2 "><p>在<span class="uicontrol">“可选表”</span>页面，勾选数据库中需要保护的表。</p></td>
+           </tr>
+          </tbody>
+         </table>
+        </div></li>
+       <li>单击<span class="uicontrol">“确定”</span>。</li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+   <p></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="DWS_00020.html">备份GaussDB(DWS)</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

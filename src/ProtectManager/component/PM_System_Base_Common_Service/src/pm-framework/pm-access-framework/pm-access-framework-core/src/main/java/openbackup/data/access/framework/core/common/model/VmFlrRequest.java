@@ -42,6 +42,8 @@ public class VmFlrRequest {
 
     private String snapId;
 
+    private String indexed;
+
     private RestoreStorageInfo storageInfo;
 
     private List<String> paths;

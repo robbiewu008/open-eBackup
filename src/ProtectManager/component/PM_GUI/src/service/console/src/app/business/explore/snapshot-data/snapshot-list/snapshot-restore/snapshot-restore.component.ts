@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
 import {
   AfterViewInit,
@@ -25,6 +25,7 @@ import {
   FormGroup,
   ValidatorFn
 } from '@angular/forms';
+import { ModalRef } from '@iux/live';
 import {
   ApiStorageBackupPluginService,
   BaseUtilService,
@@ -50,7 +51,12 @@ import {
 import {
   assign,
   cloneDeep,
+  each,
+  filter,
   includes,
+  isEmpty,
+  isNumber,
+  isString,
   isUndefined,
   map,
   reject,
@@ -80,6 +86,7 @@ export class SnapshotRestoreComponent implements OnInit, AfterViewInit {
   copyStatus = DataMap.snapshotCopyStatus;
   dataMap = DataMap;
   _isEn = this.i18n.isEn;
+  _includes = includes;
   snapshotName;
 
   rowDataResourceProperties;
@@ -89,6 +96,7 @@ export class SnapshotRestoreComponent implements OnInit, AfterViewInit {
 
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
   @ViewChild('timeTpl', { static: true }) timeTpl: TemplateRef<any>;
+  @ViewChild('statusTpl', { static: true }) statusTpl: TemplateRef<any>;
 
   nameErrorTip = {
     ...this.baseUtilService.requiredErrorTip,
@@ -127,8 +135,11 @@ export class SnapshotRestoreComponent implements OnInit, AfterViewInit {
       );
     });
 
+  @ViewChild('headerTpl', { static: true }) headerTpl: TemplateRef<any>;
+
   constructor(
     private fb: FormBuilder,
+    private modal: ModalRef,
     private i18n: I18NService,
     private datePipe: DatePipe,
     private dataMapService: DataMapService,
@@ -146,6 +157,7 @@ export class SnapshotRestoreComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.initModalHeader();
     this.getSnapshotName();
     if (this.isResource) {
       this.initTable();
@@ -157,6 +169,16 @@ export class SnapshotRestoreComponent implements OnInit, AfterViewInit {
 
     this.initForm();
     this.getRowDataProperties();
+  }
+
+  initModalHeader() {
+    this.modal.setProperty({ lvHeader: this.headerTpl });
+  }
+
+  openHelp() {
+    const lang = this.i18n.isEn ? 'en-us' : 'zh-cn';
+    const targetUrl = `/console/assets/help/cyberengine/${lang}/index.html#${lang}_topic_0000001783060378.html`;
+    window.open(targetUrl, '_blank');
   }
 
   getRowDataProperties() {
@@ -217,10 +239,7 @@ export class SnapshotRestoreComponent implements OnInit, AfterViewInit {
           showCheckAll: true,
           options: [...antiStatus, ...copyStatus]
         },
-        cellRender: {
-          type: 'status',
-          config: [...antiStatus, ...copyStatus]
-        }
+        cellRender: this.statusTpl
       }
     ];
     this.tableConfig = {
@@ -252,6 +271,34 @@ export class SnapshotRestoreComponent implements OnInit, AfterViewInit {
     };
   }
 
+  getFilterConditions(filters) {
+    const defaultParams = {};
+    const restoringMap = [
+      DataMap.snapshotCopyStatus.mounting.value,
+      DataMap.snapshotCopyStatus.mounted.value,
+      DataMap.snapshotCopyStatus.unmounting.value
+    ];
+    if (!isEmpty(filters.conditions)) {
+      const conditions = JSON.parse(filters.conditions);
+      if (conditions.anti_status) {
+        let statusArr = conditions.anti_status;
+        if (includes(statusArr, DataMap.snapshotCopyStatus.restoring.value)) {
+          statusArr = [...statusArr, ...restoringMap];
+        }
+        assign(defaultParams, {
+          copy_status: filter(statusArr, item => isString(item)),
+          anti_status: filter(statusArr, item => !isString(item))
+        });
+      }
+    }
+    each(defaultParams, (value, key) => {
+      if (isEmpty(value) && !isNumber(value)) {
+        delete defaultParams[key];
+      }
+    });
+    return defaultParams;
+  }
+
   getSnapshotList(filters, args) {
     const params = {
       resourceId: this.rowData.resource_id,
@@ -260,6 +307,12 @@ export class SnapshotRestoreComponent implements OnInit, AfterViewInit {
       akLoading:
         !isUndefined(args) && args.isAutoPolling ? !args.isAutoPolling : true
     };
+
+    const conditions = this.getFilterConditions(filters);
+    if (!isEmpty(conditions)) {
+      assign(params, { conditions: JSON.stringify(conditions) });
+    }
+
     this.copiesDetectReportService
       .ShowDetectionDetails(params)
       .subscribe(res => {

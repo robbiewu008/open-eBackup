@@ -1,0 +1,112 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 1: Registering a Cluster">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164619152.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200019957">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 1: Registering a Cluster</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200019957"></a><a name="EN-US_TOPIC_0000002200019957"></a>
+
+<h1 class="topictitle1">Step 1: Registering a Cluster</h1>
+<div><p>Before backing up and restoring a Kubernetes cluster, register the Kubernetes cluster with the <span>OceanProtect</span>. One set of <span>OceanProtect</span> supports a maximum of four Kubernetes clusters.</p>
+<div class="section"><h4 class="sectiontitle">Prerequisites</h4><ul><li>Kubernetes configuration file has been obtained and saved to a local path on the maintenance terminal.<p id="EN-US_TOPIC_0000002200019957__p174291634202919">The configuration file name is <strong id="EN-US_TOPIC_0000002200019957__b7921141517489">kubeconfig</strong>. For details about how to obtain the file, see <a href="en-us_topic_0000002164778972.html">Obtaining the kubeconfig Configuration File</a>.</p>
+</li><li>The management IP address or domain name of the Kubernetes cluster storage backend has been obtained.</li><li>A storage device user whose role is <strong>Administrator</strong> and login mode is <strong>RESTful</strong> has been created to connect Kubernetes storage backend resources to the <span>OceanProtect</span>. For details about how to create a user, see the <em>Administrator Guide</em> of the corresponding storage device version.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li id="EN-US_TOPIC_0000002200019957__li0198134611381"><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200019957__en-us_topic_0000002199964685_uicontrol84751741193812"><b><span id="EN-US_TOPIC_0000002200019957__en-us_topic_0000002199964685_text194759416387"><strong>Protection</strong></span> &gt; Containers &gt; Kubernetes FlexVolume</b></span>.</span></li><li><span>Click <span class="uicontrol"><b><span><strong>Register</strong></span></b></span> to register the Kubernetes FlexVolume cluster information.</span><p><div class="p"><a href="#EN-US_TOPIC_0000002200019957__table613227155112">Table 1</a> lists the Kubernetes FlexVolume cluster registration information.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200019957__table613227155112"></a><a name="table613227155112"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200019957__table613227155112" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Kubernetes FlexVolume cluster registration information</caption><colgroup><col style="width:25.69%"><col style="width:74.31%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.69%" id="mcps1.3.3.2.2.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.31%" id="mcps1.3.3.2.2.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.69%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>User-defined cluster name.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.69%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Configuration File</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Select the obtained Kubernetes configuration file <strong>kubeconfig</strong>.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.69%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Clients</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.31%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Select a client that can be used to back up Kubernetes.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>In the <span><strong>Storage Resources</strong></span> area, click <span><strong>Add</strong></span>.</span><p><p>Only production storage resources such as OceanStor V3, OceanStor V5, or OceanStor Dorado storage resources can be added.</p>
+<p><a href="#EN-US_TOPIC_0000002200019957__table15286164351012">Table 2</a> describes the storage resource parameters.</p>
+
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200019957__table15286164351012"></a><a name="table15286164351012"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200019957__table15286164351012" frame="border" border="1" rules="all"><caption><b>Table 2 </b>Storage resource information</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.3.2.3.2.3.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.3.2.3.2.3.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.3.2.3.1.1 "><p><span><strong>IP Address/Domain Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.3.2.3.1.2 "><p>Management IP address or domain name of a storage resource.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.3.2.3.1.1 "><p><span><strong>Port</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.3.2.3.1.2 "><p>Port for accessing storage resources. The default value is 8088.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.3.2.3.2.3.2.3.1.1 "><p><span><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.37%" headers="mcps1.3.3.2.3.2.3.2.3.1.2 "><p>Username and password of a system administrator for accessing storage resources.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.3.2.3.2.3.1.1 "><p><span><strong>Password</strong></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b><span><strong>OK</strong></span></b></span>.</span><p><p>After the registration is successful, information about the registered Kubernetes cluster is displayed on the <span><strong>Cluster</strong></span> tab page. The system automatically discovers namespaces and StatefulSets in the Kubernetes cluster and displays them on the <span><strong>Namespace</strong></span> and <span><strong>StatefulSet</strong></span> tab pages, respectively.</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164619152.html">Backing Up a Namespace or StatefulSet</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

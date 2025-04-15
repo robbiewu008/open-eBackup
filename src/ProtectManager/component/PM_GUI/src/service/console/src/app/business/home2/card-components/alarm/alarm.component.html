@@ -76,7 +76,7 @@
       class="detail"
       lv-popover
       [lvPopoverContent]="alarmPopoverContentTpl"
-      [lvPopoverFooter]="alarm.alarmTime * 1000 | date: 'yyyy-MM-dd HH:mm:ss'"
+      [lvPopoverFooter]="alarm.alarmTime * 1000 | date: 'yyyy-MM-dd HH:mm:ss': timeZone"
       (click)="alarmDetailClick(alarm)"
     >
         <ng-container *ngTemplateOutlet="alarmPopoverContentTpl"></ng-container>

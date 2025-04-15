@@ -60,9 +60,11 @@ class SystemConstant:
     CENTOS_STREAM_9 = "CentOS Stream release 9"
     CHARSET_SUPPORT_LIST = ['utf8mb4', 'latin1']
     DEFAULT_CHARSET = "utf8mb4"
+    DEFAULT_PORT = "3306"
     UNSUPPORTED_INSTANT_VERSION = ["8.0.29", "8.0.30", "8.0.31"]
     # 设置mysqlbinlog 最大恢复数据量，防止日志恢复失败,单位是字节
     MAX_ALLOWED_PACKET = 1024 * 1024 * 1024
+    DEFAULT_LOCK_TIME = "00:00:01"
 
 
 class MariaDBConstant:
@@ -143,6 +145,7 @@ class MySQLJsonConstant:
     SERVICE_NAME = "serviceName"
     ID = "id"
     BACKUPHOSTSN = "backupHostSN"
+    BINLOG_NAMES = "backupBinlog"
     FIRSTFULLBACKUPTIME = "firstFullBackupTime"
     NEXTCAUSEPARAM = "next_cause_param"
     END_TIME = "endTime"
@@ -511,3 +514,5 @@ class MysqlConfigFileKey:
 
 class SQLCMD:
     select_instant = "select name from information_schema.innodb_tables where total_row_versions > 0"
+    flush_logs = "flush binary logs"
+    show_tables = "show tables"

@@ -12,6 +12,9 @@
 */
 package openbackup.access.framework.resource.service.provider;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfig;
 import openbackup.data.protection.access.provider.sdk.plugin.PluginConfigConstants;
@@ -22,10 +25,6 @@ import openbackup.data.protection.access.provider.sdk.resource.EnvironmentProvid
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceScanProvider;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

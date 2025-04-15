@@ -47,9 +47,23 @@ public class StorageUnitVo {
 
     private BigDecimal totalCapacity;
 
+    // 物理用量
     private BigDecimal usedCapacity;
 
+    // 逻辑用量
+    private BigDecimal usedLogicCapacity;
+
     private String threshold;
+
+    /**
+     * 存储池容量严重不足告警阈值
+     */
+    private int majorThreshold;
+
+    /**
+     * 存储池容量即将耗尽告警阈值
+     */
+    private int endingUpThreshold;
 
     private Integer healthStatus;
 

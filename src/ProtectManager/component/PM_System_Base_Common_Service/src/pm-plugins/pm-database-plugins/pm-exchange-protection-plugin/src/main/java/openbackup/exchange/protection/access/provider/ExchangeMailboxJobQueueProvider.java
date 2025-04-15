@@ -12,11 +12,13 @@
 */
 package openbackup.exchange.protection.access.provider;
 
+import com.huawei.oceanprotect.job.sdk.JobQueueProvider;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.exchange.protection.access.constant.ExchangeConstant;
-import com.huawei.oceanprotect.job.sdk.JobQueueProvider;
-
 import openbackup.system.base.common.model.job.Job;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.JSONObject;
@@ -24,9 +26,6 @@ import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.JobMessage;
 import openbackup.system.base.sdk.job.model.request.JobSchedulePolicy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.shaded.com.google.common.collect.ImmutableSet;

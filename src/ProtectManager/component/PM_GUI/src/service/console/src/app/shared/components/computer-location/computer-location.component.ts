@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonConsts, ResourceType, VmRestoreOptionType } from 'app/shared';
 import {
@@ -36,6 +36,7 @@ export class ComputerLocationComponent implements OnInit {
   version;
   showErrorTip = false;
   errorTipLabel;
+  searchValue: string;
 
   @Input() vmRestoreOptionType = VmRestoreOptionType.VM;
   @Input() copyData;
@@ -157,12 +158,10 @@ export class ComputerLocationComponent implements OnInit {
         })
       })
       .subscribe(res => {
-        each(res.items, item => {
+        each(res.items, (item: any) => {
           if (
             this.vmRestoreOptionType === VmRestoreOptionType.VM &&
-            (item.type === ResourceType.VM ||
-              (event.subType === DataMap.Resource_Type.dataCenter.value &&
-                !item.alias_type))
+            item.type === ResourceType.VM
           ) {
             return;
           }
@@ -210,6 +209,7 @@ export class ComputerLocationComponent implements OnInit {
             path: item.path,
             subType: item.sub_type,
             version: item.version,
+            firmware: item.firmware,
             environmentSubType: item.environment_sub_type,
             children: [],
             unselected: nodeUnselected,

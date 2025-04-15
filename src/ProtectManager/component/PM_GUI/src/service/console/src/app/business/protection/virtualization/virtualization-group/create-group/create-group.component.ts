@@ -1,23 +1,18 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import {
-  FilterType,
-  TransferColumnItem,
-  TransferComponent,
-  TransferTableComponent
-} from '@iux/live';
+import { FilterType, TransferColumnItem, TransferComponent } from '@iux/live';
 import {
   BaseUtilService,
   CommonConsts,
@@ -27,9 +22,19 @@ import {
   ProtectedResourceApiService,
   ResourceType,
   VirtualResourceService,
-  VmRestoreOptionType
+  isJson
 } from 'app/shared';
-import { assign, each, find, includes, isEmpty, size } from 'lodash';
+import { ProtectFilterComponent } from 'app/shared/components/protect-filter/protect-filter.component';
+import {
+  assign,
+  defer,
+  each,
+  find,
+  includes,
+  isEmpty,
+  pick,
+  size
+} from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
 
 @Component({
@@ -56,6 +61,13 @@ export class CreateGroupComponent implements OnInit {
   treeData = [];
   treeSelection2;
 
+  // vmware虚拟机组增加虚拟机选择方式
+  isVmwareGroup = false;
+  ruleFromGroup: FormGroup;
+  ruleComputePath: string;
+  @ViewChild(ProtectFilterComponent, { static: false })
+  protectFilterComponent: ProtectFilterComponent;
+
   @ViewChild('transfer') transfer: TransferComponent;
   constructor(
     public baseUtilService: BaseUtilService,
@@ -75,6 +87,10 @@ export class CreateGroupComponent implements OnInit {
         isLeaf: true
       }
     ];
+    this.isVmwareGroup = includes(
+      [DataMap.Resource_Type.virtualMachine.value],
+      this.subUnitType
+    );
     if (
       includes(
         [
@@ -89,6 +105,24 @@ export class CreateGroupComponent implements OnInit {
     this.initColumns();
     this.initForm();
     this.initData();
+  }
+
+  updateRule() {
+    if (!isEmpty(this.rowData) && isJson(this.rowData[0]?.extendStr)) {
+      const extendStr = JSON.parse(this.rowData[0]?.extendStr);
+      if (!isEmpty(extendStr.resource_filters)) {
+        this.protectFilterComponent?.setFilter(extendStr.resource_filters);
+      }
+      if (!isEmpty(extendStr.resource_tag_filters)) {
+        this.protectFilterComponent?.setTagFilter(
+          extendStr.resource_tag_filters
+        );
+      }
+      if (!isEmpty(extendStr.resource_path_filter)) {
+        this.formGroup.get('selectedVCenter').setValue(this.treeSelection.uuid);
+        this.ruleComputePath = extendStr.resource_path_filter;
+      }
+    }
   }
 
   initColumns() {
@@ -140,7 +174,20 @@ export class CreateGroupComponent implements OnInit {
       name: new FormControl(this.rowData ? this.rowData[0].name : '', {
         validators: [this.baseUtilService.VALID.name()]
       }),
+      vmGroupMode: new FormControl(
+        !isEmpty(this.rowData) && this.rowData[0]?.groupType
+          ? this.rowData[0]?.groupType
+          : DataMap.vmGroupType.manual.value
+      ),
       selectedVCenter: new FormControl('')
+    });
+    this.ruleFromGroup = this.fb.group({});
+    this.formGroup.get('vmGroupMode').valueChanges.subscribe(res => {
+      if (res === DataMap.vmGroupType.manual.value) {
+        this.selectValid$.next(!!size(this.sourceSelection));
+      } else {
+        this.selectValid$.next(true);
+      }
     });
     if (!!this.rowData) {
       const data = [];
@@ -164,6 +211,8 @@ export class CreateGroupComponent implements OnInit {
       this.treeData = [];
       this.getVcenterChangeData(CommonConsts.PAGE_START, res);
     });
+
+    defer(() => this.updateRule());
   }
 
   initData(e?) {
@@ -243,16 +292,7 @@ export class CreateGroupComponent implements OnInit {
 
   change(e) {
     this.sourceSelection = e.selection;
-    if (!this.rowData) {
-      this.selectValid$.next(!!size(this.sourceSelection));
-    }
-  }
-
-  clearAll(data, panel: TransferTableComponent): void {
-    this.sourceSelection = [];
-    if (!this.rowData) {
-      this.selectValid$.next(false);
-    }
+    this.selectValid$.next(!!size(this.sourceSelection));
   }
 
   changeLocation(event) {
@@ -332,8 +372,15 @@ export class CreateGroupComponent implements OnInit {
             path: item.path,
             subType: item.sub_type,
             children: [],
-            isLeaf: false
+            isLeaf: false,
+            expanded: this.getExpandedIndex(item.path)
           };
+          if (node.expanded) {
+            this.getExpandedChangeData(CommonConsts.PAGE_START, node);
+          }
+          if (item.path === this.ruleComputePath) {
+            this.treeSelection2 = [node];
+          }
           this.treeData.push(node);
         });
         startPage++;
@@ -427,6 +474,38 @@ export class CreateGroupComponent implements OnInit {
     });
   }
 
+  getExpandedIndex(path) {
+    return (
+      includes(this.ruleComputePath, `${path}/`) &&
+      this.ruleComputePath !== path
+    );
+  }
+
+  renderData(res, event) {
+    res.items.forEach(item => {
+      if (item.type !== ResourceType.VM) {
+        const node = {
+          label: item.name,
+          contentToggleIcon: this.getResourceIcon(item),
+          type: item.type as string,
+          rootUuid: item.root_uuid,
+          uuid: item.uuid,
+          path: item.path,
+          children: [],
+          isLeaf: this.isLeaf(item),
+          expanded: this.getExpandedIndex(item.path)
+        };
+        if (node.expanded) {
+          this.getExpandedChangeData(CommonConsts.PAGE_START, node);
+        }
+        if (item.path === this.ruleComputePath) {
+          this.treeSelection2 = [node];
+        }
+        event.children.push(node);
+      }
+    });
+  }
+
   getV1ExpendData(startPage, event) {
     this.virtualResourceService
       .queryResourcesV1VirtualResourceGet({
@@ -437,21 +516,7 @@ export class CreateGroupComponent implements OnInit {
         })
       })
       .subscribe(res => {
-        res.items.forEach(item => {
-          if (item.type !== ResourceType.VM) {
-            const node = {
-              label: item.name,
-              contentToggleIcon: this.getResourceIcon(item),
-              type: item.type as string,
-              rootUuid: item.root_uuid,
-              uuid: item.uuid,
-              path: item.path,
-              children: [],
-              isLeaf: this.isLeaf(item)
-            };
-            event.children.push(node);
-          }
-        });
+        this.renderData(res, event);
         startPage++;
         if (res.total - startPage * CommonConsts.PAGE_SIZE_OPTIONS[2] > 0) {
           this.getExpandedChangeData(startPage, event);
@@ -480,6 +545,9 @@ export class CreateGroupComponent implements OnInit {
   nodeCheck(e) {
     this.curTreeSelection = this.treeSelection2[0] || this.treeSelection;
     this.initData(this.curTreeSelection);
+    if (this.isVmwareGroup) {
+      this.formGroup.updateValueAndValidity();
+    }
   }
 
   getParams() {
@@ -491,6 +559,41 @@ export class CreateGroupComponent implements OnInit {
       resourceIds: this.sourceSelection.map(item => item.uuid),
       scopeResourceId: this.treeSelection.uuid
     };
+    // vmware虚拟机规则
+    if (this.isVmwareGroup) {
+      assign(params, {
+        groupType: this.formGroup.get('vmGroupMode')?.value
+      });
+    }
+    if (
+      this.isVmwareGroup &&
+      this.formGroup.value.vmGroupMode === DataMap.vmGroupType.rule.value
+    ) {
+      const filters = {};
+      const nameFilter = this.protectFilterComponent.getAllFilters();
+      const tagFilter = this.protectFilterComponent.getAllTagFilters();
+      if (!isEmpty(nameFilter)) {
+        assign(filters, {
+          resource_filters: nameFilter
+        });
+      }
+      if (!isEmpty(tagFilter)) {
+        assign(filters, {
+          resource_tag_filters: tagFilter
+        });
+      }
+      if (!isEmpty(this.treeSelection2)) {
+        assign(filters, {
+          resource_path_filter: this.treeSelection2[0]?.path
+        });
+      }
+      assign(params, {
+        sourceType: ResourceType.VM,
+        sourceSubType: DataMap.Resource_Type.virtualMachine.value,
+        extendStr: JSON.stringify(filters)
+      });
+    }
+
     return params;
   }
 
@@ -501,10 +604,12 @@ export class CreateGroupComponent implements OnInit {
         // 调修改接口
         this.protectedResourceApiService
           .UpdateResourceGroup({
-            UpdateResourceGroupRequestBody: {
-              name: this.formGroup.value.name,
-              resourceIds: this.sourceSelection.map(item => item.uuid)
-            },
+            UpdateResourceGroupRequestBody: this.isVmwareGroup
+              ? <any>pick(params, ['name', 'resourceIds', 'extendStr'])
+              : {
+                  name: this.formGroup.value.name,
+                  resourceIds: this.sourceSelection.map(item => item.uuid)
+                },
             resourceGroupId: this.rowData[0].uuid
           })
           .subscribe({

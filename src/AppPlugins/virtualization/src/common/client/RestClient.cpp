@@ -14,6 +14,7 @@
 #include "curl_http/HttpStatus.h"
 #include "common/Utils.h"
 #include "common/utils/Utils.h"
+#include "config_reader/ConfigIniReader.h"
 #include "RestClient.h"
 
 using namespace VirtPlugin;
@@ -21,13 +22,15 @@ using namespace VirtPlugin;
 namespace {
 const std::string MODULE_NAME = "RestClient";
 const std::string HTTP_RESPONSE_HEADER_TOKNE_FILED_NAME = "X-Auth-Token";
+const std::string HTTP_RESPONSE_HEADER_SUB_TOKNE_FILED_NAME = "X-Subject-Token";
 const int32_t SEND_HTTP_DELAY_TIME = 15;
 const int32_t BASE_RETRY_TIMES = 1;
 using Defer = std::shared_ptr<void>;
 }
 
 VIRT_PLUGIN_NAMESPACE_BEGIN
-int32_t RestClient::CallApi(RequestInfo &requestInfo, std::shared_ptr<ResponseModel> response, ModelBase &model)
+int32_t RestClient::CallApi(RequestInfo &requestInfo, std::shared_ptr<ResponseModel> response, ModelBase &model,
+    bool isOpService)
 {
     Module::HttpRequest request;
     request.method = requestInfo.m_method;
@@ -45,7 +48,7 @@ int32_t RestClient::CallApi(RequestInfo &requestInfo, std::shared_ptr<ResponseMo
     request.revocationList = requestInfo.m_auth.revocationList;
     request.isVerify = requestInfo.m_auth.certVerifyEnable ? Module::CACertVerification::VCENTER_VERIFY
         : Module::CACertVerification::DO_NOT_VERIFY;
-    Utils::InnerAgentAppointNetDevice(request);
+    Utils::InnerAgentAppointNetDevice(request, !model.GetToken().empty() || isOpService);
     if (DoHttpRequestSync(request, response, model) != SUCCESS) {
         ERRLOG("Failed to do http request, url: %s", request.url.c_str());
         return FAILED;
@@ -61,28 +64,44 @@ int32_t RestClient::DoHttpRequestSync(Module::HttpRequest &request, std::shared_
     HttpClient httpRestClient;
     int32_t result = FAILED;
     do {
+        httpRestClient.SetTimeOut(Module::ConfigReader::getUint("General", "ConnectTimeOut"),
+            Module::ConfigReader::getUint("General", "TotalTimeOut"));
         int ret = httpRestClient.Send(request, response, m_retryTimes);
         if (ret != SUCCESS) {
             ERRLOG("Failed to call rest api.");
             break;
         }
+        if (response == nullptr) {
+            ERRLOG("Response is null, send request faield.");
+            return FAILED;
+        }
+        if (response->GetStatusCode() != static_cast<uint32_t>(Module::SC_UNAUTHORIZED) ||
+            !model.GetNeedRetry()) {
+            DBGLOG("Success to call rest api.");
+            return SUCCESS;
+        }
         // 发送成功但是状态为401是token错误
-        if (response->GetStatusCode() == static_cast<uint32_t>(Module::SC_UNAUTHORIZED) &&
-            model.GetNeedRetry()) {
-            std::string tokenStr;
-            Defer _(nullptr, [&](...) { Module::CleanMemoryPwd(tokenStr); });
-            if (!UpdateToken(model, tokenStr)) {
-                ERRLOG("Failed to reacquire token, retry: %d", (retryCount - 1));
-            } else {
-                request.heads.insert(std::make_pair(HTTP_RESPONSE_HEADER_TOKNE_FILED_NAME, tokenStr));
-            }
+        std::string tokenStr;
+        Defer _(nullptr, [&](...) { Module::CleanMemoryPwd(tokenStr); });
+        if (!UpdateToken(model, tokenStr)) {
+            ERRLOG("Failed to reacquire token, retry: %d", (retryCount - 1));
             retryCount--;
             sleep(SEND_HTTP_DELAY_TIME);
             continue;
         }
-        DBGLOG("Success to call rest api.");
-        result = SUCCESS;
-        break;
+        std::set<std::pair<std::string, std::string> > copyHeads;
+        for (auto it = request.heads.begin(); it != request.heads.end(); ++it) {
+            if (it->first == HTTP_RESPONSE_HEADER_TOKNE_FILED_NAME ||
+                it->first == HTTP_RESPONSE_HEADER_SUB_TOKNE_FILED_NAME) {
+                continue;
+            }
+            copyHeads.insert(std::make_pair(it->first, it->second));
+        }
+        copyHeads.insert(std::make_pair(HTTP_RESPONSE_HEADER_TOKNE_FILED_NAME, tokenStr));
+        copyHeads.insert(std::make_pair(HTTP_RESPONSE_HEADER_SUB_TOKNE_FILED_NAME, tokenStr));
+        request.heads = copyHeads;
+        retryCount--;
+        sleep(SEND_HTTP_DELAY_TIME);
     } while (retryCount);
     return result;
 }

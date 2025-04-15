@@ -9,6 +9,7 @@
 # THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
 # EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+
 function log_info() {
     echo "$(date +"[%Y-%m-%d %H:%M:%S,%N]") [$0:${BASH_LINENO}] mount_oper.sh.info: $1"
 }
@@ -19,6 +20,7 @@ GUI_BASE_PATH="/app/gui"
 whitelist=(
 "^/opt/OceanProtect/logs/.*/protectmanager$"
 "^/opt/OceanProtect/protectmanager/timezone$"
+"^/opt/OceanProtect/protectmanager/kmc$"
 "^/tmp/app.jar$"
 "^${GUI_BASE_PATH}/logs$"
 "^/etc/timezone"
@@ -33,6 +35,7 @@ whitelist=(
 "^/app/gui/frontend/console/assets/i18n/en-us/error-code/dorado_v6.json$"
 "^/app/gui/frontend/console/assets/i18n/zh-cn/alarm/dorado_v6.json$"
 "^/app/gui/frontend/console/assets/i18n/en-us/alarm/dorado_v6.json$"
+"^/app/gui/conf/wcc$"
 )
 
 check_whitelist() {

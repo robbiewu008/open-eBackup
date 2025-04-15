@@ -1,0 +1,126 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤3：注册PostgreSQL单实例下的数据库">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="postgresql-0009.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="postgresql-0011">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤3：注册PostgreSQL单实例下的数据库</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="postgresql-0011"></a><a name="postgresql-0011"></a>
+
+<h1 class="topictitle1">步骤3：注册PostgreSQL单实例下的数据库</h1>
+<div><div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>1.6.0及后续版本在执行实例注册前，请检查数据库安装路径下bin/lib/share文件属主是否为root，若是root请在/opt/DataBackup/ProtectClient/Plugins/GeneralDBPlugin/bin/applications/postgresql/conf/switch.conf配置文件中将enable_root配置项取值设置为1。</li><li>对于备份HACS（High Availability Cluster Server，高可用性集群服务软件）场景下的PostgreSQL数据库实例，目前<span>OceanProtect</span>仅支持PostgreSQL数据库以单实例进行备份。</li><li>注册数据库账户前，请先确保账户具有以下所需的最小权限。配置方法如下，以账户<strong>teste_bkp</strong>为例说明：<ol><li id="postgresql-0011__li1919772032716"><a name="postgresql-0011__li1919772032716"></a><a name="li1919772032716"></a>登录权限：由于注册PostgreSQL单实例下的数据库、执行备份以及恢复过程都需要通过数据库账号登录到指定数据库，需执行<strong>CREATE ROLE teste_bkp LOGIN PASSWORD 'teste_bkp'</strong><strong>;</strong>，使账户必须具有最基本的登录权限，并通过以下方式登录数据库，然后可查看数据库版本号，其中<em>/usr/local/pgsql/bin/psql</em>代表psql脚本的路径，-h参数代表数据库实例所在主机IP，-p参数代表数据库实例的端口号。<pre class="screen" id="postgresql-0011__screen1310223250">su - postgres
+<span>s</span><span>u - postgres -c '</span><em id="postgresql-0011__i7325132282020">/usr/local/pgsql/bin/psql</em><span> -h </span><em id="postgresql-0011__i338515391176">数据库IP</em><span> -p </span><em id="postgresql-0011__i1842183141616">端口号</em><span> -U </span><strong id="postgresql-0011__b1263531512614">teste_bkp</strong><span> -d postgres'</span> </pre>
+<div class="note" id="postgresql-0011__note163113935012"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="postgresql-0011__p11636396502">如果查询到的数据库版本号为10.0以下，则数据库账户必须为SUPERUSER，且不需要执行后续的操作<a href="#postgresql-0011__li14737182342715">2</a>和<a href="#postgresql-0011__li3687112632718">3</a>。</p>
+</div></div>
+</li><li id="postgresql-0011__li14737182342715"><a name="postgresql-0011__li14737182342715"></a><a name="li14737182342715"></a>读取配置文件权限：登录数据库后，通过<strong id="postgresql-0011__b549614151116">GRANT pg_read_all_settings TO teste_bkp;</strong>设置权限。</li><li id="postgresql-0011__li3687112632718"><a name="postgresql-0011__li3687112632718"></a><a name="li3687112632718"></a>函数执行权限：需要具备pg_backup_start函数执行权限和pg_backup_stop函数执行权限才可以执行备份，故需要赋予函数执行权限：<p id="postgresql-0011__p710125393320"><a name="postgresql-0011__li3687112632718"></a><a name="li3687112632718"></a>通过<a href="#postgresql-0011__li1919772032716">1</a>查询到的版本号，如果版本号为15.0及以上，通过以下命令赋予权限：</p>
+<p id="postgresql-0011__p3548204552719">1）赋予pg_backup_start函数权限：<strong id="postgresql-0011__b106874354124">GRANT EXECUTE ON FUNCTION pg_backup_start TO teste_bkp;</strong></p>
+<p id="postgresql-0011__p6581458122212">2）赋予pg_backup_stop函数权限：<strong id="postgresql-0011__b72921811134">GRANT EXECUTE ON FUNCTION pg_backup_stop TO teste_bkp;</strong></p>
+<p id="postgresql-0011__p1381017559336">如果版本号为15.0以下9.6及以上，通过以下命令赋予权限：</p>
+<p id="postgresql-0011__p11600185385218">1）赋予pg_backup_start函数权限：<strong id="postgresql-0011__b260016535521">GRANT EXECUTE ON FUNCTION pg_start_backup(text,boolean,boolean) TO teste_bkp;</strong></p>
+<p id="postgresql-0011__p17600195335218">2）赋予pg_backup_stop函数权限：<strong id="postgresql-0011__b36001153135210">GRANT EXECUTE ON FUNCTION pg_stop_backup() TO teste_bkp;</strong></p>
+<p id="postgresql-0011__p113810115324">如果版本号为9.6以下，通过以下命令赋予权限：</p>
+<p id="postgresql-0011__p1338151113210">1）赋予pg_backup_start函数权限：<strong id="postgresql-0011__b638141111326">GRANT EXECUTE ON FUNCTION pg_start_backup(text,boolean)  TO teste_bkp;</strong></p>
+<p id="postgresql-0011__p33831112327">2）赋予pg_backup_stop函数权限：<strong id="postgresql-0011__b23811118322">GRANT EXECUTE ON FUNCTION pg_stop_backup() TO teste_bkp;</strong></p>
+</li></ol>
+</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="postgresql-0011__zh-cn_topic_0000002199964685_uicontrol1389612810362">“<span id="postgresql-0011__zh-cn_topic_0000002199964685_text1089610893610">保护</span> &gt; 数据库 &gt; PostgreSQL”</span>。</span></li><li><span>选择<span class="uicontrol">“实例”</span>页签。</span></li><li><span>单击<span class="uicontrol">“<span>注册</span>”</span>，注册PostgreSQL。</span></li><li><span><span class="uicontrol">“<span>类型</span>”</span>选择<span class="uicontrol">“<span>单实例</span>”</span>。</span></li><li><span>配置数据库实例及其认证信息。</span><p><p>相关参数说明如<a href="#postgresql-0011__zh-cn_topic_0000001311214069_table241515964115">表1</a>所示。</p>
+
+<div class="tablenoborder"><a name="postgresql-0011__zh-cn_topic_0000001311214069_table241515964115"></a><a name="zh-cn_topic_0000001311214069_table241515964115"></a><table cellpadding="4" cellspacing="0" summary="" id="postgresql-0011__zh-cn_topic_0000001311214069_table241515964115" frame="border" border="1" rules="all"><caption><b>表1 </b>PostgreSQL单实例注册信息</caption><colgroup><col style="width:25.629999999999995%"><col style="width:74.37%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.629999999999995%" id="mcps1.3.2.2.5.2.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.37%" id="mcps1.3.2.2.5.2.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.5.2.2.2.3.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.5.2.2.2.3.1.2 "><p>安装数据库的用户名称，用户自定义。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.5.2.2.2.3.1.1 "><p><span>主机</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.5.2.2.2.3.1.2 "><p>选择要注册的数据库主机。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.5.2.2.2.3.1.1 "><p><span>用户名</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.5.2.2.2.3.1.2 "><p>运行数据库的操作系统用户名，默认为postgres。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.5.2.2.2.3.1.1 "><p><span>数据库安装路径</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.5.2.2.2.3.1.2 "><p>要注册的数据库的安装路径，可以使用PuTTY，登录PostgreSQL数据库主机，通过<strong>ps -ef | grep postgres</strong>查询，如下图所示。</p>
+<p><span><img src="zh-cn_image_0000002228527909.png"></span></p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.5.2.2.2.3.1.1 "><p>数据库归档路径</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.5.2.2.2.3.1.2 "><p>要注册的数据库归档路径。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>通过<strong>su - postgres -c "<em>/usr/local/pgsql/bin/psql</em> -U postgres -h <em>数据库IP</em> -p <em>端口号</em> -d postgres -W -H -c 'show archive_command'"</strong>命令查询归档路径，其中<em>/usr/local/pgsql/bin/psql</em>代表psql脚本的路径，-h参数代表数据库实例所在主机IP，-p参数代表数据库实例的端口号。-h和-p参数可以通过登录CLup数据库管理页面，通过选择<span class="uicontrol">“数据库管理 &gt; 实例列表”</span>进入数据库实例列表界面，登录后获取相关的<span class="uicontrol">“所在主机”</span>和<span class="uicontrol">“端口”</span>。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.5.2.2.2.3.1.1 "><p><span>业务IP地址</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.5.2.2.2.3.1.2 "><p>数据库服务接收TCP/IP连接的主机IP地址，即为注册到<span>OceanProtect</span>上的主机IP地址。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.5.2.2.2.3.1.1 "><p><span>数据库端口</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.5.2.2.2.3.1.2 "><p>数据库服务侦听TCP/IP连接的端口号，默认为5432。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.5.2.2.2.3.1.1 "><p><span>数据库用户名</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.5.2.2.2.3.1.2 "><p>数据库的管理员用户名称，需要向数据库管理员获取。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.629999999999995%" headers="mcps1.3.2.2.5.2.2.2.3.1.1 "><p><span>数据库密码</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.37%" headers="mcps1.3.2.2.5.2.2.2.3.1.2 "><p>数据库管理员用户的密码，需要向数据库管理员获取。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="postgresql-0009.html">备份PostgreSQL</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

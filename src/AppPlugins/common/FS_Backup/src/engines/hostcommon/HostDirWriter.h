@@ -40,8 +40,6 @@ protected:
     HostParams m_params;
     std::thread m_thread;
     bool m_threadDone { false };
-    std::atomic<uint64_t> m_writeTaskProduce { 0 };
-    std::atomic<uint64_t> m_writeTaskConsume { 0 };
     time_t m_isCompleteTimer { 0 };
 
 private:

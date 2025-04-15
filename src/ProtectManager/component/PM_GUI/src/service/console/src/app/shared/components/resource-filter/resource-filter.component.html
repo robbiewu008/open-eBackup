@@ -19,6 +19,8 @@
                 lvTooltipPosition="rightTop" lvTooltipTheme="light" class="configform-constraint"
                 lvColorState='true'></i>
         </lv-form-label>
+        <lv-alert lvType="warning" *ngIf="isOsBackup"><span
+                innerHTML="{{'protection_fileset_os_backup_filter_tip_label' | i18n}}"></span></lv-alert>
         <lv-form-control class="control-container filter-check-container">
             <label lv-checkbox formControlName="fileCheck">{{'common_files_label' | i18n}}</label>
             <div *ngIf="formGroup.get('fileCheck').value" class="condition-container">

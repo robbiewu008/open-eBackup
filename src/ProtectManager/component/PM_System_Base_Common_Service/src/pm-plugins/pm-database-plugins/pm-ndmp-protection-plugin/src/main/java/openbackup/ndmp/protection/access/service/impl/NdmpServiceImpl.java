@@ -12,6 +12,14 @@
 */
 package openbackup.ndmp.protection.access.service.impl;
 
+import static openbackup.data.protection.access.provider.sdk.resource.ResourceConstants.AGENT_IP_LIST;
+
+import com.huawei.oceanprotect.nas.protection.access.service.StorageAgentService;
+
+import com.google.common.base.Joiner;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.access.framework.resource.service.provider.UnifiedClusterResourceIntegrityChecker;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
@@ -30,24 +38,27 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceConnectionCheckProvider;
+import openbackup.data.protection.access.provider.sdk.resource.ResourceConstants;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
+import openbackup.data.protection.access.provider.sdk.resource.model.AgentTypeEnum;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
-import com.huawei.oceanprotect.nas.protection.access.service.StorageAgentService;
 import openbackup.ndmp.protection.access.constant.NdmpConstant;
 import openbackup.ndmp.protection.access.service.NdmpService;
+import openbackup.system.base.bean.NetWorkConfigInfo;
+import openbackup.system.base.bean.NetWorkLogicIp;
 import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.constants.Constants;
 import openbackup.system.base.common.constants.SymbolConstant;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.exception.LegoUncheckedException;
 import openbackup.system.base.common.utils.ExceptionUtil;
 import openbackup.system.base.common.utils.VerifyUtil;
+import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
+import openbackup.system.base.service.NetworkService;
 import openbackup.system.base.util.BeanTools;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -64,6 +75,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -88,6 +100,9 @@ public class NdmpServiceImpl implements NdmpService {
 
     @Autowired
     private ProtectedEnvironmentService protectedEnvironmentService;
+
+    @Autowired
+    private NetworkService networkService;
 
     /**
      * NDMP 应用基本的Service有参构造方法
@@ -348,6 +363,7 @@ public class NdmpServiceImpl implements NdmpService {
                 AgentBaseDto response = agentService.checkApplication(environment, protectedEnvironment);
                 if (!VerifyUtil.isEmpty(response) && NdmpConstant.SUCCESS.equals(response.getErrorCode())) {
                     availableAgents.add(protectedEnvironment);
+                    getNdmpType(environment, response);
                 }
             } catch (FeignException | LegoUncheckedException | LegoCheckedException e) {
                 log.warn("get StandByAlarm failed!message", ExceptionUtil.getErrorMessage(e));
@@ -357,6 +373,15 @@ public class NdmpServiceImpl implements NdmpService {
         return availableAgents;
     }
 
+    private void getNdmpType(ProtectedEnvironment environment, AgentBaseDto response) {
+        Map msg = JsonUtil.read(Optional.ofNullable(response.getErrorMessage()).orElse("{}"),
+            HashMap.class);
+        if (StringUtils.isNotEmpty(String.valueOf(msg.get(NdmpConstant.TYPE)))) {
+            environment.getExtendInfo()
+                .put(NdmpConstant.NDMP_TYPE, String.valueOf(msg.get(NdmpConstant.TYPE)));
+        }
+    }
+
     @Override
     public List<Endpoint> getAgents(String parentUuid, String agents) {
         String[] agentIds = agents.split(SymbolConstant.SEMICOLON);
@@ -364,7 +389,7 @@ public class NdmpServiceImpl implements NdmpService {
         for (String agentUuid : agentIds) {
             Optional<ProtectedResource> agentResourceOpt = resourceService.getResourceByIdIgnoreOwner(agentUuid);
             if (agentResourceOpt.isPresent()) {
-                log.error("agent not exist. agent uuid: {}.", agentUuid);
+                log.info("agent exist. agent uuid: {}.", agentUuid);
                 agentList.add(agentResourceOpt.get());
             }
         }
@@ -376,9 +401,21 @@ public class NdmpServiceImpl implements NdmpService {
             .collect(Collectors.toList());
         List<Endpoint> endpoints = getEndpointList(StringUtils.join(agentIdStrs, SymbolConstant.SEMICOLON));
         if (CollectionUtils.isNotEmpty(endpoints)) {
-            Endpoint endpoint = endpoints.stream()
+            Endpoint endpoint = endpoints
+                .stream()
                 .skip(new Random().nextInt(endpoints.size()))
                 .findFirst()
+                .map(end -> {
+                    ProtectedResource agent = resourceService.getResourceByIdIgnoreOwner(end.getId())
+                        .orElseThrow(
+                            () -> new LegoCheckedException(CommonErrorCode.RESOURCE_IS_NOT_EXIST, "agent not exist."));
+                    if (AgentTypeEnum.INTERNAL_AGENT.getValue()
+                        .equals(agent.getExtendInfoByKey(ResourceConstants.AGENT_TYPE_KEY))) {
+                        String multiIp = getMultiIp(agent);
+                        end.setAdvanceParamsByKey(NdmpConstant.MULTI_IP, multiIp);
+                    }
+                    return end;
+                })
                 .orElse(null);
             return Arrays.asList(endpoint);
         }
@@ -414,5 +451,30 @@ public class NdmpServiceImpl implements NdmpService {
         return agentResourceOpt.filter(resource -> resource instanceof ProtectedEnvironment)
             .map(resource -> (ProtectedEnvironment) resource)
             .map(env -> new Endpoint(env.getUuid(), env.getEndpoint(), env.getPort()));
+    }
+
+    /**
+     * 获取多平面ip
+     *
+     * @param agent 代理
+     * @return ip
+     */
+    private String getMultiIp(ProtectedResource agent) {
+        String agentIpList = agent.getExtendInfoByKey(AGENT_IP_LIST);
+        List<NetWorkConfigInfo> netWorkList = networkService.getNetWork(Constants.BACKUP_NET_PLANE);
+
+        // 得到每一控的备份网络，去匹配内置agent的ip，匹配上了说明同控
+        AtomicReference<String> multiIps = new AtomicReference<>();
+        netWorkList.forEach(netWorkConfigInfo -> {
+            List<String> list = netWorkConfigInfo.getLogicIpList().stream()
+                .map(NetWorkLogicIp::getIp).collect(Collectors.toList());
+            for (String ip : list) {
+                if (!agentIpList.contains(ip)) {
+                    return;
+                }
+            }
+            multiIps.set(Joiner.on(",").join(list));
+        });
+        return multiIps.get();
     }
 }

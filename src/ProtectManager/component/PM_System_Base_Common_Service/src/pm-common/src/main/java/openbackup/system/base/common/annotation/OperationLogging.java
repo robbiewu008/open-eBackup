@@ -13,7 +13,6 @@
 package openbackup.system.base.common.annotation;
 
 import openbackup.system.base.common.constants.FaultEnum;
-
 import openbackup.system.base.security.journal.Logging;
 
 import java.lang.annotation.Documented;

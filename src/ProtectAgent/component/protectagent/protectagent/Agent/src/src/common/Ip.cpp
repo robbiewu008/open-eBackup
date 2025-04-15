@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "common/Ip.h"
 #include <sstream>
 #include <fstream>
@@ -18,6 +30,8 @@
 #include "common/Path.h"
 #include "common/File.h"
 #include "common/Utils.h"
+#include "common/JsonUtils.h"
+#include "common/JsonHelper.h"
 #include "common/CSystemExec.h"
 #include "message/tcp/CSocket.h"
 
@@ -206,6 +220,13 @@ mp_int32 CIP::GetUnixHostIPList(std::vector<mp_string>& ipv4List, std::vector<mp
             mp_string str(temp);
             mp_int32 pos = str.find("%");
             mp_string ipv6 = str.substr(0, pos);
+            pos = ipv6.find("/");
+            mp_string ipv6Str = ipv6.substr(0, pos);
+            if (ipv6Str == "::" || ipv6Str == "::1") {
+                continue;
+            }
+            pos = ipv6.find(" ");
+            ipv6 = ipv6.substr(0, pos);
             ipv6List.push_back(ipv6);
         }
     }
@@ -572,7 +593,7 @@ mp_string CIP::ParseIPv6(const std::string& ip, bool delOrAddSign)
     return ipTmp;
 }
 
-// nginxListenPort -- 类似“listen       100.136.139.220:59526 ssl;”输入
+// nginxListenPort -- 类似“listen {ip}:{port} ssl;”输入
 mp_void CIP::GetListenPort(const mp_string& nginxListenPort, mp_string& strPort)
 {
     strPort = "";
@@ -743,7 +764,13 @@ mp_int32 CIP::GetApplications(mp_string& applications)
         ERRLOG("The testcfg.tmp file can't open");
         return MP_FAILED;
     }
+    mp_string pkgText = "PKG_CONF_PATH=";
+    mp_string sanClient = "sanclient";
     while (getline(stream, line)) {
+        if (line.find(pkgText.c_str()) != std::string::npos && line.find(sanClient.c_str()) != std::string::npos) {
+            INFOLOG("No need to get applications for sanClient.");
+            return MP_SUCCESS;
+        }
         if (line.find(strText.c_str()) != std::string::npos) {
             strApplicationText = line;
             break;
@@ -755,8 +782,33 @@ mp_int32 CIP::GetApplications(mp_string& applications)
         ERRLOG("The testcfg.tmp file format error");
         return MP_FAILED;
     }
-    applications = strApplicationText.substr(start + 1);
- 
+    return GetApplicationJson(strApplicationText.substr(start + 1), applications);
+}
+
+mp_int32 CIP::GetApplicationJson(const mp_string& applicationText, mp_string& applications)
+{
+    Json::Value menuJson;
+    JsonHelper::JsonStringToJsonValue(applicationText, menuJson);
+    if (!menuJson.isMember("menus") || !menuJson["menus"].isArray()) {
+        ERRLOG("Json is not array");
+        return MP_FAILED;
+    }
+    Json::Value menuArray = menuJson["menus"];
+    mp_uint32 uiSize = menuArray.size();
+    for (mp_uint32 i = 0; i < uiSize; i++) {
+        if (!menuArray[i].isMember("applications") || !menuArray[i]["applications"].isArray()) {
+            continue;
+        }
+        Json::Value appArray = menuArray[i]["applications"];
+        mp_uint32 appSize = appArray.size();
+        for (mp_uint32 j = 0; j < appSize; j++) {
+            if (!appArray[j].isMember("appValue")) {
+                continue;
+            }
+            applications.append(appArray[j]["appValue"].asString());
+        }
+    }
+    DBGLOG("Applications : %s", applications.c_str());
     return MP_SUCCESS;
 }
 

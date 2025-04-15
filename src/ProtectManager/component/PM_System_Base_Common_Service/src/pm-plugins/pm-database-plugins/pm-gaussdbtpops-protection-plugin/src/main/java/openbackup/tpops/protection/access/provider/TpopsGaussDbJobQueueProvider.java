@@ -12,12 +12,15 @@
 */
 package openbackup.tpops.protection.access.provider;
 
+import com.huawei.oceanprotect.job.sdk.JobQueueProvider;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.copy.mng.constant.CopyPropertiesKeyConstant;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.database.base.plugin.common.DatabaseConstants;
-import com.huawei.oceanprotect.job.sdk.JobQueueProvider;
 import openbackup.system.base.common.model.job.Job;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.common.utils.JSONObject;
@@ -26,9 +29,6 @@ import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.job.model.request.JobMessage;
 import openbackup.system.base.sdk.job.model.request.JobSchedulePolicy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.shaded.com.google.common.collect.ImmutableSet;
@@ -54,6 +54,10 @@ public class TpopsGaussDbJobQueueProvider implements JobQueueProvider {
 
     private static final String KEY_QUEUE_JOB_TYPE = "tpops_job_type";
 
+    private static final String TARGET_ENV = "targetEnv";
+
+    private static final String ROOT_UUID = "rootUuid";
+
     private static final String RESTORE_TO_LOCAL_POSITION = "Local";
 
     /**
@@ -66,8 +70,6 @@ public class TpopsGaussDbJobQueueProvider implements JobQueueProvider {
 
     @Override
     public boolean applicable(Job object) {
-        log.info("TpopsGaussDbJobQueueProvider get getSourceSubType: {}", object.getSourceSubType());
-        log.info("TpopsGaussDbJobQueueProvider get getType: {}", object.getType());
         return ResourceSubTypeEnum.TPOPS_GAUSSDB_INSTANCE.equalsSubType(object.getSourceSubType())
             && ALLOWED_JOB_TYPE.contains(object.getType());
     }
@@ -109,11 +111,15 @@ public class TpopsGaussDbJobQueueProvider implements JobQueueProvider {
             .orElse(new JobMessage());
         JSONObject payload = Optional.ofNullable(jobMessage.getPayload()).orElse(new JSONObject());
         payload.put(KEY_QUEUE_JOB_TYPE, job.getType());
-
         // pm传下来的参数，项目ID可能为空，用实例ID的root uuid 作为项目ID
         String projectId = payload.getString(CopyPropertiesKeyConstant.KEY_RESOURCE_PROPERTIES_ROOT_UUID);
+        JSONObject targetEnv = Optional.ofNullable(payload.getJSONObject(TARGET_ENV)).orElse(new JSONObject());
+        if (StringUtils.isEmpty(projectId)) {
+            projectId = targetEnv.getString(ROOT_UUID);
+        }
         if (StringUtils.isEmpty(projectId)) {
             String resourceUuid = job.getSourceId();
+            log.info("resourceUuid is {}", resourceUuid);
             Optional<ProtectedResource> resourceOptional = resourceService.getBasicResourceById(resourceUuid);
             if (resourceOptional.isPresent()) {
                 projectId = resourceOptional.get().getRootUuid();
@@ -126,6 +132,7 @@ public class TpopsGaussDbJobQueueProvider implements JobQueueProvider {
         if (!StringUtils.equals(RESTORE_TO_LOCAL_POSITION, job.getTargetLocation())) {
             log.info("TpopsGaussDbJobQueueProvider getCustomizedSchedulePolicy targetObject {}", job.getTargetName());
             HashMap<String, Object> conditions = new HashMap<>();
+            log.info("TpopsGaussDbJobQueueProvider getCustomizedSchedulePolicy target projectId is {}", projectId);
             conditions.put(DatabaseConstants.PARENT_UUID, projectId);
             conditions.put(DatabaseConstants.NAME, job.getTargetName());
             PageListResponse<ProtectedResource> result = resourceService

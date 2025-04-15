@@ -92,6 +92,20 @@ public:
     EXTER_ATTACK virtual void AllowBackupSubJobInLocalNode(
         ActionResult& returnValue, const AppProtect::BackupJob& job, const AppProtect::SubJob& subJob) override;
 
+	/**
+    * Function description
+    *		Query the repositories needed to be scanned
+	* Parameters
+	* 		job : backup job information
+    * 		ScanRepositories : return the repositories needed to be scanned.
+	* Return value
+    * 		return the repositories needed to be scanned.
+	* @param job
+	* @param scanRepositories
+    */
+    EXTER_ATTACK virtual void QueryScanRepositories(AppProtect::ScanRepositories& scanRepositories,
+        const AppProtect::BackupJob& job);
+
     /**
     * Function description
     *     query job permission, synchronization function

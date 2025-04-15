@@ -30,6 +30,7 @@ from common.err_code import CommErrCode
 from common.exception.common_exception import ErrCodeException
 from common.file_common import check_file_or_dir, get_user_info, exec_lchown
 from common.number_const import NumberConst
+from common.security.anonym_utils.anonymity import Anonymity
 from common.util.check_user_utils import check_path_owner, check_os_user
 from common.util.check_utils import check_param_chars_no_quote, check_dir_path, check_file_path, check_real_path, \
     check_dir_path_without_check_mode
@@ -52,7 +53,7 @@ LINUX_CMD_WHITE_LIST = (
     f"{get_install_head_path()}/DataBackup/ProtectClient/ProtectClient-E/bin/agentcli"
 )
 LINUX_PROFILE_WHITE_LIST = ("/etc/profile",)
-LINUX_SHELL_WHITE_LIST = ("/bin/bash", "/bin/sh")
+LINUX_SHELL_WHITE_LIST = ("/bin/bash", "/bin/sh", "/bin/csh")
 LOGGER = Logger().get_logger()
 # Linux系统临时命令提示符
 TEMP_PROMPT = r"\[PEXPECT\][\$\#]"
@@ -61,7 +62,9 @@ SIZE_1_G = 1073741824
 
 class ExecFuncParam:
     def __init__(self, os_user: str, cmd_list: List[str], fmt_params_list: List[List], timeout: int = None,
-                 env_file_list: List[str] = None, shell_file: str = None, chk_exe_owner: bool = True):
+                 env_file_list: List[str] = None, shell_file: str = None, chk_exe_owner: bool = True,
+                 treat_as_error_echo_list: List[str] = None, need_input_password_echo_list: List[str] = None,
+                 password: str = None):
         """
         :param os_user: 操作系统用户名
         :param cmd_list: 命令列表，例：["python3 {zctl_file} -t {t_p}", "ls -l"]
@@ -75,6 +78,9 @@ class ExecFuncParam:
         :param env_file_list: 环境变量文件列表
         :param shell_file: shell文件
         :param chk_exe_owner: 是否校验可执行文件的用户
+        :param treat_as_error_echo_list: 视为错误的回显，出现就视为命令执行失败
+        :param need_input_password_echo_list: 需要输入密码场景的回显
+        :param password: 需要输入密码场景下的键入密码
         """
         self.os_user = os_user
         self.cmd_list = cmd_list
@@ -83,6 +89,9 @@ class ExecFuncParam:
         self.env_file_list = env_file_list or list()
         self.shell_file = shell_file
         self.chk_exe_owner = chk_exe_owner
+        self.treat_as_error_echo_list = treat_as_error_echo_list
+        self.need_input_password_echo_list = need_input_password_echo_list
+        self.password = password
 
 
 class WriteFileParam:
@@ -173,6 +182,18 @@ def _temp_change_prompt(ssh):
     """临时修改命令提示符"""
     ssh.sendline("unset PROMPT_COMMAND")
     change_ps_cmd = r"PS1='[PEXPECT]\$ '"
+    ssh.sendline(change_ps_cmd)
+    index = ssh.expect([TEMP_PROMPT, pexpect.EOF, pexpect.TIMEOUT], timeout=NumberConst.TEN)
+    if index != 0:
+        out = ssh.before
+        LOGGER.error("Execute command(%s) failed, index: %s, out: %s.", change_ps_cmd, index, out)
+        raise ErrCodeException(CommErrCode.FAILED_EXECUTE_COMMAND, *[change_ps_cmd, out])
+
+
+def _temp_change_prompt_csh(ssh):
+    """临时修改命令提示符"""
+    ssh.sendline("unset PROMPT_COMMAND")
+    change_ps_cmd = r"set prompt='[PEXPECT]\$ '"
     ssh.sendline(change_ps_cmd)
     index = ssh.expect([TEMP_PROMPT, pexpect.EOF, pexpect.TIMEOUT], timeout=NumberConst.TEN)
     if index != 0:
@@ -357,6 +378,23 @@ def get_exe_abs_path(os_user: str, exe: str, shell_file: str = None):
     return exe_abs_path
 
 
+def handle_extended_scenarios(ssh, param, expect_list):
+    if param.treat_as_error_echo_list:
+        expect_list = expect_list[:1] + param.treat_as_error_echo_list + expect_list[1:]
+    if param.need_input_password_echo_list:
+        index = ssh.expect(expect_list + param.need_input_password_echo_list,
+                           timeout=param.timeout)
+        if index in range(len(expect_list), len(expect_list) + len(param.need_input_password_echo_list)):
+            if param.password:
+                ssh.sendline(param.password)
+            else:
+                ssh.sendline()
+            index = ssh.expect(expect_list, timeout=param.timeout)
+    else:
+        index = ssh.expect(expect_list, timeout=param.timeout)
+    return index
+
+
 def su_exec_cmd_list(param: ExecFuncParam):
     """
     切换用户交互式执行命令
@@ -373,12 +411,16 @@ def su_exec_cmd_list(param: ExecFuncParam):
             out = ssh.before
             LOGGER.error("Execute command(%s) failed, index: %s, out: %s.", su_cmd, index, out)
             raise ErrCodeException(CommErrCode.FAILED_EXECUTE_COMMAND, *[su_cmd, out])
-        _temp_change_prompt(ssh)
+        if param.shell_file == "/bin/csh":
+            _temp_change_prompt_csh(ssh)
+        else:
+            _temp_change_prompt(ssh)
+        expect_list = [TEMP_PROMPT, pexpect.EOF, pexpect.TIMEOUT]
         # 存在环境变量，先导环境变量
         if param.env_file_list:
             source_cmd = " && ".join([f"source {i}" for i in param.env_file_list])
             ssh.sendline(source_cmd)
-            index = ssh.expect([TEMP_PROMPT, pexpect.EOF, pexpect.TIMEOUT], timeout=NumberConst.THIRTY)
+            index = ssh.expect(expect_list, timeout=NumberConst.THIRTY)
             if index != 0:
                 out = ssh.before
                 LOGGER.error("Execute command(%s) failed, index: %s, out: %s.", source_cmd, index, out)
@@ -391,14 +433,17 @@ def su_exec_cmd_list(param: ExecFuncParam):
             fmt_cmd_list.append(fmt_cmd)
         cmd_str = " && ".join(fmt_cmd_list)
         ssh.sendline(cmd_str)
-        index = ssh.expect([TEMP_PROMPT, pexpect.EOF, pexpect.TIMEOUT], timeout=param.timeout)
+        index = handle_extended_scenarios(ssh, param, expect_list)
         if index != 0:
             out = ssh.before
-            LOGGER.error("Execute command(%s) failed, index: %s, out: %s.", cmd_str, index, out)
+            LOGGER.error("Execute command(%s) failed, index: %s, out: %s.", Anonymity.process(cmd_str), index, out)
             raise ErrCodeException(CommErrCode.FAILED_EXECUTE_COMMAND, *[cmd_str, out])
         last_before = _handle_output(ssh.before, cmd_str)
         ssh.close()
-        return str(ssh.exitstatus), last_before
+        if param.shell_file == "/bin/csh":
+            return str(index), last_before
+        else:
+            return str(ssh.exitstatus), last_before
     finally:
         if ssh:
             ssh.close()
@@ -576,7 +621,7 @@ def exec_umount_cmd(mount_path: str, option: str = None):
     return execute_cmd(cmd)
 
 
-def check_path_valid(check_path, is_check_white_list: bool = True):
+def check_path_valid(check_path, is_check_white_list: bool = True, is_check_real_path: bool = True):
     """
     对指定路径进行校验
     1、如果有特殊字符直接返回失败
@@ -587,7 +632,7 @@ def check_path_valid(check_path, is_check_white_list: bool = True):
     if re.search(expression, check_path):
         LOGGER.error(f"Path: {check_path} contains special characters.")
         return False
-    if not check_real_path(check_path):
+    if is_check_real_path and not check_real_path(check_path):
         LOGGER.error(f"Path: {check_path} is not real Path")
         return False
     if is_check_white_list:
@@ -641,9 +686,11 @@ def exec_mkdir_cmd(dir_path: str, os_user: str = None, mode=None, is_check_white
     return True
 
 
-def exec_cp_cmd(src_path, dest_path, user_name=None, option='-rp', is_check_white_list: bool = True):
+def exec_cp_cmd(src_path, dest_path, user_name=None, option='-rp', is_check_white_list=True,
+                is_check_path_owner=True):
     """
     复制文件到指定路径 默认指定路径存在文件会覆盖
+    :param is_check_path_owner: 是否检查路径属主
     :param src_path: 源文件路径 文件夹或着文件均可以
     :param dest_path: 目标路径 文件夹或这文件均可以
     :param user_name: 用户名
@@ -668,12 +715,13 @@ def exec_cp_cmd(src_path, dest_path, user_name=None, option='-rp', is_check_whit
             LOGGER.error(f"Use user copy file failed src path: {src_path} des path: {dest_path}, error: {std_err}")
             return False
         return True
-    if not check_path_owner(src_path, [user_name]):
-        LOGGER.error("The owner of src_path: %s is not %s.", src_path, user_name)
-        return False
-    if os.path.exists(dest_path) and not check_path_owner(dest_path, [user_name]):
-        LOGGER.error("The owner of desc_path: %s is not %s.", dest_path, user_name)
-        return False
+    if is_check_path_owner:
+        if not check_path_owner(src_path, [user_name]):
+            LOGGER.error("The owner of src_path: %s is not %s.", src_path, user_name)
+            return False
+        if os.path.exists(dest_path) and not check_path_owner(dest_path, [user_name]):
+            LOGGER.error("The owner of desc_path: %s is not %s.", dest_path, user_name)
+            return False
     if not option:
         cmd = f"su - {user_name} -c 'cp {src_path} {dest_path}'"
     else:
@@ -705,7 +753,7 @@ def exec_cp_dir_no_user(src_path, dest_path, option='-rp', is_check_white_list: 
 
     LOGGER.info("Use default user copy file")
     if is_overwrite:
-        cp_file = "/bin/cp"
+        cp_file = "/bin/cp -f"
     else:
         cp_file = "cp"
 

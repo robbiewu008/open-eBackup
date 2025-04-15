@@ -24,6 +24,7 @@
 #include "volume_handlers/common/DiskCommDef.h"
 #include "SessionCache.h"
 #include "curl_http/HttpClientInterface.h"
+#include "common/Structs.h"
 
 namespace VirtPlugin {
 namespace ApiErrorCode {
@@ -73,6 +74,8 @@ const int32_t FC_INITIATOR_NOTIN = 1077950342;  // same to iscsi
 const int32_t OBJECT_NOTEXIST = 1077948996;
 const int32_t V3_IS_BUSY = 1073793588;
 const int32_t V3_SYSTEM_BUSY = 1077949006;
+const int32_t LUN_MAPPED_SAME_HOST = 1077936864;
+const int32_t RETURN_OM_AUTH_CONNECT_FAILED = 1077949069;
 const int32_t UNAUTH = -401;
 };  // namespace ApiErrorCode
 
@@ -124,6 +127,7 @@ public:
     {
         return Module::SUCCESS;
     }
+    void ClearCacheSession();
     virtual void SetDeviceInfo(const ControlDeviceInfo &info);
     virtual StorageSessionInfo Login(std::string &errorDes);
     virtual int32_t Logout(StorageSessionInfo sessionInfo);
@@ -213,7 +217,7 @@ public:
     virtual int32_t DeleteLunGroupByID(const std::string &lunGroupID, std::string &errorDes);
     virtual int32_t DeleteHostByID(const std::string &hostID, std::string &errorDes);
     virtual bool CheckIscsiIsLogined(const std::vector<std::string> &targetIps);
-    virtual bool CheckContain(const std::string &strTarget, std::vector<std::string> &loginIP);
+    virtual bool CheckContain(const std::string &strTarget, const std::vector<IscsiSessionStatus> &loginedSessions);
     virtual int32_t GetLunGroupByName(const std::string &lunGroupName, LunGroupMO &lunGroupMO,
         std::string &errorDes);
     virtual int32_t InitMappingNameInfo();
@@ -228,6 +232,9 @@ public:
         std::vector<std::string> &objIds, std::string &errorDes);
     virtual int32_t RemoveObjFromLunGroupExp(const std::string& lunGroupName, const std::string& objId,
         MO_TYPE objType);
+    virtual int32_t RemovedObjFromAllLunGroup(const std::string &objId, MO_TYPE objType, std::string &errorDes);
+    virtual int32_t GetLunGroupsByObjId(const std::string& objId, MO_TYPE objType,
+        std::vector<std::string> &lunGroupIds, std::string &errorDes);
     virtual int32_t GetHostGroupFromMappingView(const std::string &mapViewID, HostGroupMO &hostGroupMO,
         std::string &errorDes);
     virtual int32_t GetLunGroupFromMappingView(const std::string &mapViewID, LunGroupMO &lunGroupMO,
@@ -241,6 +248,12 @@ public:
     void SetRetry(const bool retry);
     void SetCurlTimeOut(const uint64_t &curlTimeOut);
     int32_t TestIscsiTargetIpConnect();
+    int32_t QueryStoragePoolUsedRate(double &usedCapacityRate);
+    int32_t TestFcConnect();
+    void SetOpService(bool isOpService)
+    {
+        m_isOpService = isOpService;
+    }
 
 private:
     std::string FormatFullUrl(const std::string &fullUrl);
@@ -277,6 +290,9 @@ protected:
     std::string m_hostGroupID;
     std::string m_mappingViewName;
     std::string m_mappingViewID;
+    bool m_initMappingNameInfo {false};
+    bool m_isOpService {false};
+    std::string m_iscsiIqnName = "";
 };
 }
 #endif  // API_OPERATOR_H

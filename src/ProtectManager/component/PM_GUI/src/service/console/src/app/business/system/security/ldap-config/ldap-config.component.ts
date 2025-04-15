@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -19,6 +19,8 @@ import {
   FormGroup,
   ValidatorFn
 } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { MessageService } from '@iux/live';
 import {
   BaseUtilService,
@@ -27,6 +29,7 @@ import {
   DataMapService,
   I18NService,
   LDAPAPIService,
+  RouterUrl,
   WarningMessageService
 } from 'app/shared';
 import { LdapConfigRequest } from 'app/shared/api/models/ldap-config-request';
@@ -56,10 +59,18 @@ export class LdapConfigComponent implements OnInit {
   isCyberEngine =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.cyberengine.value;
 
-  serviceTypeOptions = this.dataMapService.toArray('ldapService').map(item => {
-    item['isLeaf'] = true;
-    return item;
-  });
+  serviceTypeOptions = this.dataMapService
+    .toArray('ldapService')
+    .filter(item => {
+      if (this.isCyberEngine) {
+        return !includes([DataMap.ldapService.windowsAd.value], item.value);
+      }
+      return true;
+    })
+    .map(item => {
+      item['isLeaf'] = true;
+      return item;
+    });
   protocolOptions = this.dataMapService.toArray('ldapProtocol').map(item => {
     item['isLeaf'] = true;
     return item;
@@ -120,6 +131,8 @@ export class LdapConfigComponent implements OnInit {
     invalidMaxLength: this.i18n.get('common_valid_maxlength_label', [63])
   };
 
+  openCertificateTip;
+
   constructor(
     private fb: FormBuilder,
     private i18n: I18NService,
@@ -127,8 +140,24 @@ export class LdapConfigComponent implements OnInit {
     private dataMapService: DataMapService,
     private messageService: MessageService,
     private baseUtilService: BaseUtilService,
-    private warningMessageService: WarningMessageService
-  ) {}
+    private warningMessageService: WarningMessageService,
+    private sanitizer: DomSanitizer,
+    public router: Router
+  ) {
+    this.openCertificateTip = this.sanitizer.bypassSecurityTrustHtml(
+      i18n.get('system_ldap_certificate_tip_label')
+    );
+  }
+
+  openCertificateLink() {
+    const openCertificate = document.querySelector('#open-certificate');
+    if (!openCertificate) {
+      return;
+    }
+    openCertificate.addEventListener('click', () => {
+      this.router.navigateByUrl(RouterUrl.SystemSecurityCertificate);
+    });
+  }
 
   onChange() {
     this.initLdap();
@@ -327,6 +356,10 @@ export class LdapConfigComponent implements OnInit {
         defer(() => this.getDomain(res));
       }
     });
+
+    this.formGroup
+      .get('protocol')
+      .valueChanges.subscribe(res => defer(() => this.openCertificateLink()));
   }
 
   addIp() {
@@ -345,8 +378,8 @@ export class LdapConfigComponent implements OnInit {
   }
 
   initLdap() {
-    this.ldapApiService.queryLdapConfig({}).subscribe(
-      (res: any) => {
+    this.ldapApiService.queryLdapConfig({}).subscribe({
+      next: (res: any) => {
         this.hasConfig = !isEmpty(res);
         this.ldapServiceStatus = res?.ldapEnable;
         this.ladapCheckCn = res?.ldapCheckCn;
@@ -469,7 +502,7 @@ export class LdapConfigComponent implements OnInit {
         };
         this.formGroup.patchValue(formParams);
       },
-      () => {
+      error: () => {
         this.serviceItems = [
           {
             label: this.i18n.get('system_service_type_label'),
@@ -520,7 +553,7 @@ export class LdapConfigComponent implements OnInit {
         ];
         this.userGroupOn = false;
       }
-    );
+    });
   }
 
   ldapServiceChange() {
@@ -536,6 +569,7 @@ export class LdapConfigComponent implements OnInit {
               .subscribe(() => {
                 this.viewSettingFlag = true;
                 this.ldapServiceStatus = false;
+                this.initLdap();
               });
           }
         });
@@ -544,20 +578,8 @@ export class LdapConfigComponent implements OnInit {
         this.ldapServiceStatus = false;
       }
     } else {
-      if (this.hasConfig) {
-        this.ldapApiService
-          .changeLdapConfig({
-            isLdapEnable: true
-          })
-          .subscribe(() => {
-            this.viewSettingFlag = true;
-            this.ldapServiceStatus = true;
-            this.initLdap();
-          });
-      } else {
-        this.viewSettingFlag = true;
-        this.ldapServiceStatus = true;
-      }
+      this.viewSettingFlag = true;
+      this.ldapServiceStatus = true;
     }
   }
 
@@ -637,8 +659,8 @@ export class LdapConfigComponent implements OnInit {
   test() {
     this.ldapApiService
       .testLdapConfig({ ldapConfig: this.getParams(), akOperationTips: false })
-      .subscribe(
-        () => {
+      .subscribe({
+        next: () => {
           this.hasTest = true;
           this.messageService.success(
             this.i18n.get('common_operate_success_label'),
@@ -648,10 +670,10 @@ export class LdapConfigComponent implements OnInit {
             }
           );
         },
-        () => {
+        error: () => {
           this.hasTest = false;
         }
-      );
+      });
   }
 
   save() {

@@ -146,8 +146,10 @@ public:
 private:
     DirCacheParser::Header m_header {};        /* File header info */
     std::string m_dcacheFileParentDir {};            /* Parent Dir of DCache File */
-    std::priority_queue<DirCache, std::vector<DirCache>, DirCacheParser::Comparator> m_dirCacheQueue {}; /* Sorted queue */
-    std::priority_queue<DirCache, std::vector<DirCache>, DirCacheParser::ComparatorV20> m_dirCacheQueueV20 {}; /* Sorted queue */
+    std::priority_queue<DirCache, std::vector<DirCache>,
+        DirCacheParser::Comparator> m_dirCacheQueue {}; /* Sorted queue */
+    std::priority_queue<DirCache, std::vector<DirCache>,
+        DirCacheParser::ComparatorV20> m_dirCacheQueueV20 {}; /* Sorted queue */
 
 
     CTRL_FILE_RETCODE OpenWrite() override;

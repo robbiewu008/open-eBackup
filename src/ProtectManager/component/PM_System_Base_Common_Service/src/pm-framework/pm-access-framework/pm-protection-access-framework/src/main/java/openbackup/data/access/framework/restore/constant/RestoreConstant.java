@@ -46,4 +46,14 @@ public class RestoreConstant {
      * 恢复的目标位置 key
      */
     public static final String RESTORE_LOCATION = "restoreLocation";
+
+    /**
+     * 归档导入恢复esn key
+     */
+    public static final String CERTAIN_DEVICE_RESTORE_ESN = "importRestoreEsn";
+
+    /**
+     * 归档导入存储池 key
+     */
+    public static final String CERTAIN_DEVICE_RESTORE_POOL = "importRestorePool";
 }

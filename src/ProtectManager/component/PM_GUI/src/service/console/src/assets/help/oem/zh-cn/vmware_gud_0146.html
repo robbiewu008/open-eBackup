@@ -1,0 +1,60 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="备份虚拟机时，虚拟机所在ESXi主机配置了NFC backup属性的VMKernel网卡，导致备份任务失败">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="vmware_gud_0115.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="vmware_gud_0146">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>备份虚拟机时，虚拟机所在ESXi主机配置了NFC backup属性的VMKernel网卡，导致备份任务失败</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="vmware_gud_0146"></a><a name="vmware_gud_0146"></a>
+  <h1 class="topictitle1">备份虚拟机时，虚拟机所在ESXi主机配置了NFC backup属性的VMKernel网卡，导致备份任务失败</h1>
+  <div>
+   <div class="section">
+    <h4 class="sectiontitle">现象描述</h4>
+    <p>虚拟机备份或磁盘备份时，备份任务失败。任务详情提示“通知客户端完成磁盘备份任务失败”，客户端所在主机日志中出现“Failed to connect to <em>xxx.xxx.xxx.xxx</em>:902”错误。其中<em>xxx.xxx.xxx.xxx</em>为虚拟机所在ESXi主机上NFC backup属性的VMKernel网卡IP地址。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">可能原因</h4>
+    <p>使用Hot-Add/NBD/NBDSSL传输模式时，如果虚拟机所在ESXi主机配置了NFC backup属性的VMKernel网卡，NFC流量会转发到该专用网卡上。客户端所在主机与该网卡IP地址不连通，导致VDDK调用失败，备份失败。</p>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">处理步骤</h4>
+    <p>客户端网络规划时，若目标虚拟机所在ESXi主机设置了NFC backup属性的VMKernel网卡，请确保客户端所在主机到该VMKernel网卡的网络连通。</p>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="vmware_gud_0115.html">常见问题</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

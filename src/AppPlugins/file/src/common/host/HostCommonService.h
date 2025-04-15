@@ -69,11 +69,13 @@ protected:
         }
         AddLogDetail(logDetail, logLabel, std::get<0>(reportInfo), logArgs...);
         AddErrCode(logDetail, errCode);
+        logDetail.__set_additionalDesc(std::vector<std::string>{m_errMsg});
         if (m_dataSize != 0) {
             subJobDetails.__set_dataSize(m_dataSize);
         }
-        INFOLOG("Enter ReportJobDetails: jobId: %s, subJobId: %s, jobStatus: %d, logLabel: %s, errCode: %d, speed: %d",
-            m_jobId.c_str(), m_subJobId.c_str(), static_cast<int>(jobStatus), logLabel.c_str(), errCode, m_jobSpeed);
+        INFOLOG("Enter ReportJobDetails: jobId: %s, subJobId: %s, jobStatus: %d, logLabel: %s, errCode: %d, errMsg: %s,"
+            " speed: %d", m_jobId.c_str(), m_subJobId.c_str(), static_cast<int>(jobStatus), logLabel.c_str(),
+            errCode, m_errMsg.c_str(), m_jobSpeed);
         constexpr uint8_t index2  = 2;
         REPORT_LOG2AGENT(subJobDetails, result, logDetailList, logDetail,
             std::get<index2>(reportInfo), m_jobSpeed, jobStatus);
@@ -105,10 +107,6 @@ protected:
     void SetJobCtrlPhase(const std::string& jobCtrlPhase);
 
     /* Backup Statistic */
-    BackupStatistic CalcuSumStructBackupStatistic(const BackupStatistic& A_backupStatistic,
-        const BackupStatistic& B_backupStatistic) const;
-    BackupStatistic CalcuAddedBackupStatistic(const BackupStatistic& A_backupStatistic,
-        const BackupStatistic& B_backupStatistic) const;
     BackupStatistic GetIncBackupStats(const BackupStats& currStats, BackupStatistic prevStats);
     void SerializeBackupStats(const BackupStats& backupStats, BackupStatistic& backupStatistic);
 
@@ -118,7 +116,7 @@ protected:
     bool IsValidCtrlFile(const std::string ctrlFileFullPath) const;
 
     bool InitSubTask(SubJob &subJob, const std::string& ctrlFile, bool ignoFail = false,
-        const std::string& prefix = "", const std::string& fsId = "");
+        const std::string& prefix = "", const std::string& fsId = "", const std::string& parentDir = "");
     void GetSubTaskInfoByFileName(const std::string &fileName, std::string &subTaskName,
                                         uint32_t &subTaskType, uint32_t &subTaskPrio);
     uint32_t GetSubJobTypeByFileName(const std::string &fileName) const;
@@ -146,8 +144,8 @@ protected:
     void MergeBackupFailureRecords();
     bool IsBackupStatusInprogress(SubJobStatus::type &jobStatus) const;
     uint64_t CalculateSizeInKB(uint64_t bytes) const;
+    bool SetNumOfChannels(const std::string& channelCntStr) const;
 
-protected:
     BackupStats m_backupStats;
     uint64_t m_curProcess = 0;
     std::string m_subJobId;
@@ -173,6 +171,10 @@ protected:
     /* Root Path Of Backup Failure Recorder Output */
     std::string m_failureRecordRoot {};
     uint64_t m_maxFailureRecordsNum = 0;
+    /* 插件配置文件读写锁 */
+    static std::mutex m_pluginAtrributeJsonFileMutex;
+    int m_errCode = 0;
+    std::string m_errMsg {};
 };
 }
 #endif

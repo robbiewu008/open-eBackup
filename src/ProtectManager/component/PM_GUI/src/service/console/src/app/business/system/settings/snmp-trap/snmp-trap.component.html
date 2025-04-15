@@ -20,18 +20,18 @@
   </div>
   <div class="aui-block aui-gutter-column-md">
     <div>
-      <div class="aui-header-2 aui-gutter-column-sm">
+      <div class="aui-header-2 aui-gutter-column-sm aui-operation">
         <h2>{{parameterConfig}}</h2>
+          <div>
+              <a *ngIf="isView" class="aui-link" (click)="modify()">{{editLabel}}</a>
+              <lv-group *ngIf="!isView" lvGutter="8px">
+                  <a [ngClass]="{'aui-link': this.formGroup.valid, 'aui-link-disabled': !this.formGroup.valid}"
+                     (click)="save()">{{saveLabel}}</a>
+                  <a class="aui-link" (click)="cancel()">{{cancelLabel}}</a>
+              </lv-group>
+          </div>
       </div>
-      <div class="aui-operation">
-        <p class="aui-text-help-sm">{{parameterCOnfigTip}}</p>
-        <a *ngIf="isView" class="aui-link" (click)="modify()">{{editLabel}}</a>
-        <lv-group *ngIf="!isView" lvGutter="8px">
-          <a [ngClass]="{'aui-link': this.formGroup.valid, 'aui-link-disabled': !this.formGroup.valid}"
-            (click)="save()">{{saveLabel}}</a>
-          <a class="aui-link" (click)="cancel()">{{cancelLabel}}</a>
-        </lv-group>
-      </div>
+        <lv-alert lvType="info" [lvClosable]="false">{{parameterCOnfigTip}}</lv-alert>
       <div class="dashed-line"></div>
       <ng-container *ngIf="isView">
         <lv-form [lvLabelColon]='false'>
@@ -44,7 +44,7 @@
                   <div class="aui-text-label">{{engineIdLabel}}</div>
                 </div>
                 <ng-container
-                  *ngIf="item.label===versionLabel && item.content===protocolVersion.V3.label && !isCyberEngine">
+                  *ngIf="item.label===versionLabel && item.content===protocolVersion.V3.label && !isCyberEngine && !appUtilsService.isDecouple">
                   <span class="aui-link mgt-8" lv-overflow id='outerClosable'
                     (click)="viewSnmpV3Engine()">
                     {{viewEngineLabel}}
@@ -212,7 +212,12 @@
                 </lv-form-control>
               </lv-form-item>
               <lv-form-item>
-                <lv-form-label lvRequired>{{communityLabel}}</lv-form-label>
+                <lv-form-label lvRequired>
+                    {{communityLabel}}
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{ 'common_community_tips_label'|i18n }}"
+                       lvTooltipPosition="topLeft" lvTooltipTheme="light" class="configform-constraint"
+                       lvColorState='true'></i>
+                </lv-form-label>
                 <lv-form-control [lvErrorTip]='securityNameV2CErrorTip'>
                   <div class="form-control-input">
                     <aui-inupt-with-eye formControlName="securityNameV2C" [lvPasteAllowed]="false"

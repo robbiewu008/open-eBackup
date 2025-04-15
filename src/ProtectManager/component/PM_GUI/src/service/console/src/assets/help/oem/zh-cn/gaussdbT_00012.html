@@ -1,0 +1,131 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤1：检查并配置数据库环境">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="gaussdbT_00011.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="gaussdbT_00012">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤1：检查并配置数据库环境</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="gaussdbT_00012"></a><a name="gaussdbT_00012"></a>
+  <h1 class="topictitle1">步骤1：检查并配置数据库环境</h1>
+  <div>
+   <p>执行备份恢复前，需确保GaussDB T数据库状态正常，参考本节执行相关检查。</p>
+   <p>对于集群类型的GaussDB T数据库、且GaussDB T数据库版本为1.5.0至1.7.0版本 （含1.5.0和1.7.0版本），在集群的主节点，若后续备份时会使用增量备份，您可以开启GaussDB T数据库的bct功能，提升主节点增量备份的性能。开启bct功能后，您需要先进行一次全量备份，后续的增量备份性能才能提高。</p>
+   <div class="note">
+    <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+    <div class="notebody">
+     <ul>
+      <li>bct通过在track文件中记录更改的页面，使用track文件代替扫描所有数据页面来识别需要备份的数据，从而实现增量备份的性能<span style="color:#404040;">提升。</span></li>
+      <li>只支持在集群的主节点上开启bct功能、集群备节点不支持开启bct功能。</li>
+     </ul>
+    </div>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ul>
+     <li><strong>查看</strong><strong>GaussDB T数据库集群类型状态</strong></li>
+    </ul>
+    <ol>
+     <li><span>登录数据库主机。</span><p></p><p>本节以GaussDB T 1.2.1版本为例说明。</p> <p></p></li>
+     <li><span>执行以下命令切换至数据库用户，如omm。</span><p></p><pre class="screen">su - omm</pre> <p></p></li>
+     <li><span>执行以下命令查看数据库状态。</span><p></p><pre class="screen">gs_om -t status</pre> <p>回显类似如下表示数据库状态正常。</p> <pre class="screen">[omm@euler124 <font style="font-size:8pt" face="Courier New">~</font>]$ gs_om -t status
+Set output to terminal.
+--------------------------------Cluster Status-------------------------
+az_state :      single_az
+<strong>cluster_state : Normal</strong>
+<strong>balanced :      true</strong></pre> <p></p></li>
+     <li><span>（可选）开启数据库bct功能。</span><p></p>
+      <ol type="a">
+       <li>执行以下命令连接进入GaussDB T数据库。<pre class="screen">zsql / as sysdba -q</pre></li>
+       <li>执行以下命令，开启数据库的bct功能。<pre class="screen">ALTER DATABASE BLOCK_CHANGE_TRACKING ON</pre></li>
+      </ol> <p></p></li>
+    </ol>
+   </div>
+   <ul>
+    <li><strong>查看</strong><strong>GaussDB T数据库<strong>单机类型</strong>状态</strong></li>
+   </ul>
+   <ol>
+    <li><span>登录数据库主机。</span><p></p><p>本节以GaussDB T 1.2.1版本为例说明。</p> <p></p></li>
+    <li><span>执行以下命令切换至数据库用户，如omm。</span><p></p><pre class="screen">su - omm</pre> <p></p></li>
+    <li><span>执行以下命令，进入数据库管理工具所在目录。</span><p></p><pre class="screen">cd $GAUSSHOME/bin</pre> <p></p></li>
+    <li><span>执行以下命令查看数据库状态。</span><p></p><pre class="screen">python zctl.py -t status -D <em>DATADIR</em> -P</pre> <p>相关参数说明如<a href="#gaussdbT_00012__table188211837115812">表1</a>所示。</p>
+     <div class="tablenoborder">
+      <a name="gaussdbT_00012__table188211837115812"></a><a name="table188211837115812"></a>
+      <table cellpadding="4" cellspacing="0" summary="" id="gaussdbT_00012__table188211837115812" frame="border" border="1" rules="all">
+       <caption>
+        <b>表1 </b>zctl.py 参数说明
+       </caption>
+       <colgroup>
+        <col style="width:50%">
+        <col style="width:50%">
+       </colgroup>
+       <thead align="left">
+        <tr>
+         <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.6.4.2.3.2.3.1.1"><p>参数</p></th>
+         <th align="left" class="cellrowborder" valign="top" width="50%" id="mcps1.3.6.4.2.3.2.3.1.2"><p>说明</p></th>
+        </tr>
+       </thead>
+       <tbody>
+        <tr>
+         <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.6.4.2.3.2.3.1.1 "><p>-D</p></td>
+         <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.6.4.2.3.2.3.1.2 "><p>指定数据库数据文件路径，即GSDB_DATA路径。</p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.6.4.2.3.2.3.1.1 "><p>-P</p></td>
+         <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.6.4.2.3.2.3.1.2 "><p>指定工具通过用户名和密码连接数据库。命令行执行过程中，会提示输入连接数据库的用户名和密码。该参数可缺省，若缺省，则通过免密登录连接数据库。</p>
+          <div class="note">
+           <span class="notetitle"> 说明： </span>
+           <div class="notebody">
+            <p>当调用<strong>zctl.py -t start</strong>时，由于不需要登录数据库，此时的<strong>-P</strong>参数仅作为兼容性参数，脚本既不会对交互式输入的用户名和密码进行校验也不会使用。</p>
+           </div>
+          </div></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.6.4.2.3.2.3.1.1 "><p>Username</p></td>
+         <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.6.4.2.3.2.3.1.2 "><p>数据库系统用户名。当数据库系统未设置免密登录时，需要填写该参数值。</p></td>
+        </tr>
+        <tr>
+         <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.6.4.2.3.2.3.1.1 "><p>Password</p></td>
+         <td class="cellrowborder" valign="top" width="50%" headers="mcps1.3.6.4.2.3.2.3.1.2 "><p>数据库系统密码。当数据库系统未设置免密登录时，需要填写该参数值。</p></td>
+        </tr>
+       </tbody>
+      </table>
+     </div> <p>回显类似如下表示数据库状态正常。</p> <p><span><img src="zh-cn_image_0000002200001853.png"></span></p> <p></p></li>
+   </ol>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="gaussdbT_00011.html">备份GaussDB T数据库</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

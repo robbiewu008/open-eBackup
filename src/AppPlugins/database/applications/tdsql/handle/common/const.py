@@ -180,6 +180,14 @@ class TDSQLReportLabel:
     TDSQL_CREATE_NEW_INSTANCE_FAIl_LABEL = "job_tdsql_create_new_instance_fail_label"
     # 恢复失败，可能原因：/data/oc_agent 所在磁盘剩余空间不足。建议清理磁盘空间或扩容后重试。
     TDSQL_ORIGINAL_LOCATION_RESTORE_FAIL = "job_tdsql_original_location_restore_fail_label"
+    # 备份失败，原因：依赖的全量副本找不到
+    TDSQL_INSTANCE_INCREMENT_BACKUP_FAIL_LABEL = "job_tdsql_instance_increment_backup_fail_label"
+    # 分布式实例全量备份任务失败，原因：挂载的文件系统不正确， 建议检查主机是否有多个挂载点，如果有请清理多余的挂载点。
+    TDSQL_GROUP_MOUNTED_FILESYSTEM_NOT_MATCH_LABEL = "job_tdsql_group_mount_filesystem_not_match_label"
+    # 前置任务失败，原因：{0}没有冷备节点，请参考产品文档中“如何配置冷备节点”章节配置。
+    TDSQL_GROUP_COLDBACKUP_NODE_NOT_EXIST_LABEL = "job_tdsql_group_coldbackup_node_not_exist_label"
+    # 子任务（{0}）失败，可能原因：备份副本中TDSQL配套的数据库版本与即时挂载的目标主机配套的数据库版本不一致。
+    TDSQL_LIVE_MOUNT_MYSQL_VERSION_NOT_MATCH_LABEL = "job_live_mount_mysql_version_not_match_label"
 
 
 class TDSQLQueryType:

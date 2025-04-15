@@ -102,7 +102,7 @@
         <lv-form-control [ngClass]="{'device-name-control':isModify}">
           <ng-container *ngIf="isModify else showDeviceNameTpl">
             <lv-checkbox [lvValue]="'true'" formControlName="isSendDeviceName">{{'common_enable_label'|i18n}}</lv-checkbox>
-            <lv-form-item *ngIf="formGroup.get('isSendDeviceName').value">
+            <lv-form-item *ngIf="formGroup.get('isSendDeviceName').value" class="mgt-16">
               <lv-form-label lvRequired>
                 {{'protection_equipment_name_label'|i18n}}
               </lv-form-label>
@@ -120,22 +120,22 @@
       </lv-form-item>
       <lv-form-item>
         <lv-form-label>
-          {{'system_syslog_receive_server_address_label' |i18n}}
+          <h3>{{'system_syslog_receive_server_address_label' |i18n}}</h3>
         </lv-form-label>
-        <lv-form-control>
-        <span *ngIf="!isModify">
+        <lv-form-control *ngIf="!isModify">
+        <span>
           {{'common_total_label' |i18n}} {{tableData.total}}
         </span>
         </lv-form-control>
       </lv-form-item>
-      <lv-group lvDirection="vertical" lvGutter="8px" style="color: #9EA4B3;margin: 10px 0;">
+      <lv-group lvDirection="vertical" lvGutter="8px" style="color: #9EA4B3;margin: 8px 0;">
         <span>{{'system_syslog_receive_server_address_tips_label' |i18n}}</span>
       </lv-group>
     </lv-form>
     <div class="mgt-16">
       <div class="aui-gutter-column-lg">
         <div class="aui-operation">
-          <lv-group lvGutter="8px">
+          <lv-group lvGutter="16px">
             <button lv-button lvType="primary" [disabled]="dataTable?.data?.total>=4" (click)="addServerNode()"> {{'common_add_label'|i18n}} </button>
             <lv-pro-button-group [config]="optsConfig" [bindData]="selectionData">
             </lv-pro-button-group>

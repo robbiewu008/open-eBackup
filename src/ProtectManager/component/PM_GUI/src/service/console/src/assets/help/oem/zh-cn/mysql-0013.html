@@ -1,0 +1,79 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤1：开启MySQL/MariaDB/GreatSQL数据库权限">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="mysql-0012.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="documenttype" content="usermanual">
+  <meta name="prodname" content="csbs">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="mysql-0013">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤1：开启MySQL/MariaDB/GreatSQL数据库权限</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="mysql-0013"></a><a name="mysql-0013"></a>
+  <h1 class="topictitle1">步骤1：开启MySQL/MariaDB/GreatSQL数据库权限</h1>
+  <div>
+   <p>MySQL/MariaDB/GreatSQL在执行备份任务前，需开启对应版本权限，否则会导致注册、备份或恢复失败。不同版本的命令可能会有差异，可联系运维人员或数据库管理员提供对应的命令。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <p>以下操作以MySQL数据库为例。</p>
+    <ol>
+     <li><span>使用root用户，登录MySQL/MariaDB/GreatSQL主机，执行如下命令登录MySQL/MariaDB/GreatSQL数据库。</span><p></p><pre class="screen">mysql -uroot -p<em>Password</em></pre> <p>命令回显示例如下：</p> <p><span><img src="zh-cn_image_0000002164603462.png"></span></p> <p></p></li>
+     <li id="mysql-0013__zh-cn_topic_0000001497361525_li1764574917387"><a name="mysql-0013__zh-cn_topic_0000001497361525_li1764574917387"></a><a name="zh-cn_topic_0000001497361525_li1764574917387"></a><span>记录Server version参数取值，该取值为数据库版本，将会用于后续操作。</span></li>
+     <li><span>执行以下命令创建用户。</span><p></p><pre class="screen" id="mysql-0013__zh-cn_topic_0000001497361525_screen1136353624011">CREATE USER '<em id="mysql-0013__zh-cn_topic_0000001497361525_i1854873016413">name</em>'@'127.0.0.1' IDENTIFIED BY '<em id="mysql-0013__zh-cn_topic_0000001497361525_i29651943164115">password</em>';</pre> <p id="mysql-0013__zh-cn_topic_0000001497361525_p5990151215716">命令回显示例如下：</p> <p id="mysql-0013__zh-cn_topic_0000001497361525_p590814410810"><span><img id="mysql-0013__zh-cn_topic_0000001497361525_image1090844414814" src="zh-cn_image_0000001972715428.png"></span></p>
+      <div class="note" id="mysql-0013__zh-cn_topic_0000001497361525_note859311431182">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p id="mysql-0013__zh-cn_topic_0000001497361525_p546984041616">如果资源接入失败请尝试执行以下命令修改身份认证插件。</p>
+        <pre class="screen" id="mysql-0013__zh-cn_topic_0000001497361525_screen140134317224">alter user '<em id="mysql-0013__zh-cn_topic_0000001497361525_i9233118171918">name</em>'@'127.0.0.1' identified with mysql_native_password by '<em id="mysql-0013__zh-cn_topic_0000001497361525_i543201771916">password</em>';</pre>
+       </div>
+      </div> <p></p></li>
+     <li><span>执行以下命令为用户开启相应数据库版本权限，数据库的版本可以通过<a href="#mysql-0013__zh-cn_topic_0000001497361525_li1764574917387">2</a>获取。</span><p></p>
+      <ul>
+       <li>MySQL 5.x：<pre class="screen">GRANT RELOAD, PROCESS, REPLICATION CLIENT, SUPER, LOCK TABLES  ON *.* TO '<em>name</em>'@'127.0.0.1';
+FLUSH PRIVILEGES;</pre></li>
+       <li>MySQL 8.x/GreatSQL 8.x：<pre class="screen">GRANT BACKUP_ADMIN, SELECT, RELOAD, PROCESS, SUPER, LOCK TABLES  ON *.* TO '<em>name</em>'@'127.0.0.1';
+FLUSH PRIVILEGES;</pre></li>
+       <li>MariaDB 10.5/10.6/10.7：<pre class="screen">GRANT RELOAD, PROCESS, BINLOG MONITOR, SUPER, LOCK TABLES ON *.* TO '<em>name</em>'@'127.0.0.1';
+FLUSH PRIVILEGES;</pre></li>
+       <li>MariaDB 10.3/10.4：<pre class="screen">GRANT RELOAD, PROCESS, REPLICATION CLIENT, SUPER, LOCK TABLES ON *.* TO '<em>name</em>'@'127.0.0.1';
+FLUSH PRIVILEGES;</pre></li>
+       <li>MariaDB 5.6/10.2：<pre class="screen">GRANT USAGE ON *.* TO '<em>name2</em>'@'127.0.0.1' IDENTIFIED BY '<em>password</em>';
+GRANT RELOAD,PROCESS,SUPER,REPLICATION CLIENT,LOCK TABLES ON *.* TO '<em>name</em>'@'127.0.0.1';
+FLUSH PRIVILEGES;</pre></li>
+      </ul> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="mysql-0012.html">备份MySQL/MariaDB/GreatSQL数据库</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

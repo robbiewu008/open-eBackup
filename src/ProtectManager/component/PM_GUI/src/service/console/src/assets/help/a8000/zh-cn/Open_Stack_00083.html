@@ -1,0 +1,65 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="OpenStack恢复系统盘时卸载系统盘失败">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="Open_Stack_00069.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="Open_Stack_00083">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>OpenStack恢复系统盘时卸载系统盘失败</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="Open_Stack_00083"></a><a name="Open_Stack_00083"></a>
+
+<h1 class="topictitle1">OpenStack恢复系统盘时卸载系统盘失败</h1>
+<div><div class="section"><h4 class="sectiontitle">现象描述</h4><p>客户端所在主机在恢复OpenStack云服务器过程中，任务失败，失败原因为卸载系统盘失败。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>OpenStack社区版不支持卸载系统盘。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li><span>执行系统盘恢复任务前，登录OpenStack主节点。</span></li><li id="Open_Stack_00083__li2987331162919"><a name="Open_Stack_00083__li2987331162919"></a><a name="li2987331162919"></a><span>执行以下命令，登录cinder数据库，更改系统卷的挂载点（默认为/dev/vda）为未挂载的设备（如/dev/vdz）。</span><p><pre class="screen">mysql</pre>
+<pre class="screen">use cinder;</pre>
+<pre class="screen">update volume_attachment set mountpoint=<em>'</em><em>/dev/vdz</em><em>'</em> where volume_id=<em>'</em><em>system_volume_id</em><em>'</em> and deleted=0;</pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>“<em>/dev/vdz</em>”为系统卷的新挂载点，需要未挂载的设备，“<em>system_volume_id</em>”为系统卷的ID。</p>
+</div></div>
+</p></li><li id="Open_Stack_00083__li1484831212304"><a name="Open_Stack_00083__li1484831212304"></a><a name="li1484831212304"></a><span>执行以下命令，登录nova数据库，更改系统卷的<strong>device_name</strong>（系统卷默认为/dev/vda）和<strong>boot_index</strong>（系统卷默认为0）。</span><p><pre class="screen">use nova;</pre>
+<pre class="screen">update block_device_mapping set device_name=<em>'/dev/vdz'</em>,boot_index=1 where volume_id=<em>'system_volume_id'</em> and deleted=0;</pre>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>“<em>/dev/vdz</em>”为系统卷的新挂载点，“<em>system_volume_id</em>”为系统卷的ID。</p>
+</div></div>
+</p></li><li><span>执行恢复任务。</span></li><li><span>恢复任务完成后，重新登录cinder、nova数据库，将<a href="#Open_Stack_00083__li2987331162919">2</a>和<a href="#Open_Stack_00083__li1484831212304">3</a>修改的参数值改为修改前的值。</span></li></ol>
+<p></p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="Open_Stack_00069.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

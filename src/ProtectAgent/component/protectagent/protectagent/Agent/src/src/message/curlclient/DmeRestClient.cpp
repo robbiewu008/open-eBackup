@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #ifdef LINUX
 #include <netdb.h>
 #include <sys/types.h>
@@ -5,6 +17,10 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #endif
+
+#include <random>
+#include <algorithm>
+#include <curl/curl.h>
 
 #include "message/curlclient/DmeRestClient.h"
 #include "common/Log.h"
@@ -26,7 +42,7 @@ const mp_string OPENSTACK_METADATA_URL = "/openstack/latest/meta_data.json";
 const mp_uint32 SEND_HTTP_DELAY_TIME = 1000;  // 1s delay
 const mp_uint32 SEND_HTTP_MAX_RETRY_TIMES = 3;
 const mp_uint32 SEND_KEY_REQ_DELAY_TIME = 10000;  // 10s delay
-const mp_uint32 SEND_KEY_REQ_MAX_RETRY_TIMES = 30;
+const mp_uint32 SEND_KEY_REQ_MAX_RETRY_TIMES = 10; // 重试时间最大10*10秒
 const mp_uint32 INVALID_PORT = 0;
 const mp_uint32 TEST_CONNECT_TIMEOUT = 1000;  // 1s 超时
 const mp_uint32 TEST_CONNECT_RETRY_TIMES = 3;
@@ -142,6 +158,16 @@ void DmeRestClient::RefreshDmeAddrOrder(const std::vector<mp_string>& srcDmeIpLi
             dstDmeIpList[end] = ip;
         }
     }
+    if (start > 1) {
+        // 随机打乱能通的ip列表，负荷分担
+        std::random_device rd;
+        std::shuffle(dstDmeIpList.begin(), dstDmeIpList.begin() + start, rd);
+    }
+    std::string ips;
+    for (const auto& ip : dstDmeIpList) {
+        ips += (ip + ",");
+    }
+    INFOLOG("Dme ips %s.", ips.c_str());
 }
 
 // 若发送时发现使用的首个ip不通，其他的通，则进行更新（将连通性更好的ip提前），防止网络不好时，连通性检测可能过不了
@@ -200,16 +226,28 @@ mp_bool DmeRestClient::IsDmeIpValid(const mp_string& dmeIp)
         DBGLOG("Get domain: %s ip: %s.", m_domainName.c_str(), ip.c_str());
     }
 #endif
-    mp_bool isIpv4;
-    if (CIP::IsIPV4(ip)) {
-        isIpv4 = true;
-    } else if (CIP::IsIPv6(ip)) {
-        isIpv4 = false;
+
+    std::vector<mp_string> useLocalIps;
+    if (StaticConfig::IsInnerAgentMainDeploy()) {
+        mp_string agentIp;
+        if (!StaticConfig::GetAgentIp(agentIp)) {
+            COMMLOG(OS_LOG_ERROR, "Get agent ip failed.");
+            return MP_FALSE;
+        }
+        useLocalIps.push_back(agentIp);
     } else {
-        ERRLOG("ip address %s is invalid.", ip.c_str());
-        return MP_FALSE;
+        mp_bool isIpv4;
+        if (CIP::IsIPV4(ip)) {
+            isIpv4 = true;
+        } else if (CIP::IsIPv6(ip)) {
+            isIpv4 = false;
+        } else {
+            ERRLOG("ip address %s is invalid.", ip.c_str());
+            return MP_FALSE;
+        }
+        useLocalIps = isIpv4 ? m_localIpv4List : m_localIpv6List;
     }
-    std::vector<mp_string>& useLocalIps = isIpv4 ? m_localIpv4List : m_localIpv6List;
+
     for (auto localIp : useLocalIps) {
         if (CSocket::CheckHostLinkStatus(localIp, ip, m_dmePort) == MP_SUCCESS) {
             INFOLOG("Local ip %s link dst ip %s success.", dmeIp.c_str(), ip.c_str());
@@ -392,27 +430,43 @@ mp_int32 DmeRestClient::CheckEcsIpConnect(mp_string& metadataServerIp, mp_string
         ERRLOG("Get openstack_metadata_server_port from config file failed.");
         return MP_FAILED;
     }
-    mp_int32 linkMetadataServerStatus = MP_FAILED;
-    const mp_int32 socketTimeoutMills = 1000;
-    mp_bool isIpv4 = false;
-    if (CIP::IsIPV4(metadataServerIp)) {
-        isIpv4 = true;
-    } else if (CIP::IsIPv6(metadataServerIp)) {
-        isIpv4 = false;
-    } else {
-        ERRLOG("Openstack ip address %s is invalid.", metadataServerIp.c_str());
-        return MP_FAILED;
-    }
-    std::vector<mp_string>& useLocalIps = isIpv4 ? m_localIpv4List : m_localIpv6List;
-    for (auto ip_item: useLocalIps) {
-        if (CSocket::CheckHostLinkStatus(ip_item, metadataServerIp,
-            atoi(metadataServerPort.c_str()), socketTimeoutMills) == MP_SUCCESS) {
-            INFOLOG("Test linking from %s to %s success.", ip_item.c_str(), metadataServerIp.c_str());
-            return MP_SUCCESS;
+    CURL* curl;
+    CURLcode res;
+    mp_int32 checkResult = MP_FAILED;
+    curl_global_init(CURL_GLOBAL_DEFAULT);
+    curl = curl_easy_init();
+    if (curl) {
+        // 设置目标URL，包括端口号
+        mp_string curlUrl = "http://" + metadataServerIp + ":" + metadataServerPort;
+        DBGLOG("The curlUrl is %s.", curlUrl.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, curlUrl.c_str());
+
+        // 跳过证书验证（虽然对于HTTP协议可能没有实际意义，但可以设置）
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+
+        // 设置超时时间为10秒
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L);  // 超时时间设置为10秒
+
+        // 执行请求
+        res = curl_easy_perform(curl);
+        if (res != CURLE_OK) {
+            if (res == CURLE_OPERATION_TIMEDOUT) {
+                WARNLOG("CheckEcsIpConnect curl timeout, error code: %d.", res);
+            } else {
+                WARNLOG("CheckEcsIpConnect curl error str is: %s", curl_easy_strerror(res));
+            }
+        } else {
+            // 输出服务器响应内容
+            checkResult = MP_SUCCESS;
+            INFOLOG("CheckEcsIpConnect curl success.");
         }
-        WARNLOG("Test linking from %s to %s failed.", ip_item.c_str(), metadataServerIp.c_str());
+        // 清理
+        curl_easy_cleanup(curl);
     }
-    return MP_FAILED;
+    curl_global_cleanup();
+
+    return checkResult;
 }
 
 mp_int32 DmeRestClient::CheckEcsMetaInfo()
@@ -444,13 +498,13 @@ mp_int32 DmeRestClient::CheckEcsMetaInfo()
     while (tryCnt++ < SEND_HTTP_MAX_RETRY_TIMES) {
         INFOLOG("Begin send to meta data server times %d.", tryCnt);
         if (RestClientCommon::Send(httpClient, req, httpResponse) == MP_SUCCESS) {
-                DBGLOG("Send url:%s info success.", req.url.c_str());
-                IHttpClient::ReleaseInstance(httpClient);
-                return MP_SUCCESS;
-            } else {
-                CMpTime::DoSleep(SEND_HTTP_DELAY_TIME);
-            }
-            ERRLOG("Send url failed messaget is %s", httpResponse.body.c_str());
+            DBGLOG("Send url:%s info success.", req.url.c_str());
+            IHttpClient::ReleaseInstance(httpClient);
+            return MP_SUCCESS;
+        } else {
+            CMpTime::DoSleep(SEND_HTTP_DELAY_TIME);
+        }
+        ERRLOG("Send url failed messaget is %s", httpResponse.body.c_str());
     }
     IHttpClient::ReleaseInstance(httpClient);
     return MP_FAILED;

@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
@@ -19,7 +19,7 @@ import {
   ViewChildren
 } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { PopoverComponent } from '@iux/live';
+import { DatatableComponent, PopoverComponent } from '@iux/live';
 import {
   BaseUtilService,
   CAPACITY_UNIT,
@@ -334,13 +334,37 @@ export class OracleSingleFileRestoreComponent {
   }
 
   deleteAllItems(index: number) {
-    this.selectingTableList.get(index).table.clearSelection(); // 调用pro-table内部的table函数，同时触发selectionChange
+    this.selectingTableList.get(index).table.clearSelection(); // 调用table内部的table函数，同时触发selectionChange
+    this.cdr.detectChanges();
   }
 
   resetAllRestoreLocation(index) {
     this.formGroup.get('activeIndex').setValue(index); // 重置就是针对所有数据调用一次批量操作
     this.formGroup.get('batchRestoreLocationName').setValue('');
     this.batchSetRestoreLocation(true);
+  }
+
+  isAllCheck(index) {
+    if (!this.selectingTableList) {
+      return false;
+    }
+    const table: DatatableComponent = this.selectingTableList.get(index).table;
+    return table.isAllSelected();
+  }
+
+  selectAllFilesChange(index) {
+    this._toggleAllSelection(index);
+  }
+
+  _toggleAllSelection(index) {
+    const table: DatatableComponent = this.selectingTableList.get(index).table;
+    const data = this.tableDataArr[index].data.data;
+    if (this.isAllCheck(index)) {
+      this.deleteAllItems(index);
+    } else {
+      table.bulkSelection(data);
+    }
+    this.cdr.detectChanges();
   }
 
   getSelectionData() {
@@ -440,7 +464,7 @@ export class OracleSingleFileRestoreComponent {
         const groupedArr = groupBy(filterArr, 'fileType');
         each(this.fileTypeArr, (item, index) => {
           this.tableDataArr[index].data = {
-            data: groupedArr[item],
+            data: groupedArr[item] || [],
             total: groupedArr[item]?.length || 0
           };
         });

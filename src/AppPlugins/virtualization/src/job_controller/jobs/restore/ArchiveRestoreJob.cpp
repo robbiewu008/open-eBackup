@@ -53,6 +53,15 @@ const int BASE64_SIZE_NUM = 2;
 const std::string RAW_SUFFIX = ".raw";
 const std::string DISTRIBUTE_DEPLOY_TYPE = "d7";
 const std::string EXTERNAL_DEPLOY_SCENE = "0";
+const std::string BACKUP_NET_PLANE = "backup";
+const std::string STORAGE_NET_PLANE = "storage";
+const std::string ARCHIVE_NET_PLANE = "archive";
+const std::vector<std::string> SUPPORT_IP_RULE_TYPE = {
+    "backup",
+    "storage",
+    "archive",
+    "replication"
+};
 }
 
 namespace VirtPlugin {
@@ -188,6 +197,35 @@ int ArchiveRestoreJob::InitJobInfo()
 }
 
 #ifndef WIN32
+bool ArchiveRestoreJob::AddTypeIpRulePolicy(const std::string &targetIP, const std::string &targetType)
+{
+    if (targetIP.empty()) {
+        ERRLOG("Parameter is invalid, dest ip is empty.");
+        return false;
+    }
+    if (std::find(SUPPORT_IP_RULE_TYPE.begin(), SUPPORT_IP_RULE_TYPE.end(), targetType) ==
+        SUPPORT_IP_RULE_TYPE.end()) {
+        ERRLOG("Unsupport ip rule type: %s.", targetType.c_str());
+        return false;
+    }
+    UpdateIpRoutePolicyRequest req;
+    req.SetTaskType(targetType);
+    req.SetDestIp(targetIP);
+    OpenStorageApiClient apiClient;
+    std::shared_ptr<UpdateIpRoutePolicyResponse> response = apiClient.AddIpPolicy(req);
+    if (response == nullptr) {
+        ERRLOG("AddIpPolicy failed, null response handler returned.");
+        return false;
+    }
+    int64_t errCode = response->GetErrorCode();
+    if (errCode != Module::SUCCESS) {
+        ERRLOG("AddIpPolicy failed, error code: %ld.", errCode);
+        return false;
+    }
+    INFOLOG("AddIscsiLogicIpRoutePolicy success.");
+    return true;
+}
+
 bool ArchiveRestoreJob::AddArchiveIpRoutePolicy(const std::string &ip)
 {
     std::string deployType;
@@ -202,18 +240,9 @@ bool ArchiveRestoreJob::AddArchiveIpRoutePolicy(const std::string &ip)
         WARNLOG("Deployed in external, no need to add route policy.");
         return true;
     }
-    UpdateIpRoutePolicyRequest req;
-    req.SetTaskType("backup");
-    req.SetDestIp(ip);
-    OpenStorageApiClient apiClient;
-    std::shared_ptr<UpdateIpRoutePolicyResponse> response = apiClient.AddIpPolicy(req);
-    if (response == nullptr) {
-        ERRLOG("AddIpPolicy failed, null response handler returned.");
-        return false;
-    }
-    int64_t errCode = response->GetErrorCode();
-    if (errCode != Module::SUCCESS) {
-        ERRLOG("AddIpPolicy failed, error code: %ld.", errCode);
+    if (!AddTypeIpRulePolicy(ip, BACKUP_NET_PLANE) &&
+        !AddTypeIpRulePolicy(ip, ARCHIVE_NET_PLANE)) {
+        ERRLOG("AddTypeIpRulePolicy for ip(%s) failed.", ip.c_str());
         return false;
     }
     INFOLOG("AddIscsiLogicIpRoutePolicy(%s) success.", ip.c_str());
@@ -451,10 +480,11 @@ bool ArchiveRestoreJob::ProcessControlFile(const std::string& control)
             ERRLOG("HandleRestoreFileName file failed name: %s", WIPE_SENSITIVE(decName).c_str());
             return false;
         }
-        std::string mark = "/source_policy_" + m_protectId + "_Context_Global_MD";
+        std::string mark = "Context_Global_MD";
         std::string metaFileName = "";
-        if (decName.substr(0, mark.size()) == mark) {
-            metaFileName = decName.substr(mark.size(), decName.length());
+        if (decName.find(mark) != std::string::npos) {
+            int32_t pos = decName.find(mark);
+            metaFileName = decName.substr(pos + mark.length(), decName.length());
             DBGLOG("metaFileName: %s", metaFileName.c_str());
 
             if (RestoreBackupMetaData(decName, metaFileName, fsId) != SUCCESS) {
@@ -624,7 +654,7 @@ bool ArchiveRestoreJob::CopyFileToCacheRepo(const std::string& file) const
             Module::CmdParam(Module::PATH_PARAM, file),
             Module::CmdParam(Module::PATH_PARAM, m_cacheRepoPath)
         };
-        int ret = Module::RunCommand("cp", cmdParam, output, pathWhitelist);
+        int ret = Utils::CallAgentExecCmd(cmdParam, output);
         if (ret != 0) {
             std::string msg = "";
             for (auto &it : output) {

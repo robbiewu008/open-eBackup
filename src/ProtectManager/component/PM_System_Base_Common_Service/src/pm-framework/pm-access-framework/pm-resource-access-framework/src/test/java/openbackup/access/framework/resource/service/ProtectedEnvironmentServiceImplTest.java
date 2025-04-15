@@ -523,6 +523,22 @@ public class ProtectedEnvironmentServiceImplTest {
     }
 
     /**
+     * 用例场景：是否存在同样的ip
+     * 前置条件：无
+     * 检查 点： 不存在返回false，否则为true
+     */
+    @Test
+    public void should_throw_LegoCheckedException_if_has_same_endpoint() {
+        ProtectedEnvironment environment = mockProtectedEnvironment();
+        List<ProtectedResource> resources = Collections.singletonList(environment);
+        PageListResponse<ProtectedResource> response = new PageListResponse<>();
+        response.setRecords(resources);
+        Mockito.when(resourceService.query(anyBoolean(), anyInt(), anyInt(), anyMap())).thenReturn(response);
+        assertThatThrownBy(() -> protectedEnvironmentService.checkHasSameEndpointEnvironment(environment)).hasMessage(
+            "Duplicate environment endpoint exists.");
+    }
+
+    /**
      * 用例场景：存在同样的环境删除原有定时任务成功
      * 前置条件：存在同样的环境
      * 检查 点： 删除原有定时任务

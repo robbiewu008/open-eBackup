@@ -1581,6 +1581,10 @@ bool libs3IO::SetUploadPartInfo(const string &objName, uint64_t segmentSize)
     m_UploadPartInfo.originalContentLength = contentLength;
 
     int uploadpartNum = 0;
+    if (segmentSize == 0) {
+        fclose(fp);
+        return false;
+    }
     if (contentLength % segmentSize != 0) {
         uploadpartNum = static_cast<int>((contentLength / segmentSize) + 1);
     } else {

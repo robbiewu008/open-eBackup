@@ -47,7 +47,7 @@ public:
     // 检查连通性
     int32_t CheckAppConnect(ActionResult &returnValue);
     int32_t GetTenantInfo(ResourceResultByPage &page);
-    int32_t GetProjectLists(ResourceResultByPage &page, std::string &parentId);
+    int32_t GetProjectLists(ResourceResultByPage &page, std::string &parentId, std::string &erroParam);
     int32_t GetVirtualMachineDetailInfo(ResourceResultByPage &returnValue, const std::vector<std::string> &vmLists);
     int32_t GetVirtualMachineList(ResourceResultByPage& page, std::string &parentId);
     int32_t GetVolumeResourceList(ResourceResultByPage& page, std::string &parentId);
@@ -96,6 +96,7 @@ protected:
     Application m_application;
     ApplicationEnvironment m_appEnv;
     QueryByPage m_condition;
+    HcsOpServiceUtils m_hcsOpServiceUtils;
 };
 }
 #endif

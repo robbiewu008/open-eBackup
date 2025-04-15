@@ -35,19 +35,6 @@
   </lv-form-item>
   <lv-form-item>
     <lv-form-label lvRequired>
-      {{ 'common_name_label' | i18n }}
-    </lv-form-label>
-    <lv-form-control [lvErrorTip]="nameErrorTip">
-      <input
-        lv-input
-        type="text"
-        formControlName="name"
-        placeholder="{{ 'protection_database_name_tips_label' | i18n }}"
-      />
-    </lv-form-control>
-  </lv-form-item>
-  <lv-form-item>
-    <lv-form-label lvRequired>
       {{ 'protection_database_instance_label' | i18n }}
     </lv-form-label>
     <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
@@ -65,6 +52,23 @@
       </lv-select>
     </lv-form-control>
   </lv-form-item>
+    <lv-form-item>
+        <lv-form-label lvRequired>
+            {{ 'common_name_label' | i18n }}
+        </lv-form-label>
+        <lv-form-control [lvErrorTip]="nameErrorTip">
+            <lv-select
+                    [lvOptions]="instanceDatabaseOpts"
+                    formControlName="name"
+                    lvValueKey="value"
+                    lvShowFilter
+                    lvFilterKey="label"
+                    lvFilterMode="contains"
+            >
+
+            </lv-select>
+        </lv-form-control>
+    </lv-form-item>
   <lv-form-item
     *ngIf="formGroup.value.type === dataMap.saphanaDatabaseType.tenantdb.value"
   >
@@ -116,9 +120,7 @@
         formControlName="userName"
         autocomplete="new-password"
         [placeholder]="
-          i18n.get('common_please_enter_label', [
-            i18n.get('common_database_user_name_label')
-          ])
+          i18n.get('common_database_user_name_placeholder_label')
         "
       />
     </lv-form-control>
@@ -136,9 +138,7 @@
       <aui-inupt-with-eye
         formControlName="password"
         [placeholder]="
-          i18n.get('common_please_enter_label', [
-            i18n.get('protection_tenant_database_password_label')
-          ])
+          i18n.get('protection_tenant_database_password_placeholder_label')
         "
       ></aui-inupt-with-eye>
     </lv-form-control>
@@ -169,7 +169,7 @@
     "
   >
     <lv-form-label lvRequired>
-      {{ 'common_database_port_label' | i18n }}
+      {{ 'protection_system_database_port_label' | i18n }}
     </lv-form-label>
     <lv-form-control [lvErrorTip]="portErrorTip">
       <input
@@ -177,9 +177,7 @@
         type="text"
         formControlName="port"
         [placeholder]="
-          i18n.get('common_please_enter_label', [
-            i18n.get('common_database_port_label')
-          ])
+          i18n.get('protection_system_database_port_placeholder_label')
         "
       />
     </lv-form-control>

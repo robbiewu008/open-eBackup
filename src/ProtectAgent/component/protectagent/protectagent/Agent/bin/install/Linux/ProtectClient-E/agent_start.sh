@@ -1,14 +1,16 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
+# 
+#  This file is a part of the open-eBackup project.
+#  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+#  If a copy of the MPL was not distributed with this file, You can obtain one at
+#  http://mozilla.org/MPL/2.0/.
+# 
+#  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+# 
+#  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+#  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+#  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 
 ###### BACKUP_SCENE ######
@@ -47,16 +49,23 @@ CURRENT_PATH=`dirname $0` && cd $CURRENT_PATH && CURRENT_PATH=`pwd`
 
 RDAGENT_PORT=""
 NGINX_PORT=""
-TESTCFG_BACK_ROLE=""
 SHELL_TYPE_SH="/bin/sh"
+
+NIGINX_BACKUP_CONFIG="${AGENT_ROOT_PATH}/nginx/conf/nginx.conf"
+LOG_FILE_NAME="${AGENT_ROOT_PATH}/log/agent_start.log"
+. "${AGENT_ROOT_PATH}/bin/agent_bin_func.sh"
+
+TESTCFG_BACK_ROLE=""
 TESTCFG_BACK_ROLE=`cat ${CURRENT_PATH}/../conf/testcfg.tmp | grep BACKUP_ROLE | ${MYAWK} -F '=' '{print $NF}'`
 if [ "${TESTCFG_BACK_ROLE}" = "${BACKUP_ROLE_SANCLIENT_PLUGIN}" ]; then
     AGENT_ROOT_PATH=${SANCLIENT_AGENT_ROOT_PATH}
 fi
 
-NIGINX_BACKUP_CONFIG="${AGENT_ROOT_PATH}/nginx/conf/nginx.conf"
-LOG_FILE_NAME="${AGENT_ROOT_PATH}/log/agent_start.log"
-. "${AGENT_ROOT_PATH}/bin/agent_bin_func.sh"
+#设置堆栈大小
+ulimit -s 8192
+
+VM_SIZE=$(ulimit -s)
+Log "VM_SIZE = ${VM_SIZE}"
 
 ########################################################################################
 # Function Definition
@@ -510,7 +519,7 @@ if [ $? -ne 0 ]; then
                 break;
             fi
         done
-        if [ $? -ne 0 ]; then
+        if [ ${succflag} -ne 0 ]; then
             echo "Process nginx of DataBackup ProtectAgent fails to be started."
             LogError "Process nginx of DataBackup ProtectAgent fails to be started." ${ERR_UPGRADE_FAIL_START_PROTECT_AGENT}
             exit 1

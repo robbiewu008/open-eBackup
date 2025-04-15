@@ -1,0 +1,95 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="VMware虚拟机备份恢复传输模式">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="vmware_gud_0115.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="vmware_gud_0121">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>VMware虚拟机备份恢复传输模式</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="vmware_gud_0121"></a><a name="vmware_gud_0121"></a>
+
+<h1 class="topictitle1">VMware虚拟机备份恢复传输模式</h1>
+<div><p id="vmware_gud_0121__zh-cn_topic_0000002164790272_p19239102516012">VMware虚拟机备份恢复支持通过SAN、Hot-Add、NBD、NBDSSL或存储层传输模式，访问数据存储中的虚拟磁盘数据。在配置备份任务前，请先了解VMware传输模式，便于您选择合适的传输模式进行备份，并确定客户端的部署方式。</p>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p123101949134916">实际备份过程中，如果客户端部署在物理服务器上，且开启了存储层备份开关，系统将按照存储层 &gt; SAN &gt; NBDSSL/NBD的顺序依次尝试每种传输模式；如果客户端部署在虚拟机上，且开启了存储层备份开关，系统将按照存储层 &gt; Hot-Add &gt; NBDSSL/NBD的顺序依次尝试每种传输模式，将使用可成功用于受保护虚拟机中所有磁盘的第一种模式进行备份恢复。</p>
+<div class="section" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_section19132151363"><h4 class="sectiontitle">SAN传输模式</h4><p id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p19539125169">VMware虚拟化平台将虚拟磁盘存储在FC SAN或iSCSI SAN时，选择SAN传输模式备份。这种方式要求客户端部署在生产端的存储区域网络内。客户端所在主机直接读取SAN存储数据进行备份恢复，无需通过ESXi主机和LAN传输任何数据，因此数据传输效率高，且不占用以太网资源。</p>
+<div class="p" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p719918494514">SAN传输模式下，客户端的部署方式如<a href="#vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_fig1199483616491">图1</a>。<div class="fignone" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_fig1199483616491"><a name="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_fig1199483616491"></a><a name="zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_fig1199483616491"></a><span class="figcap"><b>图1 </b>SAN传输模式客户端的部署方式</span><br><span><img class="eddx" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_image1994636194915" src="zh-cn_image_0000002164630828.png"></span></div>
+</div>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_p132429481445"></p>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p447713376469">使用SAN传输模式备份恢复的要求：</p>
+<ul id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_ul29081551184611"><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li11908651114610">客户端必须运行在独立的物理服务器上。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li422671220473">客户端所在的物理服务器必须能访问要备份的虚拟磁盘所在的数据存储，需要将数据存储对应的LUN映射到物理主机。</li></ul>
+<div class="p" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p109011960198">SAN传输模式的优势：<ul id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_ul727114335196"><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li12431182484714">性能优：客户端所在主机通过SAN网络直接读取虚拟磁盘数据，相比其他传输模式备份恢复性能优。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li11127936194812">独立传输：SAN传输模式直接将客户端所在主机和虚拟机所在的数据存储连接，直接通过SAN网络读取生产虚拟机的数据，对生产主机以及客户端所在主机网络影响最小。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li8434175316245">支持备份恢复的磁盘类型：SCSI、SATA、IDE。</li></ul>
+</div>
+<div class="p" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p156842510199">SAN传输模式的劣势：<ul id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_ul101791565418"><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li12859192152113">客户端部署要求高：需要额外增加物理服务器，且需要配置专门的SAN网络。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li7135131910226">生产存储仅支持SAN存储：生产存储非SAN存储时，无法使用SAN传输模式。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li691718215589">支持备份恢复的磁盘置备策略：SAN传输模式下，仅支持恢复<span class="uicontrol" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_uicontrol64531639112410">“厚置备快速置零”</span>类型的磁盘，如果虚拟机中包括非<span class="uicontrol" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_uicontrol11973112042515">“厚置备快速置零”</span>类型的磁盘，则该虚拟机所有磁盘的恢复将转换为NBDSSL传输模式。</li></ul>
+</div>
+</div>
+<div class="section" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_section1532812918561"><h4 class="sectiontitle">Hot-Add传输模式</h4><p id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p17637113345616">当客户端运行在VMware虚拟机时，客户端对待备份的目标虚拟机创建链接克隆，然后利用热添加功能将链接克隆虚拟机的VMDK挂载至客户端所在主机，客户端即可对目标虚拟机磁盘副本进行读取，从而完成对目标虚拟机的备份，这种方式即为使用Hot-Add传输模式的备份。</p>
+<div class="p" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p929851120468">Hot-Add传输模式下，客户端的部署方式如<a href="#vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_fig18828152072911">图2</a>。<div class="fignone" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_fig18828152072911"><a name="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_fig18828152072911"></a><a name="zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_fig18828152072911"></a><span class="figcap"><b>图2 </b>Hot-Add传输模式客户端的部署方式</span><br><span><img class="eddx" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_image1182842015299" src="zh-cn_image_0000002164630888.png"></span></div>
+</div>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_p844911215517"></p>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p19512638124113">使用Hot-Add传输模式备份恢复的要求：</p>
+<ul id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_ul14209104312413"><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li22091243164118">客户端必须运行在独立的VMware虚拟机。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li2049516514313">对于运行客户端的虚拟机必须能够访问目标虚拟磁盘所在的数据存储。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li1573815011585">运行客户端的虚拟机所在的数据存储，其VMFS块大小和版本必须与目标虚拟机所在的数据存储的VMFS块大小、版本相同。</li></ul>
+<div class="p" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p1942913415386">Hot-Add传输模式的优势：<ul id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_ul1986313453919"><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li968415211583">较优性能：Hot-Add传输模式提供仅次于SAN传输模式的备份恢复性能。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li13960111419581">虚拟化部署：使用虚拟机部署客户端，无需额外增加物理服务器。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li15122430182414">支持多种生产存储类型：本地磁盘、SAN存储、NAS存储。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li11871219195316">支持备份恢复的磁盘置备策略：支持备份恢复<span class="uicontrol" id="vmware_gud_0121__zh-cn_topic_0000002164790272_uicontrol576025016599">“厚置备延迟置零”</span>、<span class="uicontrol" id="vmware_gud_0121__zh-cn_topic_0000002164790272_uicontrol5760135075910">“厚置备快速置零”</span>、<span class="uicontrol" id="vmware_gud_0121__zh-cn_topic_0000002164790272_uicontrol576195015916">“精简置备”</span>全部类型的磁盘。<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p18535119175311">推荐对<span class="uicontrol" id="vmware_gud_0121__zh-cn_topic_0000002164790272_uicontrol1976118503598">“厚置备快速置零”</span>、<span class="uicontrol" id="vmware_gud_0121__zh-cn_topic_0000002164790272_uicontrol77611050105912">“精简置备”</span>类型的磁盘采用Hot-Add传输模式备份恢复。</p>
+</li></ul>
+</div>
+<div class="p" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p1212618247398">Hot-Add传输模式的劣势：<ul id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_ul372612407714"><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li137269401173">客户端所在主机位置要求：Hot-Add传输模式要求客户端所在主机必须能够访问待备份虚拟磁盘所在的数据存储。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li1306202416910">客户端所在主机需占用生产资源：客户端部署在虚拟机上，需要占用生产环境的资源，包括CPU，内存，网络，License授权等。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li8346125318258">支持备份恢复的磁盘类型：SCSI、SATA。</li></ul>
+</div>
+</div>
+<div class="section" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_section948012810229"><h4 class="sectiontitle">NBD/NBDSSL传输模式</h4><p id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p52101579281">NBD/NBDSSL是基于局域网的传输模式，ESXi主机从生产存储中读取数据，然后通过局域网传输数据到客户端所在主机。</p>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p253332515349">NBD与NBDSSL类似，区别在于NBD模式传输数据时不对数据进行加密；NBDSSL模式传输数据时使用SSL加密数据。对于NBD与NBDSSL，<span id="vmware_gud_0121__zh-cn_topic_0000002164790272_text862315631220">OceanProtect</span>默认优先选择NBDSSL进行备份恢复。</p>
+<div class="p" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p242317111567">NBD/NBDSSL传输模式下，客户端的部署方式如<a href="#vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_fig1414510481903">图3</a>。<div class="fignone" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_fig1414510481903"><a name="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_fig1414510481903"></a><a name="zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_fig1414510481903"></a><span class="figcap"><b>图3 </b>NBD/NBDSSL传输模式客户端的部署方式</span><br><span><img class="eddx" id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_image91461481007" src="zh-cn_image_0000002164630872.png"></span></div>
+</div>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_p1944820101267"></p>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p20151135135717">NBD/NBDSSL传输模式的优势：</p>
+<ul id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_ul1318503810467"><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li1860915258175">灵活部署：客户端可运行在独立的虚拟机或独立的物理服务器。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li19519115415187">支持备份恢复的磁盘置备策略：支持备份恢复<span class="uicontrol" id="vmware_gud_0121__zh-cn_topic_0000002164790272_uicontrol1276116503592">“厚置备延迟置零”</span>、<span class="uicontrol" id="vmware_gud_0121__zh-cn_topic_0000002164790272_uicontrol9762750165916">“厚置备快速置零”</span>、<span class="uicontrol" id="vmware_gud_0121__zh-cn_topic_0000002164790272_uicontrol107621750125915">“精简置备”</span>全部类型的磁盘。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li20895184595817">支持多种生产存储类型：本地磁盘、SAN存储、NAS存储。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_li1780918742610">支持备份恢复的磁盘类型：SCSI、SATA、IDE。</li></ul>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p346318435817">NBD/NBDSSL传输模式的劣势：</p>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_zh-cn_topic_0000001089179623_p15692044102010">性能较差：ESXi主机需要通过生产环境的管理网络获取备份数据，对管理网络产生较大影响。</p>
+</div>
+<div class="section" id="vmware_gud_0121__zh-cn_topic_0000002164790272_section87394494012"><h4 class="sectiontitle">存储层传输模式</h4><p id="vmware_gud_0121__zh-cn_topic_0000002164790272_p87394454013">VMware虚拟化平台挂接存储设备上的LUN或文件系统（仅1.6.0及后续版本支持文件系统）作为数据存储（Datastore）时，选择存储层传输模式备份。这种方式要求客户端部署在独立的物理服务器或独立的虚拟机上。客户端所在主机从生产存储的快照中读取数据进行备份，无需通过ESXi主机传输任何数据，因此数据传输效率高，且不占用生产主机的以太网资源。</p>
+<div class="p" id="vmware_gud_0121__zh-cn_topic_0000002164790272_p1573344184017">存储层传输模式下，客户端需部署在独立的物理服务器或独立的虚拟机上。<a href="#vmware_gud_0121__zh-cn_topic_0000002164790272_fig2730449407">图4</a>以客户端的部署在独立物理服务器为例。<div class="fignone" id="vmware_gud_0121__zh-cn_topic_0000002164790272_fig2730449407"><a name="vmware_gud_0121__zh-cn_topic_0000002164790272_fig2730449407"></a><a name="zh-cn_topic_0000002164790272_fig2730449407"></a><span class="figcap"><b>图4 </b>存储层传输模式客户端的部署方式</span><br><span><img class="eddx" id="vmware_gud_0121__zh-cn_topic_0000002164790272_image107313441404" src="zh-cn_image_0000002200031601.png"></span></div>
+</div>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_p673644134019"></p>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_p77394415407">使用存储层传输模式备份恢复的要求：</p>
+<ul id="vmware_gud_0121__zh-cn_topic_0000002164790272_ul97314410405"><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_li147315449405">客户端必须运行在独立的物理服务器或独立的虚拟机上。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_li16731644174012">客户端所在的物理服务器或虚拟机必须能访问生产存储设备，需要将数据存储对应的LUN或文件系统快照映射到客户端所在主机。</li></ul>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_p167374411401">存储层传输模式的优势：</p>
+<ul id="vmware_gud_0121__zh-cn_topic_0000002164790272_ul1173104444017"><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_li242118382236">灵活部署：客户端可运行在独立的物理服务器或独立的虚拟机上。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_li147319440408">性能优：占用生产环境资源少，虚拟机快照存在时间短，备份过程中与原虚拟机解耦。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_li77314447401">独立传输：将客户端所在主机和虚拟机所在的生产存储连接，客户端所在主机直接读取生产虚拟机的数据，对生产存储的影响与SAN传输模式一致。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_li207344416400">支持多种生产存储类型：SAN存储、NAS存储。</li></ul>
+<p id="vmware_gud_0121__zh-cn_topic_0000002164790272_p147364434014">存储层传输模式的劣势：</p>
+<ul id="vmware_gud_0121__zh-cn_topic_0000002164790272_ul38811231371"><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_li112217450386">部署较复杂：注册vCenter或ESXi主机时需添加对应的生产存储设备到<span id="vmware_gud_0121__zh-cn_topic_0000002164790272_text820591012409">OceanProtect</span>。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_li1588162315372">对待备份虚拟机有限制：待备份的虚拟机不能存在虚拟机快照。</li><li id="vmware_gud_0121__zh-cn_topic_0000002164790272_li1738672024914">对虚拟机磁盘所属的数据存储的源LUN总容量有限制：总容量不能超过15TB。</li></ul>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="vmware_gud_0115.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

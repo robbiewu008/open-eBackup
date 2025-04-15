@@ -1,0 +1,101 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤1：注册GaussDB(DWS)集群">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="DWS_00020.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="DWS_00024">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤1：注册GaussDB(DWS)集群</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="DWS_00024"></a><a name="DWS_00024"></a>
+
+<h1 class="topictitle1">步骤1：注册GaussDB(DWS)集群</h1>
+<div><p>执行GaussDB(DWS)备份恢复前，需要将GaussDB(DWS)集群注册至<span>OceanProtect</span>。</p>
+<div class="section"><h4 class="sectiontitle">前提条件</h4><ul><li>首次注册资源前，请确认已按照实际需求修改所有安装了客户端的GaussDB(DWS)节点的配置文件，详情请参见<a href="DWS_00125.html">修改GaussDB(DWS)配置文件</a>。</li><li>已安装客户端，在首次执行备份前：<ul><li>对于1.5.0SPC13及后续版本、且客户端独立部署到生产主机场景：请确保已在部署了客户端的各个主机上添加了环境变量。环境变量的添加步骤，请参见<span>《OceanProtect DataBackup 1.5.0-1.6.0 客户端安装指南》</span>中的“<span>添加环境变量<span id="DWS_00024__zh-cn_topic_0000002185440080_ph18358648142414">（适用于GaussDB（DWS））</span></span>”章节。</li><li>对于客户端部署到生产主机和独立物理服务器场景：请确保已在物理服务器上安装了roach_client。安装roach_client的操作步骤，请参见<span>《OceanProtect DataBackup 1.5.0-1.6.0 客户端安装指南》</span>中的“<span>安装roach_client（适用于GaussDB（DWS））</span>”章节。</li></ul>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><div class="p">客户端支持以下两种部署方式：<ul><li>独立部署到生产主机场景：<span style="color:#414142;">GaussDB(DWS)</span>的所有DN节点、CN节点都需要部署客户端。</li><li>部署到生产主机和独立物理服务器场景：在独立物理服务器和<span style="color:#414142;">GaussDB(DWS)</span>集群中任意一个CN节点部署客户端（为了系统可靠性，建议在2-3个CN节点上部署客户端）。</li></ul>
+</div>
+</div></div>
+</li><li>已放开备份和恢复任务所需端口，具体请参见<a href="https://support.huawei.com/enterprise/zh/doc/EDOC1100385841?idPath=7919749|251366268|250389224|251366267|258115661" target="_blank" rel="noopener noreferrer">通信矩阵</a>。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><p>GaussDB(DWS)集群注册成功后不支持修改集群名称，因名称是集群的唯一标识，需要谨慎填写。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li id="DWS_00024__zh-cn_topic_0000001346641964_zh-cn_topic_0000001249935107_li0198134611381"><span>选择<span class="uicontrol" id="DWS_00024__zh-cn_topic_0000002199964685_uicontrol865195012392">“<span id="DWS_00024__zh-cn_topic_0000002199964685_text4651950123919">保护</span> &gt; 大数据 &gt; GaussDB(DWS)”</span>。</span></li><li><span>在<span class="uicontrol">“集群”</span>页面，单击<span class="uicontrol">“注册”</span>，注册GaussDB(DWS)集群。</span><p><div class="p">相关参数说明如<a href="#DWS_00024__zh-cn_topic_0000001346641964_table196232217593">表1</a>所示。
+<div class="tablenoborder"><a name="DWS_00024__zh-cn_topic_0000001346641964_table196232217593"></a><a name="zh-cn_topic_0000001346641964_table196232217593"></a><table cellpadding="4" cellspacing="0" summary="" id="DWS_00024__zh-cn_topic_0000001346641964_table196232217593" frame="border" border="1" rules="all"><caption><b>表1 </b>注册GaussDB(DWS)集群</caption><colgroup><col style="width:25.03%"><col style="width:74.97%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.03%" id="mcps1.3.4.2.2.2.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.97%" id="mcps1.3.4.2.2.2.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p>名称</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>自定义GaussDB(DWS)集群名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p>用户名</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>运行GaussDB(DWS)集群的系统用户名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p>环境变量文件路径</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>集群用户的环境变量配置文件路径，<span style="color:#1A1A1A;">默认路径为/opt/huawei/Bigdata/mppdb/.mppdbgs_profile</span>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p>节点</p>
+</td>
+<td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>请至少选择一个有CN实例，且安装了客户端的GaussDB(DWS)节点。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.03%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.1 "><p>客户端</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="DWS_00024__fc_gud_0015_p84411322171314"><span id="DWS_00024__fc_gud_0015_ph95581882392">对于1.5.0版本，该参数名为“代理主机”。</span></p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="74.97%" headers="mcps1.3.4.2.2.2.1.2.2.3.1.2 "><p>选择安装了RoachClient的客户端。对于内核版本为GaussDB A 8.0.0的GaussDB(DWS)集群，不需要选择客户端。对于客户端独立部署到生产主机的场景，也不需要选择客户端。</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>不支持添加已经加入到其他GaussDB(DWS)集群的客户端。</p>
+</div></div>
+</div>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</div>
+<p></p>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="DWS_00020.html">备份GaussDB(DWS)</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

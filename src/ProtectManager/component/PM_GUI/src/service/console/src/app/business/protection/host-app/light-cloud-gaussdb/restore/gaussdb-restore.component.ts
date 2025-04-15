@@ -1,21 +1,21 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ModalRef } from '@iux/live';
 import {
   BaseUtilService,
   CommonConsts,
+  compareVersion,
   DataMap,
   extendParams,
   I18NService,
@@ -38,7 +38,7 @@ import {
   set,
   size
 } from 'lodash';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, Subject } from 'rxjs';
 
 @Component({
   selector: 'aui-gaussdb-restore',
@@ -51,6 +51,7 @@ export class GaussdbRestoreComponent implements OnInit {
   @Input() restoreType;
   isDrill;
   formGroup: FormGroup;
+  valid$: Subject<boolean> = new Subject();
   resourceData;
   targetEnv;
   disabledOrigin = false;
@@ -58,13 +59,15 @@ export class GaussdbRestoreComponent implements OnInit {
   instanceOptions = [];
   restoreLocationType = RestoreV2LocationType;
   readonly PAGE_SIZE = CommonConsts.PAGE_SIZE * 10;
-
+  versionVerifyFailed = false;
+  TARGET_DATABASE_VERSION = '24.7.30.10';
+  originProjectUuid = '';
+  originProjectVersion = '';
   restoreToNewLocationOnly = false;
   tip = this.i18n.get('protection_cloud_origin_restore_disabled_label');
 
   constructor(
     private fb: FormBuilder,
-    private modal: ModalRef,
     private i18n: I18NService,
     private appUtilService: AppUtilsService,
     private baseUtilService: BaseUtilService,
@@ -76,7 +79,12 @@ export class GaussdbRestoreComponent implements OnInit {
     this.resourceData = JSON.parse(
       get(this.rowCopy, 'resource_properties', '{}')
     );
-
+    this.originProjectUuid = this.resourceData.parent_uuid;
+    this.originProjectVersion = get(
+      this.resourceData,
+      'extendInfo.tpopsVersion',
+      ''
+    );
     this.restoreToNewLocationOnly = includes(
       [
         DataMap.CopyData_generatedType.replicate.value,
@@ -84,9 +92,9 @@ export class GaussdbRestoreComponent implements OnInit {
       ],
       this.rowCopy?.generated_by
     );
-
+    this.setInstanceDisabledStatus(false);
     this.initForm();
-
+    this.listenForm();
     if (
       !this.restoreToNewLocationOnly &&
       this.rowCopy?.resource_status !== DataMap.Resource_Status.notExist.value
@@ -120,6 +128,7 @@ export class GaussdbRestoreComponent implements OnInit {
         value: this.resourceData?.name,
         disabled: true
       }),
+      versionVerify: new FormControl(true),
       targetProject: new FormControl(
         { value: '', disabled: true },
         {
@@ -133,7 +142,9 @@ export class GaussdbRestoreComponent implements OnInit {
         }
       )
     });
+  }
 
+  listenForm() {
     this.formGroup.statusChanges.subscribe(res => this.disableOkBtn());
 
     this.formGroup.get('restoreLocation').valueChanges.subscribe(res => {
@@ -151,9 +162,16 @@ export class GaussdbRestoreComponent implements OnInit {
         return;
       }
       this.getInstanceOptions(res);
+      this.formGroup.get('targetInstance').setValue('');
     });
 
-    this.modal.getInstance().lvOkDisabled = false;
+    this.formGroup.get('versionVerify').valueChanges.subscribe(res => {
+      this.checkRestoreConditions();
+    });
+
+    this.formGroup.get('targetInstance').valueChanges.subscribe(res => {
+      this.checkRestoreConditions();
+    });
   }
 
   getRestoreLimit() {
@@ -162,13 +180,15 @@ export class GaussdbRestoreComponent implements OnInit {
         resourceIds: String(this.resourceData?.uuid)
       })
       .subscribe(res => {
-        const isAllowRestore = get(res[0], 'isAllowRestore', 'false');
+        const isAllowRestore = get(res[0], 'isAllowRestore', 'true');
         if (isAllowRestore === 'false') {
           this.tip = this.i18n.get('protection_origin_disable_restore_label');
           this.restoreToNewLocationOnly = true;
           this.formGroup
             .get('restoreLocation')
             .setValue(RestoreV2LocationType.NEW);
+        } else {
+          this.setInstanceDisabledStatus(this.formGroup.invalid);
         }
       });
   }
@@ -205,7 +225,7 @@ export class GaussdbRestoreComponent implements OnInit {
           DataMap.Resource_Status.notExist.value;
 
         if (this.disabledOrigin) {
-          this.modal.getInstance().lvOkDisabled = true;
+          this.setInstanceDisabledStatus(true);
         }
       }
     );
@@ -242,8 +262,7 @@ export class GaussdbRestoreComponent implements OnInit {
             value: item.uuid,
             label: item.name,
             isLeaf: true,
-            disabled:
-              get(item, 'extendInfo.isAllowRestore', 'false') === 'false'
+            disabled: get(item, 'extendInfo.isAllowRestore', 'true') === 'false'
           });
         });
         this.projectOptions = projectArray;
@@ -307,6 +326,54 @@ export class GaussdbRestoreComponent implements OnInit {
     });
   }
 
+  setInstanceDisabledStatus(disabled: boolean) {
+    this.valid$.next(!disabled);
+  }
+
+  checkRestoreConditions() {
+    const isOrigin =
+      this.formGroup.get('restoreLocation').value ===
+      RestoreV2LocationType.ORIGIN;
+    const isVerifyVersion = this.formGroup.get('versionVerify').value;
+    const targetProjectUuid = this.formGroup.get('targetProject').value;
+    const targetProjectUuidIsEmpty = isEmpty(targetProjectUuid);
+    // 原位置无需校验，新位置没有开启版本校验时无需校验
+    if (!isVerifyVersion || isOrigin || targetProjectUuidIsEmpty) {
+      this.setInstanceDisabledStatus(this.formGroup.invalid);
+      this.versionVerifyFailed = false;
+      return;
+    }
+
+    if (targetProjectUuid !== this.originProjectUuid) {
+      // 新项目恢复，需要继续比较目标实例版本
+      const targetProject = find(this.projectOptions, {
+        key: targetProjectUuid
+      });
+      const targetProjectVersion = get(
+        targetProject,
+        'extendInfo.tpopsVersion',
+        null
+      );
+      if (
+        isEmpty(targetProjectVersion) ||
+        isEmpty(this.originProjectVersion) ||
+        compareVersion(targetProjectVersion, this.TARGET_DATABASE_VERSION) ===
+          -1 ||
+        compareVersion(
+          this.originProjectVersion,
+          this.TARGET_DATABASE_VERSION
+        ) === -1
+      ) {
+        this.setInstanceDisabledStatus(true);
+        this.versionVerifyFailed = true;
+        return;
+      }
+    }
+
+    this.setInstanceDisabledStatus(this.formGroup.invalid);
+    this.versionVerifyFailed = false;
+  }
+
   getParams() {
     const params = {
       copyId: this.rowCopy.uuid,
@@ -368,6 +435,6 @@ export class GaussdbRestoreComponent implements OnInit {
   }
 
   disableOkBtn() {
-    this.modal.getInstance().lvOkDisabled = this.formGroup.invalid;
+    this.checkRestoreConditions();
   }
 }

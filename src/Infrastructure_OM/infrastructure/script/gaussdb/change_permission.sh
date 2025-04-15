@@ -105,6 +105,11 @@ function chmod_path() {
     fi
 }
 
+if [[ ! "${NODE_NAME}" =~ ^[a-zA-Z0-9]([a-zA-Z0-9._-]*[a-zA-Z0-9])?$ ]]; then
+  echo "NODE_NAME ${NODE_NAME} Invalid"
+  exit 1
+fi
+
 type="$1"
 if [ -z "${type}" ];then
     echo "type error"

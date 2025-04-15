@@ -1,0 +1,92 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Step 1: Registering a Hyper-V Virtualization Environment">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164773752.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002200100457">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Step 1: Registering a Hyper-V Virtualization Environment</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002200100457"></a><a name="EN-US_TOPIC_0000002200100457"></a>
+
+<h1 class="topictitle1">Step 1: Registering a Hyper-V Virtualization Environment</h1>
+<div><p>Before performing Hyper-V backup and restoration, you must register a Hyper-V virtualization environment with the <span>OceanProtect</span>.</p>
+<div class="section"><h4 class="sectiontitle">Context</h4><ul><li>When registering a Hyper-V virtualization environment with the <span>OceanProtect</span>, you can set <strong>Type</strong> to <strong>SCVMM</strong>, <strong>Cluster</strong>, or <strong>Host</strong>. If there are multiple independent hosts, each host must be registered.</li><li>After registering the Hyper-V virtualization environment, you can view information about clusters, hosts, or VMs on the WebUI and protect or restore them. Hosts and VMs can be restoration targets as well.</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">Procedure</h4><ol><li><span>Choose <span class="uicontrol" id="EN-US_TOPIC_0000002200100457__en-us_topic_0000002199964685_uicontrol187824252421"><b><span id="EN-US_TOPIC_0000002200100457__en-us_topic_0000002199964685_text2782025144215"><strong>Protection</strong></span> &gt; Virtualization &gt; Hyper-V</b></span>.</span></li><li><span>Click <span class="uicontrol"><b>Register</b></span>, and register the Hyper-V virtualization platform.</span><p><div class="p"><a href="#EN-US_TOPIC_0000002200100457__table613227155112">Table 1</a> lists the Hyper-V registration information.
+<div class="tablenoborder"><a name="EN-US_TOPIC_0000002200100457__table613227155112"></a><a name="table613227155112"></a><table cellpadding="4" cellspacing="0" summary="" id="EN-US_TOPIC_0000002200100457__table613227155112" frame="border" border="1" rules="all"><caption><b>Table 1 </b>Hyper-V registration information</caption><colgroup><col style="width:25.580000000000002%"><col style="width:74.42%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="25.580000000000002%" id="mcps1.3.3.2.2.2.1.2.2.3.1.1"><p>Parameter</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="74.42%" id="mcps1.3.3.2.2.2.1.2.2.3.1.2"><p>Description</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="25.580000000000002%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><strong>Type</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.42%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Management type of the registered Hyper-V server.</p>
+<ul><li>When the SCVMM is used to manage Hyper-V servers, select <span class="uicontrol"><b>SCVMM</b></span>.</li><li>When using an independent Hyper-V server, select <span class="uicontrol"><b>Host</b></span>.</li><li>When using a failover cluster, select <span class="uicontrol"><b>Cluster</b></span>.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.580000000000002%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Name</strong></span></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.42%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>User-defined virtualization platform name.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.580000000000002%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><strong>Clients</strong></p>
+</td>
+<td class="cellrowborder" valign="top" width="74.42%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Select the host where the client corresponding to the Hyper-V server is installed.</p>
+<p>When <strong>Type</strong> is set to <strong>Cluster</strong>, select all hosts where the client is installed in the cluster.</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="25.580000000000002%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Username</strong></span></p>
+</td>
+<td class="cellrowborder" rowspan="2" valign="top" width="74.42%" headers="mcps1.3.3.2.2.2.1.2.2.3.1.2 "><p>Domain administrator account and password of the AD domain where the Hyper-V server being registered resides. When <strong>Type</strong> is set to <strong>SCVMM</strong> or <strong>Cluster</strong>, the username and password are displayed.</p>
+<ul><li>When <strong>Type</strong> is set to <strong>SCVMM</strong>, enter the domain administrator account and password of the SCVMM server.</li><li>When <strong>Type</strong> is set to <strong>Cluster</strong>, enter the domain administrator account and password of the failover cluster.</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.2.2.1.2.2.3.1.1 "><p><span><strong>Password</strong></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</p></li><li><span>Click <span class="uicontrol"><b>OK</b></span>.</span><p><p>After the registration is successful, information about the registered Hyper-V virtualization environment is displayed on the left of the page. You can browse the list of clusters, hosts, or VMs.</p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164773752.html">Backing Up Hyper-V VMs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

@@ -72,7 +72,6 @@ private:
 
     time_t m_isCompleteTimer { 0 };
 
-    bool m_failed { false };
     bool m_threadDone { false };
     BackupPhaseStatus m_failReason = BackupPhaseStatus::FAILED;
     std::shared_ptr<BackupQueue<FileHandle>> m_partialReadQueue;

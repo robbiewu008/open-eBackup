@@ -1,0 +1,67 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="管理勒索检测副本">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="ransome_0018.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ransome_0022">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>管理勒索检测副本</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ransome_0022"></a><a name="ransome_0022"></a>
+
+<h1 class="topictitle1">管理勒索检测副本</h1>
+<div><p>勒索检测副本不需要或不可用时，可以通过本节操作，删除副本。</p>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><ul><li>删除勒索检测副本前，请确认不再使用该副本执行恢复操作。</li><li>勒索检测状态为<span class="uicontrol">“<span>检测中</span>”</span>的副本不支持删除。</li><li>删除资源的最后一个未感染副本将影响后续副本的勒索检测准确率，请谨慎删除。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">删除副本（适用于1.5.0版本）</h4><ol><li><span>选择“数据利用 &gt; 防勒索”。</span></li><li><span>选择VMware/<span>NAS文件系统</span>/<span>NAS共享</span>/<span>文件集</span>。</span></li><li id="ransome_0022__li982913511486"><span>单击某个资源的副本数量。</span></li><li id="ransome_0022__li113761429191011"><span>在右侧弹出的窗口中，选择<span class="menucascade" id="ransome_0022__menucascade722318474108">“<span class="uicontrol" id="ransome_0022__uicontrol152237476101"><span id="ransome_0022__text9907113143014">更多</span></span> &gt; <span class="uicontrol" id="ransome_0022__uicontrol931014891019"> <span id="ransome_0022__text1899152313012">删除</span></span>”</span>。</span></li><li id="ransome_0022__li1445913734716"><span>系统将弹出如下提示，确认提示信息无误后，勾选<span class="uicontrol" id="ransome_0022__uicontrol151712517227">“<span id="ransome_0022__text185171851182211">我已阅读上述信息，了解执行此操作带来的后果</span>”</span>后，单击<span class="uicontrol" id="ransome_0022__uicontrol1517185192214">“<span id="ransome_0022__text115174517224">确定</span>”</span>。</span><p><p id="ransome_0022__p108781143154713"><span><img id="ransome_0022__image671194464718" src="zh-cn_image_0000002199962217.png"></span></p>
+<p id="ransome_0022__p18976123713235"></p>
+<p id="ransome_0022__p560519595236">如果您要删除当前资源的最后一个未感染副本，系统将弹出如下提示，确认提示信息无误后，勾选<span class="uicontrol" id="ransome_0022__uicontrol3986451121716">“<span id="ransome_0022__text16559141016222">我已阅读上述信息，了解执行此操作带来的后果</span>”</span>后，单击<span class="uicontrol" id="ransome_0022__uicontrol1324101916227">“<span id="ransome_0022__text337913210301">确定</span>”</span>。</p>
+<p id="ransome_0022__p13983164618241"><span><img id="ransome_0022__image2077191442513" src="zh-cn_image_0000002199962221.png"></span></p>
+<p id="ransome_0022__p153633282411"></p>
+</p></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">删除副本（适用于1.6.0及后续版本）</h4><ol><li><span>选择“数据安全 &gt; 防勒索 &gt; 检测总览”。</span></li><li><span>在<span class="uicontrol">“检测总览”</span>页面，单击<span class="uicontrol">“请选择资源类型”</span>选择相应的资源类型。</span><p><p>资源类型包括：<span class="uicontrol">“VMware虚拟机”</span>、<span class="uicontrol">“<span>NAS文件系统</span>”</span>、<span class="uicontrol">“<span>NAS共享</span>”</span>、<span class="uicontrol">“<span>文件集</span>”</span>、<span class="uicontrol">“CNware虚拟机”</span>、<span class="uicontrol">“华为云Stack”</span>、<span class="uicontrol">“FusionCompute虚拟机”</span>、<span class="uicontrol">“OpenStack云服务器”</span>、<span class="uicontrol">“Hyper-V虚拟机”</span>、<span class="uicontrol">“FusionOne Compute虚拟机”</span>。</p>
+</p></li><li><span>单击某个资源的副本数量。</span></li><li><span>在右侧弹出的窗口中，选择<span class="menucascade" id="ransome_0022__ransome_0022_menucascade722318474108">“<span class="uicontrol" id="ransome_0022__ransome_0022_uicontrol152237476101"><span id="ransome_0022__ransome_0022_text9907113143014">更多</span></span> &gt; <span class="uicontrol" id="ransome_0022__ransome_0022_uicontrol931014891019"> <span id="ransome_0022__ransome_0022_text1899152313012">删除</span></span>”</span>。</span></li><li><span>系统将弹出如下提示，确认提示信息无误后，勾选<span class="uicontrol" id="ransome_0022__ransome_0022_uicontrol151712517227">“<span id="ransome_0022__ransome_0022_text185171851182211">我已阅读上述信息，了解执行此操作带来的后果</span>”</span>后，单击<span class="uicontrol" id="ransome_0022__ransome_0022_uicontrol1517185192214">“<span id="ransome_0022__ransome_0022_text115174517224">确定</span>”</span>。</span><p><p id="ransome_0022__ransome_0022_p108781143154713"><span><img id="ransome_0022__ransome_0022_image671194464718" src="zh-cn_image_0000002199962217.png"></span></p>
+<p id="ransome_0022__ransome_0022_p18976123713235"></p>
+<p id="ransome_0022__ransome_0022_p560519595236">如果您要删除当前资源的最后一个未感染副本，系统将弹出如下提示，确认提示信息无误后，勾选<span class="uicontrol" id="ransome_0022__ransome_0022_uicontrol3986451121716">“<span id="ransome_0022__ransome_0022_text16559141016222">我已阅读上述信息，了解执行此操作带来的后果</span>”</span>后，单击<span class="uicontrol" id="ransome_0022__ransome_0022_uicontrol1324101916227">“<span id="ransome_0022__ransome_0022_text337913210301">确定</span>”</span>。</p>
+<p id="ransome_0022__ransome_0022_p13983164618241"><span><img id="ransome_0022__ransome_0022_image2077191442513" src="zh-cn_image_0000002199962221.png"></span></p>
+<p id="ransome_0022__ransome_0022_p153633282411"></p>
+</p></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="ransome_0018.html">管理副本防勒索</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

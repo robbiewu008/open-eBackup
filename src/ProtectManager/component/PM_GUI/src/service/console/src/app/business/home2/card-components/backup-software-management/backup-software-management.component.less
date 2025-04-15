@@ -1,0 +1,143 @@
+.external-system-list {
+  width: 100%;
+  height: 224px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}
+
+.list-container {
+  padding-right: 1px;
+}
+
+.list-item-container {
+  lv-group {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.item-top-container {
+  lv-group {
+    height: 54px;
+    max-height: 54px;
+  }
+
+  .system-name {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .alarm-container {
+    justify-content: space-around;
+    align-items: flex-end;
+    text-wrap: nowrap;
+
+    .alarm-num,
+    .job-num {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 700;
+      color: var(--live-angular-color-text-regular);
+    }
+
+    .alarm-text {
+      color: var(--live-angular-color-text-secondary);
+      font-size: 14px;
+      line-height: 20px;
+    }
+  }
+}
+
+.item-bottom-container {
+  .chart {
+    width: 100%;
+    margin-top: 8px;
+    height: 8px;
+    border-radius: 35px !important;
+    background-color: var(--live-angular-color-track-background);
+
+    .used-chart {
+      height: 8px;
+      border-radius: 35px;
+    }
+  }
+}
+
+.job-board-container {
+  margin: 8px 0;
+  & > div {
+    width: 33%;
+    height: 56px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--custom-home-mangement-container-bg);
+  }
+  .main-text {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 700;
+    color: var(--live-angular-color-text-regular);
+  }
+  .second-text {
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--live-angular-color-text-secondary);
+  }
+  .failed-job-text {
+    color: var(--live-angular-color-error);
+  }
+}
+
+.lv-link-icon&:hover {
+  color: var(--live-angular-color-primary-hover);
+  cursor: pointer;
+}
+
+.gutter-line {
+  width: 100%;
+  height: 1px;
+  margin-top: 4px;
+  background-color: var(--live-angular-color-divider-regular);
+}
+
+.lv-link-icon {
+  min-width: 0.16rem;
+  min-height: 0.16rem;
+}
+
+.capacity-label {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--live-angular-color-text-secondary);
+
+  .percentage-text {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 22px;
+    color: var(--live-angular-color-text-regular);
+  }
+}
+
+.normal-color {
+  background-color: var(--live-angular-color-primary);
+}
+
+.warning-color {
+  background-color: var(--live-angular-color-alarm-major);
+}
+
+.empty-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+}

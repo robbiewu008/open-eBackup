@@ -4,9 +4,12 @@
 
   .big-screen {
     height: 96%;
-    overflow: scroll hidden;
+    overflow: scroll;
     &::-webkit-scrollbar-thumb {
       background-color: rgba(#fff, 0.1);
+    }
+    &::-webkit-scrollbar-corner {
+      background-color: transparent;
     }
   }
 
@@ -54,13 +57,13 @@
   background-image: url('assets/img/cyberengine_background.svg');
   background-size: 100% 100%;
   position: relative;
-  bottom: 13%;
+  bottom: 8%;
   height: 125%;
-  width: calc(87vh * 1.43 - 256px);
+  width: 67vw;
 
   .big-screen-node {
-    width: 12.8%;
-    height: 18.4%;
+    width: 195px;
+    height: 200px;
     background-image: url('assets/img/cyberengine_home_node_null.png');
     background-size: 100% 100%;
 

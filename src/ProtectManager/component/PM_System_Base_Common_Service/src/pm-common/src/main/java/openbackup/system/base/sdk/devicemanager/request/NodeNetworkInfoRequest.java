@@ -12,10 +12,9 @@
 */
 package openbackup.system.base.sdk.devicemanager.request;
 
-import openbackup.system.base.common.validator.constants.RegexpConstants;
-
 import lombok.Getter;
 import lombok.Setter;
+import openbackup.system.base.common.validator.constants.RegexpConstants;
 
 import java.util.List;
 

@@ -1,0 +1,67 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en-us" xml:lang="en-us">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="The mysql, mysqlbinlog, mysqldump, or mysqladmin Tool Cannot Be Found in the /usr/bin Directory of the MySQL/GreatSQL Host">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="en-us_topic_0000002164763106.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="documenttype" content="usermanual">
+<meta name="prodname" content="csbs">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="EN-US_TOPIC_0000002164763094">
+<meta name="DC.Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>The mysql, mysqlbinlog, mysqldump, or mysqladmin Tool Cannot Be Found in the /usr/bin Directory of the MySQL/GreatSQL Host</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="EN-US_TOPIC_0000002164763094"></a><a name="EN-US_TOPIC_0000002164763094"></a>
+
+<h1 class="topictitle1">The mysql, mysqlbinlog, mysqldump, or mysqladmin Tool Cannot Be Found in the /usr/bin Directory of the MySQL/GreatSQL Host</h1>
+<div><div class="section"><h4 class="sectiontitle">Symptom</h4><p>The MySQL/GreatSQL database fails to be backed up, and the following message is displayed: "No available configuration file is found, or the mysql, mysqlbinlog, mysqldump, or mysqladmin tool cannot be found in the /usr/bin directory of the MySQL/GreatSQL host."</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Possible Causes</h4><p>The MySQL/GreatSQL database may not be installed in the <strong>/usr/bin</strong> directory, and the <strong>mysql</strong>, <strong>mysqlbinlog</strong>, <strong>mysqldump</strong>, and <strong>mysqladmin</strong> tools are not configured through soft links.</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Troubleshooting</h4><ol><li><span>Log in to the MySQL/GreatSQL database host node.</span></li><li><span>Run the <strong>which mysql</strong> command to find the MySQL/GreatSQL database installation path. <strong>/mysqlpath</strong> is used as an example.</span></li><li><span>Run the following commands in sequence to establish MySQL command soft links:</span><p><pre class="screen">ln -s /mysqlpath/bin/mysql /usr/bin/mysql
+ln -s /mysqlpath/bin/mysqlbinlog /usr/bin/mysqlbinlog
+ln -s /mysqlpath/bin/mysqldump /usr/bin/mysqldump
+ln -s /mysqlpath/bin/mysqladmin /usr/bin/mysqladmin</pre>
+</p></li><li><span>Run the following commands and check the command output. If no error message is displayed, the configuration is successful.</span><p><pre class="screen">mysql --version
+mysqlbinlog --version
+mysqldump --version
+mysqladmin --version</pre>
+</p></li></ol>
+</div>
+<div class="section"><h4 class="sectiontitle">Suggestions</h4><p>None</p>
+</div>
+<div class="section"><h4 class="sectiontitle">Reference</h4><p>None</p>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a href="en-us_topic_0000002164763106.html">FAQs</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">Copyright &copy; Huawei Technologies Co., Ltd.</div></body>
+</html>

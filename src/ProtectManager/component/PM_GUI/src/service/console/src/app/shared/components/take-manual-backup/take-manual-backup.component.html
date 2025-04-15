@@ -21,18 +21,20 @@
         </lv-form-control>
     </lv-form-item>
     <lv-form-item>
+      <lv-alert lvType="info" lvClosable="false" *ngIf="isRHELHA" ><h3 class="lv-alert-title">{{ 'protection_unsupport_rhel_policy_label' | i18n }}</h3></lv-alert>
         <lv-form-label>
             {{ 'protection_backup_mode_label' | i18n }}
+            <i lv-icon="aui-icon-help" lv-tooltip="{{'protection_take_manual_backup_worm_tip_label' | i18n}}"
+                lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
         </lv-form-label>
         <lv-form-control>
             <lv-radio-group formControlName="action" [lvGroupName]="'backupModeGroup'" style="padding: 8px 0;">
                 <lv-group [lvGutter]="'14px'" lvDirection='vertical'>
                     <ng-container *ngFor="let item of items">
                         <lv-radio [lvValue]="item.id" *ngIf="item.id"
-                            [lvDisabled]="item.id === policyAction.LOG && disableLogAction">
-                            {{item.label}}
-                          <i  lv-icon="aui-icon-help" lv-tooltip="{{item.tips}}" lvTooltipTheme="light"  *ngIf="item.tips"
-                             class="configform-constraint" lvColorState='true'></i>
+                            [lvDisabled]="getDisableActionByActionId(item.id)">
+                            {{item.label}}<i lv-icon="aui-icon-help" lv-tooltip="{{item.tips}}" lvTooltipTheme="light"
+                                *ngIf="item.tips" class="configform-constraint tip-top" lvColorState='true'></i>
                         </lv-radio>
                     </ng-container>
                 </lv-group>

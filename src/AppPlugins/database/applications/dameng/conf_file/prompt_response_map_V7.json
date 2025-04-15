@@ -1,0 +1,50 @@
+[
+    {
+        "pattern": "\\s*(server|服务名)\\s*:\\s*",
+        "response": "127.0.0.1"
+    },
+    {
+        "pattern": "\\s*(username|用户名)\\s*:\\s*",
+        "response": "{user}"
+    },
+    {
+        "pattern": "\\s*(password|密码)\\s*:\\s*",
+        "response": "{password}"
+    },
+    {
+        "pattern": "\\s*(port|端口号)\\s*:\\s*",
+        "response": "{port}"
+    },
+    {
+        "pattern": "\\s*(SSL\\s*path|SSL路径)\\s*:\\s*",
+        "response": "{ssl_path}"
+    },
+    {
+        "pattern": "\\s*(SSL\\s*PWD|SSL密码)\\s*:\\s*",
+        "response": "{ssl_pwd}"
+    },
+    {
+        "pattern": "\\s*(UKEY\\s*NAME|UKEY名称)\\s*:\\s*",
+        "response": "{ukey_name}"
+    },
+    {
+        "pattern": "\\s*(UKEY\\s*PIN|UKEY PIN码)\\s*:\\s*",
+        "response": "{ukey_pin}"
+    },
+    {
+        "pattern": "\\s*(MPP\\s*TYPE|MPP类型)\\s*:\\s*",
+        "response": "{mpp_type}"
+    },
+    {
+        "pattern": ".*y/n.*:\\s*",
+        "response": ""
+    },
+    {
+        "pattern": "\\s*(protocol\\s*type|协议类型)\\s*:\\s*",
+        "response": "{protocol_type}"
+    },
+    {
+        "pattern": "\\s*[\\[\\(](127.0.0.1:\\d+)[\\]\\)]\\s*:\\s*",
+        "response": "end"
+    }
+]

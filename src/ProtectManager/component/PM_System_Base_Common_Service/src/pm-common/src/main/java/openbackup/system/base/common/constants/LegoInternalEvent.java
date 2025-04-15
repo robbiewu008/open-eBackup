@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.common.constants;
 
-import openbackup.system.base.common.constants.FaultEnum.AlarmSeverity;
-
 import lombok.Data;
+import openbackup.system.base.common.constants.FaultEnum.AlarmSeverity;
 
 /**
  * Lego告警
@@ -63,4 +62,7 @@ public class LegoInternalEvent {
 
     // 告警关联资源ID
     private String resourceId;
+
+    // DME场景下的Token信息
+    private String dmeToken;
 }

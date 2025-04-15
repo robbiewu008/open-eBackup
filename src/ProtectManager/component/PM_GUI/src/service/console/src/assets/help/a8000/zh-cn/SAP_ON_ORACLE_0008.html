@@ -1,0 +1,68 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="安装客户端">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="SAP_ON_ORACLE_0008">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>安装客户端</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="SAP_ON_ORACLE_0008"></a><a name="SAP_ON_ORACLE_0008"></a>
+
+<h1 class="topictitle1">安装客户端</h1>
+<div><p>执行应用备份或恢复前，需要先安装客户端。<span id="SAP_ON_ORACLE_0008__fc_gud_0008_ph355651111912">客户端（对于1.5.0版本，指ProtectAgent软件）主要用于<span id="SAP_ON_ORACLE_0008__fc_gud_0008_zh-cn_topic_0000002200031213_text2689348142311">OceanProtect</span>与生产环境的连接，备份过程中获取生产端数据传输到<span id="SAP_ON_ORACLE_0008__fc_gud_0008_zh-cn_topic_0000002200031213_text1856916148247">OceanProtect</span>的备份存储中。同时客户端也用于备份恢复过程中的流程控制和数据传输。</span></p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><p>客户端仅支持部署到生产主机，受保护的<span style="color:#414142;">SAP on Oracle</span>数据库所在的主机均需要部署客户端。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">注意事项</h4><ul><li>安装客户端前，请确保已根据<a href="SAP_ON_ORACLE_0007.html#SAP_ON_ORACLE_0007__section1513725616430">配置环境变量</a>配置了环境变量。若在安装客户端后再配置环境变量，您需要在配置环境变量后重启客户端。</li><li>请以具有管理员权限的账户安装客户端。</li></ul>
+</div>
+<div class="section"><h4 class="sectiontitle">安装流程</h4><div class="p">在主机上安装客户端的流程如<a href="#SAP_ON_ORACLE_0008__zh-cn_topic_0000001455526244_table6210448101619">表1</a>所示。
+<div class="tablenoborder"><a name="SAP_ON_ORACLE_0008__zh-cn_topic_0000001455526244_table6210448101619"></a><a name="zh-cn_topic_0000001455526244_table6210448101619"></a><table cellpadding="4" cellspacing="0" summary="" id="SAP_ON_ORACLE_0008__zh-cn_topic_0000001455526244_table6210448101619" frame="border" border="1" rules="all"><caption><b>表1 </b>客户端安装流程</caption><colgroup><col style="width:21.62%"><col style="width:78.38000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="21.62%" id="mcps1.3.4.2.2.2.3.1.1"><p>任务</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="78.38000000000001%" id="mcps1.3.4.2.2.2.3.1.2"><p>说明/操作指导</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="21.62%" headers="mcps1.3.4.2.2.2.3.1.1 "><p>准备待安装客户端的主机</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.38000000000001%" headers="mcps1.3.4.2.2.2.3.1.2 "><ul><li>待安装客户端的主机的资源要求，请参考<span id="SAP_ON_ORACLE_0008__zh-cn_topic_0000002200061433_cite687873615434">《OceanProtect DataBackup 1.5.0-1.6.0 客户端安装指南》</span>中的“<span id="SAP_ON_ORACLE_0008__zh-cn_topic_0000002200061433_ph15176124316394">客户端安装前检查（适用于部署到生产主机）</span>”章节。</li><li>待安装客户端的主机的网络规划，请参考<span id="SAP_ON_ORACLE_0008__zh-cn_topic_0000002200061433_cite42632108251">《OceanProtect DataBackup 1.5.0-1.6.0 客户端安装指南》</span>中的“<span id="SAP_ON_ORACLE_0008__zh-cn_topic_0000002200061433_ph1882783413413">主机网络规划</span>”章节。</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.62%" headers="mcps1.3.4.2.2.2.3.1.1 "><p>安装客户端前的配置</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.38000000000001%" headers="mcps1.3.4.2.2.2.3.1.2 "><ul><li>配置环境变量，请参考<a href="SAP_ON_ORACLE_0007.html#SAP_ON_ORACLE_0007__section1513725616430">配置环境变量</a>的操作步骤。</li></ul>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="21.62%" headers="mcps1.3.4.2.2.2.3.1.1 "><p>安装客户端</p>
+</td>
+<td class="cellrowborder" valign="top" width="78.38000000000001%" headers="mcps1.3.4.2.2.2.3.1.2 "><ul><li>请参考<span id="SAP_ON_ORACLE_0008__zh-cn_topic_0000002200061433_cite8263171015251">《OceanProtect DataBackup 1.5.0-1.6.0 客户端安装指南》</span>中的“安装客户端”章节。</li></ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

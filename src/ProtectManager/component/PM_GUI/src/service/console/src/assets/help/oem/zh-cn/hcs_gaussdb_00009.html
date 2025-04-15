@@ -1,0 +1,128 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="备份前准备">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="hcs_gaussdb_00006.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="hcs_gaussdb_00009">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>备份前准备</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="hcs_gaussdb_00009"></a><a name="hcs_gaussdb_00009"></a>
+  <h1 class="topictitle1">备份前准备</h1>
+  <div>
+   <p>备份前，请参考<a href="#hcs_gaussdb_00009__zh-cn_topic_0000001514140621_table10744125193920">表1</a>提前准备证书、账号、IP地址等信息。</p>
+   <div class="tablenoborder">
+    <a name="hcs_gaussdb_00009__zh-cn_topic_0000001514140621_table10744125193920"></a><a name="zh-cn_topic_0000001514140621_table10744125193920"></a>
+    <table cellpadding="4" cellspacing="0" summary="" id="hcs_gaussdb_00009__zh-cn_topic_0000001514140621_table10744125193920" frame="border" border="1" rules="all">
+     <caption>
+      <b>表1 </b>备份前准备
+     </caption>
+     <colgroup>
+      <col style="width:17.34%">
+      <col style="width:12.75%">
+      <col style="width:53.56999999999999%">
+      <col style="width:16.34%">
+     </colgroup>
+     <thead align="left">
+      <tr>
+       <th align="left" class="cellrowborder" valign="top" width="17.34%" id="mcps1.3.2.2.5.1.1"><p>准备项</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="12.75%" id="mcps1.3.2.2.5.1.2"><p>是否必须</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="53.56999999999999%" id="mcps1.3.2.2.5.1.3"><p>获取方式</p></th>
+       <th align="left" class="cellrowborder" valign="top" width="16.34%" id="mcps1.3.2.2.5.1.4"><p>数据使用章节</p></th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td class="cellrowborder" valign="top" width="17.34%" headers="mcps1.3.2.2.5.1.1 "><p>华为云Stack GaussDB管理面地址。</p></td>
+       <td class="cellrowborder" valign="top" width="12.75%" headers="mcps1.3.2.2.5.1.2 "><p>必选</p></td>
+       <td class="cellrowborder" valign="top" width="53.56999999999999%" headers="mcps1.3.2.2.5.1.3 ">
+        <ol id="hcs_gaussdb_00009__ol18636115915591">
+         <li id="hcs_gaussdb_00009__li46368592592">请参考华为云Stack软件安装阶段HCC Turnkey导出的参数信息汇总文件《<em id="hcs_gaussdb_00009__i12473164115012">xxx</em>_export_all_v2_CN.xlsx》的“基本参数”页签，搜索“region_id”和“external_global_domain_name”，获取对应的参数值。</li>
+         <li id="hcs_gaussdb_00009__li122681935416">请参考华为云Stac软件安装阶段HCC Turnkey导出的参数信息汇总文件《<em id="hcs_gaussdb_00009__i1035816496507">xxx</em>_export_all_v2_CN.xlsx》的“工具生成的IP参数”页签，搜索“AGW-LB-Float-IP”，获取管理面IP地址。</li>
+         <li id="hcs_gaussdb_00009__li1941018428330">完成域名映射。
+          <ol type="a" id="hcs_gaussdb_00009__ol201493163404">
+           <li id="hcs_gaussdb_00009__li8367141320406">登录客户端所在的主机。</li>
+           <li id="hcs_gaussdb_00009__li14676163034010">执行以下命令打开/etc/hosts文件。<pre class="screen" id="hcs_gaussdb_00009__screen1870506123418">vi /etc/hosts</pre></li>
+           <li id="hcs_gaussdb_00009__li2344115264019">在/etc/hosts文件中新增如下信息，进行域名映射,其中<em id="hcs_gaussdb_00009__i117521616375">xx.x.x.xx</em>为管理面IP。<pre class="screen" id="hcs_gaussdb_00009__screen9455132794116"><em id="hcs_gaussdb_00009__i348312113711">xx.x.x.xx</em> iam-apigateway-proxy.<em id="hcs_gaussdb_00009__i11592143393812">{region_id}</em>.<em id="hcs_gaussdb_00009__i45921833183816">{external_global_domain_name}</em></pre></li>
+          </ol></li>
+         <li id="hcs_gaussdb_00009__li6457159192714">获取管理面地址：https://<strong id="hcs_gaussdb_00009__b1266352192611">iam-apigateway-proxy.<em id="hcs_gaussdb_00009__i666165215264">{region_id}</em>.<em id="hcs_gaussdb_00009__i56610523260">{external_global_domain_name</em></strong><strong id="hcs_gaussdb_00009__b186619529266"><em id="hcs_gaussdb_00009__i76618526266">}</em></strong>:443。</li>
+        </ol></td>
+       <td class="cellrowborder" rowspan="6" valign="top" width="16.34%" headers="mcps1.3.2.2.5.1.4 "><p><a href="hcs_gaussdb_00011.html">步骤1：注册华为云Stack GaussDB项目</a></p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.1 "><p>华为云Stack GaussDB业务面地址。</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.2 "><p>必选</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><p id="hcs_gaussdb_00009__p8596193120113">请参考华为云Stack软件安装阶段HCC Turnkey导出的参数信息汇总文件《<em id="hcs_gaussdb_00009__i1101610517">xxx</em>_export_all_v2_CN.xlsx》的“工具生成的IP参数”页签，搜索“AGW-LB-Float-IP”，获取对应的参数值XX.XX.XX.XX。https://XX.XX.XX.XX即为业务面地址。</p></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.1 "><p>资源空间名称和ID</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.2 "><p>必选</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 ">
+        <ol>
+         <li>登录ManageOne运营界面。</li>
+         <li>单击界面右上角用户的名称，选择<span class="uicontrol">“个人设置”</span>。资源空间列表中的<span class="uicontrol">“资源空间名称”</span>和<span class="uicontrol">“ID”</span>列即为需要的资源空间名称和资源空间ID。</li>
+        </ol></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.1 "><p>云平台租户及密码</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.2 "><p>必选</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><p>待保护的华为云Stack GaussDB实例所属租户的名称，获取方式如下：</p>
+        <ol>
+         <li>请登录ManageOne运营面，选择“组织 &gt; 资源空间管理”。</li>
+         <li>根据<a href="hcs_gaussdb_00009.html">备份前准备</a>获取的资源空间ID进行搜索得到对应的资源集的信息，“授权VDC”为云平台租户所属VDC名称。</li>
+         <li>单击“用户”进入用户管理界面。根据“授权VDC”查找用户，选择任一用户获取用户名。</li>
+        </ol></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.1 "><p>XBSA配置路径</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.2 "><p>必选</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 ">
+        <ul>
+         <li>客户端自动推送：XBSA配置路径为/opt/backupAgent/xbsa.conf。</li>
+         <li>客户端手动安装：参见《客户端安装指南》中的“安装backUpAgent”章节配置的xbsa.conf路径。</li>
+        </ul></td>
+      </tr>
+      <tr>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.1 "><p>证书</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.2 "><p>可选</p></td>
+       <td class="cellrowborder" valign="top" headers="mcps1.3.2.2.5.1.3 "><p>开启了<span>XBSA SSL 证书管理</span>时，才需要证书。证书生成及配置方法请参见《客户端安装指南》中的“配置SSL双向认证证书文件”章节。</p></td>
+      </tr>
+     </tbody>
+    </table>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="hcs_gaussdb_00006.html">备份</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

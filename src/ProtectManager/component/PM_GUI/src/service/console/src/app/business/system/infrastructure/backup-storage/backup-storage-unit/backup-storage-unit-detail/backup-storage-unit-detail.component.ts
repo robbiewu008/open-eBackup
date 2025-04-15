@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   ChangeDetectorRef,
   Component,
@@ -51,12 +51,20 @@ export class BackupStorageUnitDetailComponent implements OnInit {
   isView = true;
   lessThanLabel = this.i18n.get('common_less_than_label');
   formGroup: FormGroup;
+  maxThreshold = 95;
   thresholdErrorTip = {
     ...this.baseUtilService.rangeErrorTip,
-    invalidRang: this.i18n.get('common_valid_rang_label', [1, 95])
+    invalidRang: this.i18n.get('common_valid_rang_label', [
+      1,
+      this.maxThreshold
+    ])
   };
   preLimitValue;
   protected readonly Math = Math;
+  thresholdPlaceHolderLabel = this.i18n.get('system_placeholder_range_label', [
+    this.maxThreshold
+  ]);
+  thresholdTipLabel = this.i18n.get('system_op_threshold_tip_label');
 
   @ViewChild('capacity', { static: true })
   capacity: TemplateRef<any>;
@@ -82,9 +90,42 @@ export class BackupStorageUnitDetailComponent implements OnInit {
       // 服务器类型的值在下发时不一样，所以需要单独转换
       this.data.deviceType = DataMap.poolStorageDeviceType.Server.value;
     }
+    this.changeMaxthreshold();
     this.initConfig();
     this.initForm();
     this.getData();
+  }
+  changeMaxthreshold() {
+    if (
+      this.data.deviceType === DataMap.poolStorageDeviceType.OceanProtectX.value
+    ) {
+      this.maxThreshold = this.data?.endingUpThreshold - 1;
+      this.thresholdErrorTip.invalidRang = this.i18n.get(
+        'common_valid_rang_label',
+        [1, this.maxThreshold]
+      );
+      this.thresholdPlaceHolderLabel = this.i18n.get(
+        'system_placeholder_range_label',
+        [this.maxThreshold]
+      );
+    }
+
+    if (
+      this.data.deviceType === DataMap.poolStorageDeviceType.OceanPacific.value
+    ) {
+      this.maxThreshold = this.data?.majorThreshold - 1;
+      this.thresholdErrorTip.invalidRang = this.i18n.get(
+        'common_valid_rang_label',
+        [1, this.maxThreshold]
+      );
+      this.thresholdPlaceHolderLabel = this.i18n.get(
+        'system_placeholder_range_label',
+        [this.maxThreshold]
+      );
+      this.thresholdTipLabel = this.i18n.get(
+        'system_pacific_threshold_tip_label'
+      );
+    }
   }
 
   initConfig() {
@@ -168,7 +209,7 @@ export class BackupStorageUnitDetailComponent implements OnInit {
         .setValidators([
           this.baseUtilService.VALID.required(),
           this.baseUtilService.VALID.integer(),
-          this.baseUtilService.VALID.rangeValue(1, 95)
+          this.baseUtilService.VALID.rangeValue(1, this.maxThreshold)
         ]);
     } else {
       this.formGroup.get('limitValue').clearValidators();

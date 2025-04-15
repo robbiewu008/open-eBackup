@@ -12,11 +12,19 @@
 */
 package openbackup.tdsql.resources.access.service.impl;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
+
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnv;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AppEnvResponse;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.Application;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.CheckAppReq;
+import openbackup.data.access.client.sdk.api.framework.agent.dto.FinalizeClearReq;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.ListResourceV2Req;
 import openbackup.data.access.client.sdk.api.framework.dme.DmeUnifiedRestApi;
 import openbackup.data.access.framework.core.agent.AgentUnifiedService;
@@ -37,6 +45,8 @@ import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.common.utils.json.JsonUtil;
 import openbackup.system.base.sdk.copy.model.Copy;
+import openbackup.system.base.sdk.job.model.JobStatusEnum;
+import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.enums.LinkStatusEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
@@ -52,12 +62,6 @@ import openbackup.tdsql.resources.access.dto.instance.GroupInfo;
 import openbackup.tdsql.resources.access.dto.instance.TdsqlGroup;
 import openbackup.tdsql.resources.access.dto.instance.TdsqlInstance;
 import openbackup.tdsql.resources.access.service.TdsqlService;
-
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Lists;
-
-import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -85,18 +89,22 @@ public class TdsqlServiceImpl implements TdsqlService {
 
     private final DmeUnifiedRestApi dmeUnifiedRestApi;
 
+    private final JobService jobService;
+
     /**
      * TdsqlServiceImpl
      *
      * @param resourceService resourceService
      * @param agentUnifiedService agentUnifiedService
      * @param dmeUnifiedRestApi dmeUnifiedRestApi
+     * @param jobService jobService
      */
     public TdsqlServiceImpl(ResourceService resourceService, AgentUnifiedService agentUnifiedService,
-        DmeUnifiedRestApi dmeUnifiedRestApi) {
+        DmeUnifiedRestApi dmeUnifiedRestApi, JobService jobService) {
         this.resourceService = resourceService;
         this.agentUnifiedService = agentUnifiedService;
         this.dmeUnifiedRestApi = dmeUnifiedRestApi;
+        this.jobService = jobService;
     }
 
     /**
@@ -424,6 +432,7 @@ public class TdsqlServiceImpl implements TdsqlService {
      * @param updateResource updateResource
      * @param linkStatus status
      */
+    @Override
     public void updateClusterGroupLinkStatus(ProtectedResource updateResource, String linkStatus) {
         log.info("begin update tdsql cluster group link status, resourceId: {}, linkStatus: {}",
             updateResource.getUuid(), linkStatus);
@@ -602,6 +611,11 @@ public class TdsqlServiceImpl implements TdsqlService {
         Map<String, Object> paramsMap = new HashMap<>();
         ArrayList<String> actionList = new ArrayList<>();
         actionList.add("removeDataRepoWhiteList");
+        Integer count = jobService.getJobCount(Lists.newArrayList(JobTypeEnum.BACKUP.getValue()),
+            Lists.newArrayList(JobStatusEnum.SUCCESS.name()), Lists.newArrayList(resourceId));
+        if (count > 0) {
+            actionList.add("removeRepository");
+        }
         paramsMap.put("resourceId", resourceId);
         paramsMap.put("actions", actionList);
         log.info("Removing data repository white list of resource(uuid={}), body: {}.", resourceId, paramsMap);
@@ -638,4 +652,43 @@ public class TdsqlServiceImpl implements TdsqlService {
         AppEnv appEnv = BeanTools.copy(resource, AppEnv::new);
         return new CheckAppReq(appEnv, application);
     }
+
+    @Override
+    public void deleteLogFromProductEnv(ProtectedResource resource, HashMap<String, String> extendInfo) {
+        log.info("deleteLogCopyFromProductEnv resource {}", resource.getUuid());
+        if (StringUtils.equals(resource.getSubType(), ResourceSubTypeEnum.TDSQL_CLUSTERINSTANCE.getType())) {
+            deleteLogClusterInstance(resource, extendInfo);
+        }
+    }
+
+    private void deleteLogClusterInstance(ProtectedResource resource, HashMap<String, String> extendInfo) {
+        // 非分布式实例清理生产环境日志
+        String clusterInstanceInfo = resource.getExtendInfo().get(TdsqlConstant.CLUSTER_INSTANCE_INFO);
+        log.info("finalize deleteLogClusterInstance, clusterInstanceInfo is {}", clusterInstanceInfo);
+        ProtectedEnvironment environment = BeanTools.copy(resource, ProtectedEnvironment::new);
+        List<Group> groups = JsonUtil.read(clusterInstanceInfo, TdsqlInstance.class).getGroups();
+        for (Group group : groups) {
+            for (DataNode dataNode : group.getDataNodes()) {
+                ProtectedEnvironment agentEnvironment = getEnvironmentById(dataNode.getParentUuid());
+                if (agentEnvironment == null || StringUtils.equals(agentEnvironment.getLinkStatus(),
+                    LinkStatusEnum.OFFLINE.getStatus().toString())) {
+                    log.warn("agent {} not exist or is offline", dataNode.getParentUuid());
+                    return;
+                }
+                Application application = new Application();
+                application.setSubType(ResourceSubTypeEnum.TDSQL_CLUSTERINSTANCE.getType());
+                application.setAuth(environment.getAuth());
+                HashMap<String, String> appExtendInfo = new HashMap<>();
+                appExtendInfo.put(TdsqlConstant.DATANODE, JSON.toJSONString(dataNode));
+                application.setExtendInfo(appExtendInfo);
+                AppEnv appEnv = BeanTools.copy(environment, AppEnv::new);
+                FinalizeClearReq finalizeClearReq = new FinalizeClearReq(appEnv, application, extendInfo);
+                agentUnifiedService.finalizeClear(agentEnvironment, resource.getSubType(), finalizeClearReq);
+            }
+        }
+    }
 }
+
+
+
+

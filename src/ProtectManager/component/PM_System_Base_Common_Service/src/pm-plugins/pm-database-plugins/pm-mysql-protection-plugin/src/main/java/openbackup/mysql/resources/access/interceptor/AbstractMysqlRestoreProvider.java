@@ -12,6 +12,7 @@
 */
 package openbackup.mysql.resources.access.interceptor;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.base.v2.TaskResource;
 import openbackup.data.protection.access.provider.sdk.copy.CopyBo;
 import openbackup.data.protection.access.provider.sdk.enums.SpeedStatisticsEnum;
@@ -25,8 +26,6 @@ import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.util.BeanTools;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.Map;
@@ -108,9 +107,9 @@ public abstract class AbstractMysqlRestoreProvider extends AbstractDbRestoreInte
         JSONObject resourceJson = JSONObject.fromObject(copy.getResourceProperties());
         Map<String, String> extendInfo = Optional.ofNullable(
                 resourceJson.getJSONObject(DatabaseConstants.EXTEND_INFO).toMap(String.class))
-                .orElse(Collections.emptyMap());
+            .orElse(Collections.emptyMap());
         Map<String, String> targetResourceExtendInfo = Optional.ofNullable(targetResource.getExtendInfo())
-                .orElse(Collections.emptyMap());
+            .orElse(Collections.emptyMap());
 
         // 拦截MySQL部署的操作系统
         mysqlBaseService.checkDeployOperatingSystem(extendInfo, targetResourceExtendInfo);

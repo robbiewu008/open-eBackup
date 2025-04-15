@@ -1,5 +1,5 @@
 {{- $deploytype:= include "getDeployType" . | default "" }}
-{{- if eq $deploytype "d10" }}
+{{- if eq $deploytype "d9"}}
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -12,7 +12,7 @@ spec:
     - third_node
     - internal
   routes:
-    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/copies`) && !Path(`/v1/copies/{copy_id}/cyber`,`/v1/copies/{copy_id}/action/update-retention-cyber`,`/v1/copies/{copy_id}/detect-status-cyber`)
+    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/copies`) && !Path(`/v1/copies/{copy_id}/detect-reports`, `/v1/copies/detect-details`, `/v1/copies/detect-statistics`, `/v1/copies/{copy_id}/detect-status`, `/v1/copies/detect-summary`,`/v1/copies/{copy_id}/cyber`,`/v1/copies/{copy_id}/action/update-retention-cyber`,`/v1/copies/{copy_id}/detect-status-cyber`)
       kind: Rule
       services:
         - name: pm-nginx

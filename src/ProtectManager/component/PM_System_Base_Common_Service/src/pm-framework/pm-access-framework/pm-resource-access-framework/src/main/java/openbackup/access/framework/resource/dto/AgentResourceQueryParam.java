@@ -12,11 +12,10 @@
 */
 package openbackup.access.framework.resource.dto;
 
-import openbackup.system.base.common.constants.LegoNumberConstant;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import openbackup.system.base.common.constants.LegoNumberConstant;
 
 import org.hibernate.validator.constraints.Length;
 

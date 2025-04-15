@@ -12,6 +12,8 @@
 */
 package openbackup.data.access.framework.restore.controller.req;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import openbackup.data.access.framework.core.common.enums.v2.RestoreTypeEnum;
 import openbackup.data.access.framework.core.common.enums.v2.filter.ResourceFilter;
 import openbackup.data.access.framework.restore.controller.RestoreController;
@@ -19,8 +21,6 @@ import openbackup.data.access.framework.restore.validator.CreateRestoreTaskReque
 import openbackup.data.protection.access.provider.sdk.enums.RestoreLocationEnum;
 import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreScript;
 import openbackup.system.base.sdk.copy.model.Copy;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.validator.constraints.Length;
 

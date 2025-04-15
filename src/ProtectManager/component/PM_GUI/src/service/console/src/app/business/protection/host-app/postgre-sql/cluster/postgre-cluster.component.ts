@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   Component,
   OnInit,
@@ -40,7 +40,8 @@ import {
   GROUP_COMMON,
   RoleOperationMap,
   hasResourcePermission,
-  getLabelList
+  getLabelList,
+  SetTagType
 } from 'app/shared';
 import { DrawModalService } from 'app/shared/services/draw-modal.service';
 import { VirtualScrollService } from 'app/shared/services/virtual-scroll.service';
@@ -65,6 +66,7 @@ import { PostgreRegisterComponent } from './register/postgre-register.component'
 import { PostgreDetailComponent } from './detail/postgre-detail.component';
 import { SetResourceTagService } from 'app/shared/services/set-resource-tag.service';
 import { USER_GUIDE_CACHE_DATA } from 'app/shared/consts/guide-config';
+import { GetLabelOptionsService } from 'app/shared/services/get-labels.service';
 
 @Component({
   selector: 'aui-postgre-cluster',
@@ -95,7 +97,8 @@ export class PostgreClusterComponent implements OnInit, AfterViewInit {
     private batchOperateService: BatchOperateService,
     private warningMessageService: WarningMessageService,
     private protectedResourceApiService: ProtectedResourceApiService,
-    private setResourceTagService: SetResourceTagService
+    private setResourceTagService: SetResourceTagService,
+    private getLabelOptionsService: GetLabelOptionsService
   ) {}
 
   ngAfterViewInit(): void {
@@ -153,7 +156,7 @@ export class PostgreClusterComponent implements OnInit, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_add_tag_label'),
         onClick: data => this.addTag(data)
@@ -165,7 +168,7 @@ export class PostgreClusterComponent implements OnInit, AfterViewInit {
           return true;
         },
         disableCheck: data => {
-          return !size(data);
+          return !size(data) || some(data, v => !hasResourcePermission(v));
         },
         label: this.i18n.get('common_remove_tag_label'),
         onClick: data => this.removeTag(data)
@@ -260,8 +263,11 @@ export class PostgreClusterComponent implements OnInit, AfterViewInit {
         key: 'labelList',
         name: this.i18n.get('common_tag_label'),
         filter: {
-          type: 'search',
-          filterMode: 'contains'
+          type: 'select',
+          isMultiple: true,
+          showCheckAll: false,
+          showSearch: true,
+          options: () => this.getLabelOptionsService.getLabelOptions()
         },
         cellRender: this.resourceTagTpl
       },
@@ -290,7 +296,7 @@ export class PostgreClusterComponent implements OnInit, AfterViewInit {
           showSelector: true
         },
         scrollFixed: true,
-        colDisplayControl: false,
+        colDisplayControl: true,
         fetchData: (filters: Filters, args) => {
           this.getData(filters, args);
         },
@@ -308,6 +314,7 @@ export class PostgreClusterComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: true,
       rowDatas: data ? data : this.selectionData,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable?.setSelections([]);
@@ -320,6 +327,7 @@ export class PostgreClusterComponent implements OnInit, AfterViewInit {
     this.setResourceTagService.setTag({
       isAdd: false,
       rowDatas: data ? data : this.selectionData,
+      type: SetTagType.Resource,
       onOk: () => {
         this.selectionData = [];
         this.dataTable?.setSelections([]);
@@ -343,9 +351,10 @@ export class PostgreClusterComponent implements OnInit, AfterViewInit {
     if (!isEmpty(filters.conditions_v2)) {
       const conditionsTemp = JSON.parse(filters.conditions_v2);
       if (conditionsTemp.labelList) {
+        conditionsTemp.labelList.shift();
         assign(conditionsTemp, {
           labelCondition: {
-            labelName: conditionsTemp.labelList[1]
+            labelList: conditionsTemp.labelList
           }
         });
         delete conditionsTemp.labelList;

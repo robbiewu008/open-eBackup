@@ -12,6 +12,12 @@
 */
 package openbackup.data.access.framework.restore.listener.v1;
 
+import com.huawei.oceanprotect.functionswitch.template.service.FunctionSwitchService;
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import com.alibaba.fastjson.JSONObject;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.base.Filter;
@@ -19,8 +25,6 @@ import openbackup.data.protection.access.provider.sdk.base.Parameter;
 import openbackup.data.protection.access.provider.sdk.restore.RestoreObject;
 import openbackup.data.protection.access.provider.sdk.restore.RestoreProvider;
 import openbackup.data.protection.access.provider.sdk.restore.RestoreTarget;
-import com.huawei.oceanprotect.functionswitch.template.service.FunctionSwitchService;
-import com.huawei.oceanprotect.job.sdk.JobService;
 import openbackup.system.base.common.utils.JSONArray;
 import openbackup.system.base.kafka.annotations.MessageListener;
 import openbackup.system.base.sdk.copy.CopyRestApi;
@@ -28,10 +32,6 @@ import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import com.alibaba.fastjson.JSONObject;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
@@ -62,7 +62,8 @@ public class RestoreListener {
         Arrays.asList(ResourceSubTypeEnum.VMWARE.getType(), ResourceSubTypeEnum.FUSION_COMPUTE.getType(),
             ResourceSubTypeEnum.HCS_CLOUD_HOST.getType(), ResourceSubTypeEnum.OPENSTACK_CLOUD_SERVER.getType(),
             ResourceSubTypeEnum.APS_INSTANCE.getType(), ResourceSubTypeEnum.CNWARE_VM.getType(),
-            ResourceSubTypeEnum.NDMP_BACKUPSET.getType(), ResourceSubTypeEnum.FUSION_ONE_COMPUTE.getType()));
+            ResourceSubTypeEnum.NUTANIX_VM.getType(), ResourceSubTypeEnum.NDMP_BACKUPSET.getType(),
+            ResourceSubTypeEnum.FUSION_ONE_COMPUTE.getType()));
 
     @Autowired
     private ProviderManager providerManager;

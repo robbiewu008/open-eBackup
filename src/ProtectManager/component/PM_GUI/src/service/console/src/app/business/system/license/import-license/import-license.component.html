@@ -18,7 +18,7 @@
 </div>
 <lv-form class="formGroup">
     <lv-form-item>
-        <lv-form-label>{{ 'common_cyber_engine_soft_capacity_label' | i18n }}</lv-form-label>
+        <lv-form-label>{{ (isCyberEngine ? 'common_cyber_engine_soft_capacity_label' : 'common_op_engine_soft_capacity_label') | i18n }}</lv-form-label>
         <lv-form-control>
             <lv-upload lvAccept=".dat" lvShowUpload="false" [lvFilters]="cyberFilters"
                 (lvChange)="cyberFilesChange($event)"></lv-upload>

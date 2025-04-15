@@ -122,7 +122,7 @@ BackupPhaseStatus LibsmbCopyReader::GetStatus()
     if (m_abort) {
         return BackupPhaseStatus::ABORTED;
     }
-    if (m_failed || m_controlInfo->m_failed || m_controlInfo->m_controlReaderFailed) {
+    if (m_controlInfo->m_failed || m_controlInfo->m_controlReaderFailed) {
         return m_failReason;
     }
     return BackupPhaseStatus::COMPLETED;
@@ -130,9 +130,9 @@ BackupPhaseStatus LibsmbCopyReader::GetStatus()
 
 bool LibsmbCopyReader::IsAbort() const
 {
-    if (m_abort || m_failed || m_controlInfo->m_failed || m_controlInfo->m_controlReaderFailed) {
-        INFOLOG("abort %d failed %d controlInfoFailed %d controlReaderFailed %d",
-            m_abort, m_failed, m_controlInfo->m_failed.load(), m_controlInfo->m_controlReaderFailed.load());
+    if (m_abort || m_controlInfo->m_failed || m_controlInfo->m_controlReaderFailed) {
+        INFOLOG("abort %d, controlInfoFailed %d, controlReaderFailed %d",
+            m_abort, m_controlInfo->m_failed.load(), m_controlInfo->m_controlReaderFailed.load());
         return true;
     }
     return false;
@@ -160,11 +160,7 @@ bool LibsmbCopyReader::IsComplete()
     }
     if ((m_controlInfo->m_controlReaderPhaseComplete) && m_readQueue->Empty() && (m_timer.GetCount() == 0) &&
         (m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) == 0) &&
-        ((m_controlInfo->m_noOfFilesRead + m_controlInfo->m_noOfDirRead + m_controlInfo->m_noOfFilesReadFailed +
-        m_controlInfo->m_skipFileCnt + m_controlInfo->m_skipDirCnt +
-        m_controlInfo->m_unaggregatedFiles + m_controlInfo->m_emptyFiles + m_controlInfo->m_unaggregatedFaildFiles) ==
-        (m_controlInfo->m_noOfFilesToBackup + m_controlInfo->m_noOfDirToBackup + m_adsFileCnt +
-        m_controlInfo->m_unarchiveFiles))) {
+        m_partialReadQueue->Empty() && (m_controlInfo->m_aggregateConsume == m_controlInfo->m_readProduce)) {
         INFOLOG("SmbCopyReader:Controlfilereader: %d "
             "(pending packet counts %d readQueueSize %d partialReadQueueSize %d timerSize %d) "
             "(noOfFilesRead %d noOfDirRead %d noOfFilesReadFaile %d "
@@ -198,7 +194,7 @@ int LibsmbCopyReader::ServerCheck()
     if (noAccessErrCount >= DEFAULT_MAX_NOACCESS) {
         ERRLOG("Threshold reached for DEFAULT_MAX_NOACCESS");
         m_failReason = BackupPhaseStatus::FAILED_NOACCESS;
-        m_failed = true;
+        m_controlInfo->m_failed = true;
         return FAILED;
     }
     /* Nas Server Check for Source side */
@@ -210,7 +206,7 @@ int LibsmbCopyReader::ServerCheck()
         if (retVal != SUCCESS) {
             ERRLOG("Stop and Abort read phase due to server inaccessible");
             FSBackupUtils::SetServerNotReachableErrorCode(m_backupParams.backupType, m_failReason);
-            m_failed = true;
+            m_controlInfo->m_failed = true;
             return FAILED;
         } else {
             INFOLOG("Nas Server reachable");
@@ -269,11 +265,11 @@ void LibsmbCopyReader::ThreadFunc()
             break;
         }
         uint64_t totalBufferSize = m_blockBufferMap->GetTotalBufferSize();
-        if (m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) > MAX_PENDING_REQUEST_COUNT ||
+        if (m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) > m_srcAdvParams->maxPendingAsyncReqCnt ||
             totalBufferSize > m_backupParams.commonParams.maxBufferSize) {
             DBGLOG("SmbCopyReader PENDING packet(%d) or totalBufferSize(%llu) reach threshold.",
                 m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING), totalBufferSize);
-            ret = m_asyncContext->Poll(DEFAULT_POLL_EXPIRED_TIME);
+            ret = m_asyncContext->Poll(m_srcAdvParams->pollExpiredTime);
             if (ret < 0 && ProcessConnectionException() != SUCCESS) {
                 break;
             }
@@ -286,7 +282,7 @@ void LibsmbCopyReader::ThreadFunc()
 
         ProcessTimers();
 
-        ret = m_asyncContext->Poll(DEFAULT_POLL_EXPIRED_TIME);
+        ret = m_asyncContext->Poll(m_srcAdvParams->pollExpiredTime);
         // ret < 0说明连接有问题，需要重连, 如果ProcessConnectionException也返回失败，说明重连失败
         if (ret < 0 && ProcessConnectionException() != SUCCESS) {
             break;
@@ -301,12 +297,12 @@ void LibsmbCopyReader::ThreadFunc()
 
 int LibsmbCopyReader::ProcessConnectionException()
 {
-    ERRLOG("src connection exception");
+    WARNLOG("src connection exception");
     int retVal = HandleConnectionException(m_asyncContext, m_params.srcSmbContextArgs, RECONNECT_CONTEXT_RETRY_TIMES);
     if (retVal != SUCCESS) {
         ERRLOG("Stop and Abort read phase due to server inaccessible");
         FSBackupUtils::SetServerNotReachableErrorCode(m_backupParams.backupType, m_failReason);
-        m_failed = true;
+        m_controlInfo->m_failed = true;
         return FAILED;
     }
     INFOLOG("Server reachable");
@@ -339,7 +335,7 @@ void LibsmbCopyReader::ProcessPartialReadEntries()
         }
         uint64_t totalBufferSize = m_blockBufferMap->GetTotalBufferSize();
         if (totalBufferSize > m_backupParams.commonParams.maxBufferSize ||
-            m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) > MAX_PENDING_REQUEST_COUNT) {
+            m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) > m_srcAdvParams->maxPendingAsyncReqCnt) {
             DBGLOG("SmbCopyReader memroy(%llu) or PENDING packet(%d) reach threshold.", totalBufferSize,
                 m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING));
             break;
@@ -357,8 +353,9 @@ bool LibsmbCopyReader::IsReaderRequestReachThreshold() const
     uint64_t totalBufferSize = m_blockBufferMap->GetTotalBufferSize();
     int64_t openedCount = GetActualOpenedFileHandleCount(m_pktStats);
     if (totalBufferSize > m_backupParams.commonParams.maxBufferSize ||
-        m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) > MAX_PENDING_REQUEST_COUNT ||
-        openedCount >= MAX_OPENED_FILEHANDLE_COUNT) {
+        m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING) >
+        m_srcAdvParams->maxPendingAsyncReqCnt ||
+        openedCount >= m_srcAdvParams->maxOpenedFilehandleCount) {
         DBGLOG("SmbCopyReader memroy(%llu) or PENDING packet(%d) or openedCount(%d) reach threshold."
             "open_sent(%d), open_failed(%d), open_retry(%d), close_recvd(%d)",
             totalBufferSize, m_pktStats->GetValue(PKT_TYPE::TOTAL, PKT_COUNTER::PENDING), openedCount,
@@ -444,6 +441,14 @@ int LibsmbCopyReader::OpenFile(FileHandle &fileHandle)
 {
     if (fileHandle.m_file->m_size == 0) {
         m_blockBufferMap->Add(fileHandle.m_file->m_fileName, fileHandle);
+        fileHandle.m_file->SetSrcState(FileDescState::SRC_CLOSED);
+        m_aggregateQueue->Push(fileHandle);
+        ++m_controlInfo->m_readProduce;
+        ++m_controlInfo->m_noOfFilesRead;
+        return SUCCESS;
+    }
+    if (fileHandle.m_file->m_fileAttr & 0x00000200 && fileHandle.m_file->m_sparse.empty()) {
+        INFOLOG("The sparse file %s data range is empty", fileHandle.m_file->m_fileName.c_str());
         fileHandle.m_file->SetSrcState(FileDescState::SRC_CLOSED);
         m_aggregateQueue->Push(fileHandle);
         ++m_controlInfo->m_readProduce;

@@ -55,6 +55,8 @@ protected:
     void PollWriteTask();
     virtual void HandleSuccessEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr);
     virtual void HandleFailedEvent(std::shared_ptr<OsPlatformServiceTask> taskPtr);
+    void HandleFailedEventInner(FileDescState state, FileHandle fileHandle,
+        std::shared_ptr<OsPlatformServiceTask> taskPtr);
     bool IsOpenBlock(const FileHandle& fileHandle);
     virtual void ProcessWriteData(FileHandle& fileHandle) = 0;
 
@@ -64,8 +66,6 @@ protected:
     std::thread             m_pollThread;
     bool                    m_threadDone { false };
     bool                    m_pollThreadDone { false };
-    std::atomic<uint64_t>   m_writeTaskProduce { 0 };
-    std::atomic<uint64_t>   m_writeTaskConsume { 0 };
     std::mutex              m_cacheMutex;
     HostParams              m_params;
     time_t                  m_isCompleteTimer { 0 };

@@ -12,13 +12,17 @@
 */
 package openbackup.data.access.framework.copy.mng.service.impl;
 
+import com.huawei.oceanprotect.job.sdk.JobService;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.framework.dme.replicate.DmeReplicationRestApi;
 import openbackup.data.access.client.sdk.api.framework.dme.replicate.model.RemoveCopyRequest;
 import openbackup.data.access.framework.copy.mng.provider.DefaultCopyDeleteInterceptor;
 import openbackup.data.access.framework.copy.mng.util.CopyUtil;
 import openbackup.data.access.framework.core.copy.CopyManagerService;
 import openbackup.data.access.framework.core.dao.CopyMapper;
-import openbackup.data.access.framework.core.entity.CopiesEntity;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.access.framework.core.model.CopySummaryCount;
 import openbackup.data.access.framework.core.model.CopySummaryResource;
@@ -31,7 +35,7 @@ import openbackup.data.protection.access.provider.sdk.copy.CopyDeleteInterceptor
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
-import com.huawei.oceanprotect.job.sdk.JobService;
+import openbackup.system.base.bean.CopiesEntity;
 import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.common.utils.VerifyUtil;
@@ -40,10 +44,6 @@ import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.copy.model.ReplicatedCopies;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -231,7 +231,7 @@ public class CopyManagerServiceImpl implements CopyManagerService {
 
     @Override
     public List<String> getAssociatedCopies(String copyId) {
-        Copy copy = copyRestApi.queryCopyByID(copyId, false);
+        CopiesEntity copy = queryCopyById(copyId);
         if (copy == null) {
             log.warn("Copy({}) can not be found when get associated copies.", copyId);
             return Collections.emptyList();
@@ -312,8 +312,40 @@ public class CopyManagerServiceImpl implements CopyManagerService {
 
     @Override
     public void updateCopyStatus(List<String> copyIdList, String status) {
-        log.info("Update copy status, copyIsList: {}, status: {}.", StringUtils.join(copyIdList, ","), status);
+        log.info("Update copy status, copyIdList: {}, status: {}.", StringUtils.join(copyIdList, ","), status);
         copyMapper.updateCopyStatus(copyIdList, status);
+    }
+
+    @Override
+    public List<String> queryCopyIdByStorageId(String generatedBy, String storageId) {
+        log.info("Query {} copy by storage id: {}.", generatedBy, storageId);
+        QueryWrapper<CopiesEntity> wrapper = new QueryWrapper<>();
+        wrapper.eq("generated_by", generatedBy);
+        Optional<List<CopiesEntity>> copiesEntities = Optional.ofNullable(copyMapper.selectList(wrapper));
+        return copiesEntities.map(entities -> entities
+                .stream()
+                .filter(copy -> getCopyStorageId(copy).equals(storageId))
+                .map(CopiesEntity::getUuid)
+                .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+    }
+
+    /**
+     * 获取归档副本的存储单元id
+     *
+     * @param copy 副本
+     * @return 副本存储单元id
+     */
+    private String getCopyStorageId(CopiesEntity copy) {
+        JSONObject properties = JSONObject.fromObject(copy.getProperties());
+        return Optional.ofNullable(properties.getString("storage_id")).orElse("");
+    }
+
+    @Override
+    public void updateCopyStorageUnitStatus(List<String> copyIdList, int storageUnitStatus) {
+        log.info("Update copy storage unit status, copyIdList: {}, status: {}.",
+                StringUtils.join(copyIdList, ","), storageUnitStatus);
+        copyMapper.updateCopyStorageUnitStatus(copyIdList, storageUnitStatus);
     }
 
     @Override
@@ -321,5 +353,29 @@ public class CopyManagerServiceImpl implements CopyManagerService {
         QueryWrapper<CopiesEntity> wrapper = new QueryWrapper<>();
         wrapper.eq("uuid", copyId);
         return copyMapper.selectOne(wrapper);
+    }
+
+    @Override
+    public Long queryCopyCounts(String resourceId, String storageUnitId, List<Integer> backupTypes) {
+        QueryWrapper<CopiesEntity> wrapper = new QueryWrapper<>();
+        if (!VerifyUtil.isEmpty(resourceId)) {
+            wrapper.eq("resource_id", resourceId);
+        }
+        if (!VerifyUtil.isEmpty(storageUnitId)) {
+            wrapper.eq("storage_unit_id", storageUnitId);
+        }
+        if (!VerifyUtil.isEmpty(backupTypes)) {
+            wrapper.in("backup_type", backupTypes);
+        }
+        return copyMapper.selectCount(wrapper);
+    }
+
+    @Override
+    public void updateCopiesUserId(List<String> copyIdList, String userId) {
+        if (VerifyUtil.isEmpty(copyIdList)) {
+            log.warn("updateCopiesUserId the copyIdList is empty, userid: {}", userId);
+            return;
+        }
+        copyMapper.updateCopyUserId(copyIdList, userId);
     }
 }

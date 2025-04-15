@@ -19,6 +19,7 @@
 #include "protect_engines/openstack/resource_discovery/OpenStackMessage.h"
 #include "common/Structs.h"
 #include "common/uuid/Uuid.h"
+#include "common/Utils.h"
 #include "curl_http/HttpStatus.h"
 
 using namespace VirtPlugin;
@@ -49,6 +50,10 @@ namespace {
     const uint32_t RETRY_COUNT = 10;
     const std::string OPENSTACK_CONF = "OpenStackConfig";
     const uint64_t CREATE_VM_FAILED_EC = 1593988896;
+    const int32_t ACTIVE_SNAPSHOT_FAILED = 1577213593;
+    const std::string CHECK_STORAGE_USAGE_FAILED_LABEL = "virtual_plugin_cnware_storage_usage_limit_label";
+    const int32_t DEFAULT_STORAGE_LIMIT = 20;
+    const int32_t NUM_100 = 100;
 };
 
 OPENSTACK_PLUGIN_NAMESPACE_BEGIN
@@ -656,9 +661,15 @@ bool OpenStackProtectEngine::CreateVolumeSnapshot(const VolInfo &volInfo, VolSna
     body.m_snapshot.m_volumeId = volInfo.m_uuid;
     body.m_snapshot.m_description = m_snapDescription;
     body.m_snapshot.m_force = "true";
+
+    if (CheckIsConsistenSnapshot()) {
+        // 一致性快照场景下，需要将自动激活设置为false，避免激活一致性组时失败
+        body.m_snapshot.m_snapshotMetadata.m_enableActive = "false";
+    }
  
     CreateSnapshotRequest request;
     request.SetBody(body);
+    request.SetApiType(ApiType::CINDER);
     FormHttpRequest(request);
  
     std::shared_ptr<CreateSnapshotResponse> response = m_cinderClient->CreateSnapshot(request);
@@ -689,12 +700,7 @@ bool OpenStackProtectEngine::CreateVolumeSnapshot(const VolInfo &volInfo, VolSna
 bool OpenStackProtectEngine::DoCreateSnapshot(const std::vector<VolInfo> &volList,
     SnapshotInfo &snapshot, std::string &errCode)
 {
-    if (CheckIsConsistenSnapshot()) {
-        INFOLOG("Start create consistent snapshot, %s.", m_taskId.c_str());
-        return DoCreateConsistencySnapshot(volList, snapshot, errCode);
-    }
-
-    INFOLOG("Start create common snapshot, %s.", m_taskId.c_str());
+    INFOLOG("Start create snapshot, %s.", m_taskId.c_str());
     return DoCreateCommonSnapshot(volList, snapshot, errCode);
 }
 
@@ -756,6 +762,109 @@ bool OpenStackProtectEngine::DoCreateCommonSnapshot(const std::vector<VolInfo> &
     return true;
 }
 
+int32_t OpenStackProtectEngine::ActiveSnapInit()
+{
+    if (!DoGetMachineMetadata()) {
+        ERRLOG("Get machine metadata failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+
+    return SUCCESS;
+}
+
+int32_t OpenStackProtectEngine::GetSnapshotProviderAuth(std::vector<std::string>& proAuth,
+    GetSnapshotRequest& request, const VolSnapInfo& volSnap)
+{
+    DBGLOG("Snapshot id %s. task id:%s", volSnap.m_snapshotId.c_str(), m_taskId.c_str());
+    request.SetSnapshotId(volSnap.m_snapshotId);
+    std::shared_ptr<GetSnapshotResponse> response = m_cinderClient->GetSnapshot(request);
+    if (response == nullptr) {
+        ERRLOG("Cinder get snap info failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    if (response->GetStatusCode() != static_cast<uint32_t>(Module::SC_OK)) {
+        ERRLOG("Show snapshot info failed. status code: %u, task id:%s", response->GetStatusCode(), m_taskId.c_str());
+        return FAILED;
+    }
+
+    SnapshotDetailsMsg snapshot = response->GetSnapshotDetails();
+    if (snapshot.m_snapshotDetails.m_providerLocation.empty()) {
+        ERRLOG("Provider auth is empty, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    Json::Value jsonValue;
+    jsonValue["lun_id"] = snapshot.m_snapshotDetails.m_providerLocation;
+    Json::FastWriter jsonWriter;
+    std::string providerInfo = jsonWriter.write(jsonValue);
+    DBGLOG("Snapshot provider info:%s. task id:%s", providerInfo.c_str(), m_taskId.c_str());
+    proAuth.push_back(providerInfo);
+    return SUCCESS;
+}
+
+int32_t OpenStackProtectEngine::ActiveSnapConsistency(const SnapshotInfo& snapshotInfo, int32_t &erroCode)
+{
+    if (!CheckIsConsistenSnapshot()) {
+        INFOLOG("Dont active snapshot consistency, %s.", m_taskId.c_str());
+        return SUCCESS;
+    }
+    if (ActiveSnapInit() != SUCCESS) {
+        ERRLOG("Active snapshot init failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+
+    GetSnapshotRequest request;
+    if (!FormHttpRequest(request, false)) {
+        ERRLOG("Initialize HCS request failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    std::shared_ptr<GetSnapshotResponse> response;
+    std::vector<std::string> providerAuthList;
+    for (const auto &snap : snapshotInfo.m_volSnapList) {
+        if (GetSnapshotProviderAuth(providerAuthList, request, snap) != SUCCESS) {
+            ERRLOG("Get volume snap provider auth  failed, task id:%s", m_taskId.c_str());
+            return FAILED;
+        }
+    }
+    ActiveSnapConsistencyRequest actRequest;
+    if (FormActiveSnapRequest(actRequest, providerAuthList) != SUCCESS) {
+        ERRLOG("Form active snap request failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    std::shared_ptr<ActiveSnapConsistencyResponse> activeResponse = m_cinderClient->ActiveSnapConsistency(actRequest);
+    if (activeResponse == nullptr) {
+        ERRLOG("Active snap consistency failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    if (activeResponse->GetStatusCode() != static_cast<uint32_t>(Module::SC_OK)) {
+        ERRLOG("Active snapshot failed. status code: %u, %s", activeResponse->GetStatusCode(), m_taskId.c_str());
+        erroCode = ACTIVE_SNAPSHOT_FAILED;
+        return FAILED;
+    }
+    return SUCCESS;
+}
+
+int32_t OpenStackProtectEngine::FormActiveSnapRequest(ActiveSnapConsistencyRequest &actRequest,
+    const std::vector<std::string> &providerAuthList)
+{
+    if (!FormHttpRequest(actRequest, false)) {
+        ERRLOG("Initialize HCS request failed. task id:%s", m_taskId.c_str());
+        return FAILED;
+    }
+    if (m_backupPara == nullptr) {
+        ERRLOG("Backup para is null, task id:%s", m_taskId.c_str());
+        return FAILED;
+    }
+    std::string volId;
+    if (m_backupPara->protectSubObject.size() == 0) {
+        volId = m_vmInfo.m_volList[0].m_uuid; // ECS任意一个卷ID
+    } else {
+        volId = m_backupPara->protectSubObject[0].id; // 已保护磁盘的任一磁盘id
+    }
+    actRequest.SetVolUUID(volId); // ECS任意一个卷ID
+    actRequest.SetSnapProviderLocationList(providerAuthList);
+    return SUCCESS;
+}
+
 bool OpenStackProtectEngine::DoCreateConsistencySnapshot(const std::vector<VolInfo> &volList,
     SnapshotInfo &snapshot, std::string &errCode)
 {
@@ -767,9 +876,86 @@ bool OpenStackProtectEngine::DoCreateConsistencySnapshot(const std::vector<VolIn
     return openstackConstSnapshot.DoCreateConsistencySnapshot(volList, snapshot, errCode);
 }
 
+int32_t OpenStackProtectEngine::GetStorageLimit()
+{
+    int32_t defaultStorageLimit = DEFAULT_STORAGE_LIMIT;
+    if (m_backupPara != nullptr && !m_backupPara->extendInfo.empty()) {
+        Json::Value extendInfo;
+        if (!Module::JsonHelper::JsonStringToJsonValue(m_backupPara->extendInfo, extendInfo)) {
+            ERRLOG("Trans job extend info to json value failed");
+            return defaultStorageLimit;
+        }
+        if (extendInfo.isMember("available_capacity_threshold")) {
+            DBGLOG("Get available_capacity_threshold.");
+            if (extendInfo["available_capacity_threshold"].asString().empty()) {
+                INFOLOG("available_capacity_threshold is empty");
+            }
+            int32_t capacity = extendInfo["available_capacity_threshold"].asString().empty() ?
+                defaultStorageLimit : Module::SafeStoi(extendInfo["available_capacity_threshold"].asString(),
+                defaultStorageLimit);
+            INFOLOG("Get available_capacity_threshold %d.", capacity);
+            return capacity;
+        }
+    }
+    ERRLOG("Get no backup ptr, return default.");
+    return defaultStorageLimit;
+}
+
+bool OpenStackProtectEngine::checkStorageUsage(const Volume &volObj, const Pools &storagePools,
+    std::set<std::string> &storageCheck, int storageLimit)
+{
+    for (const auto &pool : storagePools.m_pools) {
+        if (pool.m_name != volObj.m_osVolHostAttr) {
+            continue;
+        }
+        storageCheck.insert(volObj.m_osVolHostAttr);
+        double freeRate = pool.m_capabilities.m_freeCapacityGb/pool.m_capabilities.m_totalCapacityGb * NUM_100;
+        if (freeRate < (double(storageLimit))) {
+            ERRLOG("Storage pool usage %f is Less than limit(%d).", freeRate, storageLimit);
+            ApplicationLabelType resourceCheckLabel;
+            resourceCheckLabel.level = JobLogLevel::TASK_LOG_ERROR;
+            resourceCheckLabel.label = CHECK_STORAGE_USAGE_FAILED_LABEL;
+            resourceCheckLabel.params = std::vector<std::string>{volObj.m_osVolHostAttr, to_string(storageLimit)};
+            ReportJobDetail(resourceCheckLabel);
+            return false;
+        }
+    }
+    return true;
+}
+
+int32_t OpenStackProtectEngine::CheckBeforeCreateSnapshot(const std::vector<VolInfo> &volList)
+{
+    VolumeRequest request;
+    FormHttpRequest(request);
+    std::shared_ptr<GetPoolsResponse> response = m_cinderClient->GetProjectStoragePools(request);
+    if (response == nullptr) {
+        ERRLOG("Get project storage pools failed, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    Pools storagePools = response->GetPools();
+    int32_t storageLimit = GetStorageLimit();
+    std::set<std::string> storageCheck;    // 有多个卷需要打快照时，避免同一存储池多次检查
+    for (const VolInfo &vol : volList) {
+        Volume volObj;
+        Module::JsonHelper::JsonStringToStruct(vol.m_metadata, volObj);
+        if (storageCheck.find(volObj.m_osVolHostAttr) != storageCheck.end()) {
+            continue;
+        }
+        if (!checkStorageUsage(volObj, storagePools, storageCheck, storageLimit)) {
+            ERRLOG("Storage usage check failed, %s", m_taskId.c_str());
+            return FAILED;
+        }
+    }
+    INFOLOG("Storage pool usage check success.");
+    return SUCCESS;
+}
 
 int32_t OpenStackProtectEngine::BackUpAllVolumes(SnapshotInfo &snapshot, std::string &errCode)
 {
+    if (CheckBeforeCreateSnapshot(m_vmInfo.m_volList) != SUCCESS) {
+        ERRLOG("Check before create snapshot failed.");
+        return FAILED;
+    }
     DBGLOG("Begin to create snapshot. m_volList size: %d. %s", m_vmInfo.m_volList.size(), m_taskId.c_str());
     if (!DoCreateSnapshot(m_vmInfo.m_volList, snapshot, errCode)) {
         ERRLOG("DoCreateSnapshot failed, %s", m_taskId.c_str());
@@ -789,6 +975,10 @@ int32_t OpenStackProtectEngine::BackUpTargetVolumes(SnapshotInfo &snapshot, std:
     }
     if (volList.empty()) {
         ERRLOG("No volume valid to backup, %s", m_taskId.c_str());
+        return FAILED;
+    }
+    if (CheckBeforeCreateSnapshot(volList) != SUCCESS) {
+        ERRLOG("Check before create snapshot failed.");
         return FAILED;
     }
     if (!DoCreateSnapshot(volList, snapshot, errCode)) {
@@ -856,10 +1046,6 @@ int32_t OpenStackProtectEngine::DeleteSnapshot(const SnapshotInfo &snapshot)
         DBGLOG("Snapshot list is empty, no volume snapshot to be deleted, %s", m_taskId.c_str());
         return SUCCESS;
     }
-    if (CheckIsConsistenSnapshot()) {
-        INFOLOG("Start Delete consistent snapshot, %s.", m_taskId.c_str());
-        return DoDeleteConsistencySnapshot(snapshot);
-    }
 
     INFOLOG("Start Delete common snapshot, %s.", m_taskId.c_str());
     return DeleteCommonSnapshot(snapshot);
@@ -877,10 +1063,17 @@ int32_t OpenStackProtectEngine::DoDeleteConsistencySnapshot(const SnapshotInfo &
 
 bool OpenStackProtectEngine::SendDeleteSnapshotMsg(const VolSnapInfo &volSnap)
 {
+    return ForceDeleteSnapshot(volSnap);
+}
+
+bool OpenStackProtectEngine::ForceDeleteSnapshot(const VolSnapInfo &volSnap)
+{
     DeleteSnapshotPreHook(volSnap);
     DeleteSnapshotRequest request;
     FormHttpRequest(request, true);
     request.SetSnapshotId(volSnap.m_snapshotId);
+    request.SetApiType(ApiType::CINDER);
+    request.SetScope(Scope::ADMIN_PROJECT);
     for (int i = 0; i < MAX_EXEC_COUNT; i++) {
         std::shared_ptr<DeleteSnapshotResponse> response = m_cinderClient->DeleteSnapshot(request);
         if (response == nullptr) {
@@ -1429,6 +1622,14 @@ bool OpenStackProtectEngine::InitJobPara()
         m_requestId = m_restorePara->requestId;
         m_appEnv = m_restorePara->targetEnv;
         m_application = m_restorePara->targetObject;
+    } else if (m_jobHandle->GetJobType() == JobType::DELCOPY) {
+        m_delCopyPara = std::dynamic_pointer_cast<AppProtect::DelCopyJob>(jobInfo);
+        if (m_delCopyPara == nullptr) {
+            ERRLOG("Get del copy job parameter failed, %s", m_taskId.c_str());
+            return false;
+        }
+        m_appEnv = m_delCopyPara->protectEnv;
+        m_application = m_delCopyPara->protectObject;
     } else {
         ERRLOG("Unsupported job type: %d. %s", static_cast<int>(m_jobHandle->GetJobType()), m_taskId.c_str());
         return false;
@@ -1487,14 +1688,17 @@ bool OpenStackProtectEngine::DeleteVolumeSnapshot(const VolSnapInfo &volSnap)
 bool OpenStackProtectEngine::CheckVMStatus()
 {
     std::string jobType;
-
+    INFOLOG("Start to check server %s status.", m_jobHandle->GetApp().id.c_str());
     std::string vmSupportStatus;
+    std::string checkFailedLabel;
     if (m_jobHandle->GetJobType() == JobType::BACKUP) {
         jobType = "backup";
         vmSupportStatus = "VMSupportBackupStatus";
+        checkFailedLabel = "virtual_plugin_openstack_backup_check_server_status_failed_label";
     } else if (m_jobHandle->GetJobType() == JobType::RESTORE) {
         jobType = "restore";
         vmSupportStatus = "VMSupportRestoreStatus";
+        checkFailedLabel = "virtual_plugin_openstack_restore_check_server_status_failed_label";
         if (m_restoreLevel == RestoreLevel::RESTORE_TYPE_VM) {
             INFOLOG("Create new server, dont check server status.");
             return true;
@@ -1509,17 +1713,25 @@ bool OpenStackProtectEngine::CheckVMStatus()
 
     request.SetServerId(m_jobHandle->GetApp().id);
     std::shared_ptr<GetServerDetailsResponse> resp = m_novaClient.GetServerDetails(request);
-    if (resp == nullptr || resp->GetOsExtstsVmState() == "") {
+    if (resp == nullptr || resp->GetServerStatus() == "") {
         ERRLOG("Can not %s. %s", jobType.c_str(), m_taskId.c_str());
         return false;
     }
     std::string supportStatus = Module::ConfigReader::getString("OpenStackConfig", vmSupportStatus);
     std::set<std::string> statusList;
     boost::split(statusList, supportStatus, boost::is_any_of(","));
-    std::set<std::string>::iterator pos = statusList.find(resp->GetOsExtstsVmState());
+    // 升级场景，hcpini.conf不会更新，需要手动将支持的vm状态加入
+    statusList.insert(SERVER_STATUS_ACTIVE);
+    statusList.insert(SERVER_STATUS_SHUTOFF);
+    std::set<std::string>::iterator pos = statusList.find(resp->GetServerStatus());
     if (pos == statusList.end()) {
         ERRLOG("Can not exec %s for vmstate: %s. %s", jobType.c_str(),
-            resp->GetOsExtstsVmState().c_str(), m_taskId.c_str());
+            resp->GetServerStatus().c_str(), m_taskId.c_str());
+        ApplicationLabelType resourceCheckLabel;
+        resourceCheckLabel.level = JobLogLevel::TASK_LOG_ERROR;
+        resourceCheckLabel.label = checkFailedLabel;
+        resourceCheckLabel.params = std::vector<std::string>{resp->GetServerStatus()};
+        ReportJobDetail(resourceCheckLabel);
         return false;
     }
     DBGLOG("Can exec %s for vmstate: %s. %s", jobType.c_str(), resp->GetServerStatus().c_str(), m_taskId.c_str());
@@ -1569,6 +1781,9 @@ void OpenStackProtectEngine::FormCreateVolumeBody(const VolInfo &volObj, const s
         jsonBody["metadata"] = volMetaData;
     }
     jsonBody["volume_type"] = volObj.m_volumeType;
+    if (!volObj.m_location.empty()) {
+        jsonBody["availability_zone"] = volObj.m_location;
+    }
     Json::Value volume;
     volume["volume"] = jsonBody;
     Json::FastWriter fastWriter;
@@ -1923,7 +2138,7 @@ int32_t OpenStackProtectEngine::UpdateVolumeBootable(const std::string &volId)
     }
     if (response->GetStatusCode() != static_cast<uint32_t>(Module::SC_OK)) {
         ERRLOG("Update volume %s bootable request failed, status(%d). body(%s), %s", volId.c_str(),
-            response->GetStatusCode(), response->GetBody().c_str(), m_taskId.c_str());
+            response->GetStatusCode(), WIPE_SENSITIVE(response->GetBody()).c_str(), m_taskId.c_str());
         return FAILED;
     }
     INFOLOG("Update volume %s bootable request success", volId.c_str());
@@ -1997,7 +2212,11 @@ int32_t OpenStackProtectEngine::BuildNewServerInfo(OpenStackServerInfo &newServe
     newServerInfo.m_oSEXTAZavailabilityZone = availabilityZoneName["name"].asString();
 
     for (int i = 0; i < networkIds.size(); ++i) {
-        newServerInfo.m_addresses.push_back(networkIds[i]["id"].asString());
+        if (networkIds[i].isMember("id") && networkIds[i]["id"].isString()) {
+            newServerInfo.m_addresses.push_back(networkIds[i]["id"].asString());
+        } else {
+            WARNLOG("networkIds at index %d have no member of id or the id is not a string", i);
+        }
         std::string tIp = "";
         if (networkIds[i].isMember("ip") && networkIds[i]["ip"].isString()) {
             DBGLOG("set ip %s for network id %s", networkIds[i]["ip"].asString().c_str(),
@@ -2027,7 +2246,7 @@ int32_t OpenStackProtectEngine::SendCreateMachineRequest(VMInfo &vmInfo, OpenSta
     }
     if (response->GetStatusCode() != static_cast<uint32_t>(Module::SC_ACCEPTED)) {
         ERRLOG("Create server failed, status(%d). body(%s), %s", response->GetStatusCode(),
-            response->GetBody().c_str(), m_taskId.c_str());
+            WIPE_SENSITIVE(response->GetBody()).c_str(), m_taskId.c_str());
         serverExtendInfo.m_faultInfo.m_message = response->GetBody().c_str();
         return FAILED;
     }
@@ -2184,7 +2403,7 @@ int32_t OpenStackProtectEngine::DoDeleteServer(const std::string &serverId)
         }
         if (response->GetStatusCode() != static_cast<uint32_t>(Module::SC_NO_CONTENT)) {
             ERRLOG("Delete server failed, status(%d). body(%s), %s", response->GetStatusCode(),
-                response->GetBody().c_str(), m_taskId.c_str());
+                WIPE_SENSITIVE(response->GetBody()).c_str(), m_taskId.c_str());
             return FAILED;
         }
         if (WaitForServerDelete(serverId) == SUCCESS) {
@@ -2548,9 +2767,49 @@ void OpenStackProtectEngine::FormVolumeInfo(const Json::Value &targetVolume, Vol
             std::chrono::system_clock::now().time_since_epoch().count() / std::chrono::system_clock::period::den;
         volName = volObj.m_name + std::to_string(curTimeStamp);
     }
+    if (GetAzWhenRestore(volObj.m_location) != SUCCESS) {
+        ERRLOG("Get availabilityZone failed. %s", m_taskId.c_str());
+    }
     volObj.m_name = volName;
     volObj.m_volSizeInBytes = targetVolume["size"].asInt();
     volObj.m_volumeType = targetVolume["volumeTypeName"].asString();
+}
+
+int32_t OpenStackProtectEngine::GetAzWhenRestore(std::string &availabilityZone)
+{
+    std::string az = Module::ConfigReader::getString("OpenStackConfig", "AvailabilityZoneVolumeCreate");
+    if (!az.empty()) {
+        availabilityZone = az;
+        INFOLOG("Get availabilityZone(%s) from configure file.", az.c_str());
+        return SUCCESS;
+    }
+    if (m_restoreLevel == RestoreLevel::RESTORE_TYPE_DISK) {
+        ServerDetail server;
+        VMInfo vmInfo;
+        vmInfo.m_uuid = m_application.id;
+        if (!GetServerDetails(vmInfo, server)) {
+            ERRLOG("Get server details failed. %s", m_taskId.c_str());
+            return FAILED;
+        }
+        availabilityZone = server.m_hostServerInfo.m_oSEXTAZavailabilityZone;
+        INFOLOG("Get availabilityZone(%s) when restore disk. %s", availabilityZone.c_str(), m_taskId.c_str());
+        return SUCCESS;
+    }
+    Json::Value newServerInfoValue;
+    if (!Module::JsonHelper::JsonStringToJsonValue(m_restorePara->targetObject.extendInfo, newServerInfoValue)) {
+        ERRLOG("JsonStringToStruct failed. targetMachine's extendInfo %s, %s",
+            m_restorePara->targetObject.extendInfo.c_str(), m_taskId.c_str());
+    }
+    if (newServerInfoValue.isMember("availabilityZone")) {
+        Json::Reader reader;
+        Json::Value availabilityZoneName;
+        reader.parse(newServerInfoValue["availabilityZone"].asString(), availabilityZoneName);
+        availabilityZone = availabilityZoneName["name"].asString();
+        INFOLOG("Get availabilityZone(%s) when restore vm. %s", availabilityZone.c_str(), m_taskId.c_str());
+        return SUCCESS;
+    }
+    ERRLOG("Get availabilityZone failed. %s", m_taskId.c_str());
+    return FAILED;
 }
 
 int OpenStackProtectEngine::GenVolPair(VMInfo &vmObj, const VolInfo &copyVol,

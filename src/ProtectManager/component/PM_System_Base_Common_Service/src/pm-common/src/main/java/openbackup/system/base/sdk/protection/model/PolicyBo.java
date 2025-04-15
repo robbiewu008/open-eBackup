@@ -63,6 +63,11 @@ public class PolicyBo {
     private RetentionBo retention;
 
     /**
+     * worm校验类型，未开启worm,同副本保留时间一致、自定义WORM过期时间
+     */
+    private Integer wormValidityType;
+
+    /**
      * 根据key获取policy扩展参数的boolean值
      *
      * @param key 扩展参数的key

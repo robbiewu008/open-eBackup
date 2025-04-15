@@ -1,0 +1,58 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="Active Directory进行对象级恢复时报错：该对象的DistinguishedName已存在">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="ActiveDirectory-00084.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="ActiveDirectory-00097">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>Active Directory进行对象级恢复时报错：该对象的DistinguishedName已存在</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="ActiveDirectory-00097"></a><a name="ActiveDirectory-00097"></a>
+
+<h1 class="topictitle1">Active Directory进行对象级恢复时报错：该对象的DistinguishedName已存在</h1>
+<div><p>对于已被删除且未在回收站的对象，用户新创建了同名对象，此时恢复被删除的对象会违反对象的唯一性约束导致恢复报错。用户需要选择保留其中一个对象，如果选择恢复已删除的对象，需要参考本章节删除新建的同名对象后重新进行对象级恢复；如果选择保留新创建的同名对象无需进行对象级恢复。</p>
+<div class="section"><h4 class="sectiontitle">现象描述</h4><p>Active Directory进行对象级恢复时报错：该对象的DistinguishedName已存在</p>
+</div>
+<div class="section"><h4 class="sectiontitle">可能原因</h4><p>该对象的DistinguishedName已存在。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">处理步骤</h4><ol><li><span>打开Active Directory Users and Computers。</span><p><ol type="a" id="ActiveDirectory-00097__activedirectory-00096_ol1558811113511"><li id="ActiveDirectory-00097__activedirectory-00096_li458811203511">使用Administrator用户登录远程主机。</li><li id="ActiveDirectory-00097__activedirectory-00096_li749551033511">按Win + R。</li><li id="ActiveDirectory-00097__activedirectory-00096_li11778132363511">输入<strong id="ActiveDirectory-00097__activedirectory-00096_b1828713219211">dsa.msc</strong>后按Enter键。<p id="ActiveDirectory-00097__activedirectory-00096_p579574016591"></p>
+</li></ol>
+</p></li><li><span>找到需要删除的对象。</span></li><li><span>右键单击对象后选择“删除”。</span></li><li><span>单击“是”。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="ActiveDirectory-00084.html">常见问题</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

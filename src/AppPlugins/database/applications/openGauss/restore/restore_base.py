@@ -14,12 +14,12 @@
 import abc
 import os
 
+from openGauss.common.const import logger, MetaDataKey, ParamKey, AuthKey, ProtectObject, Tool
 from common.const import RepositoryDataTypeEnum
 from common.file_common import delete_file_or_dir_specified_user
 from openGauss.backup.resource_info import ResourceInfo
 from openGauss.common.common import get_value_from_dict, get_repository_dir, \
-    execute_cmd_by_user, check_path, safe_get_environ, check_injection_char
-from openGauss.common.const import logger, MetaDataKey, ParamKey, AuthKey, ProtectObject, Tool
+    execute_cmd_by_user, check_path, safe_get_environ, check_injection_char, is_cmdb_distribute
 
 
 class RestoreBase(metaclass=abc.ABCMeta):
@@ -43,7 +43,9 @@ class RestoreBase(metaclass=abc.ABCMeta):
         self._sql_tool = ""
         self._guc_tool = ""
         self._database_type = ""
+        self._deploy_type = ""
         self.init_environment(param)
+        self._param = param
 
     def get_copy_repository_dir(self, copy, repository_type):
         """
@@ -74,6 +76,8 @@ class RestoreBase(metaclass=abc.ABCMeta):
             self._target_name = new_target_name
         _, self._database_type = get_value_from_dict(param, ParamKey.JOB, ParamKey.TARGET_ENV, ParamKey.EXTEND_INFO,
                                                      ParamKey.CLUSTER_VERSION)
+        _, self._deploy_type = get_value_from_dict(param, ParamKey.JOB, ParamKey.TARGET_ENV, ParamKey.EXTEND_INFO,
+                                                     ParamKey.DEPLOY_TYPE)
         if ProtectObject.OPENGAUSS in self._database_type or ProtectObject.MOGDB in self._database_type or \
                 ProtectObject.CMDB in self._database_type:
             self._sql_tool = Tool.GSQL
@@ -113,13 +117,19 @@ class RestoreBase(metaclass=abc.ABCMeta):
         :return:成功返回True， 失败返回False
         """
         tmp_file = os.path.join(self._cache_dir, self._job_id)
-        if not delete_file_or_dir_specified_user(self._user_name, tmp_file):
-            return False
+        if os.path.exists("tmp_file"):
+            if not delete_file_or_dir_specified_user(self._user_name, tmp_file):
+                return False
         speed_file = os.path.join(self._cache_dir, f"{self._job_id}_speed_record")
-        return delete_file_or_dir_specified_user(self._user_name, speed_file)
+        if os.path.exists(speed_file):
+            delete_file_or_dir_specified_user(self._user_name, speed_file)
+        return True
 
     def exec_sql_cmd(self, cmd):
-        cmd = f'{self._sql_tool} -c \"{cmd}\" postgres -p {self._port}'
+        if is_cmdb_distribute(self._deploy_type, self._database_type):
+            cmd = f'{self._sql_tool} -c \"{cmd}\" postgres -p {self._resource_info.get_local_cn_port()}'
+        else:
+            cmd = f'{self._sql_tool} -c \"{cmd}\" postgres -p {self._port}'
         return execute_cmd_by_user(self._user_name, self._env_file, cmd)
 
     @abc.abstractmethod

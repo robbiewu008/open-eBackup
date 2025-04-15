@@ -12,6 +12,9 @@
 */
 package openbackup.gaussdb.protection.access.interceptor;
 
+import com.huawei.oceanprotect.repository.service.LocalStorageService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.backup.v2.PostBackupTask;
@@ -22,11 +25,8 @@ import openbackup.gaussdb.protection.access.constant.GaussDBConstant;
 import openbackup.gaussdb.protection.access.provider.GaussDBAgentProvider;
 import openbackup.gaussdb.protection.access.service.GaussDBService;
 import openbackup.gaussdb.protection.access.util.GaussDBClusterUtils;
-import com.huawei.oceanprotect.repository.service.LocalStorageService;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

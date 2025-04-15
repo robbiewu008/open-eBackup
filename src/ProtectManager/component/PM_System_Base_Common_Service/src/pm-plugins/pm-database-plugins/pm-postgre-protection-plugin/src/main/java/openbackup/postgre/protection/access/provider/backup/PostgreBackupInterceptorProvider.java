@@ -12,6 +12,7 @@
 */
 package openbackup.postgre.protection.access.provider.backup;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.backup.v2.BackupTask;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.v2.StorageRepository;
@@ -35,10 +36,6 @@ import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.StreamUtil;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -78,6 +75,9 @@ public class PostgreBackupInterceptorProvider extends AbstractDbBackupIntercepto
 
         // 设置速度统计方式为UBC
         TaskUtil.setBackupTaskSpeedStatisticsEnum(backupTask, SpeedStatisticsEnum.UBC);
+
+        // 日志备份加上检查任务类型校验
+        checkIsLogBackup(backupTask);
         return backupTask;
     }
 
@@ -176,26 +176,10 @@ public class PostgreBackupInterceptorProvider extends AbstractDbBackupIntercepto
     @Override
     protected void supplyAgent(BackupTask backupTask) {
         List<Endpoint> endpointList;
-        if (StringUtils.equals(backupTask.getProtectObject().getExtendInfo().get(PostgreConstants.INSTALL_DEPLOY_TYPE),
-            PostgreConstants.CLUP)) {
-            ProtectedResource resource = queryResourceById(backupTask.getProtectObject().getUuid());
-            List<ProtectedResource> agents = resource.getDependencies().get(DatabaseConstants.CHILDREN);
-            Optional<ProtectedResource> masterAgent = agents.stream()
-                .filter(item -> StringUtils.equals(MapUtils.getString(item.getExtendInfo(), DatabaseConstants.ROLE),
-                    PostgreConstants.PRIMARY))
-                .findFirst();
-            if (masterAgent.isPresent()) {
-                ProtectedResource agent = masterAgent.get().getDependencies().get(DatabaseConstants.AGENTS).get(0);
-                endpointList = Arrays.asList(new Endpoint(agent.getUuid(), agent.getEndpoint(), agent.getPort()));
-            } else {
-                throw new LegoCheckedException(CommonErrorCode.AGENT_NOT_EXIST, "No agent found");
-            }
-        } else {
-            List<TaskEnvironment> nodeList = queryNodeList(backupTask);
-            endpointList = nodeList.stream()
-                .map(node -> new Endpoint(node.getUuid(), node.getEndpoint(), node.getPort()))
-                .collect(Collectors.toList());
-        }
+        List<TaskEnvironment> nodeList = queryNodeList(backupTask);
+        endpointList = nodeList.stream()
+            .map(node -> new Endpoint(node.getUuid(), node.getEndpoint(), node.getPort()))
+            .collect(Collectors.toList());
         backupTask.setAgents(endpointList);
     }
 
@@ -207,5 +191,12 @@ public class PostgreBackupInterceptorProvider extends AbstractDbBackupIntercepto
     public boolean applicable(String resourceSubType) {
         return Arrays.asList(ResourceSubTypeEnum.POSTGRE_INSTANCE.getType(),
             ResourceSubTypeEnum.POSTGRE_CLUSTER_INSTANCE.getType()).contains(resourceSubType);
+    }
+
+    private void checkIsLogBackup(BackupTask backupTask) {
+        if (DatabaseConstants.LOG_BACKUP_TYPE.equals(backupTask.getBackupType())) {
+            Map<String, String> advanceParams = backupTask.getAdvanceParams();
+            advanceParams.put(PostgreConstants.IS_CHECK_BACKUP_JOB_TYPE, "true");
+        }
     }
 }

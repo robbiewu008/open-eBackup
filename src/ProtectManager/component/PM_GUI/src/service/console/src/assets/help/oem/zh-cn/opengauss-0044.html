@@ -1,0 +1,164 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="恢复openGauss/磐维CMDB">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="opengauss-0041.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="opengauss-0044">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>恢复openGauss/磐维CMDB</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="opengauss-0044"></a><a name="opengauss-0044"></a>
+  <h1 class="topictitle1">恢复openGauss/磐维CMDB</h1>
+  <div>
+   <p>当需要对已备份的openGauss/磐维CMDB数据库或实例进行恢复时，可以参考本节恢复openGauss/磐维CMDB数据库或实例至原位置或新位置。</p>
+   <div class="section">
+    <h4 class="sectiontitle">背景信息</h4>
+    <div class="p">
+     支持使用备份副本、复制副本、导入的副本进行恢复。支持恢复至原位置或新位置。
+     <div class="note">
+      <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+      <div class="notebody">
+       <p>复制副本不支持恢复至原位置。</p>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">注意事项</h4>
+    <ul>
+     <li>基于openGauss3.0数据库应用，在进行实例恢复时，恢复任务显示失败，且集群处于降级状态（主节点已经启动成功，备节点启动失败的状态为降级状态），请尝试手动重建备节点。</li>
+     <li>数据库系统用户登录备用节点，执行<strong>gs_ctl build</strong> <em>数据目录</em>命令重建备节点。</li>
+    </ul>
+    <div class="note">
+     <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+     <div class="notebody">
+      <p>数据目录为实例运行时指定的数据目录，若运行时未指定，默认为安装部署时数据库主节点配置的数据目录。</p>
+     </div>
+    </div>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">前提条件</h4>
+    <ul>
+     <li>恢复前请确保恢复目标位置的数据目录剩余空间大于恢复副本缩减前大小，否则恢复将失败。</li>
+    </ul>
+    <ul>
+     <li>执行新位置恢复前，请确保数据库安装用户具有恢复目标路径的读写权限。</li>
+     <li>除了磐维CMDB分布式集群以外，恢复前请确保目标数据库系统状态为<span class="parmvalue">“Normal”</span>。
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <p>在数据库单机节点或集群任一节点使用运行数据库的操作系统账号，执行gs_om -t status，回显中<span class="parmname">“cluster_state”</span>的值需要确认为<span class="parmvalue">“Normal”</span>。</p>
+       </div>
+      </div></li>
+    </ul>
+   </div>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol>
+     <li><span>选择<span class="uicontrol" id="opengauss-0044__zh-cn_topic_0000002199964685_uicontrol13535171992714">“<span id="opengauss-0044__zh-cn_topic_0000002199964685_text19535171918274">数据利用</span> &gt; <span id="opengauss-0044__zh-cn_topic_0000002199964685_text175351119172711">副本数据</span> &gt; <span id="opengauss-0044__zh-cn_topic_0000002199964685_text59261952124911">数据库</span> &gt; 磐维CMDB/<span id="opengauss-0044__zh-cn_topic_0000002199964685_text11575567321">openGauss</span>”</span>。</span></li>
+     <li><span>您可以以openGauss/磐维CMDB数据库资源维度或以副本维度查找副本，本节以资源维度为例进行说明。</span><p></p><p>在<span class="uicontrol">“<span>资源</span>”</span>页签，根据资源名称查找到需要恢复的资源，并单击资源名称。</p> <p></p></li>
+     <li><span>依次选择年、月、天找到副本。</span><p></p><p>当时间上显示<span><img src="zh-cn_image_0000002200039553.png"></span>，即表示该月、该天存在副本。</p> <p></p></li>
+     <li><span>指定副本或指定时间点进行恢复。</span><p></p>
+      <div class="note">
+       <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+       <div class="notebody">
+        <ul>
+         <li>openGauss仅支持指定副本恢复功能，磐维CMDB支持指定副本和指定时间点进行恢复功能。</li>
+        </ul>
+       </div>
+      </div>
+      <ul>
+       <li>指定副本恢复<p>在副本数据页面单击<span><img src="zh-cn_image_0000002164798528.png"></span>，在需要恢复的副本所在行单击<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"> <span>恢复</span></span>”</span>。</p></li>
+       <li>指定时间点恢复<p>在副本数据页面单击<span><img src="zh-cn_image_0000002200125125.png"></span>，在时间轴上选择蓝色覆盖区域的副本，单击<span class="menucascade">“<span class="uicontrol"><span>更多</span></span> &gt; <span class="uicontrol"><span>恢复</span></span>”</span>。</p></li>
+      </ul>
+      <div class="p">
+       相关参数说明如<a href="#opengauss-0044__zh-cn_topic_0000001385658689_table194961441141219">表1</a>。 
+       <div class="tablenoborder">
+        <a name="opengauss-0044__zh-cn_topic_0000001385658689_table194961441141219"></a><a name="zh-cn_topic_0000001385658689_table194961441141219"></a>
+        <table cellpadding="4" cellspacing="0" summary="" id="opengauss-0044__zh-cn_topic_0000001385658689_table194961441141219" frame="border" border="1" rules="all">
+         <caption>
+          <b>表1 </b>恢复openGauss/磐维CMDB
+         </caption>
+         <colgroup>
+          <col style="width:32.019999999999996%">
+          <col style="width:67.97999999999999%">
+         </colgroup>
+         <thead align="left">
+          <tr>
+           <th align="left" class="cellrowborder" valign="top" width="32.019999999999996%" id="mcps1.3.5.2.4.2.3.2.2.3.1.1"><p>参数</p></th>
+           <th align="left" class="cellrowborder" valign="top" width="67.97999999999999%" id="mcps1.3.5.2.4.2.3.2.2.3.1.2"><p>说明</p></th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.1 "><p><span>恢复至</span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.2 "><p>选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>或<span class="uicontrol">“<span>新位置</span>”</span>。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.1 "><p><span>位置</span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>原位置</span>”</span>时，默认显示恢复的位置。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.1 "><p>标签</p>
+            <div class="note">
+             <span class="notetitle"> 说明： </span>
+             <div class="notebody">
+              <p><span>仅1.6.0及后续版本支持此功能。</span></p>
+             </div>
+            </div></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时展示该参数。</p> <p>可通过标签筛选数据库。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.1 "><p><span>目标集群</span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，可选择恢复的目标集群。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.1 "><p><span>目标实例</span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.2 "><p>当选择恢复至<span class="uicontrol">“<span>新位置</span>”</span>时，可选择恢复的目标实例。</p></td>
+          </tr>
+          <tr>
+           <td class="cellrowborder" valign="top" width="32.019999999999996%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.1 "><p><span>数据库重命名</span></p></td>
+           <td class="cellrowborder" valign="top" width="67.97999999999999%" headers="mcps1.3.5.2.4.2.3.2.2.3.1.2 "><p>仅数据库恢复时才显示该参数，开启后可对恢复完成后的数据库进行重命名。</p></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div> <p></p></li>
+    </ol>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="opengauss-0041.html">恢复</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

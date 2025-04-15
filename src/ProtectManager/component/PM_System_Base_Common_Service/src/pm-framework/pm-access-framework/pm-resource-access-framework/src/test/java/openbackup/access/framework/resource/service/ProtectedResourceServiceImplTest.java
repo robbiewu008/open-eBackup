@@ -22,12 +22,7 @@ import openbackup.access.framework.resource.persistence.dao.ProtectedResourceExt
 import openbackup.access.framework.resource.persistence.dao.ProtectedResourceMapper;
 import openbackup.access.framework.resource.persistence.model.ProtectedEnvironmentPo;
 import openbackup.access.framework.resource.persistence.model.ProtectedResourcePo;
-import openbackup.access.framework.resource.service.JobScheduleService;
-import openbackup.access.framework.resource.service.ProtectedResourceDecryptService;
-import openbackup.access.framework.resource.service.ProtectedResourceMonitorService;
-import openbackup.access.framework.resource.service.ProtectedResourceRepository;
-import openbackup.access.framework.resource.service.ProtectedResourceServiceImpl;
-import openbackup.access.framework.resource.service.ResourceScanService;
+import openbackup.data.access.framework.core.copy.CopyManagerService;
 import openbackup.data.access.framework.core.manager.ProviderManager;
 import openbackup.data.protection.access.provider.sdk.backup.NextBackupChangeCauseEnum;
 import openbackup.data.protection.access.provider.sdk.backup.NextBackupModifyReq;
@@ -46,22 +41,35 @@ import openbackup.data.protection.access.provider.sdk.resource.model.AgentTypeEn
 import openbackup.data.protection.access.provider.sdk.resource.model.ResourceExtendInfoKeyConstants;
 import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.enums.UserTypeEnum;
 import openbackup.system.base.common.exception.LegoCheckedException;
+import openbackup.system.base.common.model.job.JobBo;
 import openbackup.system.base.common.utils.UUIDGenerator;
 import openbackup.system.base.query.SessionService;
+import openbackup.system.base.sdk.auth.UserInnerResponse;
+import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.BasePage;
+import openbackup.system.base.sdk.copy.model.Copy;
+import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
+import openbackup.system.base.sdk.quota.QuotaService;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
+import openbackup.system.base.sdk.resource.model.UpdateCopyUserObjectReq;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.service.hostagent.AgentQueryService;
 import com.huawei.oceanprotect.system.base.user.service.ResourceSetApi;
 import openbackup.system.base.util.MessageTemplate;
+
+import com.huawei.oceanprotect.system.base.user.service.ResourceSetResourceService;
+import com.huawei.oceanprotect.system.base.user.service.ResourceSetService;
+import com.huawei.oceanprotect.system.base.user.service.UserService;
 import com.huawei.oceanprotect.system.sdk.dto.SystemSwitchDto;
 import com.huawei.oceanprotect.system.sdk.enums.SwitchStatusEnum;
 import com.huawei.oceanprotect.system.sdk.service.SystemSwitchInternalService;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -69,6 +77,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.sql.Timestamp;
@@ -79,6 +89,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Timer;
 import java.util.stream.Collectors;
 
 /**
@@ -125,10 +136,26 @@ public class ProtectedResourceServiceImplTest {
     @Mock
     private ResourceSetApi resourceSetApi;
 
+    @Mock
+    private CopyRestApi copyRestApi;
+
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private QuotaService quotaService;
+
+    @Mock
+    private CopyManagerService copyManagerService;
+
+    @Mock
+    private ResourceSetService resourceSetService;
+
+    @Mock
+    private ResourceSetResourceService resourceSetResourceService;
+
     @Before
     public void prepare() throws Exception {
-        protectedResourceService = new ProtectedResourceServiceImpl(repository, protectedResourceMonitorService,
-                protectedResourceMapper, decryptService, messageTemplate);
         protectedResourceService.setDeployTypeService(deployTypeService);
         protectedResourceService.setJobScheduleService(jobScheduleService);
         protectedResourceService.setResourceScanService(resourceScanService);
@@ -322,8 +349,6 @@ public class ProtectedResourceServiceImplTest {
 
     @Test
     public void test_update_source_type() {
-        protectedResourceService = new ProtectedResourceServiceImpl(repository, protectedResourceMonitorService,
-                protectedResourceMapper, decryptService, messageTemplate);
         protectedResourceService.setDeployTypeService(deployTypeService);
         protectedResourceService.setJobScheduleService(jobScheduleService);
         protectedResourceService.setResourceScanService(resourceScanService);
@@ -336,8 +361,6 @@ public class ProtectedResourceServiceImplTest {
 
     @Test
     public void test_update_sub_source() {
-        protectedResourceService = new ProtectedResourceServiceImpl(repository, protectedResourceMonitorService,
-                protectedResourceMapper, decryptService, messageTemplate);
         protectedResourceService.setDeployTypeService(deployTypeService);
         protectedResourceService.setJobScheduleService(jobScheduleService);
         protectedResourceService.setResourceScanService(resourceScanService);
@@ -530,4 +553,117 @@ public class ProtectedResourceServiceImplTest {
         verify(resourceSetApi, times(1)).addResourceSetRelation(any());
     }
 
+    /**
+     * 用例场景：创建timer对象成功
+     * 前置条件：无
+     * 检查点：计时器创建正常
+     */
+    @Test
+    public void test_create_timer() throws Exception {
+        List<JobBo> jobBos = new ArrayList<>();
+        JobBo jobBo = new JobBo();
+        jobBo.setJobId("12");
+        jobBos.add(jobBo);
+        PowerMockito.when(resourceScanService.queryManualScanRunningJobByResId("21D123")).thenReturn(jobBos);
+        Timer timer = Whitebox.invokeMethod(protectedResourceService, "setTimer", "21D123");
+        verify(resourceScanService, times(1)).queryManualScanRunningJobByResId("21D123");
+    }
+
+    /**
+     * 用例场景：切换用户成功
+     * 前置条件：无
+     * 检查点：无报错
+     */
+    @Test
+    public void test_update_copy_user() {
+        UpdateCopyUserObjectReq updateCopyUserObjectReq = new UpdateCopyUserObjectReq();
+        updateCopyUserObjectReq.setResourceId("1212");
+        updateCopyUserObjectReq.setUserId("12");
+        UserInnerResponse userInfo = new UserInnerResponse();
+        userInfo.setUserType(UserTypeEnum.HCS.getValue());
+        userInfo.setUserId("121");
+        Copy copy1 = new Copy();
+        copy1.setUuid("11212");
+        copy1.setProperties(
+            "\"{\\\"snapshots\\\":[{\\\"id\\\":\\\"1200@Snapshot_37bc5e1f_7d77_48a0_a46d_f0490c02387c\\\",\\\""
+                + "parentName\\\":\\\"Rep_131163_Huaage_Fileset_d1cb57ad584949e192634c43da5758bb_su0_0_0\\\"}],"
+                + "\\\"dataAfterReduction\\\":194536,\\\"dataBeforeReduction\\\":3855364,\\\"dataPathSuffix\\\":"
+                + "\\\"\\\",\\\"fsRelations\\\":{\\\"relations\\\":[{\\\"newEsn\\\":\\\"2102353GTJ10M1000002\\\",\\"
+                + "\"newFsId\\\":\\\"1200\\\",\\\"newFsName\\\":\\\"Rep_131163_Huaage_Fileset_d1cb57ad584949e192634"
+                + "c43da5758bb_su0_0_0\\\",\\\"oldEsn\\\":\\\"2102353GTJ10M1000002\\\",\\\"oldFsId\\\":\\\"1196\\\","
+                + "\\\"oldFsName\\\":\\\"Fileset_d1cb57ad584949e192634c43da5758bb_su0\\\",\\\"role\\\":0}]},\\\"isAgg"
+                + "regation\\\":\\\"false\\\",\\\"isSanClient\\\":\\\"false\\\",\\\"maxSizeAfterAggregate\\\":\\\"0\\\""
+                + ",\\\"maxSizeToAggregate\\\":\\\"0\\\",\\\"metaPathSuffix\\\":\\\"\\\",\\\"multiFileSystem\\\":\\\"fa"
+                + "lse\\\",\\\"originCopyTimeStamp\\\":1732951109,\\\"repositories\\\":[{\\\"id\\\":\\\"2102353GTJ10M1"
+                + "000002\\\",\\\"type\\\":2,\\\"protocol\\\":5,\\\"role\\\":0,\\\"remotePath\\\":[{\\\"type\\\":1,\\"
+                + "\"path\\\":\\\"/Fileset_CacheDataRepository/d1cb57ad584949e192634c43da5758bb\\\",\\\"id\\\":\\\""
+                + "996\\\",\\\"parentId\\\":\\\"\\\"}],\\\"extendInfo\\\":{\\\"capacityAvailable\\\":true,\\\"esn\\"
+                + "\":\\\"2102353GTJ10M1000002\\\",\\\"storage_info\\\":{\\\"storage_device\\\":\\\"2102353GTJ10M1000"
+                + "002\\\",\\\"storage_pool\\\":\\\"0\\\"}}},{\\\"id\\\":\\\"2102353GTJ10M1000002\\\",\\\"type\\\":1"
+                + ",\\\"protocol\\\":5,\\\"role\\\":0,\\\"remotePath\\\":[{\\\"type\\\":0,\\\"path\\\":\\\"/Rep_1311"
+                + "63_Huaage_Fileset_d1cb57ad584949e192634c43da5758bb_su0_0_0/source_policy_d1cb57ad584949e192634c43d"
+                + "a5758bb_Context_Global_MD\\\",\\\"id\\\":\\\"1200\\\",\\\"parentId\\\":\\\"\\\"},{\\\"type\\\":1,"
+                + "\\\"path\\\":\\\"/Rep_131163_Huaage_Fileset_d1cb57ad584949e192634c43da5758bb_su0_0_0/source_policy"
+                + "_d1cb57ad584949e192634c43da5758bb_Context\\\",\\\"id\\\":\\\"1200\\\",\\\"parentId\\\":\\\"\\\"}]"
+                + ",\\\"extendInfo\\\":{\\\"capacityAvailable\\\":true,\\\"copy_format\\\":0,\\\"esn\\\":\\\"2102353G"
+                + "TJ10M1000002\\\",\\\"fsId\\\":\\\"1196\\\",\\\"storage_info\\\":{\\\"storage_device\\\":\\\""
+                + "\\\",\\\"storage_pool\\\":\\\"0\\\"}}}],\\\"extendInfo\\\":{\\\"dataAfterReduction\\\":194536,\\\""
+                + "dataBeforeReduction\\\":3855364,\\\"dataPathSuffix\\\":\\\"\\\",\\\"fsRelations\\\":{\\\"relation"
+                + "s\\\":[{\\\"newEsn\\\":\\\"2102353GTJ10M1000002\\\",\\\"newFsId\\\":\\\"1200\\\",\\\"newFsName\\\""
+                + ":\\\"Rep_131163_Huaage_Fileset_d1cb57ad584949e192634c43da5758bb_su0_0_0\\\",\\\"oldEsn\\\":\\\"2"
+                + "102353GTJ10M1000002\\\",\\\"oldFsId\\\":\\\"1196\\\",\\\"oldFsName\\\":\\\"Fileset_d1cb57ad584949"
+                + "e192634c43da5758bb_su0\\\",\\\"role\\\":0}]},\\\"isAggregation\\\":\\\"false\\\",\\\"isSanClient\\"
+                + "\":\\\"false\\\",\\\"maxSizeAfterAggregate\\\":\\\"0\\\",\\\"maxSizeToAggregate\\\":\\\"0\\\",\\\""
+                + "metaPathSuffix\\\":\\\"\\\",\\\"multiFileSystem\\\":\\\"false\\\",\\\"originCopyTimeStamp\\\":173"
+                + "2951109},\\\"format\\\":0,\\\"verifyStatus\\\":\\\"3\\\",\\\"size\\\":976562,\\\"backup_id\\\":\\\""
+                + "46154c63-40b6-4d54-8703-0b6cd121d3ba\\\",\\\"replicate_count\\\":2,\\\"labelList\\\":[]}\",\n");
+        copy1.setGeneratedBy(CopyGeneratedByEnum.BY_BACKUP.value());
+
+        Copy copy2 = new Copy();
+        copy1.setUuid("222211212");
+        copy1.setProperties(
+            "\"{\\\"snapshots\\\":[{\\\"id\\\":\\\"1200@Snapshot_37bc5e1f_7d77_48a0_a46d_f0490c02387c\\\",\\\""
+                + "parentName\\\":\\\"Rep_131163_Huaage_Fileset_d1cb57ad584949e192634c43da5758bb_su0_0_0\\\"}],"
+                + "\\\"dataAfterReduction\\\":194536,\\\"dataBeforeReduction\\\":3855364,\\\"dataPathSuffix\\\":"
+                + "\\\"\\\",\\\"fsRelations\\\":{\\\"relations\\\":[{\\\"newEsn\\\":\\\"2102353GTJ10M1000002\\\",\\"
+                + "\"newFsId\\\":\\\"1200\\\",\\\"newFsName\\\":\\\"Rep_131163_Huaage_Fileset_d1cb57ad584949e192634"
+                + "c43da5758bb_su0_0_0\\\",\\\"oldEsn\\\":\\\"2102353GTJ10M1000002\\\",\\\"oldFsId\\\":\\\"1196\\\","
+                + "\\\"oldFsName\\\":\\\"Fileset_d1cb57ad584949e192634c43da5758bb_su0\\\",\\\"role\\\":0}]},\\\"isAgg"
+                + "regation\\\":\\\"false\\\",\\\"isSanClient\\\":\\\"false\\\",\\\"maxSizeAfterAggregate\\\":\\\"0\\\""
+                + ",\\\"maxSizeToAggregate\\\":\\\"0\\\",\\\"metaPathSuffix\\\":\\\"\\\",\\\"multiFileSystem\\\":\\\"fa"
+                + "lse\\\",\\\"originCopyTimeStamp\\\":1732951109,\\\"repositories\\\":[{\\\"id\\\":\\\"2102353GTJ10M1"
+                + "000002\\\",\\\"type\\\":2,\\\"protocol\\\":5,\\\"role\\\":0,\\\"remotePath\\\":[{\\\"type\\\":1,\\"
+                + "\"path\\\":\\\"/Fileset_CacheDataRepository/d1cb57ad584949e192634c43da5758bb\\\",\\\"id\\\":\\\""
+                + "996\\\",\\\"parentId\\\":\\\"\\\"}],\\\"extendInfo\\\":{\\\"capacityAvailable\\\":true,\\\"esn\\"
+                + "\":\\\"2102353GTJ10M1000002\\\",\\\"storage_info\\\":{\\\"storage_device\\\":\\\"2102353GTJ10M1000"
+                + "002\\\",\\\"storage_pool\\\":\\\"0\\\"}}},{\\\"id\\\":\\\"2102353GTJ10M1000002\\\",\\\"type\\\":1"
+                + ",\\\"protocol\\\":5,\\\"role\\\":0,\\\"remotePath\\\":[{\\\"type\\\":0,\\\"path\\\":\\\"/Rep_1311"
+                + "63_Huaage_Fileset_d1cb57ad584949e192634c43da5758bb_su0_0_0/source_policy_d1cb57ad584949e192634c43d"
+                + "a5758bb_Context_Global_MD\\\",\\\"id\\\":\\\"1200\\\",\\\"parentId\\\":\\\"\\\"},{\\\"type\\\":1,"
+                + "\\\"path\\\":\\\"/Rep_131163_Huaage_Fileset_d1cb57ad584949e192634c43da5758bb_su0_0_0/source_policy"
+                + "_d1cb57ad584949e192634c43da5758bb_Context\\\",\\\"id\\\":\\\"1200\\\",\\\"parentId\\\":\\\"\\\"}]"
+                + ",\\\"extendInfo\\\":{\\\"capacityAvailable\\\":true,\\\"copy_format\\\":0,\\\"esn\\\":\\\"2102353G"
+                + "TJ10M1000002\\\",\\\"fsId\\\":\\\"1196\\\",\\\"storage_info\\\":{\\\"storage_device\\\":\\\""
+                + "\\\",\\\"storage_pool\\\":\\\"0\\\"}}}],\\\"extendInfo\\\":{\\\"dataAfterReduction\\\":194536,\\\""
+                + "dataBeforeReduction\\\":3855364,\\\"dataPathSuffix\\\":\\\"\\\",\\\"fsRelations\\\":{\\\"relation"
+                + "s\\\":[{\\\"newEsn\\\":\\\"2102353GTJ10M1000002\\\",\\\"newFsId\\\":\\\"1200\\\",\\\"newFsName\\\""
+                + ":\\\"Rep_131163_Huaage_Fileset_d1cb57ad584949e192634c43da5758bb_su0_0_0\\\",\\\"oldEsn\\\":\\\"2"
+                + "102353GTJ10M1000002\\\",\\\"oldFsId\\\":\\\"1196\\\",\\\"oldFsName\\\":\\\"Fileset_d1cb57ad584949"
+                + "e192634c43da5758bb_su0\\\",\\\"role\\\":0}]},\\\"isAggregation\\\":\\\"false\\\",\\\"isSanClient\\"
+                + "\":\\\"false\\\",\\\"maxSizeAfterAggregate\\\":\\\"0\\\",\\\"maxSizeToAggregate\\\":\\\"0\\\",\\\""
+                + "metaPathSuffix\\\":\\\"\\\",\\\"multiFileSystem\\\":\\\"false\\\",\\\"originCopyTimeStamp\\\":173"
+                + "2951109},\\\"format\\\":0,\\\"verifyStatus\\\":\\\"3\\\",\\\"size\\\":976562,\\\"backup_id\\\":\\\""
+                + "46154c63-40b6-4d54-8703-0b6cd121d3ba\\\",\\\"replicate_count\\\":2,\\\"labelList\\\":[]}\",\n");
+        copy1.setGeneratedBy(CopyGeneratedByEnum.BY_BACKUP.value());
+        List<Copy> copies = Arrays.asList(copy1, copy2);
+        Mockito.when(userService.getUserInfoByUserId(Mockito.anyString())).thenReturn(userInfo);
+        Mockito.when(userService.isDPAdminAndCustomizedUser(Mockito.anyString())).thenReturn(true);
+        Mockito.when(copyRestApi.queryCopiesByResourceIdAndGeneratedBy(Mockito.anyString(), Mockito.any()))
+            .thenReturn(copies);
+        Mockito.when(
+                quotaService.checkIsUserHasEnoughQuota(Mockito.anyString(), Mockito.anyList(), Mockito.anyString()))
+            .thenReturn(true);
+
+        protectedResourceService.updateCopyUser(updateCopyUserObjectReq);
+    }
 }

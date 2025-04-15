@@ -12,18 +12,18 @@
 */
 package openbackup.exchange.protection.access.provider;
 
+import com.huawei.oceanprotect.job.sdk.JobCommonProvider;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
-import com.huawei.oceanprotect.job.sdk.JobCommonProvider;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.model.job.Job;
 import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.job.model.JobTypeEnum;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 

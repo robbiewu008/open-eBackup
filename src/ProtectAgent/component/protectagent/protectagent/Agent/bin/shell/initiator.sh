@@ -1,14 +1,16 @@
 #!/bin/sh
-# This file is a part of the open-eBackup project.
-# This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-# If a copy of the MPL was not distributed with this file, You can obtain one at
-# http://mozilla.org/MPL/2.0/.
+# 
+#  This file is a part of the open-eBackup project.
+#  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+#  If a copy of the MPL was not distributed with this file, You can obtain one at
+#  http://mozilla.org/MPL/2.0/.
+# 
+#  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+# 
+#  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+#  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+#  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-# Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-#
-# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 set +x
 
 AGENT_ROOT_PATH=$1
@@ -148,24 +150,23 @@ GetFCInfoLinuxV2()
     if [ $FC_NUMBER -gt 0 ]; then
         if [ "$VERSION" = "NEW" ]; then
                 FC_WWNNUMBER=--
-                FC_WWNTMP=`cat /sys/class/fc_host/*/port_name`
+                FC_ALLWWN=`cat /sys/class/fc_host/*/port_name`
                 if [ "$?" = "0" ]; then
-                    FC_TMPWWN=$FC_WWNTMP
-                    FC_WWNTMP=`echo $FC_WWNTMP | ${AWK} '{print toupper($0)}'`
-                    ## process FC initor string
-                    ## 0x1234567 -> 1234567
-                    FC_WWNTMP=`expr substr $FC_WWNTMP 1 2`
+                    for FC_WWNTMP in ${FC_ALLWWN}; do
+                        FC_WWNTMP=`echo $FC_WWNTMP | ${AWK} '{print toupper($0)}'`
+                        ## process FC initor string
+                        ## 0x1234567 -> 1234567
+                        FC_TMPWWN=`expr substr $FC_WWNTMP 1 2`
 
-                    if [ "$FC_WWNTMP" = "0X" ]; then
-                        FC_WWNTMP=`echo $FC_TMPWWN|cut -b3-`
-                    else
-                        FC_WWNTMP=$FC_TMPWWN
-                    fi
+                        if [ "$FC_TMPWWN" = "0X" ]; then
+                            FC_WWNTMP=`echo $FC_WWNTMP|cut -b3-`
+                        fi
 
-                    FC_WWNNUMBER=$FC_WWNTMP
+                        FC_WWNNUMBER=$FC_WWNTMP
 
-                    echo "$FC_WWNNUMBER" >> "${RESULT_FILE}"
-                    Log "INFO: Get FC WWN $FC_WWNNUMBER successful."
+                        echo "$FC_WWNNUMBER" >> "${RESULT_FILE}"
+                        Log "INFO: Get FC WWN $FC_WWNNUMBER successful."
+                    done
                 else
                     Log "ERROR: Get FC WWN failed."
                 fi

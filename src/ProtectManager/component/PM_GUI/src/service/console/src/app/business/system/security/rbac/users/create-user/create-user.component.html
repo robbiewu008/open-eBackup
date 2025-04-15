@@ -25,8 +25,11 @@
           <lv-wizard-step [lvDescription]="i18n.get('system_user_basic_information_detail_label')">
             {{'system_user_basic_information_label' | i18n}}
           </lv-wizard-step>
-          <lv-wizard-step [lvDescription]="i18n.get('system_resource_auth_detail_label')">
-            {{'system_resource_auth_label' | i18n}}{{'system_optional_label' | i18n}}
+          <lv-wizard-step [lvDescription]="i18n.get('system_auth_storage_step_desc_label')" *ngIf="isRoleAddable">
+            {{'system_optional_label' | i18n}}{{'system_auth_storage_label' | i18n}}
+          </lv-wizard-step>
+          <lv-wizard-step [lvDescription]="i18n.get('system_resource_auth_detail_label')" *ngIf="isRoleAddable">
+            {{'system_optional_label' | i18n}}{{'system_resource_auth_label' | i18n}}
           </lv-wizard-step>
           <lv-wizard-step [lvDescription]="i18n.get('system_user_information_overview_label')">
             {{'common_summary_label' | i18n}}
@@ -54,70 +57,74 @@
                 </lv-form-label>
                 <lv-form-control [lvErrorTip]="userNameErrorTip">
                   <input *ngIf="!data" [lv-tooltip]="nameToolTips" lvTooltipTrigger="focus" lvTooltipPosition="topLeft"
-                         lvTooltipTheme="light" lv-input type="text" formControlName="userName" autocomplete="new-password" />
+                    lvTooltipTheme="light" lv-input type="text" formControlName="userName"
+                    autocomplete="new-password" />
                   <span *ngIf="data">{{formGroup.value.userName}}</span>
                 </lv-form-control>
               </lv-form-item>
             </div>
-            <div class="aui-gutter-column-l" *ngIf="formGroup.value.userType === dataMap.loginUserType.local.value">
+            <div class="aui-gutter-column-l"
+              *ngIf="includes([dataMap.loginUserType.local.value,dataMap.loginUserType.ldap.value,dataMap.loginUserType.ldapGroup.value],formGroup.value.userType)">
               <div class="formGroup-h1">{{'system_auth_info_label' | i18n}}</div>
               <!-- 登录方式 -->
               <div>
                 <lv-form-item *ngIf="isOceanProtect" class="form-item-s">
                   <lv-form-label>
                     {{'common_login_method_label' | i18n}}
-                    <i lv-icon="aui-icon-help" lv-tooltip="{{'system_login_method_help_label' | i18n}}" lvTooltipTheme="light"
-                       class="configform-constraint" lvColorState='true'></i>
+                    <i lv-icon="aui-icon-help" lv-tooltip="{{'system_login_method_help_label' | i18n}}"
+                      lvTooltipTheme="light" class="configform-constraint" lvColorState='true'></i>
                   </lv-form-label>
                   <lv-form-control>
                     <lv-select formControlName="loginType" [lvOptions]="methodTypeOptions" lvValueKey="value">
                     </lv-select>
-                    <ng-container *ngIf="isOceanProtect && formGroup.value.loginType === dataMap.loginMethod.email.value">
+                    <ng-container
+                      *ngIf="isOceanProtect && formGroup.value.loginType === dataMap.loginMethod.email.value">
                       <p class="aui-text-help-sm" [innerHTML]="dynamicCodeHelp"></p>
                     </ng-container>
                   </lv-form-control>
                 </lv-form-item>
               </div>
               <!-- 密码 -->
-              <lv-form-item class="form-item-s" *ngIf="!data">
-                <lv-form-label lvRequired>
-                  {{ 'common_password_label' | i18n }}
-                </lv-form-label>
-                <lv-form-control [lvErrorTip]="baseUtilService.pwdErrorTip">
-                  <aui-inupt-with-eye [lv-tooltip]="pwdComplexTipTpl" lvTooltipTrigger="focus" lvTooltipPosition="topLeft"
-                                      lvTooltipTheme="light" formControlName="userPassword" [lvPasteAllowed]="false"></aui-inupt-with-eye>
-                </lv-form-control>
-              </lv-form-item>
-              <!-- 确认密码 -->
-              <lv-form-item class="form-item-s" *ngIf="!data">
-                <lv-form-label lvRequired>{{ 'common_confirmpwd_label' | i18n }}</lv-form-label>
-                <lv-form-control [lvErrorTip]="baseUtilService.pwdErrorTip">
-                  <aui-inupt-with-eye formControlName="confirmPassword" [lvPasteAllowed]="false"></aui-inupt-with-eye>
-                </lv-form-control>
-              </lv-form-item>
+              <div
+                *ngIf="!includes([dataMap.loginUserType.ldap.value,dataMap.loginUserType.ldapGroup.value],formGroup.value.userType)">
+                <lv-form-item class="form-item-s" *ngIf="!data">
+                  <lv-form-label lvRequired>
+                    {{ 'common_password_label' | i18n }}
+                  </lv-form-label>
+                  <lv-form-control [lvErrorTip]="baseUtilService.pwdErrorTip">
+                    <aui-inupt-with-eye [lv-tooltip]="pwdComplexTipTpl" lvTooltipTrigger="focus"
+                      lvTooltipPosition="topLeft" lvTooltipTheme="light" formControlName="userPassword"
+                      [lvPasteAllowed]="false"></aui-inupt-with-eye>
+                  </lv-form-control>
+                </lv-form-item>
+                <!-- 确认密码 -->
+                <lv-form-item class="form-item-s" *ngIf="!data">
+                  <lv-form-label lvRequired>{{ 'common_confirmpwd_label' | i18n }}</lv-form-label>
+                  <lv-form-control [lvErrorTip]="baseUtilService.pwdErrorTip">
+                    <aui-inupt-with-eye formControlName="confirmPassword" [lvPasteAllowed]="false"></aui-inupt-with-eye>
+                  </lv-form-control>
+                </lv-form-item>
+              </div>
             </div>
             <div class="formGroup-h1">{{'common_role_label' | i18n }}</div>
             <!-- 角色 -->
             <lv-alert lvType="info" lvClosable="false">
               {{'system_default_role_tip_label' | i18n}}
             </lv-alert>
-            <div class="aui-operation">
-              <lv-pro-button-group [config]="rolesOptsConfig" [bindData]="selectionData"></lv-pro-button-group>
-            </div>
             <lv-pro-table #dataTable [config]="tableConfig" [data]="tableData"></lv-pro-table>
-            <lv-form-item class="form-item-s">
-              <lv-form-label lvRequired>{{ 'system_default_role_label' | i18n }}</lv-form-label>
-              <lv-form-control [lvErrorTip]="baseUtilService.requiredErrorTip">
-                <lv-select [lvDisabled]="!!data" [lvOptions]="roleOptions" formControlName="roleId" lvValueKey="value"></lv-select>
-              </lv-form-control>
-            </lv-form-item>
+            <lv-group lvGutter="4px" style="margin-bottom:40px"
+              [ngClass]="{'aui-link':isRoleAddable, 'aui-link-disabled':!isRoleAddable}">
+              <i lv-icon="lv-icon-create"></i>
+              <span (click)="addRole()">{{'system_add_more_role_label'
+                | i18n}}</span>
+            </lv-group>
             <div class="formGroup-h1">{{'system_other_information_label' | i18n}}</div>
             <!-- 收件人邮箱地址 -->
             <div *ngIf="isOceanProtect && formGroup.value.loginType === dataMap.loginMethod.email.value">
               <lv-form-item class="form-item-s">
                 <lv-form-label lvRequired>{{ 'system_recipient_email_address_label' | i18n }}
                   <i lv-icon="aui-icon-help" lv-tooltip="{{'system_email_address_placeholder_label' | i18n}}"
-                     lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
+                    lvTooltipTheme="light" class="configform-constraint" lvColorState="true"></i>
                 </lv-form-label>
                 <lv-form-control [lvErrorTip]="emailErrorTip">
                   <input lv-input formControlName="dynamicCodeEmail" />
@@ -130,14 +137,14 @@
                 <lv-form-label>{{ 'common_desc_label' | i18n }}</lv-form-label>
                 <lv-form-control [lvErrorTip]="baseUtilService.lengthErrorTip">
                   <lv-input-lint>
-          <textarea rows="3" maxlength="255" formControlName="description" lv-input style="resize: vertical;"
-                    [lvAutosize]="{ minRows: 4, maxRows: 8 }"></textarea>
+                    <textarea rows="3" maxlength="255" formControlName="description" lv-input style="resize: vertical;"
+                      [lvAutosize]="{ minRows: 4, maxRows: 8 }"></textarea>
                   </lv-input-lint>
                 </lv-form-control>
               </lv-form-item>
             </div>
             <!-- 用户最大连接数 -->
-            <div *ngIf="formGroup.value.roleId !== 6">
+            <div *ngIf="formGroup.value.roleId !== '6'">
               <lv-form-item class="form-item-s">
                 <lv-form-label>{{ 'system_user_maxconnections_label' | i18n }}
                 </lv-form-label>
@@ -146,21 +153,22 @@
                     <lv-form-control>
                       <lv-switch formControlName="sessionControl"></lv-switch>
                       <i lv-icon="aui-icon-help" lvTooltipTheme="light" lvTooltipPosition="bottom"
-                         lv-tooltip="{{ 'system_maxconnection_tip_label' | i18n }}" class="configform-constraint"
-                         lvColorState='true'></i>
+                        lv-tooltip="{{ 'system_maxconnection_tip_label' | i18n }}" class="configform-constraint"
+                        lvColorState='true'></i>
                     </lv-form-control>
                   </lv-group>
                   <div></div>
                   <lv-group>
                     <lv-form-control *ngIf="formGroup.get('sessionControl').value" [lvErrorTip]="sessionErrorTip">
-                      <input lv-input type="text" (blur)="sessionLimitBlur()" formControlName="sessionLimit" placeholder="1~8" />
+                      <input lv-input type="text" (blur)="sessionLimitBlur()" formControlName="sessionLimit"
+                        [placeholder]="formGroup.get('userType').value === 'SAML'?'1~100': '1~8'" />
                     </lv-form-control>
                   </lv-group>
                 </lv-form-control>
               </lv-form-item>
             </div>
             <!-- 密码永不过期 -->
-            <div *ngIf="formGroup.value.roleId === 7">
+            <div *ngIf="formGroup.value.roleId === '7'">
               <lv-form-item>
                 <lv-form-label>{{ 'system_password_no_time_limit_label' | i18n }}
                 </lv-form-label>
@@ -177,16 +185,29 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="1">
-          <aui-apply-resource [roleList]="roleList" [resourceSetMap]="resourceSetMap"
-                              [formGroup]="formGroup" (invalidEmitter)="nextBtnDisabledCheck($event)">
-          </aui-apply-resource>
+          <ng-container *ngIf="isRoleAddable">
+            <h2>{{'system_auth_storage_label' | i18n}}</h2>
+            <lv-alert lvType="info">{{'system_auth_storage_tip_label' | i18n}}</lv-alert>
+            <aui-distributed-nas-list [isRbac]="true" [resourceSetMap]="resourceSetMap"></aui-distributed-nas-list>
+          </ng-container>
+          <ng-container *ngIf="!isRoleAddable">
+            <aui-user-detail-form [roleList]="roleList" [resourceSetMap]="resourceSetMap"
+              [formGroup]="formGroup"></aui-user-detail-form>
+          </ng-container>
         </ng-container>
 
         <ng-container *ngSwitchCase="2">
-          <aui-user-detail-form [roleList]="roleList" [resourceSetMap]="resourceSetMap" [formGroup]="formGroup"></aui-user-detail-form>
+          <aui-apply-resource [roleList]="roleList" [resourceSetMap]="resourceSetMap" [formGroup]="formGroup"
+            (invalidEmitter)="nextBtnDisabledCheck($event)">
+          </aui-apply-resource>
         </ng-container>
 
-      </ng-container >
+        <ng-container *ngSwitchCase="3">
+          <aui-user-detail-form [roleList]="roleList" [resourceSetMap]="resourceSetMap"
+            [formGroup]="formGroup"></aui-user-detail-form>
+        </ng-container>
+
+      </ng-container>
     </div>
 
     <div class="bottom-btn-container">
@@ -194,10 +215,12 @@
         <button lv-button (click)='back()'>{{ 'common_cancel_label' | i18n }}</button>
         <button *ngIf="stepIndex !== 0" lv-button (click)='previous()'>{{ 'common_previous_label' | i18n
           }}</button>
-        <button *ngIf="stepIndex !== 2" lv-button lvType='primary' (click)='next()'
-                [disabled]="nextBtnDisabled">
+        <button *ngIf="(stepIndex !== 3 && isRoleAddable) || (stepIndex !== 1 && !isRoleAddable)" lv-button
+          lvType='primary' (click)='next()' [disabled]="nextBtnDisabled">
           {{'common_next_label' | i18n }}</button>
-        <button *ngIf="stepIndex === 2" lv-button (click)='onOK()' lvType='primary'>{{'common_finish_label' | i18n }}</button>
+        <button *ngIf="(stepIndex === 3 && isRoleAddable) || (stepIndex === 1 && !isRoleAddable)" lv-button
+          (click)='onOK()' lvType='primary'>{{'common_finish_label' | i18n
+          }}</button>
       </lv-group>
     </div>
   </div>
@@ -205,4 +228,27 @@
 
 <ng-template #pwdComplexTipTpl>
   <span [innerHTML]="pwdComplexTipLabel"></span>
+</ng-template>
+
+<ng-template #dpAdminTipTpl>
+  <p class="aui-text-help-sm" [innerHTML]="openStorageGroupTip"></p>
+</ng-template>
+
+<ng-template #roleColTpl let-item>
+  <span *ngIf="item.isDefaultRole && !this.data">
+    <lv-select [lvOptions]="roleOptions" lvValueKey="value" [(ngModel)]="item.roleId"
+      (ngModelChange)="defaultRoleChange($event)" lvShowFilter lvFilterKey="label" lvFilterMode="contains"></lv-select>
+  </span>
+  <span *ngIf="!item.isDefaultRole || !!this.data">
+    {{item.roleName}}
+  </span>
+</ng-template>
+
+<ng-template #roleOptsTpl let-item>
+  <lv-group lvGutter="8px">
+    <span [ngClass]="{'aui-link':!item.isDefaultRole, 'aui-link-disabled':item.isDefaultRole}"
+      (click)="deleteRole([item])">{{'common_delete_label' | i18n}}</span>
+    <span [ngClass]="{'aui-link':!!item.roleId, 'aui-link-disabled':!item.roleId}"
+      (click)="getRoleDetail(item)">{{'system_view_right_label' | i18n}}</span>
+  </lv-group>
 </ng-template>

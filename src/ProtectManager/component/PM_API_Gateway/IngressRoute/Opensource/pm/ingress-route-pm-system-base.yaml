@@ -1,5 +1,5 @@
 {{- $deploytype:= include "getDeployType" . | default "" }}
-{{- if eq $deploytype "d10" }}
+{{- if eq $deploytype "d9"}}
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -105,7 +105,7 @@ spec:
           serversTransport: serverstransport-traefik-backend
       middlewares:
         - name: middleware-pm-replace-path-regex
-    - match: Method(`POST`) && Path(`/v1/users/saml`)
+    - match: Method(`PUT`) && Path(`/v1/host-agent/action/update-backup-service-ip`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -126,6 +126,26 @@ spec:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
     - match: Method(`GET`) && Path(`/v1/multiple-storage-pool/remote-dp-user-info`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth
+    - match: Method(`GET`) && Path(`/v1/manual-replication/check-units`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth
+    - match: Method(`POST`) && Path(`/v1/users/saml`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -185,7 +205,7 @@ spec:
       middlewares:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
-    - match: Method(`GET`,`POST`) && Path(`/v1/license`,`/v1/license/action/{path:(export|import)}`)
+    - match: Method(`GET`) && PathPrefix(`/v1/license`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -234,6 +254,15 @@ spec:
           serversTransport: serverstransport-traefik-backend
       middlewares:
         - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth
+    - match: Method(`PUT`,`POST`,`GET`,`DELETE`) && PathPrefix(`/v1/report-policies`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
         - name: middleware-pm-jwt-token-auth
     - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/report`,`/v1/security/securityIp`,`/v1/security/weakpasswords`,`/v1/security/weakpasswords`,`/v1/security/weakpassword`,`/v1/security/featureSwitch`)
       kind: Rule
@@ -305,7 +334,7 @@ spec:
       middlewares:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
-    - match: Method(`GET`) && Path(`/v1/system/network-info`)
+    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/system/{path:(esn|time|initConfig|initStatusInfo|backupNetPlaneStatusInfo|archiveNetPlaneStatusInfo|initStorage|initConfig|backupNetwork|archiveNetwork|applicationType|expandBackupServiceIp|expandControllerStatus|expandBackupService|standard-backup-service|init-standard-backup-service|service-status-info|switches)}`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -315,17 +344,7 @@ spec:
       middlewares:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
-    - match: Method(`GET`) && Path(`/v1/system/node-network-info`)
-      kind: Rule
-      services:
-        - name: pm-nginx
-          port: 30093
-          scheme: https
-          serversTransport: serverstransport-traefik-backend
-      middlewares:
-        - name: middleware-pm-replace-path-regex
-        - name: middleware-pm-jwt-token-auth
-    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/system/{path:(time|initConfig|initStatusInfo|backupNetPlaneStatusInfo|archiveNetPlaneStatusInfo|initStorage|initConfig|backupNetwork|archiveNetwork|applicationType|standard-backup-service|init-standard-backup-service|service-status-info|switches|esn)}`)
+    - match: Method(`GET`) && Path(`/v1/system/timeline`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -336,6 +355,26 @@ spec:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
     - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/ldap`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth
+    - match: Method(`POST`) && Path(`/v1/system/auth`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth
+    - match: Method(`GET`) && PathPrefix(`/v2/system/failover-group`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -404,6 +443,42 @@ spec:
           serversTransport: serverstransport-traefik-backend
       middlewares:
         - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth
+    - match: Method(`GET`) && Path(`/v2/hcs/availablezones`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-jwt-token-auth
+    - match: Method(`GET`) && Path(`/v1/dme/availability-zones`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-jwt-token-auth
+    - match: Method(`GET`) && Path(`/v1/dme/projects`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-jwt-token-auth
+    - match: Method(`GET`,`POST`) && Path(`/v1/servicization-nms/dme`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
         - name: middleware-pm-jwt-token-auth
     - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/plugins`) && !Path(`/v1/plugins/storage/nas/filesystems/pacific-worm/{fileSystemId}`)
       kind: Rule
@@ -555,7 +630,7 @@ spec:
       middlewares:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
-    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/sftp`)
+    - match: Method(`POST`) && Path(`/v1/common-share/restore`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -565,7 +640,7 @@ spec:
       middlewares:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
-    - match: Method(`PUT`,`POST`) && PathPrefix(`/v1/common-share`)
+    - match: Method(`PUT`) && Path(`/v1/common-share/restore/{copyId:\w{8}(-\w{4}){3}-\w{12}}`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -595,26 +670,6 @@ spec:
       middlewares:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
-    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/anti-ransomware`)
-      kind: Rule
-      services:
-        - name: pm-nginx
-          port: 30093
-          scheme: https
-          serversTransport: serverstransport-traefik-backend
-      middlewares:
-        - name: middleware-pm-replace-path-regex
-        - name: middleware-pm-jwt-token-auth
-    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/export-files`)
-      kind: Rule
-      services:
-        - name: pm-nginx
-          port: 30093
-          scheme: https
-          serversTransport: serverstransport-traefik-backend
-      middlewares:
-        - name: middleware-pm-replace-path-regex
-        - name: middleware-pm-jwt-token-auth
     - match: Method(`GET`) && Path(`/v1/logs/level/summary`)
       kind: Rule
       services:
@@ -626,6 +681,16 @@ spec:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
     - match: Method(`GET`) && Path(`/v1/logs/level/info`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth
+    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/export-files`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -695,6 +760,26 @@ spec:
       middlewares:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
+    - match: Method(`GET`) && Path(`/v1/inspect/service/status`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth
+    - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v1/anti-ransomware`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth
     - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v2/copies`)
       kind: Rule
       services:
@@ -706,16 +791,6 @@ spec:
         - name: middleware-pm-replace-path-regex
         - name: middleware-pm-jwt-token-auth
     - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && PathPrefix(`/v2/databases`)
-      kind: Rule
-      services:
-        - name: pm-nginx
-          port: 30093
-          scheme: https
-          serversTransport: serverstransport-traefik-backend
-      middlewares:
-        - name: middleware-pm-replace-path-regex
-        - name: middleware-pm-jwt-token-auth
-    - match: Method(`GET`) && Path(`/v1/manual-replication/check-units`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -951,7 +1026,6 @@ spec:
           serversTransport: serverstransport-traefik-backend
       middlewares:
         - name: middleware-pm-replace-path-regex
-        - name: middleware-pm-jwt-token-auth
     - match: Method(`GET`,`DELETE`) && Path(`/v1/exercise/{exerciseId}`)
       kind: Rule
       services:
@@ -961,18 +1035,7 @@ spec:
           serversTransport: serverstransport-traefik-backend
       middlewares:
         - name: middleware-pm-replace-path-regex
-        - name: middleware-pm-jwt-token-auth
     - match: Method(`POST`) && Path(`/v1/exercise/active/{exerciseId}`)
-      kind: Rule
-      services:
-        - name: pm-nginx
-          port: 30093
-          scheme: https
-          serversTransport: serverstransport-traefik-backend
-      middlewares:
-        - name: middleware-pm-replace-path-regex
-        - name: middleware-pm-jwt-token-auth
-    - match: Method(`GET`) && Path(`/v1/exercise/resource`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -1001,7 +1064,6 @@ spec:
           serversTransport: serverstransport-traefik-backend
       middlewares:
         - name: middleware-pm-replace-path-regex
-        - name: middleware-pm-jwt-token-auth
     - match: Method(`GET`,`PUT`,`POST`,`DELETE`) && Path(`/v1/users/{id:[0-9a-fA-F]+}/action/update_password`)
       kind: Rule
       services:
@@ -1011,6 +1073,7 @@ spec:
           serversTransport: serverstransport-traefik-backend
       middlewares:
         - name: middleware-pm-replace-path-regex
+        - name: middleware-pm-jwt-token-auth-no-version
     - match: Method(`PUT`) && Path(`/v1/users/unify-passwd/modify`)
       kind: Rule
       services:
@@ -1134,7 +1197,6 @@ metadata:
 spec:
   entryPoints:
     - third
-    - third6
   routes:
     - match: Method(`PUT`) && Path(`/v1/system/status-info`)
       kind: Rule
@@ -1179,6 +1241,33 @@ spec:
       middlewares:
         - name: middleware-pm-replace-path-regex
     - match: Host(`CDMWebServer`) &&  Method(`GET`) && Path(`/v1/internal/clusters/local/nodes`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+    - match: Host(`CDMWebServer`) && Method(`GET`) && Path(`/v1/internal/clusters/backup/member/service-ips`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+    - match: Host(`CDMWebServer`) && Method(`POST`) && Path(`/v2/internal/resources/{jobId:\w{8}(-*\w{4}){3}-*\w{12}}/action/update`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+    - match: Host(`CDMWebServer`) && Method(`GET`) && Path(`/v2/internal/resources/{projectId:\w*}/hcs/token`)
       kind: Rule
       services:
         - name: pm-nginx
@@ -1266,50 +1355,10 @@ spec:
           serversTransport: serverstransport-traefik-backend
       middlewares:
         - name: middleware-pm-replace-path-regex
-    - match: Host(`CDMWebServer`) && Method(`GET`) && Path(`/v1/internal/clusters/backup/member/service-ips`)
-      kind: Rule
-      services:
-        - name: pm-nginx
-          port: 30093
-          scheme: https
-          serversTransport: serverstransport-traefik-backend
-      middlewares:
-        - name: middleware-pm-replace-path-regex
   tls:
     secretName: secret-pm-tls
     options:
       name: tls-option-pm-mtls
-
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: ingress-route-pm-system-base-kms
-  namespace: dpa
-spec:
-  entryPoints:
-    - internal
-  routes:
-    - match: Method(`POST`) && PathPrefix(`/v1/kms/`)
-      kind: Rule
-      services:
-        - name: pm-nginx
-          port: 30093
-          scheme: https
-          serversTransport: serverstransport-traefik-backend
-      middlewares:
-        - name: middleware-pm-replace-path-regex
-    - match: Method(`GET`) && Path(`/v1/secret/redis`)
-      kind: Rule
-      services:
-        - name: pm-nginx
-          port: 30093
-          scheme: https
-          serversTransport: serverstransport-traefik-backend
-      middlewares:
-        - name: middleware-pm-replace-path-regex
-  tls:
-    secretName: secret-pm-tls
 
 ---
 apiVersion: traefik.containo.us/v1alpha1
@@ -1419,7 +1468,33 @@ spec:
           scheme: https
           serversTransport: serverstransport-traefik-backend
       middlewares:
+        - name: middleware-pm-replace-path-regex
         - name: middleware-pm-rate-limit-average
   tls:
     secretName: secret-pm-tls
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-route-pm-system-base-ha-mtls
+  namespace: dpa
+spec:
+  entryPoints:
+    - third
+    - third6
+  routes:
+    - match: Host(`CDMWebServerHA`) && Method(`POST`) && Path(`/v1/internal/clusters/backup/component/sync-ip/ha`)
+      kind: Rule
+      services:
+        - name: pm-nginx
+          port: 30093
+          scheme: https
+          serversTransport: serverstransport-traefik-backend
+      middlewares:
+        - name: middleware-pm-replace-path-regex
+  tls:
+    secretName: secret-pm-tls
+    options:
+      name: tls-option-pm-ha
 {{- end }}

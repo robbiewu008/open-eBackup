@@ -33,6 +33,11 @@ public class SapHanaConstants {
     public static final long CHECK_DB_TIMEOUT = 300L;
 
     /**
+     * 资源扫描时间间隔
+     */
+    public static final int SAP_HANA_SCAN_INTERVAL = 300;
+
+    /**
      * SAP HANA检查数据库状态线程池工作队列大小
      */
     public static final int WORK_QUEUE_SIZE = 200;
@@ -156,4 +161,14 @@ public class SapHanaConstants {
      * 通用数据库扩展参数--关联主机ID的key
      */
     public static final String GENERAL_DB_EXT_RELATED_HOST_IDS = "relatedHostIds";
+
+    /**
+     * 跳过日志仓路径拼接：在增量副本恢复场景不需要挂载日志仓
+     */
+    public static final String SKIP_LOG_REPO_COMPOSE = "skipLogRepoCompose";
+
+    /**
+     * 通用数据库扩展参数--true
+     */
+    public static final String TRUE = "true";
 }

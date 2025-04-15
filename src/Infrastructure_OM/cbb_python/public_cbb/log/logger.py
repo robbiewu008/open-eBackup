@@ -21,8 +21,8 @@ from logging.handlers import RotatingFileHandler
 
 # no use public_cbb.config to avoid cyclic importing
 LOG_LEVEL_PATH = "/opt/common-conf/loglevel"
-MAX_LOG_FILE_NUM = 20
-MAX_LOG_BYTES = 104857600  # 100 * 1024 * 1024
+MAX_LOG_FILE_NUM = 10  # 转储数量修改 10 个
+MAX_LOG_BYTES = 52428800  # 50MB, 50 * 1024 * 1024
 
 
 def get_logger():
@@ -127,7 +127,7 @@ def get_file_handler():
 class CrlfFormatter(logging.Formatter):
     def formatMessage(self, record):
         message = super(CrlfFormatter, self).formatMessage(record)
-        message = re.sub('[\r\n\b]', ' ', message)
+        message = re.sub('[\b\n\r\v\f\x7f]', ' ', message)
         return message
 
 

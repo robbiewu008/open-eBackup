@@ -1,17 +1,23 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { DatePipe } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -54,6 +60,7 @@ import {
   map,
   size,
   split,
+  toNumber,
   toString,
   uniq
 } from 'lodash';
@@ -63,7 +70,7 @@ import {
   templateUrl: './backup-policy.component.html',
   styleUrls: ['./backup-policy.component.less']
 })
-export class BackupPolicyComponent implements OnInit {
+export class BackupPolicyComponent implements OnInit, OnChanges {
   onlyIncrement = false;
   dateItems = [];
   weekItems = [];
@@ -73,6 +80,7 @@ export class BackupPolicyComponent implements OnInit {
   monthDaysItems = [];
   optsItems: MenuItem[];
   daysOfType = DaysOfType;
+  wormType = [1];
   policyAction = PolicyAction;
   hbaseBackupType = DataMap.Hbase_Backup_Type;
   daysOfMonthType = DataMap.Days_Of_Month_Type;
@@ -97,14 +105,25 @@ export class BackupPolicyComponent implements OnInit {
   };
   isHyperdetect =
     this.i18n.get('deploy_type') === DataMap.Deploy_Type.hyperdetect.value;
-
+  isCyber = includes(
+    [
+      DataMap.Deploy_Type.cyberengine.value,
+      DataMap.Deploy_Type.cloudbackup2.value,
+      DataMap.Deploy_Type.hyperdetect.value,
+      DataMap.Deploy_Type.cloudbackup.value
+    ],
+    this.i18n.get('deploy_type')
+  );
+  isDistributed = this.appUtilsService.isDistributed;
   @Input() data: any;
   @Input() action;
   @Input() activeIndex: number;
   @Input() formGroup: FormGroup;
   @Input() applicationType: ApplicationType;
   @Input() isSpecialSense: boolean;
-
+  @Input() isWormData;
+  @Input() isBasicDisk;
+  dataMap = DataMap;
   intervalUnitOptions = this.dataMapService
     .toArray('Interval_Unit')
     .filter(item => {
@@ -137,6 +156,20 @@ export class BackupPolicyComponent implements OnInit {
         DataMap.Interval_Unit.month.value,
         DataMap.Interval_Unit.year.value,
         DataMap.Interval_Unit.persistent.value
+      ].includes(item.value);
+    })
+    .filter(item => {
+      return (item.isLeaf = true);
+    });
+  wormDurationUnitOptions = this.dataMapService
+    .toArray('Interval_Unit')
+    .filter(item => {
+      // 年 月 日 去除永久
+      return [
+        DataMap.Interval_Unit.day.value,
+        DataMap.Interval_Unit.week.value,
+        DataMap.Interval_Unit.month.value,
+        DataMap.Interval_Unit.year.value
       ].includes(item.value);
     })
     .filter(item => {
@@ -203,6 +236,10 @@ export class BackupPolicyComponent implements OnInit {
     public appUtilsService: AppUtilsService
   ) {}
 
+  setSysTime(formItem) {
+    this.appUtilsService.setTimePickerCurrent(formItem);
+  }
+
   ngOnInit() {
     this.slaBackupName.difference_increment = includes(
       [
@@ -220,7 +257,9 @@ export class BackupPolicyComponent implements OnInit {
         ApplicationType.FusionOne,
         ApplicationType.OpenStack,
         ApplicationType.ApsaraStack,
-        ApplicationType.TDSQL
+        ApplicationType.TDSQL,
+        ApplicationType.HyperV, // 备份策略导航条label
+        ApplicationType.Nutanix
       ],
       this.applicationType
     )
@@ -259,7 +298,18 @@ export class BackupPolicyComponent implements OnInit {
       ? this.policyCount.difference_increment++
       : this.policyCount.full++;
   }
-
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.isBasicDisk) {
+      this.getBackupTeams()?.controls.map(control => {
+        control.get('worm_switch').disable();
+        control.get('worm_switch').setValue(false);
+      });
+    } else {
+      this.getBackupTeams()?.controls.map(control => {
+        control.get('worm_switch').enable();
+      });
+    }
+  }
   addStorage() {
     const archiveStorageComponent = new ArchiveStorageComponent(
       this.appUtilsService,
@@ -298,8 +348,9 @@ export class BackupPolicyComponent implements OnInit {
     this.getBackupTeams().clear();
     each(this.data, item => {
       const backupTeam = cloneDeep(this.backupTeams);
-      backupTeam.patchValue(item);
+      assign(item, { worm_switch: item.worm_validity_type >= 1 });
       this.listenFormGroup(backupTeam);
+      backupTeam.patchValue(item);
       this.dealUnit(
         backupTeam,
         this.action === ProtectResourceAction.Create
@@ -334,15 +385,21 @@ export class BackupPolicyComponent implements OnInit {
   }
 
   batchDealCtrl() {
-    this.getBackupTeams().controls.map(control => {
-      if (
-        control.get('duration_unit').value ===
-        DataMap.Interval_Unit.persistent.value
-      ) {
-        control.get('retention_duration').disable();
-        control.get('retention_duration').setValue('');
-      }
-    });
+    setTimeout(() => {
+      this.getBackupTeams().controls.map(control => {
+        if (
+          control.get('duration_unit').value ===
+            DataMap.Interval_Unit.persistent.value ||
+          control.get('specified_duration_unit').value ===
+            DataMap.Interval_Unit.persistent.value
+        ) {
+          control.get('retention_duration').disable();
+          control.get('retention_duration').setValue('');
+          control.get('specified_retention_duration').disable();
+          control.get('specified_retention_duration').setValue('');
+        }
+      });
+    }, 0);
   }
 
   updateForm() {
@@ -410,6 +467,8 @@ export class BackupPolicyComponent implements OnInit {
       start_time: new FormControl('', {
         validators: [this.baseUtilService.VALID.required()]
       }),
+      worm_switch: new FormControl(false),
+      worm_validity_type: new FormControl(0),
       interval: new FormControl('', {
         validators: [
           this.baseUtilService.VALID.required(),
@@ -448,11 +507,15 @@ export class BackupPolicyComponent implements OnInit {
           this.baseUtilService.VALID.rangeValue(1, 10)
         ]
       }),
+      worm_specified_retention_duration: new FormControl(''),
       specified_duration_unit: new FormControl(
         DataMap.Interval_Unit.year.value,
         {
           validators: [this.baseUtilService.VALID.required()]
         }
+      ),
+      worm_specified_duration_unit: new FormControl(
+        DataMap.Interval_Unit.day.value
       ),
       specified_window_start: new FormControl(defaultWindowTime(), {
         validators: [this.baseUtilService.VALID.required()]
@@ -489,7 +552,41 @@ export class BackupPolicyComponent implements OnInit {
   listenFormGroup(backupTeam: FormGroup) {
     this.checkPolicyType(backupTeam);
     this.checkTrigger(backupTeam);
+    backupTeam
+      .get('specified_retention_duration')
+      .valueChanges.subscribe(res => {
+        backupTeam
+          .get('worm_specified_retention_duration')
+          .updateValueAndValidity();
+      });
+    backupTeam.get('retention_duration').valueChanges.subscribe(res => {
+      backupTeam
+        .get('worm_specified_retention_duration')
+        .updateValueAndValidity();
+    });
 
+    backupTeam.get('worm_switch').valueChanges.subscribe(res => {
+      // worm关闭时清除自定义时间校验
+      if (res && backupTeam.get('worm_validity_type').value === 2) {
+        this.wormSetVerify(backupTeam);
+      } else if (res) {
+        // 开启时如果是这两种应用的日志备份，自动切到自定义时间
+        // 日志没有保留时间，禁用与副本保留时间一致
+        backupTeam.get('worm_validity_type').setValue(1);
+        this.wormClearVerify(backupTeam);
+      } else {
+        // 关闭时将worm_validity_type置0，否则回显时开关自动打开
+        backupTeam.get('worm_validity_type').setValue(0);
+        this.wormClearVerify(backupTeam);
+      }
+    });
+    backupTeam.get('worm_validity_type').valueChanges.subscribe(res => {
+      if (res === 2 && backupTeam.get('worm_switch').value) {
+        this.wormSetVerify(backupTeam);
+      } else {
+        this.wormClearVerify(backupTeam);
+      }
+    });
     if (
       includes(
         [
@@ -513,6 +610,35 @@ export class BackupPolicyComponent implements OnInit {
         });
       });
     }
+  }
+
+  wormSetVerify(backupTeam: FormGroup) {
+    backupTeam
+      .get('worm_specified_retention_duration')
+      .setValidators([
+        this.baseUtilService.VALID.required(),
+        this.baseUtilService.VALID.integer(),
+        this.validWormDuration(backupTeam),
+        this.validproTime(backupTeam)
+      ]);
+    backupTeam
+      .get('worm_specified_duration_unit')
+      .setValidators([this.baseUtilService.VALID.required()]);
+    this.wormUpdateValue(backupTeam);
+  }
+
+  wormClearVerify(backupTeam: FormGroup) {
+    backupTeam.get('worm_specified_retention_duration').clearValidators();
+    backupTeam.get('worm_specified_duration_unit').clearValidators();
+    this.wormUpdateValue(backupTeam);
+  }
+
+  wormUpdateValue(backupTeam) {
+    backupTeam
+      .get('worm_specified_retention_duration')
+      .updateValueAndValidity();
+    backupTeam.get('worm_specified_duration_unit').updateValueAndValidity();
+    backupTeam.get('worm_specified_retention_duration').markAsTouched();
   }
 
   getBackupTeams() {
@@ -650,16 +776,6 @@ export class BackupPolicyComponent implements OnInit {
       backupTeam.get('specified_window_end').clearValidators();
       backupTeam.get('specified_retention_duration').clearValidators();
       backupTeam.get('specified_duration_unit').clearValidators();
-      if (this.applicationType === this.appType.HBase) {
-        backupTeam
-          .get('duration_unit')
-          .setValue(DataMap.Interval_Unit.persistent.value);
-        this.changeUnit(
-          backupTeam,
-          DataMap.Interval_Unit.persistent.value,
-          'retention_duration'
-        );
-      }
     } else {
       backupTeam
         .get('window_start')
@@ -1022,6 +1138,90 @@ export class BackupPolicyComponent implements OnInit {
     });
   }
 
+  validWormDuration(backupTeam: FormGroup) {
+    return (control: AbstractControl): { [key: string]: { value: any } } => {
+      const wormDurationUnit = backupTeam.value.worm_specified_duration_unit;
+      if (control.value > 365 && wormDurationUnit === 'd') {
+        return {
+          [this.i18n.get('common_valid_rang_label', [1, 365])]: {
+            value: control.value
+          }
+        };
+      } else if (control.value > 54 && wormDurationUnit === 'w') {
+        return {
+          [this.i18n.get('common_valid_rang_label', [1, 54])]: {
+            value: control.value
+          }
+        };
+      } else if (control.value > 24 && wormDurationUnit === 'MO') {
+        return {
+          [this.i18n.get('common_valid_rang_label', [1, 24])]: {
+            value: control.value
+          }
+        };
+      } else if (control.value > 20 && wormDurationUnit === 'y') {
+        return {
+          [this.i18n.get('common_valid_rang_label', [1, 20])]: {
+            value: control.value
+          }
+        };
+      }
+      return null;
+    };
+  }
+  validproTime(backupTeam: FormGroup) {
+    return (control: AbstractControl): { [key: string]: { value: any } } => {
+      const wormSetUnit = backupTeam.get('worm_specified_duration_unit').value;
+      const wormDate =
+        DataMap.unitTranslateMap[wormSetUnit] *
+        backupTeam.get('worm_specified_retention_duration').value;
+      if (
+        includes(
+          [
+            this.daysOfType.DaysOfDay,
+            this.daysOfType.DaysOfHour,
+            this.daysOfType.DaysOfMinute
+          ],
+          backupTeam.value.trigger_action
+        )
+      ) {
+        const copyDurationUnit = backupTeam.get('duration_unit').value;
+        const copyDate =
+          DataMap.unitTranslateMap[copyDurationUnit] *
+          toNumber(backupTeam.get('retention_duration').value);
+        if (wormDate > copyDate) {
+          return {
+            [this.i18n.get('common_worm_retention_label')]: {
+              value: control.value
+            }
+          };
+        }
+      } else if (
+        includes(
+          [
+            this.daysOfType.DaysOfYear,
+            this.daysOfType.DaysOfMonth,
+            this.daysOfType.DaysOfWeek
+          ],
+          backupTeam.value.trigger_action
+        )
+      ) {
+        const copySpecifiedDuration = backupTeam.get('specified_duration_unit')
+          .value;
+        const copySpecifiedDate =
+          DataMap.unitTranslateMap[copySpecifiedDuration] *
+          toNumber(backupTeam.get('specified_retention_duration').value);
+        if (wormDate > copySpecifiedDate) {
+          return {
+            [this.i18n.get('common_worm_retention_label')]: {
+              value: control.value
+            }
+          };
+        }
+      }
+      return null;
+    };
+  }
   updateOptItems() {
     const isPermanentBackupResource = includes(
       [
@@ -1040,7 +1240,9 @@ export class BackupPolicyComponent implements OnInit {
         ApplicationType.OpenStack,
         ApplicationType.ApsaraStack,
         ApplicationType.TDSQL,
-        ApplicationType.Volume
+        ApplicationType.Volume,
+        ApplicationType.HyperV, // 备份策略添加策略label
+        ApplicationType.Nutanix
       ],
       this.applicationType
     );
@@ -1067,9 +1269,7 @@ export class BackupPolicyComponent implements OnInit {
         label: isPermanentBackupResource
           ? this.i18n.get('common_permanent_backup_label')
           : this.i18n.get('common_incremental_backup_label'),
-        tips: isPermanentBackupResource
-          ? this.i18n.get('common_permanent_backup_tips_label')
-          : this.i18n.get('common_incremental_backup_tips_label'),
+        tips: this.specialTip(isPermanentBackupResource),
         onClick: () => {
           this.addBackupItem(
             includes(
@@ -1131,6 +1331,19 @@ export class BackupPolicyComponent implements OnInit {
     ];
   }
 
+  specialTip(isPermanentBackupResource) {
+    if (isPermanentBackupResource) {
+      return this.i18n.get('common_permanent_backup_tips_label');
+    } else if (
+      includes([ApplicationType.ObjectStorage], this.applicationType)
+    ) {
+      return this.i18n.get('protection_object_sla_incremental_tip_label');
+    } else if (includes([ApplicationType.GoldenDB], this.applicationType)) {
+      return this.i18n.get('common_diff_backup_tips_label');
+    } else {
+      return this.i18n.get('common_incremental_backup_tips_label');
+    }
+  }
   updateMonthDays() {
     const monthDays = Array.from({ length: 31 }, (_, i) => i + 1);
     const chunkSize = Math.ceil(monthDays.length / 5);
@@ -1155,6 +1368,7 @@ export class BackupPolicyComponent implements OnInit {
   hiddenLog() {
     return !includes(
       [
+        ApplicationType.AntDB,
         ApplicationType.HBase,
         ApplicationType.Oracle,
         ApplicationType.GaussDBT,
@@ -1176,6 +1390,7 @@ export class BackupPolicyComponent implements OnInit {
         ApplicationType.Exchange,
         ApplicationType.GoldenDB,
         ApplicationType.SapHana,
+        ApplicationType.Saponoracle,
         ApplicationType.OpenGauss
       ],
       this.applicationType
@@ -1185,6 +1400,7 @@ export class BackupPolicyComponent implements OnInit {
   hiddenPercrement() {
     return includes(
       [
+        ApplicationType.AntDB,
         ApplicationType.SQLServer,
         ApplicationType.ClickHouse,
         ApplicationType.PostgreSQL,
@@ -1192,7 +1408,9 @@ export class BackupPolicyComponent implements OnInit {
         ApplicationType.GaussDBForOpenGauss,
         ApplicationType.MongoDB,
         ApplicationType.TiDB,
-        ApplicationType.ActiveDirectory
+        ApplicationType.ActiveDirectory,
+        ApplicationType.LightCloudGaussDB,
+        ApplicationType.Saponoracle
       ],
       this.applicationType
     );
@@ -1215,6 +1433,7 @@ export class BackupPolicyComponent implements OnInit {
         ApplicationType.GaussDBForOpenGauss,
         ApplicationType.Informix,
         ApplicationType.GeneralDatabase,
+        ApplicationType.LightCloudGaussDB,
         ApplicationType.SapHana
       ],
       this.applicationType
@@ -1486,8 +1705,10 @@ export class BackupPolicyComponent implements OnInit {
         }
       }
     } else if (value === DataMap.Interval_Unit.persistent.value) {
-      formGroup.get(formControlName).disable();
-      formGroup.get(formControlName).setValue('');
+      setTimeout(() => {
+        formGroup.get(formControlName).disable();
+        formGroup.get(formControlName).setValue('');
+      }, 0);
     }
     formGroup.get(formControlName).updateValueAndValidity();
   }

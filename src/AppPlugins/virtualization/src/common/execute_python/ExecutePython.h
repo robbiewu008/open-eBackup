@@ -55,7 +55,7 @@ public:
     int32_t CallObjFunction(const std::string &className, const std::string &functionName,
         PyObject* pFunctionArgs, std::string &result);
 
-    void PrintErr();
+    void PrintErr(std::string &erroInfo);
 
     void SetScriptPath(const std::string &path)
     {

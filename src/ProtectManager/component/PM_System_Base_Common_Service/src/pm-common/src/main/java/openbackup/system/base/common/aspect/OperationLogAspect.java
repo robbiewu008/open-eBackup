@@ -12,6 +12,7 @@
 */
 package openbackup.system.base.common.aspect;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.common.annotation.ManualOperationLogging;
 import openbackup.system.base.common.annotation.OperationContext;
 import openbackup.system.base.common.annotation.OperationContexts;
@@ -20,6 +21,7 @@ import openbackup.system.base.common.constants.AspectOrderConstant;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.constants.IsmNumberConstant;
 import openbackup.system.base.common.constants.LegoInternalEvent;
+import openbackup.system.base.common.constants.RequestForwardRetryConstant;
 import openbackup.system.base.common.constants.TokenBo;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.log.OperationContextConfig;
@@ -34,9 +36,8 @@ import openbackup.system.base.common.utils.MethodUtil;
 import openbackup.system.base.common.utils.RequestUtil;
 import openbackup.system.base.common.utils.RightsControl;
 import openbackup.system.base.common.utils.StringUtil;
+import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.auth.api.AuthNativeApi;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -138,7 +139,7 @@ public class OperationLogAspect {
      */
     @Around(value = "@annotation(operationLogging)", argNames = "joinPoint,operationLogging")
     public Object processManualOperationLogging(ProceedingJoinPoint joinPoint, ManualOperationLogging operationLogging)
-        throws Throwable {
+            throws Throwable {
         return processRightsControl(joinPoint, null);
     }
 
@@ -196,7 +197,7 @@ public class OperationLogAspect {
     }
 
     private LegoCheckedException handleFailure(Map.Entry<OperationLogging, List<List<Evaluation>>> operationLogConfig,
-        HttpServletRequest request, Exception error) {
+            HttpServletRequest request, Exception error) {
         LegoCheckedException legoCheckedException = ExceptionUtil.lookFor(error, LegoCheckedException.class);
         if (legoCheckedException != null && legoCheckedException.getErrorCode() == CommonErrorCode.ACCESS_DENIED) {
             return legoCheckedException;
@@ -217,9 +218,8 @@ public class OperationLogAspect {
         for (OperationInterceptor<RightsControl> interceptor : interceptors) {
             intercept(method, context, tokenBo, interceptor, rightsControl);
         }
-        operationInterceptors.stream()
-            .filter(interceptor -> !interceptors.contains(interceptor))
-            .forEach(interceptor -> intercept(method, context, tokenBo, interceptor));
+        operationInterceptors.stream().filter(interceptor -> !interceptors.contains(interceptor))
+                .forEach(interceptor -> intercept(method, context, tokenBo, interceptor));
     }
 
     private List<OperationInterceptor<RightsControl>> findRightControlOperationInterceptorByAnnotationType() {
@@ -233,27 +233,25 @@ public class OperationLogAspect {
     }
 
     private <A extends Annotation> void intercept(Method method, Map<String, Object> context, TokenBo tokenBo,
-        OperationInterceptor<A> operationInterceptor) {
+            OperationInterceptor<A> operationInterceptor) {
         Class<A> annotationType = operationInterceptor.getSupportedAnnotationType();
         A annotation = AnnotatedElementUtils.findMergedAnnotation(method, annotationType);
         intercept(method, context, tokenBo, operationInterceptor, annotation);
     }
 
     private <A extends Annotation> void intercept(Method method, Map<String, Object> context, TokenBo tokenBo,
-        OperationInterceptor<A> operationInterceptor, A annotation) {
+            OperationInterceptor<A> operationInterceptor, A annotation) {
         if (annotation != null) {
             operationInterceptor.intercept(method, annotation, context, tokenBo);
         }
     }
 
     private Map.Entry<OperationLogging, List<List<Evaluation>>> getOperationLogConfig(
-        Map<String, Object> contextParameters, OperationLogging operationLog) {
+            Map<String, Object> contextParameters, OperationLogging operationLog) {
         List<?> targets = this.eval(contextParameters, operationLog.target());
         List<List<Evaluation>> collections = evalDetails(contextParameters, operationLog);
-        List<Evaluation> targetEvalList = targets.stream()
-            .filter(Evaluation.class::isInstance)
-            .map(Evaluation.class::cast)
-            .collect(Collectors.toList());
+        List<Evaluation> targetEvalList = targets.stream().filter(Evaluation.class::isInstance)
+                .map(Evaluation.class::cast).collect(Collectors.toList());
         collections.add(0, targetEvalList);
         return new AbstractMap.SimpleEntry<>(operationLog, collections);
     }
@@ -269,10 +267,8 @@ public class OperationLogAspect {
                     collections.add(evaluation);
                 }
             } else {
-                List<Evaluation> list = eval.stream()
-                    .filter(Evaluation.class::isInstance)
-                    .map(Evaluation.class::cast)
-                    .collect(Collectors.toList());
+                List<Evaluation> list = eval.stream().filter(Evaluation.class::isInstance).map(Evaluation.class::cast)
+                        .collect(Collectors.toList());
                 collections.add(list);
             }
         }
@@ -359,8 +355,7 @@ public class OperationLogAspect {
 
     private DataConverter getDataConverterByName(String name) {
         List<DataConverter> converters = dataConverters.stream()
-            .filter(dataConverter -> name.equals(dataConverter.getName()))
-            .collect(Collectors.toList());
+                .filter(dataConverter -> name.equals(dataConverter.getName())).collect(Collectors.toList());
         if (converters.isEmpty()) {
             throw new LegoCheckedException("data converter missing. name: " + name);
         }
@@ -375,13 +370,14 @@ public class OperationLogAspect {
     }
 
     private void loadConfig() {
-        getAllRestOperationMethods().forEach(
-            method -> methodOperationContextConfigs.put(method, getAllOperationContextConfigs(method)));
+        getAllRestOperationMethods()
+                .forEach(method -> methodOperationContextConfigs.put(method, getAllOperationContextConfigs(method)));
     }
 
     private Stream<OperationContextConfig> getMethodOperationContextConfigStream(Method method) {
-        return AnnotationUtil.getAnnotations(method, OperationContext.class, OperationContexts.class,
-            OperationContexts::value).stream().map(context -> new OperationContextConfig(method, context, null));
+        return AnnotationUtil
+                .getAnnotations(method, OperationContext.class, OperationContexts.class, OperationContexts::value)
+                .stream().map(context -> new OperationContextConfig(method, context, null));
     }
 
     private Map<String, Object> loadAllOperationContexts(List<Object> arguments, Method method) {
@@ -393,7 +389,7 @@ public class OperationLogAspect {
             contextParameters.put(Integer.toString(index), arguments.get(index));
         }
         List<OperationContextConfig> configs = Optional.ofNullable(methodOperationContextConfigs.get(method))
-            .orElse(Collections.emptyList());
+                .orElse(Collections.emptyList());
         for (OperationContextConfig config : configs) {
             config.load(loaders, contextParameters, arguments);
         }
@@ -405,17 +401,14 @@ public class OperationLogAspect {
     }
 
     private List<OperationContextConfig> getAllOperationContextConfigs(Method method) {
-        List<OperationContextConfig> configs = Stream.concat(getMethodOperationContextConfigStream(method),
-            getParameterOperationContextConfigs(method)).collect(Collectors.toList());
+        List<OperationContextConfig> configs = Stream
+                .concat(getMethodOperationContextConfigStream(method), getParameterOperationContextConfigs(method))
+                .collect(Collectors.toList());
 
-        Map<String, Long> counts = configs.stream()
-            .filter(config -> config.getName() != null)
-            .collect(Collectors.groupingBy(OperationContextConfig::getName, Collectors.counting()));
-        List<String> conflicts = counts.entrySet()
-            .stream()
-            .filter(entry -> entry.getValue() > 1)
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toList());
+        Map<String, Long> counts = configs.stream().filter(config -> config.getName() != null)
+                .collect(Collectors.groupingBy(OperationContextConfig::getName, Collectors.counting()));
+        List<String> conflicts = counts.entrySet().stream().filter(entry -> entry.getValue() > 1).map(Map.Entry::getKey)
+                .collect(Collectors.toList());
         if (!conflicts.isEmpty()) {
             throw new LegoCheckedException("context name conflicts. names: " + conflicts + ", method: " + method);
         }
@@ -426,23 +419,17 @@ public class OperationLogAspect {
     }
 
     private List<Method> getAllRestOperationMethods() {
-        return this.requestMappingHandlerMapping.getHandlerMethods()
-            .values()
-            .stream()
-            .map(HandlerMethod::getMethod)
-            .filter(TypeUtil::isRestOperationMethod)
-            .collect(Collectors.toList());
+        return this.requestMappingHandlerMapping.getHandlerMethods().values().stream().map(HandlerMethod::getMethod)
+                .filter(TypeUtil::isRestOperationMethod).collect(Collectors.toList());
     }
 
     private Stream<OperationContextConfig> getParameterOperationContextConfigs(Method method) {
-        return MethodUtil.getMethodParameters(method)
-            .stream()
-            .map(parameter -> new OperationContextConfig(method,
+        return MethodUtil.getMethodParameters(method).stream().map(parameter -> new OperationContextConfig(method,
                 parameter.getParameterAnnotation(OperationContext.class), parameter));
     }
 
     private void recordOperation(HttpServletRequest request,
-        Map.Entry<OperationLogging, List<List<Evaluation>>> operationLogConfig, Object result) {
+            Map.Entry<OperationLogging, List<List<Evaluation>>> operationLogConfig, Object result) {
         if (operationLogConfig == null) {
             return;
         }
@@ -454,7 +441,7 @@ public class OperationLogAspect {
     }
 
     private void recordAsyncOperation(HttpServletRequest request,
-        Map.Entry<OperationLogging, List<List<Evaluation>>> operationLogConfig, Object data, Throwable error) {
+            Map.Entry<OperationLogging, List<List<Evaluation>>> operationLogConfig, Object data, Throwable error) {
         if (error == null) {
             recordSuccessOperationLog(request, operationLogConfig, data);
         } else {
@@ -463,19 +450,20 @@ public class OperationLogAspect {
     }
 
     private void recordSuccessOperationLog(HttpServletRequest request,
-        Map.Entry<OperationLogging, List<List<Evaluation>>> operationLogConfig, Object result) {
+            Map.Entry<OperationLogging, List<List<Evaluation>>> operationLogConfig, Object result) {
         recordOperationLog(request, operationLogConfig, result, true, null);
     }
 
     private void recordFailureOperationLog(HttpServletRequest request,
-        Map.Entry<OperationLogging, List<List<Evaluation>>> operationLogConfig, Object result, Throwable exception) {
+            Map.Entry<OperationLogging, List<List<Evaluation>>> operationLogConfig, Object result,
+            Throwable exception) {
         MethodArgumentNotValidException methodArgumentNotValidException = ExceptionUtil.lookFor(exception,
-            MethodArgumentNotValidException.class);
+                MethodArgumentNotValidException.class);
         if (methodArgumentNotValidException != null) {
             throw LegoCheckedException.rethrow(methodArgumentNotValidException);
         }
         ConstraintViolationException constraintViolationException = ExceptionUtil.lookFor(exception,
-            ConstraintViolationException.class);
+                ConstraintViolationException.class);
         if (constraintViolationException != null) {
             throw constraintViolationException;
         }
@@ -490,9 +478,14 @@ public class OperationLogAspect {
     }
 
     private void recordOperationLog(HttpServletRequest request,
-        Map.Entry<OperationLogging, List<List<Evaluation>>> operationLogConfig, Object result, boolean isSuccess,
-        LegoCheckedException exception) {
+            Map.Entry<OperationLogging, List<List<Evaluation>>> operationLogConfig, Object result, boolean isSuccess,
+            LegoCheckedException exception) {
         if (operationLogConfig == null) {
+            return;
+        }
+        if (!VerifyUtil.isEmpty(request.getHeader(RequestForwardRetryConstant.HTTP_HEADER_INTERNAL_RETRY))) {
+            // 内部跨控制器转发的重试请求，不记录操作日志，由原始的请求记录
+            log.info("The request is retry by another node, no need record operation log again");
             return;
         }
         OperationLogging logging = operationLogConfig.getKey();

@@ -1,0 +1,253 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+<head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="DC.Type" content="topic">
+<meta name="DC.Title" content="步骤8：创建备份SLA">
+<meta name="product" content="">
+<meta name="DC.Relation" scheme="URI" content="TPOPS_GaussDB_00010.html">
+<meta name="prodname" content="">
+<meta name="version" content="">
+<meta name="brand" content="">
+<meta name="DC.Publisher" content="20250306">
+<meta name="prodname" content="csbs">
+<meta name="documenttype" content="usermanual">
+<meta name="DC.Format" content="XHTML">
+<meta name="DC.Identifier" content="TPOPS_GaussDB_00018">
+<meta name="DC.Language" content="zh-cn">
+<link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+<title>步骤8：创建备份SLA</title>
+</head>
+<body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px"><a name="TPOPS_GaussDB_00018"></a><a name="TPOPS_GaussDB_00018"></a>
+
+<h1 class="topictitle1">步骤8：创建备份SLA</h1>
+<div><p>请根据自身需求自定义SLA以对资源进行保护。</p>
+<div class="section"><h4 class="sectiontitle">背景信息</h4><p>关于自定义SLA的详细说明可参考<a href="TPOPS_GaussDB_000540.html">关于SLA</a>。</p>
+</div>
+<div class="section"><h4 class="sectiontitle">操作步骤</h4><ol><li><span>选择<span class="uicontrol" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000002199964685_uicontrol8111821122820">“保护 &gt; 保护策略 &gt; SLA”</span>。</span></li><li><span>单击<span class="uicontrol" id="TPOPS_GaussDB_00018__zh-cn_topic_0000001656561497_uicontrol12389192016473">“<span id="TPOPS_GaussDB_00018__zh-cn_topic_0000001656561497_text1214017349462">创建</span>”</span>。</span></li><li><span>自定义SLA的名称。</span></li><li><span>选择需要创建SLA的应用类型。</span><p><ol type="a" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_ol71011061385"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li874192611325">单击<span class="uicontrol" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_uicontrol16364345183319">“应用”</span>图标，创建通用SLA或指定应用创建SLA。<ul id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_ul157501053341"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li3750135143412">选择“通用SLA”页签，单击“所有资源”。<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p144377559348"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li3750135143412"></a><a name="zh-cn_topic_0000002164820434_li3750135143412"></a>通用SLA可以应用到除文件集、SQL Server、PostgreSQL、Kingbase、Redis、ClickHouse、MongoDB、NAS共享、NAS文件系统、华为云Stack GaussDB、TDSQL、Kubernetes CSI、TiDB、卷、通用共享、Active Directory、GaussDB T 单机、对象存储、GaussDB（1.6.0及后续版本）、GaussDB(DWS)、应用入口的SAP HANA（1.6.0及后续版本）、SAP on Oracle、AntDB、VMware、Hyper-V以外的资源。</p>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li1512516103413">选择“指定应用”页签，选择待创建SLA的应用。<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p1889316245358"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li1512516103413"></a><a name="zh-cn_topic_0000002164820434_li1512516103413"></a>本节以指定应用创建SLA为例进行说明。</p>
+</li></ul>
+<div class="note" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_note1521871141414"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p3218512141">仅OceanProtect X系列备份一体机支持选择NAS文件系统。</p>
+</div></div>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li7586156123316">单击<span class="uicontrol" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_uicontrol206968467360">“确定”</span>。</li></ol>
+</p></li><li><span>设置备份策略。</span><p><ol type="a"><li>单击<span class="uicontrol" id="TPOPS_GaussDB_00018__zh-cn_topic_0000001656561497_uicontrol2056715110393">“<span id="TPOPS_GaussDB_00018__zh-cn_topic_0000001656561497_text106341752134712">备份策略</span>”</span>图标。</li><li>配置备份策略基础参数。<p>相关参数说明如<a href="#TPOPS_GaussDB_00018__table2663151516335">表1</a>所示。</p>
+<div class="p">请根据业务情况合理设置备份频率、副本保留时长和备份时间窗口，建议如下：<ul><li>备份频率至少大于备份时长。</li><li>全量副本的保留时长大于差异备份副本的保留时长。</li><li>日志备份副本保留时长必须大于备份频率。</li></ul>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul><li>至少需要创建一个备份策略，如需添加其他备份策略，请单击界面右侧的<span><img id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_image94919215716" src="zh-cn_image_0000002222637705.png"></span>。</li><li>日志备份仅支持添加1个备份策略，其他备份类型最多支持添加4个备份策略。</li></ul>
+</div></div>
+</div>
+
+<div class="tablenoborder"><a name="TPOPS_GaussDB_00018__table2663151516335"></a><a name="table2663151516335"></a><table cellpadding="4" cellspacing="0" summary="" id="TPOPS_GaussDB_00018__table2663151516335" frame="border" border="1" rules="all"><caption><b>表1 </b>备份策略基础参数说明</caption><colgroup><col style="width:11.899999999999999%"><col style="width:15.25%"><col style="width:72.85000000000001%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" colspan="2" valign="top" id="mcps1.3.3.2.5.2.1.2.3.2.4.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" id="mcps1.3.3.2.5.2.1.2.3.2.4.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" rowspan="2" valign="top" width="11.899999999999999%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p><span>全量备份</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="15.25%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.2 "><p>设置备份策略名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p>-</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><div class="p">配置全量备份的备份频率、副本保留时长以及允许备份的时间段。<ul id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_ul06281446133611"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li5628184619364">配置全量备份的备份频率以及副本的保留时长。<ul id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_ul3912541183319"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li1491311419338">按年<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p7913141173316"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li1491311419338"></a><a name="zh-cn_topic_0000002164820434_li1491311419338"></a>设置每年xx月xx日执行一次，副本保留xx天/周/月/年或永久保留。</p>
+<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p52204181864">如果当年不存在该日期，则不产生副本。</p>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li18913134153311">按月<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p19131141133318"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li18913134153311"></a><a name="zh-cn_topic_0000002164820434_li18913134153311"></a>设置每月xx日（可选择多日）或最后一天执行一次，副本保留xx天/周/月/年或永久保留。</p>
+<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p131866516465">如果设置为每月xx日执行一次备份，当月不存在该日期时，则不产生副本。</p>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li79137410332">按周<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p091313410338"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li79137410332"></a><a name="zh-cn_topic_0000002164820434_li79137410332"></a>设置每周一/二/三/四/五/六/日执行一次（可多选），副本保留xx天/周/月/年或永久保留。</p>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li18498191724615">按天<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p46219385469"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li18498191724615"></a><a name="zh-cn_topic_0000002164820434_li18498191724615"></a>设置从xx年xx月xx日开始，每xx天执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li426962116468">按小时<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p6350614134914"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li426962116468"></a><a name="zh-cn_topic_0000002164820434_li426962116468"></a>设置从xx年xx月xx日开始，每xx小时执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
+</li></ul>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li1881682412376">设置允许执行全量备份的时间段，该时间范围以外的时间不会进行全量备份任务调度。<div class="note" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_note3335182113214"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_ul64461851101420"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li037445621410">如果结束时间小于或等于开始时间，则结束时间实际为跨日的结束时间。</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li4446145117142">如果备份任务在指定的时间窗口内未执行完成，系统不会中止本次备份任务，但会上报事件。</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li4684315367">一旦副本超过设定的保留时长，系统将自动删除过期的副本。</li></ul>
+</div></div>
+</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" rowspan="2" valign="top" width="11.899999999999999%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p>差异备份</p>
+</td>
+<td class="cellrowborder" valign="top" width="15.25%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.2 "><p>设置备份策略名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p>-</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><div class="p">配置差异备份的备份频率、副本保留时长以及允许备份的时间段。<span id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_ph149491035175918">增量备份和差异备份不能同时存在。</span><ul id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_ul167919791414"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_li1079119781413">配置差异备份的备份频率以及副本的保留时长。<ul id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_ul1679113751412"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_li177910751413">按年<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_p7791117131413"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_li177910751413"></a><a name="zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_li177910751413"></a>设置每年xx月xx日执行一次，副本保留xx天/周/月/年或永久保留。</p>
+<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p1644311552076">如果当年不存在该日期，则不产生副本。</p>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_li1279112715144">按月<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_p179113721413"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_li1279112715144"></a><a name="zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_li1279112715144"></a>设置每月xx日（可选择多日）或最后一天执行一次，副本保留xx天/周/月/年或永久保留。</p>
+<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_p125877114419">如果设置为每月xx日执行一次备份，当月不存在该日期时，则不产生副本。</p>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_li879112716144">按周<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_p1079111741416"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_li879112716144"></a><a name="zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_li879112716144"></a>设置每周一/二/三/四/五/六/日执行一次（可多选），副本保留xx天/周/月/年或永久保留。</p>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li1357019205199">按天<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p14570162091916"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li1357019205199"></a><a name="zh-cn_topic_0000002164820434_li1357019205199"></a>设置从xx年xx月xx日开始，每xx天执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li49631811181219">按小时<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p7963911121219"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li49631811181219"></a><a name="zh-cn_topic_0000002164820434_li49631811181219"></a>设置从xx年xx月xx日开始，每xx小时执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li796311191217">按分钟<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p19963121121214"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li796311191217"></a><a name="zh-cn_topic_0000002164820434_li796311191217"></a>设置从xx年xx月xx日开始，每xx分钟执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
+</li></ul>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001142022930_li1679107171411">设置允许执行差异备份的时间段，该时间范围以外的时间不会进行差异备份任务调度。<div class="note" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_note153637599371"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000002164820434_ul64461851101420"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000002164820434_li037445621410">如果结束时间小于或等于开始时间，则结束时间实际为跨日的结束时间。</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000002164820434_li4446145117142">如果备份任务在指定的时间窗口内未执行完成，系统不会中止本次备份任务，但会上报事件。</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000002164820434_li4684315367">一旦副本超过设定的保留时长，系统将自动删除过期的副本。</li></ul>
+</div></div>
+</li></ul>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" rowspan="2" valign="top" width="11.899999999999999%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p><span>日志备份</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="15.25%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p><span>名称</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="72.85000000000001%" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.2 "><p>设置备份策略名称。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p>-</p>
+</td>
+<td class="cellrowborder" valign="top" headers="mcps1.3.3.2.5.2.1.2.3.2.4.1.1 "><p>备份已归档的日志。配置<span>日志备份</span>的开始执行时间、备份频率、副本保留时长。</p>
+<ul><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li2514102132014">按天<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p185142219203"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li2514102132014"></a><a name="zh-cn_topic_0000002164820434_li2514102132014"></a>设置从xx年xx月xx日开始，每xx天执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li11514525202">按小时<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p18514722206"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li11514525202"></a><a name="zh-cn_topic_0000002164820434_li11514525202"></a>设置从xx年xx月xx日开始，每xx小时执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li15514102132011">按分钟<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p20514424208"><a name="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li15514102132011"></a><a name="zh-cn_topic_0000002164820434_li15514102132011"></a>设置从xx年xx月xx日开始，每xx分钟执行一次备份，副本保留xx天/周/月/年或永久保留。</p>
+</li></ul>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><ul><li>执行日志备份前，必须已存在全量备份副本。</li><li>存在日志备份副本后才可以指定时间点恢复。</li><li>不支持单独配置日志备份策略。</li></ul>
+</div></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p>一个SLA最多可以配置四个全量备份策略、四个差异备份策略、一个日志备份策略，支持自定义每个备份策略的名称。</p>
+</div></div>
+</li><li>配置备份策略其他参数。<div class="p">相关参数说明如<a href="#TPOPS_GaussDB_00018__table4195113413815">表2</a>所示。
+<div class="tablenoborder"><a name="TPOPS_GaussDB_00018__table4195113413815"></a><a name="table4195113413815"></a><table cellpadding="4" cellspacing="0" summary="" id="TPOPS_GaussDB_00018__table4195113413815" frame="border" border="1" rules="all"><caption><b>表2 </b>备份策略高级其他说明</caption><colgroup><col style="width:44.46%"><col style="width:55.54%"></colgroup><thead align="left"><tr><th align="left" class="cellrowborder" valign="top" width="44.46%" id="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.1"><p>参数</p>
+</th>
+<th align="left" class="cellrowborder" valign="top" width="55.54%" id="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.2"><p>说明</p>
+</th>
+</tr>
+</thead>
+<tbody><tr><td class="cellrowborder" valign="top" width="44.46%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.1 "><p>指定目标位置</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.54%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.2 "><div class="p">请指定备份副本的目标存储位置。<ul id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_ul3832679403"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li299019528162"><span class="parmvalue" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_parmvalue20580546155113">“备份存储单元”</span>：对应于备份集群节点。选择备份存储单元后，副本将存储至该存储单元。存储单元容量不足时，备份任务将会失败。<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p36749546164">创建备份存储单元的操作请参考<span id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_cite114441740141613">《OceanProtect DataBackup 1.5.0-1.6.0 集群高可用特性指南》</span>中的“创建备份存储单元”章节。</p>
+</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li168151656101610"><span class="parmvalue" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_parmvalue142224995111">“备份存储单元组”</span>：是备份存储单元的集合。选择备份存储单元组后，系统根据存储单元组的存储策略自动选择备份目标存储单元。<p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p15126135815168">创建备份存储单元组的操作请参考<span id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_cite961778916">《OceanProtect DataBackup 1.5.0-1.6.0 集群高可用特性指南》</span>中的“（可选）创建备份存储单元组”章节。</p>
+</li></ul>
+<div class="note" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_note06533915171"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_ul2261104811172"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li182618487176">对于1.5.0版本，如果您部署了集群高可用特性，该参数才显示。您也可以不指定目标位置，如不指定，则系统通过智能均衡自动选择备份目标存储单元。</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li1025484315189">对于1.6.0及后续版本，则必须指定目标位置。</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="44.46%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.1 "><p>限速策略</p>
+</td>
+<td class="cellrowborder" valign="top" width="55.54%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.2 "><p>备份任务平均每秒最大传输的数据量。</p>
+<p>选择<a href="TPOPS_GaussDB_00017.html">已创建的限速策略</a>。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="44.46%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.1 "><p><span>流量控制</span></p>
+<div class="note" id="TPOPS_GaussDB_00018__note178133318448"><span class="notetitle"> 说明： </span><div class="notebody"><p id="TPOPS_GaussDB_00018__p481313374417">仅1.6.0及后续版本且TPOPS为 2.23.07.260及之后版本才支持配置该功能。</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="55.54%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.2 "><p>设置备份任务每秒可以传输的最大数据量。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="44.46%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.1 "><p><span>备机备份</span></p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="TPOPS_GaussDB_00018__tpops_gaussdb_00018_p481313374417">仅1.6.0及后续版本且TPOPS为 2.23.07.260及之后版本才支持配置该功能。</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="55.54%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.2 "><p>开启后，启用备机备份。当数据安全性要求高、业务连续性需求强时建议开启该功能。</p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>不支持单节点实例及3.100.0以下的实例开启备机备份。</p>
+</div></div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="44.46%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.1 "><p><span>关闭数据压缩</span></p>
+<div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p id="TPOPS_GaussDB_00018__tpops_gaussdb_00018_p481313374417_1">仅1.6.0及后续版本且TPOPS为 2.23.07.260及之后版本才支持配置该功能。</p>
+</div></div>
+</td>
+<td class="cellrowborder" valign="top" width="55.54%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.2 "><p>关闭后，会减少备份数据占用的存储空间。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="44.46%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.1 "><div class="p"><span>重启归档</span><div class="note"><span class="notetitle"> 说明： </span><div class="notebody"><p>仅1.5.0.SPC26及后续版本支持设置该参数。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="55.54%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.2 "><div class="p" id="TPOPS_GaussDB_00018__p1252919814567">开启后，日志备份将从上一次全量备份完成的时间点开始备份日志文件。<div class="note" id="TPOPS_GaussDB_00018__note389117314419"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="TPOPS_GaussDB_00018__ul447821216415"><li id="TPOPS_GaussDB_00018__li2478212943">为避免开启重启归档后影响SLA触发的自动备份任务，可在开启前执行如下操作：单击“<span id="TPOPS_GaussDB_00018__text24781012646">禁用保护</span>”禁用实例保护后，手动触发日志备份；关闭重启归档并单击“<span id="TPOPS_GaussDB_00018__text14785121242">激活保护</span>”激活实例保护。</li><li id="TPOPS_GaussDB_00018__li84781512244">为避免影响其他实例，请确保开启重启归档的SLA未关联其他实例。</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="44.46%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.1 "><div class="p">源端重删<div class="note" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_note1141182723518"><span class="notetitle"> 说明： </span><div class="notebody"><p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p164111271351">仅OceanProtect X系列备份一体机和OceanProtect E1000（备份存储为OceanProtect）支持配置此参数。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="55.54%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.2 "><div class="p">开启后，可以减少传输的数据量，但会增加客户端的资源占用。<div class="note" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_note8885112682911"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_ul5885426132914"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li10885172616299">由于同一个客户端只能和一个存储单元建链，如果开启源端重删，<span class="parmname" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_parmname1288482662917">“指定目标位置”</span>请选择<span class="parmvalue" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_parmvalue118843260299">“备份存储单元”</span>。否则，由于智能均衡可能会选择到未建链的存储单元，导致源端重删启用失败。如果不同受保护对象关联了不同SLA，且SLA中指定不同的备份存储单元，请为受保护对象选择不同客户端，否则将会导致部分备份任务源端重删启用失败。</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li9885182662911">如果客户端已经与一个存储单元建链，当该客户端未执行源端重删备份任务时，可以在客户端所在主机上执行<strong id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_b9845163710167">dataturbo delete storage_object storage_name=</strong><em id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_i19447038131614">?</em>命令（命令中的<strong id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_b1050314315162">storage_name=</strong><em id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_i1237554410161">?</em>可以通过<strong id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_b11885726112912">dataturbo show storage_object</strong>命令查询），删除与存储单元的源端重删链接。再选择该客户端执行源端重删备份任务，则可以成功与新的存储单元建链。</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li11885142615297">请参考<a href="https://info.support.huawei.com/storage/comp/#/oceanprotect" target="_blank" rel="noopener noreferrer">OceanProtect兼容性查询</a>工具查看客户端所在主机的操作系统类型是否支持源端重删。若不支持，配置源端重删后将不会生效。</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li7883549153219">若使用内置客户端（即客户端合并部署到<span id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_text13835155817114">OceanProtect</span>）进行备份，配置源端重删后将不会生效。</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="44.46%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.1 "><div class="p">通用压缩<div class="note" id="TPOPS_GaussDB_00018__fc_gud_0018_zh-cn_topic_0000002164820434_note0148155184019"><span class="notetitle"> 说明： </span><div class="notebody"><p id="TPOPS_GaussDB_00018__fc_gud_0018_zh-cn_topic_0000002164820434_p176371043184114">仅OceanProtect E6000备份一体机支持设置此参数。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="55.54%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.2 "><p>开启通用压缩可以将业务数据直接进行压缩后再写入存储空间，达到节约存储空间提升备份效率的目的。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="44.46%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.1 "><div class="p">任务超过时间窗告警<div class="note" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_note379352823112"><span class="notetitle"> 说明： </span><div class="notebody"><p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_zh-cn_topic_0000001839143213_p8320153562113">仅1.6.0及后续版本支持设置该参数。</p>
+</div></div>
+</div>
+</td>
+<td class="cellrowborder" valign="top" width="55.54%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.2 "><p>开启后任务执行超过时间窗将发送告警，告警需手动清除。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="44.46%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.1 "><p><span>任务失败告警</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="55.54%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.2 "><p>开启后，任务执行失败后自动发送告警，下次任务成功后告警自动清除。</p>
+</td>
+</tr>
+<tr><td class="cellrowborder" valign="top" width="44.46%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.1 "><p><span>失败后自动重试</span></p>
+</td>
+<td class="cellrowborder" valign="top" width="55.54%" headers="mcps1.3.3.2.5.2.1.3.1.2.2.3.1.2 "><p>开启后，备份任务失败后系统自动重试。</p>
+<div class="p">支持重试次数为1~5次，等待时长为1~30分钟。如设置为重试3次，等待5分钟，即每5分钟后重试一次，总共重试3次。<div class="note" id="TPOPS_GaussDB_00018__zh-cn_topic_0000001656561497_note139701345152818"><span class="notetitle"> 说明： </span><div class="notebody"><ul id="TPOPS_GaussDB_00018__zh-cn_topic_0000001656561497_ul2791156299"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000001656561497_li18753111015293">自动重试时系统会创建一个新的备份任务，如果该备份任务不在设定的时间窗内则不会执行，此次备份失败。</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000001656561497_li116401113172713">该功能仅在周期性备份时生效。手动发起备份任务，任务失败无法自动重试。</li></ul>
+</div></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</li><li>对于1.6.0及后续版本，如果需生成WORM副本，请打开WORM开关，并设置WORM有效期。否则，请跳过本步骤。<div class="p" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p19339194114493">“WORM有效期”支持设置为“与副本留存期一致”或“自定义有效期”。<div class="note" id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_note8945151620502"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_ul1878144981310"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li5523165014136">仅OceanProtect X系列备份一体机和OceanProtect E1000支持WORM。</li></ul>
+<ul id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_ul2550728175518"><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li103014415565">WORM副本不支持删除或缩短有效期。</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li9171132315916">自定义WORM有效期不能大于副本保留时长。</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li976612319580">在WORM有效期内不支持修改为非WORM副本。</li><li id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_li8684112013014">如果“WORM有效期”设置为“与副本留存期一致”且副本为永久保留，由于备份存储对快照格式的副本最长保留20年，目录格式的副本最长保留70年，因此该场景下快照格式的副本WORM有效期实际为20年，目录格式的副本WORM有效期实际为70年。</li></ul>
+</div></div>
+</div>
+</li><li>单击<span class="uicontrol">“确定”</span>。</li></ol>
+</p></li><li><span>可选：配置归档策略。</span><p><p><span>OceanProtect</span>自带存储空间有限，如果您需要长期保留副本数据，可以将副本数据归档到外部存储。</p>
+<p>您可以单击<span class="uicontrol">“<span>归档策略</span>”</span>图标配置归档策略或随后通过修改SLA的方式配置归档策略。</p>
+<p>配置归档策略的具体操作请参考<a href="TPOPS_GaussDB_00034.html">归档</a>。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><p id="TPOPS_GaussDB_00018__zh-cn_topic_0000002164820434_p8134208105320">对于OceanProtect E1000，如果备份策略中指定的“备份存储单元”或“备份存储单元组”的设备类型为“服务器”，则不支持创建归档策略。</p>
+</div></div>
+</p></li><li><span>可选：配置复制策略。</span><p><p><span>OceanProtect</span>支持本地数据复制到异地，当灾难发生后在异地数据中心通过副本数据恢复生产，进而承接业务，实现异地数据保护。</p>
+<p>您可以单击<span class="uicontrol">“<span>复制策略</span>”</span>图标配置复制策略或随后通过修改SLA的方式配置复制策略。</p>
+<p>配置复制策略的具体操作请参考<a href="TPOPS_GaussDB_00022.html">复制</a>中对应产品型号的“创建复制SLA”章节。</p>
+<div class="note"><img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span><div class="notebody"><ul id="TPOPS_GaussDB_00018__hcs_gaussdb_00014_ul139451305529"><li id="TPOPS_GaussDB_00018__hcs_gaussdb_00014_li79457309526">对于1.6.0及后续版本：<ul id="TPOPS_GaussDB_00018__hcs_gaussdb_00014_zh-cn_topic_0000002164820434_ul20769645302"><li id="TPOPS_GaussDB_00018__hcs_gaussdb_00014_zh-cn_topic_0000002164820434_li83901215999">SLA中备份策略的WORM有效期需小于复制策略中副本保留时长。</li><li id="TPOPS_GaussDB_00018__hcs_gaussdb_00014_zh-cn_topic_0000002164820434_li878324105017">如果本端未设置WORM，目标端设置WORM，则WORM有效期与复制副本保留时长一致。</li><li id="TPOPS_GaussDB_00018__hcs_gaussdb_00014_zh-cn_topic_0000002164820434_li07815248507">如果本端设置了WORM，目标端未设置WORM，则复制副本的WORM有效期与本端WORM副本有效期一致，复制副本保留时长&gt;=本端的备份副本WORM有效期。</li><li id="TPOPS_GaussDB_00018__hcs_gaussdb_00014_zh-cn_topic_0000002164820434_li1278624195020">如果本端和目标端都设置WORM，且目标端在“数据安全”WORM配置中按资源粒度设置WORM，则所有复制副本均会有WORM属性，WORM有效期和复制副本保留时长一致。</li><li id="TPOPS_GaussDB_00018__hcs_gaussdb_00014_zh-cn_topic_0000002164820434_li127819245503">本端备份副本为永久保留，且“WORM有效期”设置为“与副本留存期一致”，则WORM有效期为永久有效。当生成了备份副本后，修改SLA策略（添加复制策略并设置“复制规则&amp;保留规则”为“复制所有副本”），目标端WORM有效期与复制副本保留时长一致。</li></ul>
+</li></ul>
+</div></div>
+</p></li><li><span>单击<span class="uicontrol">“确定”</span>。</span></li></ol>
+</div>
+</div>
+<div>
+<div class="familylinks">
+<div class="parentlink"><strong>父主题：</strong> <a href="TPOPS_GaussDB_00010.html">备份GaussDB实例</a></div>
+</div>
+</div>
+
+<div class="hrcopyright"><hr size="2"></div><div class="hwcopyright">版权所有 &copy; 华为技术有限公司</div></body>
+</html>

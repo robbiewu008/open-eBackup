@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.sdk.license.enums;
 
-import openbackup.system.base.sdk.license.constants.LicenseSbomConstants;
-
 import lombok.Getter;
+import openbackup.system.base.sdk.license.constants.LicenseSbomConstants;
 
 /**
  * function item

@@ -12,12 +12,11 @@
 */
 package openbackup.data.access.framework.core.common.model;
 
-import openbackup.system.base.common.constants.CommonErrorCode;
-import openbackup.system.base.common.exception.LegoCheckedException;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.exception.LegoCheckedException;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,7 +36,8 @@ public class CopySnapShotInfo {
 
     /**
      * 根据snapshotId生成snapshot名称
-     * snapshotId格式（filesystemId + @ + snapshotName）
+     * snapshotId格式（filesystemId + @ + snapshotName）e1000本地盘
+     * Snapshot_86c5cf74_13c0_4a1a_84fe_9819fa40f757
      *
      * @return 快照名称
      */
@@ -45,6 +45,9 @@ public class CopySnapShotInfo {
         log.info("start to split snapshotId:{}", id);
         if (StringUtils.isBlank(id)) {
             return StringUtils.EMPTY;
+        }
+        if (id.startsWith("Snapshot_")) {
+            return id;
         }
         String[] names = id.split("@");
         if (names.length != 2) {

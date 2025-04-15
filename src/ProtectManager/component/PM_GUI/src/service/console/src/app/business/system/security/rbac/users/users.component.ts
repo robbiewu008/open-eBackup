@@ -1,21 +1,22 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import {
   AfterViewInit,
   Component,
   EventEmitter,
   OnInit,
   Output,
+  TemplateRef,
   ViewChild
 } from '@angular/core';
 import {
@@ -57,10 +58,20 @@ export class UsersComponent implements OnInit, AfterViewInit {
   tableData;
   selectionData = [];
   isSysAdmin = this.cookieService.role === RoleType.SysAdmin;
+  neverExpireFilterMap = this.dataMapService
+    .toArray('passwordType')
+    .map(item => {
+      return assign(item, {
+        isLeaf: true
+      });
+    });
 
   @Output() openPage = new EventEmitter();
 
   @ViewChild('dataTable', { static: false }) dataTable: ProTableComponent;
+  @ViewChild('sessionLimitTpl', { static: true }) sessionLimitTpl: TemplateRef<
+    any
+  >;
 
   constructor(
     public i18n: I18NService,
@@ -127,7 +138,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
                 DataMap.loginUserType.ldap.value,
                 DataMap.loginUserType.ldapGroup.value,
                 DataMap.loginUserType.hcs.value,
-                DataMap.loginUserType.adfs.value
+                DataMap.loginUserType.adfs.value,
+                DataMap.loginUserType.dme.value
               ],
               rowData[0].userType
             )
@@ -149,7 +161,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
                 DataMap.loginUserType.ldap.value,
                 DataMap.loginUserType.ldapGroup.value,
                 DataMap.loginUserType.hcs.value,
-                DataMap.loginUserType.adfs.value
+                DataMap.loginUserType.adfs.value,
+                DataMap.loginUserType.dme.value
               ],
               rowData[0].userType
             )
@@ -185,7 +198,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
                 DataMap.loginUserType.ldap.value,
                 DataMap.loginUserType.ldapGroup.value,
                 DataMap.loginUserType.hcs.value,
-                DataMap.loginUserType.adfs.value
+                DataMap.loginUserType.adfs.value,
+                DataMap.loginUserType.dme.value
               ],
               rowData[0].userType
             )
@@ -217,7 +231,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
               [
                 DataMap.loginUserType.ldap.value,
                 DataMap.loginUserType.ldapGroup.value,
-                DataMap.loginUserType.hcs.value
+                DataMap.loginUserType.hcs.value,
+                DataMap.loginUserType.dme.value
               ],
               rowData[0].userType
             )
@@ -237,7 +252,10 @@ export class UsersComponent implements OnInit, AfterViewInit {
         disableCheck: ([data]) =>
           data.defaultUser ||
           data.userId === this.cookieService.get('userId') ||
-          includes([DataMap.loginUserType.hcs.value], data.userType)
+          includes(
+            [DataMap.loginUserType.hcs.value, DataMap.loginUserType.dme.value],
+            data.userType
+          )
       }
     ];
     const cols: TableCols[] = [
@@ -283,6 +301,29 @@ export class UsersComponent implements OnInit, AfterViewInit {
       {
         key: 'description',
         name: this.i18n.get('common_desc_label')
+      },
+      {
+        key: 'sessionLimit',
+        name: this.i18n.get('system_user_maxconnections_label'),
+        sort: this.cookieService.role !== RoleType.DataProtectionAdmin,
+        cellRender: this.sessionLimitTpl
+      },
+      {
+        key: 'neverExpire',
+        name: this.i18n.get('system_password_never_expire_label'),
+        filter:
+          this.cookieService.role !== RoleType.DataProtectionAdmin
+            ? {
+                type: 'select',
+                isMultiple: true,
+                showCheckAll: true,
+                options: this.neverExpireFilterMap
+              }
+            : null,
+        cellRender: {
+          type: 'status',
+          config: this.neverExpireFilterMap
+        }
       },
       {
         key: 'operation',
@@ -406,7 +447,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
         content: this.i18n.get('system_user_delete_label', [
           map(datas, 'userName').join(this.i18n.get('common_comma_label'))
         ]),
-        userRole: datas[0]?.rolesSet[0]?.roleName
+        userRole: map(datas, item => item?.rolesSet[0]?.roleName)
       },
       lvWidth: MODAL_COMMON.normalWidth,
       lvOkType: 'primary',

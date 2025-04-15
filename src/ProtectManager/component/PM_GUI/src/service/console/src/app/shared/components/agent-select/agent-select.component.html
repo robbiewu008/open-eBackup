@@ -20,8 +20,9 @@
     <lv-group lvGutter="4px" *ngIf="!isSimple">
         <i *ngIf="item.linkStatus || item.environment?.linkStatus" lv-icon="{{ isOnline(item) ?
                  'aui-host-online' : 'aui-host-offline'}}"></i>
-        <span>{{ item.label }}</span>
-        <span class="aui-text-help-sm" *ngIf="item.extendInfo?.scenario || item.environment?.extendInfo?.scenario">
+        <span lv-overflow class="label-class">{{ item.label }}</span>
+        <span class="aui-text-help-sm" style="vertical-align: middle;"
+            *ngIf="item.extendInfo?.scenario || item.environment?.extendInfo?.scenario">
             {{isHostBuiltIn(item) ? hostBuiltinLabel : hostExternalLabel}}
         </span>
         <span class="guide-recommend-label" *ngIf="showGuideNew(item)">

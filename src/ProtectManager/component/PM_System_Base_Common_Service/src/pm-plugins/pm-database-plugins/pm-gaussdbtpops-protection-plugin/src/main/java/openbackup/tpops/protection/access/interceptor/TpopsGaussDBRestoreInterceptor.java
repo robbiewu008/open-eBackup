@@ -12,6 +12,9 @@
 */
 package openbackup.tpops.protection.access.interceptor;
 
+import com.huawei.oceanprotect.kms.sdk.EncryptorService;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
 import openbackup.data.protection.access.provider.sdk.agent.AgentSelectParam;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
@@ -26,7 +29,6 @@ import openbackup.data.protection.access.provider.sdk.restore.v2.RestoreTask;
 import openbackup.database.base.plugin.common.DatabaseConstants;
 import openbackup.database.base.plugin.enums.DatabaseDeployTypeEnum;
 import openbackup.database.base.plugin.interceptor.AbstractDbRestoreInterceptorProvider;
-import com.huawei.oceanprotect.kms.sdk.EncryptorService;
 import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.JSONObject;
@@ -46,8 +48,6 @@ import openbackup.tpops.protection.access.constant.TpopsGaussDBConstant;
 import openbackup.tpops.protection.access.provider.TpopsGaussDBAgentProvider;
 import openbackup.tpops.protection.access.service.TpopsGaussDBService;
 import openbackup.tpops.protection.access.util.TpopsGaussDBClusterUtils;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,7 +175,7 @@ public class TpopsGaussDBRestoreInterceptor extends AbstractDbRestoreInterceptor
         Copy copy = copyRestApi.queryCopyByID(task.getCopyId());
         String generatedBy = copy.getGeneratedBy();
         if (CopyGeneratedByEnum.BY_CLOUD_ARCHIVE.value().equals(generatedBy)) {
-            task.setRestoreMode(RestoreModeEnum.REMOTE_RESTORE.getMode());
+            task.setRestoreMode(RestoreModeEnum.DOWNLOAD_RESTORE.getMode());
         } else if (CopyGeneratedByEnum.BY_TAPE_ARCHIVE.value().equals(generatedBy)) {
             task.setRestoreMode(RestoreModeEnum.DOWNLOAD_RESTORE.getMode());
         } else {

@@ -14,10 +14,11 @@
 
 namespace Module {
     std::shared_ptr<Session> SessionCache::CreateSession(std::string deviceIp, std::string deviceUserName,
-                                                         std::string devicePort, std::function<SessionInfo()> pLogin) {
+                                                         std::string devicePort, std::function<SessionInfo()> pLogin)
+    {
         std::lock_guard<std::mutex> lock(cacheMutex);
-        std::tuple <std::string, std::string, std::string> key = std::make_tuple(deviceIp, deviceUserName,
-                                                                            devicePort);
+        std::tuple <std::string, std::string, std::string> key =
+            std::make_tuple(deviceIp, deviceUserName, devicePort);
         auto itr = m_sessionCache.find(key);
         if (itr != m_sessionCache.end()) {
             std::get<1>(itr->second)++;
@@ -38,10 +39,11 @@ namespace Module {
     }
 
     bool SessionCache::DeleteSession(std::string deviceIp, std::string deviceUserName,
-                                     std::string devicePort, std::function<mp_int32(SessionInfo)> pLogout) {
+                                     std::string devicePort, std::function<mp_int32(SessionInfo)> pLogout)
+    {
         std::lock_guard<std::mutex> lock(cacheMutex);
-        std::tuple <std::string, std::string, std::string> key = std::make_tuple(deviceIp, deviceUserName,
-                                                                            devicePort);
+        std::tuple <std::string, std::string, std::string> key =
+            std::make_tuple(deviceIp, deviceUserName, devicePort);
         auto itr = m_sessionCache.find(key);
         if (itr == m_sessionCache.end()) {
             HCP_Log(INFO, deviceType) << "No session to delete from map" << HCPENDLOG;
@@ -58,7 +60,7 @@ namespace Module {
 
             mp_int32 ret = pLogout(m_sessionInfo);
             if (ret != SUCCESS) {
-                HCP_Log(ERR, deviceType) << "Logout not success, But entry is deleted "
+                HCP_Log(WARN, deviceType) << "Logout not success, But entry is deleted "
                                          << ret << HCPENDLOG;
             }
             m_sessionCache.erase(itr);
@@ -70,10 +72,11 @@ namespace Module {
      *           Must call delete session to decrease refCnt
      */
     std::shared_ptr<Session> SessionCache::GetSession(std::string deviceIp, std::string deviceUserName,
-                                                      std::string devicePort) {
+                                                      std::string devicePort)
+    {
         std::lock_guard<std::mutex> lock(cacheMutex);
-        std::tuple <std::string, std::string, std::string> key = std::make_tuple(deviceIp, deviceUserName,
-                                                                            devicePort);
+        std::tuple <std::string, std::string, std::string> key =
+            std::make_tuple(deviceIp, deviceUserName, devicePort);
         auto itr = m_sessionCache.find(key);
         if (itr != m_sessionCache.end()) {
             std::get<1>(itr->second)++;

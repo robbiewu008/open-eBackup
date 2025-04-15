@@ -1,15 +1,15 @@
 /*
- * This file is a part of the open-eBackup project.
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
- * If a copy of the MPL was not distributed with this file, You can obtain one at
- * http://mozilla.org/MPL/2.0/.
- *
- * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
- *
- * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
- * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
- * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
- */
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 import { RouterUrl } from 'app/shared';
 
 export const cardlist = [
@@ -24,14 +24,16 @@ export const cardlist = [
         navigateInfo: [RouterUrl.InsightJobs]
       }
     ],
-    selectTime: 3,
-    selectcluster: undefined
+    clusterNodesOptions: [],
+    selectTime: 3, // 任务统计范围
+    selectcluster: undefined // 任务总览选中的集群
   },
   {
     name: 'capacity',
     title: 'common_home_capacity_label',
     subtitle: 'common_home_physical_label',
-    index: 2
+    index: 2,
+    capacityTooltip: true
   },
   {
     name: 'alarm',
@@ -39,7 +41,7 @@ export const cardlist = [
     index: 3,
     footer: [
       {
-        text: 'common_home_view_all_jobs_label',
+        text: 'common_home_view_all_warning_label',
         isBtn: true,
         navigateInfo: [RouterUrl.InsightAlarms]
       }
@@ -84,6 +86,7 @@ export const cardlist = [
     ],
     selectTime: 3,
     selectNode: [],
+    clusterNodesOptions: [],
     clusterType: undefined
   },
   {
@@ -92,6 +95,7 @@ export const cardlist = [
     subtitle: 'common_home_physical_label',
     index: 7,
     selectNode: [],
+    clusterNodesOptions: [],
     clusterType: undefined
   },
   {
@@ -117,5 +121,17 @@ export const cardlist = [
     title: 'common_home_top_job_failures_resource_object_label',
     index: 12,
     selectTime: 4
+  },
+  {
+    title: 'common_external_associated_systems_label',
+    index: 13,
+    footer: [
+      {
+        text: 'common_view_all_label',
+        isBtn: true,
+        navigateInfo: [RouterUrl.ExternalAssociatedSystems]
+      }
+    ],
+    selectTime: '1d'
   }
 ];

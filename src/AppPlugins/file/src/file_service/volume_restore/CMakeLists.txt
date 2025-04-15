@@ -1,0 +1,42 @@
+add_library(volume_restore_obj
+    OBJECT
+    ${CMAKE_CURRENT_SOURCE_DIR}/VolumeRestore.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LinuxVolumeRestore.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/VolumeFileGranularRestore.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LinuxVolumeFileGranularRestore.cpp
+)
+
+target_include_directories(volume_restore_obj
+    PRIVATE
+    ${PLUGIN_SCANNER_PATH}/include
+    ${PLUGIN_SCANNER_PATH}/include/common
+    ${PLUGIN_SCANNER_PATH}/include/checkpoint
+    ${PLUGIN_SCANNER_PATH}/include/filter
+    ${PLUGIN_SCANNER_PATH}/include/interface
+    ${PLUGIN_SCANNER_PATH}/include/model
+    ${PLUGIN_SCANNER_PATH}/include/service
+    ${PLUGIN_SCANNER_PATH}/include/statistics
+    ${PLUGIN_SCANNER_PATH}/include/utils
+
+    ${PLUGIN_FRAMEWORK_PATH}/inc
+    ${PLUGIN_FRAMEWORK_PATH}/inc/client
+    ${PLUGIN_FRAMEWORK_PATH}/inc/common
+    ${PLUGIN_FRAMEWORK_PATH}/inc/job/
+    ${PLUGIN_FRAMEWORK_PATH}/inc/rpc
+    ${PLUGIN_FRAMEWORK_PATH}/inc/rpc/certificateservice
+    ${PLUGIN_SRC_PATH}
+    ${PLUGIN_SRC_PATH}/common
+    ${PLUGIN_SRC_PATH}/common/host
+    ${PLUGIN_SRC_PATH}/common/constant
+    ${PLUGIN_SRC_PATH}/common/volume
+    ${PLUGIN_SRC_PATH}/utils
+    ${PLUGIN_BACKUP_PATH}/src
+    ${PLUGIN_BACKUP_PATH}/volume
+    ${PLUGIN_BACKUP_PATH}/src/bare_metal_recovery
+)
+
+target_link_libraries(volume_restore_obj
+    PRIVATE
+    volume_obj
+    common_dep
+)

@@ -1,3 +1,15 @@
+/*
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 #include "plugins/dws/DWSPlugin.h"
 #include <fstream>
 #include <sstream>
@@ -111,6 +123,19 @@ mp_void DWSPlugin::ScheduleThreadRun()
             if (static_cast<int>(std::difftime(currentTime, taskStartTime))>=ONE_DAY_TIME) {
                 BsaSessionManager::GetInstance().ClearTaskDataSizeByTaskId(iter.first);
             }
+
+            DwsXbsaSpeedInfo info;
+            info.totalSizeInMB = iter.second.dataSize / MB_TO_BYTE;
+            if (info.totalSizeInMB == 0) {
+                DBGLOG("task:%s,TotalSizeInMB is 0.no need to write speed file", iter.first.c_str());
+                continue;
+            }
+            std::string jsonStr;
+            if (!JsonHelper::StructToJsonString(info, jsonStr)) {
+                ERRLOG("Struct to json string failed.");
+                continue;
+            }
+            WriteSpeedFile(info.totalSizeInMB, jsonStr, cacheInfo);
         }
     }
 }
@@ -119,7 +144,7 @@ mp_void DWSPlugin::WriteSpeedFile(uint64_t totalSize, const std::string &output,
 {
     mp_string hostKey = cacheInfo.hostKey;
     mp_string speedFile = cacheInfo.cacheRepoPath + "/tmp/"
-        + cacheInfo.copyId + "/speed/" + hostKey + "/xbsa_speed.txt";
+        + cacheInfo.copyId + "/speed/" + hostKey + "/schedule_thread_xbsa_speed.txt";
     std::ofstream outfile(speedFile, std::ios::trunc | std::ios_base::binary);
     if (!outfile.is_open()) {
         // speed file directory will be deleted in post job,so this could happen in normal case.

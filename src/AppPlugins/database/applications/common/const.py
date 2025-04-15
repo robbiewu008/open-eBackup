@@ -50,6 +50,13 @@ class RepositoryDataTypeEnum(int, Enum):
     LOG_META_REPOSITORY = 5
 
 
+class RepositoryNameEnum(str, Enum):
+    META = "meta"
+    DATA = "data"
+    CACHE = "cache"
+    LOG = "log"
+
+
 class CopyDataTypeEnum(str, Enum):
     # 副本类型
     FULL_COPY = "full"
@@ -195,6 +202,7 @@ class SubJobPolicyEnum(int, Enum):
     EVERY_NODE_ONE_TIME = 2
     RETRY_OTHER_NODE_WHEN_FAILED = 3
     FIXED_NODE = 4
+    EVERY_NODE_ONE_TIME_SKIP_OFFLINE = 5
 
 
 class SubJobPriorityEnum(int, Enum):
@@ -203,6 +211,10 @@ class SubJobPriorityEnum(int, Enum):
     JOB_PRIORITY_3 = 3
     JOB_PRIORITY_4 = 4
     JOB_PRIORITY_5 = 5
+    JOB_PRIORITY_6 = 6
+    JOB_PRIORITY_7 = 7
+    JOB_PRIORITY_8 = 8
+    JOB_PRIORITY_9 = 9
 
 
 class DBLogLevel(int, Enum):
@@ -219,6 +231,8 @@ class ReportDBLabel:
     RESTORE_SUB_FAILED = "plugin_restore_subjob_fail_label"
     # 子任务（{0}）即时挂载失败。
     LIVE_MOUNT_FAILED = "plugin_live_mount_subjob_fail_label"
+    # 执行前置任务成功。
+    PRE_REQUISIT_SUCCESS = "plugin_execute_prerequisit_task_success_label"
     # 执行前置任务失败。
     PRE_REQUISIT_FAILED = "plugin_execute_prerequisit_task_fail_label"
     # 开始执行备份挂载子任务（{0}）。
@@ -259,7 +273,7 @@ class EnumPathType(int, Enum):
 class CMDResult(str, Enum):
     SUCCESS = "0"
     FAILED = "1"
-    INFORMIX_CERTIFICATE_ABOUT_TO_EXPIRE = "147"
+    INFORMIX_CERTIFICATE_ABOUT_TO_EXPIRE = ["147", "149"]
 
 
 class CMDResultInt(int, Enum):
@@ -365,7 +379,17 @@ class FilePath:
                       "^/usr/local/bin$|^/usr/local/include$|^/usr/local/sbin$|^/usr/local/share$|" \
                       "^/usr/sbin$|^/usr/share$|^/usr/src$|^/var$"
     # 路径白名单
-    PATH_WHITE_LIST = r"^{}/DataBackup|^/mnt/databackup|^/mnt|^/srv|^/home|^/opt".format(get_install_head_path())
+    PATH_WHITE_LIST = r"^{}/DataBackup|^/mnt/databackup|^/mnt|^/srv|^/home|^/opt|^/data".format(get_install_head_path())
 
     # 读取文件黑名单
     READ_BLACK_LIST = r"^/dev/random$|^/dev/urandom$"
+
+
+class Encoding:
+    INTERNAL_ENCODING = "utf-8"
+
+
+class Progress:
+    START = 0
+    RUNNING = 50
+    END = 100

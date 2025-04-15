@@ -12,6 +12,7 @@
 */
 package openbackup.data.access.framework.core.config;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.client.sdk.api.base.RestClient;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.protection.access.provider.sdk.job.TaskCompleteMessageBo;
@@ -22,8 +23,6 @@ import openbackup.system.base.sdk.job.model.JobLogBo;
 import openbackup.system.base.sdk.job.model.JobLogLevelEnum;
 import openbackup.system.base.sdk.job.model.request.UpdateJobRequest;
 import openbackup.system.base.security.exterattack.ExterAttack;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.redisson.api.RMap;

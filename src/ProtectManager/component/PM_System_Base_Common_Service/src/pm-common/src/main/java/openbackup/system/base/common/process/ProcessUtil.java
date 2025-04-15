@@ -12,9 +12,8 @@
 */
 package openbackup.system.base.common.process;
 
-import openbackup.system.base.common.thread.ThreadPoolTool;
-
 import lombok.extern.slf4j.Slf4j;
+import openbackup.system.base.common.thread.LogProcessResultThreadPoolTool;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -86,7 +85,7 @@ public class ProcessUtil {
      * @throws ProcessException 处理异常
      */
     public static ProcessResult execute(String command, List<String> args, long timeout, TimeUnit timeUnit)
-        throws ProcessException {
+            throws ProcessException {
         ProcessBuilder processBuilder = new ProcessBuilder("xargs", "sudo", command);
         processBuilder.environment().put("LANG", "en_US.UTF-8");
         Process process = null;
@@ -97,11 +96,11 @@ public class ProcessUtil {
             logProcessResult(process, processResult, Collections.singletonList(command), timeout, timeUnit);
         } catch (IOException exception) {
             throw new ProcessException(exception, "start execute(command=%s,timeout=%s,timeUnit=%s) failed", command,
-                timeout, timeUnit);
+                    timeout, timeUnit);
         } catch (InterruptedException exception) {
             Thread.currentThread().interrupt();
             throw new ProcessException(exception, "start execute(command=%s,timeout=%s,timeUnit=%s) failed", command,
-                timeout, timeUnit);
+                    timeout, timeUnit);
         } finally {
             if (process != null) {
                 try {
@@ -130,7 +129,7 @@ public class ProcessUtil {
     }
 
     private static void logProcessResult(Process process, ProcessResult processResult, List<String> command,
-        long timeout, TimeUnit timeUnit) throws ProcessException, InterruptedException {
+            long timeout, TimeUnit timeUnit) throws ProcessException, InterruptedException {
         log.info("execute command:{}, timeout:{}, timeUnit:{}", command, timeout, timeUnit);
         log(process.getInputStream(), processResult, false);
         log(process.getErrorStream(), processResult, true);
@@ -140,7 +139,7 @@ public class ProcessUtil {
             processResult.setExitCode(process.exitValue());
         } else {
             throw new ProcessException("execute(command=%s,timeout=%s,timeUnit=%s) timeout", command, timeout,
-                timeUnit);
+                    timeUnit);
         }
     }
 
@@ -169,11 +168,11 @@ public class ProcessUtil {
             logProcessResult(process, processResult, command, timeout, timeUnit);
         } catch (IOException exception) {
             throw new ProcessException(exception, "start execute(command=%s,timeout=%s,timeUnit=%s) failed",
-                String.join(";", command), timeout, timeUnit);
+                    String.join(";", command), timeout, timeUnit);
         } catch (InterruptedException exception) {
             Thread.currentThread().interrupt();
             throw new ProcessException(exception, "execute(command=%s,timeout=%s,timeUnit=%s) interrupted",
-                String.join(";", command), timeout, timeUnit);
+                    String.join(";", command), timeout, timeUnit);
         } finally {
             if (process != null) {
                 try {
@@ -191,19 +190,21 @@ public class ProcessUtil {
     }
 
     private static void log(InputStream inputStream, ProcessResult processResult, boolean isError) {
-        // 线程池执行
-        ThreadPoolTool.getPool().execute(() -> {
-            try (BufferedReader bf = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+        // 指定独立线程池
+        LogProcessResultThreadPoolTool.getPool().execute(() -> {
+            try (BufferedReader bf = new BufferedReader(
+                    new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
                 collectErrorOrOutput(bf, processResult, isError);
             } catch (IOException e) {
                 log.error("ProcessUtil.log(inputStream:{},processResult:{},isError:{})", inputStream,
-                    StringUtils.truncate(processResult.toString(), MAX_LOG_ERROR_SIZE), isError);
+                        StringUtils.truncate(processResult.toString(), MAX_LOG_ERROR_SIZE), isError);
             }
         });
     }
 
+
     private static void collectErrorOrOutput(BufferedReader bufferedReader, ProcessResult processResult,
-        boolean isError) throws IOException {
+            boolean isError) throws IOException {
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             if (isError) {

@@ -120,7 +120,7 @@ public class KafkaProducerConfig {
         props.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, keyStoreType);
         props.put(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "");
         props.put(SaslConfigs.SASL_MECHANISM, mechanism);
-        String kafkaPassword = configMapService.getValueFromSecretByKey(KAFKA_AUTH_KEY);
+        String kafkaPassword = configMapService.getValueFromSecretByKey(KAFKA_AUTH_KEY, Boolean.FALSE);
         String jaasConfig = String.format(Locale.ENGLISH,
             "org.apache.kafka.common.security.plain.PlainLoginModule required username='kafka_usr' password='%s';",
             kafkaPassword);

@@ -12,6 +12,9 @@
 */
 package openbackup.data.access.framework.copy.index.provider;
 
+import com.google.common.collect.ImmutableList;
+
+import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.core.common.constants.CopyIndexConstants;
 import openbackup.data.access.framework.core.common.constants.TopicConstants;
 import openbackup.data.access.framework.core.common.enums.CopyIndexStatus;
@@ -23,10 +26,6 @@ import openbackup.system.base.common.utils.JSONObject;
 import openbackup.system.base.sdk.copy.CopyRestApi;
 import openbackup.system.base.sdk.copy.model.Copy;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
-
-import com.google.common.collect.ImmutableList;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,7 +51,9 @@ public class DeleteCopyIndexProvider implements DeleteIndexProvider {
     public boolean applicable(String copyResourceSubType) {
         return ImmutableList.of(ResourceSubTypeEnum.FILESET.getType(), ResourceSubTypeEnum.VMWARE.getType(),
                 ResourceSubTypeEnum.FUSION_COMPUTE.getType(), ResourceSubTypeEnum.HCS_CLOUD_HOST.getType(),
-                ResourceSubTypeEnum.FUSION_ONE_COMPUTE.getType())
+                ResourceSubTypeEnum.FUSION_ONE_COMPUTE.getType(), ResourceSubTypeEnum.OPENSTACK_CLOUD_SERVER.getType(),
+                ResourceSubTypeEnum.APS_INSTANCE.getType(), ResourceSubTypeEnum.HYPER_V_VM.getType(),
+                ResourceSubTypeEnum.CNWARE_VM.getType(), ResourceSubTypeEnum.NUTANIX_VM.getType())
             .contains(copyResourceSubType);
     }
 

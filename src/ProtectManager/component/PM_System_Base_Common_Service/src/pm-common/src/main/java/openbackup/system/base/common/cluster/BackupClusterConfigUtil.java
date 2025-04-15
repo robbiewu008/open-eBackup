@@ -12,12 +12,11 @@
 */
 package openbackup.system.base.common.cluster;
 
+import lombok.extern.slf4j.Slf4j;
 import openbackup.system.base.sdk.cluster.enums.ClusterEnum;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.util.PropertiesUtil;
 import openbackup.system.base.util.SpringBeanUtils;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,7 +35,7 @@ public class BackupClusterConfigUtil {
      */
     public static String getBackupClusterEsn() {
         return PropertiesUtil.fileToString(
-            BackupClusterConfigConstants.OPT_CONFIG + File.separator + BackupClusterConfigConstants.CLUSTER_ESN);
+                BackupClusterConfigConstants.OPT_CONFIG + File.separator + BackupClusterConfigConstants.CLUSTER_ESN);
     }
 
     /**
@@ -49,10 +48,8 @@ public class BackupClusterConfigUtil {
         if (deployTypeService.isE1000()) {
             return "";
         }
-        String clusterRole = PropertiesUtil.fileToString(
-            BackupClusterConfigConstants.OPT_CONFIG + File.separator + BackupClusterConfigConstants.CLUSTER_ROLE);
-        log.debug("current cluster role is: {}", clusterRole);
-        return clusterRole;
+        return PropertiesUtil.fileToString(
+                BackupClusterConfigConstants.OPT_CONFIG + File.separator + BackupClusterConfigConstants.CLUSTER_ROLE);
     }
 
     /**
@@ -62,7 +59,7 @@ public class BackupClusterConfigUtil {
      */
     public static boolean isMasterCluster() {
         String role = getBackupClusterRole();
-        //  不组成集群，认定为主节点
+        // 不组成集群，认定为主节点
         if (StringUtils.equals(role, StringUtils.EMPTY)) {
             return true;
         }
@@ -77,7 +74,7 @@ public class BackupClusterConfigUtil {
      */
     public static boolean isStandbyCluster() {
         String role = getBackupClusterRole();
-        //  不组成集群，认定为主节点
+        // 不组成集群，认定为主节点
         if (StringUtils.equals(role, StringUtils.EMPTY)) {
             return false;
         }

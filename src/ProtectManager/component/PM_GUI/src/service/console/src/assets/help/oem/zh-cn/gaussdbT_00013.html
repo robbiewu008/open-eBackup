@@ -1,0 +1,72 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤2：设置Redo日志模式">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="gaussdbT_00011.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="gaussdbT_00013">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤2：设置Redo日志模式</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="gaussdbT_00013"></a><a name="gaussdbT_00013"></a>
+  <h1 class="topictitle1">步骤2：设置Redo日志模式</h1>
+  <div>
+   <p id="gaussdbT_00013__zh-cn_topic_0000001737511009_p173691841194416">Redo日志保存可设置为Redo日志归档模式（ARCHIVELOG）或者Redo日志在线模式（NOARCHIVELOG）。</p>
+   <ul id="gaussdbT_00013__zh-cn_topic_0000001737511009_ul72323392273">
+    <li id="gaussdbT_00013__zh-cn_topic_0000001737511009_li2784136258">归档模式（ARCHIVELOG）<p id="gaussdbT_00013__zh-cn_topic_0000001737511009_p1733619164252"><a name="gaussdbT_00013__zh-cn_topic_0000001737511009_li2784136258"></a><a name="zh-cn_topic_0000001737511009_li2784136258"></a>当Redo日志写满后，把该日志内容拷贝到归档日志进行统一的存储，避免下次写入的时候覆盖。</p></li>
+    <li id="gaussdbT_00013__zh-cn_topic_0000001737511009_li62321339132719">在线模式（NOARCHIVELOG）<p id="gaussdbT_00013__zh-cn_topic_0000001737511009_p82327392274"><a name="gaussdbT_00013__zh-cn_topic_0000001737511009_li62321339132719"></a><a name="zh-cn_topic_0000001737511009_li62321339132719"></a>当Redo日志写满后，不做任何的备份。下次轮到写入该文件时，文件的内容将会被覆盖。</p></li>
+   </ul>
+   <div class="section" id="gaussdbT_00013__zh-cn_topic_0000001737511009_section18617501568">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ol id="gaussdbT_00013__zh-cn_topic_0000001737511009_ol2032185720616">
+     <li id="gaussdbT_00013__zh-cn_topic_0000001737511009_li1532125711614"><span>连接到Gauss100 OLTP服务器。</span></li>
+     <li id="gaussdbT_00013__zh-cn_topic_0000001737511009_li192071621198"><a name="gaussdbT_00013__zh-cn_topic_0000001737511009_li192071621198"></a><a name="zh-cn_topic_0000001737511009_li192071621198"></a><span>通过执行以下SQL语句查询当前日志模式。</span><p></p><pre class="screen" id="gaussdbT_00013__zh-cn_topic_0000001737511009_screen8702185112101">SELECT LOG_MODE FROM DV_DATABASE;</pre> <p></p></li>
+     <li id="gaussdbT_00013__zh-cn_topic_0000001737511009_li1397917475106"><span>如果<a href="#gaussdbT_00013__zh-cn_topic_0000001737511009_li192071621198">2</a>查询的日志归档模式需要修改，执行以下SQL语句修改Redo日志模式，此语句为修改Redo日志归档模式的示例。</span><p></p><pre class="screen" id="gaussdbT_00013__zh-cn_topic_0000001737511009_screen8424123342012">ALTER DATABASE ARCHIVELOG;</pre> <p></p></li>
+     <li id="gaussdbT_00013__zh-cn_topic_0000001737511009_li475522732016"><span>修改完成后执行<a href="#gaussdbT_00013__zh-cn_topic_0000001737511009_li192071621198">2</a>查询是否修改成功。</span></li>
+    </ol>
+    <div class="note" id="gaussdbT_00013__zh-cn_topic_0000001737511009_note4845115014255">
+     <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+     <div class="notebody">
+      <ul id="gaussdbT_00013__zh-cn_topic_0000001737511009_ul1218476112617">
+       <li id="gaussdbT_00013__zh-cn_topic_0000001737511009_li15184146192610">数据库主备部署时，只能设置Redo日志为归档模式（ARCHIVELOG），不能设置Redo日志为在线模式（NOARCHIVELOG）。</li>
+       <li id="gaussdbT_00013__zh-cn_topic_0000001737511009_li176181498269">Gauss100 OLTP默认为归档模式。</li>
+      </ul>
+     </div>
+    </div>
+   </div>
+   <p id="gaussdbT_00013__zh-cn_topic_0000001737511009_p8060118"></p>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="gaussdbT_00011.html">备份GaussDB T数据库</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

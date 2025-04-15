@@ -1,0 +1,162 @@
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-cn" xml:lang="zh-cn">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="DC.Type" content="topic">
+  <meta name="DC.Title" content="步骤2：开启归档模式">
+  <meta name="product" content="">
+  <meta name="DC.Relation" scheme="URI" content="postgresql-0009.html">
+  <meta name="prodname" content="">
+  <meta name="version" content="">
+  <meta name="brand" content="">
+  <meta name="DC.Publisher" content="20250306">
+  <meta name="prodname" content="csbs">
+  <meta name="documenttype" content="usermanual">
+  <meta name="DC.Format" content="XHTML">
+  <meta name="DC.Identifier" content="postgresql-0010_0">
+  <meta name="DC.Language" content="zh-cn">
+  <link rel="stylesheet" type="text/css" href="public_sys-resources/commonltr.css">
+  <title>步骤2：开启归档模式</title>
+ </head>
+ <body style="clear:both; padding-left:10px; padding-top:5px; padding-right:5px; padding-bottom:5px">
+  <a name="postgresql-0010_0"></a><a name="postgresql-0010_0"></a>
+  <h1 class="topictitle1">步骤2：开启归档模式</h1>
+  <div>
+   <p>在执行数据库备份前必须开启归档模式，否则将会导致备份失败。</p>
+   <div class="section">
+    <h4 class="sectiontitle">操作步骤</h4>
+    <ul>
+     <li><strong>单实例、集群实例（pgpool、CLup、HACS）：通过修改配置文件参数开启归档模式</strong>
+      <ol>
+       <li>使用PuTTY，登录PostgreSQL数据库主机。需要在所有节点上执行以下操作。</li>
+       <li>创建存放归档日志（WAL日志）的路径，后续操作以/mnt/server/archivedir/路径为例。<pre class="screen">mkdir -p<em> /mnt/server/archivedir/</em></pre></li>
+       <li>赋予运行数据库的操作系统用户postgres读写权限。<pre class="screen">chmod 750 <em>/mnt/server/archivedir/</em>
+chown postgres:postgres <em>/mnt/server/archivedir/</em></pre></li>
+       <li>执行<strong>su - postgres</strong>切换数据库的操作系统用户postgres。系统回显示例如下：<pre class="screen">[root@pg_102_129 <font style="font-size:8pt" face="Courier New">~</font>]# su - postgres
+[postgres@pg_102_129 root]$<em>  </em></pre></li>
+       <li>登录PostgreSQL数据库。<pre class="screen">cd <em>/usr/local/pgsql/bin</em>
+./psql</pre></li>
+       <li>执行<strong>show config_file</strong><strong>;</strong>查询postgresql.conf文件所在路径。系统回显示例如下：<pre class="screen">postgres=# show config_file;
+              config_file
+---------------------------------------
+ /usr/local/pgsql/data/postgresql.conf
+(1 row)</pre></li>
+       <li>在键盘上按<span class="uicontrol">“Ctrl+d”</span>退出登录数据库管理用户postgres，进入PostgreSQL数据库主机。</li>
+       <li>进入postgresql.conf文件，这里以/usr/local/pgsql/data/postgresql.conf路径为例。<pre class="screen">vi <em>/usr/local/pgsql/data/postgresql.conf</em></pre></li>
+       <li>找到并修改postgresql.conf文件中的wal_level 、archive_mode和archive_command参数，如下所示：<pre class="screen">wal_level = replica                     # minimal, replica, or logical
+archive_mode = on               # enables archiving; off, on, or always
+archive_command = 'cp %p /mnt/server/archivedir/%f'          # command to use to archive a logfile segment</pre>
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <ul>
+           <li>将wal_level设置为archive（PostgreSQL 9.6及以上版本设置为replica）。</li>
+           <li>将archive_mode设置为on。</li>
+           <li>将archive_command设置为 'cp %p /mnt/server/archivedir/%f'，并确保归档日志的路径是单个路径。</li>
+           <li>archive_command只支持cp命令，其他命令不支持。</li>
+           <li>修改postgresql.conf文件时，请修改文件中已存在的字段值，禁止在文件中自行新增同样的字段，否则将会影响恢复任务。</li>
+           <li>开启归档模式后，需要手动清理日志，否则会影响数据库的正常使用。</li>
+          </ul>
+         </div>
+        </div></li>
+       <li>退出PostgreSQL数据库，再重启数据库：
+        <ul>
+         <li><strong>单实例</strong>：
+          <div class="p">
+           /usr/local/pgsql/bin/pg_ctl代表PostgreSQL安装路径下面的pg_ctl的路径，-D参数代表客户自行指定的数据目录，-l参数代表PostgreSQL数据库在启动过程中指定的日志输出文件，在指定日志输出文件前，需要保证该文件可创建成功。
+           <pre class="screen"><em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l <em>logfile</em>  restart</pre>
+          </div></li>
+         <li><strong>集群实例（pgpool）</strong>：
+          <ol type="a">
+           <li>先停备节点数据库，再停主节点数据库：<pre class="screen"><em>/usr/local/pgpool/bin/pgpool</em> -m fast stop
+su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile stop</pre></li>
+           <li>先启动主节点数据库，再启动备节点数据库：<pre class="screen">su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile start
+<em>/usr/local/pgpool/bin/pgpool</em>  -n</pre></li>
+          </ol></li>
+         <li><strong>集群实例（CLup）</strong>：
+          <ol type="a">
+           <li>先停备节点数据库，后停主节点数据库：<p>1）登录CLup数据库管理系统。</p> <p>2）在<span class="uicontrol">“HA集群 &gt; HA管理”</span>找到对应集群，单击<span class="uicontrol">“离线”</span>，离线成功后，集群状态为Offline。</p> <p>3）在<span class="uicontrol">“数据库管理 &gt; 实例列表”</span>找到对应的数据库实例，先停备库，再停主库，单击<span class="uicontrol">“停止”</span>，停止成功后，数据库实例状态为“停止”。</p></li>
+           <li>先启动主节点数据库，再启动备节点数据库：<p>1）在<span class="uicontrol">“数据库管理 &gt; 实例列表”</span>找到对应的数据库实例，先起主库，再起备库，单击<span class="uicontrol">“启动”</span>，启动成功后，数据库实例状态为“运行中”。</p> <p>2）在<span class="uicontrol">“HA集群 &gt; HA管理”</span>找到对应集群，单击<span class="uicontrol">“上线”</span>，上线成功后，集群状态为Online。</p></li>
+          </ol></li>
+         <li><strong>集群实例（HACS）</strong>：
+          <ol type="a">
+           <li>冻结HACS集群，手动执行冻结命令<strong>crm configure property maintenance-mode=true</strong>，完成冻结后才可以手动停止PostgreSQL数据库：
+            <div class="p">
+             1）先停备节点数据库，后停主节点数据库：
+             <pre class="screen">su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile stop</pre>
+            </div>
+            <div class="p">
+             2）先启动主节点数据库，再启动备节点数据库：
+             <pre class="screen">su - postgres
+<em>/usr/local/pgsql/bin/pg_ctl</em> -D <em>/usr/local/pgsql/data</em> -l logfile start</pre>
+            </div></li>
+           <li>手动执行解冻HACS集群命令<strong>crm configure property maintenance-mode=false</strong>。</li>
+          </ol></li>
+        </ul></li>
+       <li>重启PostgreSQL数据库后，通过以下命令查询归档模式是否已开启：<pre class="screen">show archive_mode;</pre> <p>如已开启，系统回显示如下：</p> <p><span><img src="zh-cn_image_0000002169383338.png"></span></p></li>
+      </ol></li>
+    </ul>
+    <ul>
+     <li><strong>集群实例（patroni）：通过执行数据库命令开启归档模式</strong>
+      <ol>
+       <li>使用PuTTY，登录PostgreSQL数据库主机。需要在所有节点上执行以下操作。</li>
+       <li>创建存放归档日志（WAL日志）的路径，后续操作以/mnt/server/archivedir/路径为例。<pre class="screen">mkdir -p /mnt/server/archivedir/</pre></li>
+       <li>赋予运行数据库的操作系统用户有读写权限。<pre class="screen">chmod 750 /mnt/server/archivedir/
+chown postgres:postgres /mnt/server/archivedir/</pre></li>
+       <li>执行<strong>su - postgres</strong>切换数据库管理用户postgres。系统回显示如下：<pre class="screen">[root@pg_102_129 <font style="font-size:8pt" face="Courier New">~</font>]# su - postgres
+[postgres@pg_102_129 root]$<em>  </em></pre></li>
+       <li>登录PostgreSQL数据库。<pre class="screen">cd /usr/local/pgsql/bin
+./psql</pre></li>
+       <li>在PostgreSQL数据库主机，依次执行以下命令，开启数据库归档模式。<pre class="screen">alter system set wal_level= 'replica';
+alter system set archive_mode= 'on';
+alter system set archive_command ='cp %p /mnt/server/archivedir/%f';</pre>
+        <div class="note">
+         <img src="public_sys-resources/note_3.0-zh-cn.png"><span class="notetitle"> </span>
+         <div class="notebody">
+          <p>archive_command只支持cp命令，其他命令不支持。</p>
+         </div>
+        </div></li>
+       <li>退出PostgreSQL数据库，再重启数据库：
+        <div class="p">
+         1）先停所有备节点：
+         <pre class="screen">systemctl stop patroni</pre>
+        </div>
+        <div class="p">
+         2）重启主节点：
+         <pre class="screen">systemctl restart patroni</pre>
+        </div>
+        <div class="p">
+         3）启动所有备节点：
+         <pre class="screen">systemctl start patroni</pre>
+        </div></li>
+       <li>重启PostgreSQL数据库后，通过以下命令查询归档模式是否已开启：<pre class="screen">show archive_mode;</pre> <p>如已开启，系统回显示如下：</p> <p><span><img src="zh-cn_image_0000002204791729.png"></span></p></li>
+      </ol></li>
+    </ul>
+   </div>
+  </div>
+  <div>
+   <div class="familylinks">
+    <div class="parentlink">
+     <strong>父主题：</strong> <a href="postgresql-0009.html">备份PostgreSQL</a>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>
