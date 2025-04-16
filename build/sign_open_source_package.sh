@@ -2,7 +2,8 @@
 set -e
 
 if [ $# -ne 3 ]; then
-    echo "Usage: ./sign_open_source_package.sh <open-eBackup-package> <ROOT_KEY> <ROOT_CRT>"
+    echo "Usage: "
+    echo "    ./sign_open_source_package.sh <open-eBackup-package> <ROOT_KEY> <ROOT_CRT>"
     exit 1
 fi
 
