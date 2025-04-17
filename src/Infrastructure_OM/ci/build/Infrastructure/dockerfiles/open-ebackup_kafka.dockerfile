@@ -33,7 +33,7 @@ RUN echo "nobody   ALL=(ALL) NOPASSWD:/opt/mount_oper.sh" >> /etc/sudoers \
 ENV PYTHONPATH=/opt/script
 
 USER 99
-RUN pip3 install --no-cache-dir -r /opt/script/requirements.txt
+RUN pip3 install --no-cache-dir --user -r /opt/script/requirements.txt
 
 USER root
 RUN rm -f /root/.config/pip/pip.conf
