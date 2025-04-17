@@ -544,7 +544,6 @@ spec:
         - name: ip-config
           hostPath:
             path: /etc/sysconfig/network-scripts/ifcfg-eth4
-            type: FileOrCreate
         - name: common-secret
           secret:
             secretName: common-secret
