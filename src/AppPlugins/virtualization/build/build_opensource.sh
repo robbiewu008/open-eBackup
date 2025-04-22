@@ -29,7 +29,7 @@ FRAMEWORK_PATH="${OPEN_ROOT_PATH}/REST_API/src/AppPlugins/common/framework"
 MODULE_PATH="${OPEN_ROOT_PATH}/REST_API/src/AppPlugins/common/Module"
 REST_VIRT_LIB_PATH="${REST_VIRT_PATH}/lib"
 
-SYS_NAME=`arch`
+SYS_NAME=`uname -m`
 if [ "${SYS_NAME}" = "aarch64" ]; then
     VIRT_PACK="VirtualizationPlugin_aarch64.tar.xz"
 elif [ "${SYS_NAME}" = "x86_64" ]; then
@@ -138,6 +138,7 @@ function uncompress_deps
         mkdir -p ${REST_VIRT_PATH}/deps
     fi
     cp -arf ${tmp_path}/bin/patchelf "${REST_VIRT_PATH}/deps"
+    cp -arf ${tmp_path}/install/python3.pluginFrame.${SYS_NAME}.tar.gz "${REST_VIRT_PATH}/deps"
 
     rm -rf "${tmp_path}"
 }

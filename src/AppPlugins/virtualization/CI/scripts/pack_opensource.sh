@@ -148,6 +148,20 @@ function copy_file()
 
     # 6、copy dependency file
     copy_dep_binary
+
+    # 7、copy python file
+    python3_file=${VIRT_ROOT_DIR}/deps/python3.pluginFrame.${SYS_ARCH}.tar.gz
+    # 内置代理不拷python包
+    if [ ${INTERNAL_PLUGIN} = "1" ]; then
+        echo "Internal plugins does not need packag python."
+        return 0
+    fi
+    if [ ! -f ${python3_file} ]; then
+        echo "The ${python3_file} file cannot be found."
+        exit 1
+    else
+        cp -rf ${python3_file} "${OUTPUT_PKG_PATH}/install"
+    fi
 }
 
 main()

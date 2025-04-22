@@ -238,6 +238,7 @@ main()
     if [ $? -ne 0 ];then
         return 1
     fi
+    enter_virtual
     start_plugin "$@"
     if [ $? -eq 0 ]; then
         echo "[$(date "+%Y-%m-%d %H:%M:%S")][INFO][ Start agent plugin ${PLUGIN_NAME} successfully ]" >> ${LOG_FILE}
