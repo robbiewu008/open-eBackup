@@ -19,7 +19,6 @@ export BUILD_TYPE=Release
 SCRIPT_PATH=$(dirname ${BASH_SOURCE[0]})
 
 PROJECT_ROOT_PATH=$(cd "${SCRIPT_PATH}/../../../"; pwd)
-echo "${PROJECT_ROOT_PATH}  PROJECT_ROOT_PATH"
 # 虚拟化插件根路径 AppPlugins_NAS/plugins/virtualization/
 #VIRT_ROOT_DIR=$(cd "${SCRIPT_PATH}/.."; pwd)
 OPEN_ROOT_PATH=$(cd "${SCRIPT_PATH}/../../../../../"; pwd)
