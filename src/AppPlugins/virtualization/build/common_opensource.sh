@@ -19,18 +19,19 @@ export BUILD_TYPE=Release
 SCRIPT_PATH=$(dirname ${BASH_SOURCE[0]})
 
 PROJECT_ROOT_PATH=$(cd "${SCRIPT_PATH}/../../../"; pwd)
+echo "${PROJECT_ROOT_PATH}  PROJECT_ROOT_PATH"
 # 虚拟化插件根路径 AppPlugins_NAS/plugins/virtualization/
 #VIRT_ROOT_DIR=$(cd "${SCRIPT_PATH}/.."; pwd)
 OPEN_ROOT_PATH=$(cd "${SCRIPT_PATH}/../../../../../"; pwd)
 
 PLUGIN_VIRT_LIB_PATH="${PROJECT_ROOT_PATH}/libs"
-FRAMEWORK_PATH="${PROJECT_ROOT_PATH}/framework"
-MODULE_PATH="${PROJECT_ROOT_PATH}/Module"
+FRAMEWORK_PATH="${PROJECT_ROOT_PATH}/AppPlugins/common/framework"
+MODULE_PATH="${PROJECT_ROOT_PATH}/AppPlugins/common/Module"
 MODULE_OPEN_SRC_PATH="${MODULE_PATH}/third_open_src"
 MODULE_PLATFORM_PATH="${MODULE_PATH}/platform"
 OPENSOURCE_PATH="${OPEN_ROOT_PATH}/open-source-obligation/AppPlugins_virtualization"
 OPENSOURCE_MODULE_PATH="${OPENSOURCE_PATH}/Module"
-REST_API_PATH="${OPEN_ROOT_PATH}/REST_API/AppPlugins_virtualization/"
+REST_API_PATH="${OPEN_ROOT_PATH}/REST_API/src/AppPlugins/virtualization/"
 OPEN_VIRT_LIB_PATH="${REST_API_PATH}/libs"
 
 numProc=$(cat /proc/cpuinfo | grep processor | wc -l)

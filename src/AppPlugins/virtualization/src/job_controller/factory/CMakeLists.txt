@@ -8,8 +8,8 @@ add_library(virtualization_job_factory_obj
 
 target_include_directories(virtualization_job_factory_obj
     PRIVATE
-    ${PROTECT_ROOT_DIR}/framework/dep/agent_sdk/include/message/archivestream
-    ${PROTECT_ROOT_DIR}/framework/dep/agent_sdk/include
+    ${PROTECT_ROOT_DIR}/common/framework/dep/agent_sdk/include/message/archivestream
+    ${PROTECT_ROOT_DIR}/common/framework/dep/agent_sdk/include
 )
 
 target_link_libraries(virtualization_job_factory_obj

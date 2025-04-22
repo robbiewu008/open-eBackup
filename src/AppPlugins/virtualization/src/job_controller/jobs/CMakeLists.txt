@@ -17,8 +17,8 @@ add_library(jobs_obj
 
 target_include_directories(jobs_obj
     PRIVATE
-    ${PROTECT_ROOT_DIR}/framework/dep/agent_sdk/include/message/archivestream
-    ${PROTECT_ROOT_DIR}/framework/dep/agent_sdk/include
+    ${PROTECT_ROOT_DIR}/common/framework/dep/agent_sdk/include/message/archivestream
+    ${PROTECT_ROOT_DIR}/common/framework/dep/agent_sdk/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../job_controller/aio_datamover/
     ${CMAKE_CURRENT_SOURCE_DIR}/../../common
     ${PROTECT_ROOT_DIR}/Module/src/common/

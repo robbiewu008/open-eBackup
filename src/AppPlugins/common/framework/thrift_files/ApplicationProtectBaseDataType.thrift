@@ -396,6 +396,14 @@ struct JobPermission {
     5:optional string extendInfo
 }
 
+/** result of command */
+struct CmdResult {
+    /** result of cmd */
+    1:required i32 result,
+    /** output of cmd */
+    2:required list<string> output
+}
+
 /** The path of the repository. */
 struct RepositoryPath {
     /** The repository type of the Path */

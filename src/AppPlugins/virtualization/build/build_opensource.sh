@@ -14,6 +14,7 @@
 # 初始化环境变量
 
 # open-eBackup-bin
+OPEN_ROOT_PATH=${WORKSPACE}
 OPEN_OBLIGATION_ROOT_PATH=${binary_path}
 if [ -z "$OPEN_OBLIGATION_ROOT_PATH" ]; then
     echo "ERROR: Please export binary_path={open-source-obligation path}"
@@ -23,13 +24,14 @@ fi
 build_type=$1
 OPEN_VIRT_PATH="${OPEN_OBLIGATION_ROOT_PATH}/Plugins/Linux"
 REST_VIRT_PATH="${OPEN_ROOT_PATH}/REST_API/src/AppPlugins/virtualization"
+source ${REST_VIRT_PATH}/build/common_opensource.sh
 FRAMEWORK_PATH="${OPEN_ROOT_PATH}/REST_API/src/AppPlugins/common/framework"
 MODULE_PATH="${OPEN_ROOT_PATH}/REST_API/src/AppPlugins/common/Module"
 REST_VIRT_LIB_PATH="${REST_VIRT_PATH}/lib"
 
-SYS_NAME=`uname -s`
-if [ "${SYS_NAME}" = "arrch64" ]; then
-    VIRT_PACK="VirtualizationPlugin_Linux_aarch64.tar.xz"
+SYS_NAME=`arch`
+if [ "${SYS_NAME}" = "aarch64" ]; then
+    VIRT_PACK="VirtualizationPlugin_aarch64.tar.xz"
 elif [ "${SYS_NAME}" = "x86_64" ]; then
     VIRT_PACK="VirtualizationPlugin_Linux_x86_64.tar.xz"
 else
@@ -44,8 +46,8 @@ Framework_lib_list=(
     ${FRAMEWORK_PATH}/lib
     ${FRAMEWORK_PATH}/lib/agent_sdk
     
-    ${REST_VIRT_PATH}/lib
-    ${REST_VIRT_PATH}/deps/local/lib
+    #${REST_VIRT_PATH}/lib
+    #${REST_VIRT_PATH}/deps/local/lib
 )
 
 Module_lib_list=(
@@ -121,62 +123,21 @@ function uncompress_deps
     mkdir -p "${tmp_path}"
     cp "${OPEN_VIRT_PACK}" "${tmp_path}"
     xz -d "${tmp_path}/${VIRT_PACK}"
-    rm "${tmp_path}/${VIRT_PACK}"
-    tar -xvf "${tmp_path}/*.tar"
+    tar -xvf "${tmp_path}/VirtualizationPlugin_aarch64.tar" -C ${tmp_path}
+    xz -d  "${tmp_path}/VirtualizationPlugin_Linux_aarch64.tar.xz"
+    tar -xvf "${tmp_path}/VirtualizationPlugin_Linux_aarch64.tar" -C ${tmp_path}
 
-    local vir_path="${tmp_path}/AppPlugins_virtualization"
-    if [ ! -d "${REST_VIRT_PATH}/lib/service" ]; then
-        mkdir -p ${REST_VIRT_PATH}/lib/service
+    if [ ! -d "${REST_VIRT_PATH}/lib" ]; then
+        mkdir -p ${REST_VIRT_PATH}/lib
     fi
-    cp -arf "${vir_path}/tmps/lib/service/*" "${REST_VIRT_PATH}/lib/service"
-
-    if [ ! -d "${REST_VIRT_PATH}/lib/3rd" ]; then
-        mkdir -p ${REST_VIRT_PATH}/lib/3rd
-    fi
-    cp -arf "${vir_path}/tmps/lib/3rd/*" "${REST_VIRT_PATH}/lib/3rd"
-
-    if [ ! -d "${REST_VIRT_PATH}/deps" ]; then
-        mkdir -p ${REST_VIRT_PATH}/deps
-    fi
-    cp -arf "${vir_path}/deps/*" "${REST_VIRT_PATH}/deps"
+    cp -arf ${tmp_path}/lib/service/* "${REST_VIRT_PATH}/lib"
 
     if [ ! -d "${REST_VIRT_PATH}/vbstool" ]; then
         mkdir -p ${REST_VIRT_PATH}/vbstool
     fi
-    cp -arf "${vir_path}/vbstool/*" "${REST_VIRT_PATH}/vbstool"
+    cp -arf ${tmp_path}/vbstool/* "${REST_VIRT_PATH}/vbstool"
 
-    rm -rf "${REST_VIRT_PATH}/tmps"
-}
-
-function copy_deps()
-{
-    if [ ${build_type} = "release" ]; then
-        uncompress_deps
-    else
-        local deps_path="${REST_API_PATH}/deps"
-        if [ ! -d "${deps_path}" ]; then
-            mkdir -p ${deps_path}
-        fi
-        cp -arf ${OPENSOURCE_PATH}/deps/* ${deps_path}/
-
-        local module_path="${REST_API_PATH}/Module"
-        if [ ! -d "${module_path}" ]; then
-            mkdir -p ${module_path}
-        fi
-        cp -arf ${OPENSOURCE_PATH}/Module/* ${module_path}/
-
-        local framework_path="${REST_API_PATH}/framework"
-        if [ ! -d "${framework_path}" ]; then
-            mkdir -p ${framework_path}
-        fi
-        cp -arf ${OPENSOURCE_PATH}/framework/* ${framework_path}/
-
-        local vir_lib_path="${REST_API_PATH}/lib"
-        if [ ! -d "${vir_lib_path}" ]; then
-            mkdir -p ${vir_lib_path}
-        fi
-        cp -arf ${OPENSOURCE_PATH}/lib/* ${vir_lib_path}/
-    fi
+    rm -rf "${tmp_path}"
 }
 
 function cmake_all()
@@ -257,11 +218,7 @@ function main()
         log_echo "INFO" "Finish to clean build-make folder"
         return 0
     fi
-    copy_deps
-    if [ $? -ne 0 ]; then
-        log_echo "ERROR" "copy_deps error"
-        exit 1
-    fi
+    uncompress_deps
     ### 检查Framework
     for path in "${Framework_lib_list[@]}"
     do

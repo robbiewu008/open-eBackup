@@ -16,6 +16,7 @@ typedef ApplicationProtectBaseDataType.StorageRepository StorageRepository
 typedef ApplicationProtectBaseDataType.BackupJobType BackupJobType
 typedef ApplicationProtectBaseDataType.JobPermission JobPermission
 typedef ApplicationProtectBaseDataType.ResourceResultByPage ResourceResultByPage
+typedef ApplicationProtectBaseDataType.CmdResult CmdResult
 
 exception AppProtectFrameworkException {
     1:required i32 code;
@@ -421,6 +422,17 @@ service SecurityService {
             validity if the ActionResult.code is 0, invalidity otherwise
     */
     ActionResult CheckCertThumbPrint(1:string ip, 2:i32 port, 3:string thumbPrint);
+
+    /** 
+        Function description
+            when plugin need run commmand call the interface
+        Parameters
+            cmdPara : command parameters
+            cmdOutput: output of command
+        Return value
+            validity if the ActionResult.code is 0, invalidity otherwise
+    */
+    CmdResult RunCommand(1:string cmdPara);
 }
 
 /** 

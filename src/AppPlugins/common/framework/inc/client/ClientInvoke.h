@@ -105,6 +105,7 @@ public:
     /** when plugin need check Certificate thumbprint info validity call the interface **/
     static void CheckCertThumbPrint(ActionResult& returnValue, const std::string& ip,
                                     const int32_t port, const std::string& thumbPrint);
+    static void RunCommand(CmdResult& returnValue, const std::string& cmdParaStr);
 };
 
 class FrameworkService {
