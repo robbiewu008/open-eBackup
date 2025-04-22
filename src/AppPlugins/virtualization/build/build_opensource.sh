@@ -45,9 +45,6 @@ YAMLCPP=yaml-cpp-yaml-cpp-0.6.3
 Framework_lib_list=(
     ${FRAMEWORK_PATH}/lib
     ${FRAMEWORK_PATH}/lib/agent_sdk
-    
-    #${REST_VIRT_PATH}/lib
-    #${REST_VIRT_PATH}/deps/local/lib
 )
 
 Module_lib_list=(
