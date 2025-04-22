@@ -178,6 +178,7 @@ main()
 
     # Execute framework package
     sh ${FRAMEWORK_DIR}/build/pack.sh
+    sh ${FRAMEWORK_DIR}/build/generate_full_pkg.sh VirtualizationPlugin
 }
 
 main "$@"
