@@ -24,7 +24,7 @@ FRAMEWORK_OUTPUT=${FRAMEWORK_DIR}/output_pkg
 COMMON_PATH=${FRAMEWORK_DIR}/build/common
 . ${COMMON_PATH}/common.sh
 SCRIPT_NAME=$(basename $0)
-
+SYS_ARCH=`uname -m`
 type=$1
 
 function copy_hcs()
