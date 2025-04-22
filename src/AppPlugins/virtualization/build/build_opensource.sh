@@ -134,6 +134,11 @@ function uncompress_deps
     fi
     cp -arf ${tmp_path}/vbstool/* "${REST_VIRT_PATH}/vbstool"
 
+    if [ ! -d "${REST_VIRT_PATH}/deps" ]; then
+        mkdir -p ${REST_VIRT_PATH}/deps
+    fi
+    cp -arf ${tmp_path}/bin/patchelf "${REST_VIRT_PATH}/deps"
+
     rm -rf "${tmp_path}"
 }
 

@@ -106,7 +106,7 @@ function copy_dep_binary()
     # copy patchelf
     if [ ! -f "${VIRT_ROOT_DIR}"/deps/patchelf ]; then
         echo "The patchelf file cannot be found."
-        # exit 1
+        exit 1
     else
         cp -rf "${VIRT_ROOT_DIR}"/deps/patchelf "${OUTPUT_PKG_PATH}"/bin
     fi
