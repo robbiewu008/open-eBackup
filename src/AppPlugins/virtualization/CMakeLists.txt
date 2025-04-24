@@ -7,9 +7,9 @@ set(CMAKE_CXX_FLAGS -g)
 
 # set project variable
 if (OPENSOURCE)
-    set(PROTECT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../common)
-    set(VIRT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../)
-    set(MODULE_ROOT_PATH ${PROTECT_ROOT_DIR}/Module)
+    set(PROTECT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../)
+    set(VIRT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../)
+    set(MODULE_ROOT_PATH ${PROTECT_ROOT_DIR}/common/Module)
     set(MODULE_OPEN_SRC_PATH ${MODULE_ROOT_PATH}/third_open_src)
     set(MODULE_PLATFORM_PATH ${MODULE_ROOT_PATH}/platform)
 else()
@@ -23,16 +23,16 @@ endif()
 find_package(Python3 COMPONENTS Interpreter Development)
 include_directories(${Python3_INCLUDE_DIRS})
 
-include(${PROTECT_ROOT_DIR}/plugins/virtualization/build/cmake/global.cmake)
+include(${PROTECT_ROOT_DIR}/virtualization/build/cmake/global.cmake)
 
 if (TRACEPOINT)
     add_definitions(-DEBK_TRACE_POINT)
 endif()
 
 set(FRAMEWORK_LIBS
-    ${PROTECT_ROOT_DIR}/framework/lib
-    ${PROTECT_ROOT_DIR}/framework/3rd
-    ${PROTECT_ROOT_DIR}/framework/lib/agent_sdk
+    ${PROTECT_ROOT_DIR}/common/framework/lib
+    ${PROTECT_ROOT_DIR}/common/framework/3rd
+    ${PROTECT_ROOT_DIR}/common/framework/lib/agent_sdk
     ${MODULE_OPEN_SRC_PATH}/lz4_rel/lib
     ${MODULE_OPEN_SRC_PATH}/boost_rel/lib
     ${MODULE_OPEN_SRC_PATH}/jsoncpp_rel/libs
@@ -41,17 +41,18 @@ set(FRAMEWORK_LIBS
     ${MODULE_OPEN_SRC_PATH}/libaio_rel/lib
     ${MODULE_OPEN_SRC_PATH}/tinyxml2_rel/lib
     ${MODULE_PLATFORM_PATH}/SecureCLib_rel/lib
+    ${PROTECT_ROOT_DIR}/virtualization/lib
 )
 
 message(STATUS "FRAMEWORK_LIBS: ${FRAMEWORK_LIBS}")
 
 set(PLUGIN_FRAMEWORK_INC
-    ${PROTECT_ROOT_DIR}/framework/inc
-    ${PROTECT_ROOT_DIR}/framework/inc/common
-    ${PROTECT_ROOT_DIR}/framework/inc/client
-    ${PROTECT_ROOT_DIR}/framework/inc/rpc
-    ${PROTECT_ROOT_DIR}/framework/inc/rpc/certificateservice/
-    ${PROTECT_ROOT_DIR}/framework/inc/thrift_interface
+    ${PROTECT_ROOT_DIR}/common/framework/inc
+    ${PROTECT_ROOT_DIR}/common/framework/inc/common
+    ${PROTECT_ROOT_DIR}/common/framework/inc/client
+    ${PROTECT_ROOT_DIR}/common/framework/inc/rpc
+    ${PROTECT_ROOT_DIR}/common/framework/inc/rpc/certificateservice/
+    ${PROTECT_ROOT_DIR}/common/framework/inc/thrift_interface
 
     ${MODULE_ROOT_PATH}/src
     ${MODULE_OPEN_SRC_PATH}/boost_rel/include
@@ -179,5 +180,5 @@ target_include_directories(virtualization_plugin
     ${CMAKE_CURRENT_SOURCE_DIR}/src/volume_handlers
     ${PLUGIN_FRAMEWORK_INC}
     ${PLUGIN_FRAMEWORK_INC}/utils
-    ${PROTECT_ROOT_DIR}/framework
+    ${PROTECT_ROOT_DIR}/common/framework
 )

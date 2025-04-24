@@ -11,7 +11,7 @@
 # EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
 # MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 #
-VIRT_ROOT_DIR=$(cd $(dirname $0)/../..; pwd)
+export VIRT_ROOT_DIR=$(cd $(dirname $0)/../..; pwd)
 FRAMEWORK_DIR=$(cd "${VIRT_ROOT_DIR}/../common/framework"; pwd)
 MODULE_PATH=$(cd "${VIRT_ROOT_DIR}/../common/Module"; pwd)
 COMMON_PATH=${FRAMEWORK_DIR}/build/common
@@ -43,10 +43,10 @@ main()
         exit 1
     fi
 
-    # build file plugin
+    # build virtual plugin
     sh ${VIRT_ROOT_DIR}/build/build_opensource.sh "${build_type}"
     if [ $? -ne 0 ]; then
-        log_echo "ERROR" "Building file lib failed"
+        log_echo "ERROR" "Building virtual lib failed"
         exit 1
     fi
     exit 0

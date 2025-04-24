@@ -162,9 +162,9 @@ add_subdirectory(${MODULE_ROOT_PATH}/src/system system)
 endif()
 
 set(PLUGIN_FRAMEWORK_LIBS
-    ${PROTECT_ROOT_DIR}/framework/lib
-    ${PROTECT_ROOT_DIR}/framework/lib/agent_sdk
-    ${PROTECT_ROOT_DIR}/framework/lib/3rd
+    ${PROTECT_ROOT_DIR}/common/framework/lib
+    ${PROTECT_ROOT_DIR}/common/framework/lib/agent_sdk
+    ${PROTECT_ROOT_DIR}/common/framework/lib/3rd
     ${MODULE_OPEN_SRC_PATH}/lz4_rel/lib
     ${MODULE_OPEN_SRC_PATH}/boost_rel/lib
     ${MODULE_OPEN_SRC_PATH}/jsoncpp_rel/libs
@@ -178,12 +178,12 @@ set(PLUGIN_FRAMEWORK_LIBS
 )
 
 set(PLUGIN_FRAMEWORK_INC
-    ${PROTECT_ROOT_DIR}/framework/inc
-    ${PROTECT_ROOT_DIR}/framework/inc/common
-    ${PROTECT_ROOT_DIR}/framework/inc/client
-    ${PROTECT_ROOT_DIR}/framework/inc/rpc
-    ${PROTECT_ROOT_DIR}/framework/inc/rpc/certificateservice/
-    ${PROTECT_ROOT_DIR}/framework/inc/thrift_interface
+    ${PROTECT_ROOT_DIR}/common/framework/inc
+    ${PROTECT_ROOT_DIR}/common/framework/inc/common
+    ${PROTECT_ROOT_DIR}/common/framework/inc/client
+    ${PROTECT_ROOT_DIR}/common/framework/inc/rpc
+    ${PROTECT_ROOT_DIR}/common/framework/inc/rpc/certificateservice/
+    ${PROTECT_ROOT_DIR}/common/framework/inc/thrift_interface
     ${PROTECT_ROOT_DIR}/plugins/virtualization/test/llt_stub/
 
     ${MODULE_ROOT_PATH}/src
@@ -226,8 +226,8 @@ include_directories(
     ${VIRT_INC_DIR}
     ${PLUGIN_FRAMEWORK_INC}
     ${YAML_INCLUDE_DIR}
-    ${PROTECT_ROOT_DIR}/framework/dep/agent_sdk/include/message/archivestream
-    ${PROTECT_ROOT_DIR}/framework/dep/agent_sdk/include
+    ${PROTECT_ROOT_DIR}/common/framework/dep/agent_sdk/include/message/archivestream
+    ${PROTECT_ROOT_DIR}/common/framework/dep/agent_sdk/include
     ${PROTECT_ROOT_DIR}/plugins/virtualization/src/volume_handlers/fusionstorage
     # gtest
     ${GOOGLE_TEST_PATH}/googletest/include
