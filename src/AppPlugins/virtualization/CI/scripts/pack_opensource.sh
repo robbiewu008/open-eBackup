@@ -16,6 +16,7 @@ VIRT_ROOT_DIR=$(cd $(dirname $0)/../..; pwd)
 APPPLUGINS_ROOT_PATH=$(cd "${VIRT_ROOT_DIR}/.."; pwd)
 PLUGINS_PATH="${APPPLUGINS_ROOT_PATH%/*}"
 FRAMEWORK_DIR=$(cd "${APPPLUGINS_ROOT_PATH}/common/framework"; pwd)
+OUTPUT_PKG_PATH=${FRAMEWORK_DIR}/output_pkg
 MODULE_PATH=$(cd "${APPPLUGINS_ROOT_PATH}/common/Module"; pwd)
 MODULE_THIRD_DIR=$(cd "${APPPLUGINS_ROOT_PATH}/common/Module/third_open_src"; pwd)
 MODULE_LIB_DIR=${APPPLUGINS_ROOT_PATH}/common/Module/lib
@@ -23,7 +24,7 @@ FRAMEWORK_OUTPUT=${FRAMEWORK_DIR}/output_pkg
 COMMON_PATH=${FRAMEWORK_DIR}/build/common
 . ${COMMON_PATH}/common.sh
 SCRIPT_NAME=$(basename $0)
-
+SYS_ARCH=`uname -m`
 type=$1
 
 function copy_hcs()
@@ -129,7 +130,7 @@ function copy_file()
     fi
 
     # 2、copy compile so file
-    cp -rf ${VIRT_ROOT_DIR}/libs/*.so ${OUTPUT_PKG_PATH}/lib/service
+    cp -rf ${VIRT_ROOT_DIR}/lib/*.so ${OUTPUT_PKG_PATH}/lib/service
 
     # 3、copy 3rd libs
     copy_3rd_lib
@@ -148,8 +149,8 @@ function copy_file()
     # 6、copy dependency file
     copy_dep_binary
 
-    # 6、copy python file
-    python3_file=${PLUGINS_PATH}/python3_pluginFrame/python3.pluginFrame.${SYS_ARCH}.tar.gz
+    # 7、copy python file
+    python3_file=${VIRT_ROOT_DIR}/deps/python3.pluginFrame.${SYS_ARCH}.tar.gz
     # 内置代理不拷python包
     if [ ${INTERNAL_PLUGIN} = "1" ]; then
         echo "Internal plugins does not need packag python."
@@ -166,7 +167,7 @@ function copy_file()
 main()
 {
     # build plugin
-    sh ${VIRT_ROOT_DIR}/CI/script/build_virt_opensource.sh "$@"
+    sh ${VIRT_ROOT_DIR}/CI/scripts/build_virt_opensource.sh "$@"
     if [ $? -ne 0 ]; then
         log_echo "ERROR" "Building file lib failed"
         exit 1
@@ -177,6 +178,7 @@ main()
 
     # Execute framework package
     sh ${FRAMEWORK_DIR}/build/pack.sh
+    sh ${FRAMEWORK_DIR}/build/generate_full_pkg.sh VirtualizationPlugin
 }
 
 main "$@"

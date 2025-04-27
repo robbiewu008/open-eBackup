@@ -688,6 +688,37 @@ void SecurityService::CheckCertThumbPrint(ActionResult& returnValue, const std::
     return;
 };
 
+void SecurityService::RunCommand(CmdResult& returnValue, const std::string& cmdParaStr)
+{
+    int retryTimes = INVOKE_AGENT_INTERFACE_RETRY_TIMES;
+    while (retryTimes > 0) {
+        try {
+            PluginThriftClient client;
+            auto agentClient = client.GetAgentClient<SecurityServiceConcurrentClient>("SecurityService");
+            if (agentClient != nullptr) {
+                agentClient->RunCommand(returnValue, cmdParaStr);
+            } else {
+                returnValue.result = Module::FAILED;
+            }
+            return;
+        } catch (apache::thrift::transport::TTransportException& ex) {
+            HCP_Log(ERR, MODULE) << "TTransportException. " << WIPE_SENSITIVE(ex.what()) << HCPENDLOG;
+        } catch (apache::thrift::protocol::TProtocolException& ex) {
+            HCP_Log(ERR, MODULE) << "TProtocolException. " << WIPE_SENSITIVE(ex.what()) << HCPENDLOG;
+        } catch (apache::thrift::TApplicationException& ex) {
+            HCP_Log(ERR, MODULE) << "TApplicationException. " << WIPE_SENSITIVE(ex.what()) << HCPENDLOG;
+        } catch (const std::exception& ex) {
+            HCP_Log(ERR, MODULE) << "Standard C++ Exception. " << WIPE_SENSITIVE(ex.what()) << HCPENDLOG;
+        } catch (...) {
+            HCP_Log(ERR, MODULE) << "Unknown exception." << HCPENDLOG;
+        }
+        Module::SleepFor(std::chrono::seconds(INVOKE_AGENT_INTERFACE_RETRY_INTERVAL));
+        retryTimes--;
+    }
+    returnValue.result = Module::FAILED;
+    return;
+}
+
 void FrameworkService::HeartBeat(ActionResult& returnValue)
 {
     try {

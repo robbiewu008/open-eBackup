@@ -1,8 +1,8 @@
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${PLUGIN_FRAMEWORK_INC}
-    ${PROTECT_ROOT_DIR}/framework/dep/agent_sdk/include/message/archivestream
-    ${PROTECT_ROOT_DIR}/framework/dep/agent_sdk/include
+    ${PROTECT_ROOT_DIR}/common/framework/dep/agent_sdk/include/message/archivestream
+    ${PROTECT_ROOT_DIR}/common/framework/dep/agent_sdk/include
 )
 
 add_subdirectory(job_controller)
