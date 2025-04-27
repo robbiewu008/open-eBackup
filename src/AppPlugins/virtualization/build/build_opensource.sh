@@ -23,10 +23,10 @@ fi
 
 build_type=$1
 OPEN_VIRT_PATH="${OPEN_OBLIGATION_ROOT_PATH}/Plugins/Linux"
-REST_VIRT_PATH="${OPEN_ROOT_PATH}/REST_API/src/AppPlugins/virtualization"
+REST_VIRT_PATH="${code_path}/src/AppPlugins/virtualization"
 source ${REST_VIRT_PATH}/build/common_opensource.sh
-FRAMEWORK_PATH="${OPEN_ROOT_PATH}/REST_API/src/AppPlugins/common/framework"
-MODULE_PATH="${OPEN_ROOT_PATH}/REST_API/src/AppPlugins/common/Module"
+FRAMEWORK_PATH="${code_path}/src/AppPlugins/common/framework"
+MODULE_PATH="${code_path}/src/AppPlugins/common/Module"
 REST_VIRT_LIB_PATH="${REST_VIRT_PATH}/lib"
 
 SYS_NAME=`uname -m`
