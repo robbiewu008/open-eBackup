@@ -30,7 +30,7 @@ MODULE_OPEN_SRC_PATH="${MODULE_PATH}/third_open_src"
 MODULE_PLATFORM_PATH="${MODULE_PATH}/platform"
 OPENSOURCE_PATH="${OPEN_ROOT_PATH}/open-source-obligation/AppPlugins_virtualization"
 OPENSOURCE_MODULE_PATH="${OPENSOURCE_PATH}/Module"
-REST_API_PATH="${OPEN_ROOT_PATH}/src/AppPlugins/virtualization/"
+REST_API_PATH="${code_path}/src/AppPlugins/virtualization/"
 OPEN_VIRT_LIB_PATH="${REST_API_PATH}/libs"
 
 numProc=$(cat /proc/cpuinfo | grep processor | wc -l)
