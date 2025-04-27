@@ -41,6 +41,7 @@ set(FRAMEWORK_LIBS
     ${MODULE_OPEN_SRC_PATH}/libaio_rel/lib
     ${MODULE_OPEN_SRC_PATH}/tinyxml2_rel/lib
     ${MODULE_PLATFORM_PATH}/SecureCLib_rel/lib
+    ${MODULE_OPEN_SRC_PATH}/libuuid_rel/lib
     ${PROTECT_ROOT_DIR}/virtualization/lib
 )
 
@@ -65,6 +66,7 @@ set(PLUGIN_FRAMEWORK_INC
     ${MODULE_OPEN_SRC_PATH}/esdk_rel/include
     ${MODULE_OPEN_SRC_PATH}/tinyxml2_rel/include
     ${MODULE_OPEN_SRC_PATH}/libssh2_rel/include
+    ${MODULE_OPEN_SRC_PATH}/libuuid_rel/include
     ${MODULE_PLATFORM_PATH}/SecureCLib_rel/include
 )
 
