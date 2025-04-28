@@ -437,6 +437,331 @@ spec:
               readOnly: true
             - mountPath: /opt/network-conf
               name: network-conf
+        - name: dee-global-search
+          image: dee_global_search:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          resources:
+            requests:
+              cpu: "0.1"
+              memory: "1G"
+            limits:
+              cpu: "1"
+              memory: "5G"
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: MICRO_SERVICE_NAME
+              value: dee-global-search
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - /opt/OceanStor/100P/DataEnableEngine/bin/check_health.sh
+            initialDelaySeconds: 100
+            periodSeconds: 10
+            failureThreshold: 20
+            timeoutSeconds: 10
+          volumeMounts:
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - mountPath: /tmp
+              name: dee-tmp
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/OceanProtect
+              name: common-path
+            - mountPath: /opt/ProtectManager
+              name: pm-path
+            - mountPath: /opt/cluster_config
+              name: cluster-conf
+              readOnly: true
+          securityContext:
+            runAsUser: 15031
+            {{- if ne $environment "Dorado" }}
+            privileged: true
+            {{- else }}
+            capabilities:
+              drop:
+                - NET_RAW
+                - SETFCAP
+                - KILL
+                - MKNOD
+                - DAC_OVERRIDE
+                - FOWNER
+                - CHOWN
+            readOnlyRootFilesystem: true
+            {{- end }}
+        - name: dee-indexer
+          image: dee_indexer:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          resources:
+            requests:
+              cpu: "0.1"
+              memory: "2G"
+            limits:
+              cpu: "3"
+              memory: "8G"
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - /opt/OceanStor/100P/DataEnableEngine/bin/check_health.sh
+            initialDelaySeconds: 100
+            periodSeconds: 10
+            failureThreshold: 20
+            timeoutSeconds: 10
+          envFrom:
+            - configMapRef:
+                name: dee-common-conf
+          volumeMounts:
+            - mountPath: /opt/dee-variable-parameter-conf
+              name: dee-indexer-conf
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - mountPath: /tmp
+              name: dee-tmp
+            - mountPath: /mnt
+              name: dee-mnt
+            - mountPath: /tmp/share
+              name: share-path
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/OceanProtect
+              name: common-path
+            - mountPath: /etc/common-secret
+              name: ubc-secret
+              readOnly: true
+            - mountPath: /opt/cluster_config
+              name: cluster-conf
+              readOnly: true
+          securityContext:
+            runAsUser: 0
+            {{- if ne $environment "Dorado" }}
+            privileged: true
+            {{- else }}
+            capabilities:
+              add:
+                - SYS_ADMIN
+              drop:
+                - NET_RAW
+                - SETFCAP
+                - KILL
+                - MKNOD
+            readOnlyRootFilesystem: true
+            {{- end }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+            - name: MICRO_SERVICE_NAME
+              value: dee-indexer
+            - name: DEPLOY_TYPE
+              value: d2
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: REDIS_HOST
+                  name: dataenableengine-conf
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: REDIS_PORT
+                  name: dataenableengine-conf
+        - name: dee-base-parser
+          image: dee_base_parser:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          securityContext:
+            runAsUser: 0
+            {{- if ne $environment "Dorado" }}
+            privileged: true
+            {{- else }}
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - DAC_READ_SEARCH
+              drop:
+                - NET_RAW
+                - SETFCAP
+                - KILL
+                - MKNOD
+            readOnlyRootFilesystem: true
+            {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - /opt/OceanStor/100P/DataEnableEngine/bin/check_health.sh
+            initialDelaySeconds: 100
+            periodSeconds: 10
+            failureThreshold: 20
+            timeoutSeconds: 10
+          resources:
+            requests:
+              memory: "1G"
+              cpu: "0.1"
+            limits:
+              memory: "6G"
+              cpu: "3"
+              {{- if eq $environment "Dorado" }}
+              dorado/dev_kvm: 1
+              dorado/dev_fuse: 1
+              {{- end }}
+          envFrom:
+            - configMapRef:
+                name: dee-common-conf
+          volumeMounts:
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - mountPath: /opt/dee-variable-parameter-conf
+              name: dee-base-parser-conf
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/OceanProtect
+              name: common-path
+            - mountPath: /tmp/share
+              name: share-path
+            - mountPath: /tmp
+              name: dee-base-parser-tmp
+            - mountPath: /mnt
+              name: dee-base-parser-mnt
+            - mountPath: /var/tmp
+              name: dee-var
+            - mountPath: /root
+              name: dee-root
+            - mountPath: /opt/cluster_config
+              name: cluster-conf
+              readOnly: true
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: MICRO_SERVICE_NAME
+              value: dee-base-parser
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+        - name: dee-anti-ransomware
+          image: dee_anti_ransomware:{{ .Values.global.version }}
+          imagePullPolicy: Never
+          securityContext:
+            runAsUser: 15033
+            {{- if ne $environment "Dorado" }}
+            privileged: true
+            {{- else }}
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - IPC_OWNER
+              drop:
+                - NET_RAW
+                - SETFCAP
+                - KILL
+                - MKNOD
+            readOnlyRootFilesystem: true
+            {{- end }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.anti_ransomware_container_port }}
+            initialDelaySeconds: 100
+            periodSeconds: 10
+            failureThreshold: 20
+            timeoutSeconds: 10
+          envFrom:
+            - configMapRef:
+                name: dee-common-conf
+          volumeMounts:
+            - mountPath: /opt/dee-variable-parameter-conf
+              name: dee-anti-ransomware-conf
+            - mountPath: /kmc_conf
+              name: kmc-conf
+              readOnly: true
+            - mountPath: /etc/localtime
+              name: date-config
+              readOnly: true
+            - mountPath: /opt/OceanProtect
+              name: common-path
+            - mountPath: /tmp
+              name: dee-anti-ransomware-tmp
+            - mountPath: /tmp/share
+              name: share-path
+            - mountPath: /mnt
+              name: dee-anti-ransomware-mnt
+            - mountPath: /var/tmp
+              name: dee-var
+            - mountPath: /opt/cluster_config
+              name: cluster-conf
+              readOnly: true
+            - mountPath: /etc/common-secret
+              name: ubc-secret
+              readOnly: true
+            {{- if ne $environment "Dorado" }}
+            - mountPath: /dev/fuse
+              name: fuse
+            - mountPath: /dev/kvm
+              name: kvm
+            {{- end }}
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: MICRO_SERVICE_NAME
+              value: dee-anti-ransomware
+            - name: ENVIRONMENT
+              value: {{ $environment }}
+          resources:
+            requests:
+              memory: "1G"
+              cpu: "0.1"
+            limits:
+              memory: "3G"
+              cpu: "1"
+              {{- if eq $environment "Dorado" }}
+              dorado/dev_kvm: 1
+              dorado/dev_fuse: 1
+              {{- end }}
         - name: dme-archive
           env:
             - name: NODE_NAME
@@ -510,6 +835,8 @@ spec:
               name: common-conf
             - mountPath: /dev
               name: device
+            - mountPath: /opt/archive-conf
+              name: archive-conf
         - name: dme-openstorageapi-controller
           image: dme_openstorageapi_controller:{{ .Values.global.version }}
           imagePullPolicy: Never
@@ -609,6 +936,8 @@ spec:
                 - KILL
                 - MKNOD
           volumeMounts:
+            - mountPath: /opt/dme-osa-conf
+              name: dme-osa-conf
             - mountPath: /etc/localtime
               name: date-config
               readOnly: true
@@ -639,16 +968,22 @@ spec:
               name: cache-volume
             - mountPath: /opt/huawei-data-protection/vmware/bricks/
               name: metadata-path
+            - mountPath: /mnt
+              name: dee-mnt
             - mountPath: /mnt/filesystem/
               name: cache-filesystem
             - mountPath: /opt/protectagent
               name: agent-volume
+            - mountPath: /report
+              name: dee-report-tmp
             - mountPath: /kmc_conf
               name: kmc-conf
             - mountPath: /mnt-agent
               name: agent-tmp
             - mountPath: /ubc-tmp
               name: ubc-tmp
+            - mountPath: /dee-tmp
+              name: dee-tmp
             - mountPath: /lib/modules
               name: modules
           env:
@@ -665,17 +1000,64 @@ spec:
                   key: deploy_type
             - name: ENVIRONMENT
               value: {{ $environment }}
+        - name: dee-init-container
+          image: dee_initcontainer:{{ .Values.global.version }}
+          command: ['sh', '-c', 'sh /opt/OceanStor/100P/DataEnableEngine/initcontainer/dee_init_container.sh']
+          imagePullPolicy: Never
+          volumeMounts:
+            - mountPath: /tmp/share
+              name: share-path
+            - mountPath: /cache
+              name: cache-volume
+            - mountPath: /opt/OceanProtect
+              name: common-path
+            - mountPath: /antitmp
+              name: dee-anti-ransomware-tmp
+            - mountPath: /antimnt
+              name: dee-anti-ransomware-mnt
+            - mountPath: /baseparsertmp
+              name: dee-base-parser-tmp
+            - mountPath: /baseparsermnt
+              name: dee-base-parser-mnt
+            - mountPath: /var/tmp
+              name: dee-var
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: DEPLOY_TYPE
+              value: d2
       volumes:
         - name: dme-osa-conf
           configMap:
             name: dme-osa-conf
+        - name: dee-base-parser-conf
+          configMap:
+            name: dee-base-parser-conf
+        - name: dee-indexer-conf
+          configMap:
+            name: dee-indexer-conf
+        - name: dee-anti-ransomware-conf
+          configMap:
+            name: dee-anti-ransomware-conf
+        - name: dee-conf
+          configMap:
+            name: dee-common-conf
+            defaultMode: 0640
         - name: kmc-conf
           configMap:
             name: kmc-store-conf
             defaultMode: 0640
         - name: agent-tmp
           emptyDir: {}
+        - name: dee-tmp
+          emptyDir: {}
+        - name: dee-mnt
+          emptyDir: {}
         - name: ubc-tmp
+          emptyDir: {}
+        - name: dee-report-tmp
           emptyDir: {}
         - name: date-config
           hostPath:
@@ -700,6 +1082,12 @@ spec:
         - name: archive-conf
           configMap:
             name: archive-conf
+        - name: nas-conf
+          configMap:
+            name: nas-conf
+        - name: obs-conf
+          configMap:
+            name: obs-conf
         - name: cluster-conf
           configMap:
             name: cluster-conf
@@ -720,7 +1108,19 @@ spec:
             items:
               - key: vm_data_turbo.password
                 path: vm_data_turbo.password
+        - name: dee-root
+          emptyDir: {}
         - name: archive-mnt
+          emptyDir: {}
+        - name: dee-var
+          emptyDir: {}
+        - name: dee-base-parser-tmp
+          emptyDir: {}
+        - name: dee-anti-ransomware-tmp
+          emptyDir: {}
+        - name: dee-base-parser-mnt
+          emptyDir: {}
+        - name: dee-anti-ransomware-mnt
           emptyDir: {}
         - name: modules
           hostPath:

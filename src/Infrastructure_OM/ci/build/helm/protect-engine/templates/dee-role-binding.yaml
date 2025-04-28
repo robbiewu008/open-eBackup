@@ -1,3 +1,6 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d9" }}
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -11,3 +14,4 @@ roleRef:
   kind: ClusterRole
   name: dee-sa-role
   apiGroup: rbac.authorization.k8s.io
+{{- end }}

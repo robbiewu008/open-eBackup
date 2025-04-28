@@ -1,0 +1,26 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d9" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dee-base-parser-conf
+  namespace: dpa
+data:
+  # 细粒度恢复任务最大并行数
+  DEE_BASE_PARSER_FLR_MAX_TASK_SIZE: "1"
+  # libguest最大浏览并行数
+  DEE_BASE_PARSER_BROWSE_MAX_TASK_SIZE: "1"
+  # 扫描支持最大文件数量
+  DEE_BASE_PARSER_SCAN_MAX_FILE_COUNT: "20000000"
+  # libguest浏览自动回收时间（秒）
+  DEE_BASE_PARSER_LIBGUEST_BROWSE_RECYCLE: "120"
+  # 虚拟化副本细粒度恢复，搜索最多返回数据条数
+  DEE_BASE_PARSER_MAX_BROWSER_COUNT_ON_CONDITION: "1000"
+  # libguest浏览虚机内存大小（MB）
+  DEE_BASE_PARSER_BROWSE_QEMU_MEM: "1024"
+  # libguest浏览挂载点活跃时间（毫秒）
+  DEE_BASE_PARSER_MAX_KEEP_ALIVE_TIME: "300000"
+  # 副本下载libguest虚机内存大小限制（MB）
+  DEE_BASE_PARSER_FILE_DOWNLOAD_MEMSIZE: "1024"
+{{- end }}
