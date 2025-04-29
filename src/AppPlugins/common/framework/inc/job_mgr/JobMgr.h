@@ -38,6 +38,7 @@ public:
     static JobMgr& GetInstance();
 
     bool CheckJobIdExist(const std::string &jobId);
+    bool CheckJobIdExistNoLock(const std::string &jobId);
     int InsertJob(std::string jobId, std::shared_ptr<BasicJob> jobPtr);
     int AsyncAbortJob(const std::string& jobId, const std::string& subJobId);
     int PauseJob(const std::string& jobId, const std::string& subJobId);

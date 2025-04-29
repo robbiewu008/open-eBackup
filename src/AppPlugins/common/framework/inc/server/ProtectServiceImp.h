@@ -447,5 +447,31 @@ public:
     */
     EXTER_ATTACK virtual void AllowCheckCopySubJobInLocalNode(ActionResult& returnValue,
         const AppProtect::CheckCopyJob& job, const SubJob& subJob);
+    
+    /**
+    * Function description
+    *     check the del copy job whether can be executed in this node.
+    * Parameters
+    *     job : del copy job information
+    * Return value
+    *     successful if the ActionResult.code is 0, failed otherwise
+    *
+    * @param job
+    */
+    EXTER_ATTACK virtual void AllowDelCopyInLocalNode(ActionResult& returnValue, const AppProtect::DelCopyJob& job);
+    /**
+    * Function description
+    *     check the del job sub job whether can be executed in this node.
+    * Parameters
+    *     job : del job information
+    *     subJob : sub job information
+    * Return value
+    *     successful if the ActionResult.code is 0, failed otherwise
+    *
+    * @param job
+    * @param subJob
+    */
+    EXTER_ATTACK virtual void AllowDelCopySubJobInLocalNode(ActionResult& returnValue,
+        const AppProtect::DelCopyJob& job, const SubJob& subJob);
 };
 #endif // _PROTECT_SERVICE_IMP_H_
