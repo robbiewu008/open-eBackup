@@ -12,5 +12,5 @@ data:
   # 静态检测超时时间（小时）
   DEE_ANTI_STATIC_DETECT_TIME_OUT_HOUR: "1"
   # libguest浏览虚机内存大小（MB）
-  DEE_ANTI_BROWSE_QEMU_MEM: "1024
+  DEE_ANTI_BROWSE_QEMU_MEM: "1024"
 {{- end }}
