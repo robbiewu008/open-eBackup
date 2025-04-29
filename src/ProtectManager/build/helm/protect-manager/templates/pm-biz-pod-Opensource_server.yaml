@@ -29,7 +29,6 @@
   {{- if .Values.global }}
   {{- $storagepwd = .Values.global.storagepwd }}
   {{- else }}
-  {{- else }}
   {{- $storagepwd = ""}}
   {{- end }}
 
