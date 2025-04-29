@@ -86,6 +86,7 @@ public:
     static void AddIpWhiteList(ActionResult& returnValue, const std::string &jobId, const std::string &ipListStr);
     static void ReportAsyncJobDetails(ActionResult& returnValue, const std::string &jobId,
         const int &code, const ResourceResultByPage& results);
+    static void GetHcsToken(ApplicationEnvironment& env, const std::string &projectId, const std::string &isWorkSpace);
 };
 
 class RegisterPluginService {

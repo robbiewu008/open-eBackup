@@ -560,7 +560,7 @@ void JobService::AddIpWhiteList(ActionResult& returnValue, const std::string &jo
 }
 
 void JobService::ReportAsyncJobDetails(ActionResult& returnValue, const std::string &jobId,
-    const int &code, const ResourceResultByPage &results, const std::string &ipLists)
+    const int &code, const ResourceResultByPage &results)
 {
     int retryTimes = INVOKE_AGENT_INTERFACE_RETRY_TIMES;
     while (retryTimes > 0) {
@@ -569,7 +569,7 @@ void JobService::ReportAsyncJobDetails(ActionResult& returnValue, const std::str
             auto agentClient = client.GetAgentClient<JobServiceConcurrentClient>("JobService");
             if (agentClient != nullptr) {
                 HCP_Log(INFO, MODULE) << "ReportAsyncJobDetails. Code: " << code << HCPENDLOG;
-                agentClient->ReportAsyncJobDetails(returnValue, jobId, code, results, ipLists);
+                agentClient->ReportAsyncJobDetails(returnValue, jobId, code, results);
             } else {
                 returnValue.code = Module::FAILED;
             }

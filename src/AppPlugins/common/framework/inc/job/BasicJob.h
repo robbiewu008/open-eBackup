@@ -28,8 +28,7 @@
 
 using namespace AppProtect;
 constexpr uint32_t MAX_RETRY_CNT = 3;
-#define REPORT_LOG2AGENT(subJobDetails, returnValue, logDetailList, logDetail,                                         \
-                          curProcess, curSpeed, curJobstatus) do {                                                     \
+#define REPORT_LOG2AGENT(subJobDetails, returnValue, logDetailList, logDetail, curProcess, curSpeed, curJobstatus) do { \
     subJobDetails.__set_jobId(m_parentJobId);                                                                          \
     if (m_subJobInfo != nullptr && m_subJobInfo->subJobId != "") {                                                     \
         subJobDetails.__set_subJobId(m_subJobInfo->subJobId);                                                          \
@@ -58,14 +57,12 @@ constexpr uint32_t MAX_RETRY_CNT = 3;
     logDetail.__set_description("");                                                                                   \
 } while (0)
 
-#define ABORT_ENDTASK(subJobDetails, result, logDetailList, logDetail, process, speed) do {                            \
+#define ABORT_ENDTASK(subJobDetails, result, logDetailList, logDetail, process, speed)                                 \
     if (IsAbortJob()) {                                                                                                \
         HCP_Log(INFO, "BasicJob") << "Receive abort req, End Task" << HCPENDLOG;                                       \
         REPORT_LOG2AGENT(subJobDetails, result, logDetailList, logDetail, process, speed, SubJobStatus::ABORTED);      \
         return Module::SUCCESS;                                                                                        \
-    }                                                                                                                  \
-} while (0)
-   
+    }
 
 #ifdef WIN32
 class AGENT_API BasicJob {

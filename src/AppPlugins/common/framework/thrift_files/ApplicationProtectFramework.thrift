@@ -378,6 +378,17 @@ service JobService {
             validity if the ActionResult.code is 0, invalidity otherwise
     */
     ActionResult ReportAsyncJobDetails(1:string jobId, 2:i32 code, 3:ResourceResultByPage results);
+
+    /**
+        Function description
+            Plugin send msg to PM to get lasted hcs token
+        Parameters
+            projectId : HCS project id
+            isWorkSpace: 0:HCS ecs, 1:workspace ecs
+        Return value
+            new hcs token will save in ApplicationEnvironment's extendInfo
+    */
+    ApplicationEnvironment GetHcsToken(1:string projectId, 2:string isWorkSpace);
 }
 
 /** 
