@@ -49,7 +49,8 @@ int AsyncListJob::ExecuteAsyncJob()
     }
     SetJobToFinish();
     ActionResult returnValue;
-    JobService::ReportAsyncJobDetails(returnValue, m_jobId, code, page);
+    HCP_Log(INFO, MODULE) << "includde ipLists: " << m_request.ipLists << HCPENDLOG;
+    JobService::ReportAsyncJobDetails(returnValue, m_jobId, code, page, m_request.ipLists);
     if (returnValue.code != 0) {
         HCP_Log(ERR, MODULE) << "ReportAsyncJobDetails function failed, code:" << returnValue.code <<
             "error: " << returnValue.bodyErr << "message: "  << returnValue.message.c_str() << HCPENDLOG;
