@@ -93,6 +93,17 @@ target_link_libraries(file_plugin
     pluginsdk
 )
 
+if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
+    target_link_libraries(file_plugin
+        PRIVATE
+        volume_obj
+        volume_backup_obj
+        volume_restore_obj
+        volume_livemount_obj
+        volume_index_obj
+    )
+endif()
+
 # 插件使用的外部依赖项，比如开源三方、插件框架、Module
 add_library(common_dep
     INTERFACE

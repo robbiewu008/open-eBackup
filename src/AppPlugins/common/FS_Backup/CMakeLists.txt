@@ -134,6 +134,23 @@ if (VOLUME AND "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
             crypto
         )
 endif()
+if ("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Windows")
+    target_include_directories(opensrc_dep
+        INTERFACE
+        ${LIBUUID_OPENSRC_DIR}/include
+    )
+    target_link_directories(opensrc_dep
+        INTERFACE
+        ${LIBUUID_OPENSRC_DIR}/lib
+        ${LIBSSL_OPENSRC_DIR}/lib
+    )
+    target_link_libraries(opensrc_dep
+        INTERFACE
+        uuid
+        ssl
+        crypto
+    )
+endif()
 
 if (OBS)
     target_include_directories(opensrc_dep
@@ -232,6 +249,22 @@ if(NAS)
         nfs_ctx
     )
 endif ()
+if (VOLUME AND "${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Linux")
+    target_link_libraries(
+        Backup
+        PUBLIC
+        bare_metal_recovery_obj
+        VOLUMEPROTECT_OBJ
+    )
+endif()
+if ("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Windows")
+    target_link_libraries(
+        Backup
+        PUBLIC
+        bare_metal_recovery_obj
+        VOLUMEPROTECT_OBJ
+    )
+endif()
 if (OBS)
     target_link_libraries(Backup
         PUBLIC
