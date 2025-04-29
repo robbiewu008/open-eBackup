@@ -38,7 +38,7 @@ JobExecution::JobExecution()
 
 JobExecution::~JobExecution() {}
 
-int JobExecution::ExecuteJob(AppProtect::ActionResult& /* result */, const std::shared_ptr<BasicJob>& job,
+int JobExecution::ExecuteJob(AppProtect::ActionResult& result, const std::shared_ptr<BasicJob>& job,
     const std::string& jobId, OperType type)
 {
     auto func = m_funcMap[type];

@@ -38,6 +38,9 @@ using AllowCheckCopyInLocalNodeFun = void (ActionResult& returnValue, const Chec
 using AllowCheckCopySubJobInLocalNodeFun = void (ActionResult& returnValue, const CheckCopyJob& job,
     const SubJob& subJob);
 using QueryScanRepositoriesFun = void(ScanRepositories& scanRepositories, const BackupJob& job);
+using AllowDelCopyInLocalNodeFun = void (ActionResult& returnValue, const DelCopyJob& job);
+using AllowDelCopySubJobInLocalNodeFun = void (ActionResult& returnValue, const DelCopyJob& job,
+    const SubJob& subJob);
 
 namespace {
     constexpr auto MODULE = "ProtectServiceImp";

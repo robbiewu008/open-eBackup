@@ -47,7 +47,7 @@ int JobMgr::InsertJob(std::string jobId, std::shared_ptr<BasicJob> jobPtr)
         HCP_Log(ERR, MODULE) << "Insert job failed, job ptr is null" << HCPENDLOG;
         return Module::FAILED;
     }
-    if (CheckJobIdExist(jobId)) {
+    if (CheckJobIdExistNoLock(jobId)) {
         HCP_Log(ERR, MODULE) << "Insert job failed, job id exist jobId:" << jobId << HCPENDLOG;
         return Module::FAILED;
     }
@@ -59,7 +59,7 @@ int JobMgr::InsertJob(std::string jobId, std::shared_ptr<BasicJob> jobPtr)
 int JobMgr::AsyncAbortJob(const std::string& jobId, const std::string& subJobId)
 {
     std::lock_guard<std::mutex> lock(m_mtx);
-    if (CheckJobIdExist(subJobId)) {
+    if (CheckJobIdExistNoLock(subJobId)) {
         m_jobIdMap[subJobId]->SetJobAborted();
         HCP_Log(INFO, MODULE) << "abort job success, jobId: " << jobId << HCPENDLOG;
         return Module::SUCCESS;
@@ -68,7 +68,7 @@ int JobMgr::AsyncAbortJob(const std::string& jobId, const std::string& subJobId)
     int count = 0;
     for (auto str : JOBPOSTFIX) {
         std::string mgrJobId = jobId + "_" + str;
-        if (CheckJobIdExist(mgrJobId)) {
+        if (CheckJobIdExistNoLock(mgrJobId)) {
             m_jobIdMap[mgrJobId]->SetJobAborted();
             HCP_Log(INFO, MODULE) << "abort job success, jobId: " << jobId
                 << " mgr JobId: " << mgrJobId << HCPENDLOG;
@@ -88,7 +88,7 @@ int JobMgr::AsyncAbortJob(const std::string& jobId, const std::string& subJobId)
 int JobMgr::PauseJob(const std::string& jobId, const std::string& subJobId)
 {
     std::lock_guard<std::mutex> lock(m_mtx);
-    if (CheckJobIdExist(subJobId)) {
+    if (CheckJobIdExistNoLock(subJobId)) {
         m_jobIdMap[subJobId]->SetJobToPause();
             HCP_Log(INFO, MODULE) << "pause job success, jobId: " << jobId << HCPENDLOG;
         return Module::SUCCESS;
@@ -97,7 +97,7 @@ int JobMgr::PauseJob(const std::string& jobId, const std::string& subJobId)
     int count = 0;
     for (auto str : JOBPOSTFIX) {
         std::string mgrJobId = jobId + "_" + str;
-        if (CheckJobIdExist(mgrJobId)) {
+        if (CheckJobIdExistNoLock(mgrJobId)) {
             m_jobIdMap[mgrJobId]->SetJobToPause();
             HCP_Log(INFO, MODULE) << "pause job success, jobId: " << jobId
                 << " mgr JobId: " << mgrJobId << HCPENDLOG;
@@ -139,6 +139,11 @@ void JobMgr::EraseFinishJob()
 bool JobMgr::CheckJobIdExist(const std::string &jobId)
 {
     std::lock_guard<std::mutex> lock(m_mtx);
+    return m_jobIdMap.count(jobId) != 0;
+}
+
+bool JobMgr::CheckJobIdExistNoLock(const std::string &jobId)
+{
     return m_jobIdMap.count(jobId) != 0;
 }
 
