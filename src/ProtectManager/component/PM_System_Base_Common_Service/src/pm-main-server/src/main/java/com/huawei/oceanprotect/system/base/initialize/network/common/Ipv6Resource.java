@@ -27,7 +27,6 @@ import javax.validation.constraints.Pattern;
 /**
  * IP资源的相关信息
  *
- * @since 2020-12-08
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

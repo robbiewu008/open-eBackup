@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 /**
  * ArchiveNetwork Converter
  *
- * @since 2021-07-07
  */
 @Component
 @Slf4j

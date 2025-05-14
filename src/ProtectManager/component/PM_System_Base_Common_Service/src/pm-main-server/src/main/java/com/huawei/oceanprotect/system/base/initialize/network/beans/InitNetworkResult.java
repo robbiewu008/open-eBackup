@@ -24,7 +24,6 @@ import java.util.List;
 /**
  * 初始化动作结果
  *
- * @since 2021-01-15
  */
 @Data
 @ToString

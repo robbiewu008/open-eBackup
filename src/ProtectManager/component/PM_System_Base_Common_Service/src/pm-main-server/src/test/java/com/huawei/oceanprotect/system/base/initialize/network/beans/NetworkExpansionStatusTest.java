@@ -20,7 +20,6 @@ import org.junit.Assert;
 /**
  * NetworkExpansionStatusTest测试类
  *
- * @since 2023-02-27
  */
 public class NetworkExpansionStatusTest extends TestCase {
     /**

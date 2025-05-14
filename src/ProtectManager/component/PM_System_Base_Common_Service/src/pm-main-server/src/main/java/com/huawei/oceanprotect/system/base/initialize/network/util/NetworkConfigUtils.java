@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 /**
  * 网络路由信息处理公共类
  *
- * @since 2021-05-18
  */
 public class NetworkConfigUtils {
     private static final Pattern IPV4_PATTERN = Pattern.compile("(\\d+\\.){3}\\d+");

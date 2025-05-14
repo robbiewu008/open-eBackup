@@ -35,7 +35,6 @@ import java.util.ArrayList;
 /**
  * InitStatusService测试类
  *
- * @since 2023-02-27
  */
 @RunWith(PowerMockRunner.class)
 public class InitStatusServiceTest {

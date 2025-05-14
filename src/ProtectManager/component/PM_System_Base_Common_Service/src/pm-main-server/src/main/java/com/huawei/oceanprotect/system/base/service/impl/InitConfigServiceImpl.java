@@ -33,8 +33,6 @@ import java.util.Optional;
 /**
  * 获取配置信息serviceImpl类
  *
- * @version: [DataBackup 1.5.0]
- * @since 2023-07-25
  */
 @Service
 public class InitConfigServiceImpl implements InitConfigService {

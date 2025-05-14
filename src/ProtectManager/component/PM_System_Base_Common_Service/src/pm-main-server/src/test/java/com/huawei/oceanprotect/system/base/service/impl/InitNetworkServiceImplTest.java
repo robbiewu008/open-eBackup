@@ -51,8 +51,6 @@ import org.redisson.client.RedisException;
 /**
  * 测试初始化线程类
  *
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-29
  */
 public class InitNetworkServiceImplTest {
     private final RedissonClient redissonClient = Mockito.mock(RedissonClient.class);

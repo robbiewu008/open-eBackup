@@ -21,7 +21,6 @@ import lombok.Data;
 /**
  * 对外体现以太网端口
  *
- * @since 2022-12-13
  */
 @Data
 public class EthPortDto {

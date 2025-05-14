@@ -26,8 +26,6 @@ import java.util.UUID;
 /**
  * 本地系统服务实现
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/3/16
  */
 @Service
 public class SystemNativeImpl implements SystemNativeApi {

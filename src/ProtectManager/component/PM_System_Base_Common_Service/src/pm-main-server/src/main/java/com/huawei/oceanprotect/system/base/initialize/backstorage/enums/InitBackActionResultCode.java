@@ -17,7 +17,6 @@ import lombok.ToString;
 /**
  * 初始化备份错误码
  *
- * @since 2020-12-28
  */
 @ToString
 public enum InitBackActionResultCode {

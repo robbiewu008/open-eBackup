@@ -41,8 +41,6 @@ import java.util.Map;
 /**
  * 测试DM 用户能力
  *
- * @version: [DataBackup 1.5.0]
- * @since 2023-07-26
  */
 public class InitializeInfrModuleTest {
     private final DeviceManagerService service = Mockito.mock(DeviceManagerService.class);

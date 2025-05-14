@@ -24,8 +24,6 @@ import java.util.Map;
 /**
  * 添加DM端口
  *
- * @version: [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-27
  */
 @Component
 public class InitializeNfsServiceAbility implements InitializeNfsService {

@@ -22,8 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 部署形态策略接口
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-08-20
  */
 public interface InitDeployTypeStrategyService {
     /**

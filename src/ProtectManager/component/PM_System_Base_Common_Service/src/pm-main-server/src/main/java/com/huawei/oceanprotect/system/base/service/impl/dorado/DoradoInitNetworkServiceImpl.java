@@ -84,8 +84,6 @@ import java.util.stream.Collectors;
 /**
  * dorado 特有的初始化的逻辑
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-03
  */
 @Slf4j
 @Component

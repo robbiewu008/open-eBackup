@@ -24,8 +24,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * PacificServiceImplTest
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-09
  */
 @RunWith(PowerMockRunner.class)
 public class PacificServiceImplTest {

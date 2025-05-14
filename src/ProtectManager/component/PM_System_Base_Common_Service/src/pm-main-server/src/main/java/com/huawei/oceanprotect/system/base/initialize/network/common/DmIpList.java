@@ -20,7 +20,6 @@ import java.util.List;
 /**
  * 转换方法
  *
- * @since 2021-01-22
  */
 public class DmIpList extends ArrayList<String> {
     /**

@@ -55,8 +55,6 @@ import java.util.stream.Collectors;
 /**
  * E6000InitDeployTypeStrategyServiceImpl
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-08-20
  */
 @Component
 @Slf4j

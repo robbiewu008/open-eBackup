@@ -26,8 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * OceanProtectXInitDeployTypeStrategyServiceImplTest
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-08-24
  */
 @RunWith(PowerMockRunner.class)
 public class OceanProtectXInitDeployTypeStrategyServiceImplTest {

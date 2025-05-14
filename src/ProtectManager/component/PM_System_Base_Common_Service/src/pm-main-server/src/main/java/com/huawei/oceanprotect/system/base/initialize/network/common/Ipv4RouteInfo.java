@@ -26,7 +26,6 @@ import javax.validation.constraints.Pattern;
 /**
  * 路由配置信息
  *
- * @since 2020-12-08
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

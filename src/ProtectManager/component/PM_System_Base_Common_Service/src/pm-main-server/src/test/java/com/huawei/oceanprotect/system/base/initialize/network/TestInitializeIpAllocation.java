@@ -28,7 +28,6 @@ import java.util.List;
 /**
  * 测试Ip分配情况
  *
- * @since 2021-01-06
  */
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc

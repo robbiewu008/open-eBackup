@@ -56,8 +56,6 @@ import org.springframework.context.ApplicationContext;
 /**
  * 测试初始化线程类
  *
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-29
  */
 public class InitNetworkConfigThreadTest {
     private final InitNetworkConfigMapper initNetworkConfigMapper = Mockito.mock(InitNetworkConfigMapper.class);

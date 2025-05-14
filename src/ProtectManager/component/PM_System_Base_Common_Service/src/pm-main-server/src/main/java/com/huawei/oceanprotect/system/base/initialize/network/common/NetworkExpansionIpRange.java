@@ -24,7 +24,6 @@ import javax.validation.Valid;
 /**
  * 响应的ip段
  *
- * @since 2021-06-11
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

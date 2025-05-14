@@ -44,8 +44,6 @@ import java.util.ArrayList;
 /**
  * 测试 返回前台所有DM 端口信息
  *
- * @version: [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-03
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({UserUtils.class})

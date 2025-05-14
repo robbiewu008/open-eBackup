@@ -23,8 +23,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 /**
  * 配置LD参数的枚举类
  *
- * @version: [DataBackup 1.5.0]
- * @since 2023-07-25
  */
 @Getter
 public enum ExcelNetworkConfigTypeEnum {

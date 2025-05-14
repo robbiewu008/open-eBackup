@@ -21,8 +21,6 @@ import lombok.Setter;
 /**
  * 映射初始化表中存放的业务端口
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/1/22
  */
 
 @Getter

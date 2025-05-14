@@ -19,8 +19,6 @@ import org.springframework.stereotype.Component;
 /**
  * DefaultInitDeployTypeStrategyServiceImpl, 空实现
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-08-20
  */
 @Component
 public class DefaultInitDeployTypeStrategyServiceImpl implements InitDeployTypeStrategyService {}

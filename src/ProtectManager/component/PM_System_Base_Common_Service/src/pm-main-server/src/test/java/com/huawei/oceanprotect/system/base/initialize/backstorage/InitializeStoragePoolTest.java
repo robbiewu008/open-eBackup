@@ -37,7 +37,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * 测试设置存储池能力
  *
- * @since 2021-01-04
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {InitializeStoragePool.class, InitStoragePoolAbility.class})

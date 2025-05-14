@@ -15,8 +15,6 @@ package com.huawei.oceanprotect.system.base.initialize;
 /**
  * 初始化bean对象类
  *
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-29
  */
 public class MockNetworkBean {
     public static String backNetWork = "{\"ipType\":\"IPV4\",\"ipv4AnybackupVip\":\"129.115.132.10\","

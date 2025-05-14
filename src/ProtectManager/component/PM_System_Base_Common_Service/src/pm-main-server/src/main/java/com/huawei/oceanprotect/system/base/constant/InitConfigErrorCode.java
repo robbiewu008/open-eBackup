@@ -15,8 +15,6 @@ package com.huawei.oceanprotect.system.base.constant;
 /**
  * 系统初始化错误码
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/1/3
  */
 public class InitConfigErrorCode {
     /**

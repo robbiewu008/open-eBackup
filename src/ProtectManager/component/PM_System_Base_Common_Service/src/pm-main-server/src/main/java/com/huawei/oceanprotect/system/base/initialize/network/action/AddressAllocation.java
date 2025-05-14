@@ -21,7 +21,6 @@ import java.util.List;
 /**
  * IP分配规则
  *
- * @since 2020-12-22
  */
 public class AddressAllocation {
     private static final String POINT_STRING_DELIMITER = ".";

@@ -20,7 +20,6 @@ import java.util.List;
 /**
  * 冬夏令时时间戳
  *
- * @since 2024-12-08
  */
 @Getter
 @Setter

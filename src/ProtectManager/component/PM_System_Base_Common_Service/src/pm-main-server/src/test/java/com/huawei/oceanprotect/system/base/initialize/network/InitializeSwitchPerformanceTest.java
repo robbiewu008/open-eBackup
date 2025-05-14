@@ -29,7 +29,6 @@ import org.mockito.Mockito;
 /**
  * 集群存储性能 测试类
  *
- * @since 2022-08-18
  */
 public class InitializeSwitchPerformanceTest {
     private final InitializeSwitchPerformance initializeSwitchPerformance = new InitializeSwitchPerformanceAbility();

@@ -22,7 +22,6 @@ import java.util.List;
 /**
  * DeviceManager回应错误信息
  *
- * @since 2020-12-12
  */
 @Data
 @NoArgsConstructor

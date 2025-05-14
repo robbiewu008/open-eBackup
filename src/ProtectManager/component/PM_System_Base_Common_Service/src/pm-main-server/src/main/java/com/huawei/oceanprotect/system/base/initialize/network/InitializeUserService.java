@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * 添加DM端口
  *
- * @version: [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-03
  */
 public interface InitializeUserService {
     /**

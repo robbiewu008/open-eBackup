@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 /**
  * MediaSetId2name
  *
- * @since 2021-09-15
  */
 @Component
 @Slf4j

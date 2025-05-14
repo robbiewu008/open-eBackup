@@ -23,8 +23,6 @@ import java.util.List;
 /**
  * 业务端口存放的vlan信息
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/1/22
  */
 @Getter
 @Setter

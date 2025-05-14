@@ -51,8 +51,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * {@link SystemInternalController} 测试类
  *
- * @version OceanCyber 300 1.1.0
- * @since 2023-09-26
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)

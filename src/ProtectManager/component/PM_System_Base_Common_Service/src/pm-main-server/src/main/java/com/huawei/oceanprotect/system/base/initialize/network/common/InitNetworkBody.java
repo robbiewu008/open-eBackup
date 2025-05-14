@@ -24,7 +24,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 归档网络信息
  *
- * @since 2020-02-02
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

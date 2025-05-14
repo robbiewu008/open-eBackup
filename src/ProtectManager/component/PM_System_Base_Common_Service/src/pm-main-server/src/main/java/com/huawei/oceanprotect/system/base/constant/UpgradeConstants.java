@@ -21,7 +21,6 @@ import java.util.List;
 /**
  * 升级常量类
  *
- * @since 2024-06-20
  */
 public class UpgradeConstants {
     /**

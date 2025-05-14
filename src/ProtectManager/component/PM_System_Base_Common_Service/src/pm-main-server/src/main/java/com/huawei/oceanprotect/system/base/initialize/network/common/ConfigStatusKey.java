@@ -22,7 +22,6 @@ import lombok.NoArgsConstructor;
 /**
  * 配置状态
  *
- * @since 2021-10-01
  */
 @Data
 @AllArgsConstructor

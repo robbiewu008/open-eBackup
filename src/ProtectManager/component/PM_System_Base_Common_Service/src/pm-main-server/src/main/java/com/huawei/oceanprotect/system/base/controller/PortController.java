@@ -65,8 +65,6 @@ import javax.validation.constraints.NotBlank;
 /**
  * DM端口相关信息对外接口
  *
- * @version: [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-03
  */
 @Slf4j
 @RestController

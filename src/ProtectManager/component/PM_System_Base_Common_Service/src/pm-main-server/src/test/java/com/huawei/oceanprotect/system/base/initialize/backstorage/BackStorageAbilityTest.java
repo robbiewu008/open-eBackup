@@ -36,7 +36,6 @@ import java.util.List;
 /**
  * 测试创建存储能力
  *
- * @since 2021-07-03
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {InitializeBackStorage.class, InitBackStorageAbility.class})

@@ -26,7 +26,6 @@ import java.util.Map;
 /**
  * 错误码
  *
- * @since 2020-12-24
  */
 @Getter
 @AllArgsConstructor

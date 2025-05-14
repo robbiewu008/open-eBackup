@@ -44,8 +44,6 @@ import java.util.List;
 /**
  * 功能描述
  *
- * @version [OceanProtect DataBackup 1.7.0]
- * @since 2025-01-09
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {ConfigMapUtil.class})

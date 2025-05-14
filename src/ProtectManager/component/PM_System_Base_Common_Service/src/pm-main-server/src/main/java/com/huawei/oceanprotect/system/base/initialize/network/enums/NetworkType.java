@@ -15,8 +15,6 @@ package com.huawei.oceanprotect.system.base.initialize.network.enums;
 /**
  * 备份信息枚举
  *
- * @version: [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-29
  */
 public enum NetworkType {
     /**

@@ -20,7 +20,6 @@ import org.junit.Assert;
 /**
  * InitNetworkResultDesc测试类
  *
- * @since 2023-02-27
  */
 public class InitNetworkResultDescTest extends TestCase {
     /**

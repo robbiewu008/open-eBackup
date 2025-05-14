@@ -27,7 +27,6 @@ import javax.validation.Valid;
 /**
  * 扩容信息;
  *
- * @since 2021-06-11
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

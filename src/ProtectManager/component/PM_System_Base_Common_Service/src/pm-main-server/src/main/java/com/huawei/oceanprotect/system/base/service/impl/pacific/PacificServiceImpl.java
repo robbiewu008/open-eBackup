@@ -31,8 +31,6 @@ import java.util.stream.Collectors;
 /**
  * pacific服务接口实现类
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-09
  */
 @Service
 @Slf4j

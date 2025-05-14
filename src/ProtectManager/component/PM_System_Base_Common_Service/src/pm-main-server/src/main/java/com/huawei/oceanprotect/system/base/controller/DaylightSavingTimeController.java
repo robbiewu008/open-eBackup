@@ -37,7 +37,6 @@ import java.util.ArrayList;
 /**
  * 冬夏令时控制器，提供冬夏令时时间戳相关接口
  *
- * @since 2024-12-08
  */
 @Slf4j
 @RestController

@@ -25,7 +25,6 @@ import java.util.List;
 /**
  * 配置状态
  *
- * @since 2020-12-19
  */
 @Data
 @AllArgsConstructor

@@ -46,8 +46,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * PacificInitNetworkServiceImplTest
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-03
  */
 @RunWith(PowerMockRunner.class)
 public class PacificInitNetworkServiceImplTest {

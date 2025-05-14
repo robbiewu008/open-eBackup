@@ -60,7 +60,6 @@ import javax.annotation.PostConstruct;
 /**
  * 测试Ip分配情况
  *
- * @since 2021-01-11
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {

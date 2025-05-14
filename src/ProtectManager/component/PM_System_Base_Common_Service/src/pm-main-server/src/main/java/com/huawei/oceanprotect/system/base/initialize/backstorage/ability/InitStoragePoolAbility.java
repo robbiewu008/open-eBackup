@@ -32,7 +32,6 @@ import org.springframework.stereotype.Service;
 /**
  * 初始化备份存储
  *
- * @since 2020-12-21
  */
 @Slf4j
 @Service

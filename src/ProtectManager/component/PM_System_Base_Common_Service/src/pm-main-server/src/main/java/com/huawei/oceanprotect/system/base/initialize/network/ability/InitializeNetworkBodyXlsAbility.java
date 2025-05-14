@@ -91,8 +91,6 @@ import java.util.stream.Collectors;
 /**
  * 只在OceanProtectXInitDeployTypeStrategyServiceImpl中使用当前类
  *
- * @version: [DataBackup 1.5.0]
- * @since 2023-07-25
  */
 @Service
 @Slf4j

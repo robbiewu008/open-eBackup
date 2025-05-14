@@ -21,8 +21,6 @@ import java.util.Map;
 /**
  * 获取接口模块信息列表
  *
- * @version: [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-27
  */
 public interface InitializeInfrModule {
     /**

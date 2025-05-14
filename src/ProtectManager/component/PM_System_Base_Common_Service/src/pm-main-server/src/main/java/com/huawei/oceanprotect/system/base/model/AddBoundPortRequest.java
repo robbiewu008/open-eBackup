@@ -26,8 +26,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 添加绑定端口请求对象
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023/12/29
  */
 
 @Getter

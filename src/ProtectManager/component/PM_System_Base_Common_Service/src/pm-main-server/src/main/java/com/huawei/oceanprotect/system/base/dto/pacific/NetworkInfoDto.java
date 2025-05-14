@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * pacific 多个节点的业务网络配置信息
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-05
  */
 @Getter
 @Setter

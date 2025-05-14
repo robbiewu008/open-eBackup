@@ -19,7 +19,6 @@ import openbackup.system.base.common.model.repository.StoragePool;
 /**
  * 初始化存储池
  *
- * @since 2020-12-28
  */
 public interface InitializeStoragePool {
     /**

@@ -23,8 +23,6 @@ import java.util.Map;
 /**
  * 配置平面网络类型枚举类
  *
- * @version: [DataBackup 1.5.0]
- * @since 2023-07-25
  */
 public enum NetPlaneType {
     /**

@@ -26,8 +26,6 @@ import openbackup.system.base.bean.DeviceUser;
 /**
  * 系统服务接口
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-04
  */
 public interface SystemService {
     /**

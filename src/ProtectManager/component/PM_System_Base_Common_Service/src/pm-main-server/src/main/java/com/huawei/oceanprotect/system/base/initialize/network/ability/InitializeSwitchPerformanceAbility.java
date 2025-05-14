@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
 /**
  * 集群存储性能
  *
- * @since 2022-08-18
  */
 @Slf4j
 @Component

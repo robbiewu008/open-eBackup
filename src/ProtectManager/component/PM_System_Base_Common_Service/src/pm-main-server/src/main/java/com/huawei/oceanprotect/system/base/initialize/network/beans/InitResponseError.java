@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 /**
  * 初始化信息 回应模板
  *
- * @since 2020-12-24
  */
 @Data
 @AllArgsConstructor

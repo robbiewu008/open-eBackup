@@ -20,7 +20,6 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 /**
  * 初始化 检测动作
  *
- * @since 2021-04-01
  */
 public interface InitializeCheck {
     /**

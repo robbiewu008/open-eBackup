@@ -27,8 +27,6 @@ import java.util.Objects;
 /**
  * InitLogService
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-05-30
  */
 @Slf4j
 @Service

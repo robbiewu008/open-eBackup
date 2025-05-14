@@ -17,7 +17,6 @@ import lombok.ToString;
 /**
  * 初始化备份错误码
  *
- * @since 2021-01-15
  */
 @ToString
 public enum InitNetworkResultCode {

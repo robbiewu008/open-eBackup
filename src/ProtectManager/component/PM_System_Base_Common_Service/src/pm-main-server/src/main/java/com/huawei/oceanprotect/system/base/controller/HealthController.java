@@ -34,8 +34,6 @@ import java.util.List;
 /**
  * 健康检查的接口，用于k8s就绪探针
  *
- * @version [OceanProtect A8000 1.0.RC1]
- * @since 2021-02-03
  */
 @RestController
 public class HealthController {

@@ -22,7 +22,6 @@ import java.util.List;
 /**
  * 发送给外部所有端口列表集合
  *
- * @since 2022-12-13
  */
 @Data
 public class AllPortListResponseDto {

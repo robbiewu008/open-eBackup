@@ -29,8 +29,6 @@ import java.util.List;
 /**
  * 以太网端口
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/4/25
  */
 @AllArgsConstructor
 @Component

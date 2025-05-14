@@ -22,7 +22,6 @@ import java.util.List;
 /**
  * 响应参数
  *
- * @since 2021-06-16
  */
 @Data
 @ToString

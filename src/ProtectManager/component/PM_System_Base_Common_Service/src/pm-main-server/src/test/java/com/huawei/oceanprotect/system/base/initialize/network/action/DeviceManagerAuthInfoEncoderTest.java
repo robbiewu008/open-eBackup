@@ -22,7 +22,6 @@ import org.junit.Test;
 /**
  * DeviceManagerAuthInfoEncoder测试类
  *
- * @since 2023-02-27
  */
 public class DeviceManagerAuthInfoEncoderTest extends TestCase {
     /**

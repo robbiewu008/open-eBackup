@@ -91,8 +91,6 @@ import java.util.stream.Collectors;
 /**
  * 升级服务
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-03-15
  */
 @Component
 @Slf4j

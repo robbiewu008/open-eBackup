@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * 手动初始化归档配置
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/4/5
  */
 @Getter
 @Setter

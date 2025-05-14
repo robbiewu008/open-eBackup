@@ -35,7 +35,6 @@ import java.util.List;
 /**
  * 对外体现逻辑端口列表
  *
- * @since 2022-12-13
  */
 @Data
 public class LogicPortDto {

@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 保存初始化配置上下文结果
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/1/27
  */
 @Getter
 @Setter

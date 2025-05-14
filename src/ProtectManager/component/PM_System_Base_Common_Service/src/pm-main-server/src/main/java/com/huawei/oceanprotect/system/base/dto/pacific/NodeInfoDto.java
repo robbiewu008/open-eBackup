@@ -20,8 +20,6 @@ import java.util.Map;
 /**
  * 每个节点的名称和端口绑定信息
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-19
  */
 @Getter
 @Setter

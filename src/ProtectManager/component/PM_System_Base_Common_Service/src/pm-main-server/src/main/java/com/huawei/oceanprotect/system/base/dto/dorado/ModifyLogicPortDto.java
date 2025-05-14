@@ -21,8 +21,6 @@ import openbackup.system.base.common.enums.AddressFamily;
 /**
  * 修改逻辑端口参数
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/1/25
  */
 @Getter
 @Setter

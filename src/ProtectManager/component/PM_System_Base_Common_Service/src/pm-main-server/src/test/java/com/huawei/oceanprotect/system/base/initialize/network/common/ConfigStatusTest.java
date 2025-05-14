@@ -21,7 +21,6 @@ import org.junit.Test;
 /**
  * ConfigStatus测试类
  *
- * @since 2023-02-27
  */
 public class ConfigStatusTest extends TestCase {
     /**

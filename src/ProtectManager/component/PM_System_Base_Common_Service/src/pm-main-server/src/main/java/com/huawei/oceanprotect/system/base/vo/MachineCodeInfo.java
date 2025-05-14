@@ -17,7 +17,6 @@ import lombok.Data;
 /**
  * 设备机器码信息
  *
- * @since 2021-01-19
  */
 @Data
 public class MachineCodeInfo {

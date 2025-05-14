@@ -17,8 +17,6 @@ import lombok.Getter;
 /**
  * 初始化相关的枚举
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-08-21
  */
 public class InitEnum {
     /**

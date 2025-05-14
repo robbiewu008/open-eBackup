@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 监控是否正在进行初始化或网络配置修改
  *
- * @since 2021-04-12
  */
 @Slf4j
 public class CheckStatusThread extends Thread {

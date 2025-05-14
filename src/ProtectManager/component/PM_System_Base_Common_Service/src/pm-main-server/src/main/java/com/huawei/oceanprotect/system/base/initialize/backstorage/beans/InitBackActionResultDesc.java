@@ -21,7 +21,6 @@ import lombok.ToString;
 /**
  * 初始化动作结果描述
  *
- * @since 2020-12-28
  */
 @Data
 @ToString

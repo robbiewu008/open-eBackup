@@ -23,8 +23,6 @@ import java.util.List;
 /**
  * 系统初始化常量类
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2023/12/30
  */
 public class InitNetworkConfigConstants {
     /**

@@ -17,8 +17,6 @@ import com.huawei.oceanprotect.system.base.sdk.devicemanager.DeviceManagerServic
 /**
  * 添加DM端口
  *
- * @version: [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-27
  */
 public interface InitializeNfsService {
     /**

@@ -29,8 +29,6 @@ import java.util.List;
 /**
  * 测试
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/2/25
  */
 public class InitConfigServiceImplTest {
     private final InitNetworkConfigMapper initNetworkConfigMapper = Mockito.mock(InitNetworkConfigMapper.class);

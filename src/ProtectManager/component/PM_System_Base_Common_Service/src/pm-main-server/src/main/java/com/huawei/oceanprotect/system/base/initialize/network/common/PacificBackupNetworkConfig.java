@@ -24,8 +24,6 @@ import javax.validation.constraints.Size;
 /**
  * 分布式初始化备份网络配置
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/4/5
  */
 @Getter
 @Setter

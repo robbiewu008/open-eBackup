@@ -20,7 +20,6 @@ import lombok.Setter;
 /**
  * 设备ESN和机器码
  *
- * @since 2024-03-23
  */
 @Getter
 @Setter

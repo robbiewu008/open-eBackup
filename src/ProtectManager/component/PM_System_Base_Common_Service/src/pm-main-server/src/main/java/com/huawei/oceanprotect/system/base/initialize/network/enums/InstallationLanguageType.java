@@ -25,7 +25,6 @@ import java.util.Map;
 /**
  * 爱数安装语言的枚举值
  *
- * @since 2021-03-26
  */
 @Getter
 @AllArgsConstructor

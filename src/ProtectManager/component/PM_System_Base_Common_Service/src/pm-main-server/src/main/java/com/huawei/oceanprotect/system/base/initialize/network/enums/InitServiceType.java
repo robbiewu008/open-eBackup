@@ -15,7 +15,6 @@ package com.huawei.oceanprotect.system.base.initialize.network.enums;
 /**
  * 归档IP类型
  *
- * @since 2020-12-19
  */
 public enum InitServiceType {
     /**

@@ -24,8 +24,6 @@ import javax.validation.constraints.NotNull;
 /**
  * 分布式初始化参数
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/4/5
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

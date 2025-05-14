@@ -31,8 +31,6 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * E6000InitDeployTypeStrategyServiceImplTest
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-08-23
  */
 @RunWith(PowerMockRunner.class)
 public class E6000InitDeployTypeStrategyServiceImplTest {

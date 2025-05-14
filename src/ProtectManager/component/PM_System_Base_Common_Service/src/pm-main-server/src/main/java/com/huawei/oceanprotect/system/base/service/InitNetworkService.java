@@ -22,8 +22,6 @@ import openbackup.system.base.util.Applicable;
 /**
  * 初始化时，定义不同部署类型操作不同的接口
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-01-03
  */
 public interface InitNetworkService extends Applicable<String> {
     /**

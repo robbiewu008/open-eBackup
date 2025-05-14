@@ -28,7 +28,6 @@ import javax.validation.constraints.Size;
 /**
  * 备份网络信息
  *
- * @since 2020-12-08
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

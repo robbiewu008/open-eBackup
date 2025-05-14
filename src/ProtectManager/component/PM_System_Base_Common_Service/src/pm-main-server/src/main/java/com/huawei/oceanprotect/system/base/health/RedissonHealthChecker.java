@@ -26,7 +26,6 @@ import java.util.Date;
 /**
  * The RedissonHealthChecker
  *
- * @since 2022/1/27
  */
 @Slf4j
 @Component

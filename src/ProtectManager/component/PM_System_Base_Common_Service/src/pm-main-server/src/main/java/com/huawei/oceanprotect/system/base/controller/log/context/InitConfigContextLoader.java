@@ -31,8 +31,6 @@ import java.util.Map;
 /**
  * 初始化上下文，用于操作日志记录
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/1/27
  */
 @Component
 @CalleeMethods(name = "init_config_context_loader", value = {@CalleeMethod(name = "getInitConfigMap")})

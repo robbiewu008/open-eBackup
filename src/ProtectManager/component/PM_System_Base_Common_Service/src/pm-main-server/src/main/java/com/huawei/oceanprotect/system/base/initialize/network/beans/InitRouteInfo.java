@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * IP资源的路由配置信息
  *
- * @version: [OceanProtect DataBackup 1.3.0]
- * @since 2022-12-29
  */
 @Getter
 @Setter

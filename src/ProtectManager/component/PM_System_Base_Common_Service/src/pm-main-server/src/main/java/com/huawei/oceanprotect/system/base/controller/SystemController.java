@@ -92,8 +92,6 @@ import javax.validation.constraints.Pattern;
 /**
  * 系统控制器，提供后台相关RESTful 接口
  *
- * @version [OceanStor 100P 8.1.0]
- * @since 2020-09-29
  */
 @Slf4j
 @RestController

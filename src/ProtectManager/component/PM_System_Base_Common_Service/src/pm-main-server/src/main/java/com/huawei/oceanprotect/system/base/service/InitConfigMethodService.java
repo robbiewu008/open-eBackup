@@ -20,8 +20,6 @@ import openbackup.system.base.util.Applicable;
 /**
  * 初始化配置方式服务
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/4/5
  */
 public interface InitConfigMethodService extends Applicable<InitType> {
     /**

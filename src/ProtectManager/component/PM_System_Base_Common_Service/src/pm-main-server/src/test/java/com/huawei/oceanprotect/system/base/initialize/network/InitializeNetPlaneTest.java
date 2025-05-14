@@ -49,7 +49,6 @@ import java.util.Map;
 /**
  * 测试 平面网络的创建情况
  *
- * @since 2021-01-21
  */
 public class InitializeNetPlaneTest {
     /**

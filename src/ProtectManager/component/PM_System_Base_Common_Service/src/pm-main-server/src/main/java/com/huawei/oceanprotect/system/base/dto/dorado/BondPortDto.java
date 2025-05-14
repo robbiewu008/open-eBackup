@@ -22,7 +22,6 @@ import java.util.List;
 /**
  * 对外体现绑定端口
  *
- * @since 2022-12-13
  */
 @Data
 public class BondPortDto {

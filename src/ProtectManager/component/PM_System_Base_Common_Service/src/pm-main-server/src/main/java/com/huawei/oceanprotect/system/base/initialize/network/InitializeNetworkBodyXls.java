@@ -19,8 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 获取LLD配置信息和并返回
  *
- * @version: [DataBackup 1.5.0]
- * @since 2023-07-25
  */
 public interface InitializeNetworkBodyXls {
     /**

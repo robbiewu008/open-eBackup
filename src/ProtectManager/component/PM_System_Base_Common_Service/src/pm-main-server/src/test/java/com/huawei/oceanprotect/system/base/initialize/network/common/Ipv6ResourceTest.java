@@ -21,7 +21,6 @@ import org.junit.Test;
 /**
  * Ipv6Resource测试类
  *
- * @since 2023-02-27
  */
 public class Ipv6ResourceTest extends TestCase {
     /**

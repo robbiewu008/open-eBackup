@@ -25,8 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 获取esn
  *
- * @version OceanCyber 300 1.1.0
- * @since 2023-09-26
  */
 @Slf4j
 @RestController

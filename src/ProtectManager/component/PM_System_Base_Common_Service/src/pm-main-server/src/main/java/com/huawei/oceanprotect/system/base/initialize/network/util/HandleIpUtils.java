@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 /**
  * IP地址处理公共类
  *
- * @since 2021-09-24
  */
 public class HandleIpUtils {
     private static final int OLD_NET_PLANE_COUNT = 3;

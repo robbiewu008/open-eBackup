@@ -65,7 +65,6 @@ import java.util.stream.Collectors;
 /**
  * 处理DM交互的接口
  *
- * @since 2020-12-08
  */
 @Data
 @Slf4j

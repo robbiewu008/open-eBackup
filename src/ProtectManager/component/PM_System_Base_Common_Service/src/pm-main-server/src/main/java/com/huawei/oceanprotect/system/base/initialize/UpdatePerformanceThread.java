@@ -19,8 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 线程更新性能监控
  *
- * @version: [OceanProtect X8000 2.1.0]
- * @since 2022-08-26
  */
 @Slf4j
 public class UpdatePerformanceThread extends Thread {

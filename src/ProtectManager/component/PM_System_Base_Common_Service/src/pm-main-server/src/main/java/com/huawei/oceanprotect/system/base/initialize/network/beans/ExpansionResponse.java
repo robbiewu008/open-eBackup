@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
  * DeviceManager回应模板
  *
  * @param <T> 数据类型
- * @since 2021-06-22
  */
 @Data
 @NoArgsConstructor

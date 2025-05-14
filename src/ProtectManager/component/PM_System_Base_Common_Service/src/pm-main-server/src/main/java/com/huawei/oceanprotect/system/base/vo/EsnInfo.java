@@ -17,7 +17,6 @@ import lombok.Data;
 /**
  * 设备ESN信息
  *
- * @since 2021-09-24
  */
 @Data
 public class EsnInfo {

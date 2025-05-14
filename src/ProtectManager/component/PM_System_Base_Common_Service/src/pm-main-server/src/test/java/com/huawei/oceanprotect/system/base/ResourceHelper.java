@@ -23,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 /**
  * 资源工具类
  *
- * @since 2024-01-05
  */
 public class ResourceHelper {
     /**

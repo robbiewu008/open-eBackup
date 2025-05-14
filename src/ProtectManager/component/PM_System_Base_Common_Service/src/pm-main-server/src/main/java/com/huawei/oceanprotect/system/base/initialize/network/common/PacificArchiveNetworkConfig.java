@@ -21,8 +21,6 @@ import java.util.List;
 /**
  * 分布式初始化归档网络配置
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/4/5
  */
 @Getter
 @Setter

@@ -17,7 +17,6 @@ import com.huawei.oceanprotect.system.base.sdk.devicemanager.DeviceManagerServic
 /**
  * dorado service
  *
- * @since 2021-01-11
  */
 public interface DoradoService {
     /**

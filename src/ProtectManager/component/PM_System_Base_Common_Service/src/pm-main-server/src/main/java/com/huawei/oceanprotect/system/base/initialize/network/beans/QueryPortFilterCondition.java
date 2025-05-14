@@ -18,8 +18,6 @@ import lombok.Setter;
 /**
  * 从底座查询端口时的过滤条件
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024/1/24
  */
 @Getter
 @Setter

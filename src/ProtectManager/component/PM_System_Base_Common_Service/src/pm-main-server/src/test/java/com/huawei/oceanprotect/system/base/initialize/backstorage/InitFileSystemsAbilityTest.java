@@ -31,8 +31,6 @@ import java.util.List;
 /**
  * 测试文件系统
  *
- * @version [OceanProtect X8000 1.2.1]
- * @since 2022-07-29
  */
 public class InitFileSystemsAbilityTest {
     private final DeviceManagerService service = Mockito.mock(DeviceManagerService.class);

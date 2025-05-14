@@ -27,7 +27,6 @@ import java.util.List;
 /**
  * 测试Ipv6分配情况
  *
- * @since 2021-04-12
  */
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc

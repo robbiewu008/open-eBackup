@@ -100,7 +100,6 @@ import java.util.stream.Collectors;
 /**
  * 初始化创建线程
  *
- * @since 2021-02-05
  */
 @Slf4j
 public class InitNetworkConfigThread extends Thread {

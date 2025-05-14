@@ -31,8 +31,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * InitDeployTypeStrategyContextTest
  *
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-08-21
  */
 @SpringBootTest(classes = {InitDeployTypeStrategyContext.class})
 @RunWith(PowerMockRunner.class)

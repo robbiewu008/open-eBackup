@@ -89,8 +89,6 @@ import java.util.Map;
 /**
  * 测试 DM端口添加情况
  *
- * @version: [OceanProtect DataBackup 1.3.0]
- * @since 2023-01-03
  */
 @PrepareForTest(value = {CommonUtil.class})
 @RunWith(PowerMockRunner.class)
