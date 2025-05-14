@@ -20,7 +20,7 @@ function copy_scripts() {
     cd ${PM_MS_DIR}/
     rm -rf package PM_Data_Protection_Service.tar.gz
     mkdir package
-    tar -zxvf ${BIN_PATH}/PM_GUI.tar.gz -C ${PM_MS_DIR}
+    tar -zxvf ${BIN_PATH}/PM_Data_Protection_Service.tar.gz -C ${PM_MS_DIR}
     cp -r ${CUR_PATH}/scripts/* ${PM_MS_DIR}/package/3rd/
 }
 
