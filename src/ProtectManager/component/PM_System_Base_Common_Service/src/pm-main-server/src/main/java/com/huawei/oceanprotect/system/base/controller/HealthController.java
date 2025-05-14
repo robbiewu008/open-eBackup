@@ -1,7 +1,15 @@
 /*
- * Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
- */
-
+* This file is a part of the open-eBackup project.
+* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+* If a copy of the MPL was not distributed with this file, You can obtain one at
+* http://mozilla.org/MPL/2.0/.
+*
+* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+*
+* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+*/
 package com.huawei.oceanprotect.system.base.controller;
 
 import openbackup.system.base.common.constants.Constants;
@@ -26,7 +34,6 @@ import java.util.List;
 /**
  * 健康检查的接口，用于k8s就绪探针
  *
- * @author y00559272
  * @version [OceanProtect A8000 1.0.RC1]
  * @since 2021-02-03
  */
