@@ -594,6 +594,39 @@ void JobService::ReportAsyncJobDetails(ActionResult& returnValue, const std::str
     return;
 }
 
+void JobService::GetHcsToken(ApplicationEnvironment& env, const std::string &projectId, const std::string &isWorkSpace)
+{
+    int retryTimes = INVOKE_AGENT_INTERFACE_RETRY_TIMES;
+    while (retryTimes > 0) {
+        try {
+            PluginThriftClient client;
+            auto agentClient = client.GetAgentClient<JobServiceConcurrentClient>("JobService");
+            if (agentClient != nullptr) {
+                agentClient->GetHcsToken(env, projectId, isWorkSpace);
+            } else {
+                env.__set_extendInfo("");
+            }
+            return;
+        } catch (AppProtectFrameworkException &e) {
+            throw e;
+        } catch (apache::thrift::transport::TTransportException& ex) {
+            HCP_Log(ERR, MODULE) << "TTransportException. " << WIPE_SENSITIVE(ex.what()) << HCPENDLOG;
+        } catch (apache::thrift::protocol::TProtocolException& ex) {
+            HCP_Log(ERR, MODULE) << "TProtocolException. " << WIPE_SENSITIVE(ex.what()) << HCPENDLOG;
+        } catch (apache::thrift::TApplicationException& ex) {
+            HCP_Log(ERR, MODULE) << "TApplicationException. " << WIPE_SENSITIVE(ex.what()) << HCPENDLOG;
+        } catch (const std::exception& ex) {
+            HCP_Log(ERR, MODULE) << "Standard C++ Exception. " << WIPE_SENSITIVE(ex.what()) << HCPENDLOG;
+        } catch (...) {
+            HCP_Log(ERR, MODULE) << "Unknown exception." << HCPENDLOG;
+        }
+        Module::SleepFor(std::chrono::seconds(INVOKE_AGENT_INTERFACE_RETRY_INTERVAL));
+        retryTimes--;
+    }
+    env.__set_extendInfo("");
+    return;
+}
+
 void RegisterPluginService::RegisterPlugin(ActionResult& returnValue, const ApplicationPlugin& plugin)
 {
     int retryTimes = INVOKE_AGENT_INTERFACE_RETRY_TIMES;

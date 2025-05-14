@@ -38,6 +38,9 @@ using AllowCheckCopyInLocalNodeFun = void (ActionResult& returnValue, const Chec
 using AllowCheckCopySubJobInLocalNodeFun = void (ActionResult& returnValue, const CheckCopyJob& job,
     const SubJob& subJob);
 using QueryScanRepositoriesFun = void(ScanRepositories& scanRepositories, const BackupJob& job);
+using AllowDelCopyInLocalNodeFun = void (ActionResult& returnValue, const DelCopyJob& job);
+using AllowDelCopySubJobInLocalNodeFun = void (ActionResult& returnValue, const DelCopyJob& job,
+    const SubJob& subJob);
 
 namespace {
     constexpr auto MODULE = "ProtectServiceImp";
@@ -954,4 +957,45 @@ EXTER_ATTACK void ProtectServiceImp::AllowCheckCopySubJobInLocalNode(ActionResul
     }
     fun(returnValue, job, subJob);
     HCP_Log(INFO, MODULE) << "Exit AllowCheckCopySubJobInLocalNode" << HCPENDLOG;
+}
+
+EXTER_ATTACK void ProtectServiceImp::AllowDelCopyInLocalNode(ActionResult& returnValue, const DelCopyJob& job)
+{
+    HCP_Log(INFO, MODULE) << "Enter AllowDelCopyInLocalNode" << HCPENDLOG;
+    auto fun = OpenLibMgr::GetInstance().GetObj<AllowDelCopyInLocalNodeFun>("AllowDelCopyInLocalNode");
+    if (fun == nullptr) {
+        returnValue.__set_code(INNER_ERROR);
+        char errMsg[MAX_ERR_MSG_LEN] = {0};
+        HCP_Log(ERR, MODULE) << "Get AllowDelCopyInLocalNode function failed: " <<
+            Module::DlibError(errMsg, sizeof(errMsg)) << HCPENDLOG;
+        return;
+    }
+    if (!ParamCheck("DelCopyJob", StructToJson(job), returnValue)) {
+        HCP_Log(ERR, MODULE) << "ParamCheck failed." << HCPENDLOG;
+        return;
+    }
+    fun(returnValue, job);
+    HCP_Log(INFO, MODULE) << "Exit AllowDelCopyInLocalNode" << HCPENDLOG;
+}
+
+EXTER_ATTACK void ProtectServiceImp::AllowDelCopySubJobInLocalNode(ActionResult& returnValue,
+    const DelCopyJob& job, const SubJob& subJob)
+{
+    HCP_Log(INFO, MODULE) << "Enter AllowDelCopySubJobInLocalNode" << HCPENDLOG;
+
+    if (!ParamCheck({{"DelCopyJob", StructToJson(job)}, {"SubJob", StructToJson(subJob)}}, returnValue)) {
+        HCP_Log(ERR, MODULE) << "ParamCheck failed." << HCPENDLOG;
+        return;
+    }
+
+    auto fun = OpenLibMgr::GetInstance().GetObj<AllowDelCopySubJobInLocalNodeFun>("AllowDelCopySubJobInLocalNode");
+    if (fun == nullptr) {
+        returnValue.__set_code(INNER_ERROR);
+        char errMsg[MAX_ERR_MSG_LEN] = {0};
+        HCP_Log(ERR, MODULE) << "Get AllowDelCopySubJobInLocalNode function failed: " <<
+            Module::DlibError(errMsg, sizeof(errMsg)) << HCPENDLOG;
+        return;
+    }
+    fun(returnValue, job, subJob);
+    HCP_Log(INFO, MODULE) << "Exit AllowDelCopySubJobInLocalNode" << HCPENDLOG;
 }

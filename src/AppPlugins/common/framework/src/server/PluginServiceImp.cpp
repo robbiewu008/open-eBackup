@@ -21,7 +21,7 @@ PluginServiceImp::PluginServiceImp()
 PluginServiceImp::~PluginServiceImp()
 {}
 
-void PluginServiceImp::QueryPlugin(ApplicationPlugin& /* returnValue */)
+void PluginServiceImp::QueryPlugin(ApplicationPlugin& returnValue)
 {
     // to be implement
     INFOLOG("======HeartBeat=========");
