@@ -27,7 +27,7 @@ class PluginFactory(object):
             return default_res
         for file in os.listdir(plugins_dir):
             name, ext = os.path.splitext(file)
-            if name != '__init__' and ext == '.pyc':
+            if name != '__init__' and ext == '.py':
                 plugins.append('app.resource.discovery.plugins.%s' % name)
         return plugins
 

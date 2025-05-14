@@ -26,13 +26,13 @@ class ValidatorManager(object):
     def _load_validators(self):
         extend_path = os.path.join(os.path.abspath(
             os.path.dirname(__file__)), self._extends_dir)
-        py_files = glob.glob("{}/*.pyc".format(extend_path).rstrip("/"))
+        py_files = glob.glob("{}/*.py".format(extend_path).rstrip("/"))
 
         for py_file in py_files:
-            if py_file.endswith("__init__.pyc"):
+            if py_file.endswith("__init__.py"):
                 continue
             script_module_name = "{}.{}".format(
-                self._package, os.path.basename(py_file)[:-len(".pyc")])
+                self._package, os.path.basename(py_file)[:-len(".py")])
             spec = importlib.util.spec_from_file_location(
                 script_module_name, py_file)
 
