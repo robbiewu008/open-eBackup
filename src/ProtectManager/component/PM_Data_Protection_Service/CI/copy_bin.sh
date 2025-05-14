@@ -66,14 +66,8 @@ function copy_scripts() {
 }
 
 function build_package(){
-    cp ${CUR_PATH}/scripts/build_pyc.py ${PM_MS_DIR}/../PM_App_Common_Lib/CI/
-    python ${PM_MS_DIR}/../PM_App_Common_Lib/CI/build_pyc.py
-	  cp -r ${PM_MS_DIR}/../PM_App_Common_Lib/src ${PM_MS_DIR}/package/
-	  rm -rf ${PM_MS_DIR}/package/common
-	  mv ${PM_MS_DIR}/package/common_pyc ${PM_MS_DIR}/package/common
+    cp -r ${PM_MS_DIR}/../PM_App_Common_Lib/src ${PM_MS_DIR}/package/
 	  cp -r ${PM_MS_DIR}/src ${PM_MS_DIR}/package/
-	  rm -rf ${PM_MS_DIR}/package/src/app
-	  mv ${PM_MS_DIR}/package/src/app_pyc ${PM_MS_DIR}/package/src/app
 	  cp ${PM_MS_DIR}/scripts/app.sh ${PM_MS_DIR}/package/src/
     cp ${PM_MS_DIR}/scripts/check_health.sh ${PM_MS_DIR}/package/src/
     cp ${PM_MS_DIR}/scripts/check_live.sh ${PM_MS_DIR}/package/src/
@@ -115,6 +109,4 @@ else
 	echo "buildVersion=${PackageVersion}" > ${PM_MS_DIR}/../buildInfo.properties
 fi
 
-# 编译py为pyc
-python build_pyc.py
 main

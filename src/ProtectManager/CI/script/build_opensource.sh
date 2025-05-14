@@ -54,6 +54,13 @@ function compile() {
 				echo "${pmservice} compile failed"
 				exit 1
 			fi
+		elif [ "${pmservice}" == "PM_Data_Protection_Service" ]; then
+		  cd ${BASE_PATH}/component/${pmservice}/CI
+		  sh build_opensource.sh "${REPO_PATH}/ProtectManager"
+			if [ $? -ne 0 ]; then
+				echo "${pmservice} compile failed"
+				exit 1
+			fi
 		else 
 			local L_COMPONENTS_DIR="${BASE_PATH}/component"
 			if [ -d ${L_COMPONENTS_DIR}/${pmservice}/pkg ]; then

@@ -57,7 +57,13 @@ RUN chmod 750 /context/src \
     && chown -R 15013:99 /context/src
 
 COPY --chown=15013:99 package/src/ .
-RUN chown 15013:nobody /context/src/app/common/security/kmc_util.pyc /context/src/app/common/clients/client_util.pyc /context/src/app/__main__.pyc \
+RUN python3 -m py_compile /context/src/app/common/security/kmc_util.py /context/src/app/common/clients/client_util.py /context/src/app/__main__.py \
+    && cp -rf /context/src/app/common/security/__pycache__/kmc_util.*.pyc /context/src/app/common/security/kmc_util.pyc \
+    && cp -rf /context/src/app/common/clients/__pycache__/client_util.*.pyc /context/src/app/common/clients/client_util.pyc \
+    && cp -rf /context/src/app/__pycache__/__main__.*.pyc /context/src/app/__main__.pyc \
+    && rm -rf /context/src/app/common/security/__pycache__ /context/src/app/common/clients/__pycache__ /context/src/app/__pycache__ /context/src/app/common/security/kmc_util.py /context/src/app/common/clients/client_util.py /context/src/app/__main__.py \
+    && rm -rf /context/src/common/security/kmc_util.py /context/src/common/clients/client_util.py \
+    && chown 15013:nobody /context/src/app/common/security/kmc_util.pyc /context/src/app/common/clients/client_util.pyc /context/src/app/__main__.pyc \
     && echo "/usr/local/lib" >> /etc/ld.so.conf \
     && ldconfig \
     && touch "/etc/timezone" \
