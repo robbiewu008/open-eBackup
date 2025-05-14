@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.huawei.oceanprotect</groupId>
+        <artifactId>pm-system-base</artifactId>
+        <version>0.0.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>pm-access-framework</module>
+        <module>pm-access-provider-sdk</module>
+        <module>pm-alarm</module>
+        <module>pm-anti-ransomware</module>
+        <module>pm-api-gen</module>
+        <module>pm-cert</module>
+        <module>pm-cluster</module>
+        <module>pm-export-files</module>
+        <module>pm-inspection</module>
+        <module>pm-ibmc</module>
+        <module>pm-job</module>
+        <module>pm-kerberos</module>
+        <module>pm-kms</module>
+        <module>pm-license</module>
+        <module>pm-protectagent</module>
+        <module>pm-repository</module>
+        <module>pm-schedule</module>
+        <module>pm-sdk-device-manager</module>
+        <module>pm-sftp</module>
+        <module>pm-system-backup</module>
+        <module>pm-user</module>
+        <module>pm-sla</module>
+        <module>pm-system-setting</module>
+        <module>pm-report</module>
+        <module>pm-quota</module>
+        <module>pm-functionswitch</module>
+        <module>pm-version</module>
+        <module>pm-sso-saml</module>
+        <module>pm-coordinator</module>
+        <module>pm-exercise</module>
+        <module>pm-external-system</module>
+        <module>pm-label</module>
+    </modules>
+
+    <artifactId>pm-framework</artifactId>
+    <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
+    <description>${project.artifactId}-${project.version}.${project.packaging}</description>
+
+</project>

@@ -1,0 +1,14 @@
+[
+    {
+        "ID": "2251808370065408",
+        "MTU": "1500",
+        "NAME": "op_bond_port1711369204317.1",
+        "PORTID": "1970329132080898",
+        "PORTTYPE": "7",
+        "RUNNINGSTATUS": "11",
+        "TAG": "1",
+        "TYPE": "280",
+        "fatherDrvType": "1",
+        "netspaceID": "0"
+    }
+]

@@ -1,0 +1,56 @@
+/*
+ *  Copyright (c) Huawei Technologies Co., Ltd. 2024-2024. All rights reserved.
+ */
+
+package com.huawei.oceanprotect.system.base.initialize.network.enums;
+
+/**
+ * 初始化类型枚举
+ *
+ * @author n30046257
+ * @version [OceanProtect DataBackup 1.6.0]
+ * @since 2024/4/5
+ */
+public enum InitType {
+    /**
+     * 手动初始化
+     */
+    MANUAL_CONFIGURATION("0"),
+    /**
+     * LLD初始化
+     */
+    LLD_TEMPLATE_CONFIGURATION("1");
+
+    private final String value;
+
+    InitType(String value) {
+        this.value = value;
+    }
+
+    /**
+     * 获取初始化配置类型是手动还是LLD
+     *
+     * @return initType
+     */
+    public String getType() {
+        return value;
+    }
+
+    /**
+     * 是否是手动初始化
+     *
+     * @return true：是，false：不是
+     */
+    public boolean isManualInit() {
+        return InitType.MANUAL_CONFIGURATION.getType().equals(this.value);
+    }
+
+    /**
+     * 是否是lld初始化
+     *
+     * @return true：是，false：不是
+     */
+    public boolean isLldInit() {
+        return InitType.LLD_TEMPLATE_CONFIGURATION.getType().equals(this.value);
+    }
+}

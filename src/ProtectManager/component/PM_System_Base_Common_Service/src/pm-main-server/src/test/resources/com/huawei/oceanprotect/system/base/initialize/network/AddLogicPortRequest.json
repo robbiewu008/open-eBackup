@@ -1,0 +1,56 @@
+[
+  {
+    "name": "back1",
+    "homePortName": "CTE0.A.IOM0.P0",
+    "homePortType": "8",
+    "homePortId": "",
+    "ip": "192.168.111.116",
+    "mask": "255.255.0.0",
+    "gateWay": "",
+    "role": "4",
+    "ipType": "IPV4",
+    "vlan": {
+      "id": "",
+      "tags": [
+        1
+      ],
+      "portType": "7",
+      "bondPortId": "",
+      "portNameList": [
+        "CTE0.B.IOM4.P0",
+        "CTE0.B.IOM4.P3"
+      ],
+      "mtu": "1500"
+    }
+  },
+  {
+  "name": "back6",
+  "homePortName": "CTE0.B.IOM0.P0",
+  "homePortType": "1",
+  "homePortId": "",
+  "ip": "192.168.111.120",
+  "mask": "255.255.0.0",
+  "gateWay": "",
+  "role": "4",
+  "ipType": "IPV4"
+		},
+  {
+  "name": "back2",
+  "homePortName": "CTE0.A.IOM0.P0",
+  "homePortType": "7",
+  "homePortId": "",
+  "ip": "192.168.111.3",
+  "mask": "255.255.0.0",
+  "gateWay": "",
+  "role": "2",
+  "ipType": "IPV4",
+  "bondPort": {
+    "id": "",
+    "portNameList": [
+      "CTE0.B.IOM4.P0",
+      "CTE0.B.IOM4.P3"
+    ],
+    "mtu": "1890"
+  }
+		}
+]

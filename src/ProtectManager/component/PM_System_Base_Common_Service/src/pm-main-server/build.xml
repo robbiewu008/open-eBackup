@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="DPA-build" default="build" basedir=".">
+    <property name="PM_PACKAGE_NAME" value="PM_System_Base_Service"/>
+    <!-- 是否windows-->
+    <condition property="isWindows">
+        <os family="windows"/>
+    </condition>
+    <!-- 是否unix-->
+    <condition property="isUnix">
+        <os family="unix"/>
+    </condition>
+
+    <!-- 拷贝java jar-->
+    <target name="copyMainserverJar">
+        <copy todir="target/package/" overwrite="true">
+            <fileset dir="target/">
+                <include name="pm-main-server.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- 拷贝告警xml-->
+    <target name="copyAlarmXml">
+        <!-- 备份软件告警码/事件码-->
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/explore.json"
+              tofile="target/classes/conf/alarmI18nE/explore.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/common.json"
+              tofile="target/classes/conf/alarmI18nE/common.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/protection.json"
+              tofile="target/classes/conf/alarmI18nE/protection.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/insight.json"
+              tofile="target/classes/conf/alarmI18nE/insight.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/params.json"
+              tofile="target/classes/conf/alarmI18nE/params.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/search.json"
+              tofile="target/classes/conf/alarmI18nE/search.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/system.json"
+              tofile="target/classes/conf/alarmI18nE/system.json"></copy>
+
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/explore.json"
+              tofile="target/classes/conf/alarmI18nZ/explore.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/common.json"
+              tofile="target/classes/conf/alarmI18nZ/common.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/protection.json"
+              tofile="target/classes/conf/alarmI18nZ/protection.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/insight.json"
+              tofile="target/classes/conf/alarmI18nZ/insight.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/params.json"
+              tofile="target/classes/conf/alarmI18nZ/params.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/search.json"
+              tofile="target/classes/conf/alarmI18nZ/search.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/system.json"
+              tofile="target/classes/conf/alarmI18nZ/system.json"></copy>
+
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/alarm/common.json"
+              tofile="target/classes/conf/alarmI18nE/AlarmCommonEn.json"></copy>
+        <!-- dorado告警码-->
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/alarm/dorado_alarm.json"
+              tofile="target/classes/conf/alarmI18nE/DoradoAlarmEn.json"></copy>
+        <!-- pacific告警码-->
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/alarm/pacific_alarm.json"
+              tofile="target/classes/conf/alarmI18nE/PacificAlarmEn.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/alarm/ab.json"
+              tofile="target/classes/conf/alarmI18nE/AbAlarmEn.json"></copy>
+        <!-- 事件里面的告警对象的国际化-->
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/operation/common.json"
+              tofile="target/classes/conf/alarmI18nE/OperationTargetEn.json"></copy>
+        <!-- 通用label-->
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/common.json"
+              tofile="target/classes/conf/alarmI18nE/SecondaryParamEn.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/alarm/common.json"
+              tofile="target/classes/conf/alarmI18nZ/AlarmCommonZh.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/alarm/dorado_alarm.json"
+              tofile="target/classes/conf/alarmI18nZ/DoradoAlarmZn.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/alarm/pacific_alarm.json"
+              tofile="target/classes/conf/alarmI18nZ/PacificAlarmZn.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/alarm/ab.json"
+              tofile="target/classes/conf/alarmI18nZ/AbAlarmZn.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/operation/common.json"
+              tofile="target/classes/conf/alarmI18nZ/OperationTargetZn.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/common.json"
+              tofile="target/classes/conf/alarmI18nZ/SecondaryParamZn.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/en-us/task/common.json"
+              tofile="target/classes/conf/alarmI18nZ/TaskCommonEn.json"></copy>
+        <copy file="../../../PM_GUI/src/service/console/src/assets/i18n/zh-cn/task/common.json"
+              tofile="target/classes/conf/alarmI18nZ/TaskCommonZn.json"></copy>
+    </target>
+
+    <!-- 拷贝配置-->
+    <target name="copyConf">
+        <copy todir="target/package/" overwrite="true">
+            <fileset dir="src/main/resources/">
+                <include name="conf/**"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- 拷贝script-->
+    <target name="copyScripts">
+        <copy todir="target/package/" overwrite="true">
+            <fileset dir="../../scripts/">
+                <include name="pkg/**"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- 压缩安装包-->
+    <target name="package">
+        <tar basedir="target/package/" destfile="target/${PM_PACKAGE_NAME}.tar.gz" compression="gzip"></tar>
+    </target>
+
+    <!-- 拷贝xml文件-->
+    <target name="compile">
+        <antcall target="copyAlarmXml"/>
+    </target>
+
+    <target name="build">
+        <echo message="kmc.build.enabled:${kmc.build.enabled}"/>
+        <condition property="kmc.build.enabled">
+            <istrue value="${kmc.build.enabled}"/>
+        </condition>
+        <echo message="kmc.build.enabled:${kmc.build.enabled}"/>
+
+        <antcall target="copyMainserverJar"/>
+        <antcall target="copyConf"/>
+        <antcall target="copyScripts"/>
+        <antcall target="package"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="target/thirdPartSoft/"></delete>
+        <delete dir="target/package/"></delete>
+    </target>
+</project>

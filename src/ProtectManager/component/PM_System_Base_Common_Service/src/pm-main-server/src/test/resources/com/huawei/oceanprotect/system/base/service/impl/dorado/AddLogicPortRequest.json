@@ -1,0 +1,130 @@
+[
+  {
+    "name": "1",
+    "homePortName": "CTE0.A.IOM0.P0",
+    "homePortType": "8",
+    "homePortId": "",
+    "ip": "192.168.111.116",
+    "mask": "255.255.0.0",
+    "gateWay": "",
+    "role": "2",
+    "ipType": "IPV4",
+    "currentControllerId": "0A",
+    "vlan": {
+      "id": "",
+      "tags": [
+        1
+      ],
+      "portType": "7",
+      "bondPortId": "",
+      "portNameList": [
+        "CTE0.B.IOM4.P0",
+        "CTE0.B.IOM4.P3"
+      ],
+      "mtu": "1500"
+    }
+  },
+  {
+  "name": "3",
+  "homePortName": "CTE0.B.IOM0.P0",
+  "homePortType": "1",
+  "homePortId": "",
+  "ip": "192.168.111.120",
+  "mask": "255.255.0.0",
+  "gateWay": "",
+  "role": "4",
+  "ipType": "IPV4",
+    "currentControllerId": "0A"
+		},
+  {
+  "name": "4",
+  "homePortName": "CTE0.B.IOM0.P0",
+  "homePortType": "1",
+  "homePortId": "",
+  "ip": "192.168.111.120",
+  "mask": "255.255.0.0",
+  "gateWay": "",
+  "role": "4",
+  "ipType": "IPV4",
+    "currentControllerId": "0B"
+		},
+  {
+    "name": "2",
+    "homePortName": "CTE0.A.IOM0.P0",
+    "homePortType": "7",
+    "homePortId": "",
+    "ip": "192.168.111.3",
+    "mask": "255.255.0.0",
+    "gateWay": "",
+    "role": "2",
+    "ipType": "IPV4",
+    "currentControllerId": "0B",
+    "bondPort": {
+      "id": "",
+      "portNameList": [
+        "CTE0.B.IOM4.P0",
+        "CTE0.B.IOM4.P3"
+      ],
+      "mtu": "1890"
+    }
+  },
+    {
+  "name": "5",
+  "homePortName": "CTE0.A.IOM0.P0",
+  "homePortType": "7",
+  "homePortId": "",
+  "ip": "192.168.111.5",
+  "mask": "255.255.0.0",
+  "gateWay": "",
+  "role": "11",
+  "ipType": "IPV4",
+    "currentControllerId": "0A",
+  "bondPort": {
+    "id": "",
+    "portNameList": [
+      "CTE0.B.IOM4.P0",
+      "CTE0.B.IOM4.P3"
+    ],
+    "mtu": "1890"
+  }},
+      {
+  "name": "6",
+  "homePortName": "CTE0.A.IOM0.P0",
+  "homePortType": "7",
+  "homePortId": "",
+  "ip": "192.168.111.6",
+  "mask": "255.255.0.0",
+  "gateWay": "",
+  "role": "11",
+  "ipType": "IPV4",
+    "currentControllerId": "0B",
+  "bondPort": {
+    "id": "",
+    "portNameList": [
+      "CTE0.B.IOM4.P0",
+      "CTE0.B.IOM4.P3"
+    ],
+    "mtu": "1890"
+  }
+		},
+   {
+  "name": "7",
+  "homePortName": "CTE0.A.IOM0.P0",
+  "homePortType": "7",
+  "homePortId": "",
+  "ip": "192.168.111.6",
+  "mask": "255.255.0.0",
+  "gateWay": "",
+  "role": "3",
+  "ipType": "IPV4",
+    "currentControllerId": "0B",
+  "bondPort": {
+    "id": "",
+    "portNameList": [
+      "CTE0.B.IOM4.P0",
+      "CTE0.B.IOM4.P3"
+    ],
+    "mtu": "1890"
+  }
+		}
+]

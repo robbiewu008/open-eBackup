@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (c) Huawei Technologies Co., Ltd. 2021-2022. All rights reserved.
+  -->
+<trapcfg>
+    <traps>
+        <!--创建资源-->
+        <trap ID="0x20640332002F" KeyIndexs="2,3" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520026" SuccessDMEventID="0x20131F520025"/>
+        <!--更新资源-->
+        <trap ID="0x206403320030" KeyIndexs="2,3" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520028" SuccessDMEventID="0x20131F520027"/>
+        <!--删除资源-->
+        <trap ID="0x206403320031" KeyIndexs="2,3" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F52002A" SuccessDMEventID="0x20131F520029"/>
+        <!--手工扫描受保护环境-->
+        <trap ID="0x206403320032" KeyIndexs="2,3" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F52002C" SuccessDMEventID="0x20131F52002B"/>
+        <!--更新受保护环境-->
+        <trap ID="0x206403320033" KeyIndexs="2,3" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F52002E" SuccessDMEventID="0x20131F52002D"/>
+        <!--删除受保护环境-->
+        <trap ID="0x206403320034" KeyIndexs="2,3" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520030" SuccessDMEventID="0x20131F52002F"/>
+        <!--注册受保护环境-->
+        <trap ID="0x206403320035" KeyIndexs="2,3" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520032" SuccessDMEventID="0x20131F520031"/>
+        <!--测试资源-->
+        <trap ID="0x20640332003A" KeyIndexs="2,3" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520034" SuccessDMEventID="0x20131F520033"/>
+        <!--测试受保护环境-->
+        <trap ID="0x20640332003B" KeyIndexs="2,3" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520036" SuccessDMEventID="0x20131F520035"/>
+    </traps>
+</trapcfg>

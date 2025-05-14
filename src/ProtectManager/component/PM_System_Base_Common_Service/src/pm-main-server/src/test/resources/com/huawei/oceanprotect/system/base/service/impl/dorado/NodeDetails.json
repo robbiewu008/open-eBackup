@@ -1,0 +1,26 @@
+[
+    {
+        "address": "",
+        "componentList": [
+            "DME",
+            "PM",
+            "PM"
+        ],
+        "hostname": "node-0",
+        "nodeName": "0A",
+        "nodeStatus": "ready"
+    },
+    {
+        "address": "",
+        "componentList": [
+            "INFRA",
+            "DME",
+            "DME",
+            "PM",
+            "PM"
+        ],
+        "hostname": "node-1",
+        "nodeName": "0B",
+        "nodeStatus": "ready"
+    }
+]
