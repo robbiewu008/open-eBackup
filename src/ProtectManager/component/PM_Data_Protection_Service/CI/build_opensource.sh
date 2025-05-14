@@ -25,6 +25,7 @@ function copy_scripts() {
 }
 
 function build_package(){
+    rm -rf ${PM_MS_DIR}/package/src
     cp -r ${PM_MS_DIR}/src ${PM_MS_DIR}/package/
 	  cp ${PM_MS_DIR}/scripts/app.sh ${PM_MS_DIR}/package/src/
     cp ${PM_MS_DIR}/scripts/check_health.sh ${PM_MS_DIR}/package/src/
