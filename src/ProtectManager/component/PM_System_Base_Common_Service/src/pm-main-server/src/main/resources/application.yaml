@@ -274,7 +274,7 @@ secret:
 crm:
   client:
     pmCaFilesPath: /opt/OceanProtect/protectmanager/cert/client/
-    pmAgentZipFile: /opt/ProtectManager/agent/client/DataProtect_${APP_VERSION}_client.zip
+    pmAgentZipFile: /img/agent/client/DataProtect_${APP_VERSION}_client.zip
     agentInitZipPath: /app/agent/initPath/zipFile/
     agentPackageName: DataProtect_${APP_VERSION}_client
     agentInitUnzipPath: /app/agent/initPath/unZipFiles/
