@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * 归档网络信息
  *
- * @author l00347293
  * @since 2020-12-08
  */
 @Data

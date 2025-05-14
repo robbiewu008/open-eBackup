@@ -39,7 +39,6 @@ import java.util.Arrays;
 /**
  * 测试类
  *
- * @author w00504341
  * @since 2023-08-24
  */
 @RunWith(PowerMockRunner.class)

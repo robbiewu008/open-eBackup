@@ -31,7 +31,6 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * E6000InitDeployTypeStrategyServiceImplTest
  *
- * @author y30046482
  * @version [OceanProtect DataBackup 1.6.0]
  * @since 2024-08-23
  */

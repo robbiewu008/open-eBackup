@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 /**
  * DeviceManager认证信息编码器
  *
- * @author w00493811
  * @since 2021-05-05
  */
 @Service("deviceManagerAuthInfoEncoder")

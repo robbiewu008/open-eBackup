@@ -61,7 +61,6 @@ import java.util.stream.Collectors;
 /**
  * Service for initialization in case of {@link DeployTypeEnum#E1000}
  *
- * @author p00823811
  * @since 2024-02-10
  */
 @Service

@@ -25,7 +25,6 @@ import javax.validation.constraints.Size;
 /**
  * lld初始化备份网络配置
  *
- * @author n30046257
  * @version [OceanProtect DataBackup 1.6.0]
  * @since 2024/4/5
  */

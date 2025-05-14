@@ -17,7 +17,6 @@ import lombok.Data;
 /**
  * 设备ESN信息
  *
- * @author s00455050
  * @since 2021-09-24
  */
 @Data

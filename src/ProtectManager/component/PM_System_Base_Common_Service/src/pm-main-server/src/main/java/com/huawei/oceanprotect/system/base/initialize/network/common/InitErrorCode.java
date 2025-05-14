@@ -15,7 +15,6 @@ package com.huawei.oceanprotect.system.base.initialize.network.common;
 /**
  * 初始化错误类
  *
- * @author swx1010572
  * @since 2023-07-10
  */
 public class InitErrorCode {

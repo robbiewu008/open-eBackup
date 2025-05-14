@@ -22,7 +22,6 @@ import java.util.List;
 /**
  * 初始化动作
  *
- * @author swx1010572
  * @since 2021-01-18
  */
 public interface InitializePortRoute {

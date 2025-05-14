@@ -20,7 +20,6 @@ import openbackup.system.base.util.Applicable;
 /**
  * 处理网络配置的接口
  *
- * @author swx1010572
  * @since 2021-11-29
  */
 public interface GetNetworkConfigService<T> extends Applicable<String> {

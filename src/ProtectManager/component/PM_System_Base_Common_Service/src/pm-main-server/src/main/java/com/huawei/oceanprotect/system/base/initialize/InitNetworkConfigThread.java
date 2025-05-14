@@ -100,7 +100,6 @@ import java.util.stream.Collectors;
 /**
  * 初始化创建线程
  *
- * @author l00347293
  * @since 2021-02-05
  */
 @Slf4j

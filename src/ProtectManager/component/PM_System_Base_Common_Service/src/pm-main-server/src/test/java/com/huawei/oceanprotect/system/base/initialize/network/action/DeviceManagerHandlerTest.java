@@ -55,7 +55,6 @@ import java.util.Map;
 /**
  * 测试 备份/归档 初始化/修改/扩容 流程
  *
- * @author swx1010572
  * @since 2021-01-11
  */
 public class DeviceManagerHandlerTest {

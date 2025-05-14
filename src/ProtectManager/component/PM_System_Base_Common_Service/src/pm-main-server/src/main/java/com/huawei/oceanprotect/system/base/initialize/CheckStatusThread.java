@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 监控是否正在进行初始化或网络配置修改
  *
- * @author l00347293
  * @since 2021-04-12
  */
 @Slf4j

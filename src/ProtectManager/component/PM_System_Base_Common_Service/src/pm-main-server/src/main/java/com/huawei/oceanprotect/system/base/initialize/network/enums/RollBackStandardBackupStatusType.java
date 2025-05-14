@@ -15,7 +15,6 @@ package com.huawei.oceanprotect.system.base.initialize.network.enums;
 /**
  * 归档IP类型
  *
- * @author l00347293
  * @since 2020-12-19
  */
 public enum RollBackStandardBackupStatusType {

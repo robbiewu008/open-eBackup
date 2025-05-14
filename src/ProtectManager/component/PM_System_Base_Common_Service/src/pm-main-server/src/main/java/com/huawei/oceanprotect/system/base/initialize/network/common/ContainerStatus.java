@@ -22,7 +22,6 @@ import lombok.NoArgsConstructor;
 /**
  * 配置状态
  *
- * @author l00347293
  * @since 2020-12-19
  */
 @Data

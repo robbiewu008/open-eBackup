@@ -15,7 +15,6 @@ package com.huawei.oceanprotect.system.base.initialize.network.common;
 /**
  * 软硬解耦初始化备份网络配置
  *
- * @author n30046257
  * @version [OceanProtect DataBackup 1.6.0]
  * @since 2024/4/5
  */

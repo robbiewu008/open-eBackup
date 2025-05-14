@@ -21,7 +21,6 @@ import org.hibernate.validator.constraints.Length;
 /**
  * 查询逻辑端口过滤参数
  *
- * @author n30046257
  * @version [OceanProtect DataBackup 1.6.0]
  * @since 2024/3/27
  */

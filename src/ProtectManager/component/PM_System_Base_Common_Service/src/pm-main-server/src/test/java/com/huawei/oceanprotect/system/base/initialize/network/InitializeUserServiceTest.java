@@ -26,7 +26,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * 测试DM 用户能力
  *
- * @author swx1010572
  * @version: [OceanProtect DataBackup 1.3.0]
  * @since 2023-02-16
  */

@@ -35,7 +35,6 @@ import java.util.List;
 /**
  * InitPortRouteAbility Test
  *
- * @author z00666391
  * @since 2023-02-27
  */
 public class InitPortRouteAbilityTest {

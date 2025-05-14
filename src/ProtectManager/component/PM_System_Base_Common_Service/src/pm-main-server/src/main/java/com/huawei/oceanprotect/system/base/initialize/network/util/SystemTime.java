@@ -25,7 +25,6 @@ import java.util.TimeZone;
 /**
  * 记录时间
  *
- * @author swx1010572
  * @since 2021-04-08
  */
 public class SystemTime {

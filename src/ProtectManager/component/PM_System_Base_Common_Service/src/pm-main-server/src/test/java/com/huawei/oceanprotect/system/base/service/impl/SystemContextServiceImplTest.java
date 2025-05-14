@@ -45,7 +45,6 @@ import java.util.List;
 /**
  * SystemContextServiceImpl测试类
  *
- * @author z00445440
  * @since 2023-03-10
  */
 @RunWith(PowerMockRunner.class)

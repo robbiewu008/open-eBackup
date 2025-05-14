@@ -38,7 +38,6 @@ import java.util.Map;
 /**
  * 功能描述
  *
- * @author z00893213
  * @version [OceanProtect DataBackup 1.7.0]
  * @since 2025-03-05
  */

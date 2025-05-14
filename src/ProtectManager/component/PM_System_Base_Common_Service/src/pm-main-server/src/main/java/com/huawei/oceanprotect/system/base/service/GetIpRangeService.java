@@ -21,7 +21,6 @@ import java.util.List;
 /**
  * 处理ip段的接口
  *
- * @author swx1010572
  * @since 2021-11-29
  */
 public interface GetIpRangeService extends Applicable<String> {

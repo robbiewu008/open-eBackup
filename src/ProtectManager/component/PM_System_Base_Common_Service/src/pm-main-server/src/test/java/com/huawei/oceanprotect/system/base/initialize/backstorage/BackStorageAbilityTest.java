@@ -36,7 +36,6 @@ import java.util.List;
 /**
  * 测试创建存储能力
  *
- * @author l00347293
  * @since 2021-07-03
  */
 @RunWith(SpringRunner.class)

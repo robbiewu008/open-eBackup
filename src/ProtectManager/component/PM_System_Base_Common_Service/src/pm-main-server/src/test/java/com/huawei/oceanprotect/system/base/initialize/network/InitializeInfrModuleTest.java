@@ -41,7 +41,6 @@ import java.util.Map;
 /**
  * 测试DM 用户能力
  *
- * @author swx1010572
  * @version: [DataBackup 1.5.0]
  * @since 2023-07-26
  */

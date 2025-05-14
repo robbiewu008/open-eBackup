@@ -17,7 +17,6 @@ import lombok.ToString;
 /**
  * 初始化备份错误码
  *
- * @author w00493811
  * @since 2020-12-28
  */
 @ToString

@@ -29,7 +29,6 @@ import org.mockito.Mockito;
 /**
  * 集群存储性能 测试类
  *
- * @author swx1010572
  * @since 2022-08-18
  */
 public class InitializeSwitchPerformanceTest {

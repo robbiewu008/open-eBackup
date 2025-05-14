@@ -23,7 +23,6 @@ import javax.validation.Valid;
 /**
  * 查询逻辑端口参数
  *
- * @author n30046257
  * @version [OceanProtect DataBackup 1.6.0]
  * @since 2024/1/26
  */

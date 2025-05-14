@@ -22,7 +22,6 @@ import java.util.List;
 /**
  * DM 返回值处理公共类
  *
- * @author swx1010572
  * @version: [OceanProtect DataBackup 1.3.0]
  * @since 2023-01-09
  */

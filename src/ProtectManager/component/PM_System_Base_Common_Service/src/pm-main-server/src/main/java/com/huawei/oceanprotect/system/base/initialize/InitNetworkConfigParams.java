@@ -44,7 +44,6 @@ import org.springframework.context.ApplicationContext;
 /**
  * 功能描述
  *
- * @author w00493811
  * @since 2021-03-19
  */
 @Data

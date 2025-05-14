@@ -45,7 +45,6 @@ import java.util.List;
 /**
  * 初始化需要Mock的Bean对象
  *
- * @author swx1010572
  * @since 2022-012-22
  */
 public class DeviceManagerServiceMockBean {

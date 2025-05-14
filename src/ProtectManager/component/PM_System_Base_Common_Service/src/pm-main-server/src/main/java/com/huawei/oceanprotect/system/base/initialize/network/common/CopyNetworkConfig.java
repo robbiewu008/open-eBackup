@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * 复制网络信息
  *
- * @author swx1010572
  * @version: [OceanProtect DataBackup 1.3.0]
  * @since 2022-12-26
  */

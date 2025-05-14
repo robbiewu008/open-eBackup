@@ -22,7 +22,6 @@ import lombok.NoArgsConstructor;
 /**
  * DeviceManager回应模板
  *
- * @author swx1010572
  * @since 2021-06-22
  */
 @Data

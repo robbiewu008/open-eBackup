@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 /**
  * dorado service impl
  *
- * @author g00500588
  * @since 2021-01-20
  */
 @Service

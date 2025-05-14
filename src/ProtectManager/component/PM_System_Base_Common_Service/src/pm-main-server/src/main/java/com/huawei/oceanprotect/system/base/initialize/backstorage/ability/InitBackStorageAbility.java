@@ -34,7 +34,6 @@ import java.util.List;
 /**
  * 初始化备份存储能力
  *
- * @author w00493811
  * @since 2020-12-21
  */
 @Slf4j

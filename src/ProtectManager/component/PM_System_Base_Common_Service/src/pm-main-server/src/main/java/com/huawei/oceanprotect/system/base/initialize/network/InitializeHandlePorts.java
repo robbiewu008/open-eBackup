@@ -22,7 +22,6 @@ import java.util.Map;
 /**
  * 获取端口列表
  *
- * @author swx1010572
  * @since 2022-12-13
  */
 public interface InitializeHandlePorts {

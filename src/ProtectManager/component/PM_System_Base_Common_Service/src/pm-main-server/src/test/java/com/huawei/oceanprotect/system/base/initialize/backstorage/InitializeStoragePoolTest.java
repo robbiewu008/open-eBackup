@@ -37,7 +37,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * 测试设置存储池能力
  *
- * @author w00493811
  * @since 2021-01-04
  */
 @RunWith(SpringRunner.class)

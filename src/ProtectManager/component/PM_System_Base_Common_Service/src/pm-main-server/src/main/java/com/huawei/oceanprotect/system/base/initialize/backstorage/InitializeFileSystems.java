@@ -17,7 +17,6 @@ import com.huawei.oceanprotect.system.base.sdk.devicemanager.DeviceManagerServic
 /**
  * 初始化动作
  *
- * @author w00493811
  * @since 2020-12-21
  */
 public interface InitializeFileSystems {

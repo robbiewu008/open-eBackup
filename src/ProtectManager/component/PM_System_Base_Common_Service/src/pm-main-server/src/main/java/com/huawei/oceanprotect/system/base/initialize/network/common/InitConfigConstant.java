@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 初始化配置错误码信息
  *
- * @author l00347293
  * @since 2020-12-08
  */
 public final class InitConfigConstant {

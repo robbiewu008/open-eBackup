@@ -17,7 +17,6 @@ import com.huawei.oceanprotect.system.base.sdk.devicemanager.DeviceManagerServic
 /**
  * 集群存储性能
  *
- * @author swx1010572
  * @since 2022-08-18
  */
 public interface InitializeSwitchPerformance {

@@ -41,7 +41,6 @@ import java.util.List;
 /**
  * 初始化状态服务
  *
- * @author w00493811
  * @since 2021-03-18
  */
 @Component

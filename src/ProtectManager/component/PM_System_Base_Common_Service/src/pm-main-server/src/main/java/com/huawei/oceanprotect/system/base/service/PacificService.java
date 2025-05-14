@@ -17,7 +17,6 @@ import com.huawei.oceanprotect.system.base.dto.pacific.NetworkInfoDto;
 /**
  * pacific服务接口
  *
- * @author y30046482
  * @version [OceanProtect DataBackup 1.6.0]
  * @since 2024-01-09
  */

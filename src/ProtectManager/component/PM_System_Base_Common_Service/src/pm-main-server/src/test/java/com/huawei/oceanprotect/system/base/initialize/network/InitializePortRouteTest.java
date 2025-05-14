@@ -40,7 +40,6 @@ import java.util.List;
 /**
  * 测试 路由创建情况
  *
- * @author swx1010572
  * @since 2021-01-11
  */
 @RunWith(SpringRunner.class)

@@ -22,7 +22,6 @@ import org.junit.Test;
 /**
  * InitConfigConstant测试类
  *
- * @author s30031954
  * @since 2023-02-27
  */
 public class InitConfigConstantTest extends TestCase {

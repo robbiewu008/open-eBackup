@@ -28,7 +28,6 @@ import java.util.List;
 /**
  * 过去LLD配置信息中间类
  *
- * @author swx1010572
  * @version: [DataBackup 1.5.0]
  * @since 2023-07-25
  */

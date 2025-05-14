@@ -17,7 +17,6 @@ import openbackup.system.base.util.Applicable;
 /**
  * dorado service
  *
- * @author g00500588
  * @since 2021-01-11
  */
 public interface InitService<T> extends Applicable<String> {

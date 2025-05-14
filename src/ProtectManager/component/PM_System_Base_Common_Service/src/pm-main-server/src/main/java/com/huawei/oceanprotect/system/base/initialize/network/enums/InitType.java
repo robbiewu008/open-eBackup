@@ -15,7 +15,6 @@ package com.huawei.oceanprotect.system.base.initialize.network.enums;
 /**
  * 初始化类型枚举
  *
- * @author n30046257
  * @version [OceanProtect DataBackup 1.6.0]
  * @since 2024/4/5
  */

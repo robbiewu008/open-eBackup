@@ -19,7 +19,6 @@ import openbackup.system.base.common.exception.LegoCheckedException;
 /**
  * 初始化动作
  *
- * @author w00493811
  * @since 2020-12-21
  */
 public interface InitializeBackStorage {

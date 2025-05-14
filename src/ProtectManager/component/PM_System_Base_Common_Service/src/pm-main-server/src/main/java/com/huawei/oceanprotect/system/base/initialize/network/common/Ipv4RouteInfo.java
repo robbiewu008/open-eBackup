@@ -26,7 +26,6 @@ import javax.validation.constraints.Pattern;
 /**
  * 路由配置信息
  *
- * @author l00347293
  * @since 2020-12-08
  */
 @Data

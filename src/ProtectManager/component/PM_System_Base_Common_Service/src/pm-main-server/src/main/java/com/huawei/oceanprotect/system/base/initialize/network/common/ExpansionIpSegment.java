@@ -28,7 +28,6 @@ import javax.validation.constraints.Pattern;
 /**
  * 扩容Ip段信息
  *
- * @author swx1010572
  * @since 2021-06-11
  */
 @Data

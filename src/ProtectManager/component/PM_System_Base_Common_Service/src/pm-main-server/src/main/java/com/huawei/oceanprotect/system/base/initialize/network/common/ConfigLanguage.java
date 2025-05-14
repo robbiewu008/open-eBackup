@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 /**
  * 配置参数
  *
- * @author swx1010572
  * @since 2021-03-26
  */
 @Data
