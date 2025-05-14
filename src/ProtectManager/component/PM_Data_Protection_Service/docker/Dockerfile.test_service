@@ -1,0 +1,66 @@
+# ---------------------------------------------------------------------
+#
+# $file: Dockerfile
+# $author: Protect Manager
+#
+# This is a boilerplate test service tested by integration test pod.
+# The integration test pod send message to input topic of the boilerplate
+# test service, and assert result with produced to output topic. This enable us
+# to test the complete flow of recv message, processing and send the result.
+# ---------------------------------------------------------------------
+
+ARG python_version=3.8
+ARG min_coverage=90
+
+# ---------------------------------------------------------------------
+# Pull requirements python packages
+# ---------------------------------------------------------------------
+FROM emei-il.huawei.com:5443/python:${python_version}-buster as dev_layer
+
+# Install certificate
+COPY devops/emei-il.crt /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+
+# Update pip repository
+COPY devops/pip.conf /etc/
+
+# Build required packages
+WORKDIR /wheels
+COPY src/app/requirements requirements.app
+COPY tests/unit/requirements requirements.unit
+RUN cat requirements.app requirements.unit > requirements
+RUN pip wheel black pytest pytest-cov -r requirements
+
+# Also install those packages
+RUN pip install --no-index --find-links=/wheels black pytest pytest-cov  -r requirements
+
+# Add our top code folder to python path.
+ENV PYTHONPATH=/context/src
+
+# Copy everything
+WORKDIR /context
+COPY . .
+
+CMD ["python", "-m", "app"]
+# ---------------------------------------------------------------------
+# Build image
+# ---------------------------------------------------------------------
+FROM emei-il.huawei.com:5443/python:${python_version}-slim as build
+
+WORKDIR /wheels
+COPY --from=dev_layer /wheels .
+RUN pip install --no-index --find-links=/wheels -r requirements.app && \
+    rm -rf /wheels /root/.cache/pip/*
+
+# copy the application source code only.
+WORKDIR /src
+COPY src/ .
+
+# Overrides service.py and message_parser.py with the boilerplate test service
+# implementation
+COPY tests/integration/test_service/ app/
+
+ENV PYTHONPATH=/src
+
+
+CMD ["python", "-m", "app"]

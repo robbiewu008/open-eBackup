@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+    service:
+        image: <IMAGE_NAME>:integration
+        build:
+            context: ..
+            dockerfile: docker/Dockerfile
+        environment:
+            SERVICE_MODE: real
+        networks:
+            - local
+    integration:
+        depends_on:
+            - service
+        image: <IMAGE_NAME>-tests:integration
+        build:
+            context: ..
+            dockerfile: docker/Dockerfile.integration
+        environment:
+            TESTS: all
+        networks:
+            - local
+
+networks:
+    local:
+

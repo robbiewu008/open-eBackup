@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    emei_stor: 'True'
+    k8s-app: pm-data-protection-service
+  name: pm-data-protection-service
+spec:
+  ports:
+  - port: {{ .Values.service.port }}
+    protocol: TCP
+  selector:
+    k8s-app: pm-data-protection-service

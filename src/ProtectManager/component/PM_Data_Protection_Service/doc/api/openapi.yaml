@@ -1,0 +1,1781 @@
+components:
+  schemas:
+    BackupTimeUnit:
+      description: An enumeration.
+      enum:
+      - m
+      - h
+      - d
+      - w
+      title: BackupTimeUnit
+      type: string
+    BaseExtendParam:
+      properties:
+        qos_id:
+          description: "\u9650\u901F\u7B56\u7565id"
+          title: Qos Id
+          type: string
+      title: BaseExtendParam
+      type: object
+    BasePage_QosRes_:
+      properties:
+        items:
+          description: "\u6570\u636E\u5217\u8868"
+          items:
+            $ref: '#/components/schemas/QosRes'
+          title: Items
+          type: array
+        page_no:
+          description: "\u9875\u9762\u7F16\u53F7"
+          title: Page No
+          type: integer
+        page_size:
+          description: "\u6BCF\u9875\u6570\u636E\u91CF"
+          title: Page Size
+          type: integer
+        pages:
+          description: "\u603B\u9875\u6570"
+          title: Pages
+          type: integer
+        total:
+          description: "\u603B\u7684\u6570\u636E\u6761\u6570"
+          title: Total
+          type: integer
+      required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+      title: BasePage[QosRes]
+      type: object
+    BasePage_SlaQuery_:
+      properties:
+        items:
+          description: "\u6570\u636E\u5217\u8868"
+          items:
+            $ref: '#/components/schemas/SlaQuery'
+          title: Items
+          type: array
+        page_no:
+          description: "\u9875\u9762\u7F16\u53F7"
+          title: Page No
+          type: integer
+        page_size:
+          description: "\u6BCF\u9875\u6570\u636E\u91CF"
+          title: Page Size
+          type: integer
+        pages:
+          description: "\u603B\u9875\u6570"
+          title: Pages
+          type: integer
+        total:
+          description: "\u603B\u7684\u6570\u636E\u6761\u6570"
+          title: Total
+          type: integer
+      required:
+      - total
+      - pages
+      - page_size
+      - page_no
+      - items
+      title: BasePage[SlaQuery]
+      type: object
+    DownloadRequestSchema:
+      properties:
+        paths:
+          description: "\u6587\u4EF6\u4FE1\u606F\uFF0C\u4F8B\u5982\uFF1A/root"
+          items:
+            type: string
+          maxItems: 9223372036854775807
+          title: Paths
+          type: array
+      required:
+      - paths
+      title: DownloadRequestSchema
+      type: object
+    DownloadResponseSchema:
+      properties:
+        request_id:
+          description: "\u8BF7\u6C42id"
+          title: Request Id
+          type: string
+      required:
+      - request_id
+      title: DownloadResponseSchema
+      type: object
+    Filter:
+      properties:
+        content:
+          description: "\u8FC7\u6EE4\u5185\u5BB9"
+          maxLength: 10240
+          title: Content
+          type: string
+        model:
+          description: "\u8FC7\u6EE4\u6A21\u5F0F"
+          maximum: 2.0
+          minimum: 1.0
+          title: Model
+          type: integer
+        type:
+          description: "\u8FC7\u6EE4\u7C7B\u578B"
+          maximum: 4.0
+          minimum: 1.0
+          title: Type
+          type: integer
+      required:
+      - type
+      - model
+      - content
+      title: Filter
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+          type: array
+      title: HTTPValidationError
+      type: object
+    JobSchema:
+      properties:
+        associativeId:
+          title: Associativeid
+          type: string
+        copyId:
+          title: Copyid
+          type: string
+        copyTime:
+          title: Copytime
+          type: integer
+        data:
+          title: Data
+          type: string
+        detail:
+          title: Detail
+          type: string
+        detailPara:
+          title: Detailpara
+          type: string
+        enableStop:
+          title: Enablestop
+          type: boolean
+        endTime:
+          title: Endtime
+          type: integer
+        extendStr:
+          title: Extendstr
+          type: string
+        isSystem:
+          title: Issystem
+          type: boolean
+        isVisible:
+          title: Isvisible
+          type: boolean
+        jobId:
+          title: Jobid
+          type: string
+        lastUpdateTime:
+          title: Lastupdatetime
+          type: integer
+        message:
+          title: Message
+          type: string
+        parentId:
+          title: Parentid
+          type: string
+        progress:
+          title: Progress
+          type: integer
+        requestId:
+          title: Requestid
+          type: string
+        sourceId:
+          title: Sourceid
+          type: string
+        sourceLocation:
+          title: Sourcelocation
+          type: string
+        sourceName:
+          title: Sourcename
+          type: string
+        sourceSubType:
+          title: Sourcesubtype
+          type: string
+        speed:
+          title: Speed
+          type: string
+        startTime:
+          title: Starttime
+          type: integer
+        status:
+          title: Status
+          type: string
+        targetLocation:
+          title: Targetlocation
+          type: string
+        targetName:
+          title: Targetname
+          type: string
+        type:
+          title: Type
+          type: string
+        userId:
+          title: Userid
+          type: string
+      title: JobSchema
+      type: object
+    Policy:
+      properties:
+        action:
+          $ref: '#/components/schemas/PolicyActionEnum'
+        ext_parameters:
+          allOf:
+          - $ref: '#/components/schemas/BaseExtendParam'
+          description: "\u6269\u5C55\u53C2\u6570"
+          title: Ext Parameters
+        name:
+          description: "\u7B56\u7565\u540D\u79F0"
+          maxLength: 64
+          minLength: 1
+          pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
+          title: Name
+          type: string
+        retention:
+          allOf:
+          - $ref: '#/components/schemas/Retention'
+          description: "\u4FDD\u7559\u7B56\u7565"
+          title: Retention
+        schedule:
+          allOf:
+          - $ref: '#/components/schemas/Schedule'
+          description: "\u7B56\u7565\u8C03\u5EA6\u4FE1\u606F"
+          title: Schedule
+        type:
+          $ref: '#/components/schemas/PolicyTypeEnum'
+        uuid:
+          description: "\u552F\u4E00\u7F16\u7801"
+          format: uuid
+          title: Uuid
+          type: string
+      required:
+      - name
+      - schedule
+      - type
+      title: Policy
+      type: object
+    PolicyActionEnum:
+      description: An enumeration.
+      enum:
+      - full
+      - log
+      - cumulative_increment
+      - difference_increment
+      - replication
+      - archiving
+      title: PolicyActionEnum
+      type: string
+    PolicyQuery:
+      properties:
+        action:
+          $ref: '#/components/schemas/PolicyActionEnum'
+        ext_parameters:
+          description: "\u6269\u5C55\u53C2\u6570\uFF0C\u4E0D\u540C\u7C7B\u578B\u5E94\
+            \u7528\u5404\u81EA\u6269\u5C55"
+          format: json-string
+          title: Ext Parameters
+          type: string
+        name:
+          description: "\u7B56\u7565\u540D\u79F0"
+          title: Name
+          type: string
+        retention:
+          allOf:
+          - $ref: '#/components/schemas/Retention'
+          description: "\u4FDD\u7559\u7B56\u7565"
+          title: Retention
+        schedule:
+          allOf:
+          - $ref: '#/components/schemas/Schedule'
+          description: "\u7B56\u7565\u8C03\u5EA6\u4FE1\u606F"
+          title: Schedule
+        type:
+          $ref: '#/components/schemas/PolicyTypeEnum'
+        uuid:
+          description: "\u552F\u4E00\u7F16\u7801"
+          title: Uuid
+          type: string
+      required:
+      - name
+      - schedule
+      - type
+      title: PolicyQuery
+      type: object
+    PolicyTypeEnum:
+      description: An enumeration.
+      enum:
+      - backup
+      - archiving
+      - replication
+      title: PolicyTypeEnum
+      type: string
+    QosReq:
+      properties:
+        description:
+          description: "\u63CF\u8FF0"
+          maxLength: 255
+          title: Description
+          type: string
+        name:
+          description: "qos \u540D\u79F0"
+          maxLength: 64
+          minLength: 1
+          pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
+          title: Name
+          type: string
+        speed_limit:
+          description: "\u9650\u5236\u901F\u7387,\u5355\u4F4DM"
+          maximum: 1024.0
+          minimum: 1.0
+          title: Speed Limit
+          type: integer
+      required:
+      - name
+      - speed_limit
+      - description
+      title: QosReq
+      type: object
+    QosRes:
+      properties:
+        description:
+          description: "\u63CF\u8FF0"
+          title: Description
+          type: string
+        name:
+          description: "qos \u540D\u79F0"
+          title: Name
+          type: string
+        speed_limit:
+          description: "\u9650\u5236\u901F\u7387,\u5355\u4F4DM"
+          title: Speed Limit
+          type: integer
+        uuid:
+          description: id
+          title: Uuid
+          type: string
+      required:
+      - uuid
+      - name
+      - speed_limit
+      - description
+      title: QosRes
+      type: object
+    ResourceSubTypeEnum:
+      description: An enumeration.
+      enum:
+      - DBBackupAgent
+      - VMBackupAgent
+      - ABBackupClient
+      - DWSBackupAgent
+      - Fileset
+      - DFSFileset
+      - Oracle
+      - OracleApp
+      - SQLServer
+      - DB2
+      - MySQL
+      - GaussDB
+      - SAP HANA
+      - Kingbase
+      - Sybase IQ
+      - Informix
+      - TimesTen
+      - GBase
+      - Dameng
+      - Cassandra
+      - OscarDB
+      - Exchange
+      - VMware vCenter Server
+      - VMware
+      - VMware ESX
+      - VMware ESXi
+      - Hyper-V
+      - ms.HostSystem
+      - FusionSphere
+      - vim.ClusterComputeResource
+      - vim.HostSystem
+      - vim.Folder
+      - vim.ResourcePool
+      - OpenStack
+      - HuaweiCloudStack
+      - vim.VirtualMachine
+      - ms.VirtualMachine
+      - Hadoop
+      - FusionInsight
+      - vim.VirtualApp
+      - vim.Datacenter
+      - Common
+      - Replica
+      title: ResourceSubTypeEnum
+      type: string
+    RestoreLocation:
+      description: An enumeration.
+      enum:
+      - O
+      - N
+      title: RestoreLocation
+      type: string
+    RestoreRequestSchema:
+      example:
+        copy_id: gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012
+        ext_parameters:
+          AFTER_RESTORE_SCRIPT: after_restore_script.sh
+          BEFORE_RESTORE_SCRIPT: before_restore_script.sh
+          CHANNELS: 100
+          FILE_REPLACE_STRATEGY: replace/ignore/replace_old_file
+          IS_SINGLE_RESTORE: 0
+          RESTORE_FAILED_SCRIPT: restore_failed_script.sh
+          RESTORE_TO_SINGLE_DIRECTORY: 'true'
+        filters:
+        - content: ''
+          filter_mode: 1
+          filter_type: 1
+        object_type: File
+        request_id: 266ea41d-adf5-480b-af50-15b940c2b846
+        restore_location: O
+        restore_objects:
+        - gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/grub
+        - gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/efi
+        restore_target:
+          details:
+          - src_id: gns://069d6e86d23511eaa0e45ce883e5baf6/1596717691120012/boot/ef
+            target_id: /tmp
+            target_type: File
+          env_id: 266ea41d-adf5-480b-af50-15b940c2b846
+          env_type: Host
+          restore_target: /tmp
+        restore_type: CR
+        source:
+          source_location: str
+          source_name: str
+      properties:
+        copy_id:
+          description: "\u526F\u672CID"
+          maxLength: 64
+          title: Copy Id
+          type: string
+        ext_parameters:
+          description: "\u6062\u590D\u53C2\u6570"
+          title: Ext Parameters
+          type: object
+        filters:
+          description: "\u8FC7\u6EE4\u6761\u4EF6\u3002"
+          items:
+            $ref: '#/components/schemas/Filter'
+          maxItems: 9223372036854775807
+          title: Filters
+          type: array
+        object_type:
+          description: "\u5BF9\u8C61\u7C7B\u578B"
+          maxLength: 2048
+          title: Object Type
+          type: string
+        restore_location:
+          $ref: '#/components/schemas/RestoreLocation'
+        restore_objects:
+          description: "\u6062\u590D\u7684\u5BF9\u8C61\u5217\u8868\uFF0C\u6587\u4EF6\
+            \u96C6\u6062\u590D\u53EF\u4EE5\u6307\u5B9A\u591A\u4E2A\u6587\u4EF6\u6216\
+            \u76EE\u5F55\uFF0C\u4E0D\u6307\u5B9A\u5219\u5168\u90E8\u6062\u590D\u3002"
+          items:
+            type: string
+          maxItems: 9223372036854775807
+          title: Restore Objects
+          type: array
+        restore_type:
+          $ref: '#/components/schemas/RestoreType'
+        source:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          description: "\u6570\u636E\u6E90\u4FE1\u606F"
+          title: Source
+        target:
+          allOf:
+          - $ref: '#/components/schemas/RestoreTarget'
+          description: "\u6062\u590D\u76EE\u6807"
+          title: Target
+      required:
+      - copy_id
+      - object_type
+      - source
+      - filters
+      - restore_objects
+      - target
+      - ext_parameters
+      title: RestoreRequestSchema
+      type: object
+    RestoreTarget:
+      properties:
+        details:
+          description: "\u6062\u590D\u76EE\u6807\u8BE6\u60C5\uFF0C \u6587\u4EF6\u96C6\
+            \u6062\u590D\u8BE5\u5B57\u6BB5\u4E3A\u7A7A\u3002"
+          items:
+            $ref: '#/components/schemas/TargetDetail'
+          maxItems: 9223372036854775807
+          title: Details
+          type: array
+        env_id:
+          description: "\u6062\u590D\u73AF\u5883ID"
+          maxLength: 64
+          title: Env Id
+          type: string
+        env_type:
+          description: "\u6062\u590D\u73AF\u5883\u7C7B\u578B"
+          maxLength: 1024
+          title: Env Type
+          type: string
+        restore_target:
+          description: "\u6062\u590D\u76EE\u6807\uFF0C \u6587\u4EF6\u96C6\u6062\u590D\
+            \u8BE5\u5B57\u6BB5\u4E3A\u6062\u590D\u76EE\u6807\u8DEF\u5F84\uFF0C\u865A\
+            \u62DF\u673A\u6062\u590D\u8BE5\u5B57\u6BB5\u4E3A\u76EE\u6807ESX/Cluster"
+          maxLength: 10240
+          title: Restore Target
+          type: string
+      required:
+      - env_id
+      - env_type
+      - details
+      title: RestoreTarget
+      type: object
+    RestoreType:
+      description: An enumeration.
+      enum:
+      - CR
+      - IR
+      - MR
+      - FLR
+      title: RestoreType
+      type: string
+    Retention:
+      properties:
+        duration_unit:
+          $ref: '#/components/schemas/RetentionTimeUnit'
+        retention_duration:
+          description: "\u4FDD\u7559\u5468\u671F"
+          title: Retention Duration
+          type: integer
+        retention_type:
+          $ref: '#/components/schemas/RetentionTypeEnum'
+      required:
+      - retention_type
+      title: Retention
+      type: object
+    RetentionTimeUnit:
+      description: An enumeration.
+      enum:
+      - d
+      - w
+      - MO
+      - y
+      title: RetentionTimeUnit
+      type: string
+    RetentionTypeEnum:
+      description: An enumeration.
+      enum:
+      - 1
+      - 2
+      title: RetentionTypeEnum
+      type: integer
+    Schedule:
+      properties:
+        interval:
+          description: "\u8C03\u5EA6\u95F4\u9694\u5468\u671F"
+          title: Interval
+          type: integer
+        interval_unit:
+          $ref: '#/components/schemas/BackupTimeUnit'
+        start_time:
+          description: "\u9996\u6B21\u5F00\u59CB\u65F6\u95F4\uFF0C\u683C\u5F0F [YYYY/MM/DD\
+            \ HH:mm:ss]"
+          format: date-time
+          title: Start Time
+          type: string
+        trigger:
+          $ref: '#/components/schemas/TriggerEnum'
+        window_end:
+          description: "\u65F6\u95F4\u7A97\u7ED3\u675F\u65F6\u95F4\uFF0C\u683C\u5F0F\
+            [HH:mm:ss]"
+          format: time
+          title: Window End
+          type: string
+        window_start:
+          description: "\u65F6\u95F4\u7A97\u5F00\u59CB\u65F6\u95F4\uFF0C\u683C\u5F0F\
+            [HH:mm:ss]"
+          format: time
+          title: Window Start
+          type: string
+      required:
+      - trigger
+      title: Schedule
+      type: object
+    SlaBase:
+      properties:
+        application:
+          $ref: '#/components/schemas/ResourceSubTypeEnum'
+        created_time:
+          description: "SLA\u521B\u5EFA\u65F6\u95F4"
+          format: date-time
+          title: Created Time
+          type: string
+        name:
+          description: "SLA\u540D\u79F0"
+          maxLength: 64
+          minLength: 1
+          pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
+          title: Name
+          type: string
+        type:
+          $ref: '#/components/schemas/SlaType'
+      required:
+      - name
+      - type
+      - application
+      title: SlaBase
+      type: object
+    SlaCreate:
+      properties:
+        application:
+          $ref: '#/components/schemas/ResourceSubTypeEnum'
+        created_time:
+          description: "SLA\u521B\u5EFA\u65F6\u95F4"
+          format: date-time
+          title: Created Time
+          type: string
+        name:
+          description: "SLA\u540D\u79F0"
+          maxLength: 64
+          minLength: 1
+          pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
+          title: Name
+          type: string
+        policy_list:
+          description: "SLA\u5BF9\u5E94\u7684\u7B56\u7565\u96C6\u5408"
+          items:
+            $ref: '#/components/schemas/Policy'
+          maxItems: 16
+          minItems: 1
+          title: Policy List
+          type: array
+        type:
+          $ref: '#/components/schemas/SlaType'
+        user_id:
+          description: "\u521B\u5EFASLA\u7684\u7528\u6237"
+          maxLength: 64
+          minLength: 1
+          title: User Id
+          type: string
+      required:
+      - name
+      - type
+      - application
+      - policy_list
+      title: SlaCreate
+      type: object
+    SlaId:
+      properties:
+        uuid:
+          description: "SLA\u552F\u4E00\u7F16\u7801"
+          format: uuid
+          title: Uuid
+          type: string
+      required:
+      - uuid
+      title: SlaId
+      type: object
+    SlaQuery:
+      properties:
+        application:
+          $ref: '#/components/schemas/ResourceSubTypeEnum'
+        archival_count:
+          description: "SLA\u5173\u8054\u7684\u5F52\u6863\u76EE\u6807\u6570\u91CF"
+          title: Archival Count
+          type: integer
+        created_time:
+          description: "SLA\u521B\u5EFA\u65F6\u95F4"
+          format: date-time
+          title: Created Time
+          type: string
+        is_global:
+          description: "\u662F\u5426\u662F\u9884\u7F6E\u7B56\u7565\uFF0Ctrue-\u9884\
+            \u7F6E\u7B56\u7565  false-\u975E\u9884\u7F6E\u7B56\u7565"
+          title: Is Global
+          type: boolean
+        name:
+          description: "SLA\u540D\u79F0"
+          maxLength: 64
+          minLength: 1
+          pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
+          title: Name
+          type: string
+        policy_list:
+          description: "SLA\u5BF9\u5E94\u7684\u7B56\u7565\u96C6\u5408"
+          items:
+            $ref: '#/components/schemas/PolicyQuery'
+          title: Policy List
+          type: array
+        replication_count:
+          description: "SLA\u5173\u8054\u7684\u590D\u5236\u76EE\u6807\u6570\u91CF"
+          title: Replication Count
+          type: integer
+        resource_count:
+          description: "SLA\u5173\u8054\u8D44\u6E90\u7684\u6570\u91CF"
+          title: Resource Count
+          type: integer
+        type:
+          $ref: '#/components/schemas/SlaType'
+        uuid:
+          description: "\u552F\u4E00\u7F16\u7801"
+          format: uuid
+          title: Uuid
+          type: string
+      required:
+      - name
+      - type
+      - application
+      - uuid
+      - is_global
+      - policy_list
+      title: SlaQuery
+      type: object
+    SlaType:
+      description: An enumeration.
+      enum:
+      - 1
+      - 2
+      title: SlaType
+      type: integer
+    SlaUpdate:
+      properties:
+        application:
+          $ref: '#/components/schemas/ResourceSubTypeEnum'
+        created_time:
+          description: "SLA\u521B\u5EFA\u65F6\u95F4"
+          format: date-time
+          title: Created Time
+          type: string
+        name:
+          description: "SLA\u540D\u79F0"
+          maxLength: 64
+          minLength: 1
+          pattern: ^[a-zA-Z_\u4e00-\u9fa5]{1}[\u4e00-\u9fa5\w-]*$
+          title: Name
+          type: string
+        policy_list:
+          description: "SLA\u5BF9\u5E94\u7684\u7B56\u7565\u96C6\u5408"
+          items:
+            $ref: '#/components/schemas/Policy'
+          maxItems: 16
+          minItems: 1
+          title: Policy List
+          type: array
+        type:
+          $ref: '#/components/schemas/SlaType'
+        user_id:
+          description: "\u521B\u5EFASLA\u7684\u7528\u6237"
+          maxLength: 64
+          minLength: 1
+          title: User Id
+          type: string
+        uuid:
+          description: "\u552F\u4E00\u7F16\u7801"
+          format: uuid
+          title: Uuid
+          type: string
+      required:
+      - name
+      - type
+      - application
+      - policy_list
+      - uuid
+      title: SlaUpdate
+      type: object
+    Source:
+      properties:
+        source_location:
+          description: "\u6570\u636E\u6E90\u4F4D\u7F6E"
+          maxLength: 10240
+          title: Source Location
+          type: string
+        source_name:
+          description: "\u6570\u636E\u6E90\u540D\u79F0"
+          maxLength: 2048
+          title: Source Name
+          type: string
+      required:
+      - source_name
+      - source_location
+      title: Source
+      type: object
+    TargetDetail:
+      properties:
+        src_id:
+          description: "\u6E90ID"
+          items:
+            type: string
+          maxItems: 9223372036854775807
+          title: Src Id
+          type: array
+        target_id:
+          description: "\u76EE\u6807ID"
+          maxLength: 64
+          title: Target Id
+          type: string
+        target_type:
+          description: "\u76EE\u6807\u7C7B\u578B"
+          maxLength: 2048
+          title: Target Type
+          type: string
+      required:
+      - src_id
+      - target_id
+      - target_type
+      title: TargetDetail
+      type: object
+    TriggerEnum:
+      description: An enumeration.
+      enum:
+      - 1
+      - 2
+      - 3
+      title: TriggerEnum
+      type: integer
+    ValidationError:
+      properties:
+        loc:
+          items:
+            type: string
+          title: Location
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+      type: object
+info:
+  title: "\u6570\u636E\u4FDD\u62A4\u63A5\u53E3"
+  version: v1
+openapi: 3.0.2
+paths:
+  /v1/internal/archive/job-examine:
+    post:
+      operationId: entrance_v1_internal_archive_job_examine_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: "\u4EFB\u52A1\u6D41\u7A0B\u9884\u68C0\u67E5\u53C2\u6570"
+              title: Param
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Entrance
+  /v1/internal/qos:
+    get:
+      operationId: query_resources_v1_internal_qos_get
+      parameters:
+      - description: "\u5206\u9875\u9875\u9762\u7F16\u7801"
+        in: query
+        name: page_no
+        required: true
+        schema:
+          description: "\u5206\u9875\u9875\u9762\u7F16\u7801"
+          minimum: 0.0
+          title: Page No
+          type: integer
+      - description: "\u5206\u9875\u6570\u636E\u6761\u6570"
+        in: query
+        name: page_size
+        required: true
+        schema:
+          description: "\u5206\u9875\u6570\u636E\u6761\u6570"
+          maximum: 200.0
+          minimum: 0.0
+          title: Page Size
+          type: integer
+      - description: "\u6392\u5E8F\u5B57\u6BB5\uFF1A"
+        in: query
+        name: orders
+        required: false
+        schema:
+          description: "\u6392\u5E8F\u5B57\u6BB5\uFF1A"
+          items:
+            type: string
+          title: Orders
+          type: array
+      - description: "\u6761\u4EF6\u53C2\u6570\uFF1A"
+        in: query
+        name: conditions
+        required: false
+        schema:
+          description: "\u6761\u4EF6\u53C2\u6570\uFF1A"
+          title: Conditions
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasePage_QosRes_'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u5206\u9875\u67E5\u8BE2Qos\u7B56\u7565\u5217\u8868"
+      tags:
+      - Qos
+  /v1/internal/qos/action/revoke/{user_id}:
+    put:
+      operationId: revoke_qos_user_id_v1_internal_qos_action_revoke__user_id__put
+      parameters:
+      - description: "\u7528\u6237ID"
+        in: path
+        name: user_id
+        required: true
+        schema:
+          description: "\u7528\u6237ID"
+          title: User Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Revoke Qos User Id
+      tags:
+      - Qos
+  /v1/internal/qos/action/verify:
+    get:
+      operationId: internal_verify_qos_ownership_v1_internal_qos_action_verify_get
+      parameters:
+      - description: "\u7528\u6237ID"
+        in: query
+        name: user_id
+        required: true
+        schema:
+          description: "\u7528\u6237ID"
+          title: User Id
+          type: string
+      - description: "Qos id\u5217\u8868"
+        in: query
+        name: qos_uuid_list
+        required: true
+        schema:
+          description: "Qos id\u5217\u8868"
+          items:
+            type: string
+          title: Qos Uuid List
+          type: array
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Internal Verify Qos Ownership
+      tags:
+      - Qos
+  /v1/internal/qos/{qos_id}:
+    get:
+      operationId: internal_get_qos_v1_internal_qos__qos_id__get
+      parameters:
+      - description: "Qos\u7684id"
+        in: path
+        name: qos_id
+        required: true
+        schema:
+          description: "Qos\u7684id"
+          title: Qos Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QosRes'
+          description: "qos\u8BE6\u7EC6\u4FE1\u606F"
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get Qos
+      tags:
+      - Qos
+  /v1/internal/restore/action/abort:
+    put:
+      description: Restore Abort API
+      operationId: abort_job_v1_internal_restore_action_abort_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/JobSchema'
+              description: Job Info
+              title: Job
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u6062\u590D\u7EC8\u6B62\u56DE\u8C03"
+      tags:
+      - Restore_Manager
+  /v1/internal/sla/action/revoke/{user_id}:
+    put:
+      operationId: revoke_sla_user_id_v1_internal_sla_action_revoke__user_id__put
+      parameters:
+      - description: "\u7528\u6237ID"
+        in: path
+        name: user_id
+        required: true
+        schema:
+          description: "\u7528\u6237ID"
+          title: User Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Revoke Sla User Id
+      tags:
+      - sla-api
+  /v1/internal/sla/action/verify:
+    get:
+      operationId: internal_verify_sla_ownership_v1_internal_sla_action_verify_get
+      parameters:
+      - description: "\u7528\u6237ID"
+        in: query
+        name: user_id
+        required: true
+        schema:
+          description: "\u7528\u6237ID"
+          title: User Id
+          type: string
+      - description: "SLA\u5217\u8868"
+        in: query
+        name: sla_uuid_list
+        required: true
+        schema:
+          description: "SLA\u5217\u8868"
+          items:
+            type: string
+          title: Sla Uuid List
+          type: array
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Internal Verify Sla Ownership
+      tags:
+      - sla-api
+  /v1/internal/slas/policies/ext-parameters:
+    get:
+      operationId: query_sla_by_policy_extra_parameter_v1_internal_slas_policies_ext_parameters_get
+      parameters:
+      - description: KEY
+        in: query
+        name: key
+        required: true
+        schema:
+          description: KEY
+          title: Key
+          type: string
+      - description: VALUE
+        in: query
+        name: value
+        required: true
+        schema:
+          description: VALUE
+          title: Value
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlaBase'
+          description: sla base
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u6839\u636Ekey/value\u67E5\u8BE2\u7ED1\u5B9A\u7684\u7B56\u7565"
+      tags:
+      - sla-api
+  /v1/internal/slas/{sla_id}:
+    get:
+      operationId: query_internal_sla_by_id_v1_internal_slas__sla_id__get
+      parameters:
+      - description: "SLA\u7684id"
+        in: path
+        name: sla_id
+        required: true
+        schema:
+          description: "SLA\u7684id"
+          example: '100191918'
+          title: Sla Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlaQuery'
+          description: "SLA\u8BE6\u7EC6\u4FE1\u606F"
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u6839\u636Eid\u67E5\u8BE2\u5355\u4E2ASLA"
+      tags:
+      - sla-api
+  /v1/internal/workflows/backup/result:
+    put:
+      operationId: update_backup_result_v1_internal_workflows_backup_result_put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/JobSchema'
+              description: Job Info
+              title: Job
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u66F4\u65B0\u5907\u4EFD\u6D41\u7A0B\u7ED3\u679C,\u7528\u4E8E\u5907\
+        \u4EFD\u4EFB\u52A1\u53D6\u6D88\u65F6\u7684\u56DE\u8C03"
+      tags:
+      - Backup
+  /v1/qos:
+    delete:
+      description: "\u5220\u9664qos\n:param qos_ids: qos \u6700\u5927\u89C4\u683C\u4E3A\
+        64\n:param db: db\n:return: none"
+      operationId: delete_qos_v1_qos_delete
+      parameters:
+      - description: "\u8BBF\u95EE\u4EE4\u724C"
+        in: header
+        name: X-Auth-Token
+        required: true
+        schema:
+          description: "\u8BBF\u95EE\u4EE4\u724C"
+          title: X-Auth-Token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: Qos ids
+              items:
+                type: string
+              title: Qos Ids
+              type: array
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u6279\u91CF\u5220\u9664\u6307\u5B9AQos\u7B56\u7565"
+      tags:
+      - Qos
+    get:
+      operationId: query_resources_v1_qos_get
+      parameters:
+      - description: "\u5206\u9875\u9875\u9762\u7F16\u7801"
+        in: query
+        name: page_no
+        required: true
+        schema:
+          description: "\u5206\u9875\u9875\u9762\u7F16\u7801"
+          minimum: 0.0
+          title: Page No
+          type: integer
+      - description: "\u5206\u9875\u6570\u636E\u6761\u6570"
+        in: query
+        name: page_size
+        required: true
+        schema:
+          description: "\u5206\u9875\u6570\u636E\u6761\u6570"
+          maximum: 200.0
+          minimum: 0.0
+          title: Page Size
+          type: integer
+      - description: "\u6392\u5E8F\u5B57\u6BB5\uFF1A"
+        in: query
+        name: orders
+        required: false
+        schema:
+          description: "\u6392\u5E8F\u5B57\u6BB5\uFF1A"
+          items:
+            type: string
+          title: Orders
+          type: array
+      - description: "\u6761\u4EF6\u53C2\u6570\uFF1A"
+        in: query
+        name: conditions
+        required: false
+        schema:
+          description: "\u6761\u4EF6\u53C2\u6570\uFF1A"
+          title: Conditions
+          type: string
+      - description: "\u8BBF\u95EE\u4EE4\u724C"
+        in: header
+        name: X-Auth-Token
+        required: true
+        schema:
+          description: "\u8BBF\u95EE\u4EE4\u724C"
+          title: X-Auth-Token
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasePage_QosRes_'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u5206\u9875\u67E5\u8BE2Qos\u7B56\u7565\u5217\u8868"
+      tags:
+      - Qos
+    post:
+      operationId: create_qos_v1_qos_post
+      parameters:
+      - description: "\u6388\u6743token"
+        in: header
+        name: X-Auth-Token
+        required: true
+        schema:
+          description: "\u6388\u6743token"
+          title: X-Auth-Token
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/QosReq'
+              description: "\u521B\u5EFAQos\u7B56\u7565\u8BF7\u6C42"
+              title: Qos Req
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u521B\u5EFAQos\u7B56\u7565"
+      tags:
+      - Qos
+  /v1/qos/{qos_id}:
+    get:
+      operationId: get_qos_v1_qos__qos_id__get
+      parameters:
+      - description: "Qos\u7684id"
+        in: path
+        name: qos_id
+        required: true
+        schema:
+          description: "Qos\u7684id"
+          maxLength: 64
+          title: Qos Id
+          type: string
+      - description: "\u8BBF\u95EE\u4EE4\u724C"
+        in: header
+        name: X-Auth-Token
+        required: true
+        schema:
+          description: "\u8BBF\u95EE\u4EE4\u724C"
+          title: X-Auth-Token
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QosRes'
+          description: "qos\u8BE6\u7EC6\u4FE1\u606F"
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u67E5\u8BE2\u6307\u5B9AQos\u7B56\u7565"
+      tags:
+      - Qos
+    put:
+      operationId: update_qos_v1_qos__qos_id__put
+      parameters:
+      - description: "Qos\u7684id"
+        in: path
+        name: qos_id
+        required: true
+        schema:
+          description: "Qos\u7684id"
+          maxLength: 64
+          title: Qos Id
+          type: string
+      - description: "\u8BBF\u95EE\u4EE4\u724C"
+        in: header
+        name: X-Auth-Token
+        required: true
+        schema:
+          description: "\u8BBF\u95EE\u4EE4\u724C"
+          title: X-Auth-Token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/QosReq'
+              description: "Qos\u4FE1\u606F"
+              title: Qos Req
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u66F4\u65B0\u6307\u5B9AQos\u7B56\u7565"
+      tags:
+      - Qos
+  /v1/readiness:
+    get:
+      operationId: readiness_v1_readiness_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Readiness
+  /v1/restores:
+    post:
+      description: Restore API
+      operationId: create_restore_v1_restores_post
+      parameters:
+      - description: "\u6388\u6743token"
+        in: header
+        name: X-Auth-Token
+        required: true
+        schema:
+          description: "\u6388\u6743token"
+          title: X-Auth-Token
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RestoreRequestSchema'
+              description: "\u6062\u590D\u8BF7\u6C42\u4F53"
+              title: Restore Req
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u521B\u5EFA\u6062\u590D"
+      tags:
+      - Restore_Manager
+  /v1/restores/{copy_id}/action/download:
+    post:
+      description: Download API
+      operationId: download_v1_restores__copy_id__action_download_post
+      parameters:
+      - description: "\u526F\u672Cid"
+        in: path
+        name: copy_id
+        required: true
+        schema:
+          description: "\u526F\u672Cid"
+          maxLength: 64
+          title: Copy Id
+          type: string
+      - description: "\u6388\u6743token"
+        in: header
+        name: X-Auth-Token
+        required: true
+        schema:
+          description: "\u6388\u6743token"
+          title: X-Auth-Token
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/DownloadRequestSchema'
+              description: "\u4E0B\u8F7D\u8BF7\u6C42\u4F53"
+              title: Download Req
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DownloadResponseSchema'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u4E0B\u8F7D\u526F\u672C\u4E2D\u7684\u6307\u5B9A\u6587\u4EF6"
+      tags:
+      - Restore_Manager
+  /v1/slas:
+    get:
+      operationId: page_query_slas_v1_slas_get
+      parameters:
+      - description: "SLA\u540D\u79F0\uFF0C\u652F\u6301\u6A21\u7CCA\u67E5\u8BE2"
+        in: query
+        name: name
+        required: false
+        schema:
+          description: "SLA\u540D\u79F0\uFF0C\u652F\u6301\u6A21\u7CCA\u67E5\u8BE2"
+          title: Name
+          type: string
+      - description: "sla\u7C7B\u578B\uFF0C\u652F\u6301\u7B5B\u9009\u8FC7\u6EE4"
+        in: query
+        name: types
+        required: false
+        schema:
+          description: "sla\u7C7B\u578B\uFF0C\u652F\u6301\u7B5B\u9009\u8FC7\u6EE4"
+          items:
+            $ref: '#/components/schemas/SlaType'
+          title: Types
+          type: array
+      - description: "sla\u5E94\u7528\u7C7B\u578B\uFF0C\u652F\u6301\u8FC7\u7B5B\u9009\
+          \u8FC7\u6EE4"
+        in: query
+        name: applications
+        required: false
+        schema:
+          description: "sla\u5E94\u7528\u7C7B\u578B\uFF0C\u652F\u6301\u8FC7\u7B5B\u9009\
+            \u8FC7\u6EE4"
+          items:
+            $ref: '#/components/schemas/ResourceSubTypeEnum'
+          title: Applications
+          type: array
+      - description: "\u5907\u4EFD\u6A21\u5F0F\u5217\u8868"
+        in: query
+        name: actions
+        required: false
+        schema:
+          description: "\u5907\u4EFD\u6A21\u5F0F\u5217\u8868"
+          items:
+            $ref: '#/components/schemas/PolicyActionEnum'
+          title: Actions
+          type: array
+      - description: "\u5206\u9875\u9875\u9762\u7F16\u7801"
+        in: query
+        name: page_no
+        required: true
+        schema:
+          description: "\u5206\u9875\u9875\u9762\u7F16\u7801"
+          title: Page No
+          type: integer
+      - description: "\u5206\u9875\u6570\u636E\u6761\u6570"
+        in: query
+        name: page_size
+        required: true
+        schema:
+          description: "\u5206\u9875\u6570\u636E\u6761\u6570"
+          maximum: 200.0
+          minimum: 0.0
+          title: Page Size
+          type: integer
+      - description: "\u8BF7\u6C42token"
+        in: header
+        name: X-Auth-Token
+        required: true
+        schema:
+          description: "\u8BF7\u6C42token"
+          title: X-Auth-Token
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasePage_SlaQuery_'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u5206\u9875\u67E5\u8BE2SLA\u4FE1\u606F"
+      tags:
+      - sla-api
+    post:
+      description: "\u521B\u5EFASLA\n\u63A5\u53E3\uFF1A/v1/slas \u65B9\u6CD5\uFF1A\
+        Post\n:param database_session: \u6570\u636E\u5E93\u8FDE\u63A5\u4F1A\u8BDD\n\
+        :param token: \u7528\u6237\u4EE4\u724C\n:param sla_req: SLA\u8BF7\u6C42\n\
+        :return: SLA\u7F16\u53F7"
+      operationId: create_v1_slas_post
+      parameters:
+      - description: "\u8BF7\u6C42token"
+        in: header
+        name: X-Auth-Token
+        required: true
+        schema:
+          description: "\u8BF7\u6C42token"
+          title: X-Auth-Token
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SlaCreate'
+              description: "SLA\u8BE6\u7EC6\u4FE1\u606F"
+              title: Sla Req
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlaId'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u521B\u5EFA\u65B0\u7684SLA"
+      tags:
+      - sla-api
+    put:
+      description: "\u4FEE\u6539SLA\n\u63A5\u53E3\uFF1A/v1/slas \u65B9\u6CD5\uFF1A\
+        Put\n:param user_info: \u6CE8\u5165\u7684\u767B\u5F55\u7528\u6237\u4FE1\u606F\
+        \n:param sla_req: SLA\u8BF7\u6C42\n:return: SAL\u7F16\u53F7"
+      operationId: modify_v1_slas_put
+      parameters:
+      - description: "\u8BF7\u6C42token"
+        in: header
+        name: X-Auth-Token
+        required: true
+        schema:
+          description: "\u8BF7\u6C42token"
+          title: X-Auth-Token
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SlaUpdate'
+              description: "SLA\u8BE6\u7EC6\u4FE1\u606F"
+              title: Sla Req
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlaId'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u4FEE\u6539SLA\u4FE1\u606F"
+      tags:
+      - sla-api
+  /v1/slas/{sla_id}:
+    delete:
+      operationId: delete_v1_slas__sla_id__delete
+      parameters:
+      - description: "SLA\u7684id"
+        in: path
+        name: sla_id
+        required: true
+        schema:
+          description: "SLA\u7684id"
+          title: Sla Id
+          type: string
+      - description: "\u8BF7\u6C42token"
+        in: header
+        name: X-Auth-Token
+        required: true
+        schema:
+          description: "\u8BF7\u6C42token"
+          title: X-Auth-Token
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlaId'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u5220\u9664SLA\u4FE1\u606F"
+      tags:
+      - sla-api
+    get:
+      description: "\u67E5\u8BE2SLA\u8BE6\u7EC6\u4FE1\u606F\n\u63A5\u53E3\uFF1A/v1/slas/{sla_id}\
+        \ \u65B9\u6CD5\uFF1AGet\n:param database_session: \u6570\u636E\u5E93\u8FDE\
+        \u63A5\u4F1A\u8BDD\n:param token: \u7528\u6237\u4EE4\u724C\n:param sla_id:\
+        \ \u8BF7\u6C42SLA\u7684\u7F16\u53F7\n:return: SLA\u8BE6\u7EC6\u4FE1\u606F"
+      operationId: query_sla_by_id_v1_slas__sla_id__get
+      parameters:
+      - description: "SLA\u7684id"
+        in: path
+        name: sla_id
+        required: true
+        schema:
+          description: "SLA\u7684id"
+          example: '100191918'
+          maxLength: 64
+          minLength: 1
+          title: Sla Id
+          type: string
+      - description: "\u8BF7\u6C42token"
+        in: header
+        name: X-Auth-Token
+        required: true
+        schema:
+          description: "\u8BF7\u6C42token"
+          title: X-Auth-Token
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlaQuery'
+          description: "SLA\u8BE6\u7EC6\u4FE1\u606F"
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: "\u6839\u636Eid\u67E5\u8BE2\u5355\u4E2ASLA"
+      tags:
+      - sla-api

@@ -1,0 +1,25 @@
+version: '2.0'
+env:
+  label: OceanStor_100P_Euler_ARM_pool
+buildspace:
+  fixed: true
+params:
+  - name: MS_NAME
+    value: ${serviceName}
+steps:
+  PRE_BUILD:
+    - checkout:
+        path: ${serviceName}
+    - gitlab: 
+        url: https://gitlab.huawei.com/dpa/protectmanager/PM_App_Common_Lib.git
+        branch: ${branch}
+        path: PM_App_Common_Lib
+  BUILD:
+    - build_execute:
+        command: sh ${serviceName}/CI/build.sh
+        accelerate: false
+        check: true
+  POST_BUILD:
+    - upload_cloud_artifact:
+        file_path: '${serviceName}/pkg/*.tar.gz'
+    - version_set

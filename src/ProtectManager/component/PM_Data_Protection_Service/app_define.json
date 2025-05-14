@@ -1,0 +1,1 @@
+{"fileVersion":"1","name":"PM_Data_Protection_Service","serviceId":"ef9472ce30c14e55b4c60e9f9db2960e","description":"","version":"1.0.0","type":"microService","processes":{"PM_Data_Protection_Service":{"subscribes":[]}}}
