@@ -27,36 +27,36 @@ function copy_scripts() {
 function build_package(){
     rm -rf ${PM_MS_DIR}/package/src
     cp -r ${PM_MS_DIR}/src ${PM_MS_DIR}/package/
-	  cp ${PM_MS_DIR}/scripts/app.sh ${PM_MS_DIR}/package/src/
+    cp ${PM_MS_DIR}/scripts/app.sh ${PM_MS_DIR}/package/src/
     cp ${PM_MS_DIR}/scripts/check_health.sh ${PM_MS_DIR}/package/src/
     cp ${PM_MS_DIR}/scripts/check_live.sh ${PM_MS_DIR}/package/src/
-	  cp ${PM_MS_DIR}/scripts/mount_oper.sh ${PM_MS_DIR}/package/src/
-	  tar -czf PM_Data_Protection_Service.tar.gz package/
+    cp ${PM_MS_DIR}/scripts/mount_oper.sh ${PM_MS_DIR}/package/src/
+    tar -czf PM_Data_Protection_Service.tar.gz package/
 }
 
 function copy_pkgs() {
-	  cp ${PM_MS_DIR}/pkg/PM_Data_Protection_Service.tar.gz ${BASE_PATH}/pkg/mspkg/
-	  if [ $? -ne 0 ]; then
-		  echo "copy pkg failed."
-		  exit 1
-	  fi
+    cp ${PM_MS_DIR}/PM_Data_Protection_Service.tar.gz ${BASE_PATH}/pkg/mspkg/
+    if [ $? -ne 0 ]; then
+        echo "copy pkg failed."
+        exit 1
+    fi
 }
 
 function main() {
-	echo ${PM_MS_DIR}
-  copy_scripts
-  build_package
-	copy_pkgs
+    echo ${PM_MS_DIR}
+    copy_scripts
+    build_package
+    copy_pkgs
 }
 
 export buildNumber=$(date +%Y%m%d%H%M%S)
 
 if [[ ${releaseVersion} ]]; then
-	PackageVersion=${releaseVersion}
-	echo "buildVersion=${releaseVersion}" > ${PM_MS_DIR}/../buildInfo.properties
+    PackageVersion=${releaseVersion}
+    echo "buildVersion=${releaseVersion}" > ${PM_MS_DIR}/../buildInfo.properties
 else
-	PackageVersion=1.0.0.${buildNumber}
-	echo "buildVersion=${PackageVersion}" > ${PM_MS_DIR}/../buildInfo.properties
+    PackageVersion=1.0.0.${buildNumber}
+    echo "buildVersion=${PackageVersion}" > ${PM_MS_DIR}/../buildInfo.properties
 fi
 
 main
