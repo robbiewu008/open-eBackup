@@ -1,0 +1,16 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d9" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dee-anti-ransomware-conf
+  namespace: dpa
+data:
+  # 每控可以并发执行的任务数
+  DEE_ANTI_DEFAULT_TASK_CONCURRENCY_LIMIT: "1"
+  # 静态检测超时时间（小时）
+  DEE_ANTI_STATIC_DETECT_TIME_OUT_HOUR: "1"
+  # libguest浏览虚机内存大小（MB）
+  DEE_ANTI_BROWSE_QEMU_MEM: "1024"
+{{- end }}

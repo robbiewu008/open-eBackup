@@ -1,0 +1,22 @@
+{{- $deploytype:= include "getDeployType" . | default "" }}
+
+{{- if eq $deploytype "d9" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dee-indexer-conf
+  namespace: dpa
+data:
+  # 索引任务最大并行数
+  DEE_INDEXER_MAX_TASK_SIZE: "1"
+  # 扫描任务最大并行数
+  DEE_INDEXER_SCAN_MAX_TASK_SIZE: "1"
+  # 索引任务失败重试周期（分钟）
+  DEE_INDEXER_RETRY_WAIT_TIME: "15"
+  # 浏览nas挂载点超时时间（毫秒）
+  DEE_INDEXER_UMOUNT_DELAY_TIME: "3600000"
+  # 索引单次请求插入和更新条数
+  DEE_INDEXER_BATCH_COUNT: "5000"
+  # 索引任务失败重试次数
+  DEE_INDEXER_MAX_RETRY_COUNT: "3"
+{{- end }}

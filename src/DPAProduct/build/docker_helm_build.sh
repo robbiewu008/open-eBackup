@@ -167,7 +167,6 @@ function build_open_helm() {
         #和system_pm的包共用一套pv
         rm -rf ${G_BASE_DIR}/build/helm/databackup/templates/*.yaml
         for h in $(ls "${G_BASE_DIR}/build/helm/components"); do
-            find ./ -name "*dee*.yaml" -exec rm -rf {} +
             sed -i "s/^version:.*/version: ${INTERNAL_VERSION}/g" "${G_BASE_DIR}/build/helm/components/$h/Chart.yaml"
             sed -i "s/^appVersion:.*/appVersion: ${G_VERSION}/g" "${G_BASE_DIR}/build/helm/components/$h/Chart.yaml"
             sed -i "s/product_version/${LAST_MS_TAG}/g" "${G_BASE_DIR}/build/helm/databackup/values.yaml"

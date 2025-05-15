@@ -1,12 +1,11 @@
 {{- $deploytype:= include "getDeployType" . | default "" }}
 
-{{- if eq $deploytype "d5"}}
+{{- if eq $deploytype "d9" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: dataenableengine-conf
+  name: dee-db-anonymization-conf
   namespace: dpa
 data:
-  REDIS_HOST: "infrastructure"
-  REDIS_PORT: "6369"
+  DEE_DB_ANONYMIZATION_IDENTITY_MAX_TASK_SIZE: "8"
 {{- end }}
