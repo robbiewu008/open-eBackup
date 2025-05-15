@@ -1,0 +1,1484 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+
+
+
+<trapcfg>
+    <traps>
+        <trap ID="0x000803220001" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--登录-->
+        <trap ID="0x2064032B0001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0001" SuccessDMEventID="0x2064032B0001"/>
+        <!--登出-->
+        <trap ID="0x2064032B0002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--创建用户，不支持RBAC功能的部署形态-->
+        <trap ID="0x2064032B0007" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0019" SuccessDMEventID="0x2064032B0007"/>
+        <!--删除用户-->
+        <trap ID="0x2064032B0008" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0002" SuccessDMEventID="0x2064032B0008"/>
+        <!--修改用户，不支持RBAC功能的部署形态-->
+        <trap ID="0x2064032B0009" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0014" SuccessDMEventID="0x2064032B0009"/>
+        <!--修改密码-->
+        <trap ID="0x2064032B000A" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0003" SuccessDMEventID="0x2064032B000A"/>
+        <!--重置密码-->
+        <trap ID="0x2064032B000B" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0004" SuccessDMEventID="0x2064032B000B"/>
+        <!--修改用户找回密码邮箱-->
+        <trap ID="0x206400770002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0015" SuccessDMEventID="0x206400770002"/>
+        <!--用户发送临时验证码-->
+        <trap ID="0x2064032B0016" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0008" SuccessDMEventID="0x2064032B0016"/>
+        <!--用户提交临时验证码-->
+        <trap ID="0x2064032B0017" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0016" SuccessDMEventID="0x2064032B0017"/>
+        <!--用户重置忘记的密码-->
+        <trap ID="0x2064032B0018" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0017" SuccessDMEventID="0x2064032B0018"/>
+        <!--锁定用户-->
+        <trap ID="0x2064032B000C" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0005" SuccessDMEventID="0x2064032B000C"/>
+        <!--连续多次输错密码锁定用户-->
+        <trap ID="0x2064032B000F" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA000B" SuccessDMEventID="0x2064032B000F"/>
+        <!--解锁用户-->
+        <trap ID="0x2064032B000D" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0006" SuccessDMEventID="0x2064032B000D"/>
+        <!--系统自动解锁用户-->
+        <trap ID="0x2064032B0011" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA000E" SuccessDMEventID="0x2064032B0011"/>
+        <!--修改安全策略-->
+        <trap ID="0x2064032B000E" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0007" SuccessDMEventID="0x2064032B000E"/>
+        <!--新增弱口令-->
+        <trap ID="0x2064032B0010" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA000C" SuccessDMEventID="0x2064032B0010"/>
+        <!--删除弱口令-->
+        <trap ID="0x206400770001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA000D" SuccessDMEventID="0x206400770001"/>
+        <!-- 用户密码过期时间还剩五天的告警 -->
+        <trap ID="0x64032B0001" KeyIndexs="" Severity="0" UpgradeShield="false"/>
+        <!-- 创建文件夹 -->
+        <trap ID="0x20640632002F" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520002" SuccessDMEventID="0x20131F520001"/>
+        <!-- 删除文件夹 -->
+        <trap ID="0x20655552002F" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520004" SuccessDMEventID="0x20131F520003"/>
+        <!-- 挂载文件系统 -->
+        <trap ID="0x20655552003F" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520006" SuccessDMEventID="0x20131F520005"/>
+        <!-- 创建文件系统 -->
+        <trap ID="0x20655552004F" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520008" SuccessDMEventID="0x20131F520007"/>
+        <!--添加存储用户-->
+        <trap ID="0x2064032D0001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D0002" SuccessDMEventID="0x20131F4D0001"/>
+        <!--删除存储用户-->
+        <trap ID="0x2064032D0002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D0004" SuccessDMEventID="0x20131F4D0003"/>
+        <!--修改存储用户密码-->
+        <trap ID="0x2064032D0003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D0006" SuccessDMEventID="0x20131F4D0005"/>
+        <!--用户注销-->
+        <trap ID="0x2064032B0012" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA000F" SuccessDMEventID="0x2064032B0012"/>
+        <!--在线用户被锁定后强制下线-->
+        <trap ID="0x2064032B0015" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0011" SuccessDMEventID="0x2064032B0015"/>
+        <!--修改访问控制-->
+        <trap ID="0x2064032B0013" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0012" SuccessDMEventID="0x2064032B0013"/>
+        <!--修改修改可访问IP列表-->
+        <trap ID="0x2064032B0014" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0013" SuccessDMEventID="0x2064032B0014"/>
+        <!--超时退出-->
+        <trap ID="0x2063032B0001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0010" SuccessDMEventID="0x2063032B0001"/>
+        <!--添加复制集群-->
+        <trap ID="0x2064032D0004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D0008" SuccessDMEventID="0x20131F4D0007"/>
+        <!--修改复制集群-->
+        <trap ID="0x2064032D0005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D000A" SuccessDMEventID="0x20131F4D0009"/>
+        <!--删除复制集群-->
+        <trap ID="0x2064032D0006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D000C" SuccessDMEventID="0x20131F4D000B"/>
+        <!--删除副本-->
+        <trap ID="0x2064033A0001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5A0002" SuccessDMEventID="0x20131F5A0001"/>
+        <!--删除副本-安全一体机-->
+        <trap ID="0x2064033A000A" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--更新副本保留策略-->
+        <trap ID="0x2064033A0002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5A0004" SuccessDMEventID="0x20131F5A0005"/>
+        <!--更新快照保留策略-安全一体机-->
+        <trap ID="0x2064033A000B" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--更新资源副本保留策略-->
+        <trap ID="0x2064033A0005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5A0007" SuccessDMEventID="0x20131F5A0006"/>
+        <!--手动创建副本索引-->
+        <trap ID="0x2064033A0003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5A0009" SuccessDMEventID="0x20131F5A0008"/>
+        <!--创建索引失败-->
+        <trap ID="0x64033A0001" KeyIndexs="" Severity="3" UpgradeShield="true" SendToDM="true"
+              SuccessDMEventID="0x20131F5A000B"/>
+        <!--副本过期失败-->
+        <trap ID="0x64033A0002" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--安全一体机快照过期失败-->
+        <trap ID="0x64033A0003" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--创建索引成功-->
+        <trap ID="0x105F025D0001" KeyIndexs="" Severity="0" UpgradeShield="false"/>
+        <!--索引任务数超限-->
+        <trap ID="0x105F025C0001" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--清除资源索引-->
+        <trap ID="0x2064033A0007" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5A000C" SuccessDMEventID="0x20131F5A000A"/>
+        <!--创建LiveMount-->
+        <trap ID="0x206403380001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F580002" SuccessDMEventID="0x20131F580001"/>
+        <!--创建共享路径恢复-安全一体机-->
+        <trap ID="0x20640338000B" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改LiveMount-->
+        <trap ID="0x206403380002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F580004" SuccessDMEventID="0x20131F580003"/>
+        <!--更新LiveMount-->
+        <trap ID="0x206403380003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F580006" SuccessDMEventID="0x20131F580005"/>
+        <!--销毁LiveMount-->
+        <trap ID="0x206403380004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F580008" SuccessDMEventID="0x20131F580007"/>
+        <!--激活LiveMount-->
+        <trap ID="0x206403380005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F58000A" SuccessDMEventID="0x20131F580009"/>
+        <!--取消激活LiveMount-->
+        <trap ID="0x206403380006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F58000C" SuccessDMEventID="0x20131F58000B"/>
+        <!--迁移LiveMount-->
+        <trap ID="0x206403380007" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F58000E" SuccessDMEventID="0x20131F58000D"/>
+        <!--创建挂载更新策略-->
+        <trap ID="0x206403380008" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F580010" SuccessDMEventID="0x20131F58000F"/>
+        <!--修改挂载更新策略-->
+        <trap ID="0x206403380009" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F580012" SuccessDMEventID="0x20131F580011"/>
+        <!--删除挂载更新策略-->
+        <trap ID="0x20640338000A" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F580014" SuccessDMEventID="0x20131F580013"/>
+        <!--删除主机/集群-->
+        <trap ID="0x206403320001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F52000A" SuccessDMEventID="0x20131F520009"/>
+        <!--创建主机/集群-->
+        <trap ID="0x20640332000D" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F52000C" SuccessDMEventID="0x20131F52000B"/>
+        <!--注册数据库-->
+        <trap ID="0x20640332000E" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F52000E" SuccessDMEventID="0x20131F52000D"/>
+        <!--删除数据库-->
+        <trap ID="0x20640332000C" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F52000F" SuccessDMEventID="0x20131F520010"/>
+        <!--认证实例-->
+        <trap ID="0x20640332000F" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520012" SuccessDMEventID="0x20131F520011"/>
+        <!--停止任务-->
+        <trap ID="0x2064033E0001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5E0002" SuccessDMEventID="0x20131F5E0001"/>
+        <!--导出任务-->
+        <trap ID="0x2064033E0002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5E0004" SuccessDMEventID="0x20131F5E0003"/>
+        <!--设置任务备注信息-->
+        <trap ID="0x2064033E0003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5E0006" SuccessDMEventID="0x20131F5E0005"/>
+        <!--设置性能统计开关-->
+        <trap ID="0x2064032D0007" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D000E" SuccessDMEventID="0x20131F4D000D"/>
+        <!--设置删除历史监控数据-->
+        <trap ID="0x2064032D0008" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D0010" SuccessDMEventID="0x20131F4D000F"/>
+        <!--修改系统备份策略-->
+        <trap ID="0x2064033F0001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5F0002" SuccessDMEventID="0x20131F5F0001"/>
+        <!--执行系统备份-->
+        <trap ID="0x2064033F0002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5F0004" SuccessDMEventID="0x20131F5F0003"/>
+        <!--执行系统恢复-->
+        <trap ID="0x2064033F0003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5F0006" SuccessDMEventID="0x20131F5F0005"/>
+        <!--系统管理数据自动备份-->
+        <trap ID="0x2064033F0007" KeyIndexs="" Severity="0" UpgradeShield="false" SendToDM="true"
+              FailureDMEventID="0x20131F5F000B" SuccessDMEventID="0x20131F5F000A"/>
+        <!--上传系统备份-->
+        <trap ID="0x2064033F0004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5F0008" SuccessDMEventID="0x20131F5F0007"/>
+        <!--下载系统备份-->
+        <trap ID="0x2064033F0005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5F000C" SuccessDMEventID="0x20131F5F0009"/>
+        <!--删除系统备份-->
+        <trap ID="0x2064033F0006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5F000D" SuccessDMEventID="0x20131F5F000E"/>
+        <!--创建保护-->
+        <trap ID="0x206403340002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F540001" SuccessDMEventID="0x20131F540002"/>
+        <!--创建保护-安全一体机-->
+        <trap ID="0x20640334000C" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改保护-->
+        <trap ID="0x206403340003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F540003" SuccessDMEventID="0x20131F540004"/>
+        <!--修改保护-安全一体机-->
+        <trap ID="0x206403340009" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--移除保护-->
+        <trap ID="0x206403340001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F540006" SuccessDMEventID="0x20131F540005"/>
+        <!--移除保护-安全一体机-->
+        <trap ID="0x206403340008" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--激活保护-->
+        <trap ID="0x206403340004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F540008" SuccessDMEventID="0x20131F540007"/>
+        <!--激活保护-安全一体机-->
+        <trap ID="0x20640334000A" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--取消激活保护-->
+        <trap ID="0x206403340005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F540009" SuccessDMEventID="0x20131F54000A"/>
+        <!--取消激活保护-安全一体机-->
+        <trap ID="0x20640334000B" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--手动执行备份-->
+        <trap ID="0x206403340006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F54000C" SuccessDMEventID="0x20131F54000B"/>
+        <!--手动执行备份-安全一体机-->
+        <trap ID="0x20640334000D" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--分配资源-->
+        <trap ID="0x206403320012" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F54000D" SuccessDMEventID="0x20131F520013"/>
+        <!--回收资源-->
+        <trap ID="0x206403320013" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F54000E" SuccessDMEventID="0x20131F520014"/>
+        <!--修改数据库认证信息-->
+        <trap ID="0x206403320014" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F54000F" SuccessDMEventID="0x20131F520015"/>
+        <!--修改资源注册信息-->
+        <trap ID="0x206403320015" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520017" SuccessDMEventID="0x20131F520016"/>
+        <!--移除资源-->
+        <trap ID="0x206403320016" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520018" SuccessDMEventID="0x20131F520019"/>
+        <!--注册资源-->
+        <trap ID="0x206403320017" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F52001B" SuccessDMEventID="0x20131F52001A"/>
+        <!--重新扫描资源信息-->
+        <trap ID="0x206403320018" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F52001C" SuccessDMEventID="0x20131F52001D"/>
+        <!--注册外部证书-->
+        <trap ID="0x206403310001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F510004" SuccessDMEventID="0x20131F510003"/>
+        <!--导入证书-->
+        <trap ID="0x206403310002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F510001" SuccessDMEventID="0x20131F510002"/>
+        <!--重启服务-->
+        <trap ID="0x20640331000B" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F510005" SuccessDMEventID="0x20131F510006"/>
+        <!--导入私钥-->
+        <trap ID="0x20640331000C" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F510008" SuccessDMEventID="0x20131F510007"/>
+        <!--删除私钥-->
+        <trap ID="0x20640331000D" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F51000A" SuccessDMEventID="0x20131F510009"/>
+        <!--更新HA证书-->
+        <trap ID="0x20640331000E" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F51000B" SuccessDMEventID="0x20131F51000C"/>
+        <!--导出请求文件-->
+        <trap ID="0x206403310003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F51000D" SuccessDMEventID="0x20131F51000E"/>
+        <!--删除组件-->
+        <trap ID="0x206403310004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F51000F" SuccessDMEventID="0x20131F510010"/>
+        <!--导入吊销列表-->
+        <trap ID="0x206403310005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F510011" SuccessDMEventID="0x20131F510012"/>
+        <!--删除证书吊销列表-->
+        <trap ID="0x206403310006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F510014" SuccessDMEventID="0x20131F510013"/>
+        <!--修改证书配置-->
+        <trap ID="0x206403310007" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F510015" SuccessDMEventID="0x20131F510016	"/>
+        <!--下载CA证书-->
+        <trap ID="0x206403310008" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F510018" SuccessDMEventID="0x20131F510017"/>
+        <!--下载吊销列表-->
+        <trap ID="0x20640331000A" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F510019" SuccessDMEventID="0x20131F51001A"/>
+        <!--导入License-->
+        <trap ID="0x2064032F0001" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--导出License-->
+        <trap ID="0x2064032F0002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--激活License-->
+        <trap ID="0x2064032F0003" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改归档网络-->
+        <trap ID="0x2064032E0002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--新增业务端口-->
+        <trap ID="0x206403460012" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改业务端口-->
+        <trap ID="0x206403460015" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除业务端口-->
+        <trap ID="0x206403460014" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--创建初始化X系列网络-->
+        <trap ID="0x2064032E0022" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--创建初始化软硬解耦网络-->
+        <trap ID="0x2064032E0024" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--创建初始化分布式网络-->
+        <trap ID="0x2064032E0023" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改归档网络-->
+        <trap ID="0x2064032E001D" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0004" SuccessDMEventID="0x20131F4E0003"/>
+        <!--修改备份网络-->
+        <trap ID="0x2064032E0004" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改存储认证信息-->
+        <trap ID="0x2064032E0005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0005" SuccessDMEventID="0x20131F4E0006"/>
+        <!--创建限速策略-->
+        <trap ID="0x206403350002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F550002" SuccessDMEventID="0x20131F550001"/>
+        <!--刪除限速策略-->
+        <trap ID="0x206403350003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F550004" SuccessDMEventID="0x20131F550003"/>
+        <!--更新限速策略-->
+        <trap ID="0x206403350004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F550006" SuccessDMEventID="0x20131F550005"/>
+
+        <!--修改外部存储信息-->
+        <trap ID="0x2064032E0006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0008" SuccessDMEventID="0x20131F4E0007"/>
+        <!--接入外部存储-->
+        <trap ID="0x2064032E0007" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0009" SuccessDMEventID="0x20131F4E000A"/>
+        <!--移除外部存储-->
+        <trap ID="0x2064032E0008" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E000C" SuccessDMEventID="0x20131F4E000B"/>
+        <!--Agent文件下载-->
+        <trap ID="0x206403400001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F600001" SuccessDMEventID="0x20131F600002"/>
+        <!--Agent文件删除-->
+        <trap ID="0x206403400005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F600003" SuccessDMEventID="0x20131F600004"/>
+        <!--Agent上传-->
+        <trap ID="0x206403400002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F600005" SuccessDMEventID="0x20131F600006"/>
+        <!--修改告警阈值-->
+        <trap ID="0x2064032E0009" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E000D" SuccessDMEventID="0x20131F4E000E"/>
+        <!--创建SLA-->
+        <trap ID="0x206403330001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F530001" SuccessDMEventID="0x20131F530002"/>
+        <!--修改SLA-->
+        <trap ID="0x206403330003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F530003" SuccessDMEventID="0x20131F530004"/>
+        <!--删除SLA-->
+        <trap ID="0x206403330002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F530005" SuccessDMEventID="0x20131F530006"/>
+        <!--创建SLA-安全一体机-->
+        <trap ID="0x206403330006" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改SLA-安全一体机-->
+        <trap ID="0x206403330005" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除SLA-安全一体机-->
+        <trap ID="0x206403330004" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--Activate SLA-->
+        <trap ID="0x206403330007" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--Deactivate SLA-->
+        <trap ID="0x206403330008" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改告警转储配置-->
+        <trap ID="0x2064032C0001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0068" SuccessDMEventID="0x201300CA0067"/>
+        <!--删除告警转储历史日志-->
+        <trap ID="0x2064032C0002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA006A" SuccessDMEventID="0x201300CA0069"/>
+        <!--导出告警转储文件-->
+        <trap ID="0x2064032C0003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA006C" SuccessDMEventID="0x201300CA006B"/>
+        <!--修改告警通知Email服务器配置-->
+        <trap ID="0x2064032C0004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA006E" SuccessDMEventID="0x201300CA006D"/>
+        <!--测试邮件服务器-->
+        <trap ID="0x2064032C0005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0070" SuccessDMEventID="0x201300CA006F"/>
+        <!--测试收件人邮箱-->
+        <trap ID="0x2064032C0006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0072" SuccessDMEventID="0x201300CA0071"/>
+        <!--修改告警通知收件设置-->
+        <trap ID="0x2064032C0007" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0074" SuccessDMEventID="0x201300CA0073"/>
+        <!--添加告警通知收件人-->
+        <trap ID="0x2064032C0008" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0076" SuccessDMEventID="0x201300CA0075"/>
+        <!--删除告警通知收件人-->
+        <trap ID="0x2064032C0009" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0078" SuccessDMEventID="0x201300CA0077"/>
+        <!--修改SNMP Trap参数-->
+        <trap ID="0x2064032C000A" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA007A" SuccessDMEventID="0x201300CA0079"/>
+        <!--添加SNMP Trap IP地址-->
+        <trap ID="0x2064032C000B" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA007C" SuccessDMEventID="0x201300CA007B"/>
+        <!--修改SNMP Trap IP地址-->
+        <trap ID="0x2064032C000C" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA007E" SuccessDMEventID="0x201300CA007D"/>
+        <!--删除SNMP Trap IP地址-->
+        <trap ID="0x2064032C000D" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0080" SuccessDMEventID="0x201300CA007F"/>
+        <!--导出全部告警信息-->
+        <trap ID="0x2064032C000E" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0082" SuccessDMEventID="0x201300CA0081"/>
+        <!--导出全部事件信息-->
+        <trap ID="0x2064032C000F" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0084" SuccessDMEventID="0x201300CA0083"/>
+        <!--更新密钥文件-->
+        <trap ID="0x206403300001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0086" SuccessDMEventID="0x201300CA0085"/>
+        <!--修改密钥更新周期-->
+        <trap ID="0x206403300002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0088" SuccessDMEventID="0x201300CA0087"/>
+        <!--创建主机-->
+        <trap ID="0x206403320019" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除主机-->
+        <trap ID="0x20640332001A" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA008A" SuccessDMEventID="0x201300CA0089"/>
+        <!--ASM认证-->
+        <trap ID="0x20640332001B" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA008C" SuccessDMEventID="0x201300CA008B"/>
+        <!--创建文件集-->
+        <trap ID="0x20640332001C" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA008E" SuccessDMEventID="0x201300CA008D"/>
+        <!--修改文件集-->
+        <trap ID="0x20640332001D" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0090" SuccessDMEventID="0x201300CA008F"/>
+        <!--删除文件集-->
+        <trap ID="0x20640332001E" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0092" SuccessDMEventID="0x201300CA0091"/>
+        <!--添加脱敏规则-->
+        <trap ID="0x205F02510001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F530007" SuccessDMEventID="0x20131F630005"/>
+        <!--修改脱敏规则-->
+        <trap ID="0x205F02510002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F590001" SuccessDMEventID="0x20131F530008"/>
+        <!--删除脱敏规则-->
+        <trap ID="0x205F02510003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F66000D" SuccessDMEventID="0x20131F66000C"/>
+        <!--添加识别规则-->
+        <trap ID="0x205F02510004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F66000E" SuccessDMEventID="0x20131F66000F"/>
+        <!--修改识别规则-->
+        <trap ID="0x205F02510005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F660011" SuccessDMEventID="0x20131F660010"/>
+        <!--删除识别规则-->
+        <trap ID="0x205F02510006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F660013" SuccessDMEventID="0x20131F660012"/>
+        <!--配置脱敏策略-->
+        <trap ID="0x205F02510007" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F660015" SuccessDMEventID="0x20131F660014"/>
+        <!--删除脱敏策略-->
+        <trap ID="0x205F02510008" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F660017" SuccessDMEventID="0x20131F660016"/>
+        <!--创建任务-->
+        <trap ID="0x205F02510009" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F660019" SuccessDMEventID="0x20131F660018"/>
+        <!--下载脱敏报告-->
+        <trap ID="0x205F0251000A" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F66001B" SuccessDMEventID="0x20131F66001A"/>
+        <!--修改识别结果-->
+        <trap ID="0x205F0251000B" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F66001D" SuccessDMEventID="0x20131F66001C"/>
+        <!--验证数据库数据-->
+        <trap ID="0x205F0251000C" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F66001F" SuccessDMEventID="0x20131F66001E"/>
+        <!--用户测试数据库连接-->
+        <trap ID="0x205F0251000D" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--POD运行状态异常-->
+        <trap ID="0x106500C80001" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--日志级别异常-->
+        <trap ID="0x106500C80002" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--CPU使用率超过阈值-->
+        <trap ID="0x106500C80003" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--内置持久卷容量使用率超过阈值-->
+        <trap ID="0x106500C80004" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--内存使用率超过阈值-->
+        <trap ID="0x106500C80005" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--修改日志级别-->
+        <trap ID="0x206500C80001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x2013E21C0002" SuccessDMEventID="0x2013E21C0001"/>
+        <!--日志导出-->
+        <trap ID="0x206500C80002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x2013E21C0003" SuccessDMEventID="0x206500C80002"/>
+        <!--删除远程复制Pair记录失败-->
+        <trap ID="0x5F02590001" KeyIndexs="" Severity="3" UpgradeShield="false"/>
+        <!--删除远端设备失败-->
+        <trap ID="0x5F02590002" KeyIndexs="" Severity="3" UpgradeShield="false"/>
+        <!--删除远端设备用户失败-->
+        <trap ID="0x5F02590003" KeyIndexs="" Severity="3" UpgradeShield="false"/>
+        <!--用户修改主机名-->
+        <trap ID="0x20640332001F" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F660020" SuccessDMEventID="0x20131F5F000F"/>
+        <!--ORACLE资源清理失败-->
+        <trap ID="0x205F02560001" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--  创建标准备份池卷      -->
+        <trap ID="0x2064032E000A" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0012" SuccessDMEventID="0x20131F4E0011"/>
+        <!--  删除标准备份池卷      -->
+        <trap ID="0x2064032E000B" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0014" SuccessDMEventID="0x20131F4E0013"/>
+        <!--  回迁标准备份池中的卷  -->
+        <trap ID="0x2064032E000D" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0016" SuccessDMEventID="0x20131F4E0015"/>
+        <!--  创建恢复任务      -->
+        <trap ID="0x206403350005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F550008" SuccessDMEventID="0x20131F550007"/>
+        <!--  创建文件级下载任务      -->
+        <trap ID="0x206403350006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F55000A" SuccessDMEventID="0x20131F550009"/>
+        <!--  Oracle离线告警      -->
+        <trap ID="0x6403320001" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--  VMwareAgent离线告警      -->
+        <trap ID="0x6403320002" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--  DWS离线告警      -->
+        <trap ID="0x6403320003" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!-- 复制移除远端pair失败告警 -->
+        <trap ID="0x205F02590001" KeyIndexs="" Severity="3" UpgradeShield="false"/>
+        <!-- 挂载标准备份NAS文件系统失败告警      -->
+        <trap ID="0x1064032E0002" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--  创建标准备份池的卷失败告警      -->
+        <trap ID="0x1064032E0001" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--  删除文件系统失败告警      -->
+        <trap ID="0x5F02560001" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!-- 清除告警 -->
+        <trap ID="0x2064032C0010" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4C0002" SuccessDMEventID="0x20131F4C0001"/>
+        <!-- 	导入副本 -->
+        <trap ID="0x2064033A0004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5A0010" SuccessDMEventID="0x20131F5A000F"/>
+        <!--  Oracle数据库归档日志空间超过阈值 -->
+        <trap ID="0x6403400001" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!-- 创建SFTP普通用户-->
+        <trap ID="0x206403410001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F610002" SuccessDMEventID="0x20131F610001"/>
+        <!-- 修改SFTP用户密码-->
+        <trap ID="0x206403410002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F610004" SuccessDMEventID="0x20131F610003"/>
+        <!-- 修改SFTP服务状态-->
+        <trap ID="0x206403410003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F610006" SuccessDMEventID="0x20131F610005"/>
+        <!-- 修改SFTP配置-->
+        <trap ID="0x206403410006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"/>
+        <!-- 删除SFTP用户-->
+        <trap ID="0x206403410004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F610010" SuccessDMEventID="0x20131F610007"/>
+        <!-- 修改事件转储SFTP服务器配置 -->
+        <trap ID="0x2064032C0011" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F610009" SuccessDMEventID="0x20131F610008"/>
+        <!-- 测试事件转储SFTP服务器配置 -->
+        <trap ID="0x2064032C0012" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F61000B" SuccessDMEventID="0x20131F61000A"/>
+        <!-- 上传告警转储文件至SFTP服务器 -->
+        <trap ID="0x2064032C0013" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F61000D" SuccessDMEventID="0x20131F61000C"/>
+        <!--  事件转储文件上传失败 -->
+        <trap ID="0x64032C0005" KeyIndexs="0" Severity="3" UpgradeShield="true"/>
+        <!--  提醒回迁 -->
+        <trap ID="0x64032E0004" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--证书替换成功-->
+        <trap ID="0x206403310009" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              SuccessDMEventID="0x20131F61000E"/>
+        <!--扩容服务操作-->
+        <trap ID="0x2064032E000C" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0018" SuccessDMEventID="0x20131F4E0017"/>
+        <!-- 检查SNMP Trap配置 -->
+        <trap ID="0x2064032C0014" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4C0004" SuccessDMEventID="0x20131F4C0003"/>
+        <!-- 发送模拟告警 -->
+        <trap ID="0x2064032C0015" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4C0006" SuccessDMEventID="0x20131F4C0005"/>
+        <!--添加归档存储-->
+        <trap ID="0x2064032E000E" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E001A" SuccessDMEventID="0x20131F4E0019"/>
+        <!--修改归档存储-->
+        <trap ID="0x2064032E000F" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E001C" SuccessDMEventID="0x20131F4E001B"/>
+        <!--删除归档存储-->
+        <trap ID="0x2064032E0010" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E001E" SuccessDMEventID="0x20131F4E001D"/>
+        <!--导入归档存储中的副本-->
+        <trap ID="0x2064032E0011" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0020" SuccessDMEventID="0x20131F4E001F"/>
+        <!--同步snmp strap信息-->
+        <trap ID="0x206403320020" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520024" SuccessDMEventID="0x20131F520023"/>
+        <!--迁移主机-->
+        <trap ID="0x206403320036" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--创建K8S数据集-->
+        <trap ID="0x206403320024" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--日志文件超过阈值-->
+        <trap ID="0x106500C80006" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--注册客户端数据保护代理测试-->
+        <trap ID="0x206403400006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F600008" SuccessDMEventID="0x20131F600007"/>
+        <!--注册客户端数据保护代理-->
+        <trap ID="0x2064032C0016" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F60000A" SuccessDMEventID="0x20131F600009"/>
+        <!--批量更新数据保护代理客户端-->
+        <trap ID="0x206403400007" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F60000C" SuccessDMEventID="0x20131F60000B"/>
+        <!--扫描磁带库-->
+        <trap ID="0x2064032E0012" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0022" SuccessDMEventID="0x20131F4E0021"/>
+        <!--修改驱动器属性-->
+        <trap ID="0x2064032E0013" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0024" SuccessDMEventID="0x20131F4E0023"/>
+        <!--置空磁带-->
+        <trap ID="0x2064032E0014" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0026" SuccessDMEventID="0x20131F4E0025"/>
+        <!--擦除磁带-->
+        <trap ID="0x2064032E0015" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0028" SuccessDMEventID="0x20131F4E0027"/>
+        <!--删除磁带-->
+        <trap ID="0x2064032E0016" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E002A" SuccessDMEventID="0x20131F4E0029"/>
+        <!--识别磁带-->
+        <trap ID="0x2064032E0017" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E002C" SuccessDMEventID="0x20131F4E002B"/>
+        <!--导入磁带-->
+        <trap ID="0x2064032E0018" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E002D" SuccessDMEventID="0x20131F4E002E"/>
+        <!--导出磁带-->
+        <trap ID="0x2064032E0019" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E002F" SuccessDMEventID="0x20131F4E0030"/>
+        <!--创建介质集-->
+        <trap ID="0x2064032E001A" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0032" SuccessDMEventID="0x20131F4E0031"/>
+        <!--修改介质集-->
+        <trap ID="0x2064032E001B" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0034" SuccessDMEventID="0x20131F4E0033"/>
+        <!--删除介质集-->
+        <trap ID="0x2064032E001C" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0010" SuccessDMEventID="0x20131F4E000F"/>
+        <!--  介质集可用磁带数量小于阈值 -->
+        <trap ID="0x64032E0005" KeyIndexs="0" Severity="1" UpgradeShield="true"/>
+        <!-- 代理主机启动外部插件失败 -->
+        <trap ID="0x6403400002" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!-- 删除文件系统快照失败 -->
+        <trap ID="0x5F02580008" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!-- 删除文件系统失败 -->
+        <trap ID="0x5F02580009" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!-- 回滚文件系统快照失败 -->
+        <trap ID="0x5F0258000A" KeyIndexs="" Severity="3" UpgradeShield="false"/>
+        <!--修改勒索软件检测设置-->
+        <trap ID="0x205F03440001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F420002" SuccessDMEventID="0x20131F420001"/>
+        <!--导入勒索软件检测模型-->
+        <trap ID="0x205F03440002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F420004" SuccessDMEventID="0x20131F420003"/>
+        <!--删除勒索软件检测模型-->
+        <trap ID="0x205F03440003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131FA60001" SuccessDMEventID="0x20131F420003"/>
+        <!--激活勒索软件检测模型-->
+        <trap ID="0x206403440005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131FA60003" SuccessDMEventID="0x20131FA60002"/>
+        <!--添加勒索软件检测策略-->
+        <trap ID="0x206403440003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131FA60005" SuccessDMEventID="0x20131FA60004"/>
+        <!--处理勒索软件检测误报-->
+        <trap ID="0x2064033A0006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5A000E" SuccessDMEventID="0x20131F5A000D"/>
+        <!--处理实时勒索检测误告警-->
+        <trap ID="0x205F025D003F" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--处理智能侦测误报-安全一体机-->
+        <trap ID="0x2064033A000C" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除勒索软件检测策略-->
+        <trap ID="0x206403440001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F640002" SuccessDMEventID="0x20131F640001"/>
+        <!--修改勒索软件检测策略-->
+        <trap ID="0x206403440002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F640004" SuccessDMEventID="0x20131F640003"/>
+        <!--手动执行勒索软件检测-->
+        <trap ID="0x206403440004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F640006" SuccessDMEventID="0x20131F640005"/>
+        <!--手动执行勒索软件检测-安全一体机-->
+        <trap ID="0x2064025D0001" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--添加Kerberos-->
+        <trap ID="0x206403450001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F650002" SuccessDMEventID="0x20131F650001"/>
+        <!--删除Kerberos-->
+        <trap ID="0x206403450002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F650004" SuccessDMEventID="0x20131F650003"/>
+        <!--修改Kerberos-->
+        <trap ID="0x206403450003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F650006" SuccessDMEventID="0x20131F650005"/>
+        <!--副本已被勒索软件感染-->
+        <trap ID="0x5F025A0001" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--副本已被勒索软件感染-->
+        <trap ID="0x131F420001" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--勒索软件检测异常-->
+        <trap ID="0x5F025A0002" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--  导出磁带失败 -->
+        <trap ID="0x5F02580003" KeyIndexs="0,1" Severity="1" UpgradeShield="true"/>
+        <!--  导入磁带失败 -->
+        <trap ID="0x5F02580004" KeyIndexs="0,1" Severity="1" UpgradeShield="true"/>
+        <!--  擦除磁带失败 -->
+        <trap ID="0x5F02580005" KeyIndexs="0,1" Severity="1" UpgradeShield="true"/>
+        <!--  识别磁带失败 -->
+        <trap ID="0x5F02580006" KeyIndexs="0,1" Severity="1" UpgradeShield="true"/>
+        <!--  数据保护代理异常 -->
+        <trap ID="0x3006005a" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--  扫描磁带库失败 -->
+        <trap ID="0x5F02580007" KeyIndexs="0" Severity="1" UpgradeShield="true"/>
+        <!--保护代理启动应用插件管理服务失败-->
+        <trap ID="0x106403400001" KeyIndexs="0" Severity="3" UpgradeShield="true"/>
+        <!--最大并发任务持续超过10分钟-->
+        <trap ID="0x106403400002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--创建导出文件-->
+        <trap ID="0x206403430001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F630003" SuccessDMEventID="0x206403430001"/>
+        <!--删除导出文件-->
+        <trap ID="0x206403430002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F630001" SuccessDMEventID="0x206403430002"/>
+        <!--下载导出文件-->
+        <trap ID="0x206403430003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F630002" SuccessDMEventID="0x206403430003"/>
+        <!--删除快照失败-->
+        <trap ID="0x205F02570001" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--虚拟机开机失败-->
+        <trap ID="0x205F02570002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--指定某个被管理集群为管理集群-->
+        <trap ID="0x2064032D000C" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA00A0" SuccessDMEventID="0x20131F630004"/>
+        <!--取消某个管理集群为被管理集群-->
+        <trap ID="0x2064032D000D" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D0011" SuccessDMEventID="0x20131F4D0012"/>
+        <!--添加被管集群的授权-->
+        <trap ID="0x2064032D000B" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D0014" SuccessDMEventID="0x20131F4D0013"/>
+        <!--修改被管集群的授权-->
+        <trap ID="0x2064032D000A" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D0016" SuccessDMEventID="0x20131F4D0015"/>
+        <!--修改被管集群的授权-->
+        <trap ID="0x2064032D0009" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D0018" SuccessDMEventID="0x20131F4D0017"/>
+        <!--同步被管理集群-->
+        <trap ID="0x1064032D0001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D001A" SuccessDMEventID="0x20131F4D0019"/>
+        <!--管理集群关系-->
+        <trap ID="0x2064032D000E" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4D001C" SuccessDMEventID="0x20131F4D001B"/>
+        <!--管理集群关系-->
+        <trap ID="0x5F025D0001" KeyIndexs="0" Severity="3" UpgradeShield="false"/>
+        <!--即将更新内部组件密码-->
+        <trap ID="0x206500C80004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F410001" SuccessDMEventID="0x20131F450001"/>
+        <!--创建文件集模板-->
+        <trap ID="0x206403320037" KeyIndexs="2,3" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F410002" SuccessDMEventID="0x20131F52001E"/>
+        <!--修改文件集模板-->
+        <trap ID="0x206403320038" KeyIndexs="2,3" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520020" SuccessDMEventID="0x20131F52001F"/>
+        <!--删除文件集模板-->
+        <trap ID="0x206403320039" KeyIndexs="2,3" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F520022" SuccessDMEventID="0x20131F520021"/>
+        <!--代理主机时间与系统时间不一致-->
+        <trap ID="0x106403400003" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--文件过滤告警-->
+        <trap ID="0x1064025D0001" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--文件过滤操作日志-->
+        <trap ID="0x205F025D000C" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--租户的文件系统检测到勒索软件感染-->
+        <trap ID="0x5F025D0004" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--租户关联的文件扩展名过滤规则取消应用失败-->
+        <trap ID="0x5F025D0003" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--租户关联的文件扩展名过滤规则应用失败-->
+        <trap ID="0x5F025D0002" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--租户的从端文件系统无法正常配置文件扩展名过滤规则-->
+        <trap ID="0x5F025D0008" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--开启文件扩展名过滤-->
+        <trap ID="0x205F025D0001" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--禁用文件扩展名过滤-->
+        <trap ID="0x205F025D0002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除文件扩展名过滤规则-->
+        <trap ID="0x205F025D0008" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--创建文件扩展名过滤规则-->
+        <trap ID="0x205F025D0007" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--文件扩展名过滤规则关联租户-->
+        <trap ID="0x205F025D0009" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--文件扩展名过滤规则解除关联租户-->
+        <trap ID="0x205F025D000A" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改租户关联的文件扩展名过滤规则-->
+        <trap ID="0x205F025D000B" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改分布式NAS存储库-->
+        <trap ID="0x2064032E001E" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x101300CA0003" SuccessDMEventID="0x201300CA0093"/>
+        <!--删除分布式NAS存储库-->
+        <trap ID="0x2064032E001F" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0095" SuccessDMEventID="0x201300CA0094"/>
+        <!--快照勒索检测异常告警-->
+        <trap ID="0x64025D0001" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--租户的LUN检测到勒索软件感染-->
+        <trap ID="0x5F025D0015" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--实时勒索检测发生异常，快照重建失败-->
+        <trap ID="0x131F420004" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!--任务失败后告警-->
+        <trap ID="0x64006E0001" KeyIndexs="1,3" Severity="3" UpgradeShield="true"/>
+        <!--任务部分成功后告警-->
+        <trap ID="0x64006E0004" KeyIndexs="1,2" Severity="1" UpgradeShield="true"/>
+        <!--修改SFTP普通用户阈值-->
+        <trap ID="0x206403410005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0097" SuccessDMEventID="0x201300CA0096"/>
+        <!--手动执行归档-->
+        <trap ID="0x206403350008" KeyIndexs="" Severity="0" UpgradeShield="true" />
+        <!--执行复制-->
+        <trap ID="0x206403350007" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA009B" SuccessDMEventID="0x201300CA0098"/>
+        <!--执行手动复制-->
+        <trap ID="0x206403340007" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA009A" SuccessDMEventID="0x201300CA0099"/>
+        <!--执行副本校验-->
+        <trap ID="0x2064033A0008" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA009F" SuccessDMEventID="0x201300CA009E"/>
+        <!--删除实时勒索检测白名单-->
+        <trap ID="0x205F025D0011" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--创建实时勒索检测白名单-->
+        <trap ID="0x205F025D0010" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改实时勒索检测白名单-->
+        <trap ID="0x205F025D0012" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--实时勒索检测白名单关联租户-->
+        <trap ID="0x205F025D000D" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--实时勒索检测白名单解除关联租户-->
+        <trap ID="0x205F025D000E" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改租户关联的实时勒索检测白名单-->
+        <trap ID="0x205F025D000F" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--开启智能勒索检测-->
+        <trap ID="0x205F025D0005" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--禁用智能勒索检测-->
+        <trap ID="0x205F025D0006" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--开启实时勒索检测（未开启误告警分析）-->
+        <trap ID="0x205F025D0019" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--开启实时勒索检测（已开启误告警分析）-->
+        <trap ID="0x205F025D001A" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--禁用实时勒索检测-->
+        <trap ID="0x205F025D0003" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--开启实时勒索检测-->
+        <trap ID="0x205F025D0004" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改SAN实时勒索检测功能成功-->
+        <trap ID="0x205F025D002F" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改SAN实时勒索检测功能失败-->
+        <trap ID="0x205F025D0030" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改SAN智能勒索检测功能成功-->
+        <trap ID="0x205F025D0031" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改SAN智能勒索检测功能失败（-->
+        <trap ID="0x205F025D0032" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改系统开关-->
+        <trap ID="0x206403460001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F660004" SuccessDMEventID="0x20131F660005"/>
+        <!--管理数据未配置告警-->
+        <trap ID="0x6400790001" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--取消任务告警-->
+        <trap ID="0x64033E0003" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--发送验证码-->
+        <trap ID="0x2064032B0019" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0009" SuccessDMEventID="0x2064032B0019"/>
+        <!--修改LDAP配置-->
+        <trap ID="0x206403460002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F660001" SuccessDMEventID="0x206403460002"/>
+        <!--检测LDAP配置-->
+        <trap ID="0x206403460009" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x206403460009" SuccessDMEventID="0x206403460009"/>
+        <!--LDAP服务器无法连接-->
+        <trap ID="0x6403460001" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--关闭LDAP配置-->
+        <trap ID="0x20640346000A" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F660003" SuccessDMEventID="0x20640346000A"/>
+        <!--保存ADFS配置-->
+        <trap ID="0x20640346000B" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--校验ADFS配置-->
+        <trap ID="0x20640346000D" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--关闭ADFS配置开关-->
+        <trap ID="0x20640346000C" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--ADFS服务器无法连接-->
+        <trap ID="0x64007A0001" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--修改SSO配置-->
+        <trap ID="0x206403460003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F660006" SuccessDMEventID="0x20131F660007"/>
+        <!--删除SSO配置-->
+        <trap ID="0x206403460004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F660008" SuccessDMEventID="0x20131F660009"/>
+        <!--禁用SSO配置-->
+        <trap ID="0x206403460005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F66000A" SuccessDMEventID="0x20131F66000B"/>
+        <!--激活SSO配置-->
+        <trap ID="0x206403460006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F660021" SuccessDMEventID="0x20131F660022"/>
+        <!--导出元数据-->
+        <trap ID="0x206403460008" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F660023" SuccessDMEventID="0x20131F660024"/>
+        <!--创建SSO配置-->
+        <trap ID="0x206403460007" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0035" SuccessDMEventID="0x20131F660025"/>
+        <!--创建报表-->
+        <trap ID="0x206403470001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F630007" SuccessDMEventID="0x20131F630006"/>
+        <!--删除报表-->
+        <trap ID="0x206403470002" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F630009" SuccessDMEventID="0x20131F630008"/>
+        <!--下载报表-->
+        <trap ID="0x206403470003" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F63000B" SuccessDMEventID="0x20131F63000A"/>
+        <!--批量下载报表-->
+        <trap ID="0x206403470004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F63000D" SuccessDMEventID="0x20131F63000C"/>
+        <!--发送报表-->
+        <trap ID="0x206403470005" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F63000F" SuccessDMEventID="0x20131F63000E"/>
+        <!--配置日志代理级别-->
+        <trap ID="0x206403400009" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F60000E" SuccessDMEventID="0x20131F60000D"/>
+        <!--删除指定用户指定类型副本-->
+        <trap ID="0x2064033A0009" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5A0012" SuccessDMEventID="0x20131F5A0011"/>
+        <!--设置用户配额容量-->
+        <trap ID="0x2064032C0019" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0018" SuccessDMEventID="0x2064032C0019"/>
+        <!--设置用户功能开关-->
+        <trap ID="0x2064032C0017" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA000A" SuccessDMEventID="0x2064032C0017"/>
+        <!--反馈任务结果-->
+        <trap ID="0x206400700001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5E0008" SuccessDMEventID="0x20131F5E0007"/>
+        <!--创建Air Gap策略-->
+        <trap ID="0x206402510001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F640008" SuccessDMEventID="0x20131F640007"/>
+        <!--修改Air Gap策略-->
+        <trap ID="0x206403440006" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F64000A" SuccessDMEventID="0x20131F640009"/>
+        <!--批量删除Air Gap策略-->
+        <trap ID="0x206403440007" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F64000C" SuccessDMEventID="0x20131F64000B"/>
+        <!--存储设备关联Air Gap策略-->
+        <trap ID="0x206403440008" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F64000E" SuccessDMEventID="0x20131F64000D"/>
+        <!--开启存储设备关联的Air Gap策略-->
+        <trap ID="0x206403440009" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F640010" SuccessDMEventID="0x20131F64000F"/>
+        <!--关闭存储设备关联的Air Gap策略-->
+        <trap ID="0x20640344000A" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F640012" SuccessDMEventID="0x20131F640011"/>
+        <!--修改存储设备和Air Gap策略的关联-->
+        <trap ID="0x20640344000B" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F640014" SuccessDMEventID="0x20131F640013"/>
+        <!--关闭存储设备关联的Air Gap策略-->
+        <trap ID="0x20640344000C" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F640016" SuccessDMEventID="0x20131F640015"/>
+        <!--断开设备复制链路-->
+        <trap ID="0x20640344000E" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F640018" SuccessDMEventID="0x20131F640017"/>
+        <!--激活逻辑口失败-->
+        <trap ID="0x6403440001" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--去激活逻辑口失败-->
+        <trap ID="0x6403440002" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--备份产生的临时快照文件删除失败-->
+        <trap ID="0x2064006F0001" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--备份失败或中止时保留虚拟机快照-->
+        <trap ID="0x6403340002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--卷索引过程中部分卷挂载失败-->
+        <trap ID="0x640340000D" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--用户配额已用完-->
+        <trap ID="0x2064032B001A" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--用户配额即将用完-->
+        <trap ID="0x2064032B001B" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--代理主机内存占用率超过阈值	-->
+        <trap ID="0x640340000C" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--代理主机CPU占用率超过阈值	-->
+        <trap ID="0x640340000B" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--资源配偶已用完-->
+        <trap ID="0x2064032B001C" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--资源配额即将用完-->
+        <trap ID="0x2064032B001D" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--对象存储库已离线-->
+        <trap ID="0x6400690001" KeyIndexs="0" Severity="3" UpgradeShield="true"/>
+        <!--主机配置LAN-FREE-->
+        <trap ID="0x206403400008" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F600010" SuccessDMEventID="0x20131F60000F"/>
+        <!--更新本地存储超级管理员密码-->
+        <trap ID="0x2064032E0021" KeyIndexs="" Severity="3" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F4E0037" SuccessDMEventID="0x20131F4E0036"/>
+        <!--添加文件系统侦测报告-->
+        <trap ID="0x206403480001" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除文件系统侦测报告-->
+        <trap ID="0x206403480002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机检测license(闪存)容量超过0.8阈值告警-->
+        <trap ID="0x64032F0006" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--安全一体机检测license(闪存)容量耗尽告警-->
+        <trap ID="0x64032F0007" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--安全一体机检测license(分布式存储)容量超过0.8阈值告警-->
+        <trap ID="0x64032F0008" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--安全一体机检测license(分布式存储)容量耗尽告警-->
+        <trap ID="0x64032F0009" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--安全一体机检测license(备份存储)容量超过0.8阈值告警-->
+        <trap ID="0x64032F000A" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--安全一体机检测license(备份存储)容量耗尽告警-->
+        <trap ID="0x64032F000B" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--安全一体机检测license维保服务到期告警-->
+        <trap ID="0x64032F0004" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--安全一体机检测license维保服务即将到期告警-->
+        <trap ID="0x64032F0005" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--备份产生的克隆卷删除失败-->
+        <trap ID="0x6403400004" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--快照已被勒索软件感染-->
+        <trap ID="0x5F025A0004" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--智能勒索检测发生异常-->
+        <trap ID="0x64025D0003" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--智能勒索检测发生异常-快照不存在-非安全一体机-->
+        <trap ID="0x64025D0005" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--智能勒索检测发生异常-快照不存在-安全一体机-->
+        <trap ID="0x64025D0006" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--租户关联的文件扩展名过滤规则应用失败-->
+        <trap ID="0x5F025D0005" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--租户关联的文件扩展名过滤规则取消应用失败-->
+        <trap ID="0x5F025D0006" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--租户已应用的文件扩展名过滤规则未全部应用于所有的文件系统共享-->
+        <trap ID="0x64025D0004" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--租户的文件系统检测到勒索软件感染-->
+        <trap ID="0x5F025D0007" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--Windows代理主机启动外部插件失败-->
+        <trap ID="0x6403400007" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--agent日志所占空间超出阈值%N -->
+        <trap ID="0x6403400005" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--agent安装目录磁盘空间使用率已大于90% -->
+        <trap ID="0x6403400010" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--agent日志所占空间超出阈值,停止agent服务-->
+        <trap ID="0x6403400006" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--测试SFTP的连通性-->
+        <trap ID="0x2064033F0008" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x20131F5F0011" SuccessDMEventID="0x20131F5F0010"/>
+        <!--磁带副本覆写删除-->
+        <trap ID="0x205F02580002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机-本地配置iBMC用户信息-->
+        <trap ID="0x20640346000E" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--安全一体机-同步修改iBMC用户密码-->
+        <trap ID="0x20640346000F" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--安全一体机-iBMC用户鉴权失败-->
+        <trap ID="0x64032C0006" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机-iBMC获取硬件告警失败-->
+        <trap ID="0x64032C0007" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改告警通知收件人-->
+        <trap ID="0x2064032C001A" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--在自动扫描资源时，系统对资源创建保护-->
+        <trap ID="0x20640334000E" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--在自动扫描资源时，系统对资源移除保护-->
+        <trap ID="0x20640334000F" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--在自动扫描资源时，系统对资源修改保护-->
+        <trap ID="0x206403340010" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改数据保护代理应用类型-->
+        <trap ID="0x20640340000A" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA001B" SuccessDMEventID="0x201300CA001A"/>
+        <!--添加HA成员-->
+        <trap ID="0x2064032D0018" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA001C" SuccessDMEventID="0x201300CA001D"/>
+        <!--移除HA成员-->
+        <trap ID="0x2064032D0019" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA001F" SuccessDMEventID="0x201300CA001E"/>
+        <!--修改HA参数-->
+        <trap ID="0x2064032D000F" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0021" SuccessDMEventID="0x201300CA0020"/>
+        <!--执行添加HA操作-->
+        <trap ID="0x2064032D0021" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0023" SuccessDMEventID="0x201300CA0022"/>
+        <!--执行移除HA操作-->
+        <trap ID="0x2064032D0022" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0025" SuccessDMEventID="0x201300CA0024"/>
+        <!--执行后置任务-->
+        <trap ID="0x2064032D0023" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0027" SuccessDMEventID="0x201300CA0026"/>
+        <!--执行修改HA参数操作-->
+        <trap ID="0x2064032D0024" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0029" SuccessDMEventID="0x201300CA0028"/>
+        <!--校验HA参数-->
+        <trap ID="0x2064032D0025" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA002B" SuccessDMEventID="0x201300CA002A"/>
+        <!--同步kmc-->
+        <trap ID="0x2064032D0012" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA002D" SuccessDMEventID="0x201300CA002C"/>
+        <!--回退kmc-->
+        <trap ID="0x2064032D0013" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA002F" SuccessDMEventID="0x201300CA002E"/>
+        <!--同步证书-->
+        <trap ID="0x2064032D0010" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0031" SuccessDMEventID="0x201300CA0030"/>
+        <!--回退证书-->
+        <trap ID="0x2064032D0011" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0033" SuccessDMEventID="0x201300CA0032"/>
+        <!--修改成员节点基础设施指向-->
+        <trap ID="0x2064032D001B" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0035" SuccessDMEventID="0x201300CA0034"/>
+        <!--操作成员节点组件-->
+        <trap ID="0x2064032D0014" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0037" SuccessDMEventID="0x201300CA0036"/>
+        <!--修改成员节点角色-->
+        <trap ID="0x2064032D001C" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0039" SuccessDMEventID="0x201300CA0038"/>
+        <!--添加内部通信网络平面失败-->
+        <trap ID="0x64032D0002" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--主节点或成员节点添加内部网络平面-->
+        <trap ID="0x2064032D001D" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA003C" SuccessDMEventID="0x201300CA003B"/>
+        <!--主节点或成员节点修改内部网络平面-->
+        <trap ID="0x2064032D0026" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA003A" SuccessDMEventID="0x201300CA003D"/>
+        <!--主节点删除内部网络平面-->
+        <trap ID="0x2064032D0027" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA003F" SuccessDMEventID="0x201300CA003E"/>
+        <!--主节点调用备份成员节点收集存储认证信息-->
+        <trap ID="0x2064032D001E" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0041" SuccessDMEventID="0x201300CA0040"/>
+        <!--备份成员节点调用主节点存储存储认证信息-->
+        <trap ID="0x2064032D001F" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0043" SuccessDMEventID="0x201300CA0042"/>
+        <!--主节点调用备份成员节点更新内部组件密码-->
+        <trap ID="0x2064032D0020" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0045" SuccessDMEventID="0x201300CA0044"/>
+        <!--HA浮动ip冲突-->
+        <trap ID="0x6500C80007" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--HA心跳中断-->
+        <trap ID="0x6500C80003" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--HA网关不通-->
+        <trap ID="0x6500C80002" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--HA数据同步失败-->
+        <trap ID="0x6500C80001" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--HA主备倒换-->
+        <trap ID="0x106500C80008" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA009C" SuccessDMEventID="0x201300CA0046"/>
+        <!--保存外部帐号及密码信息	-->
+        <trap ID="0x206403460010" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0047" SuccessDMEventID="0x201300CA0048"/>
+        <!--保存vpc信息	-->
+        <trap ID="0x2064032B001E" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA004A" SuccessDMEventID="0x201300CA0049"/>
+        <!--删除vpc信息	-->
+        <trap ID="0x20640332003D" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA004C" SuccessDMEventID="0x201300CA004B"/>
+        <!--成员节点离线-->
+        <trap ID="0x131F430001" KeyIndexs="1" Severity="3" UpgradeShield="true"/>
+        <!--文件系统开启文件拦截-->
+        <trap ID="0x205F025D0016" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--文件系统禁用文件拦截-->
+        <trap ID="0x205F025D0017" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--文件系统关联过滤规则-->
+        <trap ID="0x205F025D0014" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--文件系统取消关联过滤规则-->
+        <trap ID="0x205F025D0015" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--文件系统修改过滤规则关联-->
+        <trap ID="0x205F025D0018" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--成员节点删除dme复制关系-->
+        <trap ID="0x2064032D002C" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA004E" SuccessDMEventID="0x201300CA004D"/>
+        <!--成员节点删除复制链路-->
+        <trap ID="0x2064032D002B" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0066" SuccessDMEventID="0x201300CA0065"/>
+        <!--绑定网卡与租户关系-->
+        <trap ID="0x206402530001" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--批量删除绑定网卡与租户关系-->
+        <trap ID="0x206402530002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--op告警联动侦测断开告警-->
+        <trap ID="0x6403440003" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--oc告警联动侦测断开告警-->
+        <trap ID="0x6403440006" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--告警实时侦测断开告警-->
+        <trap ID="0x6403440005" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--备份存储单元升级为备份成员节点-->
+        <trap ID="0x2064032D002E" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0050" SuccessDMEventID="0x201300CA004F"/>
+        <!--代理主机修改名称-->
+        <trap ID="0x20640340000B" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0052" SuccessDMEventID="0x201300CA0051"/>
+        <!--备更新初始化状态-->
+        <trap ID="0x206403460011" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0054" SuccessDMEventID="0x201300CA0053"/>
+        <!--更新内部组件密码-->
+        <trap ID="0x2064032D0028" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0056" SuccessDMEventID="0x201300CA0055"/>
+        <!--执行更新内部组件密码-->
+        <trap ID="0x2064032D0029" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0058" SuccessDMEventID="0x201300CA0057"/>
+        <!--接受转发归档消息-->
+        <trap ID="0x206402580001" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA005A" SuccessDMEventID="0x201300CA0059"/>
+        <!--同步密钥和证书-->
+        <trap ID="0x2064032D0031" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA005B" SuccessDMEventID="0x101300CA0002"/>
+        <!--回退密钥和证书-->
+        <trap ID="0x2064032D0032" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA005D" SuccessDMEventID="0x201300CA005C"/>
+        <!--任务在本节点被调度-->
+        <trap ID="0x2064033E0004" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA009D" SuccessDMEventID="0x201300CA005E"/>
+        <!--资源加锁-->
+        <trap ID="0x20640332003E" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0060" SuccessDMEventID="0x201300CA005F"/>
+        <!--资源解锁-->
+        <trap ID="0x20640332003F" KeyIndexs="" Severity="0" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0062" SuccessDMEventID="0x201300CA0061"/>
+        <!--文件系统扫描过滤规则关联-->
+        <trap ID="0x205F025D001B" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--文件系统应用过滤规则失败-->
+        <trap ID="0x5F025D000A" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--文件系统取消应用过滤规则失败-->
+        <trap ID="0x5F025D0009" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--文件系统已应用的过滤规则未完全应用-->
+        <trap ID="0x105F025D0002" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--任务结束通知其他节点-->
+        <trap ID="0x2064033E0005" KeyIndexs="" Severity="1" UpgradeShield="true" SendToDM="true"
+              FailureDMEventID="0x201300CA0064" SuccessDMEventID="0x201300CA0063"/>
+        <!--文件系统过滤规则扫描发生错误-->
+        <trap ID="0x5F025D000C" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--文件系统扫描过滤规则关联结束-->
+        <trap ID="0x105F025D0003" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--证书批量推送更新-->
+        <trap ID="0x20640331000F" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--创建灾难演练-->
+        <trap ID="0x206403320043" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除灾难演练-->
+        <trap ID="0x206403320044" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--新增标签-->
+        <trap ID="0x2064034A0001" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改标签-->
+        <trap ID="0x2064034A0002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除标签-->
+        <trap ID="0x2064034A0003" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--资源设置标签-->
+        <trap ID="0x2064034A0004" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除资源标签-->
+        <trap ID="0x2064034A0005" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--创建报表策略-->
+        <trap ID="0x206403470006" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改报表策略-->
+        <trap ID="0x206403470007" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除报表策略-->
+        <trap ID="0x206403470008" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--手动执行报表策略-->
+        <trap ID="0x206403470009" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--文件系统共享配置异常-->
+        <trap ID="0x5F025D000D" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--诱饵文件部署失败-->
+        <trap ID="0x5F025D000E" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--开启诱饵检测事件提示-->
+        <trap ID="0x205F025D001C" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--禁用诱饵检测事件提示-->
+        <trap ID="0x205F025D001D" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改诱饵检测设置事件提示-->
+        <trap ID="0x205F025D001E" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改灾难演练-->
+        <trap ID="0x206403360001" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--激活灾难演练-->
+        <trap ID="0x206403360002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--禁用灾难演练-->
+        <trap ID="0x206403360003" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改副本归属用户-->
+        <trap ID="0x20640332004C" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机实时侦测：实时侦测白名单解除关联策略-->
+        <trap ID="0x205F025D002A" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机实时侦测：实时侦测白名单关联策略-->
+        <trap ID="0x205F025D0029" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机实时侦测：删除实时侦测白名单-->
+        <trap ID="0x205F025D0028" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机实时侦测：创建实时侦测白名单-->
+        <trap ID="0x205F025D0027" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机实时侦测：删除实时侦测策略-->
+        <trap ID="0x205F025D0026" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机实时侦测：修改实时侦测策略-->
+        <trap ID="0x205F025D0025" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机实时侦测：创建实时侦测策略-->
+        <trap ID="0x205F025D0024" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机实时侦测：激活保护-->
+        <trap ID="0x205F025D0023" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机实时侦测：禁用保护-->
+        <trap ID="0x205F025D0022" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机实时侦测：移除保护-->
+        <trap ID="0x205F025D0021" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机实时侦测：修改保护-->
+        <trap ID="0x205F025D0020" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机实时侦测：创建保护-->
+        <trap ID="0x205F025D001F" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机实时侦测：导出实时侦测可疑文件列表-->
+        <trap ID="0x205F025D0036" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--租户的文件系统检测到勒索软件感染-->
+        <trap ID="0x5F025D000F" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--通用共享：配置共享-->
+        <trap ID="0x206403390001" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--通用共享：删除共享-->
+        <trap ID="0x206400700002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--新增外部系统信息-->
+        <trap ID="0x206403460018" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除外部系统信息-->
+        <trap ID="0x206403460019" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改外部系统信息-->
+        <trap ID="0x20640346001A" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--文件系统在进行实时侦测时挂载失败-->
+        <trap ID="0x5F025D0010" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--诱饵文件部署失败-->
+        <trap ID="0x5F025D0011" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--文件系统在进行实时侦测时创建快照失败-->
+        <trap ID="0x5F025D0012" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--租户下文件系统在进行实时侦测时，审计日志文件系统挂载失败-->
+        <trap ID="0x5F025D0013" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--创建存储单元-->
+        <trap ID="0x206400670001" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除存储单元-->
+        <trap ID="0x206400670002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--更新存储单元-->
+        <trap ID="0x206400670003" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改存储单元容量阈值-->
+        <trap ID="0x206400670004" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--验证对端用户帐户密码-->
+        <trap ID="0x2064032D0034" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--初始化时配置存储认证信息-->
+        <trap ID="0x206403460016" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--初始化解析LLD-->
+        <trap ID="0x20640346001D" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改节点业务网络-->
+        <trap ID="0x2064032D0033" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--租户下文件系统在进行实时侦测时，审计日志文件系统挂载失败-->
+        <trap ID="0x5F025D0013" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--删除业务端口路由-->
+        <trap ID="0x20640346001C" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--添加业务端口路由-->
+        <trap ID="0x20640346001B" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--重新生成内部证书-->
+        <trap ID="0x206403310010" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--主节点同步内部证书到成员节点-->
+        <trap ID="0x206403310011" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--创建资源组-->
+        <trap ID="0x206403320046" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--修改资源组-->
+        <trap ID="0x206403320047" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--删除资源组-->
+        <trap ID="0x206403320048" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--创建资源组保护-->
+        <trap ID="0x206403320049" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--修改资源组保护-->
+        <trap ID="0x20640332004A" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--删除资源组保护-->
+        <trap ID="0x20640332004B" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--重新生成内部证书-->
+        <trap ID="0x206403310010" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--主节点同步内部证书到成员节点-->
+        <trap ID="0x206403310011" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--添加策略存储单元关联关系-->
+        <trap ID="0x2064032D0037" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除策略存储单元关联关系-->
+        <trap ID="0x2064032D0038" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!-- 添加存储单元用户授权关系-->
+        <trap ID="0x1064032D0002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!-- 删除存储单元用户授权关系 -->
+        <trap ID="0x1064032D0003" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!-- 从备份代理虚拟机上解除磁盘绑定失败 -->
+        <trap ID="0x205F02570006" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--修改业务网络-->
+        <trap ID="0x2064032D0039" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--E6000设置用户功能开关-->
+        <trap ID="0x2064032C0018" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--设置E6000用户配额容量-->
+        <trap ID="0x2064032C0020" KeyIndexs="" Severity="0" UpgradeShield="true" />
+        <!--未感染快照转安全快照失败-->
+        <trap ID="0x5F025A0005" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--创建资源集-->
+        <trap ID="0x2064032B0022" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--修改资源集-->
+        <trap ID="0x2064032B0024" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--删除资源集-->
+        <trap ID="0x2064032B0023" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--创建角色-->
+        <trap ID="0x2064032B0025" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--修改角色-->
+        <trap ID="0x2064032B0021" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--删除角色-->
+        <trap ID="0x2064032B0020" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--备份任务执行超过时间窗-->
+        <trap ID="0x106403330002" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--从端文件系统无法正常配置文件扩展名过滤规则-->
+        <trap ID="0x5F025D0014" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--修改Syslog配置（安全一体机）-->
+        <trap ID="0x2064032C0023" KeyIndexs="" Severity="0" UpgradeShield="true" />
+        <!--新增Syslog IP（安全一体机）-->
+        <trap ID="0x206400740002" KeyIndexs="" Severity="0" UpgradeShield="true" />
+        <!--删除Syslog IP（安全一体机）-->
+        <trap ID="0x2064032C0021" KeyIndexs="" Severity="0" UpgradeShield="true" />
+        <!--修改Syslog IP（安全一体机）-->
+        <trap ID="0x2064032C0022" KeyIndexs="" Severity="0" UpgradeShield="true" />
+        <!--测试Syslog IP（安全一体机）-->
+        <trap ID="0x2064032C0024" KeyIndexs="" Severity="0" UpgradeShield="true" />
+        <!--Syslog服务器联通失败（安全一体机）-->
+        <trap ID="0x64032C0008" KeyIndexs="" Severity="1" UpgradeShield="true" />
+        <!--存储单元已使用容量超过了设定的告警阈值-->
+        <trap ID="0x64032D0005" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--存储单元状态异常-->
+        <trap ID="0x64032D0004" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--标记任务处理意见-->
+        <trap ID="0x2064033E0006" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--任务重试-->
+        <trap ID="0x2064033E0007" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机修改安全策略-->
+        <trap ID="0x2064032B0026" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--添加感染副本操作限制-->
+        <trap ID="0x20640344000F" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--删除感染副本操作限制-->
+        <trap ID="0x206403440010" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改感染副本操作限制-->
+        <trap ID="0x206403440011" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--检查网络连通性-->
+        <trap ID="0x205F025D0034" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--下载rfi文件-->
+        <trap ID="0x205F025D0033" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--CSBS副本防篡改-->
+        <trap ID="0x205F025D0035" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--关闭文件级浏览挂载点-->
+        <trap ID="0x2064033A000D" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--创建文件级浏览挂载点-->
+        <trap ID="0x2064033A000E" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--文件系统配置了SmartMobility特性，无法创建快照-->
+        <trap ID="0x6403350003" KeyIndexs="" Severity="1" UpgradeShield="true" />
+        <!--修改worm设置-->
+        <trap ID="0x2064032B0027" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--文件系统共享配置异常-->
+        <trap ID="0x131F420002" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--诱饵文件部署失败-->
+        <trap ID="0x131F420003" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!--删除hcs存储-->
+        <trap ID="0x2064032E0026" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改hcs存储-->
+        <trap ID="0x2064032E0025" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--添加hcs存储-->
+        <trap ID="0x206403320040" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--创建用户时针对支持RBAC功能的部署形态单独申请的事件码-->
+        <trap ID="0x2064032B0028" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--修改用户时针对支持RBAC功能的部署形态单独申请的事件码-->
+        <trap ID="0x2064032B0029" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--同步Agent备份网络配置的事件码-->
+        <trap ID="0x20640340000D" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--更新备份策略的启用状态的事件码-->
+        <trap ID="0x206400790001" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机创建备份副本侦测白名单-->
+        <trap ID="0x205F025D003B" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机删除备份副本侦测白名单-->
+        <trap ID="0x205F025D003C" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机创建备份副本侦测白名单-文件系统关联-->
+        <trap ID="0x205F025D003D" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+        <!--安全一体机删除备份副本侦测白名单-文件系统关联-->
+        <trap ID="0x205F025D003E" KeyIndexs="" Severity="0" UpgradeShield="true"/>
+    </traps>
+</trapcfg>

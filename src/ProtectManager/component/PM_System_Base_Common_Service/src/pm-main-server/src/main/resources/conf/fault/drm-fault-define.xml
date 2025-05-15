@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  This file is a part of the open-eBackup project.
+  This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+  If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.
+  
+  Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+  
+  THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  -->
+
+<!-- 设备告警定义配置文件模板 -->
+
+<!-- moMainType：告警所属网元主类型，该信息由LEGO平台统一管理，例如：阵列 -->
+<!-- moSubType：告警所属网元子类型，该信息由LEGO平台统一管理，支持多个主类型，以逗号分隔，例如：S2600,S5000 -->
+
+<!-- 告警定义字段说明 -->
+<!--
+	ID: 告警ID 16进制数字母必须大写。如0x323000A
+	KeyIndexs: 告警参数中的标识信息，用来区分不同来源的同类告警(例如：不同端口的Linkdown告警，需要通过端口索引进来区分)
+
+	Name: 告警名称
+	Type: 告警类型 通信质量(1), 环境告警(2), 设备故障(3), 业务质量(4), 处理出错(5), 安全告警(6), 阈值告警(7)
+	Severity: 告警级别 INFO(1), warning(2), major(3), critical(4)
+	UpgradeShield：升级过程是否需要屏蔽 屏蔽(true),不屏蔽(false)
+	Desc: 告警描述信息
+	Effect: 对系统的影响描述
+	Advice: 告警修复建议
+	Location: 告警定位信息
+-->
+
+<trapcfg>
+    <traps>
+        <!-- 容量告警 -->
+        <trap ID="0x64032E0001" KeyIndexs="1" Severity="4" UpgradeShield="true"/>
+        <!-- 告警通知失败 -->
+        <trap ID="0x64032C0001" KeyIndexs="" Severity="1" UpgradeShield="false"/>
+        <!-- 告警转储失败 -->
+        <trap ID="0x64032C0002" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!-- 邮件测试告警 -->
+        <trap ID="0x64032C0003" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!-- 告警SNMP上报失败 -->
+        <trap ID="0x64032C0004" KeyIndexs="" Severity="4" UpgradeShield="true"/>
+        <!-- 证书即将过期告警 -->
+        <trap ID="0x106403310001" KeyIndexs="0" Severity="3" UpgradeShield="false"/>
+        <!-- 证书已经过期告警 -->
+        <trap ID="0x106403310002" KeyIndexs="0" Severity="3" UpgradeShield="false"/>
+        <!-- 吊销列表已经过期 -->
+        <trap ID="0x106403310003" KeyIndexs="0" Severity="3" UpgradeShield="false"/>
+        <!-- 添加外部证书回退失败 -->
+        <trap ID="0x6403310002" KeyIndexs="" Severity="3" UpgradeShield="false"/>
+        <!-- 删除外部证书回退失败 -->
+        <trap ID="0x6403310003" KeyIndexs="" Severity="3" UpgradeShield="false"/>
+        <!-- 删除吊销列表回退失败 -->
+        <trap ID="0x6403310004" KeyIndexs="" Severity="3" UpgradeShield="false"/>
+        <!-- 导入吊销列表回退失败 -->
+        <trap ID="0x6403310005" KeyIndexs="" Severity="3" UpgradeShield="false"/>
+        <!-- 导入证书回退失败 -->
+        <trap ID="0x6403310006" KeyIndexs="" Severity="3" UpgradeShield="false"/>
+        <!-- 目标集群连接异常告警-->
+        <trap ID="0x64032D0001" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!-- 备份任务执行超过时间窗 -->
+        <trap ID="0x106403350001" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!-- 安全一体机快照任务执行超过时间窗 -->
+        <trap ID="0x106403350002" KeyIndexs="" Severity="1" UpgradeShield="true"/>
+        <!-- 转储失败告警 -->
+        <trap ID="0x1064032C0001" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!-- 容量使用率告警 -->
+        <trap ID="0x64032F0001" KeyIndexs="" Severity="3" UpgradeShield="false"/>
+        <!-- 受保护环境连接状态离线 -->
+        <trap ID="0x106403320001" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!-- 本地存储认证状态异常 -->
+        <trap ID="0x64032E0002" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!-- 外部存储连接状态异常 -->
+        <trap ID="0x64032E0003" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!-- 证书替换失败告警 -->
+        <trap ID="0x6403310001" KeyIndexs="0" Severity="3" UpgradeShield="false"/>
+        <!-- 管理数据备份失败告警 -->
+        <trap ID="0x64033E0001" KeyIndexs="1" Severity="1" UpgradeShield="false"/>
+        <!-- 管理数据恢复失败告警 -->
+        <trap ID="0x64033E0002" KeyIndexs="1" Severity="1" UpgradeShield="false"/>
+        <!-- 备份存储单元连接异常告警-->
+        <trap ID="0x64032D0003" KeyIndexs="" Severity="3" UpgradeShield="true"/>
+        <!--oracle删除保护组失败告警-->
+        <trap ID="0x6403350001" KeyIndexs="0" Severity="3" UpgradeShield="true"/>
+    </traps>
+</trapcfg>

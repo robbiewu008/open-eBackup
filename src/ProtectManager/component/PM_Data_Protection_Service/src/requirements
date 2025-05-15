@@ -1,0 +1,70 @@
+# -*- coding: utf-8 -*-
+#########################################
+# Copyright (c) 2023-2023 Huawei .
+# All rights reserved.
+#
+# Function：OpenSource requirements
+#########################################
+
+### 主动依赖 ###
+# pdmcode<0583284369>
+SQLAlchemy==1.4.49 --no-binary SQLAlchemy
+# pdmcode<0583126821>
+sqlalchemy-utils==0.40.0
+# pdmcode<0583046665>
+fastapi==0.110.0
+# pdmcode<0583167943>
+redis==4.5.4
+# pdmcode<0583556595>
+requests==2.32.0
+# pdmcode<0583135027>
+pydantic==1.10.5
+# pdmcode<0583057343>
+PyJWT==2.4.0
+# pdmcode<0583128251>
+apscheduler==3.10.0
+# pdmcode<0583200225>
+uvicorn==0.20.0
+# pdmcode<0583362427>
+pyvmomi==8.0.1.0.1
+# pdmcode<0583294324>
+watchdog==3.0.0
+# pdmcode<0583551767>
+urllib3==1.26.19
+# pdmcode<0583129558>
+aiohttp==3.8.4
+# pdmcode<0583046019>
+confluent-kafka==1.8.2
+# pdmcode<0583162920>
+pytz==2023.3
+# pdmcode<0583200226>
+websockets==11.0.3
+# pdmcode<0583572520>
+cryptography==43.0.1
+# pdmcode<0583363465>
+psycopg2==2.9.6
+# pdmcode<0583488269>
+numpy==1.25.2
+# pdmcode<0583133114>
+pandas==1.5.3
+# pdmcode<0583077648>
+joblib==1.2.0
+# pdmcode<0583554282>
+torch==v2.3.1
+# pdmcode<0583556293>
+scikit-learn==1.5.1
+tzdata==2024.2
+
+### 被动依赖 ###
+# pdmcode<05833RLG>
+sqlalchemy-migrate==0.13.0
+# pdmcode<05839NWK>
+httptools==0.3.0
+# pdmcode<05805345>
+ptvsd==5.0.0a12
+# pdmcode<0583196145>
+starlette==0.36.3
+# pdmcode<0583156396>
+tzlocal==4.3
+# pdmcode<05837PCJ>
+python-json-logger==2.0.2

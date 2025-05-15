@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.huawei.oceanprotect</groupId>
+        <artifactId>pm-system-base</artifactId>
+        <version>0.0.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>pm-storage-protection-plugin</module>
+        <module>pm-ora-vm-protection-plugin</module>
+        <module>pm-host-app-backup-plugin</module>
+        <module>pm-cloud-protection-plugin</module>
+        <module>pm-hadoop-plugins</module>
+        <module>pm-database-plugins</module>
+        <module>pm-kubernetes-protection-plugin</module>
+        <module>pm-fc-protection-plugin</module>
+        <module>pm-hcs-protection-plugin</module>
+        <module>pm-openstack-plugins</module>
+        <module>pm-k8s-csi-protection-plugin</module>
+        <module>pm-file-protection-plugins</module>
+        <module>pm-agentless-plugins</module>
+        <module>pm-cnware-protection-plugin</module>
+        <module>pm-aps-protection-plugin</module>
+        <module>pm-hyperv-protection-plugin</module>
+        <module>pm-dme-protection-plugin</module>
+        <module>pm-nutanix-protection-plugin</module>
+    </modules>
+
+    <artifactId>pm-plugins</artifactId>
+    <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
+    <description>${project.artifactId}-${project.version}.${project.packaging}</description>
+
+</project>

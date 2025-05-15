@@ -1,0 +1,185 @@
+{
+  "sla_list": [
+    {
+      "uuid": "8556bb41-abe6-4821-870d-a0252f304dfc",
+      "name": "Gold",
+      "type": 1,
+      "application": "Common",
+      "is_global": true,
+      "created_time": "9999-01-09T00:30:00"
+    },
+    {
+      "uuid": "456061c0-fd23-4929-b0c1-45d63a9339a9",
+      "name": "Silver",
+      "type": 1,
+      "application": "Common",
+      "is_global": true,
+      "created_time": "8888-01-09T00:30:00"
+    },
+    {
+      "uuid": "56defa38-52c1-4e65-9110-b29612c5973a",
+      "name": "Bronze",
+      "type": 1,
+      "application": "Common",
+      "is_global": true,
+      "created_time": "7777-01-09T00:30:00"
+      
+    }
+  ],
+  "policy_list": [
+    {
+      "uuid": "3bd9e448-816d-43b1-9b16-1feca34ece65",
+      "sla_id": "8556bb41-abe6-4821-870d-a0252f304dfc",
+      "name": "full",
+      "type": "backup",
+      "action": "full",
+      "active": true,
+      "ext_parameters": {
+      }
+    },
+    {
+      "uuid": "9b17382f-7164-4f5b-8d77-2910a0be348c",
+      "sla_id": "8556bb41-abe6-4821-870d-a0252f304dfc",
+      "name": "difference_increment",
+      "type": "backup",
+      "action": "difference_increment",
+      "active": true,
+      "ext_parameters": {
+      }
+    },
+    {
+      "uuid": "64189d72-1a26-4d81-a66e-41a9d56eeb7e",
+      "sla_id": "456061c0-fd23-4929-b0c1-45d63a9339a9",
+      "name": "full",
+      "type": "backup",
+      "action": "full",
+      "active": true,
+      "ext_parameters": {
+      }
+    },
+    {
+      "uuid": "1c3114fb-9ff2-41fa-895b-b4df8d783fa7",
+      "sla_id": "456061c0-fd23-4929-b0c1-45d63a9339a9",
+      "name": "difference_increment",
+      "type": "backup",
+      "action": "difference_increment",
+      "active": true,
+      "ext_parameters": {
+      }
+    },
+    {
+      "uuid": "7c011152-fb27-4326-baf6-3e71ffab0e82",
+      "sla_id": "56defa38-52c1-4e65-9110-b29612c5973a",
+      "name": "full",
+      "type": "backup",
+      "action": "full",
+      "active": true,
+      "ext_parameters": {
+      }
+    },
+    {
+      "uuid": "19fb78cf-23b1-4388-99bd-aca6b2e4110a",
+      "sla_id": "56defa38-52c1-4e65-9110-b29612c5973a",
+      "name": "difference_increment",
+      "type": "backup",
+      "action": "difference_increment",
+      "active": true,
+      "ext_parameters": {
+      }
+    }
+  ],
+  "schedule_list": [
+    {
+      "policy_id": "3bd9e448-816d-43b1-9b16-1feca34ece65",
+      "trigger": 1,
+      "interval": 1,
+      "interval_unit": "d",
+      "start_time": "2019-10-30T00:30:00",
+      "window_start": "00:30:00",
+      "window_end": "00:30:00"
+    },
+    {
+      "policy_id": "9b17382f-7164-4f5b-8d77-2910a0be348c",
+      "trigger": 1,
+      "interval": 4,
+      "interval_unit": "h",
+      "start_time": "2019-10-30T00:30:00",
+      "window_start": "00:30:00",
+      "window_end": "00:30:00"
+    },
+    {
+      "policy_id": "64189d72-1a26-4d81-a66e-41a9d56eeb7e",
+      "trigger": 1,
+      "interval": 1,
+      "interval_unit": "w",
+      "start_time": "2019-10-30T00:30:00",
+      "window_start": "00:30:00",
+      "window_end": "00:30:00"
+    },
+    {
+      "policy_id": "1c3114fb-9ff2-41fa-895b-b4df8d783fa7",
+      "trigger": 1,
+      "interval": 1,
+      "interval_unit": "d",
+      "start_time": "2019-10-30T00:30:00",
+      "window_start": "00:30:00",
+      "window_end": "00:30:00"
+    },
+    {
+      "policy_id": "7c011152-fb27-4326-baf6-3e71ffab0e82",
+      "trigger": 1,
+      "interval": 30,
+      "interval_unit": "d",
+      "start_time": "2019-10-30T00:30:00",
+      "window_start": "00:30:00",
+      "window_end": "00:30:00"
+    },
+    {
+      "policy_id": "19fb78cf-23b1-4388-99bd-aca6b2e4110a",
+      "trigger": 1,
+      "interval": 1,
+      "interval_unit": "w",
+      "start_time": "2019-10-30T00:30:00",
+      "window_start": "00:30:00",
+      "window_end": "00:30:00"
+    }
+  ],
+  "retention_list": [
+    {
+      "policy_id": "3bd9e448-816d-43b1-9b16-1feca34ece65",
+      "retention_type": 2,
+      "retention_duration": 1,
+      "duration_unit": "MO"
+    },
+    {
+      "policy_id": "9b17382f-7164-4f5b-8d77-2910a0be348c",
+      "retention_type": 2,
+      "retention_duration": 1,
+      "duration_unit": "MO"
+    },
+    {
+      "policy_id": "64189d72-1a26-4d81-a66e-41a9d56eeb7e",
+      "retention_type": 2,
+      "retention_duration": 1,
+      "duration_unit": "MO"
+    },
+    {
+      "policy_id": "1c3114fb-9ff2-41fa-895b-b4df8d783fa7",
+      "retention_type": 2,
+      "retention_duration": 1,
+      "duration_unit": "MO"
+    },
+    {
+      "policy_id": "7c011152-fb27-4326-baf6-3e71ffab0e82",
+      "retention_type": 2,
+      "retention_duration": 3,
+      "duration_unit": "MO"
+    },
+    {
+      "policy_id": "19fb78cf-23b1-4388-99bd-aca6b2e4110a",
+      "retention_type": 2,
+      "retention_duration": 3,
+      "duration_unit": "MO"
+    }
+  ]
+}

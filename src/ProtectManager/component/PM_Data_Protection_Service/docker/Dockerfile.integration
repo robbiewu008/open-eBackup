@@ -1,0 +1,36 @@
+# ---------------------------------------------------------------------
+#
+# $file: Dockerfile.integration
+# $author: Protect Manager
+#
+# build docker for integration tests
+# ---------------------------------------------------------------------
+
+ARG python_version=3.8
+
+# ---------------------------------------------------------------------
+# Build image
+# ---------------------------------------------------------------------
+FROM emei-il.huawei.com:5443/python:${python_version}-slim as build
+RUN echo hello
+
+# Install certificate
+COPY devops/emei-il.crt /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+
+# Update pip repository
+COPY devops/pip.conf /etc/
+
+WORKDIR /wheels
+COPY tests/integration/requirements requirements
+RUN pip wheel -r requirements
+RUN pip install -r requirements --no-index --find-links=/wheels && \
+    rm -rf /wheels /root/.cache/pip/*
+
+
+WORKDIR /integration
+COPY tests/integration .
+COPY src/app/workflow_context workflow_context
+
+ENV PYTHONPATH=/integration
+CMD  ["python", "/integration"]

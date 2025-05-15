@@ -1,0 +1,13 @@
+fullnameOverride: ''
+image:
+  pullPolicy: IfNotPresent
+  registry: emei-il.huawei.com
+  repository: pm-data-protection-service
+isTesting: ''
+nameOverride: ''
+namespace: default
+replicaCount: 1
+service:
+  port: 80
+  type: ClusterIP
+serviceMode: real

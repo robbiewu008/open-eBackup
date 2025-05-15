@@ -1,0 +1,75 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels:
+    k8s-app: pm-data-protection-service
+  name: pm-data-protection-service
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+      matchLabels:
+          k8s-app: pm-data-protection-service
+  template:
+    metadata:
+      labels:
+        k8s-app: pm-data-protection-service
+        name: lala
+      annotations:
+        co.elastic.logs/processors.decode_json_fields.fields.1: "message"
+        co.elastic.logs/processors.decode_json_fields.target: ""
+        co.elastic.logs/processors.decode_json_fields.overwrite_keys: "true"
+    spec:
+      containers:
+      - image: emei-il.huawei.com/dev/pm-data-protection-service
+        name: pm-data-protection-service
+        imagePullPolicy: IfNotPresent
+        env:
+            - name: SERVICE_MODE
+              value: real
+            - name: GAUSSDB_USERNAME
+              valueFrom:
+                  secretKeyRef:
+                    name: gaussdb
+                    key: username
+            - name: SCHEDULER_MISFIRE_GRACE_SEC
+              valueFrom:
+                  configMapKeyRef:
+                      name: service-env-config
+                      key: SCHEDULER_MISFIRE_GRACE_SEC
+            - name: GAUSSDB_PASSWORD
+              valueFrom:
+                  secretKeyRef:
+                    name: gaussdb
+                    key: password
+            - name: REDIS_SENTINEL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: service-env-config
+                  key: REDIS_SENTINEL_HOST
+            - name: REDIS_SENTINEL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: service-env-config
+                  key: REDIS_SENTINEL_PORT
+            - name: KAFKA_BROKER_ADDR
+              valueFrom:
+                  configMapKeyRef:
+                      name: service-env-config
+                      key: KAFKA_BROKER_ADDR
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pm-data-protection-service
+  labels:
+    k8s-app: pm-data-protection-service
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+  type: ClusterIP
+  selector:
+    k8s-app: pm-data-protection-service
