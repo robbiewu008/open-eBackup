@@ -1531,7 +1531,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
                     [
                       DataMap.Deploy_Type.cyberengine.value,
                       DataMap.Deploy_Type.decouple.value,
-                      DataMap.Deploy_Type.e6000.value
+                      DataMap.Deploy_Type.e6000.value,
+                      DataMap.Deploy_Type.openServer.value
                     ],
                     this.i18n.get('deploy_type')
                   ),
@@ -1645,7 +1646,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
                       DataMap.Deploy_Type.x6000.value,
                       DataMap.Deploy_Type.x9000.value,
                       DataMap.Deploy_Type.e6000.value,
-                      DataMap.Deploy_Type.decouple.value
+                      DataMap.Deploy_Type.decouple.value,
+                      DataMap.Deploy_Type.openOem.value,
+                      DataMap.Deploy_Type.openServer.value
                     ],
                     this.i18n.get('deploy_type')
                   )
