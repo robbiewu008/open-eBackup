@@ -26,9 +26,6 @@ import org.springframework.stereotype.Component;
 /**
  * 功能描述: K8sEnvironmentResourceProvider
  *
- * @author l30057246
- * @version [OceanProtect DataBackup 1.6.0]
- * @since 2024-05-14
  */
 @Slf4j
 @AllArgsConstructor

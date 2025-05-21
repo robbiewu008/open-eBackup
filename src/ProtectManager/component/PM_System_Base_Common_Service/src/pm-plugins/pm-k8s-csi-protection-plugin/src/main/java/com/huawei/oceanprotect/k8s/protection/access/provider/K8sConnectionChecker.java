@@ -38,9 +38,6 @@ import java.util.Objects;
 /**
  * k8s连通性检测
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/7/19
  */
 @Component
 public class K8sConnectionChecker extends UnifiedResourceConnectionChecker {

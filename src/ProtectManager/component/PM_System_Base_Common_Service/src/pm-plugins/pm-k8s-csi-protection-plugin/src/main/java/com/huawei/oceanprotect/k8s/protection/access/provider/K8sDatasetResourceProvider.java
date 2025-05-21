@@ -36,9 +36,6 @@ import java.util.Map;
 /**
  * k8s Dataset资源类provider
  *
- * @author t30049904
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/7/24
  */
 @Slf4j
 @AllArgsConstructor

@@ -21,9 +21,6 @@ import org.junit.Test;
 /**
  * k8s NameSpace资源类provider
  *
- * @author t30049904
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/7/26
  */
 public class K8sNameSpaceResourceProviderTest {
     private K8sNameSpaceResourceProvider k8sNameSpaceResourceProvider;

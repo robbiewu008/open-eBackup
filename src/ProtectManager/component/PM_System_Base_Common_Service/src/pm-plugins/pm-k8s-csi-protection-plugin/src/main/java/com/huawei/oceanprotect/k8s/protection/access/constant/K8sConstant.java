@@ -15,9 +15,6 @@ package com.huawei.oceanprotect.k8s.protection.access.constant;
 /**
  * 功能描述: K8sConstant
  *
- * @author l00570077
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-18
  */
 public class K8sConstant {
     /**

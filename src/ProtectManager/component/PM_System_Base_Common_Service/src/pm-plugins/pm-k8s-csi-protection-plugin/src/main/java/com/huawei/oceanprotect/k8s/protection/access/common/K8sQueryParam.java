@@ -29,9 +29,6 @@ import java.util.List;
  * fieldSelector，labelSelector始终生效
  * fieldSelector和labelSelector存在时，只关注namespace，不关注super其他值
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/7/18
  */
 @Getter
 @Setter

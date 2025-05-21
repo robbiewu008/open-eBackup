@@ -27,9 +27,6 @@ import java.util.Iterator;
 /**
  * Yaml转换java实体类
  *
- * @author t30049904
- * @version [OceanProtect DataBack 1.5.0]
- * @since 2023/9/22
  */
 @Slf4j
 public class YamlUtil {

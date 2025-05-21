@@ -19,9 +19,6 @@ import java.util.Optional;
 /**
  * 工具类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/7/19
  */
 public class K8sUtil {
     /**
