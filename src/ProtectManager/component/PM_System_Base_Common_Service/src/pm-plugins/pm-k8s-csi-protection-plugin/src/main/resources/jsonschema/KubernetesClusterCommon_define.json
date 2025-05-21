@@ -1,0 +1,108 @@
+{
+  "type": "object",
+  "title": "受保护的k8s集群信息",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "k8s集群的名称",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_\\u4e00-\\u9fa5]{1}[\\u4e00-\\u9fa5\\w-]*$",
+      "maxLength": 512
+    },
+    "type": {
+      "type": "string",
+      "description": "环境的类型",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "subType": {
+      "type": "string",
+      "description": "环境的子类型",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "endpoint": {
+      "type": "string",
+      "description": "主机IP/域名",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "port": {
+      "type": "integer",
+      "description": "端口",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "extendInfo": {
+      "type": "object",
+      "properties": {
+        "imageNameAndTag": {
+          "type": "string",
+          "description": "备份Pod镜像名称和Tag",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "nodeSelector": {
+          "type": "string",
+          "description": "k8s节点选择器",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "jobNumOnSingleNode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2
+        },
+        "isVerifySsl": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
+        }
+      },
+      "required": [
+        "imageNameAndTag"
+      ],
+      "description": "环境扩展信息"
+    },
+    "auth": {
+      "type": "object",
+      "properties": {
+        "authType": {
+          "type": "integer",
+          "description": "认证类型",
+          "minimum": 0,
+          "maximum": 8
+        },
+        "extendInfo": {
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string",
+              "description": "k8s集群token"
+            },
+            "certificateAuthorityData": {
+              "type": "string",
+              "description": "k8s集群SSL认证文件"
+            },
+            "config": {
+              "type": "string",
+              "description": "k8s集群配置文件"
+            }
+          },
+          "description": "环境认证信息扩展参数"
+        }
+      },
+      "required": [
+        "extendInfo",
+        "authType"
+      ]
+    }
+  },
+  "required": [
+    "name",
+    "type",
+    "subType",
+    "auth",
+    "extendInfo"
+  ]
+}

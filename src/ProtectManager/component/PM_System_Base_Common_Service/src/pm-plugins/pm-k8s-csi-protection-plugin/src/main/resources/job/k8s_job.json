@@ -1,0 +1,9 @@
+{
+  "subTypes": ["KubernetesNamespaceCommon", "KubernetesDatasetCommon"],
+  "queueTypes": [
+    {
+      "jobTypes": ["BACKUP", "RESTORE"],
+      "queueScope": "root_uuid"
+    }
+  ]
+}

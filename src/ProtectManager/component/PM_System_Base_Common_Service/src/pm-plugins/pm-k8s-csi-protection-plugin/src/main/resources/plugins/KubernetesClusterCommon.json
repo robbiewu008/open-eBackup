@@ -1,0 +1,9 @@
+{
+  "type": "KubernetesCommon",
+  "subType": "KubernetesClusterCommon",
+  "functions": {
+    "scan": {
+      "auto-scan": true
+    }
+  }
+}
