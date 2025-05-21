@@ -63,15 +63,3 @@ code-sync.js
 
 errorCode.xls
 alarm.xls
-
-/src/assets/i18n/en-us/alarm/common.json
-/src/assets/i18n/en-us/error-code/common.json
-/src/assets/i18n/en-us/error-code/dorado_616.json
-/src/assets/i18n/en-us/error-code/pacific.json
-/src/assets/i18n/zh-cn/alarm/common.json
-/src/assets/i18n/zh-cn/error-code/common.json
-/src/assets/i18n/zh-cn/error-code/dorado_616.json
-/src/assets/i18n/zh-cn/error-code/pacific.json
-/src/service/console/swagger/json/*.json
-/src/assets/whitebox/resources/oem.js
-/src/assets/whitebox/resources/tool.ini
