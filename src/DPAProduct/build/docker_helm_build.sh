@@ -141,7 +141,7 @@ function build_open_helm() {
 
     if [ "${BUILD_MODULE}" == "system_pm" ] ; then
         copy_files
-        if [ -d "$DIR_PATH" ]; then
+        if [ -d "${G_BASE_DIR}/bak" ]; then
             cp -rf ${G_BASE_DIR}/bak/*.yaml ${G_BASE_DIR}/build/helm/databackup/templates/
         else
             mkdir -p ${G_BASE_DIR}/bak
