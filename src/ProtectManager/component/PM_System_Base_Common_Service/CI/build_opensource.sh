@@ -90,6 +90,8 @@ function main(){
       build_base
       cd ${PM_MS_DIR}/src/pm-plugins/pm-openstack-plugins
       build_base
+      cd ${PM_MS_DIR}/src/pm-plugins/pm-k8s-csi-protection-plugin
+      build_base
       borrow_package
       build_package
    echo "=========== build PM_System_Base_Service.tar.gz success ========="
