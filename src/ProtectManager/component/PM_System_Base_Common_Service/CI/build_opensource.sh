@@ -28,7 +28,6 @@ function borrow_package(){
     echo "=========== start to borrow PM_System_Base_Service.tar.gz ==========="
     mkdir -p ${PM_MS_DIR}/tmp/
     tar -zxvf ${BIN_PATH}/PM_System_Base_Service.tar.gz -C ${PM_MS_DIR}/tmp
-    tar -zxvf ${BIN_PATH}/pm-system-base-jar.tar.gz -C ${PM_MS_DIR}/src
     cp ${BASE_PATH}/../ProtectAgent/component/protectagent/protectagent/final_pkg/DataProtect_*_client.zip ${PM_MS_DIR}/tmp
     echo "=========== Borrow PM_System_Base_Service.tar.gz success ==========="
 }
@@ -74,26 +73,27 @@ function build_base(){
 }
 
 function main(){
-  echo "=========== start to PM_System_Base_Service.tar.gz , STEP_LEVEL=(${STEP_LEVEL})========="
-   echo "=========== start to exec all ========="
-      cd ${PM_MS_DIR}/src/pm-common
-      build_base
-      cd ${PM_MS_DIR}/src/pm-framework/pm-access-framework
-      build_base
-      cd ${PM_MS_DIR}/src/pm-framework/pm-access-provider-sdk
-      build_base
-      cd ${PM_MS_DIR}/src/pm-plugins/pm-cnware-protection-plugin
-      build_base
-      cd ${PM_MS_DIR}/src/pm-plugins/pm-database-plugins
-      build_base
-      cd ${PM_MS_DIR}/src/pm-plugins/pm-file-protection-plugin
-      build_base
-      cd ${PM_MS_DIR}/src/pm-plugins/pm-openstack-plugins
-      build_base
-      cd ${PM_MS_DIR}/src/pm-plugins/pm-k8s-csi-protection-plugin
-      build_base
-      borrow_package
-      build_package
+    echo "=========== start to PM_System_Base_Service.tar.gz , STEP_LEVEL=(${STEP_LEVEL})========="
+    echo "=========== start to exec all ========="
+    tar -zxvf ${BIN_PATH}/pm-system-base-jar.tar.gz -C ${PM_MS_DIR}/src
+    cd ${PM_MS_DIR}/src/pm-common
+    build_base
+    cd ${PM_MS_DIR}/src/pm-framework/pm-access-framework
+    build_base
+    cd ${PM_MS_DIR}/src/pm-framework/pm-access-provider-sdk
+    build_base
+    cd ${PM_MS_DIR}/src/pm-plugins/pm-cnware-protection-plugin
+    build_base
+    cd ${PM_MS_DIR}/src/pm-plugins/pm-database-plugins
+    build_base
+    cd ${PM_MS_DIR}/src/pm-plugins/pm-file-protection-plugin
+    build_base
+    cd ${PM_MS_DIR}/src/pm-plugins/pm-openstack-plugins
+    build_base
+    cd ${PM_MS_DIR}/src/pm-plugins/pm-k8s-csi-protection-plugin
+    build_base
+    borrow_package
+    build_package
    echo "=========== build PM_System_Base_Service.tar.gz success ========="
 }
 
