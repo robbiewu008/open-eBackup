@@ -35,9 +35,6 @@ import java.util.Map;
 /**
  * K8sRestoreProvider测试类
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/8/16
  */
 public class K8sRestoreProviderTest {
     private final CopyRestApi copyRestApi = Mockito.mock(CopyRestApi.class);

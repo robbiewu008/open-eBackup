@@ -35,9 +35,6 @@ import static org.mockito.ArgumentMatchers.any;
 /**
  * 功能描述: K8sDatasetResourceProviderTest
  *
- * @author t30049904
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-24
  */
 public class K8sDatasetResourceProviderTest {
     private final ResourceService resourceService = Mockito.mock(ResourceService.class);

@@ -58,9 +58,6 @@ import java.util.regex.Pattern;
 /**
  * k8s恢复provider
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/8/16
  */
 @Component
 @AllArgsConstructor

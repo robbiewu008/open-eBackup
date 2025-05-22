@@ -71,9 +71,6 @@ import java.util.stream.Collectors;
 /**
  * 功能描述: K8sCommonService
  *
- * @author l00570077
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-05-23
  */
 @Slf4j
 @Service

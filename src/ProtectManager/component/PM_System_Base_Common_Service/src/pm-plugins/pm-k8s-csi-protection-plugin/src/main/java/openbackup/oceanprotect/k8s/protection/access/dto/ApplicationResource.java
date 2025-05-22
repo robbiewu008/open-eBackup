@@ -19,9 +19,6 @@ import openbackup.system.base.common.utils.JSONArray;
 /**
  * 对应某个具体的pod/deployment/statefulset/daemonset
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/8/2
  */
 @Getter
 @Setter

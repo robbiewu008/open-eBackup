@@ -52,9 +52,6 @@ import java.util.List;
 /**
  * 功能描述: K8sCommonServiceTest
  *
- * @author l00570077
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-05-23
  */
 public class K8sCommonServiceTest {
     private final AgentBusinessService agentBusinessService = Mockito.mock(AgentBusinessService.class);

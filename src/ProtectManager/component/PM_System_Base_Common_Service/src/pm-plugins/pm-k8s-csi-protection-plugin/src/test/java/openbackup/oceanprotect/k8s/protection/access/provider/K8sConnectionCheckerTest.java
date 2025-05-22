@@ -41,9 +41,6 @@ import java.util.List;
 /**
  * 功能描述: K8sConnectionCheckerTest
  *
- * @author t30049904
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-21
  */
 public class K8sConnectionCheckerTest {
     private static  AgentBusinessService agentBusinessService = Mockito.mock(AgentBusinessService.class);

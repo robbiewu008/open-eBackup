@@ -19,9 +19,6 @@ import java.util.List;
 /**
  * 功能描述: ExtendInfoKey
  *
- * @author l00570077
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-07-18
  */
 public class K8sExtendInfoKey {
     /**

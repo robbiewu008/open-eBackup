@@ -23,9 +23,6 @@ import java.util.List;
 /**
  * KubeConfig 实体类
  *
- * @author t30049904
- * @version [OceanProtect DataBack 1.5.0]
- * @since 2023/9/21
  */
 @Getter
 @Setter

@@ -52,9 +52,6 @@ import java.util.Optional;
 /**
  * 功能描述: K8sEnvironmentProviderTest
  *
- * @author l00570077
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023-05-23
  */
 public class K8sEnvironmentProviderTest {
     private static final int K8S_CLUSTER_MAX_COUNT = 8;

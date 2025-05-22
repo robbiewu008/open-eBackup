@@ -18,9 +18,6 @@ import lombok.Setter;
 /**
  * 任务超时时间
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/10/31
  */
 @Getter
 @Setter

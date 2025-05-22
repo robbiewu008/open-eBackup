@@ -36,9 +36,6 @@ import java.util.HashMap;
 /**
  * K8sBackupProvider Test
  *
- * @author h30027154
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/7/29
  */
 public class K8sBackupProviderTest {
     private final K8sCommonService commonService = Mockito.mock(K8sCommonService.class);

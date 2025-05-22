@@ -20,9 +20,6 @@ import java.util.List;
 /**
  * 工作负载信息
  *
- * @author n30046257
- * @version [OceanProtect DataBackup 1.5.0]
- * @since 2023/8/2
  */
 
 @Getter
