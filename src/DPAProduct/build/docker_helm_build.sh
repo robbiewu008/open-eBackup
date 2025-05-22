@@ -141,6 +141,12 @@ function build_open_helm() {
 
     if [ "${BUILD_MODULE}" == "system_pm" ] ; then
         copy_files
+        if [ -d "${G_BASE_DIR}/bak" ]; then
+            cp -rf ${G_BASE_DIR}/bak/*.yaml ${G_BASE_DIR}/build/helm/databackup/templates/
+        else
+            mkdir -p ${G_BASE_DIR}/bak
+            cp -rf ${G_BASE_DIR}/build/helm/databackup/templates/*.yaml ${G_BASE_DIR}/bak/
+        fi
         cd ${G_BASE_DIR}/build/helm/components
         find ./ -name "*.yaml" | xargs -I {} sed -i "s/{{ .Values.global.version }}/${LAST_MS_TAG}/g" {}
         cp -rf ${G_BASE_DIR}/build/helm/components/protect-engine/conf ${G_BASE_DIR}/build/helm/components/infrastructure/
