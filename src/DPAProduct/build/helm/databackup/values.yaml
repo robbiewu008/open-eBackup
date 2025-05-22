@@ -232,7 +232,7 @@ check-dynamic-params:
   timeout: "^([1][8][0][0]|[1][0-7][0-9][0-9])"
   global.gaussdbpwd: "^([R][2][F][1][c][3][N][k][Y][l][8][x][M][j][M][=])"
   global.replicas: "^([1-8])"
-  global.deploy_type: "^(d[0-6]|dataprotect|cloudbackup|ransomware)$"
+  global.deploy_type: "^(d[0-9]|dataprotect|cloudbackup|ransomware)$"
   global.backupNetPlane: "^([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|[1][0][0-2][0-4]|)$"
 
 dm-extend-params:
