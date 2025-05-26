@@ -86,7 +86,7 @@ function main(){
     build_base
     cd ${PM_MS_DIR}/src/pm-plugins/pm-database-plugins
     build_base
-    cd ${PM_MS_DIR}/src/pm-plugins/pm-file-protection-plugin
+    cd ${PM_MS_DIR}/src/pm-plugins/pm-file-protection-plugins
     build_base
     cd ${PM_MS_DIR}/src/pm-plugins/pm-openstack-plugins
     build_base
