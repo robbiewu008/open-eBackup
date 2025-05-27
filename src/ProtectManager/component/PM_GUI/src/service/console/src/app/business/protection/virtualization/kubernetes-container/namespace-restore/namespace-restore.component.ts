@@ -1,15 +1,15 @@
 /*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+ * This file is a part of the open-eBackup project.
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ *
+ * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+ *
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ */
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -88,6 +88,7 @@ export class NamespaceRestoreComponent implements OnInit {
       'protection_k8s_cluster_version_error_label'
     )
   };
+  proxyOptions = [];
 
   constructor(
     public baseUtilService: BaseUtilService,
@@ -209,6 +210,7 @@ export class NamespaceRestoreComponent implements OnInit {
           ? this.resource.uuid
           : this.resource.parent_uuid
       ),
+      proxyHost: new FormControl([]),
       targetCluster: new FormControl(''),
       targetNamespace: new FormControl(''),
       overwriteType: new FormControl(FileReplaceStrategy.Replace),
@@ -506,6 +508,7 @@ export class NamespaceRestoreComponent implements OnInit {
     const params = {
       copyId: this.rowCopy?.uuid,
       restoreType: this.restoreType,
+      agents: this.formGroup.value.proxyHost || [],
       targetEnv:
         this.formGroup.value.restoreTo === RestoreV2LocationType.ORIGIN
           ? this.formGroup.value.originalCluster

@@ -1,15 +1,15 @@
 /*
-* This file is a part of the open-eBackup project.
-* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-* If a copy of the MPL was not distributed with this file, You can obtain one at
-* http://mozilla.org/MPL/2.0/.
-*
-* Copyright (c) [2024] Huawei Technologies Co.,Ltd.
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*/
+ * This file is a part of the open-eBackup project.
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ *
+ * Copyright (c) [2024] Huawei Technologies Co.,Ltd.
+ *
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ */
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -25,7 +25,9 @@ import {
   DataMap,
   DataMapService,
   I18NService,
-  ProtectedEnvironmentApiService
+  MultiCluster,
+  ProtectedEnvironmentApiService,
+  ProtectedResourceApiService
 } from 'app/shared';
 import { AppUtilsService } from 'app/shared/services/app-utils.service';
 import {
@@ -39,7 +41,13 @@ import {
   reject,
   size,
   toNumber,
-  uniqueId
+  uniqueId,
+  filter,
+  includes,
+  intersection,
+  map,
+  difference,
+  some
 } from 'lodash';
 import { Observable, Observer, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -96,6 +104,7 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
     invalidMaxLength: this.i18n.get('protection_labels_value_valid_label'),
     invalidName: this.i18n.get('protection_labels_value_valid_label')
   };
+  hostOptions = [];
 
   constructor(
     private fb: FormBuilder,
@@ -105,7 +114,8 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
     private appUtilsService: AppUtilsService,
     public baseUtilService: BaseUtilService,
     private protectedEnvironmentApiService: ProtectedEnvironmentApiService,
-    private dataMapService: DataMapService
+    private dataMapService: DataMapService,
+    private protectedResourceApiService: ProtectedResourceApiService
   ) {}
 
   ngOnDestroy() {
@@ -115,6 +125,7 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initForm();
+    this.getProxyOptions();
     this.initConfigFileFilter();
     this.updateForm();
   }
@@ -142,6 +153,92 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
       ? '/console/assets/help/a8000/en-us/index.html#en-us_topic_0000002199990881.html'
       : '/console/assets/help/a8000/zh-cn/index.html#kubernetes_CSI_00026.html';
     this.appUtilsService.openSpecialHelp(url);
+  }
+
+  getProxyOptions() {
+    const extParams = {
+      conditions: JSON.stringify({
+        type: 'Plugin',
+        subType: [
+          `${DataMap.Resource_Type.kubernetesClusterCommon.value}Plugin`
+        ]
+      })
+    };
+    this.appUtilsService.getResourceByRecursion(
+      extParams,
+      params => this.protectedResourceApiService.ListResources(params),
+      resource => {
+        resource = filter(resource, item => !isEmpty(item.environment));
+        const hostArray = [];
+        resource = filter(
+          resource,
+          item =>
+            item.environment.extendInfo.scenario ===
+            DataMap.proxyHostType.external.value
+        );
+        if (MultiCluster.isMulti) {
+          resource = filter(resource, item => {
+            const val = item.environment;
+            const connection = val?.extendInfo?.connection_result;
+            const targetObj = JSON.parse(connection || '{}');
+            const linkFlag = some(
+              targetObj,
+              item =>
+                item.link_status ===
+                Number(DataMap.resource_LinkStatus_Special.normal.value)
+            );
+
+            if (
+              linkFlag ||
+              includes(
+                map(this.rowItem?.dependencies?.agents, 'uuid'),
+                val.uuid
+              )
+            ) {
+              return true;
+            }
+            return (
+              val.linkStatus ===
+              DataMap.resource_LinkStatus_Special.normal.value
+            );
+          });
+        }
+        resource = filter(
+          resource,
+          item =>
+            item.environment?.linkStatus ===
+              DataMap.resource_LinkStatus_Special.normal.value ||
+            includes(
+              map(this.rowItem?.dependencies?.agents, 'uuid'),
+              item.environment?.uuid
+            )
+        );
+        each(resource, item => {
+          const tmp = item.environment;
+          hostArray.push({
+            ...tmp,
+            key: tmp.uuid,
+            value: tmp.uuid,
+            label: `${tmp.name}(${tmp.endpoint})`,
+            isLeaf: true
+          });
+        });
+        this.hostOptions = hostArray;
+        if (!isEmpty(this.rowItem)) {
+          this.formGroup
+            .get('clusterNode')
+            .setValue(
+              intersection(
+                map(this.rowItem.dependencies?.agents, 'uuid'),
+                map(this.hostOptions, 'uuid')
+              ),
+              {
+                emitEvent: false
+              }
+            );
+        }
+      }
+    );
   }
 
   updateForm() {
@@ -241,6 +338,7 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
           this.baseUtilService.VALID.maxLength(64)
         ]
       }),
+      clusterNode: new FormControl([]),
       ip: new FormControl(
         { value: '', disabled: !!this.rowItem?.uuid },
         {
@@ -426,10 +524,22 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
   }
 
   getParams() {
+    let reduceAgents = [];
+    if (!isEmpty(this.rowItem)) {
+      reduceAgents = difference(
+        this.rowItem.dependencies?.agents.map(item => item.uuid),
+        this.formGroup.value.clusterNode
+      );
+    }
     const params = {
       name: this.formGroup.value.name,
       type: 'KubernetesCommon',
       subType: DataMap.Resource_Type.kubernetesClusterCommon.value,
+      dependencies: {
+        agents: map(this.formGroup.value.clusterNode, item => {
+          return { uuid: item };
+        })
+      },
       extendInfo: {
         clusterType: this.formGroup.value.clusterType,
         imageNameAndTag: this.formGroup.value.podTag,
@@ -447,6 +557,13 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
         })
       }
     };
+    if (!isEmpty(this.rowItem)) {
+      assign(params.dependencies, {
+        '-agents': reduceAgents.map(item => {
+          return { uuid: item };
+        })
+      });
+    }
     if (!isEmpty(this.includeLabels)) {
       assign(params.extendInfo, {
         nodeSelector: this.getIncludeLabels()
