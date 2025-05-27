@@ -26,6 +26,7 @@ import {
   DataMap,
   DataMapService,
   FileReplaceStrategy,
+  filterVersion,
   I18NService,
   ProtectedResourceApiService,
   RestoreApiV2Service,
@@ -103,6 +104,7 @@ export class NamespaceRestoreComponent implements OnInit {
   ngOnInit() {
     this.initResource();
     this.initForm();
+    this.getProxyOptions();
   }
 
   initResource() {
@@ -143,6 +145,42 @@ export class NamespaceRestoreComponent implements OnInit {
         ];
       }
     });
+  }
+
+  getProxyOptions() {
+    const extParams = {
+      conditions: JSON.stringify({
+        type: 'Plugin',
+        subType: [
+          `${DataMap.Resource_Type.kubernetesClusterCommon.value}Plugin`
+        ]
+      })
+    };
+    this.appUtilsService.getResourceByRecursion(
+      extParams,
+      params => this.protectedResourceApiService.ListResources(params),
+      resource => {
+        resource = filter(resource, item => !isEmpty(item.environment));
+        const hostArray = [];
+        each(resource, item => {
+          const tmp = item.environment;
+          if (
+            tmp.linkStatus ===
+              DataMap.resource_LinkStatus_Special.normal.value &&
+            tmp.extendInfo.scenario === DataMap.proxyHostType.external.value
+          ) {
+            hostArray.push({
+              ...tmp,
+              key: tmp.uuid,
+              value: tmp.uuid,
+              label: `${tmp.name}(${tmp.endpoint})`,
+              isLeaf: true
+            });
+          }
+        });
+        this.proxyOptions = hostArray;
+      }
+    );
   }
 
   getEnvVariablesFormGroup(addValid?) {

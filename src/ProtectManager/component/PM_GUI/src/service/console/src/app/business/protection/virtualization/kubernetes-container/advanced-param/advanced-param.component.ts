@@ -60,7 +60,9 @@ export class AdvancedParamComponent implements OnInit {
     const extParams = {
       conditions: JSON.stringify({
         type: 'Plugin',
-        subType: [`${DataMap.Resource_Type.KubernetesCommon.value}Plugin`]
+        subType: [
+          `${DataMap.Resource_Type.kubernetesClusterCommon.value}Plugin`
+        ]
       })
     };
     if (!this.resourceData.sla_id) {
