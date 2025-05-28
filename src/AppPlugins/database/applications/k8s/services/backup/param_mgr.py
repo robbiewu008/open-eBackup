@@ -14,6 +14,7 @@
 import json
 from base64 import b64decode
 
+import subprocess
 import yaml
 
 from k8s.common.k8s_resource_map import K8SAPI
