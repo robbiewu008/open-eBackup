@@ -13,6 +13,10 @@
 package openbackup.oceanprotect.k8s.protection.access.service;
 
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
+
+import openbackup.access.framework.resource.persistence.dao.ProtectedResourceMapper;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
+import openbackup.data.protection.access.provider.sdk.resource.model.AgentTypeEnum;
 import openbackup.oceanprotect.k8s.protection.access.common.K8sQueryParam;
 import openbackup.oceanprotect.k8s.protection.access.constant.K8sConstant;
 import openbackup.oceanprotect.k8s.protection.access.util.K8sUtil;
@@ -52,6 +56,7 @@ import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
 import openbackup.system.base.service.AvailableAgentManagementDomainService;
 import openbackup.system.base.service.DeployTypeService;
 import openbackup.system.base.service.NetworkService;
+import openbackup.system.base.util.BeanTools;
 import openbackup.system.base.util.OpServiceUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -85,6 +90,8 @@ public class K8sCommonService {
     private final IVpcService iVpcService;
     private final NetworkServiceApi networkServiceApi;
     private final AvailableAgentManagementDomainService domainService;
+    private final ProtectedEnvironmentService environmentService;
+    private final ProtectedResourceMapper protectedResourceMapper;
 
     @Autowired
     private NetworkService networkService;
@@ -98,10 +105,10 @@ public class K8sCommonService {
      * @param k8sCluster K8S 集群
      */
     public void checkConnectivity(ProtectedEnvironment k8sCluster) {
-        List<ProtectedEnvironment> agents = filterCurrentNodeInternalAgents();
+        List<ProtectedEnvironment> agents = getAgentEnvironment(k8sCluster);
         AgentBaseDto response = null;
         try {
-            addIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+            addIpRule(k8sCluster);
             for (ProtectedEnvironment internalAgent : agents) {
                 response = agentUnifiedService.checkApplication(k8sCluster, internalAgent);
                 if (!VerifyUtil.isEmpty(response) && K8sConstant.SUCCESS.equals(response.getErrorCode())) {
@@ -113,7 +120,7 @@ public class K8sCommonService {
                 }
             }
         } finally {
-            deleteIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+            deleteIpRule(k8sCluster);
         }
         log.error("K8s cluster check failed, uuid: {}, name: {}.", k8sCluster.getUuid(), k8sCluster.getName());
         if (VerifyUtil.isEmpty(response) || VerifyUtil.isEmpty(response.getErrorMessage())) {
@@ -160,11 +167,11 @@ public class K8sCommonService {
         listResourceV2Req.setApplications(new ArrayList<>());
         listResourceV2Req.getApplications().add(toApplication(k8sCluster));
         try {
-            addIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+            addIpRule(k8sCluster);
             return agentUnifiedService.getDetailPageList(ResourceSubTypeEnum.KUBERNETES_CLUSTER_COMMON.getType(),
                 internalAgent.getEndpoint(), internalAgent.getPort(), listResourceV2Req);
         } finally {
-            deleteIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+            deleteIpRule(k8sCluster);
         }
     }
 
@@ -177,10 +184,10 @@ public class K8sCommonService {
     public AppEnvResponse queryClusterInfo(ProtectedEnvironment k8sCluster) {
         List<ProtectedEnvironment> agents = getConnectiveInternalAgent(k8sCluster, true);
         try {
-            addIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+            addIpRule(k8sCluster);
             return agentUnifiedService.getClusterInfo(k8sCluster, agents.get(0));
         } finally {
-            deleteIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+            deleteIpRule(k8sCluster);
         }
     }
 
@@ -208,7 +215,7 @@ public class K8sCommonService {
     }
 
     /**
-     * 根据env的扩展参数得到能连通k8s的内置agent
+     * 根据env的扩展参数得到能连通k8s的agent
      *
      * @param k8sCluster k8s集群
      * @param isStrict 严格模式，为true时未找到连通的agent则报错
@@ -217,26 +224,26 @@ public class K8sCommonService {
     public List<ProtectedEnvironment> getConnectiveInternalAgentByParams(ProtectedResource k8sCluster,
         boolean isStrict) {
         Map<String, String> params = k8sCluster.getExtendInfo();
-        Map<String, Boolean> internalAgentConnectionMap = new HashMap<>();
+        Map<String, Boolean> agentConnectionMap = new HashMap<>();
         if (params == null) {
             return Collections.emptyList();
         }
         params.forEach((key, value) -> {
             Optional<String> agentId = K8sUtil.getAgentIdFromExtendInfoKey(key);
             if (agentId.isPresent() && !VerifyUtil.isEmpty(agentId.get())) {
-                internalAgentConnectionMap.put(agentId.get(), Boolean.valueOf(value));
+                agentConnectionMap.put(agentId.get(), Boolean.valueOf(value));
             }
         });
-
-        List<ProtectedEnvironment> agents = filterCurrentNodeInternalAgents();
+        ProtectedEnvironment k8sClusterEnv = BeanTools.copy(k8sCluster, ProtectedEnvironment::new);
+        List<ProtectedEnvironment> agents = getAgentEnvironment(k8sClusterEnv);
         List<String> agentIds = agents.stream()
                 .map(ProtectedEnvironment::getUuid).collect(Collectors.toList());
-        log.info("After filter agent, agents are {}, internalAgentConnectionMap is {}",
-                String.join(",", agentIds), internalAgentConnectionMap);
-        agents.removeIf(next -> !internalAgentConnectionMap.getOrDefault(next.getUuid(), false));
+        log.info("After filter agent, agents are {}, agentConnectionMap is {}",
+            String.join(",", agentIds), agentConnectionMap);
+        agents.removeIf(next -> !agentConnectionMap.getOrDefault(next.getUuid(), false));
 
         if (VerifyUtil.isEmpty(agents) && isMultiClusterAgents(agents, k8sCluster)) {
-            log.warn("K8s can not get connective internal agent, k8s cluster id is {}", k8sCluster.getUuid());
+            log.warn("K8s can not get connective agent, k8s cluster id is {}", k8sCluster.getUuid());
             if (isStrict) {
                 throw new LegoCheckedException(CommonErrorCode.AGENT_NETWORK_ERROR,
                         "there is no internal agent connective");
@@ -250,9 +257,10 @@ public class K8sCommonService {
             return true;
         }
         AgentBaseDto response;
-        List<ProtectedEnvironment> currentNodeInternalAgents = filterCurrentNodeInternalAgents();
+        ProtectedEnvironment k8sClusterEnv = BeanTools.copy(k8sCluster, ProtectedEnvironment::new);
+        List<ProtectedEnvironment> currentNodeInternalAgents = getAgentEnvironment(k8sClusterEnv);
         try {
-            addIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+            addIpRule(k8sClusterEnv);
             for (ProtectedEnvironment internalAgent : currentNodeInternalAgents) {
                 response = agentUnifiedService.checkApplication(k8sCluster, internalAgent);
                 if (!VerifyUtil.isEmpty(response) && K8sConstant.SUCCESS.equals(response.getErrorCode())) {
@@ -265,9 +273,46 @@ public class K8sCommonService {
                 }
             }
         } finally {
-            deleteIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+            deleteIpRule(k8sClusterEnv);
         }
         return true;
+    }
+
+    private List<ProtectedEnvironment> getAgentEnvironment(ProtectedEnvironment environment) {
+        log.info("Start to get k8s csi agent info of environment: {}", environment.getUuid());
+        List<ProtectedEnvironment> agentsEnvList = new ArrayList<>();
+        if (VerifyUtil.isEmpty(environment.getDependencies())
+            || VerifyUtil.isEmpty(environment.getDependencies().get(K8sConstant.AGENTS))) {
+            // 未指定代理，获取环境中在线的K8S CSI类型的代理主机信息，包括内置代理
+            List<ProtectedResource> agentList =
+                protectedResourceMapper.queryOnlineAgentListByAppLabel(K8sConstant.APP_LABEL_CSI);
+            agentsEnvList = agentList.stream()
+                .map(o -> BeanTools.copy(o, ProtectedEnvironment::new))
+                .collect(Collectors.toList());
+        } else {
+            List<ProtectedResource> agents = environment.getDependencies().get(K8sConstant.AGENTS);
+            for (ProtectedResource agent : agents) {
+                try {
+                    ProtectedEnvironment agentEnv = environmentService.getEnvironmentById(agent.getUuid());
+                    if (VerifyUtil.isEmpty(agentEnv)) {
+                        throw new LegoCheckedException(CommonErrorCode.AGENT_NOT_EXIST, "Get agent environment failed");
+                    }
+                    agentsEnvList.add(agentEnv);
+                } catch (LegoCheckedException e) {
+                    log.error("Query k8s csi agent environment error, agentId:{}.", agent.getUuid(), e);
+                }
+            }
+        }
+        if (!memberClusterService.clusterEstablished()) {
+            return agentsEnvList;
+        }
+        String esn = memberClusterService.getCurrentClusterEsn();
+        List<ProtectedEnvironment> agentsEnvFiltered = agentsEnvList.stream()
+            .filter(agent -> StringUtils.equals(esn, agent.getExtendInfoByKey(K8sConstant.INTERNAL_AGENT_ESN))
+                || StringUtils.equals(
+                AgentTypeEnum.INTERNAL_AGENT.getValue(), agent.getExtendInfo().get(K8sConstant.INTERNAL_AGENT_KEY)))
+            .collect(Collectors.toList());
+        return agentsEnvFiltered;
     }
 
     /**
@@ -290,21 +335,22 @@ public class K8sCommonService {
         advanceParams.put(VPC_INFO, JsonUtil.json(vpcInfoEntities));
     }
 
-
     /**
      * 给所有备份ip添加到集群的路由
      *
-     * @param destinationIp 集群ip
-     * @param port 业务端口
+     * @param environment 环境信息 destinationIp 集群ip port 集群端口
      */
 
-    public void addIpRule(String destinationIp, int port) {
+    public void addIpRule(ProtectedEnvironment environment) {
+        String destinationIp = environment.getEndpoint();
+        int port = environment.getPort();
         if (!isNeedUpdateIpRule(destinationIp, port)) {
             log.info("K8s no need to add ip rule.");
             return;
         }
         List<AgentManagementDomain> agentManagementDomains = new ArrayList<>();
-        filterCurrentNodeInternalAgents().forEach(agent ->
+        List<ProtectedEnvironment> agentList = getAgentEnvironment(environment);
+        agentList.forEach(agent ->
             agentManagementDomains.addAll(domainService.getAllAvailableManagementInfo(agent.getUuid())));
         IpRulePolicyUpdateRequest request = getIpRulePolicyRequest(destinationIp, "backup", port);
         int size = getUpdateIpRuleSuccessDomainNum("add", request, agentManagementDomains);
@@ -318,16 +364,18 @@ public class K8sCommonService {
     /**
      * 删除所有备份ip到集群的路由
      *
-     * @param destinationIp 集群ip
-     * @param port 集群端口
+     * @param environment 环境信息 destinationIp 集群ip port 集群端口
      */
-    public void deleteIpRule(String destinationIp, int port) {
+    public void deleteIpRule(ProtectedEnvironment environment) {
+        String destinationIp = environment.getEndpoint();
+        int port = environment.getPort();
         if (!isNeedUpdateIpRule(destinationIp, port)) {
             log.info("K8s no need to delete ip rule.");
             return;
         }
         List<AgentManagementDomain> agentManagementDomains = new ArrayList<>();
-        filterCurrentNodeInternalAgents().forEach(agent ->
+        List<ProtectedEnvironment> agentList = getAgentEnvironment(environment);
+        agentList.forEach(agent ->
             agentManagementDomains.addAll(domainService.getAllAvailableManagementInfo(agent.getUuid())));
         IpRulePolicyUpdateRequest request = getIpRulePolicyRequest(destinationIp, "backup", 0);
         int size = getUpdateIpRuleSuccessDomainNum("delete", request, agentManagementDomains);

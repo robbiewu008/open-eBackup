@@ -26,6 +26,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironm
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.util.BeanTools;
 
 import org.springframework.stereotype.Component;
 
@@ -73,11 +74,12 @@ public class K8sConnectionChecker extends UnifiedResourceConnectionChecker {
 
     @Override
     public CheckResult<Object> generateCheckResult(ProtectedResource protectedResource) {
+        ProtectedEnvironment protectedEnvironment = BeanTools.copy(protectedResource, ProtectedEnvironment::new);
         try {
-            commonService.addIpRule(protectedResource.getEndpoint(), protectedResource.getPort());
+            commonService.addIpRule(protectedEnvironment);
             return super.generateCheckResult(protectedResource);
         } finally {
-            commonService.deleteIpRule(protectedResource.getEndpoint(), protectedResource.getPort());
+            commonService.deleteIpRule(protectedEnvironment);
         }
     }
 
