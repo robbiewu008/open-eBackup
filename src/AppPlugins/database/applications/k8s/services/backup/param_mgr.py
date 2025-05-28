@@ -87,7 +87,33 @@ class ParamMgr:
         for repository in repositories:
             if repository['repositoryType'] == repository_type:
                 log.info(f"Extend info is {repository['extendInfo']}")
-                return Repositories(logical_ip_list=repository['extendInfo']["storageLogicalIps"],
+                extend_info = repository.get('extendInfo', {})
+                if 'storageLogicalIps' in extend_info:
+                    logical_ip_list = extend_info['storageLogicalIps']
+                else:
+                # 执行命令获取IP列表
+                    command = (
+                        f"grep listen {get_install_head_path()}/DataBackup/ProtectClient/ProtectClient-E/nginx/conf/nginx.conf | "
+                        "awk -F ' ' '{print $2}' | "
+                        "awk -F ':' '{print $1}'"
+                )
+                try:
+                    # 执行命令并捕获输出
+                    result = subprocess.run(
+                        command,
+                        shell=True,
+                        capture_output=True,
+                        text=True,
+                        check=True  # 检查命令是否成功执行
+                    )
+                    # 解析命令输出结果
+                    logical_ip_list = result.stdout.strip().split()
+                    log.info(f"Logical IP List: {logical_ip_list}")
+                except subprocess.CalledProcessError as e:
+                    # 命令执行失败时记录错误并抛出异常
+                    log.error(f"Command execution failed: {e}")
+                    raise Exception("Failed to retrieve IPs from nginx.conf")
+                return Repositories(logical_ip_list=logical_ip_list,
                                     remote_path=repository["remotePath"],
                                     local_path=repository["path"][0])
         log.error(f"Not found repository {repository_type}")
