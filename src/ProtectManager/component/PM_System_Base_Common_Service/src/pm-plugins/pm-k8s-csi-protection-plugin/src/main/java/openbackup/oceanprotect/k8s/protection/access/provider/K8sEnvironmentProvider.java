@@ -238,6 +238,7 @@ public class K8sEnvironmentProvider implements EnvironmentProvider {
             throw new LegoCheckedException(CommonErrorCode.ILLEGAL_PARAM, "k8s TIMEOUT is illegal");
         }
     }
+
     private void checkMinute(String minutes) {
         checkNum(minutes);
         checkMinuteOrSeconds(minutes);
@@ -267,7 +268,7 @@ public class K8sEnvironmentProvider implements EnvironmentProvider {
         }
         if (SSL_DISABLED.equals(env.getExtendInfo().get(K8sExtendInfoKey.IS_VERIFY_SSL)) || env.getAuth()
                 .getAuthType() == Authentication.OTHER) {
-            log.info("k8s cluster dont need check ssl,Env name is {},Env id is {}", env.getName(), env.getUuid());
+            log.info("k8s cluster do not need check ssl,Env name is {},Env id is {}", env.getName(), env.getUuid());
             return;
         }
         if (VerifyUtil.isEmpty(env.getAuth().getExtendInfo().get(K8sExtendInfoKey.CERTIFICATE_AUTHORITY_DATA))) {
@@ -349,10 +350,10 @@ public class K8sEnvironmentProvider implements EnvironmentProvider {
     @Override
     public void validate(ProtectedEnvironment environment) {
         try {
-            commonService.addIpRule(environment.getEndpoint(), environment.getPort());
+            commonService.addIpRule(environment);
             unifiedConnectionCheckProvider.checkConnection(environment);
         } finally {
-            commonService.deleteIpRule(environment.getEndpoint(), environment.getPort());
+            commonService.deleteIpRule(environment);
         }
     }
 

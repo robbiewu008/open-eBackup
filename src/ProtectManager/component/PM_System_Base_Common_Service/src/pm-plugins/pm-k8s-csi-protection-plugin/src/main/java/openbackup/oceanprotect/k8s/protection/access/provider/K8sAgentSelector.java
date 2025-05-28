@@ -16,7 +16,6 @@ import openbackup.oceanprotect.k8s.protection.access.service.K8sCommonService;
 
 import lombok.extern.slf4j.Slf4j;
 import openbackup.data.access.framework.agent.ProtectAgentSelector;
-import openbackup.data.access.framework.core.common.util.EnvironmentLinkStatusHelper;
 import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
@@ -25,7 +24,6 @@ import openbackup.system.base.common.constants.CommonErrorCode;
 import openbackup.system.base.common.exception.LegoCheckedException;
 import openbackup.system.base.common.utils.VerifyUtil;
 import openbackup.system.base.sdk.resource.model.ResourceTypeEnum;
-import openbackup.system.base.util.StreamUtil;
 
 import org.springframework.stereotype.Component;
 
@@ -59,7 +57,7 @@ public class K8sAgentSelector implements ProtectAgentSelector {
      * 注册环境时的内置agent
      *
      * @param protectedResource 备份/恢复资源{@link ProtectedResource}
-     * @param parameters        备份恢复参数
+     * @param parameters 备份恢复参数
      * @return agent 列表
      */
     @Override
@@ -73,9 +71,7 @@ public class K8sAgentSelector implements ProtectAgentSelector {
             .orElseThrow(() -> new LegoCheckedException(CommonErrorCode.OBJ_NOT_EXIST, "Resource not exists!"));
         List<ProtectedEnvironment> agents = k8sCommonService.getConnectiveInternalAgentByParams(environment, false);
         return agents.stream()
-                .flatMap(StreamUtil.match(ProtectedEnvironment.class))
-                .filter(EnvironmentLinkStatusHelper::isOnlineAdaptMultiCluster)
-                .peek(agent -> log.debug("dependent online agent is :{}", agent.getUuid()))
+                .peek(agent -> log.info("dependent agent is :{}", agent.getUuid()))
                 .map(env -> new Endpoint(env.getUuid(), env.getEndpoint(), env.getPort()))
                 .collect(Collectors.toList());
     }

@@ -12,6 +12,7 @@
 */
 package openbackup.oceanprotect.k8s.protection.access.provider;
 
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.oceanprotect.k8s.protection.access.service.K8sCommonService;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource
 import openbackup.data.protection.access.provider.sdk.resource.ResourceDeleteContext;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceProvider;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.util.BeanTools;
 
 import org.springframework.stereotype.Component;
 
@@ -50,7 +52,8 @@ public class K8sClusterResourceProvider implements ResourceProvider {
 
     @Override
     public ResourceDeleteContext preHandleDelete(ProtectedResource resource) {
-        commonService.deleteIpRule(resource.getEndpoint(), resource.getPort());
+        ProtectedEnvironment environment = BeanTools.copy(resource, ProtectedEnvironment::new);
+        commonService.deleteIpRule(environment);
         return ResourceDeleteContext.defaultValue();
     }
 

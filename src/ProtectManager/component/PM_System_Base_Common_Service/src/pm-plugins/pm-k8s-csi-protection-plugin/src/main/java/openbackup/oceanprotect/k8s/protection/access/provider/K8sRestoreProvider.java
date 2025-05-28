@@ -12,6 +12,7 @@
 */
 package openbackup.oceanprotect.k8s.protection.access.provider;
 
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
 import openbackup.oceanprotect.k8s.protection.access.constant.K8sConstant;
 import openbackup.oceanprotect.k8s.protection.access.constant.K8sExtendInfoKey;
 import openbackup.oceanprotect.k8s.protection.access.service.K8sCommonService;
@@ -44,6 +45,7 @@ import openbackup.system.base.sdk.copy.model.CopyGeneratedByEnum;
 import openbackup.system.base.sdk.job.model.request.AdvancedConfigReq;
 import openbackup.system.base.sdk.job.model.request.ScParameter;
 import openbackup.system.base.sdk.resource.model.ResourceSubTypeEnum;
+import openbackup.system.base.util.BeanTools;
 
 import org.springframework.stereotype.Component;
 
@@ -140,7 +142,8 @@ public class K8sRestoreProvider implements RestoreInterceptorProvider {
 
     @Override
     public RestoreTask initialize(RestoreTask task) {
-        commonService.addIpRule(task.getTargetEnv().getEndpoint(), task.getTargetEnv().getPort());
+        ProtectedEnvironment targetEnv = BeanTools.copy(task.getTargetEnv(), ProtectedEnvironment::new);
+        commonService.addIpRule(targetEnv);
         Copy copy = copyRestApi.queryCopyByID(task.getCopyId());
         setRestoreMode(task, copy);
         setDeployType(task);
@@ -148,8 +151,10 @@ public class K8sRestoreProvider implements RestoreInterceptorProvider {
         if (ResourceSubTypeEnum.KUBERNETES_NAMESPACE_COMMON.equalsSubType(task.getTargetObject().getSubType())) {
             task.getTargetObject().setParentName(task.getTargetObject().getName());
         }
+
         // 统计速率
         TaskUtil.setRestoreTaskSpeedStatisticsEnum(task, SpeedStatisticsEnum.UBC);
+
         // 填充恢复路径参数
         fillRestorePathParam(task, copy);
 
@@ -162,7 +167,8 @@ public class K8sRestoreProvider implements RestoreInterceptorProvider {
 
     @Override
     public void postProcess(RestoreTask task, ProviderJobStatusEnum jobStatus) {
-        commonService.deleteIpRule(task.getTargetEnv().getEndpoint(), task.getTargetEnv().getPort());
+        ProtectedEnvironment targetEnv = BeanTools.copy(task.getTargetEnv(), ProtectedEnvironment::new);
+        commonService.deleteIpRule(targetEnv);
     }
 
     private void fillTargetEnvExtendInfo(RestoreTask task) {
@@ -175,8 +181,10 @@ public class K8sRestoreProvider implements RestoreInterceptorProvider {
             extendInfo = new HashMap<>();
         }
         Map<String, String> advanceParams = task.getAdvanceParams();
+
         // 填充环境变量参数
         fillEnvConfig(extendInfo, advanceParams);
+
         // 填充Sc参数
         fillScParameter(extendInfo, advanceParams);
         targetEnv.setExtendInfo(extendInfo);
@@ -246,10 +254,10 @@ public class K8sRestoreProvider implements RestoreInterceptorProvider {
         List<AdvancedConfigReq> advancedConfigReqs = JSON.parseArray(advancedConfigReqListStr, AdvancedConfigReq.class);
         if (Objects.isNull(advancedConfigReqs) || advancedConfigReqs.size() == K8sConstant.ADVANCED_CONFIG_MIN_SIZE
             || advancedConfigReqs.size() > K8sConstant.ADVANCED_CONFIG_MAX_SIZE) {
-            throw new LegoCheckedException(CommonErrorCode.ERR_PARAM, "Advanced config is wrong.");
+            throw new LegoCheckedException(CommonErrorCode.ERR_PARAM, "Advanced config is wrong!");
         }
         for (AdvancedConfigReq advancedConfigReq : advancedConfigReqs) {
-            ValidationUtil.fastFailValidate(advancedConfigReq, "Advanced config is wrong.");
+            ValidationUtil.fastFailValidate(advancedConfigReq, "Advanced config is wrong!");
             if (!WorkLoadTypeEnum.contains(advancedConfigReq.getWorkLoadType())) {
                 throw new LegoCheckedException(CommonErrorCode.ERR_PARAM, "Advanced config is wrong.");
             }

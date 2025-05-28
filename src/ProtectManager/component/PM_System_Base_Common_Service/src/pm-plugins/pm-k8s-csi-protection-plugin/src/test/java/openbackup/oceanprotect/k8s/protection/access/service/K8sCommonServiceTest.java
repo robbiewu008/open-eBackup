@@ -14,6 +14,7 @@ package openbackup.oceanprotect.k8s.protection.access.service;
 
 import static org.mockito.Mockito.spy;
 
+import openbackup.access.framework.resource.persistence.dao.ProtectedResourceMapper;
 import openbackup.access.framework.resource.service.AgentBusinessService;
 import com.huawei.oceanprotect.base.cluster.sdk.service.MemberClusterService;
 import openbackup.data.access.client.sdk.api.framework.agent.dto.AgentBaseDto;
@@ -25,6 +26,7 @@ import openbackup.data.protection.access.provider.sdk.base.Endpoint;
 import openbackup.data.protection.access.provider.sdk.base.PageListResponse;
 import openbackup.data.protection.access.provider.sdk.resource.ActionResult;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironment;
+import openbackup.data.protection.access.provider.sdk.resource.ProtectedEnvironmentService;
 import openbackup.data.protection.access.provider.sdk.resource.ProtectedResource;
 import openbackup.data.protection.access.provider.sdk.resource.ResourceService;
 import openbackup.oceanprotect.k8s.protection.access.common.K8sQueryParam;
@@ -63,8 +65,10 @@ public class K8sCommonServiceTest {
     private final AvailableAgentManagementDomainService domainService = Mockito.mock(AvailableAgentManagementDomainService.class);
     private final NetworkService networkService = Mockito.mock(NetworkService.class);
     private final DeployTypeService deployTypeService = Mockito.mock(DeployTypeService.class);
+    private final ProtectedEnvironmentService environmentService = Mockito.mock(ProtectedEnvironmentService.class);
+    private final ProtectedResourceMapper protectedResourceMapper = Mockito.mock(ProtectedResourceMapper.class);
     private final K8sCommonService commonService = new K8sCommonService(agentBusinessService, agentUnifiedService,
-            memberClusterService, resourceService, iVpcService, networkServiceApi, domainService, networkService, deployTypeService);
+        memberClusterService, resourceService, iVpcService, networkServiceApi, domainService, environmentService, protectedResourceMapper, networkService, deployTypeService);
 
     /**
      * 用例场景：检查K8S集群连通性
@@ -78,8 +82,8 @@ public class K8sCommonServiceTest {
         AgentBaseDto successResp = new AgentBaseDto();
         successResp.setErrorCode(K8sConstant.SUCCESS);
         K8sCommonService spyCommonService = spy(commonService);
-        Mockito.doNothing().when(spyCommonService).addIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
-        Mockito.doNothing().when(spyCommonService).deleteIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+        Mockito.doNothing().when(spyCommonService).addIpRule(k8sCluster);
+        Mockito.doNothing().when(spyCommonService).deleteIpRule(k8sCluster);
         Mockito.when(agentBusinessService.queryInternalAgentEnv()).thenReturn(agents);
         Mockito.when(agentUnifiedService.checkApplication(k8sCluster, agents.get(0))).thenReturn(successResp);
         spyCommonService.checkConnectivity(k8sCluster);
@@ -96,8 +100,8 @@ public class K8sCommonServiceTest {
         ProtectedEnvironment k8sCluster = new ProtectedEnvironment();
         List<ProtectedEnvironment> agents = Collections.emptyList();
         K8sCommonService spyCommonService = spy(commonService);
-        Mockito.doNothing().when(spyCommonService).addIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
-        Mockito.doNothing().when(spyCommonService).deleteIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+        Mockito.doNothing().when(spyCommonService).addIpRule(k8sCluster);
+        Mockito.doNothing().when(spyCommonService).deleteIpRule(k8sCluster);
         Mockito.when(agentBusinessService.queryInternalAgentEnv()).thenReturn(agents);
         LegoCheckedException exception = Assert.assertThrows(LegoCheckedException.class,
                 () -> spyCommonService.checkConnectivity(k8sCluster));
@@ -119,8 +123,8 @@ public class K8sCommonServiceTest {
         result.setBodyErr(String.valueOf(CommonErrorCode.KUBE_CONFIG_ERROR));
         failedResp.setErrorMessage(JsonUtil.json(result));
         K8sCommonService spyCommonService = spy(commonService);
-        Mockito.doNothing().when(spyCommonService).addIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
-        Mockito.doNothing().when(spyCommonService).deleteIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+        Mockito.doNothing().when(spyCommonService).addIpRule(k8sCluster);
+        Mockito.doNothing().when(spyCommonService).deleteIpRule(k8sCluster);
         Mockito.when(agentBusinessService.queryInternalAgentEnv()).thenReturn(agents);
         Mockito.when(agentUnifiedService.checkApplication(k8sCluster, agents.get(0))).thenReturn(failedResp);
         LegoCheckedException exception = Assert.assertThrows(LegoCheckedException.class,
@@ -145,8 +149,8 @@ public class K8sCommonServiceTest {
         response.setTotalCount(20);
 
         K8sCommonService spyCommonService = spy(commonService);
-        Mockito.doNothing().when(spyCommonService).addIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
-        Mockito.doNothing().when(spyCommonService).deleteIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+        Mockito.doNothing().when(spyCommonService).addIpRule(k8sCluster);
+        Mockito.doNothing().when(spyCommonService).deleteIpRule(k8sCluster);
         Mockito.when(agentUnifiedService.getDetailPageList(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
                 .thenReturn(response);
 
@@ -171,8 +175,8 @@ public class K8sCommonServiceTest {
         appEnvResponse.getExtendInfo().put(K8sConstant.CLUSTER_VERSION, "1.17.0");
 
         K8sCommonService spyCommonService = spy(commonService);
-        Mockito.doNothing().when(spyCommonService).addIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
-        Mockito.doNothing().when(spyCommonService).deleteIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+        Mockito.doNothing().when(spyCommonService).addIpRule(k8sCluster);
+        Mockito.doNothing().when(spyCommonService).deleteIpRule(k8sCluster);
         Mockito.when(agentUnifiedService.getClusterInfo(Mockito.any(), Mockito.any())).thenReturn(appEnvResponse);
 
         AppEnvResponse res = spyCommonService.queryClusterInfo(k8sCluster);
@@ -210,8 +214,8 @@ public class K8sCommonServiceTest {
         agent1.setUuid("agent2");
         List<ProtectedEnvironment> agents = new ArrayList<>(Collections.singletonList(agent1));
         K8sCommonService spyCommonService = spy(commonService);
-        Mockito.doNothing().when(spyCommonService).addIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
-        Mockito.doNothing().when(spyCommonService).deleteIpRule(k8sCluster.getEndpoint(), k8sCluster.getPort());
+        Mockito.doNothing().when(spyCommonService).addIpRule(k8sCluster);
+        Mockito.doNothing().when(spyCommonService).deleteIpRule(k8sCluster);
         Mockito.when(agentBusinessService.queryInternalAgentEnv()).thenReturn(agents);
         Mockito.when(memberClusterService.clusterEstablished()).thenReturn(true);
         LegoCheckedException legoCheckedException = Assert.assertThrows(LegoCheckedException.class,

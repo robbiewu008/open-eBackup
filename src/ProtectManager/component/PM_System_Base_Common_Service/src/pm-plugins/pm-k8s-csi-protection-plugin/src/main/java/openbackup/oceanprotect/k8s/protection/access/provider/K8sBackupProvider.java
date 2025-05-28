@@ -60,8 +60,7 @@ public class K8sBackupProvider implements BackupInterceptorProvider {
     public BackupTask initialize(BackupTask backupTask) {
         ProtectedEnvironment environment = environmentService
                 .getEnvironmentById(backupTask.getProtectObject().getRootUuid());
-        commonService.addIpRule(environment.getEndpoint(),
-                environment.getPort());
+        commonService.addIpRule(environment);
         checkConnectivity(backupTask);
         handleRepositories(backupTask);
         setDeployType(backupTask);
@@ -80,7 +79,7 @@ public class K8sBackupProvider implements BackupInterceptorProvider {
     public void finalize(PostBackupTask postBackupTask) {
         ProtectedEnvironment environment =
             environmentService.getEnvironmentById(postBackupTask.getProtectedObject().getEnvUuid());
-        commonService.deleteIpRule(environment.getEndpoint(), environment.getPort());
+        commonService.deleteIpRule(environment);
     }
 
     private void checkConnectivity(BackupTask backupTask) {

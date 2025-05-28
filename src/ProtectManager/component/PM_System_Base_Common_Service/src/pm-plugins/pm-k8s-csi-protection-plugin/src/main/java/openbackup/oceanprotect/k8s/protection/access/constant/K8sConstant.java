@@ -42,7 +42,6 @@ public class K8sConstant {
      */
     public static final String TAG_PATTERN = "^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,61}[a-zA-Z0-9]$|^[a-zA-Z0-9]$";
 
-
     /**
      * k8s容器的部署类型
      */
@@ -97,4 +96,24 @@ public class K8sConstant {
      * 环境变量最大长度
      */
     public static final int ADVANCED_CONFIG_PARAM_MAX_SIZE = 100;
+
+    /**
+     * 框架 environment 中 dependencies 的 agent 名称
+     */
+    public static final String AGENTS = "agents";
+
+    /**
+     * appLabel Type
+     */
+    public static final String APP_LABEL_CSI = "\"appLabel\":\"KubernetesCommon\"";
+
+    /**
+     * 内置代理esn
+     */
+    public static final String INTERNAL_AGENT_ESN = "internal_agent_esn";
+
+    /**
+     * 内置agent的key
+     */
+    public static final String INTERNAL_AGENT_KEY = "scenario";
 }
