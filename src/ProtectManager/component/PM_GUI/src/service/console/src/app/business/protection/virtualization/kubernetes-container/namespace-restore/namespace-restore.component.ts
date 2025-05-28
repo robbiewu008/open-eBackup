@@ -149,6 +149,7 @@ export class NamespaceRestoreComponent implements OnInit {
 
   getProxyOptions() {
     const extParams = {
+      queryDependency: true,
       conditions: JSON.stringify({
         type: 'Plugin',
         subType: [

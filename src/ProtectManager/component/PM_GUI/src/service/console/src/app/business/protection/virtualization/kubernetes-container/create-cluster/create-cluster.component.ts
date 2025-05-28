@@ -157,6 +157,7 @@ export class CreateClusterComponent implements OnInit, OnDestroy {
 
   getProxyOptions() {
     const extParams = {
+      queryDependency: true,
       conditions: JSON.stringify({
         type: 'Plugin',
         subType: [
