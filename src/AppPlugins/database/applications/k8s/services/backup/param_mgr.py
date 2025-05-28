@@ -22,6 +22,7 @@ from common.const import BackupTypeEnum, RepositoryDataTypeEnum, SubJobPolicyEnu
 from common.parse_parafile import ParamFileUtil
 from common.exception.common_exception import ErrCodeException
 from common.common_models import SubJobModel
+from common.env_common import get_install_head_path
 from k8s.logger import log
 from k8s.common.const import K8sBackupKeyName, K8sSubType, ActionType, JobInfo, CONSISTENT_SCRIPT_TIMEOUT
 from k8s.common.kubernetes_client.struct import ClusterAuthentication, Token, Resource, Namespace, DataSet, AuthType, \
