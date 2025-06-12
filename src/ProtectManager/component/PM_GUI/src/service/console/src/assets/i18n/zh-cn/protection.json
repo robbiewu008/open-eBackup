@@ -1726,7 +1726,7 @@
   "protection_gbase_cluster_path_tip_label": "请确保已存在的路径未被占用且拥有GBase 8s数据库用户的读写权限。",
   "protection_kubernetes_flexvolume_label": "Kubernetes FlexVolume",
   "protection_kubernetes_flexvolume_tip_label": "Kubernetes FlexVolume指其他类型的外部存储以FlexVolume插件方式接入到Kubernetes系统中。",
-  "protection_kubernetes_container_label": "Kubernetes CSI",
+  "protection_kubernetes_container_label": "Kubernetes CSI/host-Path",
   "protection_kubernetes_container_tip_label": "Kubernetes CSI指其他类型的外部存储以CSI插件方式接入到Kubernetes系统中。",
   "protection_kubernetes_container_cluster_label": "Kubernetes CSI集群",
   "protection_kubernetes_container_namespace_label": "Kubernetes CSI命名空间",

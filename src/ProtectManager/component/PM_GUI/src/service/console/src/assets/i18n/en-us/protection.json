@@ -1726,7 +1726,7 @@
   "protection_tiup_path_info_label": "Log in to the database cluster node and run the \"which tiup\" command to obtain the path.",
   "protection_kubernetes_flexvolume_label": "Kubernetes FlexVolume",
   "protection_kubernetes_flexvolume_tip_label": "\"Kubernetes FlexVolume\" indicates that other types of external storage devices are connected to the Kubernetes system using FlexVolume plug-ins.",
-  "protection_kubernetes_container_label": "Kubernetes CSI",
+  "protection_kubernetes_container_label": "Kubernetes CSI/host-Path",
   "protection_kubernetes_container_tip_label": "\"Kubernetes CSI\" indicates that other types of external storage devices are connected to the Kubernetes system using CSI plug-ins.",
   "protection_kubernetes_container_cluster_label": "Kubernetes CSI Cluster",
   "protection_kubernetes_container_namespace_label": "Kubernetes CSI Namespace",
