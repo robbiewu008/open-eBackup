@@ -25,7 +25,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "baseHref": "/console/",
-            "outputPath": "console",
+            "outputPath": "dist/pm-gui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
