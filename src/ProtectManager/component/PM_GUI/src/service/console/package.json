@@ -7,8 +7,7 @@
     "pre-swagger": "npm run convert && node swagger/codegen/json.js",
     "pre-gen": "node swagger/codegen/prepare.js swagger/swagger.json swagger/codegen/prepared_swagger.json",
     "gen": "npm run pre-swagger && npm run pre-gen && npx ng-swagger-gen -c codegen.json",
-    "start": "node --max-old-space-size=8192 ./node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.json --port 8100"
-    ,
+    "start": "node --max-old-space-size=8192 ./node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.json --port 8100",
     "hmr": "ng serve --configuration development --proxy-config proxy.conf.json",
     "build": "npm run gen && npm run omrp && ng build --configuration production && npm run i18n",
     "open-build": "npm run gen && ng build --configuration production && npm run i18n",
