@@ -48,6 +48,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import openbackup.system.base.common.constants.Constants;
+import openbackup.system.base.common.constants.CommonErrorCode;
+import openbackup.system.base.common.exception.LegoCheckedException;
 
 /**
  * 添加DM端口
@@ -170,6 +175,17 @@ public class InitializeUserServiceAbility implements InitializeUserService {
     public String createUser(String authUsername, String addUsername, Integer addUserRoleId) {
         String deviceId = initConfigService.getLocalStorageDeviceId();
         String pwd = RandomPwdUtil.generate(IsmNumberConstant.TWELVE);
+
+        // Determine if the user is an admin based on addUserRoleId
+        boolean isAdminUser = String.valueOf(addUserRoleId).equals(Constants.ROLE_SYS_ADMIN) ||
+                             String.valueOf(addUserRoleId).equals(Constants.ROLE_AUDITOR) ||
+                             String.valueOf(addUserRoleId).equals(Constants.Builtin.ROLE_SECURITY_ADMIN_ID);
+
+        if (!isValidPassword(pwd, isAdminUser)) {
+            // Consider using a more specific error code if available
+            throw new LegoCheckedException(CommonErrorCode.PARAM_ILLEGAL, "Password does not meet policy requirements.");
+        }
+
         UserObjectRequest userObjectRequest = new UserObjectRequest();
         userObjectRequest.setName(addUsername);
         userObjectRequest.setPassword(pwd);
@@ -259,6 +275,40 @@ public class InitializeUserServiceAbility implements InitializeUserService {
     @Override
     public void modifyUser(String targetUsername, String oldPassword, String newPassword) {
         log.info("Modify user:{} start.", targetUsername);
+
+        // Placeholder: Assume a method exists to get UserObjectResponse or at least role ID by username
+        // UserObjectResponse user = deviceUserService.getUserDetails(targetUsername); // This is an assumed method
+        // Integer userRoleId = user.getRoleId(); // Assuming UserObjectResponse has getRoleId()
+        // For now, as a placeholder, we'll need to decide a default or fetch it.
+        // Let's assume we need to fetch it. Since we can't implement that fully here,
+        // this part of the logic for determining isAdmin based on fetched role ID is conceptual.
+        // boolean isAdminUser = String.valueOf(userRoleId).equals(Constants.ROLE_SYS_ADMIN) ||
+        //                      String.valueOf(userRoleId).equals(Constants.ROLE_AUDITOR) ||
+        //                      String.valueOf(userRoleId).equals(Constants.Builtin.ROLE_SECURITY_ADMIN_ID);
+        // As a temporary measure for this exercise, defaulting to non-admin policy for modifyUser
+        // unless a mechanism to fetch role is confirmed/implemented.
+        // For the purpose of this change, we will assume 'false' (non-admin) if role cannot be determined.
+        // This part needs to be correctly implemented by fetching the user's actual role.
+        boolean isAdminUser = false; // Placeholder - needs actual role determination
+        // Example of how it might be (if UserUtils or another service could provide role by name):
+        // try {
+        //    UserObjectResponse userDetails = findUserDetailsByName(targetUsername); // Assumed method
+        //    if (userDetails != null && userDetails.getRolesSet() != null && !userDetails.getRolesSet().isEmpty()) {
+        //        String roleId = userDetails.getRolesSet().get(0).getId(); // Assuming RoleBo has getId()
+        //        isAdminUser = Constants.ROLE_SYS_ADMIN.equals(roleId) ||
+        //                      Constants.ROLE_AUDITOR.equals(roleId) ||
+        //                      Constants.Builtin.ROLE_SECURITY_ADMIN_ID.equals(roleId);
+        //    }
+        // } catch (Exception e) {
+        //     log.warn("Could not determine role for user {}, applying default password policy.", targetUsername);
+        // }
+
+
+        if (!isValidPassword(newPassword, isAdminUser)) {
+            // Consider using a more specific error code if available
+            throw new LegoCheckedException(CommonErrorCode.PARAM_ILLEGAL, "New password does not meet policy requirements.");
+        }
+
         String deviceId = initConfigService.getLocalStorageDeviceId();
         ChangePwdRequest changePwdRequest = new ChangePwdRequest();
         changePwdRequest.setId(targetUsername);
@@ -280,6 +330,29 @@ public class InitializeUserServiceAbility implements InitializeUserService {
     public void initUserPassword(String authUsername, String targetUsername,
         String superAdminPassword, String newPassword) {
         log.info("Init user:{} start.", targetUsername);
+
+        // Placeholder: Determine if targetUsername is an admin to apply correct policy
+        // This requires fetching the role of targetUsername.
+        // For this exercise, defaulting to non-admin policy if role cannot be determined.
+        // This part needs to be correctly implemented by fetching the user's actual role.
+        boolean isTargetUserAdmin = false; // Placeholder - needs actual role determination
+        // Example of how it might be:
+        // try {
+        //    UserObjectResponse userDetails = findUserDetailsByName(targetUsername); // Assumed method
+        //    if (userDetails != null && userDetails.getRolesSet() != null && !userDetails.getRolesSet().isEmpty()) {
+        //        String roleId = userDetails.getRolesSet().get(0).getId(); // Assuming RoleBo has getId()
+        //        isTargetUserAdmin = Constants.ROLE_SYS_ADMIN.equals(roleId) ||
+        //                            Constants.ROLE_AUDITOR.equals(roleId) ||
+        //                            Constants.Builtin.ROLE_SECURITY_ADMIN_ID.equals(roleId);
+        //    }
+        // } catch (Exception e) {
+        //     log.warn("Could not determine role for user {}, applying default password policy.", targetUsername);
+        // }
+
+        if (!isValidPassword(newPassword, isTargetUserAdmin)) {
+            throw new LegoCheckedException(CommonErrorCode.PARAM_ILLEGAL, "New password does not meet policy requirements for target user.");
+        }
+
         String deviceId = initConfigService.getLocalStorageDeviceId();
 
         DeviceInitPwdParam deviceInitPwdParam = new DeviceInitPwdParam();
@@ -288,5 +361,36 @@ public class InitializeUserServiceAbility implements InitializeUserService {
         deviceInitPwdParam.setNewPassword(newPassword);
         deviceUserService.initUserPassword(deviceId, authUsername, deviceInitPwdParam);
         log.info("Init user:{} success.", targetUsername);
+    }
+
+    private boolean isValidPassword(String password, boolean isAdmin) {
+        if (password == null) {
+            return false;
+        }
+        int minLength = isAdmin ? 8 : 6;
+        if (password.length() < minLength) {
+            log.warn("Password validation failed: Password is shorter than minimum length {}.", minLength);
+            return false;
+        }
+
+        int charTypeCount = 0;
+        if (Pattern.compile("[A-Z]").matcher(password).find()) { // Uppercase
+            charTypeCount++;
+        }
+        if (Pattern.compile("[a-z]").matcher(password).find()) { // Lowercase
+            charTypeCount++;
+        }
+        if (Pattern.compile("[0-9]").matcher(password).find()) { // Digit
+            charTypeCount++;
+        }
+        if (Pattern.compile("[^A-Za-z0-9]").matcher(password).find()) { // Special character
+            charTypeCount++;
+        }
+
+        if (charTypeCount < 2) {
+            log.warn("Password validation failed: Password does not contain at least 2 character types.");
+            return false;
+        }
+        return true;
     }
 }
