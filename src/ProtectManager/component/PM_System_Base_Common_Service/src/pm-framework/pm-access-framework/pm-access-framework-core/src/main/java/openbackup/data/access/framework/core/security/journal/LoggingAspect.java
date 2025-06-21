@@ -65,6 +65,10 @@ import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
+import java.util.Date; // For AuditLog timestamp
+// import openbackup.system.base.model.AuditLog; // Assuming path for planned AuditLog entity
+// import openbackup.system.base.dao.AuditLogRepository; // Assuming path for planned AuditLogRepository
+import com.google.gson.Gson; // For serializing details to JSON, if needed
 
 /**
  * Logging Aspect
@@ -351,24 +355,106 @@ public class LoggingAspect implements ApplicationContextAware {
 
     private void sendEvent(Logging logging, HttpServletRequest request, LogParam param) {
         String[] params = initParams(request, logging, param.getDetails());
-        param.setDetails(params);
+        param.setDetails(params); // params now include username and IP at the beginning if not manual
         LegoInternalEvent event = buildEvent(request, logging, param);
+
+        TokenBo tokenBo = tokenVerificationService.parsingTokenFromRequest();
+        String userId = "";
+        String userName = "";
+        String userRole = "";
+
+        if (tokenBo != null && tokenBo.getUser() != null) {
+            userId = tokenBo.getUser().getId();
+            userName = tokenBo.getUser().getName();
+            if (tokenBo.getUser().getRoles() != null && !tokenBo.getUser().getRoles().isEmpty()) {
+                userRole = tokenBo.getUser().getRoles().get(0).getName(); // Assuming first role is primary
+            }
+        } else if (logging.manual() && params.length > 0) {
+            // For manual logging, username might be the first detail param
+            userName = params[0]; // Conventionally, for manual logs, first param is username
+            Optional<String> userIdOpt = getUserIdByUsername(userName);
+            if (userIdOpt.isPresent()) {
+                userId = userIdOpt.get();
+                // How to get role for manual log by username? Needs UserInternalService or similar
+                // For now, leave userRole blank or set to a default for manual if not determinable
+            }
+        }
+        event.setUserId(userId); // Set UserId for LegoInternalEvent as well
+
+        // ---- Begin AuditLog Enhancement ----
+        // AuditLog auditLog = new AuditLog();
+        // auditLog.setTimestamp(new Date(event.getEventTime() * 1000L)); // Convert seconds to ms
+        // auditLog.setUserId(userId);
+        // auditLog.setUsername(userName);
+        // auditLog.setUserRole(userRole);
+        // auditLog.setActionType(logging.name()); // Using event code as actionType
+        // auditLog.setTargetResourceType(logging.target());
+        //
+        // // Extracting targetResourceId would require knowing which detail param is the ID
+        // // This needs a convention, e.g., if details() has "$1.id", it implies first arg's id
+        // // For now, let's assume a placeholder or leave it null if not easily determinable
+        // // String targetResourceId = extractTargetResourceId(param.getDetails(), logging.details());
+        // // auditLog.setTargetResourceId(targetResourceId);
+        //
+        // auditLog.setDescription(generateChineseDescription(logging, param.getDetails())); // Placeholder for i18n
+        // auditLog.setStatus(param.isSuccess() ? "SUCCESS" : "FAILURE");
+        // auditLog.setIpAddress(event.getMoIP());
+        //
+        // // Gson gson = new Gson();
+        // // auditLog.setDetails(gson.toJson(param.getDetails())); // Original params as JSON details
+        //
+        // // try {
+        // //   if (auditLogRepository != null) { // auditLogRepository would be @Autowired
+        // //      auditLogRepository.save(auditLog);
+        // //   } else {
+        // //      log.warn("AuditLogRepository not available, AuditLog not saved to DB.");
+        // //   }
+        // // } catch (Exception e) {
+        // //    log.error("Failed to save AuditLog to DB.", e);
+        // // }
+        // ---- End AuditLog Enhancement ----
+
+
         // 如果needCheckLogging为false，则不需要发送事件
         if (logging.needCheckLogging() && deployTypeService.isCyberEngine()) {
             boolean isNeedLogging = Boolean.parseBoolean(params[params.length - 1]);
             String[] originParams = Arrays.copyOfRange(params, 0, params.length - 1);
-            param.setDetails(originParams);
+            param.setDetails(originParams); // Restore original details for LegoInternalEvent if modified
             if (!isNeedLogging) {
                 return;
             }
         }
-        if (!logging.manual()) {
-            event.setUserId(getUserIdFromAuthToken());
-        } else {
-            Optional<String> userIdOpt = getUserIdByUsername(param.getDetails()[0]);
-            userIdOpt.ifPresent(event::setUserId);
-        }
         operationLogService.sendEvent(event);
+    }
+
+    // Placeholder method for generating Chinese descriptions
+    // This would ideally use an i18n service and keys from the @Logging annotation
+    private String generateChineseDescription(Logging logging, String[] details) {
+        // Example: "用户 [username] 执行了操作 [actionType] 在资源 [targetResourceType] 上，详情：[details_concatenated]"
+        // This needs a proper internationalization mechanism.
+        // For now, returning a formatted string of the event name and details.
+        StringBuilder descBuilder = new StringBuilder();
+        descBuilder.append("操作 [").append(logging.name()).append("]");
+        descBuilder.append(" 对象类型 [").append(logging.target()).append("]");
+        if (details != null && details.length > 0) {
+            descBuilder.append(" 详情 [");
+            for (int i = 0; i < details.length; i++) {
+                // Assuming params[0] is username and params[1] is IP if not manual and already handled
+                // For audit log description, we might want to skip username/IP if already in dedicated fields
+                if (logging.manual() || i >= 2) { // Adjust index based on actual content of 'details'
+                    descBuilder.append(details[i]);
+                    if (i < details.length - 1) {
+                        descBuilder.append(", ");
+                    }
+                } else if (i == 0 && !logging.manual()) { // Username placeholder
+                     descBuilder.append(details[i]); // Already username
+                     if (i < details.length - 1) descBuilder.append(", ");
+                }
+                 // IP is usually in a dedicated field, might not need it in description's details
+            }
+            descBuilder.append("]");
+        }
+        return descBuilder.toString();
     }
 
     private LegoInternalEvent buildEvent(HttpServletRequest request, Logging logging, LogParam param) {
